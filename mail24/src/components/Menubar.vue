@@ -22,7 +22,7 @@
           <el-menu-item index="1">
             
             <span slot="title">收件箱 <el-badge class="fl_r badege_grey" :value="3" style="text-indent: 0;margin-right:5px;" /></span>
-            <router-link to="/welcome/receive" class="link_router"></router-link>
+            <router-link to="/welcome/index" class="link_router"></router-link>
           </el-menu-item>
           <el-menu-item index="2">
             <span slot="title">代办邮件</span>

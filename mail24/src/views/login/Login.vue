@@ -60,7 +60,7 @@
 
 </template>
 <script>
-import router from '../router'
+import router from '../../router'
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
 
@@ -111,7 +111,7 @@ export default {
     width:100%;
 
     height:100%;
-    background-image: url(../assets/img/mainBg0.jpg);
+    background-image: url(../../assets/img/mainBg0.jpg);
     /* background-image: url(../assets/img/login_right.png); */
     background-size: cover;
 }
@@ -147,7 +147,7 @@ body{
     -o-background-size: cover;
     background-size: cover;
     background-position: right bottom;
-    background-image: url(../assets/img/login_right.png);
+    background-image: url(../../assets/img/login_right.png);
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
