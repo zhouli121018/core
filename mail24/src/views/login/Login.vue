@@ -93,7 +93,8 @@ export default {
         },
         test:function(){
             var apiUrl = 'http://192.168.1.24:9090/ajax_get_captcha';
-            this.$http.get('/api/ajax_get_captcha').then((data)=>console.log('success:'+data), (data)=>console.log(data));
+            // this.$http.get('/api/ajax_get_captcha').then((data)=>console.log('success:'+data), (data)=>console.log(data));
+            this.$http.post('/api/login/',{"username": "system@test.com",  "password": "1QAZ2wsx"}).then((data)=>console.log('success:'+data), (data)=>console.log(data));
         }
     },
     mounted:function(){

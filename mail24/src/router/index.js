@@ -38,6 +38,7 @@ export default new Router({
     //     }
     //   ]
     // },
+    {path:'/',redirect:'/login'},
     {path:'/login',component:_import('login/Login')},
     {
       path: '/welcome',
