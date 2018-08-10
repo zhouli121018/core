@@ -1,31 +1,26 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import * as getters from './getters';
+import mutations from './mutations';
+import * as actions from './actions';
+
 Vue.use(Vuex)
 
+import cookie from '../assets/js/cookie';
+
+const userInfo = {
+  name:cookie.getCookie('name')||'',
+  token:cookie.getCookie('token')||''
+}
 const store = new Vuex.Store({
     state: {
-      currentTabIdx:'home',
-      isLogin:false,
-      user:{"uname":'oadmin@business1473.com',pwd:123456}
+      userInfo
     },
 
-    actions: {
-
-    },
-
-    mutations: {
-      changeTabIdx(state, data) {
-        state.currentTabIdx = data
-      },
-      changeLogin(state, data) {
-        state.isLogin = data
-      },
-      changeUser(state, data1,data2){
-        state.user.uname=data1;
-        state.user.pwd=data2;
-      }
-    }
+    actions,
+    mutations,
+    getters
 })
 
 export default store;

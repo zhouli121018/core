@@ -5,10 +5,10 @@ import App from './App'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import Menubar from './components/Menubar'
-import Home from './components/Home'
 Vue.use(ElementUI)
 import Vuex from 'vuex'
 import store from './store'
+import './axios/';
 import axios from 'axios'
 import router from './router'
 Vue.prototype.$http=axios
@@ -17,7 +17,6 @@ Vue.use(Vuex)
 Vue.config.productionTip = false
 
 Vue.component('Menubar', Menubar)
-Vue.component('Home', Home)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

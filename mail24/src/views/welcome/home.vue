@@ -7,14 +7,14 @@
                             <div class="abstract">
                                 <div class="avatar">
                                     <a href="javascript:void(0);" class="u-img u-img-round">
-                                        <img alt="avatar" class="j-avatar" src="../assets/img/man.png">
+                                        <img alt="avatar" class="j-avatar" src="@/assets/img/man.png">
                                     </a>
                                     </div>
                                     <div class="info">
                                     <ul class="u-list u-list-horizontal j-link-trigger">
                                         <li>
                                         <span class="headings">我的邮箱:</span>
-                                        <a href="javascript:void(0);" class="link" data-trigger="mail.unread"><span class="mark">1</span> 封未读邮件</a>
+                                        <a href="javascript:void(0);" class="link" data-trigger="mail.unread"><span class="mark">{{unread}}</span> 封未读邮件</a>
                                         </li>
                                     </ul>
                                     <ul class="u-list u-list-horizontal">
@@ -23,10 +23,10 @@
                                         <div class="u-progress u-progress-success">
                                             <div class="u-progress-bar" style="width: 0%;"></div>
                                         </div>
-                                        <span class="text-success">1.05M / 1000.00M</span>
+                                        <span class="text-success">{{ used_capacity ||'0.00M'}} / {{ total_capacity || '0.00M'}} &nbsp;</span>
                                         </li>
                                         <li>
-                                        <a href="javascript:void(0);" class="link" data-trigger="setting.folder.folder">管理</a>
+                                        <a href="javascript:void(0);" class="link" data-trigger="setting.folder.folder"> 管理</a>
                                         </li>
                                     </ul>
                                     <ul class="u-list u-list-horizontal">
@@ -45,7 +45,7 @@
                                     <span class="place">深圳市</span>
                                 </div>
                                 <div class="weaimg">
-                                    <img src="../assets/img/duoyun.png" alt="weather">
+                                    <img src="@/assets/img/duoyun.png" alt="weather">
                                 </div>
                             </div>
                         </div>
@@ -58,7 +58,7 @@
                                     
                                     <p>
                                         <a href="http://www.lunkr.cn/" class="lunkr_image" target="_blank" title="了解Coremail论客" style="display: block;width: 100%;background-size: cover;background-repeat:no-repeat;">
-                                            <img src="../assets/img/lunkr_banner.png" style="width:100%;max-width:100%;" alt="">
+                                            <img src="@/assets/img/lunkr_banner.png" style="width:100%;max-width:100%;" alt="">
                                         </a>
                                     </p>
                                     <p class="lunkr_download_links">
@@ -121,7 +121,7 @@
 
                                 <div class="app">
                                 <p>移动邮件、即时沟通</p>
-                                <img src="../assets/img/download.png" alt="qrcode">
+                                <img src="@/assets/img/download.png" alt="qrcode">
                                 <div class="img-text">
                                     <a href="http://www.lunkr.cn/download.html?p=pc" target="_blank">
                                     <span class="el-icon-menu"></span>
@@ -139,23 +139,38 @@
                                 </div>
                             </div>
                             </div>
-
-
                     </div>
                 </div>  
                 <div class="footer small text-gray">Copyright © U-Mail Co.,Ltd.</div> 
             </div>  
 </template>
 <script>
+import cookie from '@/assets/js/cookie';
+import {welcome} from '@/api/api'
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
     data() {
         return {
+            unread:0,
+            used_capacity:'',
+            total_capacity:''
         }
     },
     computed: {
         username() { // 获取store中的数据
-            return this.$store.state.user.uname;
+            return this.$store.state.userInfo.name;
         }
+    },
+    mounted: function(){
+            console.log(11111111)
+            console.log(this.$store.state)
+            console.log(222222222)
+            welcome().then(res=>{
+                console.log(res.data);
+                this.unread = res.data.unread;
+                this.used_capacity = res.data.used_capacity;
+                this.total_capacity = res.data.total_capacity
+            })
     },
 }
 </script>
@@ -454,7 +469,7 @@ a.u-img {
     height: 120px;
 }
 .m-mlwelcome .icon-feature {
-    background-image: url(../assets/img/features.png);
+    background-image: url(../../assets/img/features.png);
     width: 52px;
     height: 52px;
 }

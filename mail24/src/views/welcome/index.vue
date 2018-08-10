@@ -4,7 +4,7 @@
           <Menubar></Menubar>
       </div>
       <div class="mlmain">
-            <Home></Home>    
+            <router-view></router-view>     
       </div>
   </div>
 </template>
@@ -18,11 +18,10 @@ export default {
       // 计算属性
     computed: {
         list() { // 获取store中的数据
-            return this.$store.state.isLogin;
+            // return this.$store.state.isLogin;
         }
     },
     mounted:function(){
-        console.log(123)
         console.log(this.$store.state)
         // this.test();
     }, 

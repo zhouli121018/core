@@ -81,7 +81,8 @@
 <script>
 import store from '@/store'
 import router from '@/router'
-import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
+import cookie from '@/assets/js/cookie';
+// import {logout} from '@/api/api'
 export default {
     data:function(){
       return {
@@ -98,17 +99,17 @@ export default {
         console.log(key, keyPath);
       },
       logout(){
-        this.$store.commit('changeLogin', false);
-        this.$store.commit('changeUser', {});
-        console.log(this.$store.state)
+        cookie.delCookie('token')
+        cookie.delCookie('name')
+        this.$store.dispatch('setInfo');
         router.push('/login')
       }
     },
     mounted:function(){
-            console.log(this.$store.state.isLogin)
-            if(!this.$store.state.isLogin){
-                // router.push('/login')
-            }
+            // console.log(this.$store.state.isLogin)
+            // if(!this.$store.state.isLogin){
+            //     // router.push('/login')
+            // }
     },
 }
 </script>

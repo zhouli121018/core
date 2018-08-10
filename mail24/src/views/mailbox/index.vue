@@ -4,7 +4,7 @@
           <Menubar></Menubar>
       </div>
       <div class="mlmain">
-            收件箱    
+            <router-view></router-view>   
       </div>
   </div>
 </template>

@@ -37,10 +37,10 @@
                     <h2 class="text-center">用户登录</h2>
                     <el-form :label-position="labelPosition"  label-width="80px" :model="formLabelAlign">
                     <el-form-item label="用户名">
-                        <el-input v-model.trim="formLabelAlign.uname"></el-input>
+                        <el-input v-model.trim="formLabelAlign.username"></el-input>
                     </el-form-item>
                     <el-form-item label="密码">
-                        <el-input v-model="formLabelAlign.pwd"></el-input>
+                        <el-input v-model="formLabelAlign.password"></el-input>
                     </el-form-item>
 
                     </el-form>
@@ -56,10 +56,14 @@
 
         </div>
 
+        <!--弹窗-->
+        
     </div>
 
 </template>
 <script>
+import cookie from '../../assets/js/cookie';
+import {login} from '../../api/api'
 import router from '../../router'
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
@@ -68,28 +72,46 @@ export default {
       return {
         labelPosition: 'top',
         formLabelAlign: {
-          uname: '',
-          pwd: ''
+          username: '',
+          password: ''
         },
 
       };
     },
     methods:{
         login:function(){
-            if(!this.formLabelAlign.uname){
-                alert("请输入用户名！");
+            if(!this.formLabelAlign.username){
+                this.open('请输入用户名！');
                 return;
             }
-            if(!this.formLabelAlign.pwd){
-                alert("请输入密码！");
+            if(!this.formLabelAlign.password){
+                this.open('请输入密码！');
                 return;
             }
-            console.log(this.formLabelAlign);
-            console.log(this.$store.state)
-            this.$store.commit('changeUser', this.formLabelAlign.uname,this.formLabelAlign.pwd)
-            this.$store.commit('changeLogin', true)
-            console.log(this.$store.state)
-            router.push('/welcome')
+            var that = this;
+            login({"username": this.formLabelAlign.username,  "password": this.formLabelAlign.password})
+            .then((response)=>{
+                var token = response.data.token;
+                //本地存储用户信息
+                cookie.setCookie('name',this.formLabelAlign.username,7);
+                cookie.setCookie('token',response.data.token,7)
+                that.$store.dispatch('setInfo');
+                that.$router.push('/welcome')
+                // this.$store.commit('changeUser', this.formLabelAlign.username,this.formLabelAlign.password)
+            }, (data)=>{
+                that.open('用户名或密码错误！请重新输入！');
+            });
+        },
+        open(str) {
+            this.$alert(str, '提示：', {
+                confirmButtonText: '确定',
+                // callback: action => {
+                //     this.$message({
+                //     type: 'info',
+                //     message: `action: ${ action }`
+                //     });
+                // }
+            })
         },
         test:function(){
             var apiUrl = 'http://192.168.1.24:9090/ajax_get_captcha';
@@ -99,7 +121,7 @@ export default {
     },
     mounted:function(){
             console.log(this.$store.state)
-            this.test();
+            // this.test();
     },
 }
 </script>

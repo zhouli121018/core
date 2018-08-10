@@ -19,18 +19,18 @@
           text-color="#333"
           active-text-color="#ffd04b" style="text-align:left;text-indent:2em;">
           
-          <el-menu-item index="1">
+          <el-menu-item index="1"  @click="jump('/mailbox/index/inbox')">
             
-            <span slot="title">收件箱 <el-badge class="fl_r badege_grey" :value="3" style="text-indent: 0;margin-right:5px;" /></span>
-            <router-link to="/welcome/index" class="link_router"></router-link>
+            <span slot="title">收件箱 <el-badge class="fl_r badege_grey" :value="unread" style="text-indent: 0;margin-right:5px;" /></span>
+            <!-- <router-link to="/mailbox/index/inbox" class="link_router"></router-link> -->
           </el-menu-item>
-          <el-menu-item index="2">
+          <el-menu-item index="2"  >
             <span slot="title">代办邮件</span>
           </el-menu-item>
           <el-menu-item index="3">
             <span slot="title">草稿箱</span>
           </el-menu-item>
-          <el-menu-item index="5">
+          <el-menu-item index="5" @click="jump('/mailbox/index/outbox')">
             <span slot="title">已发送</span>
           </el-menu-item>
           <el-submenu index="4" id="no-padding-left">
@@ -58,10 +58,12 @@
 
 
 <script>
+import router from '@/router'
   export default {
     data(){
       return {
-        active_index:1
+        active_index:1,
+        unread:0
       }
     },
     methods: {
@@ -70,6 +72,9 @@
       },
       handleClose(key, keyPath) {
         console.log(key, keyPath);
+      },
+      jump(path){
+        router.push(path)
       }
     }
   }

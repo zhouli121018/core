@@ -7,3 +7,7 @@ export const login = params => {
     return axios.post(`${host}/login/`, params)
 }
   
+//获取欢迎页面信息
+export const welcome = params => {
+    return axios.get(`${host}/welcome/`)
+}

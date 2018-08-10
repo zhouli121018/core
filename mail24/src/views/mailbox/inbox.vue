@@ -1,9 +1,10 @@
 <template>
-  <div>
-      <h1>我的邮箱</h1>
-  </div>
+    <div>
+        <h3>收件箱</h3>
+    </div>
 </template>
 <script>
 export default {
+    
 }
 </script>
