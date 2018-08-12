@@ -8,12 +8,15 @@ import Menubar from './components/Menubar'
 Vue.use(ElementUI)
 import Vuex from 'vuex'
 import store from './store'
-import './axios/';
+// import './axios/';
 import axios from 'axios'
 import router from './router'
 Vue.prototype.$http=axios
 
+
+import './assets/style/skin.css'
 import './assets/style/main.css'
+import './assets/iconfont/iconfont.css'
 
 Vue.use(Vuex)
 Vue.config.productionTip = false
