@@ -28,6 +28,7 @@ export default {
 }
 </script>
 <style>
+
 .welcome_box{
     width:100%;
     height:100%;

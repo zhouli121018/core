@@ -115,6 +115,7 @@ export default {
 </script>
 
 <style>
+/* @import '../../assets/style/main.css'; */
     #main-box{
         width:100%;
         height:100%;

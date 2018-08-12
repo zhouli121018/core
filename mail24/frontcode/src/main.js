@@ -13,6 +13,8 @@ import axios from 'axios'
 import router from './router'
 Vue.prototype.$http=axios
 
+import './assets/style/main.css'
+
 Vue.use(Vuex)
 Vue.config.productionTip = false
 
