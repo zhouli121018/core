@@ -7,7 +7,7 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
-    {path:'/',redirect:'/login'},
+    {path:'/',redirect:'/layout1'},
     {path:'/login',component:_import('login/Login')},
     {
       path: '/welcome',
@@ -63,13 +63,13 @@ export default new Router({
         path: 'mailbox',
         component: _import('mailbox/mailbox'),
         children:[
-          {path:'/',redirect:'innerbox'},
+          {path:'/',redirect:'home'},
           {path:'home',component:_import('mailbox/components/home')},
           {path:'innerbox',component:_import('mailbox/components/innerbox')},
           {path:'outbox',component:_import('mailbox/components/outbox')}
         ]
       }]
-    }
+    },
 
 
 

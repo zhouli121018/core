@@ -6,7 +6,7 @@
         </div>
 
         <aside class="lysidebar j-layout-nav">
-            <div class="icon j-switch-mainpage" data-i18n="common/nav_main" i18n-target="title" title="主页"><i class="iconfont iconhome"></i></div>
+            <div class="icon j-switch-mainpage"  title="主页" @click="jumpTo('/')"><i class="iconfont icon-iconhome"></i></div>
             <div class="avatar">
                 <a href="javascript:void(0);" class="u-img u-img-round">
                     <img class="j-avatar" alt="avatar" src="/coremail/XT5/89517/style/img/man.png">
@@ -15,25 +15,25 @@
             <div class="divider"></div>
             <div class="j-wrapper">
                 <div class="icon active" data-trigger="mail" data-i18n="main/appname_MBOX" i18n-target="title" title="我的邮箱">
-                    <i class="iconfont iconemail"></i>
+                    <i class="iconfont icon-youxiang"></i>
                 </div>
                 
                     <div class="icon" data-trigger="calendar" data-i18n="main/appname_MYCAL" i18n-target="title" title="我的日程">
-                        <i class="iconfont iconschedule"></i>
+                        <i class="iconfont icon-iconschedule"></i>
                     </div>
                 
                 
                     <div class="icon" data-trigger="file" data-i18n="common/nav_file" i18n-target="title" title="文件中心">
-                        <i class="iconfont iconfiler"></i>
+                        <i class="iconfont icon-iconfiler"></i>
                     </div>
                 
                 
                     <div class="icon" data-trigger="contact" data-i18n="common/nav_contact" i18n-target="title" title="联系人">
-                        <i class="iconfont iconcontacts"></i>
+                        <i class="iconfont icon-iconcontacts"></i>
                     </div>
                 
                 <div class="icon" data-trigger="appcenter" data-i18n="common/nav_appcenter" i18n-target="title" title="应用中心">
-                    <i class="iconfont iconmore"></i>
+                    <i class="iconfont icon-iconmore"></i>
                 </div>
                 <div role="toLunkr" class="icon j-lunkr lunkr" data-i18n="common/nav_lunkr" i18n-target="title" title="论客">
                     <i class="iconfont iconlunkrlogo"></i>
@@ -97,8 +97,18 @@
 </template>
 
 <script>
+import router from '@/router'
 export default {
-    
+    data:function(){
+        return {
+
+        }
+    },
+    methods:{
+        jumpTo(path){
+            router.push(path)
+        }
+    }
 }
 </script>
 

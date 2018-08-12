@@ -128,15 +128,15 @@
           <img src="@/assets/img/download.png" alt="qrcode">
           <div class="img-text">
             <a href="http://www.lunkr.cn/download.html?p=pc" target="_blank">
-              <span class="iconfont iconwindows"></span>
+              <span class="iconfont icon-iconwindows"></span>
               PC版
             </a>
             <a href="http://www.lunkr.cn/download.html?p=ios" target="_blank">
-              <span class="iconfont iconapple"></span>
+              <span class="iconfont icon-icon-apple"></span>
               iPhone版
             </a>
             <a href="http://www.lunkr.cn/download.html?p=android" target="_blank">
-              <span class="iconfont iconanroid"></span>
+              <span class="iconfont icon-iconanroid"></span>
               Android版
             </a>
           </div>
