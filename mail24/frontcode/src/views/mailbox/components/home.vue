@@ -3,7 +3,7 @@
         <div class="m-mlwelcome" data-view-cid="view-5" data-view-name="mail.welcome">
   <div class="container">
     <div class="header j-header">
-    <div class="panel-sbj"><div class="tag skin-primary-bg"></div>中午好, oadmin@business1473.com</div>
+    <div class="panel-sbj"><div class="tag skin-primary-bg"></div>中午好, {{username}}</div>
     <div class="panel-cnt">
       <div class="abstract">
         <div class="avatar">
@@ -13,38 +13,39 @@
         </div>
         <div class="info">
           <ul class="u-list u-list-horizontal j-link-trigger">
-            <li>
-              <span class="headings">我的邮箱:</span>
-            </li>
-          </ul>
+                <li>
+                <span class="headings">我的邮箱:</span>
+                <a href="#" class="link" ><span class="mark">{{userinfo.unread}}</span> 封未读邮件</a>
+                </li>
+            </ul>
           <ul class="u-list u-list-horizontal">
             <li>
               <span>邮箱容量: </span>
               <div class="u-progress u-progress-success">
                 <div class="u-progress-bar" style="width: 0%;"></div>
               </div>
-              <span class="text-success">1.08M / 1000.00M</span>
+              <span class="text-success">{{userinfo.capacity_used}} M / {{userinfo.capacity_total}} M</span>
             </li>
             <li>
               <a href="javascript:void(0);" class="link" data-trigger="setting.folder.folder">管理</a>
             </li>
           </ul>
           <ul class="u-list u-list-horizontal">
-            <li>最近登录: 2018年8月12日星期日上午9点23分41秒</li>
-            <li>61.141.186.64 (广东省深圳市)</li>
-            <li><a href="javascript:void(0);" data-trigger="logs.login">详情</a></li>
+            <li>最近登录: {{userinfo.last_login}}</li>
+            <li>{{userinfo.login_ip}} ({{userinfo.login_isp}})</li>
+            <li><a href="#">详情</a></li>
           </ul>
 
         </div>
       </div>
     
-    <div class="weather">
+    <div class="weather" v-if="weatherinfo.has_weather">
       <div class="weadesc">
-        <div class="temp">29 ~ 25℃</div>
-        <span>中雨/无持续风向微风</span>
-        <span class="place">深圳市</span>
+        <div class="temp">{{weatherinfo.data.temLow}} ~ {{weatherinfo.data.temHigh}}℃</div>
+        <span>{{weatherinfo.data.stateDetailed}} / {{weatherinfo.data.windState}}</span>
+        <span class="place">{{weatherinfo.data.cityname}}</span>
       </div>
-      <div class="weaimg">
+      <div class="weaimg" :style="{ backgroundPosition: weatherinfo.data.imgLocation1 }">
         <!-- <img src="/coremail/XT5/89517/style/img/weather/zhongyu.png" alt="weather"> -->
       </div>
     </div>
@@ -151,6 +152,49 @@
     </div>
 </template>
 
+<script>
+import cookie from '@/assets/js/cookie';
+import {welcome} from '@/api/api'
+export default {
+  data(){
+        return {
+            userinfo: {
+              "capacity_used": 1,
+              "login_isp": "广东深圳电信",
+              "capacity_used_rate": 0,
+              "last_login": "2018年8月9日星期二下午15点49分46秒",
+              "login_ip": "116.30.220.106",
+              "unread": 10,
+              "capacity_total": 1000
+            },
+            weatherinfo:{
+              has_weather:true,
+              data:{
+                cityname:"深圳",
+                imgLocation1:'0 0',
+                temLow:'0',
+                temHigh:'0',
+                stateDetailed:'晴',
+                windState:'微风'
+              }
+            }
+        }
+  },
+  mounted: function(){
+            welcome().then(res=>{
+                console.log(res.data);
+                this.userinfo = res.data.userinfo;
+                this.weatherinfo = res.data.weatherinfo;
+            })
+  },
+  computed: {
+        username() { // 获取store中的数据
+            return this.$store.state.userInfo.name;
+        }
+  },
+}
+</script>
+
 <style>
 .lunkr_image{
   background:url('../../../assets/img/lunkr_banner.png')
@@ -163,6 +207,15 @@
     background-image: url(../../../assets/img/features.png);
     width: 52px;
     height: 52px;
+}
+.weaimg{
+  box-sizing: border-box;
+  width:80px;
+  height:80px;
+  position:relative;
+  left:10px;
+  background:url(../../../assets/img/blue80.png) no-repeat;
+  background-position:-80px -80px;
 }
 </style>
 

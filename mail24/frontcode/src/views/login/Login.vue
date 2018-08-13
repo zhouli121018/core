@@ -35,14 +35,14 @@
                     <el-radio-button label="top">顶部对齐</el-radio-button>
                     </el-radio-group> -->
                     <h2 class="text-center">用户登录</h2>
-                    <el-form :label-position="labelPosition"  label-width="80px" :model="formLabelAlign">
+                    <el-form :label-position="labelPosition" class="loginForm" label-width="80px" :model="formLabelAlign">
                     <el-form-item label="用户名">
                         <el-input v-model.trim="formLabelAlign.username"></el-input>
                     </el-form-item>
                     <el-form-item label="密码">
                         <el-input type="password" v-model="formLabelAlign.password"></el-input>
                     </el-form-item>
-
+                    <el-checkbox v-model="rememberUserInfo">记住用户名和密码</el-checkbox>
                     </el-form>
                     <div class="text-center">
                         <el-button type="primary" @click="login">登录</el-button>
@@ -62,9 +62,9 @@
 
 </template>
 <script>
-import cookie from '../../assets/js/cookie';
-import {login} from '../../api/api'
-import router from '../../router'
+import cookie from '@/assets/js/cookie';
+import {login} from '@/api/api'
+import router from '@/router'
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
 
@@ -94,9 +94,17 @@ export default {
                 var token = response.data.token;
                 //本地存储用户信息
                 cookie.setCookie('name',this.formLabelAlign.username,7);
-                cookie.setCookie('token',response.data.token,7)
+                cookie.setCookie('token',response.data.token,7);
+                if(this.rememberUserInfo){
+                    cookie.setCookie('rememberName',this.formLabelAlign.username);
+                    cookie.setCookie('rememberPwd',this.formLabelAlign.password);
+                }else{
+                    cookie.setCookie('rememberName','');
+                    cookie.setCookie('rememberPwd','');
+                }
+               
                 that.$store.dispatch('setInfo');
-                that.$router.push('/welcome')
+                that.$router.push('/mailbox')
                 // this.$store.commit('changeUser', this.formLabelAlign.username,this.formLabelAlign.password)
             }, (data)=>{
                 that.open('用户名或密码错误！请重新输入！');
@@ -122,13 +130,28 @@ export default {
     mounted:function(){
             console.log(this.$store.state)
             // this.test();
+            this.formLabelAlign.username = cookie.getCookie('rememberName');
+            this.formLabelAlign.password = cookie.getCookie('rememberPwd')
     },
+    computed:{
+        rememberUserInfo: {
+            get: function () {
+             return this.$store.state.rememberUserInfo
+            },
+            set: function () {
+                this.$store.dispatch('setMember');
+            }
+        }
+    }
 }
 </script>
 <style>
 .login_logo{
     padding:20px;
     display:inline-block
+}
+.loginForm{
+    margin-bottom:20px;
 }
 #login_bg{
     width:100%;

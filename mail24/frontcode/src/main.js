@@ -8,7 +8,7 @@ import Menubar from './components/Menubar'
 Vue.use(ElementUI)
 import Vuex from 'vuex'
 import store from './store'
-// import './axios/';
+import './axios/';
 import axios from 'axios'
 import router from './router'
 Vue.prototype.$http=axios

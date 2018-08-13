@@ -27,86 +27,86 @@
 
                             <!--选择-->
                             <el-dropdown @command="handleCommand">
-                            <el-button  size="small" plain>
-                                <span><el-checkbox v-model="checkAll" @change="tabCheckAll"></el-checkbox></span>
-                                <i class="el-icon-arrow-down el-icon--right"></i>
-                            </el-button>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item v-for="item in checkItems" :key="item.id" class="dropdown_item" :class="{ active: checkIndex===item.id }" 
-                                :divided="item.divided" :command="item.id">
-                                <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: checkIndex===item.id }"></i>
-                                </b> {{item.text}}
-                                </el-dropdown-item>
-                            </el-dropdown-menu>
+                                <el-button  size="small" plain>
+                                    <span><el-checkbox v-model="checkAll" @change="tabCheckAll"></el-checkbox></span>
+                                    <i class="el-icon-arrow-down el-icon--right"></i>
+                                </el-button>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item v-for="item in checkItems" :key="item.id" class="dropdown_item" :class="{ active: checkIndex===item.id }" 
+                                    :divided="item.divided" :command="item.id">
+                                    <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: checkIndex===item.id }"></i>
+                                    </b> {{item.text}}
+                                    </el-dropdown-item>
+                                </el-dropdown-menu>
                             </el-dropdown>
 
                             <!--排序-->
                             <el-dropdown @command="orderHandleCommand">
-                            <el-button  size="small" plain>
-                                <span>排序</span>
-                                <i class="el-icon-arrow-down el-icon--right"></i>
-                            </el-button>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item v-for="item in orderItems" :key="item.id" class="dropdown_item" :class="{ active: orderCheckIndex===item.id }" 
-                                :divided="item.divided" :command="item.id">
-                                <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: orderCheckIndex===item.id }"></i> </b>
-                                {{ item.text}}</el-dropdown-item>
-                            </el-dropdown-menu>
+                                <el-button  size="small" plain>
+                                    <span>排序</span>
+                                    <i class="el-icon-arrow-down el-icon--right"></i>
+                                </el-button>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item v-for="item in orderItems" :key="item.id" class="dropdown_item" :class="{ active: orderCheckIndex===item.id }" 
+                                    :divided="item.divided" :command="item.id">
+                                    <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: orderCheckIndex===item.id }"></i> </b>
+                                    {{ item.text}}</el-dropdown-item>
+                                </el-dropdown-menu>
                             </el-dropdown>
 
                             <!--查看-->
                             <el-dropdown @command="viewHandleCommand">
-                            <el-button  size="small" plain>
-                                <span>查看</span>
-                                <i class="el-icon-arrow-down el-icon--right"></i>
-                            </el-button>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item v-for="item in viewItems" :key="item.id" class="dropdown_item" :class="{ active: viewCheckIndex===item.id }" 
-                                :divided="item.divided" :command="item.id">
-                                <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: viewCheckIndex===item.id }"></i> </b>
-                                {{ item.text}}</el-dropdown-item>
-                            </el-dropdown-menu>
+                                <el-button  size="small" plain>
+                                    <span>查看</span>
+                                    <i class="el-icon-arrow-down el-icon--right"></i>
+                                </el-button>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item v-for="item in viewItems" :key="item.id" class="dropdown_item" :class="{ active: viewCheckIndex===item.id }" 
+                                    :divided="item.divided" :command="item.id">
+                                    <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: viewCheckIndex===item.id }"></i> </b>
+                                    {{ item.text}}</el-dropdown-item>
+                                </el-dropdown-menu>
                             </el-dropdown>
 
                             <!-- 更多按钮 -->
                             <div v-if="showMoreMenu" class="inline_block">
-                            <el-button  size="small" plain>
-                                删除
-                            </el-button>
-
-                            <el-dropdown @command="moveHandleCommand">
                                 <el-button  size="small" plain>
-                                <span>移动到</span>
-                                <i class="el-icon-arrow-down el-icon--right"></i>
+                                    删除
                                 </el-button>
-                                <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item v-for="item in moveItems" :key="item.id" class="dropdown_item" :class="{ active: moveCheckIndex===item.id }" 
-                                :divided="item.divided" :command="item.id">
-                                    <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moveCheckIndex===item.id }"></i> </b>
-                                    {{ item.text}}</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
 
-                            <div class="inline_block">
-                                <el-button  size="small" plain >
-                                    <span>标记为</span>
+                                <el-dropdown @command="moveHandleCommand">
+                                    <el-button  size="small" plain>
+                                    <span>移动到</span>
                                     <i class="el-icon-arrow-down el-icon--right"></i>
-                                </el-button>
-                            
-                            </div>
+                                    </el-button>
+                                    <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item v-for="item in moveItems" :key="item.id" class="dropdown_item" :class="{ active: moveCheckIndex===item.id }" 
+                                    :divided="item.divided" :command="item.id">
+                                        <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moveCheckIndex===item.id }"></i> </b>
+                                        {{ item.text}}</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
 
-                            <el-dropdown @command="moreHandleCommand">
-                                <el-button  size="small" plain>
-                                <span>更多</span>
-                                <i class="el-icon-arrow-down el-icon--right"></i>
-                                </el-button>
-                                <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item v-for="item in moreItems" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }" 
-                                :divided="item.divided" :command="item.id">
-                                    <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moreCheckIndex===item.id }"></i> </b>
-                                    {{ item.text}}</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
+                                <div class="inline_block">
+                                    <el-button  size="small" plain >
+                                        <span>标记为</span>
+                                        <i class="el-icon-arrow-down el-icon--right"></i>
+                                    </el-button>
+                                
+                                </div>
+
+                                <el-dropdown @command="moreHandleCommand">
+                                    <el-button  size="small" plain>
+                                    <span>更多</span>
+                                    <i class="el-icon-arrow-down el-icon--right"></i>
+                                    </el-button>
+                                    <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item v-for="item in moreItems" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }" 
+                                    :divided="item.divided" :command="item.id">
+                                        <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moreCheckIndex===item.id }"></i> </b>
+                                        {{ item.text}}</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
 
                             </div>
 
@@ -133,15 +133,15 @@
                     </div>
                     <div class="m-mllist-row mllist-list-row">
                         <el-collapse v-model="activeNames" @change="handleChange">
-                            <el-collapse-item title="前天（1）" name="1">
+                            <el-collapse-item v-for="t in collapseItems" :key="t.id" :title="t.title" :name="t.id">
                                 <ul class="list-wrap j-mail-list ">
-                                    <li class="list-item j-mail read display-summary active flagged label0-0" mid="1:1tbiAQAJEFXEqdgAXgADsl" index="0" fid="1">
+                                    <li class="list-item j-mail display-summary" @click="readmail(t.id,l.id)" v-for="l in t.lists" :key="l.id" :class="{flagged:l.flagged,'label0-0':l.flagged,selected:l.checked,read:l.isread,unread:!l.isread}" >
                                         <div class="item-content mail-info">
                                             <div class="info-desc">
                                                 <div class="info-desc-left">
                                                     <div class="desc-flag">
-                                                            <span class="flag-flagged j-flag ">
-                                                                <i title="设为红旗" class="iconfont icon-iconflatcolor"></i>
+                                                            <span class="flag-flagged j-flag" :class="{unflag:!l.flagged}" @click.stop="changeFlag(t.id,l.id)">
+                                                                <i :title="l.flagged?'点击取消旗帜':'设为红旗'" class="iconfont" :class="l.flagged?'icon-iconflatcolor':'icon-iconflat'"></i>
                                                             </span>
                                                         <span class="flag-defer unflag">
                                                                 <i title="设置待办" class="j-undefer iconfont icon-iconclock"></i>
@@ -149,18 +149,18 @@
                                                     </div>
                                                     <div class="desc-text">
                                                         <span class="icon"><i class="j-priorityIcon iconfont " title=""></i></span>
-                                                        <span class="subject" title="[召回邮件失败] MEMZ彩虹猫病毒/[Recall mail 失败] MEMZ彩虹猫病毒">[召回邮件失败] MEMZ彩虹猫病毒/[Recall mail 失败] MEMZ彩虹猫病毒</span>
+                                                        <span class="subject" title="l.text">{{l.text}}</span>
                                                     </div>
                                                 </div>
                                                 <div class="info-desc-right">
-                                                    <span class="desc-time">08-09</span>
+                                                    <span class="desc-time">{{l.time}}</span>
                                                 </div>
                                             </div>
                                             <div class="info-summary">
                                                 <p class="summary-text">
-                                                    <span class="fromto from"> postmaster</span>
-                                                    <span class="fromto">：</span>
-                                                    <span class="summary"> 发给751296883@qq.com的邮件召回失败,原因：不支持召回  email sent to 751296883@qq.com has been recalled unsucce</span>
+                                                    <span class="fromto from"> {{l.from}}</span>
+                                                    <span class="fromto" v-if="l.plain">：</span>
+                                                    <span class="summary"> {{l.plain}}</span>
                                                 </p>
                                                 <div class="summary-stat">
                                                     <div class="summary-stat-bg"></div>
@@ -172,57 +172,12 @@
                                         </div>
                                         <div class="item-chk check-col" title="系统认证可信任来源">
                                             
-                                            <el-checkbox v-model="checked1" @change="changeSelect"></el-checkbox>
+                                            <el-checkbox :v-model="l.checked" @change="changeSelect(t.id,l.id)" :class="{'is-checked':l.checked}"></el-checkbox>
                                         </div>
                                         <div class="item-active-border"></div>
                                         <div class="item-divider"></div>
                                     </li>
                                 </ul>
-                            </el-collapse-item>
-
-                            <el-collapse-item title="更早 （1）" name="2">
-                                <li class="list-item j-mail read display-summary" mid="1:1tbiAQAJEFXEqdgAXgADsl" index="0" fid="1">
-                                        <div class="item-content mail-info">
-                                            <div class="info-desc">
-                                                <div class="info-desc-left">
-                                                    <div class="desc-flag">
-                                                            <span class="flag-flagged j-flag unflag">
-                                                                <i title="设为红旗" class="iconfont icon-iconflat"></i>
-                                                            </span>
-                                                        <span class="flag-defer unflag">
-                                                                <i title="设置待办" class="j-undefer iconfont icon-iconclock"></i>
-                                                        </span>
-                                                    </div>
-                                                    <div class="desc-text">
-                                                        <span class="icon"><i class="j-priorityIcon iconfont " title=""></i></span>
-                                                        <span class="subject" title="[召回邮件失败] MEMZ彩虹猫病毒/[Recall mail 失败] MEMZ彩虹猫病毒">[召回邮件失败] MEMZ彩虹猫病毒/[Recall mail 失败] MEMZ彩虹猫病毒</span>
-                                                    </div>
-                                                </div>
-                                                <div class="info-desc-right">
-                                                    <span class="desc-time">08-09</span>
-                                                </div>
-                                            </div>
-                                            <div class="info-summary">
-                                                <p class="summary-text">
-                                                    <span class="fromto from"> postmaster</span>
-                                                    <span class="fromto">：</span>
-                                                    <span class="summary"> 发给751296883@qq.com的邮件召回失败,原因：不支持召回  email sent to 751296883@qq.com has been recalled unsucce</span>
-                                                </p>
-                                                <div class="summary-stat">
-                                                    <div class="summary-stat-bg"></div>
-                                                </div>
-                                            </div>
-                                            <div class="info-icon">
-                                                <span><i class="j-normalIcon iconfont state-icon icon-SYSTEM" title="系统认证可信任来源"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="item-chk check-col" title="系统认证可信任来源">
-                                            
-                                            <el-checkbox ></el-checkbox>
-                                        </div>
-                                        <!-- <div class="item-active-border"></div> -->
-                                        <div class="item-divider"></div>
-                                    </li>
                             </el-collapse-item>
                         </el-collapse>
 
@@ -309,9 +264,30 @@ export default {
             {id:9,text:'彻底删除',divided:false}
           ],
           showMoreMenu:false,
-          activeNames: ['1'],
-          selectCounts:2,
-          checked1:true
+          activeNames: [0],
+          activeLi:[0,0],
+          collapseItems:[
+              {
+                  id:0,
+                  title:"前天 （3）",
+                  lists:[
+                    {id:0,isread:false,flagged:true,text:'[召回邮件失败] MEMZ彩虹猫病毒/[Recall mail 失败] MEMZ彩虹猫病毒',time:'08-09',from:'postman',
+                    plain:'发给751296883@qq.com的邮件召回失败,原因：不支持召回  email sent to 751296883@qq.com has been recalled unsucce',checked:false},
+                    {id:1,isread:true,flagged:false,text:' MEMZ彩虹猫病毒/[Recall mail 失败] MEMZ彩虹猫病毒',time:'08-08',from:'postman',
+                    plain:'发给751296883@qq.com的邮件召回失败,原因：不支持召回  email sent to 751296883@qq.com has been recalled unsucce',checked:false},
+                    {id:2,isread:true,flagged:false,text:'欢迎进入XT5体验中心',time:'08-06',from:'postman',
+                    plain:'',checked:false}
+                    ]
+              },
+              {
+                  id:1,
+                  title:"更早 （1）",
+                  lists:[
+                    {id:0,isread:true,flagged:false,text:'欢迎进入XT5体验中心',time:'08-06',from:'postman',
+                    plain:'',checked:false}
+                    ]
+              },
+          ]
         }
     },
     methods:{
@@ -326,8 +302,20 @@ export default {
       tabCheckAll:function(){
         if(this.checkAll){
           this.checkIndex=0;
+          for(var i=0;i<this.collapseItems.length;i++){
+              for(var k=0;k<this.collapseItems[i].lists.length;k++){
+                  this.collapseItems[i].lists[k].checked = true;
+                  
+              }
+          }
+          console.log(this.collapseItems)
         }else{
           this.checkIndex='';
+          for(var i=0;i<this.collapseItems.length;i++){
+              for(var k=0;k<this.collapseItems[i].lists.length;k++){
+                  this.collapseItems[i].lists[k].checked = false;
+              }
+          }
         }
       },
       orderHandleCommand:function(index){
@@ -346,17 +334,42 @@ export default {
         console.log(value);
       },
       noSelect(){
-          this.selectCounts=0;
-      },
-      changeSelect(){
-          if(this.checked1){
-              this.selectCounts++;
-          }else{
-              this.selectCounts--;
+          for(var i=0;i<this.collapseItems.length;i++){
+              for(var k=0;k<this.collapseItems[i].lists.length;k++){
+                  this.collapseItems[i].lists[k].checked = false;
+              }
           }
+      },
+      changeSelect(pid,cid){
+          console.log(this.collapseItems[pid].lists[cid])
+          this.collapseItems[pid].lists[cid].checked = !this.collapseItems[pid].lists[cid].checked
+          if(this.collapseItems[pid].lists[cid].checked){
+              
+          }else{
+              
+          }
+      },
+      changeFlag(pid,cid){
+          this.collapseItems[pid].lists[cid].flagged = !this.collapseItems[pid].lists[cid].flagged;
+      },
+      readmail(pid,cid){
+          console.log(pid,cid)
+          this.collapseItems[pid].lists[cid].isread = true;
       }
 
     },
+    computed:{
+        selectCounts:function(){
+            for (var i=0,count=0;i<this.collapseItems.length;i++){
+                for(var k=0;k<this.collapseItems[i].lists.length;k++){
+                    if(this.collapseItems[i].lists[k].checked){
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+    }
 }
 </script>
 

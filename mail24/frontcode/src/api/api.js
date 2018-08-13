@@ -11,3 +11,7 @@ export const login = params => {
 export const welcome = params => {
     return axios.get(`${host}/welcome/`)
 }
+
+export const lockscreen = params => {
+    return axios.post(`${host}/api/lockscreen/`)
+}

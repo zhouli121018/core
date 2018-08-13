@@ -15,7 +15,9 @@ const userInfo = {
 }
 const store = new Vuex.Store({
     state: {
-      userInfo
+      userInfo,
+      rememberUserInfo:cookie.getCookie('rememberName'),
+      lastUrl:'/'
     },
 
     actions,

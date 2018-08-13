@@ -14,6 +14,12 @@ export default {
             token:cookie.getCookie('token')
         }
         console.log(state.userInfo);
+    },
+    [types.SET_MEMBER] (state) {
+        state.rememberUserInfo = !state.rememberUserInfo
+    },
+    setLastUrl (state,path){
+        state.lastUrl = path;
     }
     
 

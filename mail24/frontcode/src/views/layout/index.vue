@@ -6,36 +6,20 @@
         </div>
 
         <aside class="lysidebar j-layout-nav">
-            <div class="icon j-switch-mainpage"  title="主页" @click="jumpTo('/')"><i class="iconfont icon-iconhome"></i></div>
+            <div class="icon j-switch-mainpage"  title="主页" @click="jumpTo('/mailbox')"><i class="iconfont icon-iconhome"></i></div>
             <div class="avatar">
                 <a href="javascript:void(0);" class="u-img u-img-round">
-                    <img class="j-avatar" alt="avatar" src="/coremail/XT5/89517/style/img/man.png">
+                    <img class="j-avatar" alt="avatar" src="@/assets/img/man.png">
                 </a>
             </div>
             <div class="divider"></div>
             <div class="j-wrapper">
-                <div class="icon active" data-trigger="mail" data-i18n="main/appname_MBOX" i18n-target="title" title="我的邮箱">
-                    <i class="iconfont icon-youxiang"></i>
-                </div>
-                
-                    <div class="icon" data-trigger="calendar" data-i18n="main/appname_MYCAL" i18n-target="title" title="我的日程">
-                        <i class="iconfont icon-iconschedule"></i>
+
+                    <div class="icon" :class="{active:activeTab==t.id}" v-for="t in tabs" :key="t.id" title="t.title" @click="changeTab(t.id)">
+                        <i class="iconfont" :class="t.iconclass"></i>
                     </div>
-                
-                
-                    <div class="icon" data-trigger="file" data-i18n="common/nav_file" i18n-target="title" title="文件中心">
-                        <i class="iconfont icon-iconfiler"></i>
-                    </div>
-                
-                
-                    <div class="icon" data-trigger="contact" data-i18n="common/nav_contact" i18n-target="title" title="联系人">
-                        <i class="iconfont icon-iconcontacts"></i>
-                    </div>
-                
-                <div class="icon" data-trigger="appcenter" data-i18n="common/nav_appcenter" i18n-target="title" title="应用中心">
-                    <i class="iconfont icon-iconmore"></i>
-                </div>
-                <div role="toLunkr" class="icon j-lunkr lunkr" data-i18n="common/nav_lunkr" i18n-target="title" title="论客">
+
+                    <div role="toLunkr" class="icon j-lunkr lunkr" title="论客">
                     <i class="iconfont iconlunkrlogo"></i>
                     <span></span>
                 </div>
@@ -65,8 +49,8 @@
                         <li><a href="#" class="skin-primary-hover-color f-dn lunkr-bandage f-pr">移动端</a></li>
                         <li><a href="#" class="skin-primary-hover-color f-dn f-pr" >即时沟通</a></li>
                         <li><a href="#" class="skin-primary-hover-color f-dn j-migrate-mbox" >马上搬家</a></li>
-                        <li><a href="#" class="skin-primary-hover-color" >锁屏</a></li>
-                        <li><a href="#" class="skin-primary-hover-color">退出</a></li>
+                        <li><a href="#" class="skin-primary-hover-color" @click.prevent.stop="lockscreen">锁屏</a></li>
+                        <li><a href="#" class="skin-primary-hover-color" @click="logout">退出</a></li>
                         <li class="header-divider">
                             <a href="javascript:void(0);" class="skin-primary-hover-color history-notification-trigger j-history-notification-trigger unread">
                                 <i class="iconfont icon-iconms"></i>
@@ -92,22 +76,62 @@
                 </div>
             </section>
         </article>
-
     </section>
 </template>
 
 <script>
+import store from '@/store'
 import router from '@/router'
+import cookie from '@/assets/js/cookie';
 export default {
     data:function(){
         return {
-
+            activeTab:0,
+            tabs:[
+                {id:0,title:'我的邮箱',iconclass:'icon-youxiang'},
+                {id:1,title:'我的日程',iconclass:'icon-iconschedule'},
+                {id:2,title:'文件中心',iconclass:'icon-iconfiler'},
+                {id:3,title:'联系人',iconclass:'icon-iconcontacts'},
+                {id:4,title:'应用中心',iconclass:'icon-iconmore'},
+            ]
         }
     },
     methods:{
         jumpTo(path){
             router.push(path)
+        },
+        changeTab(index){
+            this.activeTab = index;
+            if(index == 0){
+                this.jumpTo('/mailbox')
+            }else if(index == 1){
+                this.jumpTo('/calendar')
+            }
+        },
+        logout(){
+            cookie.delCookie('token')
+            cookie.delCookie('name')
+            this.$store.dispatch('setInfo');
+            router.push('/login')
+        },
+        lockscreen() {
+            this.$confirm('<h3>您的邮箱将进入锁定状态</h3><p>邮箱将仍然保持在线</p><p>在输入正确的“邮箱密码”前任何人都无法动您的邮箱</p><p>可以更安全的保护您的隐私</p>', '锁屏提示', {
+                dangerouslyUseHTMLString: true,
+                distinguishCancelAndClose: true,
+                confirmButtonText: '确定锁屏',
+                cancelButtonText: '取消'
+            })
+            .then(() => {
+                cookie.delCookie('token')
+                this.$store.dispatch('setInfo');
+                this.$store.commit('setLastUrl','/mailbox')
+                router.push('/lockscreen');
+            })
+            .catch(action => {
+               
+            });
         }
+
     }
 }
 </script>

@@ -5,3 +5,4 @@ function makeAction (type) {
 };
 
 export const setInfo = makeAction(types.SET_INFO);
+export const setMember = makeAction(types.SET_MEMBER);
