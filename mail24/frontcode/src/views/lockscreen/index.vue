@@ -53,19 +53,27 @@ export default {
     methods:{
         lockscreenfn(){
             var that =this;
+            console.log(this.lockpassword)
             lockscreen({"password":this.lockpassword})
             .then((response)=>{
-
+              console.log(response.data)
+              if(response.data.token){
                 var token = response.data.token;
                 //本地存储用户信息
+                cookie.delCookie('locked')
                 cookie.setCookie('token',response.data.token,7);
                 that.$store.dispatch('setInfo');
                 that.$router.push(that.$store.state.lastUrl)
-                // this.$store.commit('changeUser', this.formLabelAlign.username,this.formLabelAlign.password)
+              }
             }, (data)=>{
-                this.open('用户名或密码错误！请重新输入！');
+              this.$message.error('用户名或密码错误！请重新输入！');
+                // this.open('用户名或密码错误！请重新输入！');
             });
         }
+    },
+    mounted:function(){
+      cookie.setCookie('locked','1',7);
+      this.$store.dispatch('setInfo');
     }
 }
 </script>

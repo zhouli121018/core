@@ -172,7 +172,7 @@
                                         </div>
                                         <div class="item-chk check-col" title="系统认证可信任来源">
                                             
-                                            <el-checkbox :v-model="l.checked" @change="changeSelect(t.id,l.id)" :class="{'is-checked':l.checked}"></el-checkbox>
+                                            <el-checkbox :v-model="l.checked" @change="changeSelect(t.id,l.id)"></el-checkbox>
                                         </div>
                                         <div class="item-active-border"></div>
                                         <div class="item-divider"></div>

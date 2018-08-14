@@ -11,7 +11,8 @@ import cookie from '../assets/js/cookie';
 
 const userInfo = {
   name:cookie.getCookie('name')||'',
-  token:cookie.getCookie('token')||''
+  token:cookie.getCookie('token')||'',
+  locked:cookie.getCookie('locked')||''
 }
 const store = new Vuex.Store({
     state: {
@@ -19,7 +20,6 @@ const store = new Vuex.Store({
       rememberUserInfo:cookie.getCookie('rememberName'),
       lastUrl:'/'
     },
-
     actions,
     mutations,
     getters

@@ -15,11 +15,10 @@ axios.interceptors.request.use(
     if (store.state.userInfo.token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
       config.headers.Authorization = `JWT ${store.state.userInfo.token}`;
     }
-    console.log(1)
     return config;
   },
   err => {
-    router.push('/')
+    // router.push('/')
     return Promise.reject(err);
   });
 

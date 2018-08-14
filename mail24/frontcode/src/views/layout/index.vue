@@ -122,9 +122,6 @@ export default {
                 cancelButtonText: '取消'
             })
             .then(() => {
-                cookie.delCookie('token')
-                this.$store.dispatch('setInfo');
-                this.$store.commit('setLastUrl','/mailbox')
                 router.push('/lockscreen');
             })
             .catch(action => {

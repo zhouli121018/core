@@ -2,41 +2,48 @@ import Vue from 'vue'
 import Router from 'vue-router'
 const _import = require('./_import_' + process.env.NODE_ENV)
 import Layout1 from '../views/layout/index'
+import cookie from '@/assets/js/cookie';
+import store from '@/store'
+import {rou} from './routes'
 Vue.use(Router)
 
-export default new Router({
-  routes: [
-    {path:'/',redirect:'/login'},
-    {path:'/lockscreen',component:_import('lockscreen/index')},
-    {path:'/login',component:_import('login/Login')},
-    {
-      path: '/calendar',
-      component: Layout1,
-      redirect: '/calendar/index',
-      children: [{
-        path: 'index',
-        component: _import('calendar/index'),
-        name: 'calendar',
-        meta: { title: 'U-Mail calendar'}
-      }]
-    },
-    {
-      path:'/mailbox',component:Layout1,
-      children: [
-        {path:'/',redirect:'mailbox'},
-        {
-        path: 'mailbox',
-        component: _import('mailbox/mailbox'),
-        children:[
-          {path:'/',redirect:'home'},
-          {path:'home',component:_import('mailbox/components/home')},
-          {path:'innerbox',component:_import('mailbox/components/innerbox')},
-          {path:'outbox',component:_import('mailbox/components/outbox')}
-        ]
-      }]
-    },
 
-
-
-  ]
+const router = new Router({
+  routes: rou
 })
+
+router.beforeEach((to, from, next)=>{
+  console.log(to,from,next)
+  store.commit('setLastUrl',from.path)
+  console.log(store.state.lastUrl)
+  if (store.state.userInfo.token) {
+    if(store.state.userInfo.locked){
+      cookie.delCookie('token')
+      cookie.delCookie('name')
+      cookie.delCookie('locked')
+      store.dispatch('setInfo');
+      next({
+        path: '/login',
+      });
+      return;
+    }
+    next()
+  } else {
+    //防止无限循环
+    if (to.path === '/lockscreen') {
+      next();
+      return;
+    }else if (to.path === '/login') {
+      next();
+      return
+    }
+    next({
+      path: '/login',
+    });
+  }
+})
+router.afterEach((to, from, next) => {
+  // document.title = '123';
+})
+
+export default router;

@@ -42,7 +42,7 @@
                     <el-form-item label="密码">
                         <el-input type="password" v-model="formLabelAlign.password"></el-input>
                     </el-form-item>
-                    <el-checkbox v-model="rememberUserInfo">记住用户名和密码</el-checkbox>
+                    <el-checkbox v-model="rememberUserInfo" :class="{'is-checked el-checkbox__input':rememberUserInfo}">记住用户名和密码</el-checkbox>
                     </el-form>
                     <div class="text-center">
                         <el-button type="primary" @click="login">登录</el-button>
@@ -95,6 +95,7 @@ export default {
                 //本地存储用户信息
                 cookie.setCookie('name',this.formLabelAlign.username,7);
                 cookie.setCookie('token',response.data.token,7);
+                cookie.delCookie('locked')
                 if(this.rememberUserInfo){
                     cookie.setCookie('rememberName',this.formLabelAlign.username);
                     cookie.setCookie('rememberPwd',this.formLabelAlign.password);
