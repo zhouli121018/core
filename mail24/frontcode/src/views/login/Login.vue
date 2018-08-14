@@ -1,5 +1,5 @@
 <template>
-    <div id="login_bg">
+    <div id="login_bg" >
         <div class="main-bottom main-bottom-0"></div>
         <div class="main-middle main-middle-0"></div>
 
@@ -21,7 +21,7 @@
                     </label>
                 </div>
             </div>
-            <div class="aside-blur">
+            <div class="aside-blur" >
 
             </div>
             <div class="aside">
@@ -75,7 +75,7 @@ export default {
           username: '',
           password: ''
         },
-
+        randB:['url(../../assets/img/mainBg0.jpg)','url(../../assets/img/aside0.png)']
       };
     },
     methods:{
@@ -132,7 +132,8 @@ export default {
             console.log(this.$store.state)
             // this.test();
             this.formLabelAlign.username = cookie.getCookie('rememberName');
-            this.formLabelAlign.password = cookie.getCookie('rememberPwd')
+            this.formLabelAlign.password = cookie.getCookie('rememberPwd');
+
     },
     computed:{
         rememberUserInfo: {
@@ -194,7 +195,7 @@ body{
     -o-background-size: cover;
     background-size: cover;
     background-position: right bottom;
-    background-image: url(../../assets/img/login_right.png);
+    background-image: url(../../assets/img/aside0.png);
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
