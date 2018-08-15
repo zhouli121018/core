@@ -9,7 +9,7 @@
                 </div>
 
                 <div class="wrapper u-scroll">
-                    <!-- <ul class="ztree" id="mltree">
+                    <ul class="ztree" id="mltree">
                         <li id="mltree_1" class="level0" @click="jumpTo('/mailbox/mailbox/innerbox')" tabindex="0" hidefocus="true" ><a id="mltree_1_a" class="level0" treenode_a="" onclick="" target="_blank" style="" title="收件箱">
                             <span id="mltree_1_switch" title="" class="button level0 switch noline_docu" treenode_switch=""></span><span id="mltree_1_ico" title="" treenode_ico="" class="button ico_docu" style="width:0px;height:0px;"></span><span id="mltree_1_span" fid="1" style="width: 80%;"><div class="cnt">收件箱</div></span></a>
                             </li>
@@ -22,22 +22,7 @@
                             <li id="mltree_5" class="level0" tabindex="0" hidefocus="true" treenode="">
                                 <a id="mltree_5_a" class="level0 curSelectedNode" treenode_a="" onclick="" target="_blank" style="" title="其他文件夹"><span id="mltree_5_switch" title="" class="button level0 switch noline_close" treenode_switch=""></span><span id="mltree_5_ico" title="" treenode_ico="" class="button ico_close" style="width:0px;height:0px;"></span><span id="mltree_5_span" fid="-4" style="width: 80%;">
                                 <div class="cnt">其他文件夹</div><i class="j-setting iconfont icon-iconset" title="管理" style="display: block;"></i><i class="j-add iconfont icon-add" title="添加" style="display: block;"></i></span></a>
-                            <ul id="mltree_5_ul" class="level0 " style="display: none;"><li id="mltree_6" class="level1" tabindex="0" hidefocus="true" treenode=""><a id="mltree_6_a" class="level1" treenode_a="" onclick="" target="_blank" style="" title="已删除"><span style="display: inline-block;width:5px"></span><span id="mltree_6_switch" title="" class="button level1 switch noline_docu" treenode_switch=""></span><span id="mltree_6_ico" title="" treenode_ico="" class="button ico_docu" style="width:0px;height:0px;"></span><span id="mltree_6_span" fid="4" style="width: 77%;"><div class="cnt">已删除</div></span></a></li><li id="mltree_7" class="level1" tabindex="0" hidefocus="true" treenode=""><a id="mltree_7_a" class="level1" treenode_a="" onclick="" target="_blank" style="" title="垃圾邮件"><span style="display: inline-block;width:5px"></span><span id="mltree_7_switch" title="" class="button level1 switch noline_docu" treenode_switch=""></span><span id="mltree_7_ico" title="" treenode_ico="" class="button ico_docu" style="width:0px;height:0px;"></span><span id="mltree_7_span" fid="5" style="width: 77%;"><div class="cnt">垃圾邮件</div></span></a></li><li id="mltree_8" class="level1" tabindex="0" hidefocus="true" treenode=""><a id="mltree_8_a" class="level1" treenode_a="" onclick="" target="_blank" style="" title="病毒文件夹"><span style="display: inline-block;width:5px"></span><span id="mltree_8_switch" title="" class="button level1 switch noline_docu" treenode_switch=""></span><span id="mltree_8_ico" title="" treenode_ico="" class="button ico_docu" style="width:0px;height:0px;"></span><span id="mltree_8_span" fid="6" style="width: 77%;"><div class="cnt">病毒文件夹</div></span></a></li></ul></li></ul> -->
-
-                  <div class="custom-tree-container">
-                    <div class="block">
-                      <p>使用 render-content</p>
-                      <el-tree
-                        :data="data4"
-                        show-checkbox
-                        node-key="id"
-                        default-expand-all
-                        :expand-on-click-node="false"
-                        :render-content="renderContent">
-                      </el-tree>
-                    </div>
-                  </div>
-
+                            <ul id="mltree_5_ul" class="level0 " style="display: none;"><li id="mltree_6" class="level1" tabindex="0" hidefocus="true" treenode=""><a id="mltree_6_a" class="level1" treenode_a="" onclick="" target="_blank" style="" title="已删除"><span style="display: inline-block;width:5px"></span><span id="mltree_6_switch" title="" class="button level1 switch noline_docu" treenode_switch=""></span><span id="mltree_6_ico" title="" treenode_ico="" class="button ico_docu" style="width:0px;height:0px;"></span><span id="mltree_6_span" fid="4" style="width: 77%;"><div class="cnt">已删除</div></span></a></li><li id="mltree_7" class="level1" tabindex="0" hidefocus="true" treenode=""><a id="mltree_7_a" class="level1" treenode_a="" onclick="" target="_blank" style="" title="垃圾邮件"><span style="display: inline-block;width:5px"></span><span id="mltree_7_switch" title="" class="button level1 switch noline_docu" treenode_switch=""></span><span id="mltree_7_ico" title="" treenode_ico="" class="button ico_docu" style="width:0px;height:0px;"></span><span id="mltree_7_span" fid="5" style="width: 77%;"><div class="cnt">垃圾邮件</div></span></a></li><li id="mltree_8" class="level1" tabindex="0" hidefocus="true" treenode=""><a id="mltree_8_a" class="level1" treenode_a="" onclick="" target="_blank" style="" title="病毒文件夹"><span style="display: inline-block;width:5px"></span><span id="mltree_8_switch" title="" class="button level1 switch noline_docu" treenode_switch=""></span><span id="mltree_8_ico" title="" treenode_ico="" class="button ico_docu" style="width:0px;height:0px;"></span><span id="mltree_8_span" fid="6" style="width: 77%;"><div class="cnt">病毒文件夹</div></span></a></li></ul></li></ul>
                 </div>
             </aside>
             <article class="mlmain mltabview">
@@ -53,73 +38,20 @@
 import router from '@/router'
 export default {
     data:function(){
-      const data = [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }];
         return{
             showTabs:false,
-          tabs:[
-            {id:0,text:'收件箱1',unread:2,children:[]},
-            {id:1,text:'ceshi1',children:[]},
-            {id:2,text:'收件箱5',children:[{id:'20',text:'sub01'}]}
-          ],
-          data4: JSON.parse(JSON.stringify(data)),
-
         }
     },
     methods:{
         jumpTo(path){
             router.push(path);
-        },
-      renderContent(h, { node, data, store }) {
-        return `
-          (<span class="custom-tree-node">
-            <span>{node.label}</span>
-            <span>
-              <el-button size="mini" type="text" on-click={ () => this.append(data) }>Append</el-button>
-              <el-button size="mini" type="text" on-click={ () => this.remove(node, data) }>Delete</el-button>
-            </span>
-          </span>)`;
-      }
-
+        }
     }
 }
 </script>
 
 <style>
 .mltabview-content{
-    top:0!important;
+    top:0;
 }
 </style>

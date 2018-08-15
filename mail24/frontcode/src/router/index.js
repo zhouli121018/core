@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+const _import = require('./_import_' + process.env.NODE_ENV)
+import Layout1 from '../views/layout/index'
 import cookie from '@/assets/js/cookie';
 import store from '@/store'
 import {rou} from './routes'
@@ -11,9 +13,9 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next)=>{
-  // console.log(to,from,next)
+  console.log(to,from,next)
   store.commit('setLastUrl',from.path)
-  // console.log(store.state.lastUrl)
+  console.log(store.state.lastUrl)
   if (store.state.userInfo.token) {
     if(store.state.userInfo.locked){
       cookie.delCookie('token')

@@ -204,9 +204,7 @@
         </div>   
 </template>
 <script>
-  import {getMailMessage} from "@/api/api";
-
-  export default {
+export default {
     data() {
         return {
           checkIndex:'',
@@ -371,34 +369,7 @@
             }
             return count;
         }
-    },
-    mounted:function(){
-      console.log('innerbox')
-      // this.test();
-      getMailMessage().then((res)=>{
-        var items = [];
-        var object = res.data;
-        for (var i in object) {
-            var obj = {};
-            var arr = object[i].split('\r\n');
-            for(var k=0,subObj={};k<arr.length;k++){
-              var suba = arr[k].split(':');
-              if(suba[0]){
-                subObj[suba[0]] = suba[1];
-              }
-            }
-            console.log(subObj)
-            obj.id = i;
-            obj.from = subObj.From;
-            items.push(obj);
-        }
-        console.log(items)
-      },(err)=>{
-        console.log('err')
-        console.log(err)
-      })
-
-    },
+    }
 }
 </script>
 
