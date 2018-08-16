@@ -97,8 +97,8 @@ export default {
                 cookie.setCookie('token',response.data.token,7);
                 cookie.delCookie('locked')
                 if(this.rememberUserInfo){
-                    cookie.setCookie('rememberName',this.formLabelAlign.username);
-                    cookie.setCookie('rememberPwd',this.formLabelAlign.password);
+                    cookie.setCookie('rememberName',this.formLabelAlign.username,7);
+                    cookie.setCookie('rememberPwd',this.formLabelAlign.password,7);
                 }else{
                     cookie.setCookie('rememberName','');
                     cookie.setCookie('rememberPwd','');

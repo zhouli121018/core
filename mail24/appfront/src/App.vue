@@ -5,51 +5,69 @@
 </template>
 
 <script>
-import store from './store'
-export default {
-  name: 'App',
-  mounted:function(){
-    // console.log(this.$store);
+  import store from './store'
+  export default {
+    name: 'App',
+    mounted:function(){
+      // console.log(this.$store);
+    }
   }
-}
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  width:100%;
-  height:100%;
-}
-body,html{
-  padding:0;
-  margin:0;
-  width:100%;
-  height:100%;
+  #app {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    width:100%;
+    height:100%;
+  }
+  body,html{
+    padding:0;
+    margin:0;
+    width:100%;
+    height:100%;
     font-size: 14px;
     line-height: 1.42857143;
     color: #333;
     background-color: #fff;
     overflow: hidden;
-}
-ul,li,p,h1,h2,h3,h4{
-  padding:0;
-  margin:0;
-}
-ul,li{
-  list-style:none;
-}
-.fl_r{
-  float:right;
-}
-.fl_l{
-  float:left;
-}
+  }
+  ul,li,p,h1,h2,h3,h4{
+    padding:0;
+    margin:0;
+  }
+  ul,li{
+    list-style:none;
+  }
+  .fl_r{
+    float:right;
+  }
+  .fl_l{
+    float:left;
+  }
   .vibility_hide{
     visibility: hidden;
   }
   .vibility_show{
     visibility: visible;
   }
+  .el-tree-node__content{
+    height:36px;
+  }
+  .toolbar {
+    background: #f2f2f2;
+    padding: 10px;
+  / / border: 1 px solid #dfe6ec;
+    margin: 10px 0px;
+  }
+  .el-form-item {
+    margin-bottom: 10px;
+  }
+  .breadcrumb-container {
+    margin-top: 7px;
+    margin-bottom: 7px;
+    margin-left: 7px;
+  }
+
 </style>

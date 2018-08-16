@@ -9,9 +9,8 @@ export const rou = [
   {path:'/lockscreen',component:_import('lockscreen/index')},
   {path:'/login',component:_import('login/Login')},
   {
-    path:'/mailbox',component:Layout1,
+    path:'/',component:Layout1,
     children: [
-      {path:'/',redirect:'mailbox'},
       {
         path: 'mailbox',
         component: _import('mailbox/mailbox'),
@@ -19,7 +18,8 @@ export const rou = [
           {path:'/',redirect:'home'},
           {path:'home',component:_import('mailbox/components/home')},
           {path:'innerbox',component:_import('mailbox/components/innerbox')},
-          {path:'outbox',component:_import('mailbox/components/outbox')}
+          {path:'outbox',component:_import('mailbox/components/outbox')},
+          {path:'read/:id',component:_import('mailbox/components/read')}
         ]
       }]
   },
@@ -35,33 +35,30 @@ export const rou = [
     }]
   },
   {
-    path:'/file',component:Layout1,
+    path:'/',component:Layout1,
     children: [
-      {path:'/',redirect:'file'},
       {
         path: 'file',
         component: _import('file/index'),
 
       }]
   },
-  {
-    path:'/contact',component:Layout1,
+    {
+    path:'/',component:Layout1,
     children: [
-      {path:'/',redirect:'contact'},
       {
         path: 'contact',
         component: _import('contact/index'),
         children:[
-          {path:'/',redirect:'oab/id'},
+          {path:'/',redirect:'oab/1'},
           {path:'oab/:id',component:_import('contact/oab')},
           {path:'pab/:id',component:_import('contact/pab')}
         ]
       }]
   },
   {
-    path:'/appcenter',component:Layout1,
+    path:'/',component:Layout1,
     children: [
-      {path:'/',redirect:'appcenter'},
       {
         path: 'appcenter',
         component: _import('appcenter/index'),
@@ -69,9 +66,8 @@ export const rou = [
       }]
   },
   {
-    path:'/setting',component:Layout1,
+    path:'/',component:Layout1,
     children: [
-      {path:'/',redirect:'setting'},
       {
         path: 'setting',
         component: _import('setting/index'),

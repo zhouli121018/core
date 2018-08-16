@@ -132,15 +132,16 @@
                     </div>
                     </div>
                     <div class="m-mllist-row mllist-list-row">
-                        <el-collapse v-model="activeNames" @change="handleChange">
+                      <div class="j-module-content j-maillist mllist-list u-scroll">
+                          <el-collapse v-model="activeNames" @change="handleChange">
                             <el-collapse-item v-for="t in collapseItems" :key="t.id" :title="t.title" :name="t.id">
                                 <ul class="list-wrap j-mail-list ">
-                                    <li class="list-item j-mail display-summary" @click="readmail(t.id,l.id)" v-for="l in t.lists" :key="l.id" :class="{flagged:l.flagged,'label0-0':l.flagged,selected:l.checked,read:l.isread,unread:!l.isread}" >
-                                        <div class="item-content mail-info">
+                                    <li class="list-item j-mail display-summary"  v-for="(l,k) in t.lists" :key="l.uid" :class="{flagged:l.flagged,'label0-0':l.flagged,selected:l.checked,read:l.isread,unread:!l.isread}" >
+                                        <div @click="readmail(t.id,k,l.uid)" class="item-content mail-info">
                                             <div class="info-desc">
                                                 <div class="info-desc-left">
                                                     <div class="desc-flag">
-                                                            <span class="flag-flagged j-flag" :class="{unflag:!l.flagged}" @click.stop="changeFlag(t.id,l.id)">
+                                                            <span class="flag-flagged j-flag" :class="{unflag:!l.flagged}" @click.stop="changeFlag(t.id,k)">
                                                                 <i :title="l.flagged?'点击取消旗帜':'设为红旗'" class="iconfont" :class="l.flagged?'icon-iconflatcolor':'icon-iconflat'"></i>
                                                             </span>
                                                         <span class="flag-defer unflag">
@@ -149,16 +150,16 @@
                                                     </div>
                                                     <div class="desc-text">
                                                         <span class="icon"><i class="j-priorityIcon iconfont " title=""></i></span>
-                                                        <span class="subject" title="l.text">{{l.text}}</span>
+                                                        <span class="subject" title="l.text">{{l.subject}}</span>
                                                     </div>
                                                 </div>
                                                 <div class="info-desc-right">
-                                                    <span class="desc-time">{{l.time}}</span>
+                                                    <span class="desc-time">{{l.internaldate}}</span>
                                                 </div>
                                             </div>
                                             <div class="info-summary">
                                                 <p class="summary-text">
-                                                    <span class="fromto from"> {{l.from}}</span>
+                                                    <span class="fromto from"> {{(l.mfrom[1]==null?'':l.mfrom[1]) + " <"+l.mfrom[0]+">"}}</span>
                                                     <span class="fromto" v-if="l.plain">：</span>
                                                     <span class="summary"> {{l.plain}}</span>
                                                 </p>
@@ -171,8 +172,8 @@
                                             </div>
                                         </div>
                                         <div class="item-chk check-col" title="系统认证可信任来源">
-                                            
-                                            <el-checkbox :v-model="l.checked" @change="changeSelect(t.id,l.id)"></el-checkbox>
+
+                                            <el-checkbox :v-model="l.checked" @change="changeSelect(t.id,k)"></el-checkbox>
                                         </div>
                                         <div class="item-active-border"></div>
                                         <div class="item-divider"></div>
@@ -181,7 +182,7 @@
                             </el-collapse-item>
                         </el-collapse>
 
-                        <div class="mllist-pagination">
+                          <div class="mllist-pagination">
                             <el-button-group>
                                 <el-button  icon="el-icon-arrow-left"  round></el-button>
                                 <el-button>
@@ -198,6 +199,8 @@
                                 <el-button  icon="el-icon-arrow-right" round></el-button>
                             </el-button-group>
                         </div>
+                      </div>
+
                     </div>
                 </div>
             </div>
@@ -205,6 +208,7 @@
 </template>
 <script>
   import {getMailMessage} from "@/api/api";
+  import router from '@/router'
 
   export default {
     data() {
@@ -271,21 +275,13 @@
           collapseItems:[
               {
                   id:0,
-                  title:"前天 （3）",
+                  title:"更早 （3）",
                   lists:[
-                    {id:0,isread:false,flagged:true,text:'[召回邮件失败] MEMZ彩虹猫病毒/[Recall mail 失败] MEMZ彩虹猫病毒',time:'08-09',from:'postman',
+                    {uid:0,isread:false,flagged:true,subject:'[召回邮件失败] MEMZ彩虹猫病毒/[Recall mail 失败] MEMZ彩虹猫病毒',internaldate:'08-09',mfrom:'postman',
                     plain:'发给751296883@qq.com的邮件召回失败,原因：不支持召回  email sent to 751296883@qq.com has been recalled unsucce',checked:false},
-                    {id:1,isread:true,flagged:false,text:' MEMZ彩虹猫病毒/[Recall mail 失败] MEMZ彩虹猫病毒',time:'08-08',from:'postman',
+                    {uid:1,isread:true,flagged:false,subject:' MEMZ彩虹猫病毒/[Recall mail 失败] MEMZ彩虹猫病毒',internaldate:'08-08',mfrom:'postman',
                     plain:'发给751296883@qq.com的邮件召回失败,原因：不支持召回  email sent to 751296883@qq.com has been recalled unsucce',checked:false},
-                    {id:2,isread:true,flagged:false,text:'欢迎进入XT5体验中心',time:'08-06',from:'postman',
-                    plain:'',checked:false}
-                    ]
-              },
-              {
-                  id:1,
-                  title:"更早 （1）",
-                  lists:[
-                    {id:0,isread:true,flagged:false,text:'欢迎进入XT5体验中心',time:'08-06',from:'postman',
+                    {uid:2,isread:true,flagged:false,subject:'欢迎进入XT5体验中心',internaldate:'08-06',mfrom:'postman',
                     plain:'',checked:false}
                     ]
               },
@@ -293,6 +289,9 @@
         }
     },
     methods:{
+      jumpTo(path){
+            router.push(path);
+        },
       handleCommand:function(index){
         this.checkIndex = index;
         if(index===0){
@@ -343,7 +342,7 @@
           }
       },
       changeSelect(pid,cid){
-          console.log(this.collapseItems[pid].lists[cid])
+          console.log(1111111)
           this.collapseItems[pid].lists[cid].checked = !this.collapseItems[pid].lists[cid].checked
           if(this.collapseItems[pid].lists[cid].checked){
               
@@ -354,9 +353,10 @@
       changeFlag(pid,cid){
           this.collapseItems[pid].lists[cid].flagged = !this.collapseItems[pid].lists[cid].flagged;
       },
-      readmail(pid,cid){
+      readmail(pid,cid,mid){
           console.log(pid,cid)
           this.collapseItems[pid].lists[cid].isread = true;
+          this.jumpTo('/mailbox/read/'+mid)
       }
 
     },
@@ -376,23 +376,15 @@
       console.log('innerbox')
       // this.test();
       getMailMessage().then((res)=>{
-        var items = [];
-        var object = res.data;
-        for (var i in object) {
-            var obj = {};
-            var arr = object[i].split('\r\n');
-            for(var k=0,subObj={};k<arr.length;k++){
-              var suba = arr[k].split(':');
-              if(suba[0]){
-                subObj[suba[0]] = suba[1];
-              }
-            }
-            console.log(subObj)
-            obj.id = i;
-            obj.from = subObj.From;
-            items.push(obj);
-        }
+        var items = res.data;
         console.log(items)
+        for(var i=0;i<items.length;i++){
+          items[i].flagged = (items[i].flags.indexOf('Flagged')>=0);
+          items[i].isread = (items[i].flags.indexOf('Seen')>=0);
+          items[i].plain = '';
+          items[i].checked = false;
+        }
+        this.collapseItems[0].lists = items;
       },(err)=>{
         console.log('err')
         console.log(err)
