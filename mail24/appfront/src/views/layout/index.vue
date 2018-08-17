@@ -174,5 +174,39 @@
     background:url(../../assets/img/bg_right.jpg) no-repeat right bottom;
     background-size: contain;
   }
+  ul,li{
+    padding:0;
+    margin:0;
+  }
+  /*.el-popper[x-placement^=right] {*/
+  /*margin-left: 0;*/
+  /*}*/
+  .el-menu{
+    border-right:none;
+  }
+  .hover_btn{
+    padding:4px 0;
+    width:42px;
+    border:none;
+    background:#057ab8;
+    color:#6bc5f4;
+  }
+  .hover_btn:hover{
+    background:#056599;
+    color:#fff;
+  }
+  .hover_btn i{
+    font-size:32px;
+  }
+  @media screen and (max-width: 1366px){
+    .hover_btn {
+      width:32px;
+    }
+    .hover_btn i{
+      font-size:26px;
+    }
+  }
+
+
 </style>
 

@@ -11,11 +11,9 @@ export const welcome = params => { return axios.get(`${host}/core/welcome/`, { p
 //锁屏
 export const lockscreen = params => { return axios.post(`${host}/core/lockscreen/`, { params: params }) }
 
-// 获取个人通讯录组
-export const contactPabGroups = params => { return axios.get(`${host}/contact/pabgroup/`, { params: params })}
-// 获取个人通讯录数据
 // 获取 当前域 部门数据
 export const contactDepartment = params => { return axios.get(`${host}/contact/department/`, { params: params })}
+
 // 获取 企业通讯录 数据
 export const contactOab = params => { return axios.get(`${host}/contact/oab/`, { params: params }) }
 
@@ -24,3 +22,6 @@ export const getMailMessage = params => { return axios.get(`${host}/mail/message
 
 //获取文件夹列表
 export const getFloder = params => { return axios.get(`${host}/mail/floder/`, { params: params }) };
+
+//读邮件
+export const readMail = params => { return axios.get(`${host}/mail/message/${params}/`) };

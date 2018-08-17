@@ -57,9 +57,11 @@
   }
   .toolbar {
     background: #f2f2f2;
-    padding: 10px;
-  / / border: 1 px solid #dfe6ec;
-    margin: 10px 0px;
+    /*padding: 10px;*/
+    border-bottom: 1px solid #dfe6ec;
+    /*margin: 10px 0px;*/
+    padding-left: 10px;
+    padding-right: 10px;
   }
   .el-form-item {
     margin-bottom: 10px;

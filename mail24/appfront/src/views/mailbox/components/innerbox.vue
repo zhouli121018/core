@@ -153,6 +153,7 @@
                                                         <span class="subject" title="l.text">{{l.subject}}</span>
                                                     </div>
                                                 </div>
+
                                                 <div class="info-desc-right">
                                                     <span class="desc-time">{{l.internaldate}}</span>
                                                 </div>

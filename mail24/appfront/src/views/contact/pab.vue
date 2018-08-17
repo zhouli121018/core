@@ -1,55 +1,134 @@
 <template>
-  <div>
-    <div class="ctmain-bg"></div>
-    <div class="j-contact-content">
-      <div data-panel="contact.oab:business1473/102" class="j-contact-panel" style="display: block;">
-        <section class="m-ctoab" data-view-cid="view-20" data-view-name="contact.oab">
-
-          <div class="main-wrapper switch-list">
-            <div class="content-wrapper">
-
-              <!-- 普通列表 -->
-              <section class="content content-list">
-                <header class="toolbar">
-                  <button class="u-btn u-btn-primary u-btns-hide j-goPrevLevel" data-action="goPrev" style="display: inline-block;">
-                    <i class="iconfont iconupperlayer"></i>返回上层
-                  </button>
-                  <button class="u-btn u-btn-default" data-operation="showSearchList">
-                    <i class="iconfont iconsreachm"></i>
-                  </button>
-                </header>
-                <div class="deptInfo"><b>人力资源部</b><label class="totalcnt">共 0 个,</label><label class="deptcnt" style="display: none;">0 个子部门,</label><label>0 个地址</label></div>
-                <div class="u-list u-scroll">
-                  <table class="u-table u-table-assign u-table-row">
-                    <thead>
-                    <tr>
-                      <th class="firstTH">
-                      <span class="j-selectAll">
-                        <input class="rc-hidden" type="checkbox"><i class="checkbox checkbox-checked"></i>
-                      </span>
-                      </th>
-                      <th class="nth2TH">&nbsp;</th>
-                      <th data-sort="true_name" class="" width=""><div class="f-ellipsis">姓名<i class="iconfont"></i></div></th>
-                      <th data-sort="email" class="" width=""><div class="f-ellipsis">邮件地址<i class="iconfont"></i></div></th>
-                      <th data-sort="mobile_number" class="hideForShrink" width=""><div class="f-ellipsis">手机号码<i class="iconfont"></i></div></th>
-                      <th data-sort="security_level" class="hideForShrink" width=""><div class="f-ellipsis">收信密级<i class="iconfont"></i></div></th>
-                      <th data-sort="sender_security_level" class="hideForShrink" width=""><div class="f-ellipsis">发信密级<i class="iconfont"></i></div></th>
-                      <th data-sort="duty" class="hideForShrink" width=""><div class="f-ellipsis">职位<i class="iconfont"></i></div></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr><td colspan="8">没有用户</td></tr>
-                    </tbody>
-                  </table>
-                </div>
-              </section>
-
+    <section class="m-mail">
+      <aside class="mlsidebar">
+        <div class="wrapper u-scroll top0">
+          <div class="el-row" style="background: #f2f2f2;border-bottom: 1px solid #dfe6ec;">
+            <div class="el-col el-col-24">
+              <div class="pab-header">联系组</div>
             </div>
-
           </div>
 
-        </section>
-      </div>
-    </div>
-  </div>
+          <el-tree
+            :data="pab_groups"
+            :props="pab_defaultProps"
+            highlight-current
+            node-key="id"
+            :default-checked-keys="pab_checked_keys"
+            @node-click="pab_handleNodeClick">
+            <table class="custom-tree-node" slot-scope="{ node, data }">
+              <tr>
+                <td style="text-align: left">
+                  <span style="display: inline-block;width: 120px" class="text_slice">
+				            <span class="text_slice" style="float: left" :title="node.label">{{ node.label }}</span><span v-if="!data.is_sysname">({{ data.count }})</span>
+                  </span>
+                </td>
+                <td v-if="!data.is_sysname">
+                  <el-button type="text" size="mini" @click="() => append(data)" style="margin-left: 7px;">编辑</el-button>
+                  <el-button type="text" size="mini" @click="() => remove(node, data)" style="margin-left: 0px;">删除</el-button>
+                </td>
+              </tr>
+            </table>
+          </el-tree>
+
+        </div>
+      </aside>
+
+      <article class="mlmain mltabview overflow_auto">
+        <div  class="j-module-content j-maillist mllist-list ">
+        </div>
+      </article>
+
+      <input type="hidden" v-model="pab_cid"/>
+    </section>
+
 </template>
+
+<script>
+  import { contactPabGroups } from '@/api/api'
+  export default {
+    data() {
+      return {
+        pab_cid: "",
+        pab_checked_keys: [],
+        pab_groups: [],
+        pab_defaultProps: {
+          label: 'name',
+          count: 'count',
+        },
+
+
+        filters: {
+          search: ''
+        },
+        total: 0,
+        page: 1,
+        page_size: 15,
+        listLoading: false,
+        sels: [],//列表选中列
+        oab_tables: [],
+        department_name: ""
+      };
+    },
+
+    mounted: function(){
+      this.getPABGroups();
+    },
+
+    methods: {
+
+      getPABGroups(){
+        contactPabGroups().then(res=>{
+          let pab_cid = res.data.pab_cid;
+          this.pab_cid = pab_cid
+          this.pab_groups = res.data.results;
+          this.pab_checked_keys = [pab_cid];
+          // this.getOABs();
+        });
+      },
+
+      pab_handleNodeClick(data) {
+        this.pab_cid = data.id;
+        // this.getOABs();
+      },
+      renderContent(h, { node, data, store }) {
+        return (
+          '<span class="custom-tree-node">' +
+          '<span>{node.label}</span>' +
+          '<span> ' +
+          '<el-button size="mini" type="text" on-click={ () => this.append(data) }>Append</el-button> ' +
+          '<el-button size="mini" type="text" on-click={ () => this.remove(node, data) }>Delete</el-button> ' +
+          '</span> ' +
+          '</span>');
+      },
+
+    }
+
+  };
+</script>
+
+<style>
+  .top0{
+    top:0px!important;
+  }
+  /*.el-tree-node__content > .el-tree-node__expand-icon {*/
+    /*padding: 0px;*/
+  /*}*/
+  .text_slice {
+    width: 90px;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -webkit-text-overflow: ellipsis;
+  }
+  .pab-header {
+    background: #f2f2f2;
+    color:#555;
+    font-weight:bold;
+    height:27px;z-index:1000 !important;
+    line-height: 27px;
+    float: left;
+    padding-left: 13px;
+  }
+
+</style>
