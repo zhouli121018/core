@@ -212,6 +212,15 @@
   import router from '@/router'
 
   export default {
+    name:'Innerbox',
+    props:{
+      collapseItems:{
+        type:Array,
+        default:[
+
+        ]
+      }
+    },
     data() {
         return {
           checkIndex:'',
@@ -273,25 +282,17 @@
           showMoreMenu:false,
           activeNames: [0],
           activeLi:[0,0],
-          collapseItems:[
-              {
-                  id:0,
-                  title:"更早 （3）",
-                  lists:[
-                    {uid:0,isread:false,flagged:true,subject:'[召回邮件失败] MEMZ彩虹猫病毒/[Recall mail 失败] MEMZ彩虹猫病毒',internaldate:'08-09',mfrom:'postman',
-                    plain:'发给751296883@qq.com的邮件召回失败,原因：不支持召回  email sent to 751296883@qq.com has been recalled unsucce',checked:false},
-                    {uid:1,isread:true,flagged:false,subject:' MEMZ彩虹猫病毒/[Recall mail 失败] MEMZ彩虹猫病毒',internaldate:'08-08',mfrom:'postman',
-                    plain:'发给751296883@qq.com的邮件召回失败,原因：不支持召回  email sent to 751296883@qq.com has been recalled unsucce',checked:false},
-                    {uid:2,isread:true,flagged:false,subject:'欢迎进入XT5体验中心',internaldate:'08-06',mfrom:'postman',
-                    plain:'',checked:false}
-                    ]
-              },
-          ]
+
         }
     },
     methods:{
-      jumpTo(path){
-            router.push(path);
+      jumpTo(path,rid){
+            router.push({
+             name: path,
+             params: {
+              id: rid
+             }
+            });
         },
       handleCommand:function(index){
         this.checkIndex = index;
@@ -355,10 +356,11 @@
           this.collapseItems[pid].lists[cid].flagged = !this.collapseItems[pid].lists[cid].flagged;
       },
       readmail(pid,cid,mid){
-          console.log(pid,cid)
           this.collapseItems[pid].lists[cid].isread = true;
-          this.jumpTo('/mailbox/read/'+mid)
-      }
+          this.jumpTo('read',mid)
+
+      },
+
 
     },
     computed:{
@@ -373,25 +375,7 @@
             return count;
         }
     },
-    mounted:function(){
-      console.log('innerbox')
-      // this.test();
-      getMailMessage().then((res)=>{
-        var items = res.data;
-        console.log(items)
-        for(var i=0;i<items.length;i++){
-          items[i].flagged = (items[i].flags.indexOf('Flagged')>=0);
-          items[i].isread = (items[i].flags.indexOf('Seen')>=0);
-          items[i].plain = '';
-          items[i].checked = false;
-        }
-        this.collapseItems[0].lists = items;
-      },(err)=>{
-        console.log('err')
-        console.log(err)
-      })
 
-    },
 }
 </script>
 

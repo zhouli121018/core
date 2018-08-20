@@ -26,16 +26,7 @@ export const rou = [
       {
         path: 'mailbox',
         component: _import('mailbox/mailbox'),
-        children:[
-          {path:'/',redirect:'home'},
-          {path:'home',component:_import('mailbox/components/home')},
-          {path:'innerbox',component:_import('mailbox/components/innerbox')},
-          {path:'outbox',component:_import('mailbox/components/outbox')},
-          {path:'read/:id',component:_import('mailbox/components/read')}
-        ]
-      },
-
-      ]
+      }]
   },
   {
     path: '/calendar',
@@ -58,12 +49,17 @@ export const rou = [
       }]
   },
   {
-    path:'/contact',component:Layout1,
+    path:'/',component:Layout1,
     children: [
-      {path:'/',redirect:'oab'},
-      {path:'oab',component:_import('contact/oab')},
-      {path:'pab',component:_import('contact/oab')}
-    ]
+      {
+        path: 'contact',
+        component: _import('contact/index'),
+        children:[
+          {path:'/',redirect:'pab'},
+          {path:'pab',component:_import('contact/pab')},
+          {path:'oab',component:_import('contact/oab')}
+        ]
+      }]
   },
   {
     path:'/',component:Layout1,

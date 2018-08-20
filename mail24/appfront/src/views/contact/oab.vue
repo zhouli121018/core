@@ -1,5 +1,5 @@
 <template>
-    <section class="m-mail">
+    <section class="m-mail absolute_height">
       <aside class="mlsidebar">
         <div class="mlsidebar-bg"></div>
         <div class="wrapper u-scroll top0">
@@ -61,7 +61,7 @@
             </el-col>
 
             <!--列表-->
-            <el-table :data="oab_tables" highlight-current-row v-loading="listLoading" @selection-change="Oab_selsChange" style="width: 100%;max-height:100%;" size="mini" border>
+            <el-table :data="oab_tables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>
               <el-table-column type="selection" width="50">
               </el-table-column>
               <el-table-column type="index" label="No." width="60">

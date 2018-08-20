@@ -102,7 +102,7 @@
         router.push(path)
       },
       goHome(){
-        this.jumpTo('/mailbox');
+        this.jumpTo('/welcome');
         this.activeTab = 0;
       },
       changeTab(index){

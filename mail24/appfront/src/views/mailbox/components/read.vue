@@ -3,7 +3,7 @@
     <div class="mltabview-panel">
       <div class="m-mlwelcome" data-view-cid="view-5" data-view-name="mail.welcome">
         <div class="container">
-          读邮件
+          {{msg}}
         </div><!-- end container -->
         <div class="footer small text-gray">Coremail. © Copyright 2000 - 2016 Mailtech.</div>
 
@@ -16,8 +16,20 @@
   import {readMail} from '@/api/api';
   export default  {
     name:'Read',
-    mounted(){
-      readMail(14294);
-    }
+    data(){
+      return {
+        msg:''
+      }
+    },
+    mounted:function(){
+      console.log(this.$route.params.id)
+      console.log('innerbox')
+      // this.test();
+      readMail(this.$route.params.id).then((data)=>{
+        this.msg = data.data.html_text
+      });
+
+
+    },
   }
 </script>

@@ -1,18 +1,19 @@
 <template>
-  <div>
-    <el-tabs v-model="activeName" @tab-click="changeContactTab" class="nopanel">
-      <el-tab-pane label="个人通讯录" name="pab" id="1">个人通讯录</el-tab-pane>
-      <el-tab-pane label="组织通讯录" name="oab" id="2">组织通讯录</el-tab-pane>
-      <el-tab-pane label="公共通讯录" name="xpab" id="3">公共通讯录</el-tab-pane>
-      <el-tab-pane label="其它域通讯录" name="zoab" id="4">其它域通讯录</el-tab-pane>
-    </el-tabs>
-    <!--<el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" background-color="#545c64"-->
-  <!--text-color="#fff"-->
-  <!--active-text-color="#ffd04b" >-->
-      <!--<el-menu-item index="1">处理中心</el-menu-item>-->
-      <!--<el-menu-item index="3">消息中心</el-menu-item>-->
-      <!--<el-menu-item index="4"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>-->
-    <!--</el-menu>-->
+  <div class="relat">
+    <!--<el-tabs v-model="activeName" @tab-click="changeContactTab" class="nopanel">-->
+      <!--<el-tab-pane label="个人通讯录" name="pab" id="1">个人通讯录</el-tab-pane>-->
+      <!--<el-tab-pane label="组织通讯录" name="oab" id="2">组织通讯录</el-tab-pane>-->
+      <!--<el-tab-pane label="公共通讯录" name="xpab" id="3">公共通讯录</el-tab-pane>-->
+      <!--<el-tab-pane label="其它域通讯录" name="zoab" id="4">其它域通讯录</el-tab-pane>-->
+    <!--</el-tabs>-->
+    <el-menu :default-active="activeIndex" class="el-menu-demo"  @select="handleSelect" mode="horizontal" background-color="#545c64"
+  text-color="#fff"
+  active-text-color="#ffd04b" >
+      <el-menu-item index="pab">个人通讯录</el-menu-item>
+      <el-menu-item index="oab">组织通讯录</el-menu-item>
+      <el-menu-item index="xpab">公共通讯录</el-menu-item>
+      <el-menu-item index="zoab">其它域通讯录</el-menu-item>
+    </el-menu>
 
     <router-view></router-view>
   </div>
@@ -23,12 +24,26 @@
   export default {
     data() {
       return {
-        activeName: 'pab'
+        activeName: 'oab',
+        activeIndex:'oab'
       };
     },
     methods:{
       jumpTo(path){
         router.push(path);
+      },
+      handleSelect(key, keyPath) {
+        console.log(key, keyPath);
+        var index = key;
+        if(index == "pab"){
+          this.jumpTo('/contact/pab');
+        }else if(index == "oab"){
+          this.jumpTo('/contact/oab');
+        }else if(index == "xpab"){
+          this.jumpTo('/contact/pab');
+        }else if(index == "zoab"){
+          this.jumpTo('/contact/pab');
+        }
       },
 
       changeContactTab(tab, event){
@@ -48,10 +63,12 @@
     },
 
     mounted() {
-      if (this.$route.path.indexOf('/pab') == 0) {
+      if (this.$route.path.indexOf('/pab') >= 0) {
         this.activeName = "pab";
-      } else if (this.$route.path.indexOf('/oab') == 0) {
+        this.activeIndex = "pab";
+      } else if (this.$route.path.indexOf('/oab') >= 0) {
         this.activeName = "oab";
+        this.activeIndex = "oab";
       }
     }
 
@@ -77,5 +94,17 @@
   }
   .nopanel .el-tabs__content{
     display:none;
+  }
+  .m-mail.absolute_height{
+    position: absolute;
+    top: 61px;
+    bottom: 0;
+    height: auto;
+    left: 0;
+    right: 0;
+    width: auto;
+  }
+  .relat{
+    position:relative;
   }
 </style>

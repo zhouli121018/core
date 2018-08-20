@@ -11,21 +11,21 @@
                       :data="floderList"
                       node-key="id"
                       default-expand-all
-                      :expand-on-click-node="false">
+                      :expand-on-click-node="false" @node-click="handleNodeClick">
                       <span class="custom-tree-node" slot-scope="{ node, data }" :title="node.label">
                         <span>{{ node.label }}</span>
-                        <span class="">
+                        <span class="" style="position:absolute;right:2px;" class="hide_btn">
                           <el-button
                             type="text"
                             size="mini"
-                            @click="() => showDialog(data)">
-                            添加
+                            @click.stop.prevent="() => showDialog(data)" title="添加">
+                            <i class="el-icon-plus"></i>
                           </el-button>
                           <el-button
                             type="text"
                             size="mini"
-                            @click="() => remove(node, data)">
-                            删除
+                            @click.stop="() => remove(node, data)" title="删除">
+                            <i class="el-icon-delete"></i>
                           </el-button>
                         </span>
                       </span>
@@ -124,7 +124,6 @@
         this.dialogFormVisible = true;
         this.rootFloder = data;
         this.form.title = data.label;
-        console.log(data);
 
       },
       append(){
@@ -141,8 +140,29 @@
         const parent = node.parent;
         const children = parent.data.children || parent.data;
         const index = children.findIndex(d => d.id === data.id);
-        children.splice(index, 1);
+        this.$confirm('删除该文件夹, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          children.splice(index, 1);
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+
       },
+      handleNodeClick(data) {
+        console.log(data);
+        this.$emit('getData', data.label);
+        this.$router.push('/mailbox')
+      }
 
     },
 
@@ -169,4 +189,11 @@
   .fr{
     float:right;
   }
+  .hide_btn{
+    display:none;
+  }
+  .el-tree-node:hover .hide_btn{
+    display:inline-block;
+  }
+
 </style>

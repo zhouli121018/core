@@ -12,15 +12,21 @@ export const rou = [
     path:'/',component:Layout1,
     children: [
       {
+        path: 'welcome',
+        component: _import('mailbox/welcome'),
+      },
+      {
+        path: 'outbox',
+        component: _import('mailbox/outbox'),
+      },
+      {
+        path: 'read',
+        name:'read',
+        component: _import('mailbox/read'),
+      },
+      {
         path: 'mailbox',
         component: _import('mailbox/mailbox'),
-        children:[
-          {path:'/',redirect:'home'},
-          {path:'home',component:_import('mailbox/components/home')},
-          {path:'innerbox',component:_import('mailbox/components/innerbox')},
-          {path:'outbox',component:_import('mailbox/components/outbox')},
-          {path:'read/:id',component:_import('mailbox/components/read')}
-        ]
       }]
   },
   {
@@ -50,7 +56,7 @@ export const rou = [
         path: 'contact',
         component: _import('contact/index'),
         children:[
-          {path:'/',redirect:'pab'},
+          {path:'/',redirect:'oab'},
           {path:'pab',component:_import('contact/pab')},
           {path:'oab',component:_import('contact/oab')}
         ]
