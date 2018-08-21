@@ -12,7 +12,7 @@
   import ContactMenu from './components/ContactMenu'
   import Oab from './components/Oab'
   import router from '@/router'
-  import {contactOab} from '@/api/api'
+  // import {contactOab} from '@/api/api'
   export default {
     name:'Contact',
     components: {
@@ -44,13 +44,13 @@
           "dept_id": this.oab_cid
         };
         this.listLoading = true;
-        contactOab(param).then((res) => {
-          this.total = res.data.count;
-          this.oab_tables = res.data.results;
-          this.department_name = res.data.department_name;
-          this.listLoading = false;
-          //NProgress.done();
-        });
+        // contactOab(param).then((res) => {
+        //   this.total = res.data.count;
+        //   this.oab_tables = res.data.results;
+        //   this.department_name = res.data.department_name;
+        //   this.listLoading = false;
+        //   //NProgress.done();
+        // });
       },
       childNotify(params){
         this.oab_cid = params;

@@ -26,7 +26,8 @@
       console.log('innerbox')
       // this.test();
       readMail(this.$route.params.id).then((data)=>{
-        this.msg = data.data.html_text
+        // this.msg = data.data.html_text
+        this.msg = data.data
       });
 
 

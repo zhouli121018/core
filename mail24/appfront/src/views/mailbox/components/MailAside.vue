@@ -160,25 +160,51 @@
       },
       handleNodeClick(data) {
         console.log(data);
-        this.$emit('getData', data.label);
+        this.$emit('getData', data.id);
         this.$router.push('/mailbox')
       }
 
     },
 
     beforeMount(){
-      getFloder().then((res)=>{
-        let arr = [];
-        for(let i=0;i<res.data.length;i++){
+      // getFloder().then((res)=>{
+      //   let arr = [];
+      //   for(let i=0;i<res.data.length;i++){
+      //     let obj={};
+      //     obj['id'] = i;
+      //     obj['label'] = res.data[i][0];
+      //     arr.push(obj);
+      //   }
+      //   this.floderList = arr
+      // },(err)=>{
+      //   console.log(err)
+      // });
+
+      let folder = [
+          ["测试1",{"raw_name":"&bUuL1Q-1","separator":".","flags":["\\HasNoChildren"],"full_name":"测试1"}],
+          ["啊啊",{"raw_name":"&VUpVSg-","separator":".","flags":["\\HasNoChildren"],"full_name":"啊啊"}],
+          ["测试",{"raw_name":"&bUuL1Q-","separator":".","flags":["\\HasNoChildren"],"full_name":"测试"}],
+          ["垃圾邮件",{"raw_name":"&V4NXPpCuTvY-","separator":".","flags":["\\HasNoChildren"],"full_name":"垃圾邮件"}],
+          ["已发送邮件",{"raw_name":"&XfJT0ZABkK5O9g-","separator":".","flags":["\\HasNoChildren"],"full_name":"已发送邮件"}],
+          ["测试2",{"raw_name":"INBOX.&bUuL1Q-2","separator":".","flags":["\\HasNoChildren","\\UnMarked"],"full_name":"INBOX.测试2"}],
+          ["旧邮件备份",{"raw_name":"INBOX.&ZeeQrk72WQdO,Q-","separator":".","flags":["\\HasNoChildren"],"full_name":"INBOX.旧邮件备份"}],
+          ["Spam",{"raw_name":"Spam","separator":".","flags":["\\HasNoChildren"],"full_name":"Spam"}],
+          ["Trash",{"raw_name":"Trash","separator":".","flags":["\\HasNoChildren"],"full_name":"Trash"}],
+          ["Sent",{"raw_name":"Sent","separator":".","flags":["\\HasNoChildren"],"full_name":"Sent"}],
+          ["Drafts",{"raw_name":"Drafts","separator":".","flags":["\\HasNoChildren"],"full_name":"Drafts"}],
+          ["INBOX",{"raw_name":"INBOX","separator":".","flags":["\\HasChildren"],"full_name":"INBOX"}]
+        ];
+      let arr = [];
+        for(let i=0;i<folder.length;i++){
           let obj={};
-          obj['id'] = i;
-          obj['label'] = res.data[i][0];
+          obj['label'] = folder[i][0];
+          obj['id'] = folder[i][1]['raw_name'];
+          obj['separator'] = folder[i][1]['separator'];
+          obj['flags'] = folder[i][1]['flags'];
+          obj['full_name'] = folder[i][1]['full_name'];
           arr.push(obj);
         }
         this.floderList = arr
-      },(err)=>{
-        console.log(err)
-      });
 
 
     }

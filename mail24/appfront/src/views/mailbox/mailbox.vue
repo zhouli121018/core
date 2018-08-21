@@ -3,6 +3,14 @@
         <section class="m-mail">
             <MailAside @getData="getData"></MailAside>
 <article class="mlmain mltabview">
+                     <div class="u-tab u-tab-seamless u-tab-highlight j-mltab" v-if="tabList.length">
+                          <ul class="mltabview-nav">
+                            <li class="mltabview-trigger" :class="{'z-current':activeTab==0}" :title="tab1.text"><span class="bar"></span><div class="trigger-wrap"><a href="#" trigger-title="" class="" :title="tab1.text" @click="changeTab1(tab1.url)">{{tab1.text}}</a></div></li>
+                            <li v-for="(v,k) in tabList" :class="{'z-current':activeTab==k+1}"><span class="bar"></span><div class="trigger-wrap"><a href="#" @click="changeTabs(v.id,k)" :title="v.text">{{v.text}}</a><span class="iconfont icon-icontabclose30x30 close" @click.stop="delTabs(k)"></span></div></li>
+
+                          </ul>
+                          <div class="iconfont icon-iconcloseall closeall"></div>
+                    </div>
                 <Innerbox :collapseItems="collapseItems"></Innerbox>
 </article>
         </section>
@@ -52,7 +60,7 @@ export default {
         this.jumpTo('/mailbox/'+url);
       },
       changeTabs(vid,key){
-        this.jumpTo('/mailbox/read/'+vid);
+        this.jumpTo('/read/');
         this.activeTab = key+1;
         console.log(this.activeTab)
       },
@@ -78,9 +86,9 @@ export default {
           console.log(err)
         })
       },
-      getData(label){
-        console.log(label)
-        // this.getMessageList({folder:label});
+      getData(id){
+        console.log(id)
+        this.getMessageList({folder:id});
       }
 
     },

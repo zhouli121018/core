@@ -23,7 +23,7 @@
 
 <script>
   import router from '@/router'
-  import {contactDepartment} from '@/api/api'
+  // import {contactDepartment} from '@/api/api'
   export default {
     name: 'ContactMenu',
     data() {
@@ -45,10 +45,10 @@
       },
     },
     mounted: function(){
-      contactDepartment().then(res=>{
-        this.oab_departs = res.data.results;
-        let cid = res.data.oab_id;
-      })
+      // contactDepartment().then(res=>{
+      //   this.oab_departs = res.data.results;
+      //   let cid = res.data.oab_id;
+      // })
     },
     // mounted(){
     //   this.jumpTo(`/contact/contact/oab/-1`);
