@@ -1,6 +1,7 @@
 <template>
-  <article class="mlmain mltabview">
-    <div class="mltabview-panel">
+  <!--<article class="mlmain mltabview">-->
+    <div class="mltabview-content">
+      <div class="mltabview-panel">
       <div class="m-mlwelcome" data-view-cid="view-5" data-view-name="mail.welcome">
         <div class="container">
           <div class="header j-header">
@@ -151,7 +152,9 @@
 
       </div>
     </div>
-  </article>
+    </div>
+
+  <!--</article>-->
 </template>
 
 <script>

@@ -56,7 +56,7 @@ export const rou = [
         path: 'contact',
         component: _import('contact/index'),
         children:[
-          {path:'/',redirect:'oab'},
+          {path:'/',redirect:'pab'},
           {path:'pab',component:_import('contact/pab')},
           {path:'oab',component:_import('contact/oab')}
         ]

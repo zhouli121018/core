@@ -1,11 +1,5 @@
 <template>
   <div class="relat">
-    <!--<el-tabs v-model="activeName" @tab-click="changeContactTab" class="nopanel">-->
-    <!--<el-tab-pane label="个人通讯录" name="pab" id="1">个人通讯录</el-tab-pane>-->
-    <!--<el-tab-pane label="组织通讯录" name="oab" id="2">组织通讯录</el-tab-pane>-->
-    <!--<el-tab-pane label="公共通讯录" name="xpab" id="3">公共通讯录</el-tab-pane>-->
-    <!--<el-tab-pane label="其它域通讯录" name="zoab" id="4">其它域通讯录</el-tab-pane>-->
-    <!--</el-tabs>-->
     <el-menu :default-active="activeIndex" class="el-menu-demo"  @select="handleSelect" mode="horizontal" background-color="#545c64"
              text-color="#fff"
              active-text-color="#ffd04b" >
@@ -21,52 +15,46 @@
 
 <script>
   import router from '@/router'
+  import { getContactInfo } from '@/api/api'
   export default {
     data() {
       return {
-        activeName: 'oab',
-        activeIndex:'oab'
+        activeIndex:'pab'
       };
     },
-    methods:{
-      jumpTo(path){
+    created: function() {
+      let pab_cid = window.sessionStorage['pab_cid'];
+      if (pab_cid === undefined){
+        getContactInfo().then((res) => {
+          window.sessionStorage['pab_cid'] = res.data.pab_cid;
+          window.sessionStorage['oab_cid'] = res.data.oab_cid;
+          //NProgress.done();
+        });
+      }
+      // console.log("父组件调用了'created'");
+    },
+    methods: {
+      jumpTo(path) {
         router.push(path);
       },
       handleSelect(key, keyPath) {
         var index = key;
-        if(index == "pab"){
+        if (index == "pab") {
           this.jumpTo('/contact/pab');
-        }else if(index == "oab"){
+        } else if (index == "oab") {
           this.jumpTo('/contact/oab');
-        }else if(index == "xpab"){
+        } else if (index == "xpab") {
           this.jumpTo('/contact/pab');
-        }else if(index == "zoab"){
+        } else if (index == "zoab") {
           this.jumpTo('/contact/pab');
         }
       },
-
-      changeContactTab(tab, event){
-        let index = tab.name;
-        console.log(index);
-        if(index == "pab"){
-          this.jumpTo('/contact/pab');
-        }else if(index == "oab"){
-          this.jumpTo('/contact/oab');
-        }else if(index == "xpab"){
-          this.jumpTo('/contact/pab');
-        }else if(index == "zoab"){
-          this.jumpTo('/contact/pab');
-        }
-      }
-
     },
 
     mounted() {
       if (this.$route.path.indexOf('/pab') >= 0) {
-        this.activeName = "pab";
         this.activeIndex = "pab";
       } else if (this.$route.path.indexOf('/oab') >= 0) {
-        this.activeName = "oab";
         this.activeIndex = "oab";
       }
     }
@@ -116,7 +104,8 @@
     display:inline-block;
   }
   .text_slice {
-    width: 100px;
+    max-width: 100px;
+    min-width: 100px;
     display: block;
     overflow: hidden;
     white-space: nowrap;

@@ -1,10 +1,10 @@
 <template>
         <div class="mltabview-content">
-            <div class="mltabview-panel">
+            <div v-if="collapseItems[0].lists.length>0" class="mltabview-panel">
                 <div class="m-mllist">
                     <div class="list-bg"></div>
                     <div class="m-mllist-row">
-                        <div class="toolbar">
+                        <div class="toolbar" style="background:#fff;">
                             <span class=" f-fr j-setting">
                                 <el-button  icon="el-icon-setting" circle></el-button></span>
                             <div id="pagination" class="f-fr">
@@ -137,7 +137,7 @@
                             <el-collapse-item v-for="t in collapseItems" :key="t.id" :title="t.title" :name="t.id">
                                 <ul class="list-wrap j-mail-list ">
                                     <li class="list-item j-mail display-summary"  v-for="(l,k) in t.lists" :key="l.uid" :class="{flagged:l.flagged,'label0-0':l.flagged,selected:l.checked,read:l.isread,unread:!l.isread}" >
-                                        <div @click="readmail(t.id,k,l.uid)" class="item-content mail-info">
+                                        <div @click="readmail(t.id,k,l.uid,l.subject)" class="item-content mail-info">
                                             <div class="info-desc">
                                                 <div class="info-desc-left">
                                                     <div class="desc-flag">
@@ -205,6 +205,9 @@
                     </div>
                 </div>
             </div>
+            <div v-if="collapseItems[0].lists.length==0" class="mltabview-panel">
+               <h3 style="margin:30px 0 0 20px;font-size:24px;font-weight:normal;"> "{{curr_floder}}" 没有邮件</h3>
+            </div>
         </div>   
 </template>
 <script>
@@ -219,6 +222,10 @@
         default:[
 
         ]
+      },
+      curr_floder:{
+        type:String,
+        default:''
       }
     },
     data() {
@@ -311,7 +318,6 @@
                   
               }
           }
-          console.log(this.collapseItems)
         }else{
           this.checkIndex='';
           for(var i=0;i<this.collapseItems.length;i++){
@@ -344,7 +350,6 @@
           }
       },
       changeSelect(pid,cid){
-          console.log(1111111)
           this.collapseItems[pid].lists[cid].checked = !this.collapseItems[pid].lists[cid].checked
           if(this.collapseItems[pid].lists[cid].checked){
               
@@ -355,9 +360,12 @@
       changeFlag(pid,cid){
           this.collapseItems[pid].lists[cid].flagged = !this.collapseItems[pid].lists[cid].flagged;
       },
-      readmail(pid,cid,mid){
+      readmail(pid,cid,mid,subject){
+        console.log(111111111111111)
           this.collapseItems[pid].lists[cid].isread = true;
-          this.jumpTo('read',mid)
+          console.log(mid,subject)
+          this.$emit('getRead', {'id':mid,'subject':subject,'activeTab':2});
+          // this.jumpTo('read',mid)
 
       },
 
@@ -372,6 +380,7 @@
                     }
                 }
             }
+
             return count;
         }
     },

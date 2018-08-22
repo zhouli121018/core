@@ -15,14 +15,14 @@ const userInfo = {
   locked:cookie.getCookie('locked')||''
 }
 const store = new Vuex.Store({
-    state: {
-      userInfo,
-      rememberUserInfo:cookie.getCookie('rememberName'),
-      lastUrl:'/'
-    },
-    actions,
-    mutations,
-    getters
+  state: {
+    userInfo,
+    rememberUserInfo:cookie.getCookie('rememberName'),
+    lastUrl:'/'
+  },
+  actions,
+  mutations,
+  getters
 })
 
 export default store;

@@ -102,7 +102,7 @@
         router.push(path)
       },
       goHome(){
-        this.jumpTo('/welcome');
+        this.jumpTo('/mailbox');
         this.activeTab = 0;
       },
       changeTab(index){
@@ -122,8 +122,8 @@
         }
       },
       logout(){
-        cookie.delCookie('token')
-        cookie.delCookie('name')
+        cookie.delCookie('token');
+        cookie.delCookie('name');
         this.$store.dispatch('setInfo');
         router.push('/login')
       },

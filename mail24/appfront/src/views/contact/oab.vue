@@ -83,7 +83,6 @@
 </template>
 
 <script>
-  import router from '@/router'
   import { contactOabDepartsGet, contactOabMembersGet } from '@/api/api'
   export default {
     data() {
@@ -107,14 +106,20 @@
         department_name: ""
       };
     },
-
+    created: function() {
+      this.oab_cid = window.sessionStorage['oab_cid'];
+      // console.log("子组件调用了'created'");
+    },
     mounted: function(){
+      this.$parent.activeIndex = "oab";
       this.getOABDepart();
+      this.getOABs();
     },
 
     methods: {
       oab_handleNodeClick(data) {
         this.oab_cid = data.id;
+        window.sessionStorage['oab_cid'] = data.id;
         this.getOABs();
       },
       Oab_handleSizeChange(val) {
@@ -129,9 +134,8 @@
       // 获取 部门列表
       getOABDepart(){
         contactOabDepartsGet().then(res=>{
-          this.oab_cid = res.data.oab_cid;
+          // this.oab_cid = res.data.oab_cid;
           this.oab_departs = res.data.results;
-          this.getOABs();
         });
       },
       //获取用户列表
