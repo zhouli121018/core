@@ -32,7 +32,7 @@
                                     <i class="el-icon-arrow-down el-icon--right"></i>
                                 </el-button>
                                 <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-for="item in checkItems" :key="item.id" class="dropdown_item" :class="{ active: checkIndex===item.id }" 
+                                    <el-dropdown-item v-for="item in checkItems" :key="item.id" class="dropdown_item" :class="{ active: checkIndex===item.id }"
                                     :divided="item.divided" :command="item.id">
                                     <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: checkIndex===item.id }"></i>
                                     </b> {{item.text}}
@@ -47,7 +47,7 @@
                                     <i class="el-icon-arrow-down el-icon--right"></i>
                                 </el-button>
                                 <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-for="item in orderItems" :key="item.id" class="dropdown_item" :class="{ active: orderCheckIndex===item.id }" 
+                                    <el-dropdown-item v-for="item in orderItems" :key="item.id" class="dropdown_item" :class="{ active: orderCheckIndex===item.id }"
                                     :divided="item.divided" :command="item.id">
                                     <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: orderCheckIndex===item.id }"></i> </b>
                                     {{ item.text}}</el-dropdown-item>
@@ -61,7 +61,7 @@
                                     <i class="el-icon-arrow-down el-icon--right"></i>
                                 </el-button>
                                 <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-for="item in viewItems" :key="item.id" class="dropdown_item" :class="{ active: viewCheckIndex===item.id }" 
+                                    <el-dropdown-item v-for="item in viewItems" :key="item.id" class="dropdown_item" :class="{ active: viewCheckIndex===item.id }"
                                     :divided="item.divided" :command="item.id">
                                     <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: viewCheckIndex===item.id }"></i> </b>
                                     {{ item.text}}</el-dropdown-item>
@@ -80,7 +80,7 @@
                                     <i class="el-icon-arrow-down el-icon--right"></i>
                                     </el-button>
                                     <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-for="item in moveItems" :key="item.id" class="dropdown_item" :class="{ active: moveCheckIndex===item.id }" 
+                                    <el-dropdown-item v-for="item in moveItems" :key="item.id" class="dropdown_item" :class="{ active: moveCheckIndex===item.id }"
                                     :divided="item.divided" :command="item.id">
                                         <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moveCheckIndex===item.id }"></i> </b>
                                         {{ item.text}}</el-dropdown-item>
@@ -92,7 +92,7 @@
                                         <span>标记为</span>
                                         <i class="el-icon-arrow-down el-icon--right"></i>
                                     </el-button>
-                                
+
                                 </div>
 
                                 <el-dropdown @command="moreHandleCommand">
@@ -101,7 +101,7 @@
                                     <i class="el-icon-arrow-down el-icon--right"></i>
                                     </el-button>
                                     <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-for="item in moreItems" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }" 
+                                    <el-dropdown-item v-for="item in moreItems" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }"
                                     :divided="item.divided" :command="item.id">
                                         <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moreCheckIndex===item.id }"></i> </b>
                                         {{ item.text}}</el-dropdown-item>
@@ -206,9 +206,9 @@
                 </div>
             </div>
             <div v-if="collapseItems[0].lists.length==0" class="mltabview-panel">
-               <h3 style="margin:30px 0 0 20px;font-size:24px;font-weight:normal;"> "{{curr_floder}}" 没有邮件</h3>
+               <h3 style="margin:30px 0 0 20px;font-size:24px;font-weight:normal;"> "{{curr_folder}}" 没有邮件</h3>
             </div>
-        </div>   
+        </div>
 </template>
 <script>
   import {getMailMessage} from "@/api/api";
@@ -223,7 +223,7 @@
 
         ]
       },
-      curr_floder:{
+      curr_folder:{
         type:String,
         default:''
       }
@@ -315,7 +315,7 @@
           for(var i=0;i<this.collapseItems.length;i++){
               for(var k=0;k<this.collapseItems[i].lists.length;k++){
                   this.collapseItems[i].lists[k].checked = true;
-                  
+
               }
           }
         }else{
@@ -352,16 +352,15 @@
       changeSelect(pid,cid){
           this.collapseItems[pid].lists[cid].checked = !this.collapseItems[pid].lists[cid].checked
           if(this.collapseItems[pid].lists[cid].checked){
-              
+
           }else{
-              
+
           }
       },
       changeFlag(pid,cid){
           this.collapseItems[pid].lists[cid].flagged = !this.collapseItems[pid].lists[cid].flagged;
       },
       readmail(pid,cid,mid,subject){
-        console.log(111111111111111)
           this.collapseItems[pid].lists[cid].isread = true;
           console.log(mid,subject)
           this.$emit('getRead', {'id':mid,'subject':subject,'activeTab':2});

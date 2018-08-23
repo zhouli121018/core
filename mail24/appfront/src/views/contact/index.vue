@@ -5,8 +5,8 @@
              active-text-color="#ffd04b" >
       <el-menu-item index="pab">个人通讯录</el-menu-item>
       <el-menu-item index="oab">组织通讯录</el-menu-item>
-      <el-menu-item index="xpab">公共通讯录</el-menu-item>
-      <el-menu-item index="zoab">其它域通讯录</el-menu-item>
+      <el-menu-item index="cab">公共通讯录</el-menu-item>
+      <el-menu-item index="soab">其它域通讯录</el-menu-item>
     </el-menu>
 
     <router-view></router-view>
@@ -43,10 +43,10 @@
           this.jumpTo('/contact/pab');
         } else if (index == "oab") {
           this.jumpTo('/contact/oab');
-        } else if (index == "xpab") {
-          this.jumpTo('/contact/pab');
-        } else if (index == "zoab") {
-          this.jumpTo('/contact/pab');
+        } else if (index == "cab") {
+          this.jumpTo('/contact/cab');
+        } else if (index == "soab") {
+          this.jumpTo('/contact/soab');
         }
       },
     },
@@ -56,6 +56,10 @@
         this.activeIndex = "pab";
       } else if (this.$route.path.indexOf('/oab') >= 0) {
         this.activeIndex = "oab";
+      } else if (this.$route.path.indexOf('/cab') >= 0) {
+        this.activeIndex = "cab";
+      } else if (this.$route.path.indexOf('/soab') >= 0) {
+        this.activeIndex = "soab";
       }
     }
 
@@ -63,9 +67,9 @@
 </script>
 
 <style>
-  .mltabview-content{
-    top:0!important;
-  }
+  /*.mltabview-content{*/
+    /*top:0!important;*/
+  /*}*/
   .wrapper.u-scroll.top0{
     top:0
   }
@@ -121,9 +125,9 @@
     float: left;
     padding-left: 13px;
   }
-  .mltabview-content{
-    top:0!important;
-  }
+  /*.mltabview-content{*/
+    /*top:0!important;*/
+  /*}*/
   .wrapper.u-scroll.top0{
     top:0
   }

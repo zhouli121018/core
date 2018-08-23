@@ -32,7 +32,7 @@ export const contactOabMembersGet = params => { return axios.get(`${host}/contac
 export const getMailMessage = params => { return axios.get(`${host}/mail/message/`, { params: params }) }
 
 //获取文件夹列表
-export const getFloder = params => { return axios.get(`${host}/mail/floder/`, { params: params }) };
+export const getFloder = params => { return axios.get(`${host}/mail/folder/`, { params: params }) };
 
 //读邮件
 export const readMail = params => { return axios.get(`${host}/mail/message/${params}/`) };

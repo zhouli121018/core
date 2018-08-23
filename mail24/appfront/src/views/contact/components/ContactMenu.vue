@@ -2,7 +2,7 @@
       <aside class="mlsidebar">
         <div class="mlsidebar-bg"></div>
          <div class="wrapper u-scroll top0">
-            <span slot="label">&nbsp;&nbsp;组织通讯录</span>
+            <span slot="label">&nbsp;&nbsp;组织通讯录11</span>
 
             <el-tree
               class="filter-tree"

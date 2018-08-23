@@ -72,6 +72,7 @@
               <el-button type="success" @click="Oab_send_to_group" size="mini"> 发邮件给组 </el-button>
               <el-button type="primary" @click="Oab_import_to_group" size="mini">导入</el-button>
               <el-button type="success" @click="Oab_export_group" size="mini">导出</el-button>
+              <a :href="blobUrl" download="" style="display:none;" ref="download"></a>
 
             </el-col>
             <el-col :span="12" >
@@ -355,16 +356,69 @@
       </div>
     </el-dialog>
 
+    <!--上传文件 界面-->
+    <el-dialog title="导入联系人"  :visible.sync="importPabFormVisible" :close-on-click-modal="false" :append-to-body="true">
+      <el-form :model="importPabForm" label-width="130px" :rules="importPabFormRules" ref="importPabForm" enctype="multipart/form-data">
+
+        <el-form-item label="上传文件" prop="file"><el-input v-model="importPabForm.file" auto-complete="off" type="file"></el-input></el-form-item>
+
+        <!--<el-form-item label="上传文件" prop="file">-->
+          <!--<el-upload-->
+            <!--class="upload-demo"-->
+            <!--v-model="importPabForm.file"-->
+            <!--action="mixinUploadUrl"-->
+            <!--:before-upload="onBeforeUpload"-->
+            <!--accept=".xls,.xlsx,.csv,.XLS,.XLSX,.CSV"-->
+            <!--:multiple='false'-->
+            <!--:file-list="fileList"-->
+            <!--:auto-upload="false">-->
+            <!--<el-button slot="trigger" size="mini" type="primary">选取文件</el-button>-->
+            <!--&lt;!&ndash;<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>&ndash;&gt;-->
+            <!--<div slot="tip" class="el-upload__tip">只能上传xls、xlsx、csv格式文件，且不超过10M;</div>-->
+          <!--</el-upload>-->
+        <!--</el-form-item>-->
+
+        <el-form-item label="把联系人导入到" prop="group_id" style="margin-top: 20px;">
+          <el-select v-model="importPabForm.group_id" placeholder="请选择" style="width: 100%">
+            <el-option v-for="item in pab_contact_groups" :key="item.id" :label="item.label" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="重复地址处理方式" prop="import_mode">
+          <el-select v-model="importPabForm.import_mode" placeholder="请选择" style="width: 100%">
+            <el-option v-for="item in import_mode_groups" :key="item.id" :label="item.label" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click.native="importPabFormVisible = false">取消</el-button>
+        <el-button type="primary" @click.native="importPabSubmit()" :loading="importPabLoading">提交</el-button>
+      </div>
+    </el-dialog>
+
   </section>
 
 </template>
 
 <script>
-  import cookie from '@/assets/js/cookie';
-  import { MessageBox } from 'element-ui';
-  import { contactPabGroupsGet, contactPabGroupsCreate, contactPabGroupsDelete, contactPabGroupsUpdate,
-    contactPabMembersGet, contactPabMembersNoGet, contactPabMembersNoDelete, contactPabMembersNoCreate, contactPabMembersNoUpdate,
-    contactPabMembersNoBatchDelete, contactPabMembersNoDistribute, contactPabMembersNoExport } from '@/api/api'
+  import {MessageBox} from 'element-ui';
+  import {
+    contactPabGroupsCreate,
+    contactPabGroupsDelete,
+    contactPabGroupsGet,
+    contactPabGroupsUpdate,
+    contactPabMapsGet,
+    contactPabMembersBatchDelete,
+    contactPabMembersCreate,
+    contactPabMembersDelete,
+    contactPabMembersDistribute,
+    contactPabMembersExport,
+    contactPabMembersGet,
+    contactPabMembersUpdate,
+    contactPabMembersImport
+  } from '@/api/api'
+
   export default {
     data() {
       var isEmail = function(rule,value,callback){
@@ -375,9 +429,15 @@
         }
       };
       return {
+        blobUrl:'',
         pab_contact_groups: [],
+        import_mode_groups: [
+          {'id': 'ignore', label: '忽略'},
+          {'id': 'override', label: '覆盖'},
+        ],
         distribute_groups_value: '',
         pab_iscan_distribute: false,
+        fileList: [],
 
         pab_cid: 0,
         pab_cname: '',
@@ -502,17 +562,39 @@
         distributePabForm: {
           group_id: '',
         },
-      };
-    },
 
-    mounted: function(){
-      this.$parent.activeIndex = "pab";
-      this.getPABs();
+        /************************
+         ************************
+         pab 地址导入
+         ************************
+         ************************/
+        // pob 编辑
+        importPabFormVisible: false,//编辑界面是否显示
+        importPabLoading: false,
+        importPabFormRules: {
+          file: [
+            { required: true, message: '请选择文件', trigger: 'blur' },
+          ]
+        },
+        //编辑界面数据
+        importPabForm: {
+          file: '',
+          group_id: '',
+          import_mode: 'ignore',
+        },
+
+
+      };
     },
     created: function() {
       this.pab_cid = window.sessionStorage['pab_cid'];
       // console.log("子组件调用了'created'");
     },
+    mounted: function(){
+      this.$parent.activeIndex = "pab";
+      this.getPABs();
+    },
+
     methods: {
       getPABs(){
         this.getPABGroups();
@@ -536,7 +618,7 @@
         };
         this.listLoading = true;
         if (this.pab_cid >0){
-          contactPabMembersGet(param).then((res) => {
+          contactPabMapsGet(param).then((res) => {
             this.total = res.data.count;
             this.oab_tables = res.data.results;
             this.pab_cname = res.data.pab_cname;
@@ -545,7 +627,7 @@
             //NProgress.done();
           });
         } else {
-          contactPabMembersNoGet(param).then((res) => {
+          contactPabMembersGet(param).then((res) => {
             this.total = res.data.count;
             this.oab_tables = res.data.results;
             this.pab_cname = res.data.pab_cname;
@@ -589,11 +671,13 @@
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
               this.distributePabLoading = true;
               let para = Object.assign({ids: ids}, this.distributePabForm);
-              contactPabMembersNoDistribute(para).then((res) => {
+              this.listLoading = true;
+              contactPabMembersDistribute(para).then((res) => {
                 this.$refs['distributePabForm'].resetFields();
                 this.distributePabLoading = false;
                 this.$message({message: '提交成功', type: 'success'});
                 this.distributePabFormVisible = false;
+                this.listLoading = false;
                 this.getPABs();
               }, (data)=>{
                 this.distributePabLoading = false;
@@ -637,7 +721,7 @@
           this.listLoading = true;
           //NProgress.start();
           let para = {ids: ids};
-          contactPabMembersNoBatchDelete(para).then((res) => {
+          contactPabMembersBatchDelete(para).then((res) => {
             this.listLoading = false;
             //NProgress.done();
             that.$message({ message: '批量删除成功', type: 'success'});
@@ -652,36 +736,84 @@
       },
       // 发邮件给联系组
       Oab_send_to_group: function(){},
-      // 导入联系人
-      Oab_import_to_group: function(){},
+      // 导入联系人 编辑
+      Oab_import_to_group: function(){
+        this.fileList = [];
+        this.importPabFormVisible = true;
+        this.importPabForm = Object.assign({},{ file: '', group_id: '',  import_mode: 'ignore',});
+      },
+      // 导入联系人 提交
+      importPabSubmit: function(){
+        let that = this;
+        this.$refs. importPabForm.validate((valid) => {
+          if (valid) {
+            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+              // this.listLoading = true;
+              this.importPabLoading = true;
+              let para = Object.assign({}, this.importPabForm);
+              para.group_id = (!para.group_id || para.group_id == '') ? 0 : para.group_id;
+              // para.file = this.$refs.importPabForm.file.uploadFiles;
+              console.log(para);
+              contactPabMembersImport(para.group_id, para).then((res) => {
+                this.$refs['importPabForm'].resetFields();
+                this.importPabLoading = false;
+                // this.listLoading = false;
+                that.$message({message: '导入成功', type: 'success'});
+                this.getPABs();
+              }).catch(function (error) {
+                that.importPabLoading = false;
+                that.$message({ message: '导入失败，请重试',  type: 'error' });
+                console.log(error);
+              });
+            });
+          }
+        });
+      },
+      onBeforeUpload: function(file) {
+        // const isIMAGE = file.type === 'image/jpeg'||'image/gif'||'image/png';
+        const isLt5M = file.size / 1024 / 1024 < 1;
+        let filename =file.name;
+        console.log(filename);
+
+        // if (!isIMAGE) {
+        //   this.$message.error('上传文件只能是图片格式!');
+        // }
+        if (!isLt5M) {
+          this.$message.error('上传文件大小不能超过 1MB!');
+        }
+        return isIMAGE && isLt1M;
+      },
+      //点击下载
+      download(){
+        this.$refs.download.click();
+      },
       // 导出联系人
       Oab_export_group: function(){
         let that = this;
         this.$confirm('确认导出该联系人组吗?', '提示', {
           type: 'warning'
         }).then(() => {
-          contactPabMembersNoExport(this.pab_cid).then((response)=> {
-            return response;
-            // console.log(response);
-            //创建一个blob对象,file的一种
-            console.log(4444444444343432)
-            console.log(response)
-            return;
+          this.listLoading = true;
+          contactPabMembersExport(this.pab_cid).then((response)=> {
+            // let blob = new Blob([response.data], { type: 'application/vnd.ms-excel;charset=UTF-8' })
+            this.listLoading = false;
             let blob = new Blob([response.data], { type: response.headers["content-type"] })
-            let link = document.createElement('a')
-            link.href = window.URL.createObjectURL(blob)
-            //配置下载的文件名
-            link.download = 'aaa.xls'
-            link.click()
+            let objUrl = URL.createObjectURL(blob);
+            this.blobUrl = objUrl;
+            let filenameHeader = response.headers['content-disposition']
+            let filename = filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1);
+            if (window.navigator.msSaveOrOpenBlob) {
+              // if browser is IE
+              navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
+            } else {
+              // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
+              var link = document.createElement("a");
+              link.setAttribute("href", objUrl);
+              link.setAttribute("download", filename);
 
-
-            //创建一个blob对象,file的一种
-            // let blob = new Blob([response.data], { type: 'application/x-xls' })
-            // let link = document.createElement('a')
-            // link.href = window.URL.createObjectURL(blob)
-            // //配置下载的文件名
-            // link.download = fileNames[scheduleType] + '_' + response.headers.datestr + '.xls'
-            // link.click()
+              document.body.appendChild(link);
+              link.click();
+            }
             that.$message({ message: '导出成功', type: 'success' });
             // this.getPABs();
           }).catch(function (error) {
@@ -802,7 +934,7 @@
         this.$confirm('确认删除该联系人吗?', '提示', {
           type: 'warning'
         }).then(() => {
-          contactPabMembersNoDelete(row.contact_id).then((response)=> {
+          contactPabMembersDelete(row.contact_id).then((response)=> {
             that.$message({ message: '删除成功', type: 'success' });
             this.getPABs();
           }).catch(function (error) {
@@ -825,7 +957,7 @@
               this.editPabMerberLoading = true;
               let para = Object.assign({}, this.editPabMerberForm);
               para.birthday = (!para.birthday || para.birthday == '') ? null : para.birthday;
-              contactPabMembersNoUpdate(para.contact_id, para).then((res) => {
+              contactPabMembersUpdate(para.contact_id, para).then((res) => {
                 this.editPabMerberLoading = false;
                 this.$message({message: '提交成功', type: 'success'});
                 this.$refs['editPabMerberForm'].resetFields();
@@ -864,7 +996,7 @@
               this.addPabMerberLoading = true;
               let para = Object.assign({}, this.addPabMerberForm);
               para.birthday = (!para.birthday || para.birthday == '') ? null : para.birthday;
-              contactPabMembersNoCreate(para).then((res) => {
+              contactPabMembersCreate(para).then((res) => {
                 this.addPabMerberLoading = false;
                 this.$message({message: '提交成功', type: 'success'});
                 this.$refs['addPabMerberForm'].resetFields();
@@ -895,5 +1027,8 @@
 <style scoped>
   .el-button{
     margin-left: 0px;
+  }
+  .disabled .el-upload--picture-card {
+    display: none;
   }
 </style>

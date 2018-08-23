@@ -2,18 +2,18 @@
     <div>
         <section class="m-mail">
             <MailAside @getData="getData"></MailAside>
-            <article class="mlmain mltabview">
+            <article class="mlmain mltabview" :class="{position_top0:!tabList.length}">
                     <div class="u-tab u-tab-seamless u-tab-highlight j-mltab" v-if="tabList.length">
                               <ul class="mltabview-nav">
-                                <li class="mltabview-trigger" :class="{'z-current':activeTab==0}" :title="tab1.text"><span class="bar"></span><div class="trigger-wrap"><a href="#" trigger-title="" class="" :title="tab1.text" @click="changeTab1(tab1.url)">{{tab1.text}}</a></div></li>
-                                <li v-for="(v,k) in tabList" :class="{'z-current':activeTab==k+1}"><span class="bar"></span><div class="trigger-wrap"><a href="#" @click="changeTabs(v.id,k)" :title="v.text">{{v.text}}</a><span class="iconfont icon-icontabclose30x30 close" @click.stop="delTabs(k)"></span></div></li>
+                                <li class="mltabview-trigger" :class="{'z-current':activeTab==0}" @click="changeTab1" :title="tab1.text"><span class="bar"></span><div class="trigger-wrap"><a href="#" trigger-title="" class="" :title="tab1.text" >{{tab1.text}}</a></div></li>
+                                <li v-for="(v,k) in tabList" :class="{'z-current':activeTab==v.id}"><span class="bar"></span><div class="trigger-wrap"><a href="#" @click="changeTabs(v.id,k)" :title="v.text">{{v.text}}</a><span class="iconfont icon-icontabclose30x30 close" @click.stop="delTabs(k,v.id)"></span></div></li>
 
                               </ul>
-                              <div class="iconfont icon-iconcloseall closeall"></div>
+                              <div class="iconfont icon-iconcloseall closeall" @click="closeAllTab"></div>
                         </div>
                     <Home v-if="showTabIndex==0"></Home>
-                    <Innerbox v-if="showTabIndex==1" :collapseItems="collapseItems" :curr_floder="curr_floder"></Innerbox>
-                    <Read v-if="showTabIndex==2" @getRead="getRead"></Read>
+                    <Innerbox v-if="showTabIndex==1" :collapseItems="collapseItems" :curr_folder="curr_folder" @getRead="getRead"></Innerbox>
+                    <Read v-if="showTabIndex==2" ></Read>
             </article>
         </section>
 
@@ -34,12 +34,12 @@ export default {
         return{
             showTabIndex:0,
             activeTab:0,
-            curr_floder:'收件箱',
+            curr_folder:'收件箱',
             tab1:{id:0,url:'home',text:'收件箱'},
             tabList:[
-              {id:14724,text:'邮件主题1'},
-              {id:14722,text:'邮件主题2'}
+
             ],
+          titleHash:[],
           collapseItems:[
             {
                   id:0,
@@ -61,19 +61,28 @@ export default {
       jumpTo(path){
           router.push(path);
       },
-      changeTab1(url){
+      changeTab1(){
         this.activeTab = 0;
-        this.jumpTo('/mailbox/'+url);
+        this.showTabIndex = 1;
+        this.jumpTo('/mailbox/');
       },
       changeTabs(vid,key){
-        this.jumpTo('/read/');
-        this.activeTab = key+1;
+        this.jumpTo('/mailbox');
+        this.showTabIndex = 2;
+
+        this.activeTab = vid;
       },
-      delTabs(id){
+      delTabs(id,vid){
           this.tabList.splice(id,1);
-          if(this.activeTab == id+1){
-            this.changeTab1(this.tab1.url);
+          this.titleHash[vid] = false;
+          if(this.activeTab == vid){
+            this.changeTab1();
           }
+      },
+      closeAllTab(){
+        this.tabList = [];
+        this.titleHash = [];
+        this.changeTab1();
       },
       getMessageList(param){
         getMailMessage(param).then((res)=>{
@@ -90,12 +99,20 @@ export default {
         })
       },
       getData(obj){
-        this.curr_floder = obj.curr_floder;
+        this.curr_folder = obj.curr_folder;
         this.showTabIndex = obj.activeTab;
         this.getMessageList({folder:obj.id});
       },
       getRead(obj){
-        console.log(obj)
+
+        console.log(obj);
+        if(this.titleHash[obj.id]){
+
+        }else{
+          this.titleHash[obj.id]=true;
+          this.tabList.push({id:obj.id,text:obj.subject})
+        }
+        this.activeTab = obj.id;
         this.showTabIndex = obj.activeTab;
       }
 
@@ -109,7 +126,11 @@ export default {
 </script>
 
 <style>
-/*.mltabview-content{*/
-    /*top:0!important;*/
-/*}*/
+.position_top0 .mltabview-content{
+    top:0!important;
+}
+  .icon-icontabclose30x30.close{
+    font-size:20px;
+    padding-left:4px;
+  }
 </style>

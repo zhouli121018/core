@@ -22,43 +22,49 @@
     <article class="mlmain mltabview overflow_auto">
       <div  class="j-module-content j-maillist mllist-list height100 ">
 
-        <el-col :span="24" class="breadcrumb-container">
-          <el-breadcrumb separator="/">
-            <el-breadcrumb-item :to="{ path: '/mailbox/home' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item><a href="#">组织通讯录</a></el-breadcrumb-item>
-            <el-breadcrumb-item>当前部门：&nbsp;{{department_name}}</el-breadcrumb-item>
-          </el-breadcrumb>
-        </el-col>
+        <el-row>
+          <el-col :span="24" class="breadcrumb-container">
+            <el-breadcrumb separator="/">
+              <el-breadcrumb-item :to="{ path: '/mailbox/home' }">首页</el-breadcrumb-item>
+              <el-breadcrumb-item><a href="#">组织通讯录</a></el-breadcrumb-item>
+              <el-breadcrumb-item>当前部门：&nbsp;{{department_name}}</el-breadcrumb-item>
+            </el-breadcrumb>
+          </el-col>
+        </el-row>
 
         <!--工具条-->
-        <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-          <el-form :inline="true" :model="filters">
-            <el-form-item>
-              <el-input v-model="filters.search" placeholder="邮箱或姓名" size="small"></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" v-on:click="getOABs" size="small">查询</el-button>
-            </el-form-item>
-          </el-form>
-        </el-col>
+        <el-row>
+          <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+            <el-form :inline="true" :model="filters">
+              <el-form-item>
+                <el-input v-model="filters.search" placeholder="邮箱或姓名" size="small"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" v-on:click="getOABs" size="small">查询</el-button>
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-row>
 
         <!-- 普通列表 -->
         <section class="content content-list height100" >
 
-          <el-col :span="12" class="toolbar">
-            <el-button type="primary" @click="Oab_send_to_select" :disabled="this.sels.length===0" size="small"> 发信给选择的人员</el-button>
-            <el-button type="success" @click="Oab_send_to_department" :disabled="this.sels.length===0" size="small">发邮件给本机构人员</el-button>
-            <el-button type="info" @click="Oab_to_pab" :disabled="this.sels.length===0" size="small"> 添加至个人通讯录</el-button>
-          </el-col>
-          <el-col :span="12" class="toolbar">
-            <el-pagination layout="total, sizes, prev, pager, next, jumper"
-                           @size-change="Oab_handleSizeChange"
-                           @current-change="Oab_handleCurrentChange"
-                           :page-sizes="[15, 30, 50, 100]"
-                           :page-size="page_size"
-                           :total="total" style="float: right">
-            </el-pagination>
-          </el-col>
+          <el-row>
+            <el-col :span="12" class="toolbar">
+              <el-button type="primary" @click="Oab_send_to_select" :disabled="this.sels.length===0" size="mini"> 发信给选择的人员</el-button>
+              <el-button type="success" @click="Oab_send_to_department" :disabled="this.sels.length===0" size="mini">发邮件给本机构人员</el-button>
+              <el-button type="info" @click="Oab_to_pab" :disabled="this.sels.length===0" size="mini"> 添加至个人通讯录</el-button>
+            </el-col>
+            <el-col :span="12" class="toolbar">
+              <el-pagination layout="total, sizes, prev, pager, next, jumper"
+                             @size-change="Oab_handleSizeChange"
+                             @current-change="Oab_handleCurrentChange"
+                             :page-sizes="[15, 30, 50, 100]"
+                             :page-size="page_size"
+                             :total="total" style="float: right">
+              </el-pagination>
+            </el-col>
+          </el-row>
 
           <!--列表-->
           <el-table :data="oab_tables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>
@@ -83,7 +89,7 @@
 </template>
 
 <script>
-  import { contactOabDepartsGet, contactOabMembersGet } from '@/api/api'
+  import { contactOabDepartsGet, contactOabMembersGet, contactPabMembersOabAdd } from '@/api/api'
   export default {
     data() {
       return {
@@ -138,7 +144,7 @@
           this.oab_departs = res.data.results;
         });
       },
-      //获取用户列表
+      // 获取部门成员
       getOABs() {
         var param = {
           "page": this.page,
@@ -202,28 +208,29 @@
         });
       },
       Oab_to_pab: function () {
+        let that = this;
         var ids = this.sels.map(item => item.id).toString();
         this.$confirm('确定将选中成员添加到个人通讯录中？', '提示', {
           type: 'warning'
         }).then(() => {
             this.listLoading = true;
-            //NProgress.start();
             let para = {ids: ids};
-            // batchRemoveUser(para).then((res) => {
-            //   this.listLoading = false;
-            //   //NProgress.done();
-            //   this.$message({
-            //     message: '删除成功',
-            //     type: 'success'
-            //   });
-            //   this.getOABs();
-            // });
+            contactPabMembersOabAdd(para).then((res) => {
+              this.listLoading = false;
+              //NProgress.done();
+              that.$message({ message: '已成功添加联系人到个人通讯录', type: 'success' });
+            });
           }
         ).catch(() => {
+           that.$message({ message: '操作失败，请重试',  type: 'error' });
         });
       }
     }
   }
 </script>
 
-<style></style>
+<style scoped>
+  .el-button{
+    margin-left: 0px;
+  }
+</style>

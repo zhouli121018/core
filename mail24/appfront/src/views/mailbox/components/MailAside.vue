@@ -8,7 +8,7 @@
 
                 <div class="wrapper u-scroll">
                     <el-tree
-                      :data="floderList"
+                      :data="folderList"
                       node-key="id"
                       default-expand-all
                       :expand-on-click-node="false" @node-click="handleNodeClick">
@@ -63,7 +63,7 @@
     name:'MailAside',
     data(){
       return{
-        floderList: [
+        folderList: [
             {
               id: 1,
               url:'innerbox',
@@ -118,7 +118,7 @@
             }
           }
         }
-        digui(this.floderList);
+        digui(this.folderList);
         return result;
       }
     }
@@ -164,7 +164,7 @@
       },
       handleNodeClick(data) {
         console.log(data);
-        this.$emit('getData', {id:data.id,'curr_floder':data.label,activeTab:1});
+        this.$emit('getData', {id:data.id,'curr_folder':data.label,activeTab:1});
         this.$router.push('/mailbox')
       }
 
@@ -182,7 +182,7 @@
           obj['unseen'] = folder[i]['unseen_count'];
           arr.push(obj);
         }
-        this.floderList = arr
+        this.folderList = arr
       },(err)=>{
         console.log(err)
       });

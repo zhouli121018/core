@@ -58,7 +58,9 @@ export const rou = [
         children:[
           {path:'/',redirect:'pab'},
           {path:'pab',component:_import('contact/pab')},
-          {path:'oab',component:_import('contact/oab')}
+          {path:'oab',component:_import('contact/oab')},
+          {path:'cab',component:_import('contact/cab')},
+          {path:'soab',component:_import('contact/pab')},
         ]
       }]
   },
