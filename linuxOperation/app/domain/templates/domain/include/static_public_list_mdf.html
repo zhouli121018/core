@@ -1,0 +1,128 @@
+{% load i18n %}
+{% load static %}
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">添加客户</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal form_public_add">
+                {% csrf_token %}
+                <div class="form-group form_public_add">
+                    <label class="col-sm-4 control-label">姓名：</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="fullname" value="{{ form.fullname.value }}" class="form-control">
+                        {% if form.fullname.error %}
+                            <div style="clear: both"><p class="errornote txt-color-red" style="margin-left: 25px;">{{ form.fullname.error }}</p></div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">邮箱：</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="pref_email" value="{{ form.pref_email.value }}" class="form-control">
+                        {% if form.pref_email.error %}
+                            <div style="clear: both"><p class="errornote txt-color-red" style="margin-left: 25px;">{{ form.pref_email.error }}</p></div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">所属分类：</label>
+                    <div class="col-sm-6">
+                        <select name="cate_id" class="form-control">
+                            {% for c in form.get_cate_list %}
+                                <option value="{{ c.id }}"> {{ c.name }} </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">手机/电话：</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="pref_tel" value="{{ form.pref_tel.value }}" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">生日：</label>
+                    <div class="col-sm-6">
+                        <input name="birthday" class="form-control date-picker" value="{{ form.birthday.value | date:'Y-m-d' }}" type="text" data-date-format="yyyy-mm-dd">
+                        {% if form.birthday.error %}
+                            <div style="clear: both"><p class="errornote txt-color-red" style="margin-left: 25px;">{{ form.birthday.error }}</p></div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">性别：</label>
+                    <div class="col-sm-8">
+                        <label class="inline" >
+                            <input name="gender" value="M" {% if form.gender.value == "M" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5 open">
+                            <span class="lbl gender"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">工作电话：</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="work_tel" value="{{ form.work_tel.value }}" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">住宅电话：</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="home_tel" value="{{ form.home_tel.value }}" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">QQ：</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="im_qq" value="{{ form.im_qq.value }}" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">MSN：</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="im_msn" value="{{ form.im_msn.value }}" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">备注：</label>
+                    <div class="col-sm-6">
+                        <textarea name="remark" rows="5" class="form-control"> {{ form.remark.value }} </textarea>
+                    </div>
+                </div>
+                <div class="modal-footer center">
+                    {% if form.instance %}
+                        <input type="hidden" id="id" name="id" value="{{ id }}" />
+                        <button type="button" class="btn btn-sm btn-info" onclick="clickDomainPublicSave('mdf','form_public_add')">保存</button>
+                    {% else %}
+                        <button type="button" class="btn btn-sm btn-info" onclick="clickDomainPublicSave('add','form_public_add')">保存</button>
+                    {% endif %}
+                    <button type="button" class="btn btn-sm btn-danger" onclick="backDomainPublic()" >返回</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+//        $(".sign_show a").trigger("click");
+        $(".mydatetime").datetimepicker({
+            format: 'YYYY-MM-DD HH:mm:ss'
+//        autoclose:true
+        });
+        $('#mycolor').ace_colorpicker().on('change', function() {
+//        alert(this.value);
+//        alert(this.selectedIndex);
+        });
+        $('.date-picker').datepicker({
+                    autoclose: true,
+                    todayHighlight: true
+                })
+                //show datepicker when clicking on the icon
+                .next().on(ace.click_event, function(){
+            $(this).prev().focus();
+        });
+
+    })
+</script>

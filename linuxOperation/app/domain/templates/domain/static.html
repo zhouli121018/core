@@ -1,0 +1,173 @@
+{% extends 'base_list.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block css_block %}
+
+<style>
+    #search_form th{
+        border-top:none;
+    }
+    #search_form th input,#search_form th select{
+        width:95%;
+    }
+    #search_form .text-right{
+        white-space: nowrap;
+    }
+    .sorting_asc:after{
+        content:"" !important;
+    }
+    .sorting_desc:after{
+        content:"" !important;
+    }
+</style>
+
+
+{% endblock %}
+
+{% block page-content %}
+
+<div id="static-div" class="tabs2">
+    <h3 class="header smaller lighter blue">{% trans "域名配置" %}
+    </h3>
+    <div class="box" >
+        <div id="tab2">
+            <ul>
+                <li>
+                    <a href="#domain_basic">{% trans "邮件域基本信息" %}</a>
+                </li>
+                <li>
+                    <a href="#domain_reg_login" >{% trans "用户注册" %}</a>
+                </li>
+                <li>
+                    <a href="#domain_sys">{% trans "域名功能设置" %}</a>
+                </li>
+                <li class="sign_show" >
+                    <a href="#domain_webmail">{% trans "Webmail 页面定制" %}</a>
+                </li >
+                <li>
+                    <a href="#domain_sign">{% trans "签名" %}</a>
+                </li>
+                <li>
+                    <a href="#domain_module">{% trans "前台模块管理" %}</a>
+                </li>
+                <li>
+                    <a href="#domain_public">{% trans "公共通讯录" %}</a>
+                </li>
+                <li>
+                    <a href="#domain_secret">{% trans "密级管理" %}</a>
+                </li>
+            </ul>
+                <div id="domain_basic">
+                    {% include 'domain/include/static_basic.html' %};
+                </div>
+                <div id="domain_reg_login"></div>
+                <div id="domain_sys"></div>
+                <div id="domain_webmail"></div>
+                <div id="domain_sign"></div>
+                <div id="domain_module"></div>
+                <div id="domain_public"></div>
+                <div id="domain_secret"></div>
+
+        </div>
+    </div>
+
+
+    <!--<div class="hr hr-18 dotted hr-double"></div>-->
+</div>
+
+{% endblock %}
+{% block my_jsblock %}
+{% include 'domain/include/static_common.html' %}
+<script>
+    function onchangeDomainOptions(value){
+        var base_url = "{% url 'domain_basic' %}" + "?domain="+ value;
+        window.location.href = base_url;
+    }
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        function sameOrigin(url) {
+            // test that a given url is a same-origin URL
+            // url could be relative or scheme relative or absolute
+            var host = document.location.host; // host + port
+            var protocol = document.location.protocol;
+            var sr_origin = '//' + host;
+            var origin = protocol + sr_origin;
+            // Allow absolute or scheme relative URLs to same origin
+            return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+                (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+                // or any other URL that isn't scheme relative or absolute i.e relative.
+                !(/^(\/\/|http:|https:).*/.test(url));
+        }
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                     var cookie = jQuery.trim(cookies[i]);
+                     // Does this cookie string begin with the name we want?
+                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                         break;
+                     }
+                 }
+            }
+            return cookieValue;
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+                    // Send the token to same-origin, relative URLs only.
+                    // Send the token only if the method warrants CSRF protection
+                    // Using the CSRFToken value acquired earlier
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        csrftoken = getCookie('csrftoken');
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+    $('#tab2>ul>li>a').click(function(){
+        var href = $(this).attr('href');
+        //console.log(href);
+        //console.log($(href))
+        if(href == "#domain_basic"){
+            url = "{% url 'domain_basic' %}";
+        }else if(href == "#domain_reg_login"){
+            url = "{% url 'domain_reg_login' %}";
+        }else if(href == "#domain_sys"){
+            url = "{% url 'domain_sys' %}";
+        }else if(href == "#domain_webmail"){
+            url = "{% url 'domain_webmail' %}";
+        }else if(href == "#domain_sign"){
+            url = "{% url 'domain_sign' %}";
+        }else if(href == "#domain_module"){
+            url = "{% url 'domain_module' %}";
+        }else if(href == "#domain_public"){
+            url = "{% url 'domain_public' %}";
+        }else if(href == "#domain_secret"){
+            url = "{% url 'domain_secret' %}";
+        }else if(href == "#domain_public"){
+            url = "{% url 'domain_public' %}";
+        }
+
+        $.ajax(
+        {
+            url: url,
+            success: function(html){
+                $(href).html(html);
+            }
+        }
+        );
+    })
+</script>
+{% endblock %}

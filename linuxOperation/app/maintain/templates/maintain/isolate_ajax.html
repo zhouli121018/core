@@ -1,0 +1,14 @@
+<td>{{ d.id }}</td>
+<td>{{ number }}</td>
+<td>{{ d.get_datetime|default_if_none:'' }}</td>
+<td>{{ d.sender|default_if_none:'' }}</td>
+<td>{{ d.recipient|default_if_none:'' }}</td>
+<td>
+    <a data-toggle="modal" href="{% url 'isolate_read' d.id %}" data-target="#myModal" data-whatever="{{ d.id }}" title="查看内容">
+        {{ d.subject|default_if_none:'' }}
+    </a>
+</td>
+<td>{{ d.reason|default_if_none:'' }}</td>
+<td>{{ d.detail|default_if_none:'' }}</td>
+<td>{{ d.mailsize|filesizeformat }}</td>
+<td>{{ d.get_status_display }}</td>

@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+{% load i18n %}
+{% load static %}
+{% load tags %}
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>{{ obj.subject }}</title>
+    <link href="{% static 'admin/css/mod_mail.css' %}" rel="stylesheet">
+</head>
+<body style="overflow: auto;" scroll="yes">
+
+<div id="mailReadHeader" class="mail-read-header" style="overflow-x:hidden;">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <a href="{% url 'isolate_read' isolate_id %}?action=view_source" target="_blank" class="btn btn-purple">{% trans "查看邮件头" %}</a>
+    <a href="{% url 'isolate_read' isolate_id %}?action=export" class="btn btn-primary">{% trans "下载邮件" %}</a>
+    <div id="header-subject"><h1><b>
+        {% autoescape off %}
+        {{ obj.subject }}
+        {% endautoescape %}
+    </b></h1></div>
+    <div id="mail-more-info" class="mail-more-info" style="display:;">
+        <div>
+            <span>From:</span> &nbsp;
+            <span> <strong>{{ obj.sender }}</strong> </span>
+        </div>
+
+        <div>
+            <span>To:</span> &nbsp;
+            <span> <strong>{{ obj.recipient }}</strong> </span>
+        </div>
+        <div id="header-from">
+            <span>{% trans "发件人" %}:</span>
+            &nbsp;
+            <span class="grayTxt" id="mailAddress">
+                <strong id="mailName"> {% autoescape off %} {{ obj.sender }} {% endautoescape %}</strong>
+            </span>
+        </div>
+        <div id="header-to">
+            <span>{% trans "收件人" %}:</span> &nbsp;
+            <span class="grayTxt">{{ obj.recipient }}</span>
+        </div>
+        <div id="header-date">
+            <span>{% trans "隔离时间" %}:</span>
+            &nbsp;
+            <span style="margin-left:-6px;">{{ obj.datetime|date:"Y-m-d H:i:s" }}</span>
+        </div>
+
+        {% if m.real_attachments  %}
+            <div id="header-attach">
+                <span>{% trans "附&nbsp;&nbsp;&nbsp;件" %}:</span>
+                &nbsp;
+                <span style="margin-left: -8px;">
+                {{ m.real_attachments|length }}{% trans "个" %}(<span class="grayTxt"> {{ m.real_attachments|list_sum:"size"|filesizeformat }} </span> )
+                    {% for attach in m.real_attachments %}
+                        <b class="icon"></b>
+                        ({{ attach.decode_name }}
+                        <span class="grayTxt" style="margin-left: 20px">
+                      {{ attach.size|filesizeformat }}
+                    </span>)
+                    {% endfor %}
+                    <a hidefocus="hidefocus" id="view-attachs" title="{% trans "查看全部附件" %}" class="link-2" href="#mail-attach-box">{% trans "查看全部附件" %}</a>
+            </span>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="header-split"></div>
+<div id="mailReadBody" class="mail-read-body">
+    <iframe width="100%" id="mail-iframe" onload="bodyS(this);autoH(this);" height="600px" frameborder="0" src="{% url 'isolate_read' isolate_id %}?action=view_body"></iframe>
+</div>
+
+{% if m.real_attachments %}
+    <div id="mail-attach-box" class="mail-attach-box">
+        <div style="" id="mail-attach-head" class="mail-attach-head">
+            <strong>{% trans "附&nbsp;&nbsp;&nbsp;件" %}({{ m.real_attachments|length }}{% trans "个" %})({{ m.real_attachments|list_sum:"size"|filesizeformat }})</strong>
+        </div>
+        <div class="mail-attach-body">
+            <div class="mail-attach-title">
+                <h3>{% trans "普通附件" %}</h3>
+            </div>
+            <table>
+                <tbody>
+                {% for attach in m.real_attachments %}
+                    <tr class="linkStyle04">
+                        <td style="padding:0.5em 1em;" width="210">
+                            <div class="attach-img" style="float:left;">
+                                <b class="icon icon-large icon-large-jpg"></b>
+                            </div>
+                            <div style="width:150px;margin-right: 15px;overflow-x: hidden;text-overflow: ellipsis;white-space:nowrap;float:left;">
+                                <a href="{% url 'isolate_read' isolate_id %}?action=download&aid={{forloop.counter0}}&download=1" target="_blank" title="{{attach.decode_name}}" style="color:black;">{{attach.decode_name}}</a>
+                            </div>
+                        </td>
+                        <td style="padding:0.5em 1em;">
+                            <span class="grayTxt" style="margin-left: 20px"> {{ attach.size|filesizeformat }} </span>
+                        </td>
+                        <td style="padding:0.5em 1em;">
+                            <a href="{% url 'isolate_read' isolate_id %}?action=download&aid={{forloop.counter0}}&download=1" target="_blank">{% trans "下载附件" %}</a>
+                            {% if attach.decode_name|preview_check %}
+                                - <a href="{% url 'isolate_read' isolate_id %}?action=download&aid={{forloop.counter0}}" target="_blank">{% trans "预览" %}</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endif %}
+<div class="modal-footer" id="modal-footer">
+    <button type="button" id="modal_close" class="btn btn-default" data-dismiss="modal">Close</button>
+</div>
+</body></html>

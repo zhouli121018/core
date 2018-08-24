@@ -1,0 +1,156 @@
+{% load i18n %}
+{% load static %}
+
+<div class="row">
+    <div class="space-6"></div>
+    <div class="col-xs-12">
+        <div class="page-header">
+            <h1>{% trans "AD域配置" %}</h1>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <form class="form-horizontal" role="form" name="form_select" id="id_form" action="" method="POST">
+            {% csrf_token %}
+            <table class="table  table-bordered table-striped">
+                <tr>
+                    <td><label class="control-label no-padding-right" for="id_srvtype" id="id_srvtype" > 服务器类型 </label></td>
+                    <td>
+                        <select class="col-xs-10 col-sm-4" id="id_srvtype" name="srvtype" onchange="onchangeTypeOptions(this.value)">
+                            <option value="ad" {% if form.srvtype.value == "ad" %} selected {% endif %} > Microsoft Active Directory同步(AD域) </option>
+                            <option value="ldap" {% if form.srvtype.value == "ldap" %} selected {% endif %} > LDAP 服务器同步 </option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label class="control-label no-padding-right" for="id_delete_local" id="id_delete_local"> 处理AD域中不存在的帐号 </label></td>
+                    <td>
+                        <label class="radio radio-inline padding-top-0 margin-top-0 form-inline">
+                            <label>
+                                <input type="radio" id="id_delete_local1" name="delete_local" value="1" {% if form.delete_local.value == '1'  %} checked="" {% endif %}><span>删除</span>
+                            </label>
+                            <label>
+                                <input type="radio" id="id_delete_local2" name="delete_local" value="-1" {% if form.delete_local.value == '-1'  %} checked="" {% endif %}><span>禁用</span>
+                            </label>
+                            <label>
+                                <input type="radio" id="id_delete_local3" name="delete_local" value="0" {% if form.delete_local.value == '0'  %} checked="" {% endif %}><span>保留</span>
+                            </label>
+                            {% if form.delete_local.error %}
+                            <div style="clear: both"><p class="errornote txt-color-red">{{ form.delete_local.error }}</p></div>
+                            {% endif %}
+                        </label>
+                        <div style="clear: both">
+                        <strong style="color: red">备注：</strong> 选择“删除”后，会删除掉AD域中不存在的帐号的所有邮件、网盘数据且不可挽回。
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label class="control-label no-padding-right" for="sync_disabled" id="sync_disabled" > 同步AD域中被禁用的帐号 </label></td>
+                    <td>
+                        <label class="radio radio-inline padding-top-0 margin-top-0 form-inline">
+                            <label>
+                                <input type="radio" name="sync_disabled" value="1" {% if form.sync_disabled.value == '1'  %} checked="" {% endif %}><span>同步</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="sync_disabled" value="-1" {% if form.sync_disabled.value != '1'  %} checked="" {% endif %}><span>不同步</span>
+                            </label>
+                            {% if form.sync_disabled.error %}
+                            <div style="clear: both"><p class="errornote txt-color-red">{{ form.sync_disabled.error }}</p></div>
+                            {% endif %}
+                        </label>
+                        <div style="clear: both">
+                        <strong style="color: red">备注：</strong> AD域中“禁用”的帐号，同步过来后也是“禁用”状态。若选择“不同步”，则被AD域中“禁用”的帐号会被程序视为“AD域中不存在”。
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label class="control-label no-padding-right" for="id_delete_local_dept" id="id_delete_local_dept" > 处理AD域中不存在的部门 </label></td>
+                    <td>
+                        <label class="radio radio-inline padding-top-0 margin-top-0 form-inline">
+                            <label>
+                                <input type="radio" name="delete_local_dept" value="1" {% if form.delete_local_dept.value == '1'  %} checked="" {% endif %}><span>删除</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="delete_local_dept" value="-1" {% if form.delete_local_dept.value != '1'  %} checked="" {% endif %}><span>保留</span>
+                            </label>
+                            {% if form.delete_local_dept.error %}
+                            <div style="clear: both"><p class="errornote txt-color-red">{{ form.delete_local_dept.error }}</p></div>
+                            {% endif %}
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label class="control-label no-padding-right" for="id_ad_verify" id="id_ad_verify" > 同步报告通知地址 </label></td>
+                    <td>
+                        <input class="col-xs-10 col-sm-4" type="text" name="notify_address" value=" {{ form.notify_address.value }} " >
+                        {% if form.notify_address.error %}
+                        <div style="clear: both"><p class="errornote txt-color-red">{{ form.notify_address.error }}</p></div>
+                        {% endif %}
+                        <div style="clear: both">
+                        <strong style="color: red">备注：</strong> 同步结果会以邮件的方式通知这里输入的地址，多个地址之间以","分隔。
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label class="control-label no-padding-right" for="id_ad_verify" id="id_ad_verify" > 是否启用AD域验证密码 </label></td>
+                    <td>
+                        <label class="radio radio-inline padding-top-0 margin-top-0 form-inline">
+                            <label>
+                                <input type="radio" name="sw_login_ldap_switch" value="1" {% if form.sw_login_ldap_switch.value == '1'  %} checked {% endif %}><span>开启</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="sw_login_ldap_switch" value="-1" {% if form.sw_login_ldap_switch.value != '1'  %} checked {% endif %}><span>关闭</span>
+                            </label>
+                            {% if form.sw_login_ldap_switch.error %}
+                            <div style="clear: both"><p class="errornote txt-color-red">{{ form.sw_login_ldap_switch.error }}</p></div>
+                            {% endif %}
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label class="control-label no-padding-right" for="id_auto_sync" id="id_auto_sync" > 开启定期自动同步 </label></td>
+                    <td>
+                        <label class="radio radio-inline padding-top-0 margin-top-0 form-inline">
+                            <label>
+                                <input type="radio" name="sw_ldap" value="1" {% if form.sw_ldap.value == '1'  %} checked="" {% endif %}><span>开启</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="sw_ldap" value="-1" {% if form.sw_ldap.value != '1'  %} checked="" {% endif %}><span>关闭</span>
+                            </label>
+                            {% if form.sw_ldap.error %}
+                            <div style="clear: both"><p class="errornote txt-color-red">{{ form.sw_ldap.error }}</p></div>
+                            {% endif %}
+                        </label>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="clearfix form-actions">
+                <div>
+                <input type="hidden" value="{{ domain.id }}" name="domain_id" id="domain_id" />
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-info" type="button" onclick="onclickSubmitButton()">
+                        <i class="ace-icon fa fa-check bigger-110"></i>
+                        保存
+                    </button>
+                    <button class="btn btn-info" type="button" onclick="onclickTaskButton()">
+                        <i class="ace-icon fa fa-check bigger-110"></i>
+                        手动同步帐号
+                    </button>
+                    <button class="btn btn-info" type="button" onclick="onclickDownloadLogButton()">
+                        <i class="ace-icon fa fa-check bigger-110"></i>
+                        下载最新同步日志
+                    </button>
+                    <button class="btn" type="reset">
+                        <i class="ace-icon fa fa-undo bigger-110"></i>
+                        重置
+                    </button>
+                </div>
+            </div>
+        </form>
+
+    </div><!-- /.span -->
+</div><!-- /.row -->

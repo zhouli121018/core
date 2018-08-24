@@ -1,0 +1,55 @@
+{% extends 'base_site.html' %}
+{% load i18n %}
+{% load static %}
+{% load bootstrap %}
+{% block title %} {% trans "组成员导入" %} {% endblock %}
+{% block breadcrumb %}
+    <li> <a href="#">{% trans " 组权限管理 " %}</a> </li>
+    <li> <a href="#">{% trans " 组成员列表 " %}</a> </li>
+    <li class="active">{% trans "组成员导入" %}</li>
+{% endblock %}
+{% block page-content %}
+    <div class="row">
+        <div class="col-lg-12"><h1 class="page-header">"{{ obj.name }}"{% trans "的组成员导入" %}</h1></div>
+    </div>
+
+    <form role="form" action="" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-default" style="margin-bottom: 0px!important;">
+                    <div class="panel-heading">{% trans "组成员导入" %}</div>
+                    <div class="panel-body">
+                        <p class="help-block">
+                           <span class="text-success"><span style="color:blue">说明: </span>
+                               <br>支持导入txt、csv、excel后缀的模板文件<br>文件格式如：<br>
+                            </span>
+                            <textarea style="word-break: normal;" rows="4" cols="33" >
+user1@test.com
+user2@test.com
+...</textarea>
+                        </p>
+
+                        {% csrf_token %}
+                        {{ form|bootstrap }}
+
+                        <button type="submit" class="btn btn-primary btn-sm">{% trans "确认" %}</button>
+                        <button class="btn btn-sm" type="reset">{% trans "重置" %}</button>
+                        <button type="button" class="btn btn-link btn-sm" onclick="location.href='{% url 'core_group_member' group_id %}'">{% trans "取消" %}</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
+{% block css_block %}
+{% endblock %}
+{% block my_jsblock %}
+    <script>
+        $(function(){
+            var path = "{% url 'core_group_list' %}";
+            $('#sidebar').find('[href="'+path+'"]').parent().first().addClass('active');
+        });
+    </script>
+{% endblock %}

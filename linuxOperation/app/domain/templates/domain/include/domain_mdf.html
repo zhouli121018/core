@@ -1,0 +1,143 @@
+{% load i18n %}
+{% load static %}
+
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">邮件域基本信息</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal form_domain_mdf">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-offset-1 col-sm-4 control-label">邮件域名称：</label>
+                    <div class="col-sm-5">
+                        <input type="text" name="domainName" value="{{ form.domainName.value }}" class="form-control"  placeholder="邮件域名称">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-offset-1 col-sm-4 control-label"><span class="red bold">*</span>限定邮箱数量：</label>
+                    <div class="col-sm-5">
+                        <div class="input-group">
+                            <input type="number" name="cf_limit_mailbox_cnt" value="{{ form.cf_limit_mailbox_cnt.value }}" class="form-control" placeholder="限定邮箱数量" >
+                            <span class="input-group-addon" >个</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-offset-1 col-sm-4 control-label"><span class="red bold">*</span>限定别名数量：</label>
+                    <div class="col-sm-5">
+                        <div class="input-group">
+                            <input type="number" name="cf_limit_alias_cnt" value="{{ form.cf_limit_alias_cnt.value }}" class="form-control" value="0" placeholder="限定别名数量" >
+                            <span class="input-group-addon" >个</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-offset-1 col-sm-4 control-label"><span class="red bold">*</span>限定邮箱空间总容量：</label>
+                    <div class="col-sm-5">
+                        <div class="input-group">
+                            <input type="number" name="cf_limit_mailbox_size" value="{{ form.cf_limit_mailbox_size.value }}" class="form-control" value="0"  placeholder="限定邮箱空间总容量">
+                            <span class="input-group-addon" >MB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-offset-1 col-sm-4 control-label"><span class="red bold">*</span>限定网络硬盘总容量：</label>
+                    <div class="col-sm-5">
+                        <div class="input-group">
+                            <input type="number" name="cf_limit_netdisk_size" value="{{ form.cf_limit_netdisk_size.value }}" class="form-control" value="0"  placeholder="限定网络硬盘总容量">
+                            <span class="input-group-addon" >MB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-offset-1 col-sm-4 control-label">发送邮件限制大小：</label>
+                    <div class="col-sm-5">
+                        <div class="input-group">
+                            <input type="number" name="cf_limit_email_size" value="{{ form.cf_limit_email_size.value }}" class="form-control" value="500"  placeholder="发送邮件限制大小">
+                            <span class="input-group-addon" >MB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-offset-1 col-sm-4 control-label">WebMail单附件大小：</label>
+                    <div class="col-sm-5">
+                        <div class="input-group">
+                            <input type="number" name="cf_limit_attach_size" value="{{ form.cf_limit_attach_size.value }}" class="form-control" value="10"  placeholder="WebMail单附件大小">
+                            <span class="input-group-addon" >MB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-offset-1 col-sm-4 control-label"><span class="red bold">*</span>用户邮箱默认容量：</label>
+                    <div class="col-sm-5">
+                        <div class="input-group">
+                            <input type="number" name="cf_def_mailbox_size" value="{{ form.cf_def_mailbox_size.value }}" class="form-control" value="100"  placeholder="用户邮箱默认容量">
+                            <span class="input-group-addon" >MB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-offset-1 col-sm-4 control-label"><span class="red bold">*</span>网络硬盘默认容量：</label>
+                    <div class="col-sm-5">
+                        <div class="input-group">
+                            <input type="number" name="cf_def_netdisk_size" value="{{ form.cf_def_netdisk_size.value }}" class="form-control" value="100"  placeholder="网络硬盘默认容量">
+                            <span class="input-group-addon" >MB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-offset-1 col-sm-4 control-label"><span class="red bold">*</span>发信功能限制：</label>
+                    <div class="col-sm-5">
+                        <select name="limit_send" class="form-control">
+                            {% for v, name in form.getLimitSendParams %}
+                                <option value="{{ v }}" {% if form.limit_send.value == v %} selected {% endif %} > {{ name }} </option>
+                            {% endfor %}
+                        </select>
+                        <!--<p class="help-block">-->
+                        <!--批量修改收发信功能开关选择是后,将针对域名下全部邮箱设置修改；请谨慎修改-->
+                        <!--</p>-->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-offset-1 col-sm-4 control-label"><span class="red bold">*</span>收信功能限制：</label>
+                    <div class="col-sm-5">
+                        <select name="limit_recv" class="form-control">
+                            {% for v, name in form.getLimitRecvParams %}
+                                <option value="{{ v }}" {% if form.limit_recv.value == v %} selected {% endif %} > {{ name }} </option>
+                            {% endfor %}
+                        </select>
+                        <!--<p class="help-block">-->
+                        <!--批量修改收发信功能开关选择是后,将针对域名下全部邮箱设置修改；请谨慎修改-->
+                        <!--</p>-->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-offset-1 col-sm-4 control-label">设置为微信主域名：</label>
+                    <div class="col-sm-7">
+                        <label class="inline" >
+                            <input name="domainWechatHost" value="1" {% if form.domainWechatHost.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5">
+                            <span class="lbl"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-offset-1 col-sm-4 control-label">状态：</label>
+                    <div class="col-sm-7">
+                        <label class="inline" >
+                            <input name="domainDisabled" value="-1" {% if form.domainDisabled.value == "-1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5">
+                            <span class="lbl"></span>
+                        </label>
+                    </div>
+                </div>
+            <div class="modal-footer center">
+                <input type="hidden" value="{{ operate }}" name="operate" id="id_operate" />
+                <button type="button" class="btn btn-primary" onclick="clickModifyDomainButton({{ domain_id }})">保存</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>

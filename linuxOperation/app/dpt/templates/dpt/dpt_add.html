@@ -1,0 +1,276 @@
+{% extends 'base_site.html' %}
+{% load i18n %}
+{% load static %}
+{% load bootstrap %}
+{% block title %} {% if obj %}{% trans "修改部门信息" %} {% else %}{% trans "添加部门" %}{% endif %}{% endblock %}
+{% block breadcrumb %}
+    <li> <a href="#">{% trans "部门机构管理" %}</a> </li>
+    <li> <a href="#">{% trans "部门列表" %}</a> </li>
+    <li class="active">{% if obj %}{% trans "修改部门信息" %} {% else %}{% trans "添加部门" %}{% endif %}</li>
+{% endblock %}
+{% block page-content %}
+    <div class="row">
+        <div class="space-12"></div>
+        <div class="col-xs-12">
+            <div class="page-header"><h1>{% if obj %}{% trans "修改部门信息" %} {% else %}{% trans "添加部门" %}{% endif %}</h1></div>
+        </div>
+    </div>
+
+    <form role="form" action="" method="post">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-default" style="margin-bottom: 0px!important;">
+                    <div class="panel-heading">{% if obj %}{% trans "修改部门信息" %} {% else %}{% trans "添加部门" %}{% endif %}</div>
+                    <div class="panel-body">
+                        {% csrf_token %}
+                        {{ form.domain_id }}
+                        {{ form.parent_id }}
+                        {{ form.title|bootstrap }}
+
+                        <div class="form-group {% if form.parent_id.errors %}has-error{% endif %}">
+                            <label class="control-label  " for="id_parent_bak">{% trans "上级部门" %}</label>
+                            <div class=" " id="box_tip">
+                                <div class=" {% if parent_id_canchange %} input-group{% endif %}">
+                                    <input type="text" class="form-control department_choice tip_dept" value="{{ form.parent_name|default_if_none:"" }}" name="parent_bak" id="id_parent_bak" placeholder="{% trans "点击选择上级部门" %}" readonly >
+                                    {% if parent_id_canchange %}
+                                        <span class="input-group-btn"><button class="btn btn-sm btn-default" type="button" onclick="Clear()">清除</button></span>
+                                    {% endif %}
+                                </div>
+                                {% if parent_id_canchange %}
+                                    <div class="widget-box widget-color-blue2 email_box_tree" style="width:85%;position:absolute;z-index:10;">
+                                        <button type="button" class="btn btn-danger btn-sm pull-right close_btn" style="">&times;</button>
+                                        <div class="widget-body" style="padding-right:40px;">
+                                            <div style="padding:20px 6px 0;">
+                                                <input type="text" id="search_input" class="select_search form-control" placeholder="输入关键字搜索...">
+                                            </div>
+                                            <div class="widget-main padding-8" style="height:auto;">
+                                                <ul id="tree"></ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                {% if form.parent_id.errors %}<span class="help-block ">{{ form.parent_id.errors }}</span>{% endif %}
+                            </div>
+                        </div>
+
+                        {{ form.manager|bootstrap }}
+                        {{ form.contact|bootstrap }}
+                        {{ form.telphone|bootstrap }}
+                        {{ form.fax|bootstrap }}
+                        {{ form.email|bootstrap }}
+                        {{ form.address|bootstrap }}
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-3 col-lg-3 "">{% trans "部门权限设置" %}</label>
+                            <div class=" col-sm-9 col-lg-9 ">
+                                <div class="control-group">
+                                    <label class="checkbox checkbox-inline no-padding margin-top-0 form-inline" style="margin-top: 7px;">
+                                        <label style="margin-right:20px;">
+                                            <input name="limit_netdisk" value="1" type="checkbox" {% if 'netdisk' not in form.modlimit %}checked{% endif %}><span>{% trans "禁止网络硬盘" %}</span>
+                                        </label>
+                                        <label>
+                                            <input name="limit_oab" value="1" type="checkbox" {% if 'oab' not in form.modlimit %}checked{% endif %}><span>{% trans "禁止企业通讯录" %}</span>
+                                        </label>
+                                        <label>
+                                            <input name="limit_sub" value="1" type="checkbox" checked=""><span>{% trans "将权限设置应用到下级部门" %}</span>
+                                        </label>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-sm">{% trans "确认" %}</button>
+                        <button class="btn btn-sm" type="reset">{% trans "重置" %}</button>
+                        <button type="button" class="btn btn-link btn-sm" onclick="location.href='{% url 'department_list' %}'">{% trans "取消" %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block css_block %}
+    <link href="{% static 'components/datetimepiker/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
+    <style>
+        .email_box_tree{
+            display:none;
+        }
+        .widget-box{
+            margin: 0!important;
+        }
+        .active-header .tree-label{
+            background-color: #629B58 !important;
+            border-color: #87B87F;
+            color: #fff !important;
+        }
+    </style>
+{% endblock %}
+{% block my_jsblock %}
+    <script src="{% static 'assets/js/jquery-ui.custom.js' %}" ></script>
+    <script src="{% static 'assets/js/jquery.ui.touch-punch.js' %}" ></script>
+    <script src="{% static 'assets/js/jquery-ui.js' %}" ></script>
+    <script src="{% static 'assets/js/select2.js' %}" ></script>
+    <script src="{% static 'assets/js/fuelux/fuelux.tree.js' %}" ></script>
+    <script src="{% static 'components/datetimepiker/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'components/datetimepiker/bootstrap-datetimepicker.zh-CN.js' %}"></script>
+
+    <script>
+        $(function(){
+            var path = "{% url 'department_list' %}";
+            $('#sidebar').find('[href="'+path+'"]').parent().first().addClass('active');
+        });
+
+        function Clear() {
+            $('#{{ form.parent_id.auto_id }}').val(-1);
+            $('#id_parent_bak').val("");
+        }
+
+        {% if parent_id_canchange %}
+            var treeEle;
+            $('#tree').on('click','.tree-item,.tree-branch-header',function(){
+                $('#tree .tree-selected').removeClass('tree-selected');
+                if($(this).hasClass('tree-branch-header')){
+                    $(this).parent().addClass('tree-selected');
+                }else{
+                    $(this).addClass('tree-selected');
+                }
+                $('#tree .active-header').removeClass('active-header');
+                $(this).addClass('active-header');
+                $('.email_box_tree').hide();
+                $('#id_parent_bak').val($(this).find('.tree-label').html());
+                var o = treeEle.tree("selectedItems")[0];
+                $('#{{ form.parent_id.auto_id }}').val(o.id);
+            })
+
+            var deptArr = {{ dept_list|safe }};
+            function initdepttree(deptArr){
+                var sampleData = initiateDemoData(deptArr);
+                treeEle = $('#tree').ace_tree({
+                    dataSource: sampleData['dataSource1'],
+                    multiSelect: false,
+                    loadingHTML: '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>',
+                    'open-icon' : 'ace-icon tree-minus hide',
+                    'close-icon' : 'ace-icon tree-plus hide',
+                    'selectable' : true,
+                    'selected-icon' : 'ace-icon fa fa-check',
+                    'unselected-icon' : 'ace-icon fa fa-times',
+                    'cacheItems': true,
+                    'folderSelect': true,
+                    'folder-open-icon' : 'ace-icon tree-plus',
+                    'folder-close-icon' : 'ace-icon tree-minus'
+                });
+            }
+            initdepttree(deptArr);
+
+            function initiateDemoData(deptArr){
+                var tree_data = {};
+                for(var i=0;i<deptArr.length;i++){
+                    if(deptArr[i].parent<=0){
+                        if(deptArr[i].child&&deptArr[i].child>0){
+                            tree_data[deptArr[i].name] = {text:deptArr[i].name,type:"folder",id:deptArr[i].id};
+                            tree_data[deptArr[i].name]['additionalParameters']={"children":getSubDate(deptArr[i].id)};
+                        }else{
+                            tree_data[deptArr[i].name] = {text:deptArr[i].name,type:"item",id:deptArr[i].id};
+                        }
+                    }
+                }
+
+                function getSubDate(pid){
+                    var obj = {};
+                    for(var i=0;i<deptArr.length;i++){
+                        if(deptArr[i]['parent'] == pid){
+                            if(deptArr[i].child&&deptArr[i].child>0){
+                                obj[deptArr[i].name] = {text:deptArr[i].name,type:"folder",id:deptArr[i].id,child:deptArr[i].child}
+                            }else{
+                                obj[deptArr[i].name] = {text:deptArr[i].name,type:"item",id:deptArr[i].id,child:deptArr[i].child}
+                            }
+
+                        }
+                    }
+                    return obj;
+                }
+                function getAdditionalParameters(arr){
+                    for(var key in arr){
+                        if(arr[key]['type']=="folder"){
+                            arr[key]['additionalParameters']={"children":getSubDate(arr[key]['id'])};
+                            if(arr[key]['additionalParameters']["children"]){
+                                getAdditionalParameters(arr[key]['additionalParameters']["children"])
+                            }
+                        }
+                    }
+                }
+                getAdditionalParameters(tree_data);
+                var dataSource1 = function(options, callback){
+                    var $data = null
+                    if(!("text" in options) && !("type" in options)){
+                        $data = tree_data;//the root tree
+                        callback({ data: $data });
+                        return;
+                    }
+                    else if("type" in options && options.type == "folder") {
+                        if("additionalParameters" in options && "children" in options.additionalParameters)
+                            $data = options.additionalParameters.children || {};
+                        else $data = {}//no data
+                    }
+                    if($data != null)//this setTimeout is only for mimicking some random delay
+                        callback({ data: $data });
+                }
+                return {'dataSource1': dataSource1}
+            }
+
+            $('#search_input').keyup(function(){
+                var keywords = $(this).val();
+                $("#tree").removeData("fu.tree");
+                $("#tree").unbind('click.fu.tree');
+                if(keywords.length>0){
+                    var initArr = {{ dept_list|safe }};
+                    var reg = new RegExp(keywords, 'i');
+                    var arr = [];
+                    var textname = '';
+                    function getp(id){
+                        for(var i=0;i<initArr.length;i++){
+                            var a = initArr[i]['id'];
+                            var pp = initArr[i]['parent'];
+                            var n = initArr[i]['name'];
+                            if(a == id){
+                                textname += " -- " + n;
+                                if(pp>0){
+                                    getp(pp);
+                                }
+                            }
+                        }
+                    }
+                    for(var key in initArr){
+                        if(initArr[key]['name'].match(reg)){
+                            if(initArr[key]['parent']>0){
+                                textname += initArr[key]['name'];
+                                getp(initArr[key]['parent']);
+                                var obj = {child:0,parent:0,name:textname,id:initArr[key]['id']};
+                                textname = '';
+                            }else{
+                                var obj = {child:0,parent:0,name:initArr[key]['name'],id:initArr[key]['id']};
+                            }
+                            arr.push(obj);
+                        }
+                    }
+                    initdepttree(arr)
+                }else{
+                    initdepttree(deptArr);
+                }
+            })
+            $('.close_btn').click(function(){
+                $(this).parent().hide();
+            })
+            $('#box_tip .input-group>input').click(function(){
+                $('.email_box_tree').show();
+            })
+            $('body').click(function(e){
+                var $parents = $(e.target).parents(".email_box_tree");
+                if(!$(e.target).hasClass('department_choice') && $parents.length<1){
+                    $('.email_box_tree').hide();
+                }
+            })
+
+        {% endif %}
+
+    </script>
+{% endblock %}

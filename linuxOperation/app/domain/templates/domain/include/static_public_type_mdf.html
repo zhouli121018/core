@@ -1,0 +1,50 @@
+{% load i18n %}
+{% load static %}
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">添加客户</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal form_public_type_add">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">分类名称：</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="name" value="{{ form.name.value }}" class="form-control">
+                        {% if form.name.error %}
+                            <div style="clear: both"><p class="errornote txt-color-red" style="margin-left: 25px;">{{ form.name.error }}</p></div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">上级分类：</label>
+                    <div class="col-sm-6">
+                        <select  name="parent_id" class="form-control">
+                            <option value="0" > -- </option>
+                            {% for d in form.get_cate_list %}
+                                <option value="{{ d.id }}" {% if form.parent_id.value == d.id %} selected {% endif %} > {{ d.name }} </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">分类排序：</label>
+                    <div class="col-sm-6">
+                        <input type="number" name="order" value="{{ form.order.value }}" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer center">
+                    <input type="hidden" id="domain_id" name="domain_id" value="{{ domain.id }}" />
+                    {% if form.instance %}
+                        <input type="hidden" id="id" name="id" value="{{ id }}" />
+                        <button type="button" class="btn btn-sm btn-info" onclick="clickDomainPublicSave('type_mdf','form_public_type_add')">保存</button>
+                    {% else %}
+                        <button type="button" class="btn btn-sm btn-info" onclick="clickDomainPublicSave('type_add','form_public_type_add')">保存</button>
+                    {% endif %}
+                    <button type="button" class="btn btn-sm btn-danger" onclick="backDomainPublicType()" >返回</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

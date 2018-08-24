@@ -1,0 +1,59 @@
+{% extends 'base_site.html' %}
+{% load i18n %}
+{% load static %}
+{% load bootstrap %}
+{% block title %} {% trans "地址文件导入" %} {% endblock %}
+{% block breadcrumb %}
+    <li> <a href="#">{% trans "邮件列表管理" %}</a> </li>
+    <li class="active">{% trans "邮件列表文件导入" %}</li>
+{% endblock %}
+{% block page-content %}
+    <div class="row">
+        <div class="col-lg-12"><h1 class="page-header">{% trans "邮件列表文件导入" %}</h1></div>
+    </div>
+
+    <form role="form" action="" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="panel panel-default" style="margin-bottom: 0px!important;">
+                    <div class="panel-heading">{% trans "邮件列表文件导入" %}</div>
+                    <div class="panel-body">
+                        <p class="help-block">
+                           <span class="text-success"><span style="color:blue">文件格式说明: </span><br>
+                            文件第一行为导出日期，导入程序会忽略这一行<br>
+                            文件第二行为每列名称，导入程序会忽略这一行<br>
+                            从第三行开始，程序会读取每行数据导入到邮件列表中<br>
+                            支持导入txt、csv、excel后缀的模板文件<br>
+                            导入格式跟导出一致即可<br>
+                            </span>
+                            <textarea style="word-break: normal;width: 800px;" rows="5">
+comingchina.com--2018-06-01 14:07:21
+邮件名称    邮件地址    部门信息    列表类型    域名
+all all@comingchina.com    U-Mail集团全体  公开列表    comingchina.com
+                            </textarea>
+                        </p>
+
+                        {% csrf_token %}
+                        {{ form|bootstrap }}
+
+                        <button type="submit" class="btn btn-primary btn-sm">{% trans "确认" %}</button>
+                        <button class="btn btn-sm" type="reset">{% trans "重置" %}</button>
+                        <button type="button" class="btn btn-link btn-sm" onclick="location.href='{% url 'maillist_list' %}'">{% trans "取消" %}</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
+{% block css_block %}
+{% endblock %}
+{% block my_jsblock %}
+    <script>
+        $(function(){
+            var path = "{% url 'maillist_list' %}";
+            $('#sidebar').find('[href="'+path+'"]').parent().first().addClass('active');
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,484 @@
+{% extends 'base_site.html' %}
+{% load i18n %}
+{% load static %}
+{% load bootstrap %}
+{% block title %}{% trans "邮箱帐号管理" %}{% endblock %}
+{% block breadcrumb %}
+<li> <a href="#">{% trans "邮箱帐号管理" %}</a> </li>
+<li class="active">{% trans "添加帐号" %}</li>
+{% endblock %}
+
+{% block page-content %}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="page-header">
+            <h1>{% trans "邮箱帐号管理" %}<small>
+                <i class="ace-icon fa fa-angle-double-right"></i>{% trans "添加帐号" %}</small></h1>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <ul class="nav nav-tabs" id="myTab">
+            <li>
+                <a href="{% url 'mailbox_account' %}">
+                    <i class="green ace-icon fa fa-home bigger-120"></i>{% trans "帐号列表" %}
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="{% url 'mailbox_add_account' %}">
+                    {% trans "添加帐号" %}
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'mailbox_batchadd_account' %}">
+                    {% trans "批量添加帐号" %}
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'mailbox_batchedit_account' %}">
+                    {% trans "批量修改帐号" %}
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'mailbox_delete_account' %}">
+                    {% trans "批量删除帐号" %}
+                </a>
+            </li>
+
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade in active">
+
+                <form class="form-horizontal" action="" method="POST" >
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-sm-6" style="border-right:2px dotted #ccc;">
+                            <div class="table-header">邮箱基本信息</div>
+                            <div class="col-sm-9">
+                                {{ form.name|bootstrap_horizontal:"col-sm-5"}}
+                                {{ form.password1|bootstrap_horizontal:"col-sm-5"}}
+                                {{ form.password2|bootstrap_horizontal:"col-sm-5"}}
+                                {{ form.quota_mailbox|bootstrap_horizontal:"col-sm-5"}}
+                                {{ form.quota_netdisk|bootstrap_horizontal:"col-sm-5"}}
+                                <!--{{ form.limit_send|bootstrap_horizontal:"col-sm-5"}}-->
+                                <!--{{ form.limit_recv|bootstrap_horizontal:"col-sm-5"}}-->
+                                <!--{{ form.limit_send|bootstrap_horizontal:"col-sm-4"}}-->
+                                <div class="form-group">
+                                    <label class="control-label col-sm-5" for="id_limit_send">发信权限：</label>
+                                    <div class="  col-sm-7 ">
+                                        <select name="limit_send" class=" form-control limit_send_select" id="id_limit_send">
+                                          <option value="-1" {% if form.limit_send.value == '-1' %} selected {% endif %}>不限制邮件发送</option>
+                                          <option value="1" {% if form.limit_send.value == '1' %} selected {% endif %}>禁止发送所有邮件</option>
+                                          <option value="2" {% if form.limit_send.value == '2' %} selected {% endif %}>只发送本地域邮件</option>
+                                          <option value="4" {% if form.limit_send.value == '4' %} selected {% endif %}>可发送本地所有域邮件</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-5" for="id_limit_recv">收信权限：</label>
+                                    <div class="  col-sm-7 ">
+                                        <select name="limit_recv" class=" form-control limit_send_select" id="id_limit_recv">
+                                          <option value="-1" {% if form.limit_recv.value == '-1' %} selected {% endif %}>不限制邮件接收</option>
+                                          <option value="1" {% if form.limit_recv.value == '1' %} selected {% endif %}>禁止接收所有邮件</option>
+                                          <option value="2" {% if form.limit_recv.value == '2' %} selected {% endif %}>只接收本地域邮件</option>
+                                          <option value="4" {% if form.limit_recv.value == '4' %} selected {% endif %}>可接收本地所有域邮件</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                {{ form.limit_login|bootstrap_horizontal:"col-sm-5"}}
+                                <div class="form-group">
+                                    <label class="control-label col-sm-5 " for="id_disabled">邮箱状态：</label>
+                                    <div class="  col-sm-7 ">
+                                        <label class="inline">
+                                            <input name="disabled" class="ace ace-switch ace-switch-5" id="id_disabled" checked="" type="checkbox">
+                                            <span class="lbl"></span>
+                                        </label>
+
+                                    </div>
+                                </div>
+                                {{ form.is_active|bootstrap_horizontal_bool:"col-sm-5"}}
+                                {{ form.is_superuser|bootstrap_horizontal_bool:"col-sm-5"}}
+                                {{ form.limit_send_freq|bootstrap_horizontal_bool:"col-sm-5"}}
+                                <div class="form-group">
+                                    <label class="control-label col-sm-5 " for="id_enable_share">是否打开邮箱共享：</label>
+                                    <div class="  col-sm-7 ">
+                                        <label class="inline">
+                                            <input name="enable_share" class="ace ace-switch ace-switch-5" id="id_enable_share" type="checkbox">
+                                            <span class="lbl"></span>
+                                        </label>
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-5 " for="id_limit_pop">POP功能：</label>
+                                    <div class="  col-sm-7 ">
+                                        <label class="inline">
+                                            <input name="limit_pop" class="ace ace-switch ace-switch-5" id="id_limit_pop" checked="" type="checkbox">
+                                            <span class="lbl"></span>
+                                        </label>
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-5 " for="id_limit_imap">IMAP功能：</label>
+                                    <div class="  col-sm-7 ">
+                                        <label class="inline">
+                                            <input name="limit_imap" class="ace ace-switch ace-switch-5" id="id_limit_imap" checked="" type="checkbox">
+                                            <span class="lbl"></span>
+                                        </label>
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-sm-5 " for="id_change_pwd">登录强制修改密码：</label>
+                                    <div class="  col-sm-7 ">
+                                        <label class="inline">
+                                            <input name="change_pwd" class="ace ace-switch ace-switch-5" id="id_change_pwd" type="checkbox">
+                                            <span class="lbl"></span>
+                                        </label>
+
+                                    </div>
+                                </div>
+                                {{ form.pwd_days|bootstrap_horizontal:"col-sm-5"}}
+                                {{ form.pwd_days_time|bootstrap_horizontal:"col-sm-5"}}
+                                {{ form.ip_limit|bootstrap_horizontal:"col-sm-5"}}
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="table-header">用户信息</div>
+                            <div class="col-sm-9">
+                                {{ user_form.realname|bootstrap_horizontal:"col-sm-5"}}
+                                {{ user_form.engname|bootstrap_horizontal:"col-sm-5"}}
+                                {{ user_form.eenumber|bootstrap_horizontal:"col-sm-5"}}
+                                {{ user_form.gender|bootstrap_horizontal:"col-sm-5"}}
+                                {{ user_form.birthday|bootstrap_horizontal:"col-sm-5"}}
+                                {{ user_form.tel_mobile|bootstrap_horizontal:"col-sm-5"}}
+                                {{ user_form.tel_work|bootstrap_horizontal:"col-sm-5"}}
+                                {{ user_form.tel_work_ext|bootstrap_horizontal:"col-sm-5"}}
+                                {{ user_form.tel_group|bootstrap_horizontal:"col-sm-5"}}
+                                {{ user_form.tel_home|bootstrap_horizontal:"col-sm-5"}}
+                                {{ user_form.oabshow|bootstrap_horizontal_bool:"col-sm-5"}}
+                                {{ user_form.showorder|bootstrap_horizontal:"col-sm-5"}}
+                                <div class="form-group">
+                                    <p></p>
+                                    <label class="col-sm-5 control-label">归属部门：</label>
+                                    <div class="col-sm-7 no-padding">
+                                        <div class="col-sm-12">
+                                            <ul id="add_list">
+                                            </ul>
+                                        </div>
+                                        <div class="col-sm-8" style="margin-bottom:8px;">
+                                            <div style="position:relative;" class="parent_test">
+                                                <input type="text" class="form-control department_choice tip_dept" value="" placeholder='{% trans "点击选择部门" %}'  readonly>
+                                                <input type="hidden" id="id_dept" />
+                                                <div class="widget-box widget-color-blue2 department_choice_tree"  style="display:none;position:absolute;z-index:10;">
+                                                    <button type="button" class="btn btn-danger btn-sm pull-right close_btn" style="">&times;</button>
+                                                    <div class="widget-body" style="padding-right:40px;">
+                                                        <div style="padding:20px 6px 0;">
+                                                            <input type="text" id="search_input" class="select_search form-control" placeholder="输入关键字搜索...">
+                                                        </div>
+                                                        <div class="widget-main padding-8" style="height:auto;max-height:350px;">
+                                                            <ul id="tree"></ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control dept_name" placeholder="部门职务">
+                                        </div>
+                                        <div class="col-sm-4 text-right">
+                                            <input type="button" id="add_department" class="btn btn-success btn-xs" value="添加">
+                                        </div>
+                                        <div id="dept_input_area"></div>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+                                    <p></p>
+                                    <label class="col-sm-5 control-label">归属邮件列表：</label>
+                                    <div class="col-sm-7 no-padding">
+                                        <div class="col-sm-12">
+                                            <ul id="add_mail_list">
+                                            </ul>
+                                        </div>
+                                        <div class="col-sm-8" style="margin-bottom:8px;">
+                                            <select name="" id="" class="select2 form-control tip_mailbox">
+                                                {% for m in mail_list %}
+                                                <option value="{{m.id}}">{{ m.listname }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <select id="maillist_add_permit" class="form-control" title="成员权限">
+                                                <option value="1">收发</option>
+                                                <option value="0">只收</option>
+                                                <option value="-1">只发</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-4 text-right" >
+                                            <input type="button" id="add_mail_btn" class="btn btn-success btn-xs" value="添加">
+                                        </div>
+                                    </div>
+                                </div>
+                                {{ user_form.im_qq|bootstrap_horizontal:"col-sm-5"}}
+                                {{ user_form.im_msn|bootstrap_horizontal:"col-sm-5"}}
+                                {{ user_form.remark|bootstrap_horizontal:"col-sm-5"}}
+                                {% comment %}
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">性别：</label>
+                                    <div class="col-sm-7">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="gender" value="male" checked> 男
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="gender" value="female" > 女
+                                        </label>
+                                    </div>
+                                </div>
+                                {% endcomment %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix form-actions">
+                        <div class="text-center">
+                            <button class="btn btn-info" type="submit">
+                                <i class="ace-icon fa fa-check bigger-110"></i>
+                                保存
+                            </button>
+                            <button class="btn" type="reset">
+                                <i class="ace-icon fa fa-undo bigger-110"></i>
+                                重置
+                            </button>
+
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block css_block %}
+<link href="{% static 'components/datetimepiker/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
+{% endblock %}
+{% block my_jsblock %}
+<script src="{% static 'assets/js/jquery-ui.custom.js' %}" ></script>
+<script src="{% static 'assets/js/jquery.ui.touch-punch.js' %}" ></script>
+<script src="{% static 'assets/js/jquery-ui.js' %}" ></script>
+<script src="{% static 'assets/js/fuelux/fuelux.tree.js' %}" ></script>
+<script src="{% static 'components/datetimepiker/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'components/datetimepiker/bootstrap-datetimepicker.zh-CN.js' %}"></script>
+<script>
+    $('.select2').select2();
+    $('#edit_email_tabs').tabs();
+    $('.datetime').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:00',
+        language: 'zh-CN',
+        weekStart: 1,
+        todayBtn: 1,
+        autoclose: 1,
+        // minView: 2,
+        pickerPosition: "bottom-left"
+    });
+    $('.date').datetimepicker({
+        format: 'yyyy-mm-dd',
+        language: 'zh-CN',
+        weekStart: 1,
+        todayBtn: 1,
+        autoclose: 1,
+        minView: 2,
+        pickerPosition: "bottom-left"
+    });
+
+    $('#add_department').click(function(){
+        var a = $('.tip_dept').val();
+        var b = $('.dept_name').val();
+        var c = $('#id_dept').val();
+        if(!a){
+            layer.tips("请选择归属部门！",'.tip_dept');
+            return;
+        }
+        if(!b){
+            layer.tips("请填写部门职务！",'.dept_name');
+            $('.dept_name').focus();
+            return;
+        }
+        var input_html = '<input type="hidden" name="deptlist[]" value="'+ c + '::' + b +'" />';
+        $('#add_list').append('<li><b>'+a+' （'+b+'）</b> <b class="red delete" style="cursor:pointer;font-size:1.4em;">&times;</b>'+input_html+'</li>');
+
+    })
+    $('#add_list').on('click','li .delete',function(){
+        $(this).parent().remove();
+    })
+    $('#add_mail_btn').click(function(){
+        var v = $('.tip_mailbox').val();
+        a = $('.tip_mailbox option[value="'+v+'"]').html();
+        var b = $('#maillist_add_permit').val();
+        var d = $('#maillist_add_permit option[value="'+b+'"]').text();
+
+        var input_html = '<input type="hidden" name="maillist[]" value="'+ v + '::' + b +'" />';
+        $('#add_mail_list').append('<li><b>'+a+' （'+d+'）</b> <b class="red delete" style="cursor:pointer;font-size:1.4em;">&times;</b>'+input_html+'</li>')
+    })
+    $('#add_mail_list').on('click','li .delete',function(){
+        $(this).parent().remove();
+    })
+
+    var treeEle;
+    $('#tree').on('click','.tree-item,.tree-branch-header',function(){
+        $('#tree .tree-selected').removeClass('tree-selected');
+        if($(this).hasClass('tree-branch-header')){
+            $(this).parent().addClass('tree-selected');
+        }else{
+            $(this).addClass('tree-selected');
+        }
+        $('.department_choice_tree').hide();
+        var o = treeEle.tree("selectedItems")[0];
+        $('.tip_dept').val(o.text);
+        var did = o.id;
+        $('#id_dept').val(did);
+    })
+
+    var deptArr = {{ dept_list|safe }};
+    function initdepttree(deptArr){
+        var sampleData = initiateDemoData(deptArr);
+        treeEle = $('#tree').ace_tree({
+            dataSource: sampleData['dataSource1'],
+            multiSelect: false,
+            loadingHTML: '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>',
+            'open-icon' : 'ace-icon tree-minus hide',
+            'close-icon' : 'ace-icon tree-plus hide',
+            'selectable' : true,
+            'selected-icon' : 'ace-icon fa fa-check',
+            'unselected-icon' : 'ace-icon fa fa-times',
+            'cacheItems': true,
+            'folderSelect': true,
+            'folder-open-icon' : 'ace-icon tree-plus',
+            'folder-close-icon' : 'ace-icon tree-minus'
+        });
+    }
+    initdepttree(deptArr);
+
+    function initiateDemoData(deptArr){
+        var tree_data = {};
+        for(var i=0;i<deptArr.length;i++){
+            if(deptArr[i].parent<=0){
+                if(deptArr[i].child&&deptArr[i].child>0){
+                    tree_data[deptArr[i].name] = {text:deptArr[i].name,type:"folder",id:deptArr[i].id};
+                    tree_data[deptArr[i].name]['additionalParameters']={"children":getSubDate(deptArr[i].id)};
+                }else{
+                    tree_data[deptArr[i].name] = {text:deptArr[i].name,type:"item",id:deptArr[i].id};
+                }
+            }
+        }
+
+        function getSubDate(pid){
+            var obj = {};
+            for(var i=0;i<deptArr.length;i++){
+                if(deptArr[i]['parent'] == pid){
+                    if(deptArr[i].child&&deptArr[i].child>0){
+                        obj[deptArr[i].name] = {text:deptArr[i].name,type:"folder",id:deptArr[i].id,child:deptArr[i].child}
+                    }else{
+                        obj[deptArr[i].name] = {text:deptArr[i].name,type:"item",id:deptArr[i].id,child:deptArr[i].child}
+                    }
+
+                }
+            }
+            return obj;
+        }
+        function getAdditionalParameters(arr){
+            for(var key in arr){
+                if(arr[key]['type']=="folder"){
+                    arr[key]['additionalParameters']={"children":getSubDate(arr[key]['id'])};
+                    if(arr[key]['additionalParameters']["children"]){
+                        getAdditionalParameters(arr[key]['additionalParameters']["children"])
+                    }
+                }
+            }
+        }
+        getAdditionalParameters(tree_data);
+        var dataSource1 = function(options, callback){
+            var $data = null
+            if(!("text" in options) && !("type" in options)){
+                $data = tree_data;//the root tree
+                callback({ data: $data });
+                return;
+            }
+            else if("type" in options && options.type == "folder") {
+                if("additionalParameters" in options && "children" in options.additionalParameters)
+                    $data = options.additionalParameters.children || {};
+                else $data = {}//no data
+            }
+            if($data != null)//this setTimeout is only for mimicking some random delay
+                callback({ data: $data });
+        }
+        return {'dataSource1': dataSource1}
+    }
+
+    $('#search_input').keyup(function(){
+        var keywords = $(this).val();
+        console.log(keywords)
+        $("#tree").removeData("fu.tree");
+        $("#tree").unbind('click.fu.tree');
+        if(keywords.length>0){
+            var initArr = {{ dept_list|safe }};
+            var reg = new RegExp(keywords, 'i');
+            var arr = [];
+            var textname = '';
+            function getp(id){
+                for(var i=0;i<initArr.length;i++){
+                    var a = initArr[i]['id'];
+                    var pp = initArr[i]['parent'];
+                    var n = initArr[i]['name'];
+                    if(a == id){
+                        textname += " -- " + n;
+                        if(pp>0){
+                            getp(pp);
+                        }
+                    }
+                }
+            }
+            for(var key in initArr){
+                if(initArr[key]['name'].match(reg)){
+                    if(initArr[key]['parent']>0){
+                        textname += initArr[key]['name'];
+                        getp(initArr[key]['parent']);
+                        var obj = {child:0,parent:0,name:textname,id:initArr[key]['id']};
+                        textname = '';
+                    }else{
+                        var obj = {child:0,parent:0,name:initArr[key]['name'],id:initArr[key]['id']};
+                    }
+                    arr.push(obj);
+                }
+            }
+            initdepttree(arr)
+        }else{
+            initdepttree(deptArr);
+        }
+    })
+
+    $('.department_choice').focus(function(){
+        $('.department_choice_tree').show();
+    })
+    $('.close_btn').click(function(){
+        $(this).parent().hide();
+        showb = false;
+    })
+    $('body').click(function(e){
+        var $parents = $(e.target).parents('.department_choice_tree');
+        if((!$(".department_choice").is(":focus"))&&$parents.length<1){
+            $('.department_choice_tree').hide();
+        }
+    })
+</script>
+{% endblock %}
+

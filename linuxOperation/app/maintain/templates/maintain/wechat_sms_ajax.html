@@ -1,0 +1,9 @@
+<td>{{ number }}</td>
+<td>{{ d.phone }}</td>
+<td>{{ d.code|default_if_none:'' }}</td>
+<td>{{ d.get_status_display }}</td>
+<td>{{ d.get_type_display }}</td>
+<td>{{ d.created }}</td>
+<td>{{ d.updated }}</td>
+<td>{{ d.ip|default_if_none:'' }}</td>
+<td>{{ d.ext|default_if_none:'' }}</td>

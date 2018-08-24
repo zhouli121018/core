@@ -1,0 +1,47 @@
+{% extends 'base_site.html' %}
+{% load i18n %}
+{% load static %}
+{% load bootstrap %}
+{% block title %} {% if obj %}{% trans "修改Webmail管理员" %}{% else %}{% trans "添加Webmail管理员" %}{% endif %} {% endblock %}
+{% block breadcrumb %}
+    <li> <a href="#">{% trans "Webmail管理员管理" %}</a></li>
+    <li class="active">{% if obj %}{% trans "修改Webmail管理员" %}{% else %}{% trans "添加Webmail管理员" %}{% endif %}</li>
+{% endblock %}
+{% block page-content %}
+    <div class="row">
+        <div class="col-lg-12"><h1 class="page-header">{% if obj %}{% trans "修改Webmail管理员" %}{% else %}{% trans "添加Webmail管理员" %}{% endif %}</h1></div>
+    </div>
+    <form role="form" action="" method="post">
+        <div class="row">
+            <div class="col-sm-8 ">
+                <div class="panel panel-default" style="margin-bottom: 0px!important;">
+                    <div class="panel-heading">{% if obj %}{% trans "修改Webmail管理员" %}{% else %}{% trans "添加Webmail管理员" %}{% endif %}</div>
+                    <div class="panel-body">
+                        {% csrf_token %}
+                        {{ form.username|bootstrap }}
+                        {{ form.password|bootstrap }}
+                        {{ form.usertype|bootstrap }}
+                        {{ form.disabled|bootstrap }}
+                        {{ form.domain_id }}
+
+                        <button type="submit" class="btn btn-primary btn-sm">{% trans "确认" %}</button>
+                        <button class="btn btn-sm" type="reset">{% trans "重置" %}</button>
+                        <button type="button" class="btn btn-link btn-sm" onclick="location.href='{% url 'webmail_admin_list' %}'">{% trans "取消" %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
+{% block css_block %}
+{% endblock %}
+{% block my_jsblock %}
+    <script>
+        $(function(){
+            var path = "{% url 'webmail_admin_list' %}";
+            $('#sidebar').find('[href="'+path+'"]').parent().first().addClass('active');
+        });
+    </script>
+{% endblock %}
+

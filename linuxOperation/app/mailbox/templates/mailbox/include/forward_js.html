@@ -1,0 +1,475 @@
+<!--/* 自动转发js */-->
+{% load i18n %}
+
+<script>
+    $(function () {
+        $('#modal-forward').on('hidden.bs.modal', function (event) {
+            $(this).removeData('bs.modal').find(".modal-content").empty();
+        })
+
+        $('#modal-forward-add').on('hidden.bs.modal', function (event) {
+            $(this).removeData('bs.modal').find(".modal-content").empty();
+        })
+        $('#modal-forward-edit').on('hidden.bs.modal', function (event) {
+            $(this).removeData('bs.modal').find(".modal-content").empty();
+        })
+
+        $('#modal-forward-add').on('shown.bs.modal',function(){
+            var window_height = $(window).height();
+            $('#modal-forward-add .modal-body').css('maxHeight',window_height-130+'px');
+            var html=`<div class="col-sm-12 con_box" style="margin-bottom: 2px;">
+                                <div class="row">
+                                    <div class="col-sm-3 text-right no-padding">
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <button type="button" style="border:none;border-right:1px solid #aaa;" class="btn btn-default dropdown-toggle and_or" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_b" data_val="1">并</b> <span class="caret"></span></button>
+                                                <ul class="dropdown-menu" style="right:0;left:auto;min-width:52px;">
+                                                    <li><a href="1">并</a></li>
+                                                    <li><a href="-1">或</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <button type="button" style="border:none;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_c" data_val="contains">包含</b> <span class="caret"></span></button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="contains">包含</a></li>
+                                                    <li><a href="not_contains">不包含</a></li>
+                                                </ul>
+                                            </div>
+                                            <input type="text" name="con_val" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button type="button" class="btn btn-sm btn-danger del_btn_condition">删除条件</button>
+                                    </div>
+                                </div>
+                            </div>`;
+            $('.datetime').datetimepicker({
+                format: 'yyyy-mm-dd hh:ii:00',
+                language: 'zh-CN',
+                weekStart: 1,
+                todayBtn: 1,
+                autoclose: 1,
+                // minView: 2,
+                pickerPosition: "bottom-right",
+            });
+            $('#d_min').timepicker({
+                minuteStep: 1,
+                showSeconds: true,
+                showMeridian: false,
+                disableFocus: true
+            }).on('focus', function() {
+                $('#d_min').timepicker('showWidget');
+            }).next().on(ace.click_event, function(){
+                $(this).prev().focus();
+            });
+            $('#d_max').timepicker({
+                minuteStep: 1,
+                showSeconds: true,
+                showMeridian: false,
+                disableFocus: true
+            }).on('focus', function() {
+                $('#d_max').timepicker('showWidget');
+            }).next().on(ace.click_event, function(){
+                $(this).prev().focus();
+            });
+            $('.add_btn_condition1,.add_btn_condition2,.add_btn_condition3,.add_btn_condition4,.add_btn_condition5,.add_btn_condition6').unbind();
+            $('.add_btn_condition1,.add_btn_condition2,.add_btn_condition3,.add_btn_condition4,.add_btn_condition5,.add_btn_condition6').click(function(){
+                $(this).parent().parent().append(html);
+                layer.msg('添加成功');
+            })
+            $('#modal-forward-add').on('click','.del_btn_condition',function(){
+                $(this).parent().parent().parent().remove();
+            })
+            $('#modal-forward-add').on('click','ul.dropdown-menu a',function(e){
+                e.preventDefault();
+                var val = $(this).attr('href');
+                var text = $(this).html();
+                $(this).parents('ul').prev().find('b').html(text).attr('data_val',val);
+                if($(this).parents('ul').prev().hasClass('and_or')){
+                    $(this).parents('.con_parent').find('.and_or').find('b').html(text).attr('data_val',val);
+                }
+            })
+        })
+
+
+        $('#modal-forward-edit').on('shown.bs.modal',function(){
+            var window_height = $(window).height();
+            $('#modal-forward-edit .modal-body').css('maxHeight',window_height-130+'px');
+            var html=`<div class="col-sm-12 con_box" style="margin-bottom: 2px;">
+                                <div class="row">
+                                    <div class="col-sm-3 text-right no-padding">
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <button type="button" style="border:none;border-right:1px solid #aaa;" class="btn btn-default dropdown-toggle and_or" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_b" data_val="1">并</b> <span class="caret"></span></button>
+                                                <ul class="dropdown-menu" style="right:0;left:auto;min-width:52px;">
+                                                    <li><a href="1">并</a></li>
+                                                    <li><a href="-1">或</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group">
+                                            <div class="input-group-btn">
+                                                <button type="button" style="border:none;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_c" data_val="contains">包含</b> <span class="caret"></span></button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="contains">包含</a></li>
+                                                    <li><a href="not_contains">不包含</a></li>
+                                                </ul>
+                                            </div>
+                                            <input type="text" name="con_val" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button type="button" class="btn btn-sm btn-danger del_btn_condition">删除条件</button>
+                                    </div>
+                                </div>
+                            </div>`;
+            $('.datetime').datetimepicker({
+                format: 'yyyy-mm-dd hh:ii:00',
+                language: 'zh-CN',
+                weekStart: 1,
+                todayBtn: 1,
+                autoclose: 1,
+                // minView: 2,
+                pickerPosition: "bottom-right",
+            });
+            $('#d_min').timepicker({
+                minuteStep: 1,
+                showSeconds: true,
+                showMeridian: false,
+                disableFocus: true
+            }).on('focus', function() {
+                $('#d_min').timepicker('showWidget');
+            }).next().on(ace.click_event, function(){
+                $(this).prev().focus();
+            });
+            $('#d_max').timepicker({
+                minuteStep: 1,
+                showSeconds: true,
+                showMeridian: false,
+                disableFocus: true
+            }).on('focus', function() {
+                $('#d_max').timepicker('showWidget');
+            }).next().on(ace.click_event, function(){
+                $(this).prev().focus();
+            });
+            $('.add_btn_condition1,.add_btn_condition2,.add_btn_condition3,.add_btn_condition4,.add_btn_condition5,.add_btn_condition6').unbind();
+            $('.add_btn_condition1,.add_btn_condition2,.add_btn_condition3,.add_btn_condition4,.add_btn_condition5,.add_btn_condition6').click(function(){
+                $(this).parent().parent().append(html);
+                layer.msg('添加成功');
+            })
+            $('#modal-forward-edit').on('click','.del_btn_condition',function(){
+                $(this).parent().parent().parent().remove();
+            })
+            $('#modal-forward-edit').on('click','ul.dropdown-menu a',function(e){
+                e.preventDefault();
+                var val = $(this).attr('href');
+                var text = $(this).html();
+                $(this).parents('ul').prev().find('b').html(text).attr('data_val',val);
+                if($(this).parents('ul').prev().hasClass('and_or')){
+                    $(this).parents('.con_parent').find('.and_or').find('b').html(text).attr('data_val',val);
+                }
+            })
+        })
+
+    })
+function del_forward_contion(id, dom){
+    // $(dom).parent().parent().remove();
+
+    $.post("{% url 'mailbox_ajax_edit_forward' %}", {action:'delete', 'forward_id': id}, function(data){
+        layer.msg(data.msg);
+        $(dom).parent().parent().remove();
+    })
+}
+function change_forward(id, obj, act){
+    $.post("{% url 'mailbox_ajax_edit_forward' %}", {action:act, 'mailbox_id': id, 'value': obj.value}, function(data){
+        layer.msg(data.msg);
+    })
+}
+
+function forward_change_status(id, status, dom){
+    $.post("{% url 'mailbox_ajax_edit_forward' %}", {action:'change_status', 'forward_id': id, 'status': status}, function(data){
+        onclick="del_forward_contion({{ l.id }}, this)"
+        if (status == '1'){
+            $(dom).html('启用');
+            $(dom).attr('onclick', 'forward_change_status(' + id + ', -1, this)');
+            $(dom).parent().prev().html('<span class="text-danger">禁用</span>');
+        }else {
+            $(dom).html('禁用');
+            $(dom).attr('onclick', 'forward_change_status(' + id + ', 1, this)');
+            $(dom).parent().prev().html('<span class="text-success">启用</span>');
+        }
+        layer.msg(data.msg);
+    })
+
+//        $.ajax({
+//            //edit_url
+//            url:'edit_url',
+//            type:'POST',
+//            data:{id:id,status:status},
+//            success:function(data){
+//                console.log(data);
+//                $(dom).html('启用');
+//                $(dom).parent().prev().html('禁用');
+//            }
+//        })
+}
+
+function save_forward(mailbox_id){
+    console.log('add_btn')
+    var is_submit=true;
+    //window.editor.sync();
+    var form = document.getElementById('form_autoforward');
+    $('#exec_date_con').val('');
+    $('#exec_week_con').val('');
+    $('#sender_con').val('');
+    $('#sender_original_con').val('');
+    $('#recipient_original_con').val('');
+    $('#recipient_con').val('');
+    $('#copy_addr_con').val('');
+    $('#subject_con').val('');
+    $('#mailsize_con').val('');
+    var sender_con = '';
+    var sender_original_con = '';
+    var recipient_con = '';
+    var recipient_original_con = '';
+    var copy_addr_con = '';
+    var subject_con = '';
+    var disbaled = $('#exec_date_div #timeset1').prop('checked')? -1 : 1;
+    var time_beg = $('#time_beg').val();
+    var time_end = $('#time_end').val();
+    if (time_beg != undefined && time_beg != '' && time_end != undefined && time_end != '') {
+        $('#exec_date_con').val(disbaled + '#' + time_beg + '#' + time_end);
+    }
+    if (disbaled == -1 && $('#exec_date_con').val() == '') {
+        layer.msg('请选择执行时间');
+        return false;
+    }
+
+    if(form.forward_body.value==''){
+        layer.msg('请填写转发地址');
+        return false;
+    }
+    disbaled = $('#exec_date_div #timeset2').prop('checked') ? -1 : 1;
+    var week_start = $('#exec_date_div #selectTime #week_start').val();
+    var week_end = $('#exec_date_div #selectTime #week_end').val();
+    var start = $('#exec_date_div').find('#d_min').val();
+    var end = $('#exec_date_div').find('#d_max').val();
+    if (start != '' && end != '') {
+        form.exec_week_con.value = disbaled + '#' + week_start + '#' + week_end + '#' + start + '#' + end;
+    }
+    if (disbaled == -1 && $('#exec_week_con').val() == '') {
+        layer.msg('请选择执行时间');
+        return false;
+    }
+
+    disbaled = $('#condition_sender').find('#sender_chk').prop('checked') ? -1 : 1;
+    $('#condition_sender .con_box').each(function (i,dom) {
+        var value = $(this).find('input[name="con_val"]').val();
+        var r = $(this).find('.select_b').attr('data_val');
+        if (r == undefined || r == '') {
+            r = 0;
+        }
+        if (disbaled == -1 && value == '') {
+            layer.msg('请输入[发件人]条件关键字');
+            is_submit = false;
+            return false;
+        }
+        var c = $(this).find('.select_c').attr('data_val');
+        if (value != '' && value != undefined) {
+            sender_con = sender_con + '|' + disbaled + '#' + r + '#' + c + '#' + value;
+        }
+    });
+    form.sender_con.value = sender_con;
+    if (disbaled == -1 && $('#sender_con').val() == '') {
+        layer.msg('请输入[发件人]条件关键字');
+        is_submit = false;
+        return false;
+    }
+    disbaled = $('#condition_sender_original').find('#sender_original_chk').prop('checked')  ? -1 : 1;
+    $('#condition_sender_original .con_box').each(function () {
+        var value = $(this).find('input[name="con_val"]').val();
+        var r = $(this).find('.select_b').attr('data_val');
+        if (r == undefined || r == '') {
+            r = 0;
+        }
+        if (disbaled == -1 && value == '') {
+            layer.msg('请输入[原始发件人]条件关键字');
+            is_submit = false;
+            return false;
+        }
+        var c = $(this).find('.select_c').attr('data_val');
+        if (value != '' && value != undefined) {
+            sender_original_con = sender_original_con + '|' + disbaled + '#' + r + '#' + c + '#' + value;
+        }
+    });
+    form.sender_original_con.value = sender_original_con;
+    if (disbaled == -1 && $('#sender_original_con').val() == '') {
+        layer.msg('请输入[原始发件人]条件关键字');
+        is_submit = false;
+        return false;
+    }
+
+    disbaled = $('#condition_recipient_original').find('#recipient_original_chk').prop('checked') ? -1 : 1;
+    $('#condition_recipient_original .con_box').each(function () {
+        var value = $(this).find('input[name="con_val"]').val();
+        var r = $(this).find('.select_b').attr('data_val');
+        if (r == undefined || r == '') {
+            r = 0;
+        }
+        if (disbaled == -1 && value == '') {
+            layer.msg('请输入[原始收件人]条件关键字');
+            is_submit = false;
+            return false;
+        }
+        var c = $(this).find('.select_c').attr('data_val');
+        if (value != '' && value != undefined) {
+            recipient_original_con = recipient_original_con + '|' + disbaled + '#' + r + '#' + c + '#' + value;
+        }
+    });
+    form.recipient_original_con.value = recipient_original_con;
+    if (disbaled == -1 && $('#recipient_original_con').val() == '') {
+        layer.msg('请输入[原始收件人]条件关键字');
+        is_submit = false;
+        return false;
+    }
+
+    disbaled = $('#condition_recipient').find('#recipient_chk').prop('checked')? -1 : 1;
+    $('#condition_recipient .con_box').each(function () {
+        var value = $(this).find('input[name="con_val"]').val();
+        var r = $(this).find('.select_b').attr('data_val');
+        if (r == undefined || r == '') {
+            r = 0;
+        }
+        if (disbaled == -1 && value == '') {
+            layer.msg('请输入[收件人]条件关键字');
+            is_submit = false;
+            return false;
+        }
+        var c = $(this).find('.select_c').attr('data_val');
+        if (value != '' && value != undefined) {
+            recipient_con = recipient_con + '|' + disbaled + '#' + r + '#' + c + '#' + value;
+        }
+    });
+    form.recipient_con.value = recipient_con;
+    if (disbaled == -1 && $('#recipient_con').val() == '') {
+        layer.msg('请输入[收件人]条件关键字');
+        is_submit = false;
+        return false;
+    }
+
+
+    disbaled = $('#condition_copy_addr').find('#copy_addr_chk').prop('checked') ? -1 : 1;
+    $('#condition_copy_addr .con_box').each(function () {
+        var value = $(this).find('input[name="con_val"]').val();
+        var r = $(this).find('.select_b').attr('data_val');
+        if (r == undefined || r == '') {
+            r = 0;
+        }
+        if (disbaled == -1 && value == '') {
+            layer.msg('请输入[抄送人]条件关键字');
+            is_submit = false;
+            return false;
+        }
+        var c = $(this).find('.select_c').attr('data_val');
+        if (value != '' && value != undefined) {
+            copy_addr_con = copy_addr_con + '|' + disbaled + '#' + r + '#' + c + '#' + value;
+        }
+    });
+    form.copy_addr_con.value = copy_addr_con;
+    if (disbaled == -1 && $('#copy_addr_con').val() == '') {
+        layer.msg('请输入[抄送人]条件关键字');
+        is_submit = false;
+        return false;
+    }
+
+    disbaled = $('#condition_subject').find('#subject_chk').prop('checked') ? -1 : 1;
+    $('#condition_subject .con_box').each(function () {
+        var value = $(this).find('input[name="con_val"]').val();
+        var r = $(this).find('.select_b').attr('data_val');
+        if (r == undefined || r == '') {
+            r = 0;
+        }
+        var c = $(this).find('.select_c').attr('data_val');
+        if (disbaled == -1 && value == '') {
+            layer.msg('请输入[主题]条件关键字');
+            is_submit = false;
+            return false;
+        }
+        if (value != '' && value != undefined) {
+            subject_con = subject_con + '|' + disbaled + '#' + r + '#' + c + '#' + value;
+        }
+    });
+    form.subject_con.value = subject_con;
+    if (disbaled == -1 && $('#subject_con').val() == '') {
+        layer.msg('请输入[主题]条件关键字');
+        is_submit = false;
+        return false;
+    }
+
+    var mailsize_con = $('#condition_mailsize').find('#mailsize_beg').val() + '#' + $('#condition_mailsize').find('#mailsize_end').val();
+    disbaled = $('#condition_mailsize').find('#mailsize_chk').prop('checked') ? -1 : 1;
+    console.log(mailsize_con)
+    if(disbaled == -1 && $('#condition_mailsize').find('#mailsize_beg').val()==''){
+        layer.msg('请输入[邮件大小]条件关键字');
+        is_submit = false;
+        return false;
+    }
+    if(disbaled == -1 && $('#condition_mailsize').find('#mailsize_end').val()==''){
+        layer.msg('请输入[邮件大小]条件关键字');
+        is_submit = false;
+        return false;
+    }
+    if (mailsize_con != '#') {
+        mailsize_con = disbaled + '#' + mailsize_con;
+        form.mailsize_con.value = mailsize_con;
+
+    } else {
+        form.mailsize_con.value = '';
+    }
+    console.log($('#mailsize_con').val())
+    if (disbaled == -1 && $('#mailsize_con').val() == '') {
+        layer.msg('请输入[邮件大小]条件关键字');
+        is_submit = false;
+        return false;
+    }
+    if (form.exec_date_con.value == '' && form.exec_week_con.value == '') {
+        layer.msg('请选择[执行时间]条件关键字');
+        is_submit = false;
+        return false;
+    }
+    if(is_submit){
+        layer.msg('提交中...');
+        console.log($('#form_autoforward').serialize())
+
+        var data = {
+            action:$("#forward_action_id").val(),
+            rule_id:$("#rule_id").val(),
+            copy_addr_con:$("#copy_addr_con").val(),
+            subject_con:$("#subject_con").val(),
+            sender_original_con:$("#sender_original_con").val(),
+            sender_con:$("#sender_con").val(),
+            recipient_con:$("#recipient_con").val(),
+            recipient_original_con:$("#recipient_original_con").val(),
+            exec_date_con:$("#exec_date_con").val(),
+            exec_week_con:$("#exec_week_con").val(),
+            mailsize_con:$("#mailsize_con").val(),
+            disabled:$("input[name='disabled']").prop('checked') ? -1 : 1,
+            logic:$("input[name='logic']:checked").val(),
+            body:$("#forward_body").val(),
+            mailbox_id:mailbox_id,
+            keep_mail:$("#keep_mail").prop("checked") ? 1: -1,
+        };
+        console.log(data);
+        $.post("{% url 'mailbox_ajax_edit_forward' %}", data, function(data){
+            layer.msg(data.msg);
+            $('#id_return').click();
+        })
+    }
+}
+</script>

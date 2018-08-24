@@ -1,0 +1,23 @@
+<td>{{ number }}</td>
+<td>{{ d.datetime|date:'Y-m-d H:i' }}</td>
+<td>{{ d.mailbox.name|default_if_none:'' }}</td>
+<td>{{ d.mailbox.user.realname|default_if_none:'' }}</td>
+<td>{{ d.mailbox.username|default_if_none:'' }}</td>
+<td>{{ d.mailbox.user.tel_mobile|default_if_none:'' }}</td>
+<td>{{ d.wxuser.nickname|default_if_none:'' }}</td>
+<td>{% if d.wxuser.img %}<a href="{{ d.wxuser.img }}" target="_blank">查看头像</a>{% else %}-{% endif %}</td>
+<td>{{ d.get_classify_display }}</td>
+<td>
+    {% autoescape off %}
+    {{ d.show_action }}
+    {% endautoescape %}
+</td>
+<td>
+    {% if l.result == '1' %}
+        <span class="text-success">{{ d.get_result_display }}</span>
+    {% else %}
+        <span class="text-danger">{{ d.get_result_display }}</span>
+    {% endif %}
+</td>
+<td>{{ d.description|default_if_none:'' }}</td>
+<td>{{ d.clientip|default_if_none:'' }}</td>

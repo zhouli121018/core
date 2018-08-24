@@ -1,0 +1,9 @@
+<td>{{ d.id }}</td>
+<td>{{ number }}</td>
+<td>{{ mailobj.user.realname }}</td>
+<td>{{ mailobj.username }}</td>
+<td><input value="{{ d.position|default_if_none:'' }}" type="text" maxlength="200" id="id_position_{{ d.id }}"></td>
+<td>
+    <a type="button" class="red delete btn btn-white btn-info btn-xs" href="Javascript: ModefyRemark('{{ d.id }}')">修改职位</a>
+    <a type="button" class="red delete btn btn-white btn-danger btn-xs" href="Javascript: Delete({{ d.id }})">删除</a>
+</td>

@@ -1,0 +1,215 @@
+{% load i18n %}
+{% load static %}
+
+<div class="row">
+    <div class="col-sm-12">
+        <input type="button" value="添加链接" data-toggle="modal" onclick="clickDomainWebmailLinkAdd()" class="btn btn-success btn-sm pull-right">
+    </div>
+</div>
+<div class="table-header" style="margin-top:8px;">首页链接设置</div>
+
+<div class="modal fade" id="id_link_add_ui">
+</div>
+
+{% for i, dd in form_link.getLinkList %}
+    <p class="link_title" style="cursor: pointer;font-weight:bold;color:blue;background:#ccc;padding:2px;font-size:18px;margin-top:0;">链接{{ i }}-{{ dd.title }}
+    <button type="button" class="btn btn-sm btn-info" onclick="clickDomainWebmailLinkUpdate({{i}})">修改</button>
+    <button type="button" class="btn btn-sm btn-info" onclick="clickDomainWebmailLinkDelete({{i}})">删除</button>
+    </p>
+    <div style="padding-left:16px;">
+            <div class="row">
+                <div class="col-sm-4" style="margin-bottom:4px;">
+                    <div class="input-group">
+                        <span class="input-group-addon">名称</span>
+                        <input type="text" name="title" value="{{ dd.title }}" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <span class="input-group-addon">顺序</span>
+                        <input type="number" name="order" value="{{ dd.order }}" class="form-control" readonly>
+                    </div>
+                </div>
+            </div>
+            <p style="background:#eee;padding:2px;">链接项：1</p>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="input-group" style="margin-bottom:6px;">
+                        <span class="input-group-addon">标题</span>
+                        <input type="text" name="title_0" value="{{ dd.title_0 }}" class="form-control" readonly>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">链接</span>
+                        <input type="text" name="url_0" value="{{ dd.url_0 }}" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <span style="vertical-align:top;">描述</span>
+                    <textarea  name="desc_0" style="width:80%;margin-left:20px;" rows="3"  readonly>{{ dd.desc_0 }}</textarea>
+                </div>
+                <div class="col-sm-4">
+                    <img src="data:image/png;base64,{{ dd.img_0 }}">
+                </div>
+            </div>
+            <p style="background:#eee;padding:2px;">链接项：2</p>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="input-group" style="margin-bottom:6px;">
+                        <span class="input-group-addon">标题</span>
+                        <input type="text"  name="title_1" value="{{ dd.title_1 }}" class="form-control" readonly>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">链接</span>
+                        <input type="text"  name="url_1" value="{{ dd.url_1 }}" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <span style="vertical-align:top;">描述</span>
+                    <textarea  name="desc_1" style="width:80%;margin-left:20px;" rows="3" readonly>{{ dd.desc_1 }}</textarea>
+                </div>
+                <div class="col-sm-4">
+                    <img src="data:image/png;base64,{{ dd.img_1 }}">
+                </div>
+            </div>
+            <p style="background:#eee;padding:2px;">链接项：3</p>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="input-group" style="margin-bottom:6px;">
+                        <span class="input-group-addon">标题</span>
+                        <input type="text" name="title_2" value="{{ dd.title_2 }}" class="form-control" readonly>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">链接</span>
+                        <input type="text" name="url_2" value="{{ dd.url_2 }}" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <span style="vertical-align:top;">描述</span>
+                    <textarea  name="desc_2" style="width:80%;margin-left:20px;" rows="3" readonly>{{ dd.desc_2 }}</textarea>
+                </div>
+                <div class="col-sm-4">
+                    <img src="data:image/png;base64,{{ dd.img_2 }}">
+                </div>
+            </div>
+            <p style="background:#eee;padding:2px;">链接项：4</p>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="input-group" style="margin-bottom:6px;">
+                        <span class="input-group-addon">标题</span>
+                        <input type="text" name="title_3" value="{{ dd.title_3 }}" class="form-control" readonly>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">链接</span>
+                        <input type="text"  name="url_3" value="{{ dd.url_3 }}" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <span style="vertical-align:top;">描述</span>
+                    <textarea  name="desc_3" rows="3" style="width:80%;margin-left:20px;" readonly>{{ dd.desc_3 }}</textarea>
+                </div>
+                <div class="col-sm-4">
+                    <img src="data:image/png;base64,{{ dd.img_3 }}">
+                </div>
+            </div>
+    </div>
+{% endfor %}
+
+<script>
+
+    function clickDomainWebmailLinkAdd(id){
+        console.log("clickDomainWebmailLinkAdd");
+        $.ajax({
+            url:"{% url 'domain_webmail_link_add' %}",
+            type:"POST",
+            data:"&action=view",
+            success:function(html){
+                $('#id_link_add_ui').html(html);
+                $('#id_link_add_ui').modal('show');
+            }
+        })
+        return;
+    }
+
+    function clickDomainWebmailLinkUpdate(idx){
+        console.log("clickDomainWebmailLinkUpdate:    "+idx);
+        $.ajax({
+            url:"{% url 'domain_webmail_link_add' %}",
+            type:"POST",
+            data:"&action=view&idx="+idx,
+            success:function(html){
+                $('#id_link_add_ui').html(html);
+                $('#id_link_add_ui').modal('show');
+            }
+        })
+        return;
+    }
+
+    function clickDomainWebmailLinkAddSave(){
+        console.log("clickDomainWebmailLinkAddSave");
+        var strArr = ["","","",""];
+        var count = 0;
+        var loadcount = 0;
+        for(var i=0;i<document.getElementsByClassName('upload_logo').length;i++){
+            var selectedFile = document.getElementsByClassName('upload_logo')[i].files[0];
+            if(selectedFile){
+                count ++;
+                var reader = new FileReader();
+                reader.readAsDataURL(selectedFile);//读取文件的内容,也可以读取文件的URL
+                function getI(i,dom) {
+                    dom.onload = function(){
+                        var s = dom.result.substring(dom.result.indexOf(",") + 1);
+                        s = encodeURIComponent(s);
+                        strArr[i] = s;
+                        loadcount++;
+                        if(loadcount == count){
+                            console.log(strArr.join(','))
+//                            postDomainWebmailLinkAdd(strArr.join(','))
+                            postDomainWebmailLinkAdd(strArr[0],strArr[1],strArr[2],strArr[3])
+                        }
+                    }
+                }
+                getI(i,reader)
+            }
+        }
+//        postDomainWebmailLinkAdd(s,"","","");
+        console.log(count)
+        if(count==0){
+            postDomainWebmailLinkAdd("","","","")
+        }
+
+
+    }
+
+    function postDomainWebmailLinkAdd(logofile_1,logofile_2,logofile_3,logofile_4){
+        var str = $(".form_webmail_link").serialize();
+        $.ajax(
+                {
+                    url:"{% url 'domain_webmail_link_add' %}",
+                    type:"POST",
+                    data:str+"&logofile_1="+logofile_1+"&logofile_2="+logofile_2+"&logofile_3="+logofile_3+"&logofile_4="+logofile_4,
+                    success: function(html){
+                        $("#id_link_add_ui").modal('hide');
+                                    setTimeout(function(){
+                                        $('#tabs_first').html(html);
+                                        $('.modal-backdrop').remove();
+                                    },600)
+                    }
+                }
+        );
+    }
+
+    function clickDomainWebmailLinkDelete(idx){
+        console.log("clickDomainWebmailLinkDelete:    "+idx);
+        $.ajax({
+            url:"{% url 'domain_webmail_link' %}",
+            type:"POST",
+            data:"&action=delete&idx="+idx,
+            success:function(html){
+                $('#tabs_first').html(html);
+                $('.modal-backdrop').remove();
+            }
+        })
+        return;
+    }
+
+</script>

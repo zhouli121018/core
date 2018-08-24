@@ -1,0 +1,702 @@
+{% load i18n %}
+
+<div id="tabs_web_d">
+    <div id="sub_webmail_tabs">
+        <ul>
+            <li>
+                <a href="#sub_webmail">Webmail 页面定制</a>
+            </li>
+            <li>
+                <a href="#tabs_logo">页面LOGO设置</a>
+            </li>
+            <li >
+                <a href="#tabs_login">登录模板选择</a>
+            </li>
+
+            <li >
+                <a href="#tabs_ad">页面广告设置</a>
+            </li>
+            <li >
+                <a href="#tabs_first" onclick="clickWebmailLink()">首页链接设置</a>
+            </li>
+
+            <li >
+                <a href="#tabs_paple" onclick="clickWebmailLetter()">信纸管理</a>
+            </li>
+
+        </ul>
+
+        <div id="sub_webmail">
+            <div class="table-header" style="cursor:pointer;">
+                Webmail 页面定制
+            </div>
+            <form class="form-horizontal form_basic" role="form" name="form_basic" id="form_basic" action="" method="POST">
+                    {% csrf_token %}
+            <table class="table table-bordered table-hover table-striped">
+                <tr>
+                    <td class="text-right"><span class="red bold">*</span>企业名称：</td>
+                    <td>
+                        <input type="text" name="company" value="{{ form_basic.company.value }}" class="form-control" style="width:200px;">
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="text-right">页面标题：</td>
+                    <td>
+                        <input type="text" name="cf_title" value="{{ form_basic.cf_title.value }}" class="form-control" style="width:200px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">登录页面自动输入域名：</td>
+                    <td >
+                        <label style="margin-right:20px;">
+                            <input type="radio" name="cf_login_page" value="default" {% if form_basic.cf_login_page.value == 'default' %} checked {% endif %}> 显示
+                        </label>
+                        <label >
+                            <input type="radio" name="cf_login_page" value="manual" {% if form_basic.cf_login_page.value != 'default' %} checked {% endif %}> 不显示
+                        </label>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="text-right">ICP 备案是否显示：</td>
+                    <td class="row">
+                        <div class="col-sm-4 no-padding">
+                            <label class="inline" >
+                                <input name="sw_icp_show" value="1" {% if form_basic.sw_icp_show.value == '1' %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5 open">
+                                <span class="lbl"></span>
+                            </label>
+                        </div>
+                        <div class="col-sm-4 no-padding">
+                            <div class="input-group" >
+                                <span class="input-group-addon">备案号</span>
+                                <input type="text" class="form-control" name="cf_icp_number" value="{{ form_basic.cf_icp_number.value }}">
+                            </div>
+                        </div>
+                        <div class="col-sm-4 ">
+                            <div class="input-group" >
+                                <span class="input-group-addon">链接地址</span>
+                                <input type="text" class="form-control" name="cf_icp_url" value="{{ form_basic.cf_icp_url.value }}">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">帮助文件地址：</td>
+                    <td>
+                        <input type="text" name="cf_faq_url" value="{{ form_basic.cf_faq_url.value }}" class="form-control" style="width:200px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">系统公告：</td>
+                    <td class="row">
+                        <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#system_notice_set">设置系统公告</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">登录系统地点限制：</td>
+                    <td class="row">
+                        <div class="col-sm-4 no-padding">
+                            <label class="inline" >
+                                <input name="sw_unique_login" value="1" {% if form_basic.sw_unique_login.value == '1' %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5 open">
+                                <span class="lbl"></span>
+                            </label>
+                        </div>
+                        <div class="col-sm-8 no-padding">
+                            <span>注：打开本功能开关以后，一个邮件账户在一个地方登录后，之前的有效登录将会被强制登出；</span>
+
+                        </div>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">启用验证码功能：</td>
+                    <td class="row">
+                        <div class="col-sm-4 no-padding">
+                            <input type="text" id="spinner1" name="sw_login_captcha_error_num" value="{{ form_basic.sw_login_captcha_error_num.value }}" class="form-control"/>
+                        </div>
+                        <div class="col-sm-8 no-padding">
+                            <span>注：-1表示永远显示验证码，表示多少次验证错误后显示验证码；</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">登出跳转地址：</td>
+                    <td>
+                        <input type="text" name="cf_logout_url" value="{{ form_basic.cf_logout_url.value }}" class="form-control" style="width:200px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">SSL访问：</td>
+                    <td >
+                        <label class="inline" >
+                            <input name="sw_login_ssl" value="1" {% if form_basic.sw_login_ssl.value == '1' %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5 open">
+                            <span class="lbl"></span>
+                        </label>
+                    </td>
+                </tr>
+            </table>
+            <div class=" ">
+            <input type="hidden" value="{{ domain.id }}" name="domain_id" id="domain_id" />
+            <input type="hidden" value="{{ domain.domain }}" name="domain" id="domain" />
+            <input type="hidden" value="basic" name="action" id="action_basic" />
+            </div>
+            <div class="modal-footer center">
+                <button type="button" class="btn btn-success" onclick="clickSubmitButton('form_basic')">提交</button>
+                <button type="button"  class="btn btn-warning">重置</button>
+            </div>
+        </form>
+        </div>
+
+        <div id="tabs_logo">
+            <div class="content_1">
+                <div class="table-header">
+                    Webmail Logo 设置
+                </div>
+                <form class="form-horizontal form_webmail_logo" role="form" action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>
+                                <span class="blue">当前Logo：</span>
+                            </td>
+                            <td>
+                                <span>
+                                    {% if form_logo.getWebmailLogoData %}
+                                        <img src="data:image/png;base64,{{ form_logo.getWebmailLogoData }}">
+                                    {% else %}
+                                        当前没有设置Logo！
+                                    {% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="blue">更新Logo：</span>
+                            </td>
+                            <td class="row no-padding-left">
+                                <div class="col-sm-6">
+                                    <input type="file" name="logofile" class="class_import_logo_webmail"  value="" style="float: left">
+                                    <p class="help-block">
+                                        注：图片推荐大小为 180 x 45 像素。允许后缀:jpg, png, gif。
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class=" ">
+                    <input type="hidden" value="{{ domain.id }}" name="domain_id"  />
+                    <input type="hidden" value="{{ domain.domain }}" name="domain" />
+                    </div>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="importLogoFile('webmail_logo','form_webmail_logo')" >{% trans "确认" %}</button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="deleteLogoFile('webmail_logo_del','form_webmail_logo')" >{% trans "删除" %}</button>
+                    <button class="btn btn-sm" type="reset">{% trans "重置" %}</button>
+                </form>
+
+                <div class="hr hr-18 dotted hr-double"></div>
+                <div class="table-header">
+                    登录页面 Logo 设置
+                </div>
+                <form class="form-horizontal form_login_logo" role="form" action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>
+                                <span class="blue">当前Logo：</span>
+                            </td>
+                            <td>
+                                <span>
+                                    {% if form_logo.getLoginLogoData %}
+                                        <img src="data:image/png;base64,{{ form_logo.getLoginLogoData }}">
+                                    {% else %}
+                                        当前没有设置Logo！
+                                    {% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="blue">更新Logo：</span>
+                            </td>
+                            <td class="row no-padding-left">
+                                <div class="col-sm-6">
+                                    <input type="file" name="logofile" class="class_import_logo_login"  value="" style="float: left">
+                                    <p class="help-block">
+                                        注：图片推荐大小为 180 x 45 像素。允许后缀:jpg, png, gif。
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class=" ">
+                    <input type="hidden" value="{{ domain.id }}" name="domain_id" id="domain_id" />
+                    <input type="hidden" value="{{ domain.domain }}" name="domain" id="domain" />
+                    </div>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="importLogoFile('login_logo','form_login_logo')" >{% trans "确认" %}</button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="deleteLogoFile('login_logo_del','form_login_logo')" >{% trans "删除" %}</button>
+                    <button class="btn btn-sm" type="reset">{% trans "重置" %}</button>
+                </form>
+            </div>
+        </div>
+        <div id="tabs_login">
+            <div class="table-header">登录模板选择</div>
+            <div class="row" style="margin-bottom:12px;">
+                <div class="col-sm-3 {% if form_login.cf_login_page.value == 'default' %} active {% endif %} ">
+                    <div>
+                        <img src="../../static/assets/img/login_temp1.png" class="img-responsive" alt="1" onclick="clickLoginTemplImg('default')">
+                        <div>
+                            默认登录页面
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-3 {% if form_login.cf_login_page.value == 'manual' %} active {% endif %} ">
+                    <div>
+                        <img src="../../static/assets/img/login_temp2.png" class="img-responsive" alt="1" onclick="clickLoginTemplImg('manual')">
+                        <div>
+                            手动域名登录页面
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 {% if form_login.cf_login_page.value == 'adlogin' %} active {% endif %} ">
+                    <div>
+                        <img src="../../static/assets/img/login_temp3.png" class="img-responsive" alt="1" onclick="clickLoginTemplImg('adlogin')">
+                        <div>
+                            广告风格登录页面
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-3 {% if form_login.cf_login_page.value == 'gao' %} active {% endif %} ">
+                    <div>
+                        <img src="../../static/assets/img/login_temp4.png" class="img-responsive" alt="1" onclick="clickLoginTemplImg('gao')">
+                        <div>
+                            大气管理员风格页面
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-3 {% if form_login.cf_login_page.value == 'test' %} active {% endif %} ">
+                    <div style="position: relative;">
+                        <img src="../../static/assets/img/login_temp5.png" class="img-responsive" alt="1" onclick="clickLoginTemplImg('test')">
+                        <div style="">
+                            轮播图风格登录页面
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-3 {% if form_login.cf_login_page.value == 'center' %} active {% endif %} ">
+                    <div>
+                        <img src="../../static/assets/img/login_temp6.png" class="img-responsive" alt="1" onclick="clickLoginTemplImg('center')">
+                        <div>
+                            登录框居中登录页面
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-3 {% if form_login.cf_login_page.value == 'sanya' %} active {% endif %} ">
+                    <div>
+                        <img src="../../static/assets/img/login_temp7.png" class="img-responsive" alt="1" onclick="clickLoginTemplImg('sanya')">
+                        <div>
+                            背景图风格登录页面
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tabs_ad">
+            <div class="table-header">
+                登录页面广告设置
+            </div>
+                <table class="table table-bordered">
+                    <tr>
+                        <td>
+                            <span class="blue">广告位1：</span>
+                        </td>
+                        <td class="row no-padding-left">
+                            <form class="form-horizontal form_login_advert_1" role="form" action="" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="col-sm-6">
+                                <p>
+                                {% if form_login_advert.getAdvertData_1 %}
+                                    <img src="data:image/png;base64,{{ form_login_advert.getAdvertData_1 }}">
+                                {% else %}
+                                    当前广告（没有设置）
+                                {% endif %}
+                                </p>
+                                <input type="file" name="advert_logo_1" class="class_import_advert_logo_1"  value="" style="float: left">
+                                <p class="help-block">
+                                    注：图片推荐大小为 380 x 60 像素。允许后缀:jpg, png, gif。
+                                </p>
+                                <p class="red">链接地址</p>
+                                <input type="text" name="advert_link_1" value="{{ form_login_advert.advert_link_1 }}" style="width:200px;">
+                                <div class=" ">
+                                    <input type="hidden" value="{{ domain.id }}" name="domain_id"  />
+                                    <input type="hidden" value="{{ domain.domain }}" name="domain"  />
+                                </div>
+                                <button type="button" class="btn btn-primary btn-sm" onclick="importAdvertFile('login_advert_1','form_login_advert_1')" >{% trans "确认" %}</button>
+                                <button type="button" class="btn btn-primary btn-sm" onclick="deleteAdvertFile('login_advert_1_del','form_login_advert_1')" >{% trans "删除" %}</button>
+                                <button class="btn btn-sm" type="reset">{% trans "重置" %}</button>
+                            </div>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="blue">广告位2：</span>
+                        </td>
+                        <td class="row no-padding-left">
+                            <form class="form-horizontal form_login_advert_2" role="form" action="" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="col-sm-6">
+                                <p>
+                                {% if form_login_advert.getAdvertData_2 %}
+                                    <img src="data:image/png;base64,{{ form_login_advert.getAdvertData_2 }}">
+                                {% else %}
+                                    当前广告（没有设置）
+                                {% endif %}
+                                </p>
+                                <input type="file" name="advert_logo_2" class="class_import_advert_logo_2"  value="" style="float: left">
+                                <p class="help-block">
+                                    注：图片推荐大小为 380 x 60 像素。允许后缀:jpg, png, gif。
+                                </p>
+                                <p class="red">链接地址</p>
+                                <input type="text" name="advert_link_2" value="{{ form_login_advert.advert_link_2 }}" style="width:200px;">
+                                <div class=" ">
+                                    <input type="hidden" value="{{ domain.id }}" name="domain_id"  />
+                                    <input type="hidden" value="{{ domain.domain }}" name="domain"  />
+                                </div>
+                                <button type="button" class="btn btn-primary btn-sm" onclick="importAdvertFile('login_advert_2','form_login_advert_2')" >{% trans "确认" %}</button>
+                                <button type="button" class="btn btn-primary btn-sm" onclick="deleteAdvertFile('login_advert_2_del','form_login_advert_2')" >{% trans "删除" %}</button>
+                                <button class="btn btn-sm" type="reset">{% trans "重置" %}</button>
+                            </div>
+                            </form>
+                        </td>
+                    </tr>
+                </table>
+            <div class="hr hr-18 dotted hr-double"></div>
+            <div class="table-header">
+                Webmail 首页广告设置
+            </div>
+                <table class="table table-bordered">
+                    <tr>
+                        <td>
+                            <span class="blue">广告位1：</span>
+                        </td>
+                        <td class="row no-padding-left">
+                            <form class="form-horizontal form_login_advert_3" role="form" action="" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="col-sm-6">
+                                <p>
+                                {% if form_login_advert.getAdvertData_3 %}
+                                    <img src="data:image/png;base64,{{ form_login_advert.getAdvertData_3 }}">
+                                {% else %}
+                                    当前广告（没有设置）
+                                {% endif %}
+                                </p>
+                                <input type="file" name="advert_logo_3" class="class_import_advert_logo_3"  value="" style="float: left">
+                                <p class="help-block">
+                                    注：图片推荐大小为 230 x 490 像素。允许后缀:jpg, png, gif。
+                                </p>
+                                <p class="red">链接地址</p>
+                                <input type="text" name="webmail_link" value="{{ form_login_advert.webmail_link }}" style="width:200px;">
+                                <div class=" ">
+                                    <input type="hidden" value="{{ domain.id }}" name="domain_id" />
+                                    <input type="hidden" value="{{ domain.domain }}" name="domain"  />
+                                </div>
+                                <button type="button" class="btn btn-primary btn-sm" onclick="importAdvertFile('login_advert_3','form_login_advert_3')" >{% trans "确认" %}</button>
+                                <button type="button" class="btn btn-primary btn-sm" onclick="deleteAdvertFile('login_advert_3_del','form_login_advert_3')" >{% trans "删除" %}</button>
+                                <button class="btn btn-sm" type="reset">{% trans "重置" %}</button>
+                            </div>
+                            </form>
+                        </td>
+                    </tr>
+                </table>
+        </div>
+
+        <div id="tabs_first">
+        </div>
+
+        <div id="tabs_paple">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="system_notice_set" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">设置系统公告</h4>
+            </div>
+            <form class="form-horizontal form_anounce" role="form" name="form_anounce" id="id_form_anounce" action="" method="POST">
+                    {% csrf_token %}
+            <div class="modal-body">
+                <div class="content_1">
+                    <div class="table-header">设置系统公告</div>
+                    <table class="table table-bordered">
+                        <tr>
+                            <td style="width:20%;min-width:150px;">系统公告标题：</td>
+                            <td class="row">
+                                <div class="col-sm-4 no-padding">
+                                    <input type="text" class="form-control" name="title" value="{{ form_anounce.title }}">
+                                </div>
+                                <!--
+                                <div class="col-sm-8">
+                                    <input type="hidden" class="form-control"  name="title_color" value="{{ form_anounce.title_color }}">
+                                    <select name="mycolor" id="mycolor" class="form-control">
+                                        <option value="rgb(220,55,3)">red</option>
+                                        <option value="blue" selected>blue</option>
+                                        <option value="black">black</option>
+                                        <option value="green">green</option>
+                                        <option value="purple">purple</option>
+                                    </select>
+                                </div>
+                                -->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:20%;min-width:150px;">系统公告高度：</td>
+                            <td class="row">
+                                <div class="col-sm-4 no-padding">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" name="height" value="{{ form_anounce.height }}">
+                                        <span class="input-group-addon">px</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </table>
+                    <div class="wysiwyg-editor" id="editor_all_2">
+                        {{ form_anounce.content }}
+                    </div>
+                </div>
+                <div class=" ">
+                <input type="hidden" value="{{ domain.id }}" name="domain_id" />
+                <input type="hidden" value="{{ domain.domain }}" name="domain"  />
+                <input type="hidden" value="sys_anounce" name="action" id="action_sys_anounce" />
+                </div>
+                <div class="modal-footer center">
+                    <button type="button" class="btn btn-success" onclick="clickSubmitButton('form_anounce')">提交</button>
+                    <button type="button"  class="btn btn-warning">重置</button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $('#sub_webmail_tabs').tabs();
+//    var editor_all_2_content = htmlDecodeByRegExp("{{ form_agree.cf_agreement.value }}");
+//    $('#editor_all_2').html(editor_all_2_content);
+    var dhtml2 = htmlDecodeByRegExp($('#editor_all_2').html());
+    $('#editor_all_2').html(dhtml2);
+    initEditor('#editor_all_2');
+
+//    $('#mycolor').ace_colorpicker().on('change', function() {
+//        alert(this.value);
+//        alert(this.selectedIndex);
+//        $('input[name="title_color"]').val(this.value)
+//    });
+    $('#spinner1').ace_spinner(
+            {
+                value:3,min:-1,max:10,step:1, btn_up_class:'btn-info' , btn_down_class:'btn-info'
+            })
+            .closest('.ace-spinner')
+            .on('changed.fu.spinbox', function(){
+//                    alert($('#spinner1').val())
+    });
+
+    $('#tabs_login .row .col-sm-3>div').click(function(){
+        $(this).parent().addClass('active').siblings().removeClass('active');
+    })
+
+    function clickSubmitButton(form_name){
+        var str = $("."+form_name).serialize();
+        if (form_name == "form_anounce"){
+            content = $("#editor_all_2").html();
+            content = encodeURIComponent(content);
+            str += "&content="+content;
+        }
+        $.ajax({
+            url:"{% url 'domain_webmail' %}",
+            type:"POST",
+            data:str,
+            success:function(data){
+                $('#domain_webmail').html('<div>保存中...</div>');
+                                setTimeout(function(){
+                                    $('#domain_webmail').html(data);
+                                    $('.modal-backdrop').remove();
+                                },100)
+            }
+        })
+    };
+
+    function importLogoFile(action, form_name){
+        if (action=="webmail_logo"){
+            var str = $('.class_import_logo_webmail').val();
+            var selectedFile = document.getElementsByClassName('class_import_logo_webmail')[0].files[0];
+            if(!selectedFile){
+                layer.tips("请选择文件！",'.class_import_logo_webmail+');
+                return;
+            }
+        } else {
+            var str = $('.class_import_logo_login').val();
+            var selectedFile = document.getElementsByClassName('class_import_logo_login')[0].files[0];
+            if(!selectedFile){
+                layer.tips("请选择文件！",'.class_import_logo_login+');
+                return;
+            }
+        }
+
+        var reader = new FileReader();
+        reader.readAsDataURL(selectedFile);//读取文件的内容,也可以读取文件的URL
+        reader.onload = function () {
+            //当读取完成后回调这个函数,然后此时文件的内容存储到了result中,直接操作即可
+            //var s = Base64.encode(this.result);
+            var s = this.result.substring(this.result.indexOf(",") + 1)
+            console.log(s);
+            s = encodeURIComponent(s);
+            $.ajax(
+                    {
+                        url: "{% url 'domain_webmail' %}",
+                        type:"POST",
+                        data:"&logofile="+s+"&action="+action,
+                        success: function(data){
+                            $('#domain_webmail').html('<div>保存中...</div>');
+                                            setTimeout(function(){
+                                                $('#domain_webmail').html(data);
+                                                $('.modal-backdrop').remove();
+                                            },100)
+                        }
+                    }
+            );
+        }
+    };
+
+    function deleteLogoFile(action, form_name){
+        $.ajax(
+                {
+                    url: "{% url 'domain_webmail' %}",
+                    type:"POST",
+                    data:"&action="+action,
+                    success: function(data){
+                        $('#domain_webmail').html('<div>保存中...</div>');
+                                        setTimeout(function(){
+                                            $('#domain_webmail').html(data);
+                                            $('.modal-backdrop').remove();
+                                        },100)
+                    }
+                }
+        );
+    }
+
+    function clickLoginTemplImg(name){
+        $.ajax(
+            {
+                url: "{% url 'domain_webmail' %}",
+                type:"POST",
+                data:"&name="+name+"&action=login_template",
+            }
+        );
+    };
+
+    function importAdvertFile(action, form_name){
+        var param = $("."+form_name).serialize();
+        if (action=="login_advert_1"){
+            var str = $('.class_import_advert_logo_1').val();
+            var selectedFile = document.getElementsByClassName('class_import_advert_logo_1')[0].files[0];
+            if(!selectedFile){
+                layer.tips("请选择文件！",'.class_import_advert_logo_1+');
+                return;
+            }
+        } else if (action=="login_advert_2") {
+            var str = $('.class_import_advert_logo_2').val();
+            var selectedFile = document.getElementsByClassName('class_import_advert_logo_2')[0].files[0];
+            if(!selectedFile){
+                layer.tips("请选择文件！",'.class_import_advert_logo_2+');
+                return;
+            }
+        } else {
+            var str = $('.class_import_advert_logo_3').val();
+            var selectedFile = document.getElementsByClassName('class_import_advert_logo_3')[0].files[0];
+            if(!selectedFile){
+                layer.tips("请选择文件！",'.class_import_advert_logo_3+');
+                return;
+            }
+        }
+        var reader = new FileReader();
+        reader.readAsDataURL(selectedFile);//读取文件的内容,也可以读取文件的URL
+        reader.onload = function () {
+            //当读取完成后回调这个函数,然后此时文件的内容存储到了result中,直接操作即可
+            //var s = Base64.encode(this.result);
+            var s = this.result.substring(this.result.indexOf(",") + 1)
+            console.log(s);
+            s = encodeURIComponent(s);
+            $.ajax(
+                    {
+                        url: "{% url 'domain_webmail' %}",
+                        type:"POST",
+                        data:param+"&logofile="+s+"&action="+action,
+                        success: function(data){
+                            $('#domain_webmail').html('<div>保存中...</div>');
+                                            setTimeout(function(){
+                                                $('#domain_webmail').html(data);
+                                                $('.modal-backdrop').remove();
+                                            },100)
+                        }
+                    }
+            );
+        }
+    };
+
+    function deleteAdvertFile(action, form_name){
+        $.ajax(
+                {
+                    url: "{% url 'domain_webmail' %}",
+                    type:"POST",
+                    data:"&action="+action,
+                    success: function(data){
+                        $('#domain_webmail').html('<div>保存中...</div>');
+                                        setTimeout(function(){
+                                            $('#domain_webmail').html(data);
+                                            $('.modal-backdrop').remove();
+                                        },100)
+                    }
+                }
+        );
+    }
+
+    function clickWebmailLink(){
+        console.log("clickWebmailLink");
+        $.ajax({
+            url:"{% url 'domain_webmail_link' %}",
+            type:"POST",
+            data:"&action=view",
+            success:function(html){
+                $('#tabs_first').html(html);
+                $('.modal-backdrop').remove();
+            }
+        })
+        return;
+    }
+
+    function clickWebmailLetter(){
+        console.log("clickWebmailLetter");
+        $.ajax({
+            url:"{% url 'domain_webmail_letter' %}",
+            type:"POST",
+            data:"&action=view",
+            success:function(html){
+                $('#tabs_paple').html(html);
+                $('.modal-backdrop').remove();
+            }
+        })
+        return;
+    }
+
+</script>

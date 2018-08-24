@@ -1,0 +1,159 @@
+{% load i18n %}
+{% load static %}
+
+<div class="row">
+    <div class="col-xs-12">
+        <form class="form-horizontal" role="form" action="" method="POST">
+            {% csrf_token %}
+
+            <div class="form-group {% if form.priority.error %} has-error {% endif %}">
+                <label class="col-sm-3 control-label no-padding-right" for="id_priority"> 优先级 </label>
+                <div class="col-sm-9">
+                    <input type="number" name="priority" id="id_priority" value="{{ form.priority.value }}" maxlength="200" class="col-xs-10 col-sm-5" />
+                    {% if form.priority.error %}
+                        <div style="clear: both">
+                            <p class="errornote txt-color-red">{{ form.priority.error }}</p>
+                        </div>
+                    {% endif %}
+                    <div style="clear: both">
+                    <strong style="color: red">注：</strong> 数值越小优先级越高
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group {% if form.server_domain.error %} has-error {% endif %}">
+                <label class="col-sm-3 control-label no-padding-right" for="id_server_domain"> 服务器域名 </label>
+                <div class="col-sm-9">
+                    <input type="text" name="server_domain" id="id_server_domain" value="{{ form.server_domain.value }}" maxlength="200" class="col-xs-10 col-sm-5" />
+                    {% if form.server_domain.error %}
+                        <div style="clear: both">
+                            <p class="errornote txt-color-red">{{ form.server_domain.error }}</p>
+                        </div>
+                    {% endif %}
+                    <div style="clear: both">
+                    <strong style="color: red">注：</strong> 需要进行帐号同步的AD域域名，eg:“domain.com”
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group {% if form.server.error %} has-error {% endif %}">
+                <label class="col-sm-3 control-label no-padding-right" for="id_server"> 服务器地址 </label>
+                <div class="col-sm-9">
+                    <input type="text" name="server" id="id_server" value="{{ form.server.value }}" maxlength="200" class="col-xs-10 col-sm-5" />
+                    {% if form.server.error %}
+                        <div style="clear: both">
+                            <p class="errornote txt-color-red">{{ form.server.error }}</p>
+                        </div>
+                    {% endif %}
+                    <div style="clear: both">
+                    <strong style="color: red">注：</strong> 服务器的访问链接，eg:“192.168.100.100”
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group {% if form.port.error %} has-error {% endif %}">
+                <label class="col-sm-3 control-label no-padding-right" for="id_port"> 服务器端口 </label>
+                <div class="col-sm-9">
+                    <input type="number" name="port" id="id_port" value="{{ form.port.value }}" maxlength="200" class="col-xs-10 col-sm-5" />
+                    {% if form.port.error %}
+                        <div style="clear: both">
+                            <p class="errornote txt-color-red">{{ form.port.error }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group {% if form.account.error %} has-error {% endif %}">
+                <label class="col-sm-3 control-label no-padding-right" for="id_account"> 远程帐号 </label>
+                <div class="col-sm-9">
+                <input type="text" name="account" id="id_account" value="{{ form.account.value }}" maxlength="200" class="col-xs-10 col-sm-5" />
+                <div style="clear: both">
+                <strong style="color: red">注：</strong> 登录AD服务器时要使用的帐号，eg:“username@domain.com”
+                </div>
+                </div>
+            </div>
+
+            <div class="form-group {% if form.password.error %} has-error {% endif %}">
+                <label class="col-sm-3 control-label no-padding-right" for="id_password"> 密码 </label>
+                <div class="col-sm-9">
+                <input type="password" name="password" id="id_password" value="{{ form.password.value }}" maxlength="200" class="col-xs-10 col-sm-5" />
+                </div>
+            </div>
+
+            <div class="form-group {% if form.ou.error %} has-error {% endif %}">
+                <label class="col-sm-3 control-label no-padding-right" for="id_ou"> 部门规则 </label>
+                <div class="col-sm-9">
+                <textarea  name="ou" id="id_ou" rows="5" class="col-xs-10 col-sm-5 kinde-ditor"> {{ form.ou.value }}</textarea>
+                <div style="clear: both">
+                <strong style="color: red">注：</strong> 如不修改请留空,格式:研发部->技术部;市场部
+                </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="id_create_acct" > 创建账号的AD域属性 </label>
+                <div class="col-sm-9">
+                    <select class="col-xs-10 col-sm-5" id="id_create_acct" name="create_acct">
+                        {% for v,name in form.getCreateAcctSelection %}
+                            <option value="{{ v }}" {% if form.create_acct.value == v %} selected {% endif %} > {{ name }} </option>
+                        {% endfor %}
+                    </select>
+                    {% if form.create_acct.error %}
+                        <div style="clear: both"><p class="errornote txt-color-red">{{ form.create_acct.error }}</p></div>
+                    {% endif %}
+                    <div style="clear: both">
+                    <strong style="color: red">注：</strong> 默认会使用 '用户登录名' 创建帐号， 若设置选择其他属性（如'电子邮箱'）创建帐号但AD域无对应值，也会使用 '用户登录名' 创建帐号
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="id_create_dept" > 创建部门的AD域属性 </label>
+                <div class="col-sm-9">
+                    <select class="col-xs-10 col-sm-5" id="id_create_dept" name="create_dept">
+                        {% for v,name in form.getCreateDeptSelection %}
+                            <option value="{{ v }}" {% if form.create_dept.value == v %} selected {% endif %} > {{ name }} </option>
+                        {% endfor %}
+                    </select>
+                    {% if form.create_dept.error %}
+                        <div style="clear: both"><p class="errornote txt-color-red">{{ form.create_dept.error }}</p></div>
+                    {% endif %}
+                    <div style="clear: both">
+                    <strong style="color: red">注：</strong> 默认会读取用户属性中的'部门'属性来创建/更新部门
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right" for="id_status"> 状态 </label>
+                <div class="col-sm-9">
+                    <label class="radio radio-inline padding-top-0 margin-top-0 form-inline">
+                        <label>
+                            <input type="radio" name="disabled" value="-1" {% if form.disabled.value == '-1'  %} checked="" {% endif %}><span>启用</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="disabled" value="1" {% if form.disabled.value != '-1'  %} checked="" {% endif %}><span>禁用</span>
+                        </label>
+                    </label>
+                </div>
+            </div>
+
+            <div class="clearfix form-actions">
+                <div class="col-md-offset-3 col-md-9">
+                    <button class="btn btn-info" type="submit">
+                        <i class="ace-icon fa fa-check bigger-110"></i>
+                        保存
+                    </button>
+                    <button class="btn" type="reset">
+                        <i class="ace-icon fa fa-undo bigger-110"></i>
+                        重置
+                    </button>
+
+                    <a type="button" class="btn btn-link" href="{% url 'ldap_adlist' %}">取消</a>
+
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+

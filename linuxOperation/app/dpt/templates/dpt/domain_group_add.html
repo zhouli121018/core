@@ -1,0 +1,76 @@
+{% load i18n %}
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h4 class="modal-title" id="myModalLabel" style="font-weight: 600">组合其他域名的企业通讯录, 主域：{{ obj.domain }}</h4>
+</div>
+<form action="{% url 'domain_group_add' domain_id %}" method="post" role="form" class="" id="id-domain_group_add">
+    {% csrf_token %}
+    <div class="modal-body">
+        <div class="widget-body no-padding no-margin" style="border-color: #fff!important;">
+            <div class="form-horizontal">
+                <fieldset>
+                    <div class="row">
+
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"><strong>显示别名：</strong></label>
+                                <div class="col-md-9 input-group">
+                                    <input name="share_title" id="id_share_title" required="" class=" form-control" maxlength="200" type="text" value="{{ share_title }}">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"><strong>组合情况：</strong></label>
+                                <div class="col-md-10 input-group">
+                                    <div>
+                                        {% for g in lists %}
+                                            <span style="display: inline;float: left;">
+                                                <span onclick="changeLists('{{ g.id }}')" style="" id="id_change_{{ g.id }}" class="ac-tag_tag {% if g.id in target_ids %}is-active_tag{% endif %}">{{ g.domain }}</span>
+                                                {% if g.id in target_ids %}
+                                                    <input type="text" class="display-none" name="name[]" id="id_name_{{ g.id }}" value="{{ g.id }}"/>
+                                                {% endif %}
+                                            </span>
+                                        {% endfor %}
+                                        <span id="id_group_list">
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </fieldset>
+            </div>
+
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input value="{% trans '确定' %}" onclick="CheckChareTitle()" type="button" class="btn btn-primary">
+        <button id="modal_close" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+    </div>
+</form>
+
+
+<script>
+    function changeLists(group_id) {
+        var obj = $("#id_change_" + group_id);
+        if (obj.hasClass('is-active_tag')) {
+            obj.removeClass('is-active_tag');
+            $("#id_name_" + group_id).remove();
+        } else {
+            obj.addClass('is-active_tag');
+            $("#id_group_list").append('<input type="text" class="display-none" name="name[]" id="id_name_' + group_id + '" value="' + group_id + '"/>');
+        }
+    }
+
+    function CheckChareTitle() {
+        var share_title = $.trim($("#id_share_title").val());
+        if ( share_title == "" ){
+            alert("请填写显示别名");
+            return;
+        }
+        $('#id-domain_group_add').submit();
+    }
+</script>

@@ -1,0 +1,134 @@
+{% extends 'base_site.html' %}
+{% load i18n %}
+{% load static %}
+{% load bootstrap %}
+{% block title %}{% trans "邮箱帐号管理" %}{% endblock %}
+{% block breadcrumb %}
+<li> <a href="#">{% trans "邮箱帐号管理" %}</a> </li>
+<li class="active">{% trans "批量删除帐号" %}</li>
+{% endblock %}
+
+{% block page-content %}
+
+{% if success or failures %}
+<div class="row">
+    <article class="col-sm-12">
+
+        <div class="alert alert-success fade in">
+            <button class="close" data-dismiss="alert">
+                ×
+            </button>
+            <i class="fa-fw fa fa-success"></i>
+            成功删除 <span class="text-success">{{ success }}</span> 个邮箱, 删除失败 <span class="text-danger"> {{ failures|length }}</span> 个邮箱：
+            {% if failures %}
+            <pre>
+                {% for f in failures %}
+                <span class="text-danger">{{ f.0 }}:</span> {{ f.1 }}
+                {% endfor %}
+            </pre>
+            {% endif %}
+        </div>
+
+    </article>
+</div>
+{% endif %}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="page-header">
+            <h1>{% trans "邮箱帐号管理" %}<small>
+                <i class="ace-icon fa fa-angle-double-right"></i>{% trans "批量删除帐号" %}</small></h1>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <ul class="nav nav-tabs" id="myTab">
+            <li>
+                <a href="{% url 'mailbox_account' %}">
+                    <i class="green ace-icon fa fa-home bigger-120"></i>{% trans "帐号列表" %}
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'mailbox_add_account' %}">
+                    {% trans "修改帐号" %}
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'mailbox_batchadd_account' %}">
+                    {% trans "批量添加帐号" %}
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'mailbox_batchedit_account' %}">
+                    {% trans "批量修改帐号" %}
+                </a>
+            </li>
+            <li class="active">
+                <a href="{% url 'mailbox_delete_account' %}">
+                    {% trans "批量删除帐号" %}
+                </a>
+            </li>
+            <!--<li>-->
+                <!--<a href="{% url 'mailbox_backup_account' %}">-->
+                    <!--{% trans "导入导出帐号" %}-->
+                <!--</a>-->
+            <!--</li>-->
+
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade in active">
+                <form class="form-horizontal" action="" method="POST" >
+                    {% csrf_token %}
+
+                    <table class="table  table-bordered  ">
+                        <tbody>
+                        <tr >
+                            <td class="text-right">
+                                邮箱域名：
+                            </td>
+                            <td>
+                                <b>{{ domain.domain }}</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">注意事项：</td>
+                            <td>
+                                <p>请输入要删除的邮箱帐户用户名，一行填写一个用户	</p>
+                                <p class="red">例如:</p>
+                                <p>tina</p>
+                                <p>gary</p>
+                                <p>tom</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">帐号列表：</td>
+                            <td>
+                                <textarea name="mailboxs" rows="8" class="form-control"></textarea>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="clearfix form-actions">
+                        <div class="text-center">
+                            <button class="btn btn-info" type="submit">
+                                <i class="ace-icon fa fa-check bigger-110"></i>
+                                保存
+                            </button>
+                            <button class="btn" type="reset">
+                                <i class="ace-icon fa fa-undo bigger-110"></i>
+                                重置
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

@@ -1,0 +1,105 @@
+
+{% load tags %}
+{% load i18n %}
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">自动转发设置 -> {{ mailbox_obj.username }}</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-lg-4">
+                <span>用户可否设置：</span>
+                <input name="forward_visible" value="1" onclick="change_forward({{mailbox_obj.id}}, this,'forward_visible');" {% if forward_visible == '1' %}checked{% endif %} type="radio"> 是
+                <input name="forward_visible" value="-1" onclick="change_forward({{mailbox_obj.id}}, this,'forward_visible');" {% if forward_visible == '-1' %}checked{% endif %} type="radio"> 否
+            </div>
+            <div class="col-lg-4">
+                <span>仅转发本地邮箱：</span>
+                <input name="forward_local" value="1" onclick="change_forward({{mailbox_obj.id}}, this,'forward_local');" {% if forward_local == '1' %}checked{% endif %} type="radio"> 是
+                <input name="forward_local" value="-1" onclick="change_forward({{mailbox_obj.id}}, this,'forward_local');" {% if forward_local == '-1' %}checked{% endif %} type="radio"> 否
+
+            </div>
+            <div class="col-lg-4">
+
+                <button class="btn btn-success add-btn pull-right btn-sm" style="margin-bottom:6px;" data-toggle="modal" href="{% url 'mailbox_add_forward' mailbox_obj.id %}" data-target="#modal-forward-add" data-dismiss="modal">新增</button>
+            </div>
+        </div>
+        <div class="active">
+            <table class="table table-bordered">
+                <tr>
+
+                    <th>排序</th>
+                    <th>条件</th>
+                    <th>目标邮箱</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+                {% for l in lists %}
+                <tr>
+                    <!--<td>-->
+                    <!--<label>-->
+                    <!--<input value="{{ l.id }}" class="checkItem" type="checkbox">-->
+                    <!--</label>-->
+                    <!--</td>-->
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <ul>
+                            {% for con in l.rule.conditions %}
+                            <li>
+                                【<b>{{ con.get_option_display }}</b>】：
+                                {% for c in con.children %}
+                                {% with c.json_value as value %}
+                                {{ c.get_logic_display }}{{ c.get_action_display }}
+                                {% if c.option == 'mail_size' %}
+                                {{ value.start }}MB - {{ value.end }}MB
+                                {% elif c.option == 'exec_date' %}
+                                {% if value.type == 'date' %}
+                                {{ value.start }} - {{ value.end }}
+                                {% elif value.type == 'week' %}
+                                {{ day_dict|dict_value:value.day_start }} {% trans '到' %} {{ day_dict|dict_value:value.day_end }} {{ value.start }} -- {{ value.end }}
+                                {%endif %}
+                                {% else %}
+                                [<span class="text-danger">{{ value.value|urllib_unquote }}</span>];
+                                {% endif %}
+                                {% endwith %}
+                                {% endfor %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>{{ l.forward }}</td>
+                    <td><span {% if l.disabled == '1' %}class="text-danger"{% else %}class="text-success"{% endif %}>{{ l.get_disabled_display }}</span></td>
+                    <td>
+                        {% if l.disabled == '1' %}
+                        <a href="#" onclick="forward_change_status({{ l.id }}, -1, this)">启用</a> -
+                        {% else %}
+                        <a href="#" onclick="forward_change_status({{ l.id }}, 1, this)">禁用</a> -
+                        {% endif %}
+                        <a href="#" onclick="del_forward_contion({{ l.id }}, this)">删除</a> -
+                        <a data-toggle="modal" href="{% url 'mailbox_edit_forward' l.id %}" data-target="#modal-forward-edit" data-dismiss="modal">编辑</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <div class="well" style="background:#fff;margin-top:12px;">
+                <p>通过本功能您可以根据您设置的条件规则来进行自动回复</p>
+
+                <p>操作方法:</p>
+                <ul>
+                    <li>确定自动回复规则标题，并将规则启用，即选中“使用本规则”。</li>
+                    <li>根据您的需要选择规则条件，可以对邮件（原始）发件人、（原始）收件人/抄送人、邮件主题、和邮件大小进行设定。</li>
+                    <li>输入要自动回复的内容。</li>
+                    <li>单击增加规则页【确定】完成单条规则设置。</li>
+                    <li>已经设置完毕的规则会显示在自动回复列表中，也可以对该自动回复规则进行删除/修改操作。</li>
+                </ul>
+                <p>注意事项:</p>
+                <ul>
+                    <li>自动回复规则的执行顺序：规则列表由上而下的顺序；支持手动进行规则排序。</li>
+                    <li>多条自动回复规则都要进行自动回复的动作，以先执行的一条为准，即会执行较上方的一条要求进行自动回复。</li>
+                    <li>如要对所有收到的邮件进行自动回复，则可设置条件为：发件人包含@。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

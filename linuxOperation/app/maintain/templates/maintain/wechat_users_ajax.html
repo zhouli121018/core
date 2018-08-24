@@ -1,0 +1,10 @@
+<td>{{ number }}</td>
+<td>{{ d.nickname }}</td>
+<td> <a href="{{ d.img }}" target="_blank">查看头像</a></td>
+<td>{{ d.province|default_if_none:'' }}</td>
+<td>{{ d.city|default_if_none:'' }}</td>
+<td>{{ d.email|default_if_none:'' }}</td>
+<td>{{ d.created }}</td>
+<td>{{ d.updated }}</td>
+<td>{{ d.get_subscribe_display }}</td>
+<td>{{ d.subscribed }}</td>

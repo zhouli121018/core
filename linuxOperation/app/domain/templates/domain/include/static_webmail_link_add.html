@@ -1,0 +1,117 @@
+{% load i18n %}
+{% load static %}
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">首页链接</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal form_webmail_link">
+            <div class="row">
+                <div class="col-sm-4" style="margin-bottom:4px;">
+                    <div class="input-group">
+                        <span class="input-group-addon">名称</span>
+                        <input type="text" name="title" value="{{ dd.title }}"  class="form-control">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <span class="input-group-addon">顺序</span>
+                        <input type="number" name="order" value="{{ dd.order }}"  class="form-control">
+                    </div>
+                </div>
+            </div>
+            <p style="background:#eee;padding:2px;">链接项：1</p>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="input-group" style="margin-bottom:6px;">
+                        <span class="input-group-addon">标题</span>
+                        <input type="text" name="title_0" value="{{ dd.title_0 }}" class="form-control">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">链接</span>
+                        <input type="text" name="url_0" value="{{ dd.url_0 }}" class="form-control">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+
+                    <span style="vertical-align:top;">描述</span>
+                    <textarea  name="desc_0" style="width:80%;margin-left:20px;" rows="3"> {{ dd.desc_0 }} </textarea>
+
+                </div>
+                <div class="col-sm-4">
+                    图标： <input type="file" class="upload_logo class_import_logo_webmail_link_1" id="id-input-file-letter_1" value="图标" class="form-control" style="border:none;">
+                </div>
+            </div>
+            <p style="background:#eee;padding:2px;">链接项：2</p>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="input-group" style="margin-bottom:6px;">
+                        <span class="input-group-addon">标题</span>
+                        <input type="text"  name="title_1" value="{{ dd.title_1 }}" class="form-control">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">链接</span>
+                        <input type="text"  name="url_1" value="{{ dd.url_1 }}" class="form-control">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <span style="vertical-align:top;">描述</span>
+                    <textarea  name="desc_1" style="width:80%;margin-left:20px;" rows="3"> {{ dd.desc_1 }} </textarea>
+                </div>
+                <div class="col-sm-4">
+                    图标： <input type="file" class="upload_logo class_import_logo_webmail_link_2" id="id-input-file-letter_2" value="图标" class="form-control" style="border:none;">
+                </div>
+            </div>
+            <p style="background:#eee;padding:2px;">链接项：3</p>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="input-group" style="margin-bottom:6px;">
+                        <span class="input-group-addon">标题</span>
+                        <input type="text" name="title_2" value="{{ dd.title_2 }}" class="form-control">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">链接</span>
+                        <input type="text" name="url_2" value="{{ dd.url_2 }}" class="form-control">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <span style="vertical-align:top;">描述</span>
+                    <textarea  name="desc_2" style="width:80%;margin-left:20px;" rows="3"> {{ dd.desc_2 }} </textarea>
+                </div>
+                <div class="col-sm-4">
+                    图标： <input type="file" class="upload_logo class_import_logo_webmail_link_3" id="id-input-file-letter_3" value="图标" class="form-control" style="border:none;">
+                </div>
+            </div>
+            <p style="background:#eee;padding:2px;">链接项：4</p>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="input-group" style="margin-bottom:6px;">
+                        <span class="input-group-addon">标题</span>
+                        <input type="text" name="title_3" value="{{ dd.title_3 }}" class="form-control">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">链接</span>
+                        <input type="text"  name="url_3" value="{{ dd.url_3 }}" class="form-control">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <span style="vertical-align:top;">描述</span>
+                    <textarea  name="desc_3" rows="3" style="width:80%;margin-left:20px;">{{ dd.desc_3 }}</textarea>
+                </div>
+                <div class="col-sm-4">
+                    图标： <input type="file" class="upload_logo class_import_logo_webmail_link_4" id="id-input-file-letter_4" value="图标" class="form-control" style="border:none;">
+                </div>
+            </div>
+                <div class="modal-footer center">
+                    <input type="hidden" id="action" name="action" value="save" />
+                    <input type="hidden" id="idx" name="idx" value="{{ idx }}" />
+                    <input type="hidden" id="domain_id" name="domain_id" value="{{ domain.id }}" />
+                    <button type="button" class="btn btn-sm btn-info" onclick="clickDomainWebmailLinkAddSave()">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,320 @@
+{% extends 'base_site.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "综合功能设置" %}{% endblock %}
+
+{% block css_block %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}" />
+<style>
+    table tr td:nth-child(1),table tr td:nth-child(3){
+        text-align: right;
+    }
+    table tr td:nth-child(1) label,table tr td:nth-child(3) label{
+        text-align: right;
+        font-weight:bold;
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <li> <a href="{% url 'security_antispam' %}">{% trans "反垃圾/反病毒设置" %}</a> </li>
+{% endblock %}
+
+{% block page-content %}
+<div id="dynamic-div">
+    <h3 class="header smaller lighter blue"><span class="red">反垃圾/反病毒设置</span>
+
+    </h3>
+
+    <div class="table-header">反垃圾/反病毒设置</div>
+    <div>
+        <form class="form-horizontal" role="form" name="form_select" action="" method="POST">
+            {% csrf_token %}
+        <table class="table table-bordered table-striped">
+            <tbody>
+            <tr>
+                <td class="text-right" style="width:200px;">反病毒功能：</td>
+                <td>
+                    <label class="inline" >
+                        <input name="sw_antivirus" value="1" {% if form.sw_antivirus.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5">
+                        <span class="lbl"></span>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">反垃圾功能：</td>
+                <td>
+                    <label class="inline" >
+                        <input name="sw_antispam" value="1" {% if form.sw_antispam.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5">
+                        <span class="lbl"></span>
+                    </label>
+                </td>
+            </tr>
+            <tr class="sw_antispam">
+                <td class="text-right" >SPF检测：
+                </td>
+                <td>
+                    <label class="inline" >
+                        <input name="spf" value="1" {% if form.spf.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5">
+                        <span class="lbl middle"></span>
+                    </label>
+                </td>
+            </tr>
+            <tr class="sw_antispam">
+                <td class="text-right">灰名单检测：
+                </td>
+                <td>
+                    <label class="inline" >
+                        <input name="greylist" value="1" {% if form.greylist.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5">
+                        <span class="lbl"></span>
+                    </label>
+                </td>
+            </tr>
+            <tr class="sw_antispam">
+                <td class="text-right">检查附件：
+                </td>
+                <td>
+                    <div class="checkbox">
+                            <label style="margin-right:20px;">
+                                <input name="low_risk_attachment" type="checkbox" value="1" {% if form.low_risk_attachment.value == "1"  %} checked {% endif %} class="ace">
+                                <span class="lbl"> 小危附件 </span>
+                            </label>
+                            <label>
+                                <input name="high_risk_attachment" type="checkbox" value="1" {% if form.high_risk_attachment.value == "1"  %} checked {% endif %} class="ace">
+                                <span class="lbl"> 高危附件 </span>
+                            </label>
+                    </div>
+                </td>
+            </tr>
+            <tr class="sw_antispam">
+                <td class="text-right"> 匹配黑名单：
+                </td>
+                <td>
+                    <div class="checkbox">
+                        <label style="margin-right:20px;">
+                            <input name="sender_blacklist" type="checkbox" value="1" {% if form.sender_blacklist.value == "1"  %} checked {% endif %} class="ace">
+                            <span class="lbl"> 发件人黑名单 </span>
+                        </label>
+                        <label style="margin-right:20px;">
+                            <input name="subject_blacklist" type="checkbox" value="1" {% if form.subject_blacklist.value == "1"  %} checked {% endif %} class="ace">
+                            <span class="lbl"> 主题黑名单 </span>
+                        </label>
+                        <label style="margin-right:20px;">
+                            <input name="content_blacklist" type="checkbox" value="1" {% if form.content_blacklist.value == "1"  %} checked {% endif %} class="ace">
+                            <span class="lbl"> 内容黑名单 </span>
+                        </label>
+                        <!--
+                        <label>
+                            <input name="attach_blacklist" type="checkbox" value="1" {% if form.attach_blacklist.value == "1"  %} checked {% endif %} class="ace">
+                            <span class="lbl"> 附件黑名单 </span>
+                        </label>
+                        -->
+                    </div>
+                </td>
+            </tr>
+            <tr class="sw_antispam">
+                <td class="text-right">反垃圾引擎：</td>
+                <td>
+                    <div class="checkbox">
+                        <label style="margin-right:20px;">
+                            <input name="dspam" type="checkbox" value="1" {% if form.dspam.value == "1"  %} checked {% endif %} class="ace">
+                            <span class="lbl"> Dspam </span>
+                        </label>
+                        <label>
+                            <input name="spamassassin" type="checkbox" value="1" {% if form.spamassassin.value == "1"  %} checked {% endif %} class="ace">
+                            <span class="lbl"> Spamassassion </span>
+                        </label>
+                    </div>
+                </td>
+            </tr>
+            <tr class="sw_antispam">
+                <td class="text-right"> 检查发件人格式：
+                </td>
+                <td class="row">
+                    <div class="col-sm-4 no-padding">
+                        <label class="inline" >
+                            <input name="format" value="1" {% if form.format.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5">
+                            <span class="lbl"></span>
+                        </label>
+                    </div>
+                    <div class="col-sm-8 no-padding">
+                            <span class="middle text-success "><strong style="color: red">注：</strong> 此选项不会作用于“本域进站邮件” </span>
+
+                    </div>
+                </td>
+            </tr>
+            <tr class="sw_antispam">
+                <td class="text-right"> 垃圾邮件投递位置：</td>
+                <td class="row">
+                    <div class="col-sm-4 no-padding">
+                        <select class="form-control" id="id_spam_folder" name="spam_folder" style="max-width:200px;">
+                            <option value="Spam" {% if form.spam_folder.value == "Spam" %} selected {% endif %} > 垃圾箱 </option>
+                            <option value="Sequester" {% if form.spam_folder.value == "Sequester" %} selected {% endif %} > 隔离队列 </option>
+                            <option value="INBOX" {% if form.spam_folder.value == "INBOX" %} selected {% endif %} > 收件箱 </option>
+                        </select>
+                    </div>
+
+
+                </td>
+            </tr>
+            <tr class="sw_antispam">
+                <td class="text-right" >
+                    垃圾邮件主题标识：</td>
+                <td class="row">
+                    <div class="col-sm-4 no-padding">
+                        <input type="text" name="spam_flag" value="{{ form.spam_flag.value }}" class="form-control" style="max-width:200px;">
+                    </div>
+                    {% if form.spam_flag.error %}
+                    <div style="clear: both"><p class="errornote txt-color-red">{{ form.spam_flag.error }}</p></div>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr class="sw_antispam">
+                <td class="text-right">隔离邮件保存天数：</td>
+                <td class="row">
+                    <div class="col-sm-4 no-padding">
+                        <input type="number" name="save_days" id="id_save_days" value="{{ form.save_days.value }}" style="max-width:200px;" class="form-control">
+                    </div>
+                    {% if form.save_days.error %}
+                    <div style="clear: both"><p class="errornote txt-color-red">{{ form.save_days.error }}</p></div>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr class="sw_antispam">
+                <td class="text-right">发送隔离报告：</td>
+                <td>
+                    <label class="inline" >
+                        <input name="is_report" value="1" {% if form.is_report.value == '1'  %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5">
+                        <span class="lbl"></span>
+                    </label>
+                </td>
+            </tr>
+            <tr class="sw_antispam">
+                <td class="text-right">隔离报告发件人：</td>
+                <td class="row">
+                    <div class="col-sm-4 no-padding">
+                        <input type="text" name="spam_report" id="id_spam_report" style="max-width:200px;" value="{{ form.spam_report.value }}" class="form-control">
+                    </div>
+                    {% if form.spam_report.error %}
+                    <div style="clear: both"><p class="errornote txt-color-red">{{ form.spam_report.error }}</p></div>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr class="sw_antispam">
+                <td class="text-right">隔离报告链接地址：</td>
+                <td class="row">
+                    <div class="col-sm-4 no-padding">
+                        <input type="text" name="host" id="id_host" value="{{ form.host.value }}" class="form-control" style="max-width:200px;">
+
+                    </div>
+                    <div class="col-sm-8">
+                        <div style="clear: both">
+                            <span class="middle text-success "><strong style="color: red">注：</strong> “链接地址”必须为类似"mail.example.com"或"114.114.114.114"这种可以通过外网点击访问的地址。如果是"127.0.0.1","192.168.xx.xx"这种地址，会导致外网登录的用户无法通过链接操作隔离邮件。 </span>
+                        </div>
+                    </div>
+                    {% if form.host.error %}
+                    <div style="clear: both"><p class="errornote txt-color-red">{{ form.host.error }}</p></div>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr class="sw_antispam">
+                <td class="text-right">检测对象：
+                </td>
+                <td>
+                    <div class="checkbox">
+                        <label style="margin-right:20px;">
+                            <input type="checkbox" name="spam_check_local" value="1" {% if form.spam_check_local.value == "1"  %} checked {% endif %} class="ace">
+                            <span class="lbl"> 本域进站邮件 </span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="spam_check_outside" value="1" {% if form.spam_check_outside.value == "1"  %} checked {% endif %} class="ace">
+                            <span class="lbl"> 外域进站邮件 </span>
+                        </label>
+                    </div>
+                </td>
+            </tr>
+            <tr class="sw_antispam" id="id_spam_local_set">
+                <td class="text-right">本域进站邮件：</td>
+                <td class="row">
+                    <div class="col-sm-4 no-padding">
+                        <div class="checkbox">
+                            <label style="margin-right:20px;">
+                                <input type="checkbox" name="spam_check_local_spam" value="1" {% if spam_check_local_spam == "1"  %} checked {% endif %} class="ace">
+                                <span class="lbl"> 开启反垃圾 </span>
+                            </label>
+                            <label>
+                                <input type="checkbox" name="spam_check_local_virus" value="1" {% if spam_check_local_virus == "1"  %} checked {% endif %} class="ace">
+                                <span class="lbl"> 开启反病毒 </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                            <span class="middle text-success "><strong style="color: red">注：</strong> “反垃圾功能”和“反病毒功能”开启后，这里对应的勾选框才会生效 </span>
+                    </div>
+                </td>
+            </tr>
+            <tr id="id_spam_outside_set" class="sw_antispam">
+                <td class="text-right">外域进站邮件：</td>
+                <td class="row">
+                    <div class="col-sm-4 no-padding">
+                        <div class="checkbox">
+                            <label style="margin-right:20px;">
+                                <input type="checkbox" name="spam_check_outside_spam" value="1" {% if spam_check_outside_spam == "1"  %} checked {% endif %} class="ace">
+                                <span class="lbl"> 开启反垃圾 </span>
+                            </label>
+                            <label>
+                                <input type="checkbox" name="spam_check_outside_virus" value="1" {% if spam_check_outside_virus == "1"  %} checked {% endif %} class="ace">
+                                <span class="lbl"> 开启反病毒 </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                            <span class="middle text-success "><strong style="color: red">注：</strong> “反垃圾功能”和“反病毒功能”开启后，这里对应的勾选框才会生效 </span>
+
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="clearfix form-actions ">
+            <div class=" ">
+            <input type="hidden" value="{{ domain.id }}" name="domain_id" id="domain_id" />
+            </div>
+            <div class=" text-center">
+                <button class="btn btn-info" type="submit">
+                    <i class="ace-icon fa fa-check bigger-110"></i>
+                    保存
+                </button>
+                <button class="btn" type="reset">
+                    <i class="ace-icon fa fa-undo bigger-110"></i>
+                    重置
+                </button>
+
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block my_jsblock %}
+
+<!--
+<script>
+    $(function(){
+        $("[name='sw_antispam']").on('click', function(){
+            if($(this).prop('checked')){
+                $('.sw_antispam').show();
+            }else{
+                $('.sw_antispam').hide();
+            }
+        });
+    })
+</script>
+-->
+
+{% endblock %}
+
+

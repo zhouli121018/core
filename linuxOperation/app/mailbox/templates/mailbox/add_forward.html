@@ -1,0 +1,286 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">自动转发设置 -> {{ mailbox_obj.username }} -> 新增
+        </h4>
+    </div>
+    <div class="modal-body" style="overflow:auto;">
+        <form id="form_autoforward" method="post" action="">
+            <table class="table table-bordered">
+                <tr>
+                    <td>是否启用</td>
+                    <td>
+                        <label class="inline" >
+                            <input name="disabled" checked  type="checkbox" class="ace ace-switch ace-switch-5">
+                            <span class="lbl"></span>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:110px;">自动转发条件：</td>
+                    <td>
+                        <div>
+                            <label class="radio-inline">
+                                <input type="radio" name="logic" value="all" checked> 符合以下所有选中的条件
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="logic" value="one"> 符合以下任意一个选中条件
+                            </label>
+                        </div>
+                        <div class="row con_parent" id="condition_sender">
+                            <div class="col-sm-3">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="sender_chk" id="sender_chk"> 发件人：
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 con_box">
+                                <div class="input-group">
+                                    <div class="input-group-btn">
+                                        <button type="button" style="border:none;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_c" data_val="contains">包含</b> <span class="caret"></span></button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="contains">包含</a></li>
+                                            <li><a href="not_contains">不包含</a></li>
+                                        </ul>
+                                    </div>
+                                    <input type="text" name="con_val" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-sm btn-success add_btn_condition1">添加条件</button>
+                            </div>
+                        </div>
+
+                        <div class="row con_parent" id="condition_sender_original">
+                            <div class="col-sm-3">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="sender_original_chk" id="sender_original_chk"> 原始发件人：
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 con_box">
+                                <div class="input-group">
+                                    <div class="input-group-btn">
+                                        <button type="button" style="border:none;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_c" data_val="contains">包含</b> <span class="caret"></span></button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="contains">包含</a></li>
+                                            <li><a href="not_contains">不包含</a></li>
+                                        </ul>
+                                    </div>
+                                    <input type="text" name="con_val" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-sm btn-success add_btn_condition2">添加条件</button>
+                            </div>
+                        </div>
+                        <div class="row con_parent" id="condition_recipient">
+                            <div class="col-sm-3">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="recipient_chk" id="recipient_chk">收件人：
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 con_box">
+                                <div class="input-group">
+                                    <div class="input-group-btn">
+                                        <button type="button" style="border:none;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_c" data_val="contains">包含</b> <span class="caret"></span></button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="contains">包含</a></li>
+                                            <li><a href="not_contains">不包含</a></li>
+                                        </ul>
+                                    </div>
+                                    <input type="text" name="con_val" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-sm btn-success add_btn_condition3">添加条件</button>
+                            </div>
+                        </div>
+                        <div class="row con_parent" id="condition_recipient_original">
+                            <div class="col-sm-3">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="recipient_original_chk" id="recipient_original_chk"> 原始收件人：
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 con_box">
+                                <div class="input-group">
+                                    <div class="input-group-btn">
+                                        <button type="button" style="border:none;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_c" data_val="contains">包含</b> <span class="caret"></span></button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="contains">包含</a></li>
+                                            <li><a href="not_contains">不包含</a></li>
+                                        </ul>
+                                    </div>
+                                    <input type="text" name="con_val" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-sm btn-success add_btn_condition4">添加条件</button>
+                            </div>
+                        </div>
+                        <div class="row con_parent" id="condition_copy_addr">
+                            <div class="col-sm-3">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="copy_addr_chk" id="copy_addr_chk"> 抄送人：
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 con_box">
+                                <div class="input-group">
+                                    <div class="input-group-btn">
+                                        <button type="button" style="border:none;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_c" data_val="contains">包含</b> <span class="caret"></span></button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="contains">包含</a></li>
+                                            <li><a href="not_contains">不包含</a></li>
+                                        </ul>
+                                    </div>
+                                    <input type="text" name="con_val" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-sm btn-success add_btn_condition5">添加条件</button>
+                            </div>
+                        </div>
+                        <div class="row con_parent" id="condition_subject">
+                            <div class="col-sm-3">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="subject_chk" id="subject_chk"> 主题：
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 con_box">
+                                <div class="input-group">
+                                    <div class="input-group-btn">
+                                        <button type="button" style="border:none;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_c" data_val="contains">包含</b> <span class="caret"></span></button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="contains">包含</a></li>
+                                            <li><a href="not_contains">不包含</a></li>
+                                        </ul>
+                                    </div>
+                                    <input type="text" name="con_val" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-sm btn-success add_btn_condition6">添加条件</button>
+                            </div>
+                        </div>
+
+                        <div class="row" id="condition_mailsize">
+                            <div class="col-sm-3">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="mailsize_chk" id="mailsize_chk"> 邮件大小：
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="number" value="0" min="0" style="width:60px" name="mailsize_beg" id="mailsize_beg">
+                                --
+                                <input type="number" value="0" min="0" style="width:60px" name="mailsize_end" id="mailsize_end">
+                                <span>(0表示不限制)</span>
+                            </div>
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>执行时间：</td>
+                    <td>
+                        <div id="exec_date_div">
+                            <div style="margin-bottom:12px;">
+                                <input type="radio" name="timeset" id="timeset1" style="margin-right:10px;">
+                                <input type="datetime" id="time_beg" name="time_beg" class="datetime start_time"> --
+                                <input type="datetime" id="time_end" name="time_end" class="datetime end_time">
+                            </div>
+                            <div class="clear" id="selectTime">
+                                <div style="float:left;">
+                                    <input type="radio" name="timeset" id="timeset2" checked style="margin-right:10px;">
+                                    <select name="week_start" id="week_start">
+                                        <option value="1" selected>星期一</option>
+                                        <option value="2">星期二</option>
+                                        <option value="3">星期三</option>
+                                        <option value="4">星期四</option>
+                                        <option value="5">星期五</option>
+                                        <option value="6">星期六</option>
+                                        <option value="7">星期日</option>
+                                    </select> --
+                                    <select name="week_end" id="week_end" style="margin-right:20px;" >
+                                        <option value="1">星期一</option>
+                                        <option value="2">星期二</option>
+                                        <option value="3">星期三</option>
+                                        <option value="4">星期四</option>
+                                        <option value="5">星期五</option>
+                                        <option value="6">星期六</option>
+                                        <option value="7" selected>星期日</option>
+                                    </select>
+                                </div>
+                                <div class="input-group bootstrap-timepicker" style="width: 120px;float:left">
+                                    <input id="d_min" type="text" class="form-control" value="00:00:00" />
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-clock-o bigger-110"></i>
+                                    </span>
+                                </div>
+                                <div style="float:left;line-height:34px;padding:0 4px;"> -- </div>
+                                <div class="input-group bootstrap-timepicker" style="width: 120px;float:left">
+                                    <input id="d_max" type="text" class="form-control" value="23:59:59" />
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-clock-o bigger-110"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <p style="padding-left:24px;">
+                                设置的时间段为：从当日的  0 点到当日的 24 点
+                            </p>
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>转发到:</td>
+                    <td>
+                        <textarea class="form-control" rows="5" name="forward_body" id="forward_body"></textarea>
+                        <p style="padding-left:4px;" class="text-danger">
+                            注意：有多个转发地址以英文逗号分隔；如：qone@test.com,two@test.com
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>转发选项:</td>
+                    <td>
+                        <input name="keep_mail" id="keep_mail" checked type="checkbox">
+                        同时将信件保存在本邮箱内
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="center">
+                        <input type="hidden" name="id" value="0">
+                        <input type="hidden" name="rule_id" value="" id="rule_id">
+                        <input type="hidden" name="copy_addr_con" value="" id="copy_addr_con">
+                        <input type="hidden" name="subject_con" value="" id="subject_con">
+                        <input type="hidden" name="sender_original_con" value="" id="sender_original_con">
+                        <input type="hidden" name="sender_con" value="" id="sender_con">
+                        <input type="hidden" name="recipient_con" value="" id="recipient_con">
+                        <input type="hidden" name="recipient_original_con" value="" id="recipient_original_con">
+                        <input type="hidden" name="exec_date_con" value="" id="exec_date_con">
+                        <input type="hidden" name="exec_week_con" value="" id="exec_week_con">
+                        <input type="hidden" name="mailsize_con" value="" id="mailsize_con">
+                        <input type="submit" value="y" id="submit_ok" style="display: none;">
+                        <input type="hidden" name="action" value="add" id="forward_action_id">
+
+                        <button type="button" onclick="save_forward({{ mailbox_obj.id }})" class="btn btn-sm btn-primary">保存</button>
+                        <button type="button" id="id_return" class="btn btn-sm btn-danger cancel-btn" href="{% url 'mailbox_forward' mailbox_obj.id %}" data-target="#modal-forward" data-dismiss="modal" data-toggle="modal">返回</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+

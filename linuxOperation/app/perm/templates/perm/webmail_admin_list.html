@@ -1,0 +1,122 @@
+{% extends 'base_site.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %} {% trans "Webmail管理员管理" %} {% endblock %}
+{% block breadcrumb %}<li> <a class="active">{% trans "Webmail管理员管理" %}</a> </li><li></li>{% endblock %}
+
+{% block page-content %}
+    <div class="row">
+        <div class="space-2"></div>
+        <div class="col-xs-4">
+            <div class="page-header"><h1>{% trans "Webmail管理员管理" %}</h1></div>
+        </div>
+        <div class="col-xs-8">
+            <div class="pull-right" style="margin-right:30px;">
+                <div class="button-group">
+                    <a type="button" class="btn btn-primary btn-sm"  href="{% url 'webmail_admin_add' %}">添加管理员</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="table-responsive">
+                <table id="dynamic-table"  class="table table-striped table-bordered table-hover table-center" role="grid" >
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>用户名</th>
+                        <th>域名</th>
+                        <th>用户类型</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for d in lists %}
+                        <tr class="{% cycle 'odd' 'even' %}">
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ d.username }}</td>
+                            <td>{{ d.domain }}</td>
+                            <td>{{ d.get_usertype_display|default_if_none:'' }}</td>
+                            <td>{{ d.get_disabled_display|default_if_none:'' }}</td>
+                            <td>
+                                <a type="button" class="green btn btn-white btn-primary btn-xs" href="{% url 'webmail_admin_mdf' d.id %}">修改</a>
+                                <a type="button" class="red delete btn btn-white btn-danger btn-xs" href="Javascript: Delete({{ d.id }}, '{{ d.username }}')">删除</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <form id="id_form" action="" method="POST">
+        {% csrf_token %}
+        <input type="hidden" id="id" name="id" />
+        <input id="action" name="action" type="hidden" />
+    </form>
+{% endblock %}
+
+{% block css_block %}
+    <link rel="stylesheet" href="{% static 'components/_mod/jquery-ui.custom/jquery-ui.custom.css' %}" />
+    <link href="{% static 'components/datatables/media/css/dataTables.bootstrap.css' %}">
+    <style>
+        .btn-danger.btn-white {border-color: #e4393c;color: #e4393c !important;}
+        .modal-lg-self{width: 1200px;}
+    </style>
+{% endblock %}
+
+{% block my_jsblock %}
+    <script src="{% static 'components/datatables/media/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'components/_mod/datatables/jquery.dataTables.bootstrap.js' %}"></script>
+    <script src="{% static 'components/_mod/jquery-ui.custom/jquery-ui.custom.js' %}"></script>
+    <script>
+        $(function () {
+            ip_table =
+                $('#dynamic-table').dataTable({
+                    "bAutoWidth": false,
+                    "aaSorting": [],
+                    "drawCallback": function( settings ) {
+                        $('#dynamic-table tr').click(function () {
+                            if ($(this).hasClass('selected'))
+                                $(this).removeClass('selected');
+                            else
+                                $(this).addClass('selected');
+                        });
+                    },
+                    // select: { style : 'multi' },
+                    "iDisplayLength": 20,
+                    "lengthMenu": [10, 15, 20, 50, 100, 200],
+                    //"aaSorting": [[0, "desc"]],
+                    "oLanguage": {
+                        "sLengthMenu": "{% blocktrans %}显示 _MENU_ 每页{% endblocktrans %}",
+                        "sZeroRecords": "{% blocktrans %}对不起! 信息筛选结果为空!{% endblocktrans %}",
+                        "sInfo": "{% blocktrans %}从 _START_ 到 _END_ 总计: _TOTAL_ 条记录{% endblocktrans %}",
+                        "sInfoEmpty": "{% blocktrans %}总计: 0 条记录{% endblocktrans %}",
+                        "sInfoFiltered": "{% blocktrans %}(从 _MAX_ 条记录筛选出){% endblocktrans %}",
+                        "sSearch": "{% blocktrans %}搜索: {% endblocktrans %}",
+                        "oPaginate": {
+                            "sFirst": " {% blocktrans %}第一页{% endblocktrans %} ",
+                            "sPrevious": " {% blocktrans %}上一页{% endblocktrans %} ",
+                            "sNext": " {% blocktrans %}下一页{% endblocktrans %} ",
+                            "sLast": " {% blocktrans %}最后一页{% endblocktrans %} "
+                        }
+                    },
+                });
+        });
+
+        function Delete(id, name){
+            var str = '确定要删除列表 "%s"？';
+            str = str.replace(/%s/, name);
+            if(confirm(str)) {
+                $('#id').val(id);
+                $('#action').val('delete');
+                $('#id_form').submit();
+            }
+            return;
+        }
+    </script>
+{% endblock %}

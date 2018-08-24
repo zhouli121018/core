@@ -1,0 +1,162 @@
+{% extends 'base_site.html' %}
+{% load i18n %}
+{% load static %}
+{% load bootstrap %}
+{% block title %}{% trans "邮箱帐号管理" %}{% endblock %}
+{% block breadcrumb %}
+<li> <a href="#">{% trans "邮箱帐号管理" %}</a> </li>
+<li class="active">{% trans "批量修改帐号" %}</li>
+{% endblock %}
+
+{% block page-content %}
+
+{% if success or failures %}
+<div class="row">
+    <article class="col-sm-12">
+
+        {% autoescape off %}
+        <div class="alert alert-success fade in">
+            <button class="close" data-dismiss="alert">
+                ×
+            </button>
+            <i class="fa-fw fa fa-success"></i>
+            成功修改 <span class="text-success">{{ success }}</span> 个邮箱, 修改失败 <span class="text-danger"> {{ failures|length }}</span> 个邮箱：
+            {% if failures %}
+            <br>
+            <i class="fa-fw fa fa-success"></i>失败数据重新放入<a href="#tip">输入框</a>中，您可以重新编辑提交
+            <pre>{% for f in failures %}
+<span class="text-danger">{{ f.0 }}:</span> {{ f.1 }}
+{% endfor %}</pre>
+            {% endif %}
+        </div>
+        {% endautoescape %}
+
+    </article>
+</div>
+{% endif %}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="page-header">
+            <h1>{% trans "邮箱帐号管理" %}<small>
+                <i class="ace-icon fa fa-angle-double-right"></i>{% trans "批量修改帐号" %}</small></h1>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <ul class="nav nav-tabs" id="myTab">
+            <li>
+                <a href="{% url 'mailbox_account' %}">
+                    <i class="green ace-icon fa fa-home bigger-120"></i>{% trans "帐号列表" %}
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'mailbox_add_account' %}">
+                    {% trans "修改帐号" %}
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'mailbox_batchadd_account' %}">
+                    {% trans "批量添加帐号" %}
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="{% url 'mailbox_batchedit_account' %}">
+                    {% trans "批量修改帐号" %}
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'mailbox_delete_account' %}">
+                    {% trans "批量删除帐号" %}
+                </a>
+            </li>
+            <!--<li>-->
+                <!--<a href="{% url 'mailbox_backup_account' %}">-->
+                    <!--{% trans "导入导出帐号" %}-->
+                <!--</a>-->
+            <!--</li>-->
+
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade in active">
+                <form class="form-horizontal" action="" method="POST" >
+                    {% csrf_token %}
+                    <table class="table  table-bordered  ">
+                        <tbody>
+                        <tr >
+                            <td class="text-right">
+                                邮箱域名：
+                            </td>
+                            <td>
+                                <b>{{ domain.domain }}</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">格式说明：</td>
+                            <td>
+                                <p><span class="red">注意：</span>每行的格式为
+                                    <span class="blue">
+                    用户名 密码 邮箱大小 网盘大小 真实名称 所属部门 工号 职位 手机号码 电话号码 QQ 出生日期
+                    </span> 之间用“TAB”符号隔开
+                                    “邮箱大小”和“网盘大小”的单位为“M”</p>
+                                <p>eg:</p>
+                                <p>tina	password1	500	100	张三	财务部	12345	on	13528775736	0755-89421857	员工</p>
+                                <p>gary	password2	100	100	李四	技术部	12346	on	13528775236	0755-89721857	员工</p>
+                                <p>tom	passwor3	200	50	王五	后勤部	12347	off	13527675736	0734-89421857	员工</p>
+                                <div class="hr hr-18 dotted hr-double"></div>
+                                <p>另外:有相同的子部门时，所属部门用 - 隔开如：</p>
+                                <p>test1	password4	100	100	王五	大中华区-华南区-财务部	12347	on	13528775736	0755-89421857	员工</p>
+                                <p>test2	password5	100	100	赵六	大中华区-华北区-财务部	12348	on	13528775236	0755-89721857	员工</p>
+                                <div class="hr hr-18 dotted hr-double"></div>
+                                <p>注：如果某项留空，则不进行修改！</p>
+                                <ul>
+                                    <li>1、使用EXCEL先进行数据处理，处理成范例文件格式</li>
+                                    <li>2、txt数据导入和excel数据导入只能选择其中一种方式导入</li>
+                                    <li>3、点击表格下方的编辑进行批量修改用户。</li>
+                                    <li>4、eg:用户名为必填项</li>
+                                    <li>5、eg:邮箱大小或网盘大小为空，则默认为邮箱容量或网盘容量的设置值</li>
+                                    <li>6、eg:部门为空，但是填写了职位，则会修改所有的该用户所有的部门职位，建议修改职位指定部门</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-right" id="tip">数据导入：</td>
+                            <td>
+                                <textarea name="data" rows="6" class="form-control">{% for f in failures %}
+{{ f.1 }}{% endfor %}
+                                </textarea>
+                            </td>
+                        </tr>
+                        <!--<tr>-->
+                            <!--<td class="text-right">excel数据导入：</td>-->
+                            <!--<td>-->
+                                <!--<input type="file">-->
+                            <!--</td>-->
+                        <!--</tr>-->
+                        </tbody>
+                    </table>
+                    <div class="clearfix form-actions">
+                        <div class="text-center">
+                            <button class="btn btn-info" type="submit">
+                                <i class="ace-icon fa fa-check bigger-110"></i>
+                                保存
+                            </button>
+                            <button class="btn" type="reset">
+                                <i class="ace-icon fa fa-undo bigger-110"></i>
+                                重置
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+

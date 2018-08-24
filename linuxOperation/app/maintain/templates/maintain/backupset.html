@@ -1,0 +1,148 @@
+{% extends 'base_site.html' %}
+{% load i18n %}
+{% load static %}
+{% load bootstrap %}
+{% block title %} {% trans "备份参数设置" %} {% endblock %}
+{% block breadcrumb %}
+    <li> <a href="#">{% trans "系统维护" %}</a> </li>
+    <li><a href="#">{% trans "备份数据" %}</a></li>
+    <li class="active">{% trans "备份参数设置" %}</li>
+{% endblock %}
+
+{% block page-content %}
+    <div class="row">
+        <div class="space-12"></div>
+        <div class="col-xs-12">
+            <div class="page-header"><h1>{% trans "备份参数设置" %}</h1></div>
+        </div>
+    </div>
+
+    <form role="form" action="" method="post" class="">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-default" style="margin-bottom: 0px!important;">
+                    <div class="panel-heading">{% trans "备份参数设置" %}</div>
+                    <div class="panel-body">
+                        {% csrf_token %}
+                        {{ form.path|bootstrap }}
+
+                        <div class="form-group">
+                            <label class="control-label  " ><span class="red bold">*</span>{{ form.data.label }}</label>
+                            <div class="control-group">
+                                <label class="checkbox checkbox-inline no-padding margin-top-0 form-inline" style="margin-top: -7px;">
+                                    {% for key, value in form.fields.data.choices %}
+                                        <label {% if forloop.count == 1  %}style="margin-right:20px;" {% endif %}>
+                                            <input name="{{ form.data.name }}" value="{{ key }}" type="checkbox" {% if key in form.data.initial %}checked{% endif %}><span>{{ value }}</span>
+                                        </label>
+                                    {% endfor %}
+                                </label>
+                            </div>
+                            {% if form.data.errors %}
+                                {% for error in form.data.errors %}
+                                    <div style="clear: both"><p class="errornote txt-color-red">{{ error|escape }}</p></div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        {{ form.count|bootstrap }}
+
+                        <div class="form-group">
+                            <label class="control-label  " >{{ form.type.label }}</label>
+                            <div class="  ">
+                                <div class="control-group">
+                                    <label>{% trans "每隔" %}{{ form.cycle }}{{ form.type }}{% trans "备份一次" %}</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label  " for="id_passwd_other_bak">{% trans "备份时间" %}</label>
+                            <div class=" ">
+                                <div class="control-group">
+                                    <label>
+                                        <label id="id_month_lable">{{ form.month }}月</label>
+                                        <label id="id_date_lable">{{ form.date }}日</label>
+                                        <label id="id_week_lable">周{{ form.week }}</label>
+                                        <label id="id_hour_lable">{{ form.hour }}点</label>
+                                        <label id="id_hour_lable">{{ form.minute }}分</label>
+                                    </label>
+
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-sm">{% trans "确认" %}</button>
+                            <button class="btn btn-sm" type="reset">{% trans "重置" %}</button>
+                            <button type="button" class="btn btn-link btn-sm" onclick="location.href='{% url 'backup_maintain' %}'">{% trans "取消" %}</button>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </form>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="col-md-10">
+                <p><strong><span style="color:#FF0000;"><strong><span style="color:#FF0000;">备注:</span></strong><br></span></strong></p>
+                <p>备份数据的保存路径需要先建立好，并且给予<span class="c_blue">umail</span>用户写权限（设置目录权限为777或将目录属主设为umail）</p>
+                <p>如果要使用自动备份功能，则需要先启用<strong>“综合功能配置-&gt;系统功能设置-&gt;数据备份开关”</strong>功能</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block css_block %}
+{% endblock %}
+
+
+{% block my_jsblock %}
+    <script>
+        $(function(){
+            var path = "{% url 'backup_maintain' %}";
+            $('#sidebar').find('[href="'+path+'"]').parent().first().addClass('active');
+        });
+    </script>
+
+    <script>
+
+        $(function () {
+            onchangeType('{{ form.cleaned_data.type }}');
+        });
+
+        function onchangeType(value){
+            if (value == "year"){
+                $("#id_month_lable").removeClass("display-none");
+                $("#id_date_lable").removeClass("display-none");
+                $("#id_week_lable").addClass("display-none");
+                $("#id_hour_lable").removeClass("display-none");
+                $("#id_minute_lable").removeClass("display-none");
+            } else if ( value == "month" ) {
+                $("#id_month_lable").addClass("display-none");
+                $("#id_date_lable").removeClass("display-none");
+                $("#id_week_lable").addClass("display-none");
+                $("#id_hour_lable").removeClass("display-none");
+                $("#id_minute_lable").removeClass("display-none");
+            } else if ( value == "week" ) {
+                $("#id_month_lable").addClass("display-none");
+                $("#id_date_lable").addClass("display-none");
+                $("#id_week_lable").removeClass("display-none");
+                $("#id_hour_lable").removeClass("display-none");
+                $("#id_minute_lable").removeClass("display-none");
+            } else if ( value == "day" ) {
+                $("#id_month_lable").addClass("display-none");
+                $("#id_date_lable").addClass("display-none");
+                $("#id_week_lable").addClass("display-none");
+                $("#id_hour_lable").removeClass("display-none");
+                $("#id_minute_lable").removeClass("display-none");
+            } else if ( value == "hour" ) {
+                $("#id_month_lable").addClass("display-none");
+                $("#id_date_lable").addClass("display-none");
+                $("#id_week_lable").addClass("display-none");
+                $("#id_hour_lable").addClass("display-none");
+                $("#id_minute_lable").removeClass("display-none");
+            }
+        }
+    </script>
+{% endblock %}

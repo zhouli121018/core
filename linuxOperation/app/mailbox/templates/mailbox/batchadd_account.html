@@ -1,0 +1,431 @@
+
+{% extends 'base_site.html' %}
+{% load i18n %}
+{% load static %}
+{% load bootstrap %}
+{% block title %}{% trans "邮箱帐号管理" %}{% endblock %}
+{% block breadcrumb %}
+<li> <a href="#">{% trans "邮箱帐号管理" %}</a> </li>
+<li class="active">{% trans "批量添加帐号" %}</li>
+{% endblock %}
+
+{% block page-content %}
+
+{% if success or failures %}
+<div class="row">
+    <article class="col-sm-12">
+        {% autoescape off %}
+
+        <div class="alert alert-success fade in">
+            <button class="close" data-dismiss="alert">
+                ×
+            </button>
+            <i class="fa-fw fa fa-success"></i>
+            成功添加 <span class="text-success">{{ success }}</span> 个邮箱, 添加失败 <span class="text-danger"> {{ failures|length }}</span> 个邮箱：
+            {% if failures %}
+            <br>
+            <i class="fa-fw fa fa-success"></i>失败数据重新放入<a href="#tip">输入框</a>中，您可以重新编辑提交
+            <pre>{% for f in failures %}
+<span class="text-danger">{{ f.0 }}:</span> {{ f.1 }}
+{% endfor %}</pre>
+            {% endif %}
+        </div>
+        {% endautoescape %}
+
+    </article>
+</div>
+{% endif %}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="page-header">
+            <h1>{% trans "邮箱帐号管理" %}<small>
+                <i class="ace-icon fa fa-angle-double-right"></i>{% trans "批量添加帐号" %}</small></h1>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <ul class="nav nav-tabs" id="myTab">
+            <li>
+                <a href="{% url 'mailbox_account' %}">
+                    <i class="green ace-icon fa fa-home bigger-120"></i>{% trans "帐号列表" %}
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'mailbox_add_account' %}">
+                    {% trans "添加帐号" %}
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="{% url 'mailbox_batchadd_account' %}">
+                    {% trans "批量添加帐号" %}
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'mailbox_batchedit_account' %}">
+                    {% trans "批量修改帐号" %}
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'mailbox_delete_account' %}">
+                    {% trans "批量删除帐号" %}
+                </a>
+            </li>
+            <!--<li>-->
+                <!--<a href="{% url 'mailbox_backup_account' %}">-->
+                    <!--{% trans "导入导出帐号" %}-->
+                <!--</a>-->
+            <!--</li>-->
+
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade in active">
+
+                <form class="form-horizontal" action="" method="POST"  onsubmit="return checkForm(this);">
+                    {% csrf_token %}
+                    <table class="table  table-bordered  ">
+                        <tbody>
+                        <tr >
+                            <td class="text-right" style="width:100px;">默认邮箱容量：</td>
+                            <td>
+                                <div class="input-group">
+                                    <input type="number" name="quota_mailbox" value="{{ mb_quota_def }}" class="form-control">
+                                    <span class="input-group-addon">MB</span>
+                                </div>
+                            </td>
+                            <td class="text-right">默认网盘容量：</td>
+                            <td>
+                                <div class="input-group">
+                                    <input type="number" name="quota_netdisk" value="{{ nd_quota_def }}" class="form-control">
+                                    <span class="input-group-addon">MB</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">默认所属部门：</td>
+                            <td>
+                                <div style="position:relative;">
+                                    <div id="input_box">
+                                        <input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">
+                                        <input type="hidden" class="id_dept_id" name="option_value_dpt{{ d.id }}">
+                                    </div>
+                                    <div class="widget-box widget-color-blue2 email_box_tree" id="tree_box" style="max-width:100%;position:absolute;top:32px;z-index:10;">
+                                        <button type="button" class="btn btn-danger btn-sm pull-right close_btn" style="">&times;</button>
+                                        <div class="widget-body" style="padding-right:20px;">
+                                            <div style="padding:20px  6px 0;">
+                                                <input type="text" class="search_input form-control" placeholder="输入关键字搜索...">
+                                            </div>
+                                            <div class="widget-main padding-8" style="height:auto;">
+                                                <ul id="tree"></ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </td>
+                            <td class="text-right">兼容模式：</td>
+                            <td>
+                                <select name="compatible_id" class="tree_select form-control">
+                                    <option value="1">U-Mail Linux 版数据格式</option>
+                                    <option value="2">U-Mail Windows 版数据格式</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">格式说明：</td>
+                            <td colspan="5">
+                                <p>用户名可以是字符、数字、上划线、下划线、点，但用户名的第一个字必须是数字或字母。
+                                    如果输入的用户名是大写字母，系统将自动转为小写！</p>
+                                <p><span class="red">注意：</span>每行的格式为
+                                    <span class="blue">
+                    用户名 密码 邮箱大小 网盘大小 真实名称 所属部门 工号 职位 手机号码 电话号码 QQ 出生日期
+                    </span> 之间用“TAB”符号隔开
+                                    “邮箱大小”和“网盘大小”的单位为“M”</p>
+                                <p>eg:</p>
+                                <textarea   rows="6" class="form-control">tina	password1	500	100	水中花	技术部	12345	高级工程师	13600000000	88776655	123456	1985-01-01
+gary	password2	100	100	张三	财务部	12346	会计员	13700000000	88995566	987456	1990-10-25
+tom	djd834kjd	200	50	李四	后勤部	12347	司机	13811110000	88661122	657823	1980-07-11</textarea>
+                                <div class="hr hr-18 dotted hr-double"></div>
+                                <p>另外:有相同的子部门时，所属部门用 - 隔开如：</p>
+                                <textarea  rows="4" class="form-control">toy	password4	100	100	王五	华南区-财务部	12348	出纳	13122223333	56485264	545847	1984-08-16
+mike	password5	100	100	李明	华北区-财务部	12349	财务主管	13956485264	58746932	568742	1977-05-11</textarea>
+                                <div class="hr hr-18 dotted hr-double"></div>
+                                <p>标准操作步骤：</p>
+                                <ul>
+                                    <li>1、使用EXCEL先进行数据处理，处理成sys_mailbox_eg格式</li>
+                                    <li>2、然后将EXCEL文件内容拷贝到文本文件，见然后将EXCEL文件内容拷贝到文本文件，见。</li>
+                                    <li>3、然后将文本文件内容拷入下面的表格。</li>
+                                    <li>4、点击表格下方的添加进行批量添加用户</li>
+                                    <li>5、eg:显示名称 为空，则默认为选择列表"所属部门"的设置值</li>
+                                    <li>6、eg:邮箱大小或网盘大小为空，则默认为邮箱容量或网盘容量的设置值</li>
+                                    <li>7、eg:所属部门为空，则默认为选择列表"所属部门"的设置值</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-right" id="tip">导入数据：</td>
+                            <td colspan="5">
+                                <textarea name="data" rows="6" class="form-control">{% for f in failures %}
+{{ f.1 }}{% endfor %}
+                                </textarea>
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <div class="clearfix form-actions">
+                        <div class="text-center">
+                            <button class="btn btn-info" type="submit">
+                                <i class="ace-icon fa fa-check bigger-110"></i>
+                                保存
+                            </button>
+                            <button class="btn" type="reset">
+                                <i class="ace-icon fa fa-undo bigger-110"></i>
+                                重置
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block css_block %}
+<style>
+    #tree_box{
+        display:none;
+    }
+    #tree_box.active{
+        display:block;
+    }
+</style>
+{% endblock %}
+{% block my_jsblock %}
+<script src="{% static 'js/common.js' %}" ></script>
+<script src="{% static 'assets/js/fuelux/fuelux.tree.js' %}" ></script>
+<script>
+function checkForm(form) {
+    var checkpass = "{{ severe_pass|default_if_none:0 }}";
+    form.data.value = form.data.value.trim();
+
+    if(!checkFormat(form.quota_mailbox.value, 'number')) {
+        alert("{% trans '邮箱容量格式错误，无法提交数据！' %}");
+        return false;
+    }
+
+    if(!checkFormat(form.quota_netdisk.value, 'number')) {
+        alert("{% trans '网盘容量格式错误，无法提交数据！' %}");
+        return false;
+    }
+
+    //检测导入数据是否为空
+    if(form.data.value == "") {
+        alert("{% trans '请填写所要导入的数据！' %}");
+        return false;
+    }
+
+    //检测导入数据中的邮箱名称、密码是否符合规定
+    var lines = form.data.value.split("\n");
+    for(var i=0;i<lines.length;i++) {
+        var arr  = lines[i].trim().split(';');
+        var name = arr[0].trim();
+        var pass = arr[1].trim();
+        if(checkMailName(name) == false) {
+            alert("{% trans '邮箱名称' %}“" + name + "”{% trans '格式错误；邮件名称需由字母、数字或下划线组成！' %}");
+            return false;
+        }
+        if(checkpass == '1') {
+            var ret = checkStrongCipher(pass, false);
+            if(ret[0] == false) {
+                alert("{% trans '邮箱' %}“" + name + "”" + ret[1]);
+                return false;
+            }
+        } else if(pass == '') {
+            alert("{% trans '邮箱' %}“" + name + "”{% trans '的密码为空，无法提交数据！' %}");
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function demoinitdept(treeid,treeparentid,inputparentid,deptArr){
+    var treeEle;
+    $(treeid).removeData("fu.tree");
+    $(treeid).unbind('click.fu.tree');
+    function initdepttree(deptArr){
+        var sampleData = initiateDemoData(deptArr);
+        treeEle = $(treeid).ace_tree({
+            dataSource: sampleData['dataSource1'],
+            multiSelect: false,
+            loadingHTML: '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>',
+            'open-icon' : 'ace-icon tree-minus hide',
+            'close-icon' : 'ace-icon tree-plus hide',
+            'selectable' : true,
+            'selected-icon' : 'ace-icon fa fa-check',
+            'unselected-icon' : 'ace-icon fa fa-times',
+            'cacheItems': true,
+            'folderSelect': true,
+            'folder-open-icon' : 'ace-icon tree-plus',
+            'folder-close-icon' : 'ace-icon tree-minus'
+        });
+
+        $(treeid).tree('discloseAll');
+        $(treeid).tree('closeAll');
+
+        //默认选中节点
+        function test(ele){
+            if(ele.parent().parent().hasClass('tree-branch')){
+                ele.parent().parent().find('>i').click();
+                test(ele.parent().parent())
+            }
+        }
+
+        $(treeid).find('.tree-branch,.tree-item').each(function(i,dom){
+            //        if($(this).data().id == ccid){
+            //            $(this).addClass('active-header');
+            //            $(this).find('>i').click()
+            //            test($(this));
+            //        }
+        })
+    }
+    initdepttree(deptArr);
+    $(treeparentid+' .search_input').keyup(function(){
+        var keywords = $(this).val();
+        $(treeid).removeData("fu.tree");
+        $(treeid).unbind('click.fu.tree');
+        if(keywords.length>0){
+            var initArr = deptArr;
+            var reg = new RegExp(keywords, 'i');
+            var arr = [];
+            var textname = '';
+            function getp(id){
+                for(var i=0;i<initArr.length;i++){
+                    var a = initArr[i]['id'];
+                    var pp = initArr[i]['parent'];
+                    var n = initArr[i]['name'];
+                    if(a == id){
+                        textname += " -- " + n;
+                        if(pp>0){
+                            getp(pp);
+                        }
+                    }
+                }
+            }
+            for(var key in initArr){
+                if(initArr[key]['name'].match(reg)){
+                    if(initArr[key]['parent']>0){
+                        textname += initArr[key]['name'];
+                        getp(initArr[key]['parent']);
+                        var obj = {child:0,parent:0,name:textname,id:initArr[key]['id']};
+                        textname = '';
+                    }else{
+                        var obj = {child:0,parent:0,name:initArr[key]['name'],id:initArr[key]['id']};
+                    }
+                    arr.push(obj);
+                }
+            }
+            initdepttree(arr)
+        }else{
+            initdepttree(deptArr);
+        }
+    })
+
+    function initiateDemoData(deptArr){
+        var tree_data = {};
+        for(var i=0;i<deptArr.length;i++){
+            if(deptArr[i].parent<=0){
+                if(deptArr[i].child&&deptArr[i].child>0){
+                    tree_data[deptArr[i].name] = {text:deptArr[i].name,type:"folder",id:deptArr[i].id};
+                    tree_data[deptArr[i].name]['additionalParameters']={"children":getSubDate(deptArr[i].id)};
+                }else{
+                    tree_data[deptArr[i].name] = {text:deptArr[i].name,type:"item",id:deptArr[i].id};
+                }
+            }
+        }
+
+        function getSubDate(pid){
+            var obj = {};
+            for(var i=0;i<deptArr.length;i++){
+                if(deptArr[i]['parent'] == pid){
+                    if(deptArr[i].child&&deptArr[i].child>0){
+                        obj[deptArr[i].name] = {text:deptArr[i].name,type:"folder",id:deptArr[i].id,child:deptArr[i].child}
+                    }else{
+                        obj[deptArr[i].name] = {text:deptArr[i].name,type:"item",id:deptArr[i].id,child:deptArr[i].child}
+                    }
+
+                }
+            }
+            return obj;
+        }
+        function getAdditionalParameters(arr){
+            for(var key in arr){
+                if(arr[key]['type']=="folder"){
+                    arr[key]['additionalParameters']={"children":getSubDate(arr[key]['id'])};
+                    if(arr[key]['additionalParameters']["children"]){
+                        getAdditionalParameters(arr[key]['additionalParameters']["children"])
+                    }
+                }
+            }
+        }
+        getAdditionalParameters(tree_data);
+        var dataSource1 = function(options, callback){
+            var $data = null
+            if(!("text" in options) && !("type" in options)){
+                $data = tree_data;//the root tree
+                callback({ data: $data });
+                return;
+            }
+            else if("type" in options && options.type == "folder") {
+                if("additionalParameters" in options && "children" in options.additionalParameters)
+                    $data = options.additionalParameters.children || {};
+                else $data = {}//no data
+            }
+            if($data != null)//this setTimeout is only for mimicking some random delay
+                callback({ data: $data });
+        }
+        return {'dataSource1': dataSource1}
+    }
+
+    $(treeid).on('click','.tree-item,.tree-branch-header',function(){
+        $(treeid+' .tree-selected').removeClass('tree-selected');
+        if($(this).hasClass('tree-branch-header')){
+            $(this).parent().addClass('tree-selected');
+        }else{
+            $(this).addClass('tree-selected');
+        }
+        $(treeparentid).removeClass('active');
+        var o = treeEle.tree('selectedItems')[0];
+        $(inputparentid + ' .department_choice').val(o.text);
+        $(inputparentid + ' .id_dept_id').val(o.id);
+    })
+    var showb = false;
+    $('body').click(function(e){
+        var $parents = $(e.target).parents(treeparentid);
+        if(!$(e.target).hasClass('department_choice') && $parents.length<1){
+            $(treeparentid).removeClass('active');
+        }
+    })
+    $(treeparentid+ ' .close_btn').click(function(){
+        $(treeparentid).removeClass('active');
+    })
+
+    $(inputparentid + ' .department_choice').click(function(){
+        $(".email_box_tree").removeClass('active');
+        $(treeparentid).addClass('active');
+        showb = true;
+    })
+}
+// deptArr 为初始化获得的部门数据
+var deptArr = {{ dept_list|safe }};
+demoinitdept("#tree","#tree_box","#input_box",deptArr);
+    
+</script>
+{% endblock %}

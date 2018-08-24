@@ -1,0 +1,132 @@
+{% extends 'base_site.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "LDAP/AD域同步设置" %}{% endblock %}
+
+{% block breadcrumb %}
+    <li> <a href="#">{% trans "LDAP/AD域同步设置" %}</a> </li>
+    <li class="active">{% trans "LDAP/AD域同步设置" %}</li>
+{% endblock %}
+
+{% block page-content %}
+
+    <div class="row">
+        <div class="space-6"></div>
+        <div class="col-xs-6">
+        <div class="page-header">
+            <h1>
+                {% trans "LDAP/AD域同步设置" %}
+                <small>
+                    <i class="ace-icon fa fa-angle-double-right"></i>
+                    {% trans "LDAP/AD域同步设置" %}
+                </small>
+            </h1>
+        </div>
+    </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="tabbable">
+                <ul class="nav nav-tabs" id="myTab">
+                    <li class="active">
+                        <a href="#">
+                            <i class="green ace-icon fa fa-home bigger-120"></i>{% trans "LDAP/AD域同步设置" %}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'ldap_adlist' %}">
+                            <i class="green ace-icon fa bigger-120"></i>{% trans "AD域帐号列表" %}
+                        </a>
+                    </li>
+
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane fade in active">
+                        {% if type == "ad" %}
+                            {% include 'setting/include/ldap_setting_ad.html' %}
+                        {% else %}
+                            {% include 'setting/include/ldap_setting.html' %}
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block css_block %}
+    <link rel="stylesheet" href="{% static 'otreetable1.0/otreetable.css' %}" />
+<style>
+    #search_form th{
+        border-top:none;
+    }
+    #search_form th{
+        padding-left:0;
+        padding-right:0;
+    }
+    #search_form th input,#search_form th select{
+        width:95%;
+    }
+    #search_form .text-right{
+        white-space: nowrap;
+    }
+</style>
+{% endblock %}
+
+{% block my_jsblock %}
+    <script src="{% static 'components/datatables/media/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'components/_mod/datatables/jquery.dataTables.bootstrap.js' %}"></script>
+
+    <script>
+
+        function onchangeTypeOptions(value){
+            var base_url = "{% url 'ldap_setting' %}" + "?d="+ $('#id_selectdomain').val() + "&type=" + value;
+            window.location.href = base_url;
+        }
+
+        function onclickTaskButton(){
+            $.ajax(
+                {
+                    url: "{% url 'ldap_setting_ajax' %}" + "?d=" + $('#id_selectdomain').val(),
+                    success: function(){
+                        confirm("已添加手动同步任务！");
+                    }
+                }
+                );
+        }
+
+        function onclickSubmitButton(){
+            var params = $("#id_form").serializeArray();
+            var val = "-1";
+            for( x in params ){
+                var name=params[x].name;
+                if (name=="delete_local"){
+                    val = params[x].value;
+                    break;
+                }
+            }
+            if ( val == "1" ){
+                var str = '{% trans "选择删除 <AD域中不存在的帐号> 后，会自动删除掉这些帐号的所有帐号、邮件、网盘数据且不可挽回，是否确认此操作？" %}';
+                if(confirm(str)) {
+                    $('#id_form').submit();
+                }
+            } else {
+                $('#id_form').submit();
+            }
+            return;
+            }
+
+        function onclickDownloadLogButton(){
+            var base_url = "{% url 'ldap_download_log' %}";
+            window.location.href = base_url;
+        }
+
+    </script>
+
+{% endblock %}
+

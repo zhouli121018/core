@@ -1,0 +1,221 @@
+{% extends 'base_site.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "杂项设置" %}{% endblock %}
+
+{% block css_block %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}" />
+<style>
+    .nowrap0{
+        white-space: nowrap;
+    }
+    table td.text-right{
+      font-weight:bold;
+        /*white-space: nowrap;*/
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <li> <a href="{% url 'system_set' %}">{% trans "杂项设置" %}</a> </li>
+{% endblock %}
+
+{% block page-content %}
+<div id="dynamic-div">
+    <h3 class="header smaller lighter blue"><span class="red">杂项设置</span>
+
+    </h3>
+
+    <div class="table-header">
+        杂项设置
+    </div>
+    <div>
+        <form class="form-horizontal table-responsive" role="form" action="" method="POST">
+            {% csrf_token %}
+        <table class="table table-bordered">
+            <tr>
+                <td class="text-right">超管后台标题：</td>
+                <td class="row">
+                    <div class="col-sm-3 no-padding">
+                        <input type="text" class="form-control" name="superadmintitle" value="{{ form.superadmintitle.value }}" class="col-xs-10 col-sm-5">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">邮件收发日志保存天数：</td>
+                <td class="row">
+                    <div class="col-sm-3 no-padding">
+                        <input type="number" class="form-control" name="sw_mail_log_save_day" value="{{ form.sw_mail_log_save_day.value }}" >
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">收件人数量限制：</td>
+                <td class="row">
+                    <div class="col-sm-3 no-padding">
+                        <input type="number" class="form-control" name="recipientlimit" value="{{ form.recipientlimit.value }}" class="col-xs-10 col-sm-5" required>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="help-block green">
+                            例如：100、500、1000
+                        </p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">发信时对本服无效用户进行退信：</td>
+                <td>
+                    <label class="inline" >
+                        <input name="sys_pass_all_local" value="1" {% if form.sys_pass_all_local.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5">
+                        <span class="lbl middle"></span>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">"旧邮件备份"目录备份功能：</td>
+                <td class="row">
+                    <div class="col-sm-3 no-padding">
+                        <label class="inline" >
+                            <input name="sys_auto_backup_mail" value="1" {% if form.sys_auto_backup_mail.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5">
+                            <span class="lbl middle"></span>
+                        </label>
+                    </div>
+                    <div class="col-sm-9 green">
+                        备注：每天仅保留收件箱最新的1万封邮件，老邮件转移到"旧邮件备份"目录中，开启该功能可提高邮件搜索速度。
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">主域名和端口：</td>
+                <td class="row">
+                    <div class="col-sm-3 no-padding">
+                        <input type="text" class="form-control" name="view_webmail_url" value="{{ form.view_webmail_url.value }}" class="col-xs-10 col-sm-5">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">邮箱帐号延迟删除天数：</td>
+                <td>
+                    <div class="col-sm-3 no-padding">
+                        <input type="number" class="form-control" name="cf_mailbox_delete_delay" value="{{ form.cf_mailbox_delete_delay.value }}" class="col-xs-10 col-sm-5" required>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="help-block green">
+                            备注：在管理后台删除帐号后，系统会马上禁用该帐号并等待在这里输入的天数之后，才彻底删除该帐号的帐号和邮件数据；
+                            该选项只能被拥有“超级管理员”权限的管理员帐号修改。
+                        </p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right" >邮件搜索加速：</td>
+                <td>
+                    <div class="col-sm-4">
+                    <label class="inline" >
+                        <input name="sw_search_speedup" value="1" {% if form.sw_search_speedup.value == "1" %} checked {% endif %}  type="checkbox" class="ace ace-switch ace-switch-5 open">
+                        <span class="lbl"></span>
+                    </label>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">搜索缓存存储地址：</span>
+                            <input type="text" name="cf_search_speedup_cache" value="{{ form.cf_search_speedup_cache.value }}" class="form-control">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">邮件发送编码：</td>
+                <td class="row">
+                    <div class="col-sm-12 no-padding" style="width:110px;">
+                        <select name="cf_def_send_charset" class="chosen-select form-control">
+                            {% for k,v in form.get_encoding_list %}
+                                <option value="{{ k }}" {% if k == form.cf_def_send_charset.value %} selected {% endif %}> {{ v }} </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">短信模块设置：</td>
+                <td class="row">
+                    <div class="col-sm-4 no-padding-left">
+                        <div class="input-group">
+                            <span class="input-group-addon">短信服务商：</span>
+                            <select name="type" class="form-control">
+                                {% for k,v in form.get_sms_list %}
+                                    <option value="{{ k }}" {% if k == form.sms_type %} selected {% endif %} > {{ v }} </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">用户ID：</span>
+                            <input type="text" name="sms_account" value="{{ form.sms_account }}" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">帐号密码：</span>
+                            <input type="password" name="sms_password" value="{{ form.sms_password }}" class="form-control">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">SMTP发送重试时间：</td>
+                <td class="row">
+                    <div class="col-sm-4 no-padding-left">
+                        <p>第1次重试：</p>
+                        <div class="input-group">
+                            <span class="input-group-addon">与上次发送间隔</span>
+                            <input type="number" class="form-control" name="retry_1" value="{{ form.retry_1 }}">
+                            <span class="input-group-addon">分</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <p>第2次重试：</p>
+                        <div class="input-group">
+                            <span class="input-group-addon">与上次发送间隔</span>
+                            <input type="number" class="form-control" name="retry_2" value="{{ form.retry_2 }}">
+                            <span class="input-group-addon">分</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <p>第3次重试：</p>
+                        <div class="input-group">
+                            <span class="input-group-addon">与上次发送间隔</span>
+                            <input type="number" class="form-control" name="retry_3" value="{{ form.retry_3 }}">
+                            <span class="input-group-addon">分</span>
+                        </div>
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+            <div class="clearfix form-actions">
+                <div class="text-center">
+                    <button class="btn btn-info" type="submit">
+                        <i class="ace-icon fa fa-check bigger-110"></i>
+                        保存
+                    </button>
+                    <button class="btn" type="reset">
+                        <i class="ace-icon fa fa-undo bigger-110"></i>
+                        重置
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $('#switch-email').hide();
+</script>
+{% endblock %}
+
+{% block my_jsblock %}
+
+{% endblock %}

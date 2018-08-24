@@ -1,0 +1,8 @@
+<td>{{ d.id }}</td>
+<td>{{ number }}</td>
+<td>{{ d.name }}</td>
+<td> <img src="data:image/png;base64,{{ d.getImgData }}"> </td>
+<td>
+    <a type="button" class="green btn btn-white btn-primary btn-xs" href="Javascript: clickDomainWebmailLetterMdf({{ d.id }})">修改</a>
+    <a type="button" class="red delete btn btn-white btn-danger btn-xs" href="Javascript: Delete({{ d.id }}, '{{ d.name }}')">删除</a>
+</td>

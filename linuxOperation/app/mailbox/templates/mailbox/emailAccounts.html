@@ -1,0 +1,802 @@
+{% extends 'base_site.html' %}
+{% load i18n %}
+{% load static %}
+{% load bootstrap %}
+{% block title %}{% trans "邮箱帐号管理" %}{% endblock %}
+{% block css_block %}
+<link rel="stylesheet" href="{% static 'assets/css/daterangepicker.css' %}" />
+<link href="{% static 'components/datetimepiker/bootstrap-datetimepicker.min.css' %}" rel="stylesheet">
+<link href="{% static 'assets/css/bootstrap-timepicker.css' %}" rel="stylesheet">
+<style>
+    .control-label-flag{
+        width:auto;
+    }
+    #search_form .form-group{
+        margin-right:20px;
+        margin-bottom:10px;
+    }
+    .min-width-170{
+        min-width:170px;
+    }
+    #email_dept_choice{
+        display:none;
+    }
+    #email_dept_choice.active{
+        display:block;
+    }
+    #search_form .show_hide{
+        display:none;
+    }
+    #search_form .show_hide.active{
+        display:inline-block;
+    }
+    #search_form>.form-group:first-child{
+        position:relative;
+    }
+    .clear:after{
+        content:"";
+        display:block;
+        clear:both;
+    }
+</style>
+{% endblock %}
+{% block breadcrumb %}
+<li> <a href="#">{% trans "邮箱帐号管理" %}</a> </li>
+<li class="active">{% trans "帐号列表" %}</li>
+{% endblock %}
+
+{% block page-content %}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="page-header">
+            <h1>{% trans "邮箱帐号管理" %}<small>
+                <i class="ace-icon fa fa-angle-double-right"></i>{% trans "帐号列表" %}</small></h1>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+
+        <ul class="nav nav-tabs" id="myTab">
+            <li class="active">
+                <a href="#">
+                    <i class="green ace-icon fa fa-home bigger-120"></i>{% trans "帐号列表" %}
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'mailbox_add_account' %}">
+                    {% trans "添加帐号" %}
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'mailbox_batchadd_account' %}">
+                    {% trans "批量添加帐号" %}
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'mailbox_batchedit_account' %}">
+                    {% trans "批量修改帐号" %}
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'mailbox_delete_account' %}">
+                    {% trans "批量删除帐号" %}
+                </a>
+            </li>
+            {% if request.user.is_superuser %}
+                <li>
+                    <a href="{% url 'mailbox_backup_account' %}">
+                        {% trans "导入导出帐号" %}
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade in active">
+                <div class="row">
+                    <div class="col-lg-12" style="margin-bottom: 10px">
+                        <div class="">
+                            <form id="search_form" class="form-inline" role="form" action="" style="text-align: right">
+                                <div class="form-group">
+                                    <label class="control-label  control-label-flag     " for="id_dept">选择部门:</label>
+                                    <div class="input-group">
+                                        <input name="dept" value="{{ request.GET.dept }}" readonly="readonly" class="department_choice form-control form-control-flag" id="id_dept" type="text" placeholder="{% trans "点击选择部门" %}">
+                                        <input name="dept_id" id="id_dept_id" type="hidden" value="{{ request.GET.dept_id }}">
+                                        <span class="input-group-btn"><button class="btn btn-sm btn-default" type="button" onclick="Clear()">清除</button></span>
+                                    </div>
+                                    <div class="widget-box widget-color-blue2" id="email_dept_choice" style="max-width:500px;overflow: auto;background: #fff;text-align:left;border: 1px solid #5090c1;min-width:160px;left:73px;margin-top:0;position:absolute;z-index:100;">
+                                        <div class="widget-body" style="padding:0 0 20px ;">
+                                            <div style="padding:10px;">
+                                                <input type="text" id="search_input" class="select_search form-control" placeholder="输入关键字搜索..." style="width:100%;">
+                                            </div>
+
+                                            <ul id="tree"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label  control-label-flag">登录时间:</label>
+                                    <input name="login_time_start" value="{{ request.GET.login_time_start }}" id="id_login_time_start" class="datetime form-control" addon="datetime" type="text"> -
+                                    <input name="login_time_end" value="{{ request.GET.login_time_end }}"  id="id_login_time_end" class="datetime form-control" addon="datetime" type="text">
+                                </div>
+                                <div class="form-group">
+                                    <label title="{% trans '邮箱地址/姓名/工号/电话' %}" class="control-label  control-label-flag" for="id_keyword">关键字:</label>
+                                    <input name="keyword" placeholder="{% trans '邮箱地址/姓名/工号/电话' %}"  value="{{ request.GET.keyword }}"  class=" form-control form-control-flag" id="id_keyword" type="text">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="id_status">状态:</label>
+                                    <select name="disabled" class=" form-control form-control-flag" id="id_disabled">
+                                        <option value="">--</option>
+                                        <option {% if request.GET.status == '-1' %}selected{% endif %} value="-1">正常</option>
+                                        <option {% if request.GET.status == '1' %}selected{% endif %} value="1">禁用</option>
+                                        <option {% if request.GET.status == '2' %}selected{% endif %} value="2">等待删除</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label">管理员:</label>
+                                    <select name="is_active" class=" form-control form-control-flag">
+                                        <option value="">--</option>
+                                        <option {% if request.GET.is_active == '1' %}selected{% endif %} value="1">是</option>
+                                        <option {% if request.GET.is_active == '0' %}selected{% endif %} value="0">否</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary btn-sm">查询</button>
+                                    <a type="button" class="btn btn-primary btn-sm" onclick="Export()">导出excel</a>
+                                    <a href="Javascript:MoreSearch(this)">更多搜索</a>
+                                </div>
+                                <div>
+                                    <div class="form-group show_hide">
+                                        <label class="control-label">邮箱空间:</label>
+                                        <span class="input-group">
+                                            <select name="quota_mailbox_term" class="input-group-addon" style="position: relative;top:-2px;height:34px;">
+                                                <option {% if request.GET.quota_mailbox_term == '0' %}selected{% endif %} value="0" selected="">=</option>
+                                                <option {% if request.GET.quota_mailbox_term == '-1' %}selected{% endif %} value="-1">&lt;</option>
+                                                <option {% if request.GET.quota_mailbox_term == '1' %}selected{% endif %} value="1">&gt;</option>
+                                            </select>
+                                            <input name="quota_mailbox" value="{{ request.GET.quota_mailbox}}" type="number" min="0">
+                                            <span class="input-group-addon">MB</span>
+                                        </span>
+                                    </div>
+                                    <div class="form-group show_hide">
+                                        <label class="control-label">网络硬盘空间:</label>
+                                        <span class="input-group">
+                                                <select name="quota_netdisk_term" class="input-group-addon" style="position: relative;top:-2px;height:34px;">
+                                                    <option {% if request.GET.quota_netdisk_term == '0' %}selected{% endif %} value="0" selected="">=</option>
+                                                    <option {% if request.GET.quota_netdisk_term == '-1' %}selected{% endif %} value="-1">&lt;</option>
+                                                    <option {% if request.GET.quota_netdisk_term == '1' %}selected{% endif %} value="1">&gt;</option>
+                                                </select>
+                                                <input name="quota_netdisk" value="{{ request.GET.quota_netdisk}}" type="number" min="0">
+                                            <span class="input-group-addon">MB</span>
+                                            </span>
+                                    </div>
+                                    <div class="form-group show_hide">
+                                        <label class="control-label">已用容量(MB):</label>
+                                        <span class="input-group">
+                                            <select name="used_term" class="input-group-addon" style="position: relative;top:-2px;height:34px;">
+                                                <option {% if request.GET.used_term == '0' %}selected{% endif %} value="0" selected="">=</option>
+                                                <option {% if request.GET.used_term == '-1' %}selected{% endif %} value="-1">&lt;</option>
+                                                <option {% if request.GET.used_term == '1' %}selected{% endif %} value="1">&gt;</option>
+                                            </select>
+                                            <input name="used" value="{{ request.GET.used}}" type="number" min="0">
+                                            <span class="input-group-addon">MB</span>
+                                            </span>
+
+                                    </div>
+                                    <br/>
+                                    <div class="form-group show_hide">
+                                        <label class="control-label">邮箱空间状态:</label>
+                                        <select name="size_status" class=" form-control form-control-flag" id="id_size_status">
+                                            <option value="">--</option>
+                                            <option {% if request.GET.size_status == '1' %}selected{% endif %} value="1">即将满-橙色</option>
+                                            <option {% if request.GET.size_status == '2' %}selected{% endif %} value="2">满-红色</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group show_hide">
+                                        <label class="control-label" >发信功能:</label>
+                                        <select name="limit_send" class=" form-control">
+                                            <option value="">--</option>
+                                            <option {% if request.GET.limit_send == '-1' %}selected{% endif %} value="-1">不限制邮件发送</option>
+                                            <option {% if request.GET.limit_send == '1' %}selected{% endif %} value="1">禁止发送所有邮件</option>
+                                            <option {% if request.GET.limit_send == '2' %}selected{% endif %} value="2">只发送本地域邮件</option>
+                                            <option {% if request.GET.limit_send == '3' %}selected{% endif %} value="3">可发送指定外域邮件</option>
+                                            <option {% if request.GET.limit_send == '4' %}selected{% endif %} value="4">可发送本地所有域邮件</option>
+                                        </select>
+                                    </div><div class="form-group show_hide">
+                                    <label class="control-label">收信功能:</label>
+
+                                    <select name="limit_recv" class=" form-control form-control-flag">
+
+                                        <option value="">--</option>
+                                        <option {% if request.GET.limit_recv == '-1' %}selected{% endif %} value="-1">不限制邮件接收</option>
+                                        <option {% if request.GET.limit_recv == '1' %}selected{% endif %} value="1">禁止接收所有邮件</option>
+                                        <option {% if request.GET.limit_recv == '2' %}selected{% endif %} value="2">只接收本地域邮件</option>
+                                        <option {% if request.GET.limit_recv == '3' %}selected{% endif %} value="3">可接收指定外域邮件</option>
+                                        <option {% if request.GET.limit_recv == '4' %}selected{% endif %} value="4">可接收本地所有域邮件</option>
+                                    </select>
+                                </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <form id="id_form" action="" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="name" id="name" />
+                    <input type="hidden" name="status" id="status" />
+                    <input type="hidden" name="ids" id="ids" />
+                </form>
+
+                <div class="row" style="padding: 0px 13px 0px 13px;">
+                    <div class="row" style="margin:0;">
+                        <div class="col-sm-12" style="background-color: #EFF3F8;">
+                            <p>
+                                <button type="button" class="btn btn-link btn-sm" onclick="fnGetAll();">全选</button>/<button type="button" class="btn btn-link" onclick="fnGetReverse();">取消</button>
+                                <input type="button" onclick="changeStatus('delete', '{% trans "删除" %}');" class="btn btn-danger btn-sm" value="删除所选邮箱" >
+                                <input type="button" onclick="changeStatus('disabled', '{% trans "禁用" %}');" class="btn btn-warning btn-sm" value="禁用所选邮箱" >
+                                <input type="button" onclick="changeStatus('enabled', '{% trans "启用" %}');" class="btn btn-success btn-sm" value="启用所选邮箱" >
+                                {% if request.user.is_superuser %}
+                                    <input type="button" onclick="changeStatus('cancel_manager', '{% trans "取消设置管理员" %}');" class="btn btn-danger btn-sm" value="取消设置管理员" >
+                                    <input type="button" onclick="changeStatus('set_manager', '{% trans "设置管理员" %}');" class="btn btn-success btn-sm" value="设置管理员" >
+                                {% endif %}
+                                <input type="button" onclick="changeStatus('tip_pwd', '{% trans "提示密码" %}');" class="btn btn-info btn-sm" value="提示修改密码" >
+                                {% if request.user.is_superuser %}
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="button" onclick="tipPwd()" class="btn btn-primary btn-sm" value="提示所有邮箱修改密码" >
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    <table id="dynamic-table" class="table table-striped table-bordered table-hover table-center" role="grid" >
+                        <thead>
+                        <tr role="row">
+                            <th>ID</th>
+                            <th class="sorting" tabindex="0">序号</th>
+                            <th class="sorting center" tabindex="0">邮箱地址</th>
+                            <th class="" tabindex="0" >真实姓名</th>
+                            <th  tabindex="0" >
+                                <i class="ace-icon fa fa-clock-o bigger-110 hidden-480"></i>
+                                部门
+                            </th>
+                            <th class="" tabindex="0">邮箱/网盘 容量</th>
+                            <th class="sorting">已用容量</th>
+                            <th class="sorting">发送/接收/POP/IMAP限制</th>
+                            <th>只允许登录IP</th>
+                            <th class="sorting">账号状态</th>
+                            <th class="sorting">管理员</th>
+                            <th class="sorting">最后登录时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-example-modal-lg" id="modal-lg"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="LgModalLabel">加载中</h4>
+            </div>
+            <div class="modal-body">
+                页面加载中
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="modal-reply"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="LgModalLabel2">加载中</h4>
+            </div>
+            <div class="modal-body">
+                页面加载中
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="modal-edit"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="LgModalLabel2">加载中</h4>
+            </div>
+            <div class="modal-body">
+                页面加载中
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="modal-reply-add"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="LgModalLabel2">加载中</h4>
+            </div>
+            <div class="modal-body">
+                页面加载中
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="modal-reply-edit"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="LgModalLabel2">加载中</h4>
+            </div>
+            <div class="modal-body">
+                页面加载中
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="modal-forward"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="LgModalLabel2">加载中</h4>
+            </div>
+            <div class="modal-body">
+                页面加载中
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="modal-forward-add"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="LgModalLabel2">加载中</h4>
+            </div>
+            <div class="modal-body">
+                页面加载中
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="modal-forward-edit"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="LgModalLabel2">加载中</h4>
+            </div>
+            <div class="modal-body">
+                页面加载中
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="delete_email" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">批量删除账号</h4>
+            </div>
+            <div class="modal-body">
+                <div class="table-header">
+                    批量删除邮箱
+                </div>
+            </div>
+            <div class="modal-footer center">
+                <button class="btn btn-primary" type="button">确定</button>
+                <button class="btn btn-warning" type="button">重置</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block my_jsblock %}
+<script src="{% static 'components/datatables/media/js/jquery.dataTables.js' %}"></script>
+<script src="{% static 'components/_mod/datatables/jquery.dataTables.bootstrap.js' %}"></script>
+<script src="{% static 'assets/js/date-time/moment.js' %}" ></script>
+<script src="{% static 'assets/js/date-time/daterangepicker.js' %}" ></script>
+<script src="{% static 'assets/js/date-time/bootstrap-datepicker.js' %}" ></script>
+<script src="{% static 'components/datetimepiker/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'components/datetimepiker/bootstrap-datetimepicker.zh-CN.js' %}"></script>
+<script src="{% static 'assets/js/date-time/bootstrap-timepicker.js' %}" ></script>
+<script src="{% static 'assets/js/fuelux/fuelux.tree.js' %}" ></script>
+
+<script src="{% static 'assets/js/jquery-ui.custom.js' %}" ></script>
+<script src="{% static 'assets/js/jquery.ui.touch-punch.js' %}" ></script>
+
+<script src="{% static 'assets/js/jquery-ui.js' %}" ></script>
+<script src="{% static 'js/Jquery.Query.js' %}"></script>
+
+{% include 'mailbox/include/reply_js.html' %}
+{% include 'mailbox/include/forward_js.html' %}
+
+<script>
+    $('.date-range-picker').daterangepicker({
+        'applyClass' : 'btn-sm btn-success',
+        'cancelClass' : 'btn-sm btn-default',
+        locale: {
+            applyLabel: '确认',
+            cancelLabel: '取消'
+        }
+    })
+
+    //    $('.date-picker').datepicker({
+    //                autoclose: true,
+    //                todayHighlight: true
+    //            })
+    //            //show datepicker when clicking on the icon
+    //            .next().on(ace.click_event, function(){
+    //        $(this).prev().focus();
+    //    });
+
+    $('.datetime').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:00',
+        language: 'zh-CN',
+        weekStart: 1,
+        todayBtn: 1,
+        autoclose: 1,
+        // minView: 2,
+        pickerPosition: "bottom-right",
+    });
+
+    var ip_table;
+    var ajax_url = "{% url 'mailbox_ajax_get_account' %}" + window.location.search;
+    $(function () {
+        ip_table = $('#dynamic-table').dataTable({
+            "columnDefs": [ { "targets": [ 0 ], "visible": false, "searchable": false }],
+            bAutoWidth: false,
+            "processing": true,
+            "serverSide": true,
+            "ajax": ajax_url,
+            "aoColumns": [
+                { "bSortable": false },
+                null,null,null,
+                { "bSortable": false },
+                null, { "bSortable": false },
+                { "bSortable": false },
+                null,null,null,null,
+                { "bSortable": false },
+            ],
+            select: { style: 'multi' },
+            "drawCallback": function( settings ) {
+                $('#dynamic-table tr').click(function () {
+                    if ($(this).hasClass('selected'))
+                        $(this).removeClass('selected');
+                    else
+                        $(this).addClass('selected');
+                });
+            },
+            "iDisplayLength": 20,
+            "lengthMenu": [10, 15, 20, 50, 100, 200],
+            "aaSorting": [[1, "desc"]],
+            "oLanguage": {
+                "sLengthMenu": "{% blocktrans %}显示 _MENU_ 每页{% endblocktrans %}",
+                "sZeroRecords": "{% blocktrans %}对不起! 信息筛选结果为空!{% endblocktrans %}",
+                "sInfo": "{% blocktrans %}从 _START_ 到 _END_ 总计: _TOTAL_ 条记录{% endblocktrans %}",
+                "sInfoEmpty": "{% blocktrans %}总计: 0 条记录{% endblocktrans %}",
+                "sInfoFiltered": "{% blocktrans %}(从 _MAX_ 条记录筛选出){% endblocktrans %}",
+                "sSearch": "{% blocktrans %}搜索: {% endblocktrans %}",
+                "oPaginate": {
+                    "sFirst": " {% blocktrans %}第一页{% endblocktrans %} ",
+                    "sPrevious": " {% blocktrans %}上一页{% endblocktrans %} ",
+                    "sNext": " {% blocktrans %}下一页{% endblocktrans %} ",
+                    "sLast": " {% blocktrans %}最后一页{% endblocktrans %} "
+                }
+            },
+        });
+
+        $('#modal-lg').on('show.bs.modal', function (event) {
+            $(this).removeData('bs.modal');
+        })
+
+        $('#modal-edit').on('hidden.bs.modal', function (event) {
+            $(this).removeData('bs.modal').find(".modal-content").empty();
+        })
+
+    });
+    $.fn.dataTableExt.oApi.fnGetFilteredNodes = function ( oSettings )
+    {
+        var anRows = [];
+        //var length = oSettings._iDisplayLength > 0 ? oSettings._iDisplayLength: oSettings.aiDisplay.length;
+        var length = oSettings.aiDisplay.length;
+        for ( var i=0, iLen=length ; i<iLen ; i++ )
+        {
+            var nRow = oSettings.aoData[ oSettings.aiDisplay[i] ].nTr;
+            anRows.push( nRow );
+        }
+        return anRows;
+    };
+
+    function fnGetAll()
+    {
+        var aTrs = ip_table.fnGetFilteredNodes();
+
+        for ( var i=0 ; i<aTrs.length ; i++ )
+        {
+            if ( !$(aTrs[i]).hasClass('selected') )
+                $(aTrs[i]).addClass('selected');
+        }
+    }
+
+    function fnGetReverse()
+    {
+        var aTrs = ip_table.fnGetFilteredNodes();
+
+        for (var i=0 ; i<aTrs.length ; i++ )
+        {
+            if ( $(aTrs[i]).hasClass('selected') )
+            {
+                $(aTrs[i]).removeClass('selected');
+            }
+        }
+    }
+
+    function fnGetSelected()
+    {
+        var aReturn = new Array();
+        var aTrs = ip_table.fnGetFilteredNodes();
+        for ( var i=0 ; i<aTrs.length ; i++ )
+        {
+            if ( $(aTrs[i]).hasClass('selected') )
+            {
+                var aData = ip_table.fnGetData( aTrs[i]);
+                var iId = aData[0];
+                aReturn.push( iId );
+            }
+        }
+        return aReturn;
+    }
+
+
+    //选择部门
+    // deptArr 为初始化获得的部门数据
+    var deptArr = {{ dept_list|safe }};
+
+    function initdepttree(deptArr){
+        var sampleData = initiateDemoData(deptArr);
+        treeEle = $('#tree').ace_tree({
+            dataSource: sampleData['dataSource1'],
+            multiSelect: false,
+            loadingHTML: '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>',
+            'open-icon' : 'ace-icon tree-minus hide',
+            'close-icon' : 'ace-icon tree-plus hide',
+            'selectable' : true,
+            'selected-icon' : 'ace-icon fa fa-check',
+            'unselected-icon' : 'ace-icon fa fa-times',
+            'cacheItems': true,
+            'folderSelect': true,
+            'folder-open-icon' : 'ace-icon tree-plus',
+            'folder-close-icon' : 'ace-icon tree-minus'
+        });
+
+        $("#tree").tree('discloseAll');
+        $("#tree").tree('closeAll');
+        function test(ele){
+            if(ele.parent().parent().hasClass('tree-branch')){
+                ele.parent().parent().find('>i').click();
+                test(ele.parent().parent())
+            }
+        }
+
+        $('#tree').find('.tree-branch,.tree-item').each(function(i,dom){
+            //        if($(this).data().id == ccid){
+            //            $(this).addClass('active-header');
+            //            $(this).find('>i').click()
+            //            test($(this));
+            //        }
+        })
+    }
+    initdepttree(deptArr);
+    $('#search_input').keyup(function(){
+        var keywords = $(this).val();
+        console.log(keywords)
+        $("#tree").removeData("fu.tree");
+        $("#tree").unbind('click.fu.tree');
+        if(keywords.length>0){
+            var initArr = {{ dept_list|safe }};
+            var reg = new RegExp(keywords, 'i');
+            var arr = [];
+            var textname = '';
+            function getp(id){
+                for(var i=0;i<initArr.length;i++){
+                    var a = initArr[i]['id'];
+                    var pp = initArr[i]['parent'];
+                    var n = initArr[i]['name'];
+                    if(a == id){
+                        textname += " -- " + n;
+                        if(pp>0){
+                            getp(pp);
+                        }
+                    }
+                }
+            }
+            for(var key in initArr){
+                if(initArr[key]['name'].match(reg)){
+                    if(initArr[key]['parent']>0){
+                        textname += initArr[key]['name'];
+                        getp(initArr[key]['parent']);
+                        var obj = {child:0,parent:0,name:textname,id:initArr[key]['id']};
+                        textname = '';
+                    }else{
+                        var obj = {child:0,parent:0,name:initArr[key]['name'],id:initArr[key]['id']};
+                    }
+                    arr.push(obj);
+                }
+            }
+            initdepttree(arr)
+        }else{
+            initdepttree(deptArr);
+        }
+    })
+
+    function initiateDemoData(deptArr){
+        var tree_data = {};
+        for(var i=0;i<deptArr.length;i++){
+            if(deptArr[i].parent<=0){
+                if(deptArr[i].child&&deptArr[i].child>0){
+                    tree_data[deptArr[i].name] = {text:deptArr[i].name,type:"folder",id:deptArr[i].id};
+                    tree_data[deptArr[i].name]['additionalParameters']={"children":getSubDate(deptArr[i].id)};
+                }else{
+                    tree_data[deptArr[i].name] = {text:deptArr[i].name,type:"item",id:deptArr[i].id};
+                }
+            }
+        }
+
+        function getSubDate(pid){
+            var obj = {};
+            for(var i=0;i<deptArr.length;i++){
+                if(deptArr[i]['parent'] == pid){
+                    if(deptArr[i].child&&deptArr[i].child>0){
+                        obj[deptArr[i].name] = {text:deptArr[i].name,type:"folder",id:deptArr[i].id,child:deptArr[i].child}
+                    }else{
+                        obj[deptArr[i].name] = {text:deptArr[i].name,type:"item",id:deptArr[i].id,child:deptArr[i].child}
+                    }
+
+                }
+            }
+            return obj;
+        }
+        function getAdditionalParameters(arr){
+            for(var key in arr){
+                if(arr[key]['type']=="folder"){
+                    arr[key]['additionalParameters']={"children":getSubDate(arr[key]['id'])};
+                    if(arr[key]['additionalParameters']["children"]){
+                        getAdditionalParameters(arr[key]['additionalParameters']["children"])
+                    }
+                }
+            }
+        }
+        getAdditionalParameters(tree_data);
+        var dataSource1 = function(options, callback){
+            var $data = null
+            if(!("text" in options) && !("type" in options)){
+                $data = tree_data;//the root tree
+                callback({ data: $data });
+                return;
+            }
+            else if("type" in options && options.type == "folder") {
+                if("additionalParameters" in options && "children" in options.additionalParameters)
+                    $data = options.additionalParameters.children || {};
+                else $data = {}//no data
+            }
+            if($data != null)//this setTimeout is only for mimicking some random delay
+                callback({ data: $data });
+        }
+        return {'dataSource1': dataSource1}
+    }
+
+    $('#tree').on('click','.tree-item,.tree-branch-header',function(){
+        $('#tree .tree-selected').removeClass('tree-selected');
+        if($(this).hasClass('tree-branch-header')){
+            $(this).parent().addClass('tree-selected');
+        }else{
+            $(this).addClass('tree-selected');
+        }
+        $('#email_dept_choice').removeClass('active');
+        var o = treeEle.tree('selectedItems')[0];
+        $('.department_choice').val(o.text);
+        var did = o.id;
+        $('#id_dept_id').val(did);
+    })
+
+    function MoreSearch(o){
+        if($('#search_form .show_hide').hasClass('active')){
+            $('#search_form .show_hide').removeClass('active');
+        }else{
+            $('#search_form .show_hide').addClass('active');
+        }
+    }
+    $("#search_form .department_choice").focus(function(){
+        $('#email_dept_choice').addClass('active');
+    })
+    $('body').click(function(e){
+        var $parents = $(e.target).parents('#email_dept_choice');
+        if((!$("#search_form .department_choice").is(":focus"))&&$parents.length<1){
+            $('#email_dept_choice').removeClass('active');
+        }
+    })
+    function Clear() {
+        $('#id_dept_id').val("");
+        $('#id_dept').val("");
+    }
+
+    function changeStatus(status, str){
+        var id_array = fnGetSelected();
+
+        if (id_array.length == 0){
+            layer.msg("{% trans '请选择要处理的邮箱帐号！' %}", {time: 2000, icon:7});
+            return false;
+        }
+
+        var str = '{% trans "您确定要" %}' + str + id_array.length + '{% trans "个邮箱帐号？" %}';
+        if ( !confirm(str) ) {
+            return false;
+        } else {
+            $('#ids').val(id_array);
+            $('#status').val(status);
+            $('#id_form').submit();
+        }
+    }
+    function tipPwd() {
+        var str = '{% trans "您确定要提示所有邮箱修改密码？" %}'
+        if ( !confirm(str) ) {
+            return false;
+        } else {
+            $('#status').val('all_tip_pwd');
+            $('#id_form').submit();
+        }
+
+    }
+
+    function Export(){
+        var url = jQuery.query.set('export', '1');
+        url = decodeURIComponent((url+'').replace(/\+/g, '%20'));
+        window.location.href = url;
+    }
+
+</script>
+{% endblock %}
+

@@ -1,0 +1,958 @@
+{% load static %}
+{% load i18n %}
+{% load bootstrap %}
+{% load tags %}
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">修改信息 -> {{ obj.username }}</h4>
+    </div>
+    <div class="modal-body">
+        <form id="edit_account_form" method="POST">
+            <ul class="nav nav-tabs" id="tabContent">
+                <li class="active">
+                    <a href="#mailbox_info" data-toggle="tab">邮箱基本信息</a>
+                </li>
+                <li>
+                    <a href="#user_info" data-toggle="tab">用户信息</a>
+                </li>
+                <li>
+                    <a href="#user_group" data-toggle="tab">用户组</a>
+                </li>
+                <li>
+                    <a href="#user_department" data-toggle="tab">用户归属部门</a>
+                </li>
+                <li>
+                    <a href="#user_belong" data-toggle="tab">用户归属邮件列表</a>
+                </li>
+                <li>
+                    <a href="#relation_share" data-toggle="tab">关联共享邮箱列表（默认完全控制权限）</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                    {% csrf_token %}
+                <input type="hidden" name="mailbox_id" value="{{ obj.id }}" />
+                <input type="hidden" name="action" value="edit" />
+                <div id="mailbox_info" class="tab-pane active">
+                    <div class="table-header" style="margin-bottom:8px;">邮箱基本信息</div>
+                    <div class="form-horizontal row">
+                        <div class="col-sm-6" style="border-right:2px dashed #eee;">
+                            <div class="col-sm-11">
+                                {{ form.name|bootstrap_horizontal:"col-sm-4"}}
+                                {{ form.password1|bootstrap_horizontal:"col-sm-4"}}
+                                <!--{{ form.password2|bootstrap_horizontal:"col-sm-4"}}-->
+                                {{ form.pwd_days_time|bootstrap_horizontal:"col-sm-4"}}
+                                {{ form.pwd_days|bootstrap_horizontal:"col-sm-4"}}
+                                <div class="form-group">
+                                    <label class="control-label col-sm-4 " >邮箱状态：</label>
+                                    <div class="  col-sm-8 ">
+                                        <label class="inline">
+                                            <input name="disabled" class="ace ace-switch ace-switch-5"  {% if obj.disabled == '-1' %}checked=""{% endif %} type="checkbox">
+                                            <span class="lbl"></span>
+                                        </label>
+
+                                    </div>
+                                </div>
+                                {{ form.limit_send_freq|bootstrap_horizontal_bool:"col-sm-4"}}
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="col-sm-11">
+                                {{ form.quota_mailbox|bootstrap_horizontal:"col-sm-4"}}
+                                {{ form.quota_netdisk|bootstrap_horizontal:"col-sm-4"}}
+                                <!--{{ form.limit_send|bootstrap_horizontal:"col-sm-4"}}-->
+                                <div class="form-group">
+                                    <label class="control-label col-sm-4 " for="id_limit_send">发信权限：</label>
+                                    <div class="  col-sm-8 ">
+                                        <select name="limit_send" class=" form-control limit_send_select" id="id_limit_send">
+                                          <option value="-1" {% if form.limit_send.value == '-1' %} selected {% endif %}>不限制邮件发送</option>
+                                          <option value="1" {% if form.limit_send.value == '1' %} selected {% endif %}>禁止发送所有邮件</option>
+                                          <option value="2" {% if form.limit_send.value == '2' %} selected {% endif %}>只发送本地域邮件</option>
+                                          <option value="3" {% if form.limit_send.value == '3' %} selected {% endif %}>可发送指定外域邮件</option>
+                                          <option value="4" {% if form.limit_send.value == '4' %} selected {% endif %}>可发送本地所有域邮件</option>
+                                        </select>
+                                        <button type="button" class="btn btn-xs btn-info"  {% if form.limit_send.value != '3' %} style="display:none;" {% endif %} data-toggle="modal" data-target="#allow_send_email_dress">设置允许名单</button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-4 " for="id_limit_recv">收信权限：</label>
+                                    <div class="  col-sm-8 ">
+                                        <select name="limit_recv" class=" form-control limit_send_select" id="id_limit_recv">
+                                          <option value="-1" {% if form.limit_recv.value == '-1' %} selected {% endif %}>不限制邮件接收</option>
+                                          <option value="1" {% if form.limit_recv.value == '1' %} selected {% endif %}>禁止接收所有邮件</option>
+                                          <option value="2" {% if form.limit_recv.value == '2' %} selected {% endif %}>只接收本地域邮件</option>
+                                          <option value="3" {% if form.limit_recv.value == '3' %} selected {% endif %}>可接收指定外域邮件</option>
+                                          <option value="4" {% if form.limit_recv.value == '4' %} selected {% endif %}>可接收本地所有域邮件</option>
+                                        </select>
+                                        <button type="button" class="btn btn-xs btn-info"  {% if form.limit_recv.value != '3' %} style="display:none;" {% endif %} data-toggle="modal" data-target="#allow_send_email_dress">设置允许名单</button>
+                                    </div>
+                                </div>
+
+                                <!--{{ form.limit_recv|bootstrap_horizontal:"col-sm-4"}}-->
+                                {{ form.limit_login|bootstrap_horizontal:"col-sm-4"}}
+                                {{ form.ip_limit|bootstrap_horizontal:"col-sm-4"}}
+                                <div class="form-group">
+                                    <label class="control-label col-sm-4 " for="id_change_pwd">登录修改密码：</label>
+                                    <div class="  col-sm-8 ">
+                                        <label class="inline">
+                                            <input name="change_pwd" class="ace ace-switch ace-switch-5" id="id_change_pwd" {% if obj.change_pwd == '1' %}checked=""{% endif %} type="checkbox">
+                                            <span class="lbl"></span>
+                                        </label>
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-4 " for="id_limit_pop">POP功能：</label>
+                                    <div class="  col-sm-8 ">
+                                        <label class="inline">
+                                            <input name="limit_pop" class="ace ace-switch ace-switch-5" id="id_limit_pop" {% if obj.limit_pop == '-1' %}checked=""{% endif %} type="checkbox">
+                                            <span class="lbl"></span>
+                                        </label>
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-4 " for="id_limit_imap">IMAP功能：</label>
+                                    <div class="  col-sm-8 ">
+                                        <label class="inline">
+                                            <input name="limit_imap" class="ace ace-switch ace-switch-5" id="id_limit_imap" {% if obj.limit_imap == '-1' %}checked=""{% endif %} type="checkbox">
+                                            <span class="lbl"></span>
+                                        </label>
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-4 " for="id_enable_share">邮箱共享：</label>
+                                    <div class="  col-sm-8 ">
+                                        <label class="inline">
+                                            <input name="enable_share" class="ace ace-switch ace-switch-5" id="id_enable_share" {% if obj.enable_share == 1 %}checked=""{% endif %} type="checkbox">
+                                            <span class="lbl"></span>
+                                        </label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="center" style="border-top:2px dashed #eee;padding-top:8px;">
+                        <div class=" ">
+                            <input type="hidden" value="{{ form.is_active.value }}" name="is_active" id="id_is_active" />
+                            <input type="hidden" value="{{ form.is_superuser.value }}" name="is_superuser" id="id_is_superuser" />
+                        </div>
+                        <button type="button" onclick="edit_account_form({{ obj.id }})" class="btn btn-success">保存</button>
+                    </div>
+                </div>
+                <div class="tab-pane" id="user_info">
+                    <div class="table-header" style="margin-bottom:8px;">用户信息</div>
+                    <div class="form-horizontal row">
+                        <div class="col-sm-6" >
+                            <div class="col-sm-11">
+                                {{ user_form.realname|bootstrap_horizontal:"col-sm-4"}}
+                                {{ user_form.engname|bootstrap_horizontal:"col-sm-4"}}
+                                {{ user_form.eenumber|bootstrap_horizontal:"col-sm-4"}}
+                                {{ user_form.gender|bootstrap_horizontal:"col-sm-4"}}
+                                {{ user_form.birthday|bootstrap_horizontal:"col-sm-4"}}
+                                {{ user_form.im_qq|bootstrap_horizontal:"col-sm-4"}}
+                                {{ user_form.showorder|bootstrap_horizontal:"col-sm-4"}}
+                            </div>
+                        </div>
+                        <div class="col-sm-6" style="border-left:2px dashed #eee;">
+                            <div class="col-sm-11">
+                                {{ user_form.tel_mobile|bootstrap_horizontal:"col-sm-4"}}
+                                {{ user_form.tel_work|bootstrap_horizontal:"col-sm-4"}}
+                                {{ user_form.tel_work_ext|bootstrap_horizontal:"col-sm-4"}}
+                                {{ user_form.tel_group|bootstrap_horizontal:"col-sm-4"}}
+                                {{ user_form.tel_home|bootstrap_horizontal:"col-sm-4"}}
+                                <div class="form-group">
+                                    <label class="control-label col-sm-4 " for="id_oabshow">通讯录显示：</label>
+                                    <div class="  col-sm-8 ">
+                                        <label class="inline">
+                                            <input name="oabshow" class="ace ace-switch ace-switch-5" id="id_oabshow" {% if user.oabshow == '1' %}checked=""{% endif %} type="checkbox">
+                                            <span class="lbl"></span>
+                                        </label>
+
+                                    </div>
+                                </div>
+                                {{ user_form.im_msn|bootstrap_horizontal:"col-sm-4"}}
+                                {{ user_form.remark|bootstrap_horizontal:"col-sm-4"}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="center" style="border-top:2px dashed #eee;padding-top:8px;">
+                        <button type="button" onclick="edit_account_form({{ obj.id }})" class="btn btn-success">保存</button>
+                    </div>
+                </div>
+                <div class="tab-pane" id="user_group">
+                    <div class="table-header" style="margin-bottom:8px;">
+                        用户组
+                    </div>
+                    <div>
+                        <table class="table table-bordered table-center">
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>组名称</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for g in group_members %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ g.group}}</td>
+                                <td><button data_id="{{ g.id }}" class="btn btn-xs btn-danger user_group_del" type="button">删除</button></td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">添加组：</span>
+                                <select name="" id="" class="select2 form-control user_group_val">
+                                    <option value="">选择组</option>
+                                    {% for g in groups %}
+                                    <option value="{{ g.id }}">{{ g.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-success btn-sm user_group_add" type="button">添加</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="user_department">
+                    <div class="table-header" style="margin-bottom:8px;">
+                        用户归属部门
+                    </div>
+                    <div>
+                        <table class="table table-bordered table-center">
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>部门名称</th>
+                                <th>职位</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for d in depts %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                {% if d.dept %}
+                                    <td>{{ d.dept.id|show_all_dept }}</td>
+                                {% else %}
+                                    <td>已删除部门</td>
+                                {% endif %}
+                                <td><input type="text" class="name_input" value="{{ d.position }}" /></td>
+                                <td>
+                                    <!--<button class="btn btn-xs btn-primary" type="button">编辑</button>-->
+                                    <button data_id="{{ d.id }}" class="btn btn-xs btn-primary user_department_edit" type="button">修改</button>
+                                    <button data_id="{{ d.id }}" class="btn btn-xs btn-danger user_department_del" type="button">删除</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">归属部门：</span>
+                                <input type="text" readonly class="form-control dept_edit user_department_text">
+                                <input type="hidden" readonly class="form-control dept_edit_id">
+
+                            </div>
+                            <div class="widget-box widget-color-blue2 tree_edit_box" style="z-index:10;position:absolute;left:106px;">
+                                <button type="button" class="btn btn-danger btn-sm pull-right close_btn" style="">&times;</button>
+                                <div class="widget-body" style="padding-right:40px;">
+                                    <div style="padding:20px 6px 0;">
+                                        <input type="text" id="search_input_edit" class="select_search form-control" placeholder="输入关键字搜索...">
+                                    </div>
+                                    <div class="widget-main padding-8" style="height:auto;">
+                                        <ul id="tree_edit"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <span class="input-group-addon">职位：</span>
+                                <input type="text" class="form-control user_department_name" value="">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 col-sm-offset-2">
+                            <button class="btn btn-success btn-sm user_department_add" type="button">添加</button>
+                        </div>
+
+                    </div>
+
+
+                </div>
+                <div class="tab-pane" id="user_belong">
+                    <div class="table-header" style="margin-bottom:8px;">
+                        用户归属邮件列表
+                    </div>
+                    <div>
+                        <table class="table table-bordered table-center">
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>列表名称</th>
+                                <th>地址</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for m in maillist_member %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ m.extlist.listname }}</td>
+                                <td>{{ m.extlist.address }}</td>
+                                <td>
+                                    <button data_id="{{ m.id }}" class="btn btn-xs btn-danger user_belong_del" type="button">删除</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <div class="input-group" style="width:100%;">
+                                <span class="input-group-addon">归属邮件列表：</span>
+                                <select class="select2 form-control user_belong_val" style="width:100%" data-placeholder="归属邮件列表">
+                                    <option value="">选择归属邮件列表</option>
+                                    {% for m in maillists %}
+                                    <option value="{{ m.id }}">{{ m.address }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <span class="input-group-addon">权限：</span>
+                                <select class="form-control user_belong_power" >
+                                    <option value="1">收发</option>
+                                    <option value="0">只收</option>
+                                    <option value="-1">只发</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-success btn-sm user_belong_add" type="button">添加</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="relation_share">
+                    <div class="table-header" style="margin-bottom:8px;">
+                        关联共享邮箱列表
+                    </div>
+                    <div>
+                        <table class="table table-bordered table-center">
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>邮箱地址</th>
+                                <th>所属域名</th>
+                                <th>权限</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for r in relate_email %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ r.target }}m</td>
+                                <td>{{ r.domain }}</td>
+                                <td>{{ r.get_access_display }}</td>
+                                <td>
+                                    <button data_id="{{ r.id }}" class="btn btn-xs btn-danger relation_share_del" type="button">删除</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4 no-padding-right">
+                            <div class="input-group">
+                                <span class="input-group-addon">添加关联共享邮箱：</span>
+                                <input type="text" class="form-control relation_share_name">
+                            </div>
+                        </div>
+                        <div class="col-sm-3 no-padding-left">
+                            <div class="input-group">
+                                <span class="input-group-addon">@</span>
+                                <select name="share_domain" class="form-control select2 relation_share_yu">
+                                    {% for d in domains %}
+                                    <option value="{{d.id}}">{{ d.domain}}</option>
+                                    {% endfor %}}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-success btn-sm relation_share_add" type="button">添加(默认完全控制权限)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer center" style="padding:30px 0;">
+    </div>
+</div>
+
+<div class="modal fade" id="allow_send_email_dress" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">设置发送的外域邮件地址</h4>
+            </div>
+            <div class="modal-body">
+                <div class="table-header">例外地址</div>
+                <div>
+                    <form class="form-horizontal form_send_limit_white" role="form" name="form_send_limit_white" action="" method="POST">
+                        {% csrf_token %}
+                        <table class="table table-bordered table-center">
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>邮件地址</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for num,id,mailbox,disabled in obj.getSendLimitWhiteList %}
+                                <tr id="id_send_row_{{ num }}">
+                                    <td> {{ num }} </td>
+                                    <td> {{ mailbox }} </td>
+                                    <td>
+                                        <label class="inline" >
+                                            <input name="send_{{ mailbox }}_disabled" value="-1" {% if disabled == "-1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5">
+                                            <span class="lbl"></span>
+                                        </label>
+                                    </td>
+                                <td>
+                                    <button class="btn btn-xs btn-danger" type="button" onclick="clickLimitSendDelete('send', '{{ num }}')">删除</button>
+                                </td>
+                                <input type="hidden" value="{{ id }}" name="send_{{ mailbox }}_id" id="id_send_id_{{ num }}" />
+                                <input type="hidden" value="-1" name="send_{{ mailbox }}_delete" id="id_send_delete_{{ num }}" />
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <div class="col-sm-10 col-sm-offset-1">
+                                <div class="input-group margin-bottom-8">
+                                    <span class="input-group-addon">邮件地址：</span>
+                                    <input type="text" name="new_mailbox" class="form-control">
+                                </div>
+                                <div class="margin-bottom-8">
+                                    <textarea class="form-control" name="new_mailbox_list" rows="5" placeholder="批量例外邮箱地址，格式 @126.com|@sina.com|@qq.com"></textarea>
+                                </div>
+                                <p class="alert alert-warning"><b class="red">注：</b>当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“@域名”，如“@test.com”。</p>
+                            </div>
+                        </div>
+                        <div class=" ">
+                        <input type="hidden" value="send" name="type" id="id_send_limit_type" />
+                        <input type="hidden" value="{{ obj.id }}" name="id" id="id_mailbox_id" />
+                        </div>
+                        <div class="center" style="background:#fafafa;">
+                            <button class="btn btn-primary submit_send_permit_btn" type="button">确定</button>
+                            <button class="btn btn-warning" type="reset">重置</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="allow_recv_email_dress" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">设置接收的外域邮件地址</h4>
+            </div>
+            <div class="modal-body">
+                <div class="table-header">例外地址</div>
+                <div>
+                    <form class="form-horizontal form_recv_limit_white" role="form" name="form_recv_limit_white" action="" method="POST">
+                        {% csrf_token %}
+                        <table class="table table-bordered table-center">
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>邮件地址</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for num,id,mailbox,disabled in obj.getRecvLimitWhiteList %}
+                                <tr id="id_send_row_{{ num }}">
+                                    <td> {{ num }} </td>
+                                    <td> {{ mailbox }} </td>
+                                    <td>
+                                        <label class="inline" >
+                                            <input name="send_{{ mailbox }}_disabled" value="-1" {% if disabled == "-1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5">
+                                            <span class="lbl"></span>
+                                        </label>
+                                    </td>
+                                <td>
+                                    <button class="btn btn-xs btn-danger" type="button" onclick="clickLimitSendDelete('recv', '{{ num }}')">删除</button>
+                                </td>
+                                <input type="hidden" value="{{ id }}" name="send_{{ mailbox }}_id" id="id_send_id_{{ num }}" />
+                                <input type="hidden" value="-1" name="send_{{ mailbox }}_delete" id="id_send_delete_{{ num }}" />
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <div class="col-sm-10 col-sm-offset-1">
+                                <div class="input-group margin-bottom-8">
+                                    <span class="input-group-addon">邮件地址：</span>
+                                    <input type="text" name="new_mailbox" class="form-control">
+                                </div>
+                                <div class="margin-bottom-8">
+                                    <textarea class="form-control" name="new_mailbox_list" rows="5" placeholder="批量例外邮箱地址，格式 @126.com|@sina.com|@qq.com"></textarea>
+                                </div>
+                                <p class="alert alert-warning"><b class="red">注：</b>当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“@域名”，如“@test.com”。</p>
+                            </div>
+                        </div>
+                        <div class=" ">
+                        <input type="hidden" value="recv" name="type" id="id_send_limit_type" />
+                        <input type="hidden" value="{{ obj.id }}" name="id" id="id_mailbox_id" />
+                        </div>
+                        <div class="center" style="background:#fafafa;">
+                            <button class="btn btn-primary submit_recv_permit_btn" type="button">确定</button>
+                            <button class="btn btn-warning" type="reset">重置</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'assets/js/date-time/bootstrap-datepicker.js' %}" ></script>
+<script>
+
+    $('.limit_send_select').change(function(){
+        if($(this).val()=='3'){
+            $(this).next().show();
+        }else{
+            $(this).next().hide();
+        }
+    })
+    $('.submit_send_permit_btn').click(function(){
+        var str = $(".form_send_limit_white").serialize();
+        console.log("str  ==  "+str);
+        $.ajax({
+            url:"{% url 'mailbox_limit_whitelist' %}",
+            type:"POST",
+            data:str,
+            success:function(data){
+                if(data.status=='OK'){
+                    alert("设置成功！");
+                    $('#allow_send_email_dress').modal('hide');
+                }else{
+                    alert("设置失败：  "+data.message);
+                }
+            }
+        })
+    })
+    $('.submit_recv_permit_btn').click(function(){
+        var str = $(".form_recv_limit_white").serialize();
+        console.log("str  ==  "+str);
+        $.ajax({
+            url:"{% url 'mailbox_limit_whitelist' %}",
+            type:"POST",
+            data:str,
+            success:function(data){
+                $('#allow_recv_email_dress').modal('hide');
+            }
+        })
+    })
+    function clickLimitSendDelete(type, num){
+        var entry = "id_" + type + "_row_" + num;
+        var entry_val = "id_" + type + "_delete_" + num;
+        $("#"+entry_val).val("1");
+        $("#"+entry).addClass("display-none");
+    }
+
+    // $('#edit_email_tabs').tabs();
+    $('#modal-edit').on('loaded.bs.modal', function (e) {
+        $('.tree_edit_box').hide();
+        // $('#edit_email_tabs').tabs();
+        $('.datetime').datetimepicker({
+            format: 'yyyy-mm-dd hh:ii:00',
+            language: 'zh-CN',
+            weekStart: 1,
+            todayBtn: 1,
+            autoclose: 1,
+            // minView: 2,
+            pickerPosition: "bottom-right",
+        });
+        $('.date').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            todayHighlight: true
+        })
+        //show datepicker when clicking on the icon
+            .next().on(ace.click_event, function(){
+            $(this).prev().focus();
+        });
+        $('.select2').select2();
+
+        $("#tree_edit").removeData("fu.tree");
+        $("#tree_edit").unbind('click.fu.tree');
+        var treeEle;
+        $('#tree_edit').on('click','.tree-item,.tree-branch-header',function(){
+            $('#tree_edit .tree-selected').removeClass('tree-selected');
+            if($(this).hasClass('tree-branch-header')){
+                $(this).parent().addClass('tree-selected');
+            }else{
+                $(this).addClass('tree-selected');
+            }
+            $('#tree_edit .active-header').removeClass('active-header');
+            $(this).addClass('active-header');
+            $('.tree_edit_box').hide();
+            var o = treeEle.tree("selectedItems")[0];
+            $('.dept_edit').val(o.text);
+            $('.dept_edit_id').val(o.id);
+        })
+
+        var deptArr = {{ dept_list|safe }};
+        function initdepttree(deptArr){
+            var sampleData = initiateDemoData(deptArr);
+            treeEle = $('#tree_edit').ace_tree({
+                dataSource: sampleData['dataSource1'],
+                multiSelect: false,
+                loadingHTML: '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>',
+                'open-icon' : 'ace-icon tree-minus hide',
+                'close-icon' : 'ace-icon tree-plus hide',
+                'selectable' : true,
+                'selected-icon' : 'ace-icon fa fa-check',
+                'unselected-icon' : 'ace-icon fa fa-times',
+                'cacheItems': true,
+                'folderSelect': true,
+                'folder-open-icon' : 'ace-icon tree-plus',
+                'folder-close-icon' : 'ace-icon tree-minus'
+            });
+        }
+        initdepttree(deptArr);
+
+        function initiateDemoData(deptArr){
+            var tree_data = {};
+            for(var i=0;i<deptArr.length;i++){
+                if(deptArr[i].parent<=0){
+                    if(deptArr[i].child&&deptArr[i].child>0){
+                        tree_data[deptArr[i].name] = {text:deptArr[i].name,type:"folder",id:deptArr[i].id};
+                        tree_data[deptArr[i].name]['additionalParameters']={"children":getSubDate(deptArr[i].id)};
+                    }else{
+                        tree_data[deptArr[i].name] = {text:deptArr[i].name,type:"item",id:deptArr[i].id};
+                    }
+                }
+            }
+
+            function getSubDate(pid){
+                var obj = {};
+                for(var i=0;i<deptArr.length;i++){
+                    if(deptArr[i]['parent'] == pid){
+                        if(deptArr[i].child&&deptArr[i].child>0){
+                            obj[deptArr[i].name] = {text:deptArr[i].name,type:"folder",id:deptArr[i].id,child:deptArr[i].child}
+                        }else{
+                            obj[deptArr[i].name] = {text:deptArr[i].name,type:"item",id:deptArr[i].id,child:deptArr[i].child}
+                        }
+
+                    }
+                }
+                return obj;
+            }
+            function getAdditionalParameters(arr){
+                for(var key in arr){
+                    if(arr[key]['type']=="folder"){
+                        arr[key]['additionalParameters']={"children":getSubDate(arr[key]['id'])};
+                        if(arr[key]['additionalParameters']["children"]){
+                            getAdditionalParameters(arr[key]['additionalParameters']["children"])
+                        }
+                    }
+                }
+            }
+            getAdditionalParameters(tree_data);
+            var dataSource1 = function(options, callback){
+                var $data = null
+                if(!("text" in options) && !("type" in options)){
+                    $data = tree_data;//the root tree
+                    callback({ data: $data });
+                    return;
+                }
+                else if("type" in options && options.type == "folder") {
+                    if("additionalParameters" in options && "children" in options.additionalParameters)
+                        $data = options.additionalParameters.children || {};
+                    else $data = {}//no data
+                }
+                if($data != null)//this setTimeout is only for mimicking some random delay
+                    callback({ data: $data });
+            }
+            return {'dataSource1': dataSource1}
+        }
+
+        $('#search_input_edit').keyup(function(){
+            var keywords = $(this).val();
+            $("#tree_edit").removeData("fu.tree");
+            $("#tree_edit").unbind('click.fu.tree');
+            if(keywords.length>0){
+                var initArr = {{ dept_list|safe }};
+                var reg = new RegExp(keywords, 'i');
+                var arr = [];
+                var textname = '';
+                function getp(id){
+                    for(var i=0;i<initArr.length;i++){
+                        var a = initArr[i]['id'];
+                        var pp = initArr[i]['parent'];
+                        var n = initArr[i]['name'];
+                        if(a == id){
+                            textname += " -- " + n;
+                            if(pp>0){
+                                getp(pp);
+                            }
+                        }
+                    }
+                }
+                for(var key in initArr){
+                    if(initArr[key]['name'].match(reg)){
+                        if(initArr[key]['parent']>0){
+                            textname += initArr[key]['name'];
+                            getp(initArr[key]['parent']);
+                            var obj = {child:0,parent:0,name:textname,id:initArr[key]['id']};
+                            textname = '';
+                        }else{
+                            var obj = {child:0,parent:0,name:initArr[key]['name'],id:initArr[key]['id']};
+                        }
+                        arr.push(obj);
+                    }
+                }
+                initdepttree(arr)
+            }else{
+                initdepttree(deptArr);
+            }
+        })
+        $('.close_btn').click(function(){
+            $(this).parent().hide();
+        })
+
+        $('.dept_edit').click(function(){
+            $(this).parent().next().show();
+        })
+        $('body').click(function(e){
+            var $parents = $(e.target).parents(".tree_edit_box");
+            if(!$(e.target).hasClass('dept_edit') && $parents.length<1){
+                $('.tree_edit_box').hide();
+            }
+        })
+
+        //user_group
+        $('#user_group .user_group_add').unbind();
+        $('#user_group .user_group_add').click(function(){
+            var group_id = $('.user_group_val').val();
+            var selectedText = $('.user_group_val').find("option:selected").text();
+            if(!group_id){
+                layer.tips('请选择用户组！','.user_group_val+');
+                return;
+            }
+            $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'add_group', 'mailbox_id': '{{ obj.id }}', 'group_id': group_id}, function(data){
+                if(data.result) {
+                    var html = '<tr><td>' + data.group_id + '</td><td>' + data.group_name + '</td><td><button class="btn btn-xs btn-danger user_group_del" data_id="' + data.group_id + '" type="button">删除</button></td></tr>'
+                    $('#user_group table tbody').append(html);
+                    $('#user_group .user_group_del').unbind();
+                    $('#user_group .user_group_del').click(function(){
+                        if(confirm("{% trans '确认删除组信息？' %}")){
+                            var id = $(this).attr('data_id');
+                            $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'del_group', 'mailbox_id': '{{ obj.id }}', 'id': id}, function(data){
+                            })
+                            $(this).parent().parent().remove();
+                        }
+                    })
+                }
+                layer.msg(data.msg);
+            })
+        })
+        $('#user_group .user_group_del').unbind();
+        $('#user_group .user_group_del').click(function(){
+            if(confirm("{% trans '确认删除组信息？' %}")){
+            var id = $(this).attr('data_id');
+            $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'del_group', 'mailbox_id': '{{ obj.id }}', 'id': id}, function(data){
+                layer.msg(data.msg);
+            })
+            $(this).parent().parent().remove();
+            }
+        })
+
+        //user_department
+        $('#user_department .user_department_del').unbind();
+        $('#user_department .user_department_del').click(function(){
+            if(confirm("{% trans '确认删除部门信息？' %}")){
+            var id = $(this).attr('data_id');
+            $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'del_dept', 'mailbox_id': '{{ obj.id }}', 'id': id}, function(data){
+                layer.msg(data.msg);
+            })
+            $(this).parent().parent().remove();
+            }
+        })
+        $('#user_department .user_department_add').unbind();
+        $('#user_department .user_department_add').click(function(){
+            var text = $('.user_department_text').val()
+            var id = $('.dept_edit_id').val();
+            var name = $('.user_department_name').val();
+            if(!id){
+                layer.tips('请选择部门！','.user_department_text');
+                return;
+            }
+            if(!name){
+                layer.tips('请输入职位！','.user_department_name');
+                return;
+            }
+            $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'add_dept', 'mailbox_id': '{{ obj.id }}', 'dept_id': id, 'position': name}, function(data){
+                if(data.result) {
+                    var html = '<tr><td>'+ data.dept_id +'</td><td>'+data.dept_name+'</td><td><input type="text" class="name_input" value="'+ data.position+'"></td><td><button class="btn btn-xs btn-primary user_department_edit" data_id="'+data.dept_id+'" type="button">修改</button> <button class="btn btn-xs btn-danger user_department_del" data_id="'+ data.dept_id +'" type="button">删除</button></td></tr>'
+                    $('#user_department table tbody').append(html);
+                    $('#user_department .user_department_del').unbind();
+                    $('#user_department .user_department_del').click(function(){
+                        if(confirm("{% trans '确认删除部门信息？' %}")){
+                            var id = $(this).attr('data_id');
+                            $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'del_dept', 'mailbox_id': '{{ obj.id }}', 'id': id}, function(data){
+                                layer.msg(data.msg);
+                            })
+                            $(this).parent().parent().remove();
+                        }
+                    })
+                    $('#user_department .user_department_edit').unbind();
+                    $('#user_department .user_department_edit').click(function(){
+                        var id = $(this).attr('data_id');
+                        var name = $(this).parent().prev().find('.name_input').val();
+                        // ajax
+                        $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'edit_dept', 'mailbox_id': '{{ obj.id }}', 'id': id, 'position': name}, function(data){
+                            $(this).parent().prev().find('.name_input').val(name);
+                        })
+                    })
+                }
+                layer.msg(data.msg);
+            })
+        })
+        $('#user_department .user_department_edit').unbind();
+        $('#user_department .user_department_edit').click(function(){
+            var id = $(this).attr('data_id');
+            var name = $(this).parent().prev().find('.name_input').val();
+            // ajax
+            $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'edit_dept', 'mailbox_id': '{{ obj.id }}', 'id': id, 'position': name}, function(data){
+                $(this).parent().prev().find('.name_input').val(name);
+                layer.msg(data.msg);
+            })
+        })
+
+        //user_belong
+        $('#user_belong .user_belong_add').unbind();
+        $('#user_belong .user_belong_add').click(function(){
+            var id = $('.user_belong_val').val();
+            var permit = $('.user_belong_power').val();
+            if(!id){
+                layer.tips('请选择归属邮件！','.user_belong_val+');
+                return;
+            }
+            //添加ajax
+            $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'add_maillist', 'mailbox_id': '{{ obj.id }}', 'maillist_id': id, 'permit': permit}, function(data){
+                if(data.result) {
+                    var html = '<tr><td>'+ data.maillist_id +'</td><td>'+data.maillist_name+'</td><td>'+data.maillist_address+'</td><td><button class="btn btn-xs btn-danger user_belong_del" data_id="'+ data.maillist_id +'" type="button">删除</button></td></tr>'
+                    $('#user_belong table tbody').append(html);
+                    $('#user_belong .user_belong_del').unbind();
+                    $('#user_belong .user_belong_del').click(function(){
+                        if(confirm("{% trans '确认删除邮件列表信息？' %}")){
+                            var id = $(this).attr('data_id');
+                            $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'del_maillist', 'mailbox_id': '{{ obj.id }}', 'id': id}, function(data){
+                            })
+                            $(this).parent().parent().remove();
+                        }
+                    })
+                }
+                layer.msg(data.msg);
+            })
+        })
+        $('#user_belong .user_belong_del').unbind();
+        $('#user_belong .user_belong_del').click(function(){
+            if(confirm("{% trans '确认删除邮件列表信息？' %}")){
+            var id = $(this).attr('data_id');
+            $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'del_maillist', 'mailbox_id': '{{ obj.id }}', 'id': id}, function(data){
+            })
+            $(this).parent().parent().remove();
+                layer.msg(data.msg);
+            }
+        })
+
+        //relation_share
+        $('#relation_share .relation_share_add').unbind();
+        $('#relation_share .relation_share_add').click(function(){
+            var relate_name = $('.relation_share_name').val();
+            var relate_domain = $('.relation_share_yu').val();
+            if(!relate_name){
+                layer.tips('请输入邮箱！','.relation_share_name');
+                return;
+            }
+            //添加ajax
+            $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'add_relate_email', 'mailbox_id': '{{ obj.id }}', 'relate_name': relate_name, 'relate_domain': relate_domain}, function(data){
+                if(data.result) {
+                    var html = '<tr><td>'+data.relate_id+'</td><td>'+data.relate_name+'</td><td>'+data.relate_domain+'</td><td>'+ data.access+'</td><td><button class="btn btn-xs btn-danger relation_share_del" data_id="'+data.relate_id+'" type="button">删除</button></td></tr>'
+                    $('#relation_share table tbody').append(html);
+                    $('#relation_share .relation_share_del').unbind();
+                    $('#relation_share .relation_share_del').click(function(){
+                        if(confirm("{% trans '确认删除关联共享邮箱' %}")){
+                            var id = $(this).attr('data_id');
+                            $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'del_relate_email', 'mailbox_id': '{{ obj.id }}', 'id': id}, function(data){
+                            })
+                            $(this).parent().parent().remove();
+                        }
+                    })
+                }
+                layer.msg(data.msg);
+            })
+        })
+        $('#relation_share .relation_share_del').unbind();
+        $('#relation_share .relation_share_del').click(function(){
+            if(confirm("{% trans '确认删除关联共享邮箱' %}")){
+            var id = $(this).attr('data_id');
+            $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'del_relate_email', 'mailbox_id': '{{ obj.id }}', 'id': id}, function(data){
+                layer.msg(data.msg);
+            })
+            $(this).parent().parent().remove();
+            }
+        })
+
+    })
+
+function edit_account_form(mailbox_id){
+    console.log('add_btn')
+    var is_submit=true;
+    if(is_submit){
+        //layer.msg('提交中...');
+        var data = $('#edit_account_form').serialize();
+
+        console.log(data);
+        $.post("{% url 'mailbox_ajax_edit_account' %}", data, function(data){
+            if(data.result) {
+                layer.msg(data.msg, {icon: 1});
+            }
+            else{
+                layer.msg(data.msg, {icon: 2});
+            }
+        })
+    }
+}
+</script>
+
