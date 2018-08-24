@@ -60,7 +60,7 @@ export const rou = [
           {path:'pab',component:_import('contact/pab')},
           {path:'oab',component:_import('contact/oab')},
           {path:'cab',component:_import('contact/cab')},
-          {path:'soab',component:_import('contact/pab')},
+          {path:'soab',component:_import('contact/soab')},
         ]
       }]
   },
@@ -81,12 +81,5 @@ export const rou = [
         component: _import('setting/index'),
 
       }]
-  },
-  {
-    path:'/contact1',component:Layout1,
-    children: [
-      {path:'/',redirect:'oab'},
-      {path:'oab',component:_import('contact/index2')},
-    ]
   },
 ] 

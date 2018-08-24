@@ -8,27 +8,35 @@
           </div>
         </div>
 
-        <el-tree
-          :data="pab_groups"
-          :props="pab_defaultProps"
-          highlight-current
-          node-key="id"
-          :default-checked-keys="pab_checked_keys"
-          @node-click="oab_handleNodeClick">
-          <table class="custom-tree-node" slot-scope="{ node, data }" style="margin-left: -13px;">
-            <tr>
-              <td style="text-align: left;"><span class="text_slice" style="float: left" :title="node.label">{{ node.label }}</span></td>
-              <td style="text-align: left;width: 50px;">({{ data.count }})</td>
-              <td>
+        <el-row>
+          <el-tree
+            :data="pab_groups"
+            :props="pab_defaultProps"
+            highlight-current
+            node-key="id"
+            :default-expanded-keys="default_expanded_keys"
+            :default-checked-keys="default_checked_keys"
+            @node-click="oab_handleNodeClick"
+            ref="treeForm">
+            <table class="custom-tree-node" slot-scope="{ node, data }" style="margin-left: -5px;">
+              <tr>
+                <td style="text-align: left;"><span class="text_slice" style="float: left" :title="node.label">{{ node.label }}</span></td>
+                <td style="text-align: left;width: 50px;">({{ data.count }})</td>
+                <td>
                   <span style="margin-left: 10px;" class="hide_btn" v-if="!data.is_sysname">
                     <el-button type="text" size="mini" @click.stop.prevent="() => handlePabEdit(data)" title="编辑"><i class="el-icon-edit"></i></el-button>
                     <el-button type="text" size="mini" @click.stop="() => handlePabDel(node, data)" title="删除" style="margin-left: 0px!important;"><i class="el-icon-delete"></i></el-button>
                   </span>
-              </td>
-            </tr>
-          </table>
-        </el-tree>
+                </td>
+              </tr>
+            </table>
+          </el-tree>
+        </el-row>
 
+        <el-row style="text-align: left; margin-left: 13px;">
+          <el-button type="button" class="el-button control-button el-tooltip el-button--text el-button--small" @click="handlePabAdd">添加联系组</el-button>
+          <!--<el-button type="success" @click="handlePabAdd" size="mini">添加联系组</el-button>-->
+        </el-row>
       </div>
     </aside>
 
@@ -53,9 +61,11 @@
                 <el-input v-model="filters.search" placeholder="邮箱或姓名" size="small"></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" v-on:click="getMaps" size="small">查询</el-button>
-                <el-button type="success" @click="handlePabAdd" size="small">添加联系组</el-button>
-                <el-button type="primary" @click="handlePabMemberAdd" size="small">添加联系人</el-button>
+                <el-button type="primary" v-on:click="getPabMembers" size="small">查询</el-button>
+                <el-button type="success" @click="handlePabMemberAdd" size="small">添加联系人</el-button>
+                <el-button type="primary" @click="Oab_import_to_group" size="small"> 导入联系人</el-button>
+                <el-button type="success" @click="Oab_export_group" size="mini">导出联系人</el-button>
+                <a :href="blobUrl" download="" style="display:none;" ref="download"></a>
               </el-form-item>
             </el-form>
           </el-col>
@@ -68,12 +78,8 @@
             <el-col :span="12" >
               <el-button type="success" @click="Oab_select_to_add" :disabled="this.sels.length===0" size="mini" v-if="pab_iscan_distribute">添加至组</el-button>
               <el-button type="primary" @click="Oab_send_to_select" :disabled="this.sels.length===0" size="mini"> 选中发信</el-button>
-              <el-button type="danger" @click="Oab_delete_select" :disabled="this.sels.length===0" size="mini"> 批量删除</el-button>
               <el-button type="success" @click="Oab_send_to_group" size="mini"> 发邮件给组 </el-button>
-              <el-button type="primary" @click="Oab_import_to_group" size="mini">导入</el-button>
-              <el-button type="success" @click="Oab_export_group" size="mini">导出</el-button>
-              <a :href="blobUrl" download="" style="display:none;" ref="download"></a>
-
+              <el-button type="danger" @click="Oab_delete_select" :disabled="this.sels.length===0" size="mini"> 批量删除</el-button>
             </el-col>
             <el-col :span="12" >
               <el-pagination layout="total, sizes, prev, pager, next, jumper"
@@ -363,19 +369,19 @@
         <el-form-item label="上传文件" prop="file"><el-input v-model="importPabForm.file" auto-complete="off" type="file"></el-input></el-form-item>
 
         <!--<el-form-item label="上传文件" prop="file">-->
-          <!--<el-upload-->
-            <!--class="upload-demo"-->
-            <!--v-model="importPabForm.file"-->
-            <!--action="mixinUploadUrl"-->
-            <!--:before-upload="onBeforeUpload"-->
-            <!--accept=".xls,.xlsx,.csv,.XLS,.XLSX,.CSV"-->
-            <!--:multiple='false'-->
-            <!--:file-list="fileList"-->
-            <!--:auto-upload="false">-->
-            <!--<el-button slot="trigger" size="mini" type="primary">选取文件</el-button>-->
-            <!--&lt;!&ndash;<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>&ndash;&gt;-->
-            <!--<div slot="tip" class="el-upload__tip">只能上传xls、xlsx、csv格式文件，且不超过10M;</div>-->
-          <!--</el-upload>-->
+        <!--<el-upload-->
+        <!--class="upload-demo"-->
+        <!--v-model="importPabForm.file"-->
+        <!--action="mixinUploadUrl"-->
+        <!--:before-upload="onBeforeUpload"-->
+        <!--accept=".xls,.xlsx,.csv,.XLS,.XLSX,.CSV"-->
+        <!--:multiple='false'-->
+        <!--:file-list="fileList"-->
+        <!--:auto-upload="false">-->
+        <!--<el-button slot="trigger" size="mini" type="primary">选取文件</el-button>-->
+        <!--&lt;!&ndash;<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>&ndash;&gt;-->
+        <!--<div slot="tip" class="el-upload__tip">只能上传xls、xlsx、csv格式文件，且不超过10M;</div>-->
+        <!--</el-upload>-->
         <!--</el-form-item>-->
 
         <el-form-item label="把联系人导入到" prop="group_id" style="margin-top: 20px;">
@@ -443,7 +449,8 @@
         pab_cname: '',
         // domain_id: 0,
         // mailbox_id: 0,
-        pab_checked_keys: [],
+        default_expanded_keys: [0],
+        default_checked_keys: [0],
         pab_groups: [],
         pab_defaultProps: {
           label: 'groupname',
@@ -592,24 +599,32 @@
     },
     mounted: function(){
       this.$parent.activeIndex = "pab";
-      this.getPABs();
+      this.getPabs();
     },
 
     methods: {
-      getPABs(){
-        this.getPABGroups();
-        this.getMaps();
+      setCurrentKey() {
+        this.$nextTick(() =>{
+          this.$refs.treeForm.setCurrentKey(Number(this.pab_cid));
+          let data = this.$refs.treeForm.getCurrentNode();
+          this.pab_cname = data.groupname;
+        })
+      },
+
+      getPabs(){
+        this.getPabGroups();
+        this.getPabMembers();
       },
       // 获取联系组
-      getPABGroups(){
+      getPabGroups(){
         contactPabGroupsGet().then(res=>{
           this.pab_groups = res.data.results;
           this.pab_contact_groups = res.data.pab_contact_groups;
-          // this.getMaps();
+          this.setCurrentKey();
         });
       },
       // 获取联系人列表
-      getMaps() {
+      getPabMembers() {
         var param = {
           "page": this.page,
           "page_size": this.page_size,
@@ -621,7 +636,6 @@
           contactPabMapsGet(param).then((res) => {
             this.total = res.data.count;
             this.oab_tables = res.data.results;
-            this.pab_cname = res.data.pab_cname;
             this.pab_iscan_distribute = res.data.pab_iscan_distribute;
             this.listLoading = false;
             //NProgress.done();
@@ -630,7 +644,6 @@
           contactPabMembersGet(param).then((res) => {
             this.total = res.data.count;
             this.oab_tables = res.data.results;
-            this.pab_cname = res.data.pab_cname;
             this.pab_iscan_distribute = res.data.pab_iscan_distribute;
             this.listLoading = false;
             //NProgress.done();
@@ -640,8 +653,9 @@
       // 右侧菜单 联系组改变
       oab_handleNodeClick(data) {
         this.pab_cid = data.id;
+        this.pab_cname = data.groupname;
         window.sessionStorage['pab_cid']=data.id;
-        this.getMaps();
+        this.getPabMembers();
       },
       // 列表选中改变
       Oab_selsChange: function (sels) {
@@ -650,13 +664,13 @@
       // 每页数目改变
       Oab_handleSizeChange(val) {
         this.page_size = val;
-        this.getMaps();
+        this.getPabMembers();
         // console.log(`当前页: ${val}`);
       },
       // 翻页改变
       Oab_handleCurrentChange(val) {
         this.page = val;
-        this.getMaps();
+        this.getPabMembers();
       },
       // 添加联系人至 联系组
       Oab_select_to_add: function(){
@@ -665,7 +679,8 @@
       },
       // 添加联系人至 联系组 提交
       distributePabSubmit: function () {
-        var ids = this.sels.map(item => item.contact_id).toString();
+        // var ids = this.sels.map(item => item.contact_id).toString();
+        var ids = this.sels.map(item => item.contact_id);
         this.$refs.distributePabForm.validate((valid) => {
           if (valid) {
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
@@ -678,7 +693,7 @@
                 this.$message({message: '提交成功', type: 'success'});
                 this.distributePabFormVisible = false;
                 this.listLoading = false;
-                this.getPABs();
+                this.getPabs();
               }, (data)=>{
                 this.distributePabLoading = false;
               }).catch(function (error) {
@@ -690,8 +705,8 @@
       },
       // 发信给选择的人员
       Oab_send_to_select: function () {
-        var ids = this.sels.map(item => item.id).toString();
-        // console.log(ids);
+        // var ids = this.sels.map(item => item.id).toString();
+        var ids = this.sels.map(item => item.id);
         this.$confirm('确认删除选中记录吗？', '提示', {
           type: 'warning'
         }).then(() => {
@@ -714,7 +729,8 @@
       // 删除联系人
       Oab_delete_select: function(){
         let that = this;
-        var ids = this.sels.map(item => item.contact_id).toString();
+        // var ids = this.sels.map(item => item.contact_id).toString();
+        var ids = this.sels.map(item => item.contact_id);
         this.$confirm('确认删除选中记录吗？', '提示', {
           type: 'warning'
         }).then(() => {
@@ -725,11 +741,9 @@
             this.listLoading = false;
             //NProgress.done();
             that.$message({ message: '批量删除成功', type: 'success'});
-            this.getPABs();
-          }, (data)=>{
-            this.listLoading = false;
-            this.$message({ message: '批量删除失败，请重试', type: 'error'});
+            this.getPabs();
           }).catch(function (error) {
+            // this.listLoading = false;
             console.log(error);
           });
         });
@@ -759,7 +773,7 @@
                 this.importPabLoading = false;
                 // this.listLoading = false;
                 that.$message({message: '导入成功', type: 'success'});
-                this.getPABs();
+                this.getPabs();
               }).catch(function (error) {
                 that.importPabLoading = false;
                 that.$message({ message: '导入失败，请重试',  type: 'error' });
@@ -815,7 +829,7 @@
               link.click();
             }
             that.$message({ message: '导出成功', type: 'success' });
-            // this.getPABs();
+            // this.getPabs();
           }).catch(function (error) {
             console.log(error)
             that.$message({ message: '导出失败，请重试',  type: 'error' });
@@ -841,10 +855,10 @@
           type: 'warning'
         }).then(() => {
           contactPabGroupsDelete(data.id).then((response)=> {
-            this.getPABGroups();
+            this.getPabGroups();
             if (ppab_cid==pab_cid) {
               window.sessionStorage['pab_cid']=this.pab_cid;
-              this.getMaps();
+              this.getPabMembers();
             }
             that.$message({ message: '删除成功', type: 'success' });
           }).catch(function (error) {
@@ -873,7 +887,7 @@
                 this.$refs['editPabForm'].resetFields();
                 this.editPabFormVisible = false;
                 this.pab_groupname_error='';
-                this.getPABs();
+                this.getPabs();
               }, (data)=>{
                 this.editPabLoading = false;
                 if("non_field_errors" in data) {
@@ -907,7 +921,7 @@
                 this.$message({message: '提交成功', type: 'success'});
                 this.addPabFormVisible = false;
                 this.pab_groupname_error='';
-                this.getPABs();
+                this.getPabs();
               }, (data)=>{
                 this.addPabLoading = false;
                 if("non_field_errors" in data) {
@@ -936,7 +950,7 @@
         }).then(() => {
           contactPabMembersDelete(row.contact_id).then((response)=> {
             that.$message({ message: '删除成功', type: 'success' });
-            this.getPABs();
+            this.getPabs();
           }).catch(function (error) {
             that.$message({ message: '删除失败',  type: 'error' });
           });
@@ -963,7 +977,7 @@
                 this.$refs['editPabMerberForm'].resetFields();
                 this.editPabMerberFormVisible = false;
                 this.pab_email_error = '';
-                this.getPABs();
+                this.getPabs();
               }, (data)=>{
                 console.log(data);
                 this.editPabMerberLoading = false;
@@ -1002,7 +1016,7 @@
                 this.$refs['addPabMerberForm'].resetFields();
                 this.addPabMerberFormVisible = false;
                 this.pab_email_error = '';
-                this.getPABs();
+                this.getPabs();
               }, (data)=>{
                 this.addPabMerberLoading = false;
                 if("non_field_errors" in data) {

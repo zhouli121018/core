@@ -9,11 +9,14 @@
           class="filter-tree"
           :data="oab_departs"
           :props="oab_defaultProps"
-          render-after-expand
-          highlight-current
+          :render-after-expand="true"
+          :highlight-current="true"
           node-key="id"
-          :default-checked-keys="[272]"
-          @node-click="oab_handleNodeClick">
+          :indent="13"
+          :default-expanded-keys="default_expanded_keys"
+          :default-checked-keys="default_checked_keys"
+          @node-click="oab_handleNodeClick"
+          ref="treeForm">
         </el-tree>
 
       </div>
@@ -40,7 +43,14 @@
                 <el-input v-model="filters.search" placeholder="邮箱或姓名" size="small"></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" v-on:click="getOABs" size="small">查询</el-button>
+                <el-button type="primary" v-on:click="getOabMembers" size="small">查询</el-button>
+                <el-button type="success" @click="Oab_export_group" size="small" v-if="webmail_oab_dump_show">导出联系人</el-button>
+                <a :href="blobUrl" download="" style="display:none;" ref="download"></a>
+                <el-button type="primary" @click="Oab_export_foxmail" size="small" v-if="webmail_oab_dump_show">导出为Foxmail格式</el-button>
+                <el-button type="success" @click="Oab_export_outlook" size="small" v-if="webmail_oab_dump_show">导出为outlook格式</el-button>
+                <span v-if="webmail_oab_dump_show">
+                  （<el-button type="button" class="el-button control-button el-tooltip el-button--text el-button--small" @click="Oab_export_tutorial">客户端工具导入企业通讯录教程</el-button>）
+                </span>
               </el-form-item>
             </el-form>
           </el-col>
@@ -49,13 +59,13 @@
         <!-- 普通列表 -->
         <section class="content content-list height100" >
 
-          <el-row>
-            <el-col :span="12" class="toolbar">
+          <el-row class="toolbar">
+            <el-col :span="12">
               <el-button type="primary" @click="Oab_send_to_select" :disabled="this.sels.length===0" size="mini"> 发信给选择的人员</el-button>
               <el-button type="success" @click="Oab_send_to_department" :disabled="this.sels.length===0" size="mini">发邮件给本机构人员</el-button>
               <el-button type="info" @click="Oab_to_pab" :disabled="this.sels.length===0" size="mini"> 添加至个人通讯录</el-button>
             </el-col>
-            <el-col :span="12" class="toolbar">
+            <el-col :span="12">
               <el-pagination layout="total, sizes, prev, pager, next, jumper"
                              @size-change="Oab_handleSizeChange"
                              @current-change="Oab_handleCurrentChange"
@@ -89,17 +99,28 @@
 </template>
 
 <script>
-  import { contactOabDepartsGet, contactOabMembersGet, contactPabMembersOabAdd } from '@/api/api'
+  import {
+    contactOabDepartsGet,
+    contactOabMembersGet,
+    contactPabMembersOabAdd,
+    contactOabMembersExport,
+    contactOabMembersFoxmailExport,
+    contactOabMembersOutlookExport,
+    contactOabMembersTutorialExport } from '@/api/api'
   export default {
     data() {
       return {
         oab_cid: "",
+        blobUrl: "",
         oab_departs: [],
+        default_expanded_keys: [0],
+        default_checked_keys: [0],
         oab_defaultProps: {
           children: 'children',
           label: 'label'
         },
 
+        webmail_oab_dump_show:false,
         filters: {
           search: ''
         },
@@ -113,39 +134,52 @@
       };
     },
     created: function() {
-      this.oab_cid = window.sessionStorage['oab_cid'];
       // console.log("子组件调用了'created'");
+      this.oab_cid = window.sessionStorage['oab_cid'];
+      this.webmail_oab_dump_show = window.sessionStorage['webmail_oab_dump_show'];
     },
     mounted: function(){
+      // console.log("子组件调用了'mounted'");
       this.$parent.activeIndex = "oab";
-      this.getOABDepart();
-      this.getOABs();
+      this.getOabGroups();
+      this.getOabMembers();
     },
-
     methods: {
+      setCurrentKey() {
+        this.$nextTick(() =>{
+          this.$refs.treeForm.setCurrentKey(Number(this.oab_cid));
+          let data = this.$refs.treeForm.getCurrentNode();
+          this.department_name = data.label;
+        })
+      },
       oab_handleNodeClick(data) {
         this.oab_cid = data.id;
+        this.department_name = data.label;
         window.sessionStorage['oab_cid'] = data.id;
-        this.getOABs();
+        this.getOabMembers();
       },
       Oab_handleSizeChange(val) {
         this.page_size = val;
-        this.getOABs();
+        this.getOabMembers();
         // console.log(`当前页: ${val}`);
       },
       Oab_handleCurrentChange(val) {
         this.page = val;
-        this.getOABs();
+        this.getOabMembers();
       },
       // 获取 部门列表
-      getOABDepart(){
+      getOabGroups(){
         contactOabDepartsGet().then(res=>{
-          // this.oab_cid = res.data.oab_cid;
           this.oab_departs = res.data.results;
+          this.setCurrentKey();
         });
       },
       // 获取部门成员
-      getOABs() {
+      getOabMembers() {
+        let keys = new Array();
+        keys.push(Number(this.oab_cid));
+        this.default_expanded_keys = keys;
+        this.default_checked_keys = keys;
         var param = {
           "page": this.page,
           "page_size": this.page_size,
@@ -156,7 +190,6 @@
         contactOabMembersGet(param).then((res) => {
           this.total = res.data.count;
           this.oab_tables = res.data.results;
-          this.department_name = res.data.department_name;
           this.listLoading = false;
           //NProgress.done();
         });
@@ -164,8 +197,145 @@
       Oab_selsChange: function (sels) {
         this.sels = sels;
       },
+
+      //点击下载
+      download(){
+        this.$refs.download.click();
+      },
+      // 导出联系人
+      Oab_export_group: function(){
+        let that = this;
+        this.$confirm('确认导出该部门联系人吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.listLoading = true;
+          contactOabMembersExport(this.oab_cid).then((response)=> {
+            // let blob = new Blob([response.data], { type: 'application/vnd.ms-excel;charset=UTF-8' })
+            this.listLoading = false;
+            let blob = new Blob([response.data], { type: response.headers["content-type"] })
+            let objUrl = URL.createObjectURL(blob);
+            this.blobUrl = objUrl;
+            let filenameHeader = response.headers['content-disposition']
+            let filename = filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1);
+            if (window.navigator.msSaveOrOpenBlob) {
+              // if browser is IE
+              navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
+            } else {
+              // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
+              var link = document.createElement("a");
+              link.setAttribute("href", objUrl);
+              link.setAttribute("download", filename);
+
+              document.body.appendChild(link);
+              link.click();
+            }
+            that.$message({ message: '导出成功', type: 'success' });
+            // this.getPabs();
+          }).catch(function (error) {
+            that.listLoading = false;
+            that.$message({ message: '导出失败，请重试',  type: 'error' });
+          });
+        });
+      },
+      Oab_export_foxmail: function(){
+        let that = this;
+        this.$confirm('确认导出该部门联系人吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.listLoading = true;
+          contactOabMembersFoxmailExport(this.oab_cid).then((response)=> {
+            // let blob = new Blob([response.data], { type: 'application/vnd.ms-excel;charset=UTF-8' })
+            this.listLoading = false;
+            let blob = new Blob([response.data], { type: response.headers["content-type"] })
+            let objUrl = URL.createObjectURL(blob);
+            this.blobUrl = objUrl;
+            let filenameHeader = response.headers['content-disposition']
+            let filename = filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1);
+            if (window.navigator.msSaveOrOpenBlob) {
+              // if browser is IE
+              navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
+            } else {
+              // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
+              var link = document.createElement("a");
+              link.setAttribute("href", objUrl);
+              link.setAttribute("download", filename);
+
+              document.body.appendChild(link);
+              link.click();
+            }
+            that.$message({ message: '导出成功', type: 'success' });
+            // this.getPabs();
+          }).catch(function (error) {
+            that.listLoading = false;
+            that.$message({ message: '导出失败，请重试',  type: 'error' });
+          });
+        });
+      },
+      Oab_export_outlook: function(){
+        let that = this;
+        this.$confirm('确认导出该部门联系人吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.listLoading = true;
+          contactOabMembersOutlookExport(this.oab_cid).then((response)=> {
+            // let blob = new Blob([response.data], { type: 'application/vnd.ms-excel;charset=UTF-8' })
+            this.listLoading = false;
+            let blob = new Blob([response.data], { type: response.headers["content-type"] })
+            let objUrl = URL.createObjectURL(blob);
+            this.blobUrl = objUrl;
+            let filenameHeader = response.headers['content-disposition']
+            let filename = filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1);
+            if (window.navigator.msSaveOrOpenBlob) {
+              // if browser is IE
+              navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
+            } else {
+              // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
+              var link = document.createElement("a");
+              link.setAttribute("href", objUrl);
+              link.setAttribute("download", filename);
+
+              document.body.appendChild(link);
+              link.click();
+            }
+            that.$message({ message: '导出成功', type: 'success' });
+            // this.getPabs();
+          }).catch(function (error) {
+            that.listLoading = false;
+            that.$message({ message: '导出失败，请重试',  type: 'error' });
+          });
+        });
+      },
+      Oab_export_tutorial: function(){
+        contactOabMembersTutorialExport(this.oab_cid).then((response)=> {
+          // let blob = new Blob([response.data], { type: 'application/vnd.ms-excel;charset=UTF-8' })
+          let blob = new Blob([response.data], { type: response.headers["content-type"] })
+          let objUrl = URL.createObjectURL(blob);
+          this.blobUrl = objUrl;
+          // let filenameHeader = response.headers['content-disposition']
+          // let filename = filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1);
+          let filename = 'ImportTutorial.docx';
+          if (window.navigator.msSaveOrOpenBlob) {
+            // if browser is IE
+            navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
+          } else {
+            // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
+            var link = document.createElement("a");
+            link.setAttribute("href", objUrl);
+            link.setAttribute("download", filename);
+
+            document.body.appendChild(link);
+            link.click();
+          }
+          that.$message({ message: '导出成功', type: 'success' });
+          // this.getPabs();
+        }).catch(function (error) {
+          that.$message({ message: '导出失败，请重试',  type: 'error' });
+        });
+      },
+
       Oab_send_to_select: function () {
-        var ids = this.sels.map(item => item.id).toString();
+        // var ids = this.sels.map(item => item.id).toString();
+        var ids = this.sels.map(item => item.id);
         // console.log(ids);
         this.$confirm('确认删除选中记录吗？', '提示', {
           type: 'warning'
@@ -180,14 +350,15 @@
             //     message: '删除成功',
             //     type: 'success'
             //   });
-            //   this.getOABs();
+            //   this.getOabMembers();
             // });
           }
         ).catch(() => {
         });
       },
       Oab_send_to_department: function () {
-        var ids = this.sels.map(item => item.id).toString();
+        // var ids = this.sels.map(item => item.id).toString();
+        var ids = this.sels.map(item => item.id);
         this.$confirm('执行该操作后，“丽兹行集团”的全体成员均将作为该邮件的收件人，是否确认如此操作？', '提示', {
           type: 'warning'
         }).then(() => {
@@ -201,7 +372,7 @@
             //     message: '删除成功',
             //     type: 'success'
             //   });
-            //   this.getOABs();
+            //   this.getOabMembers();
             // });
           }
         ).catch(() => {
@@ -209,20 +380,21 @@
       },
       Oab_to_pab: function () {
         let that = this;
-        var ids = this.sels.map(item => item.id).toString();
+        // var ids = this.sels.map(item => item.id).toString();
+        var ids = this.sels.map(item => item.id);
         this.$confirm('确定将选中成员添加到个人通讯录中？', '提示', {
           type: 'warning'
         }).then(() => {
-            this.listLoading = true;
-            let para = {ids: ids};
-            contactPabMembersOabAdd(para).then((res) => {
-              this.listLoading = false;
-              //NProgress.done();
-              that.$message({ message: '已成功添加联系人到个人通讯录', type: 'success' });
-            });
-          }
-        ).catch(() => {
-           that.$message({ message: '操作失败，请重试',  type: 'error' });
+          this.listLoading = true;
+          let para = {ids: ids};
+          contactPabMembersOabAdd(para).then((res) => {
+            this.listLoading = false;
+            //NProgress.done();
+            that.$message({ message: '已成功添加联系人到个人通讯录', type: 'success' });
+          });
+        }).catch((error) => {
+          console.log(error);
+          // that.$message({ message: '操作失败，请重试',  type: 'error' });
         });
       }
     }

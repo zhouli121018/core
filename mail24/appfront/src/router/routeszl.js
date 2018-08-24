@@ -79,11 +79,4 @@ export const rou = [
 
       }]
   },
-  {
-    path:'/contact1',component:Layout1,
-    children: [
-      {path:'/',redirect:'oab'},
-      {path:'oab',component:_import('contact/index2')},
-    ]
-  },
 ] 
