@@ -2,7 +2,7 @@
   <aside class="mlsidebar">
                 <div class="mlsidebar-bg"></div>
                 <div class="u-btns">
-                    <button class="u-btn u-btn-default u-btn-large btn-compose j-mlsb" type="button" data-op="compose"><i class="iconfont icon-iconcreate"></i> <span class="title">写 信</span></button>
+                    <button class="u-btn u-btn-default u-btn-large btn-compose j-mlsb" type="button" @click="goToCompose"><i class="iconfont icon-iconcreate"></i> <span class="title">写 信</span></button>
                     <button class="u-btn u-btn-default u-btn-large btn-inbox j-mlsb" type="button" data-op="inbox"><i class="iconfont icon-iconinbox"></i></button>
                 </div>
 
@@ -165,6 +165,10 @@
       handleNodeClick(data) {
         console.log(data);
         this.$emit('getData', {id:data.id,'curr_folder':data.label,activeTab:1});
+        this.$router.push('/mailbox')
+      },
+      goToCompose(){
+        this.$emit('getCompose', {activeTab:3});
         this.$router.push('/mailbox')
       }
 

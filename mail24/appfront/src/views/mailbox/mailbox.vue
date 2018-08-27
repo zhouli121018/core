@@ -1,7 +1,7 @@
 <template>
     <div>
         <section class="m-mail">
-            <MailAside @getData="getData"></MailAside>
+            <MailAside @getData="getData" @getCompose="getCompose"></MailAside>
             <article class="mlmain mltabview" :class="{position_top0:!tabList.length}">
                     <div class="u-tab u-tab-seamless u-tab-highlight j-mltab" v-if="tabList.length">
                               <ul class="mltabview-nav">
@@ -13,7 +13,8 @@
                         </div>
                     <Home v-if="showTabIndex==0"></Home>
                     <Innerbox v-if="showTabIndex==1" :collapseItems="collapseItems" :curr_folder="curr_folder" @getRead="getRead"></Innerbox>
-                    <Read v-if="showTabIndex==2" ></Read>
+                    <Read v-if="showTabIndex==2" :readId="readId"></Read>
+                    <Compose v-if="showTabIndex==3" ></Compose>
             </article>
         </section>
 
@@ -26,14 +27,16 @@ import {getMailMessage} from "@/api/api"
 import Innerbox from './components/innerbox'
 import Home from './components/home'
 import Read from './components/read'
+import Compose from './components/compose'
 export default {
     components:{
-      MailAside,Innerbox,Home,Read
+      MailAside,Innerbox,Home,Read,Compose
     },
     data:function(){
         return{
             showTabIndex:0,
             activeTab:0,
+            readId:'',
             curr_folder:'收件箱',
             tab1:{id:0,url:'home',text:'收件箱'},
             tabList:[
@@ -68,7 +71,9 @@ export default {
       },
       changeTabs(vid,key){
         this.jumpTo('/mailbox');
-        this.showTabIndex = 2;
+        if(vid == 'compose'){this.showTabIndex = 3;}else{
+          this.showTabIndex = 2;
+        }
 
         this.activeTab = vid;
       },
@@ -99,9 +104,23 @@ export default {
         })
       },
       getData(obj){
-        this.curr_folder = obj.curr_folder;
         this.showTabIndex = obj.activeTab;
-        this.getMessageList({folder:obj.id});
+        if(obj.curr_folder){
+          this.curr_folder = obj.curr_folder;
+        }
+        if(obj.id){
+          this.getMessageList({folder:obj.id});
+        }
+      },
+      getCompose(obj){
+        this.showTabIndex = obj.activeTab;
+        if(this.titleHash['compose']){
+
+        }else{
+          this.titleHash['compose']=true;
+          this.tabList.push({id:'compose',text:'写信'})
+        }
+        this.activeTab = 'compose';
       },
       getRead(obj){
 
@@ -112,6 +131,7 @@ export default {
           this.titleHash[obj.id]=true;
           this.tabList.push({id:obj.id,text:obj.subject})
         }
+        this.readId = obj.id;
         this.activeTab = obj.id;
         this.showTabIndex = obj.activeTab;
       }
@@ -119,7 +139,7 @@ export default {
     },
     beforeMount:function(){
       // this.test();
-      this.getMessageList();
+      // this.getMessageList();
 
     },
 }

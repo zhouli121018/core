@@ -35,7 +35,7 @@
         window.sessionStorage['soab_cid'] = 0;
       }
       getContactInfo().then((res) => {
-        window.sessionStorage['webmail_oab_dump_show'] = res.data.webmail_oab_dump_show;
+        window.sessionStorage['webmail_oabdump_show'] = res.data.webmail_oabdump_show;
         if (pab_cid === undefined) {
           window.sessionStorage['soab_domain_cid'] = res.data.soab_domain_cid;
         }

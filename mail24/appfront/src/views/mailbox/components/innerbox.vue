@@ -383,6 +383,9 @@
             return count;
         }
     },
+    mounted(){
+      console.log(this.collapseItems)
+    }
 
 }
 </script>

@@ -42,8 +42,8 @@ axios.interceptors.response.use(
         break;
       case 500:
         console.log('服务器错误');
-        // alert('服务器错误');
+      // alert('服务器错误');
     }
     return Promise.reject(error.response.data)   // 返回接口返回的错误信息
-});
+  });
 

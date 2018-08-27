@@ -169,6 +169,9 @@
   import {readMail} from '@/api/api';
   export default  {
     name:'Read',
+    props:{
+      readId:''
+    },
     data(){
       return {
         msg:'',
@@ -241,11 +244,7 @@
       }
     },
     mounted:function(){
-      console.log(this.$route.params.id)
-      console.log('innerbox')
-      // this.test();
-      readMail(this.$route.params.id).then((data)=>{
-        // this.msg = data.data.html_text
+      readMail(this.readId).then((data)=>{
         this.msg = data.data
         this.subject = data.data.subject;
         this.mfrom = data.data.mfrom[1]+' < '+data.data.mfrom[0]+' > ';

@@ -2,12 +2,14 @@ import Vue from 'vue'
 import Router from 'vue-router'
 const _import = require('./_import_' + process.env.NODE_ENV)
 import Layout1 from '../views/layout/index'
+import NotFound from '../views/404.vue'
 Vue.use(Router)
 
 export const rou = [
   {path:'/',redirect:'/login'},
   {path:'/lockscreen',component:_import('lockscreen/index')},
   {path:'/login',component:_import('login/Login')},
+  {path: '/404', component: NotFound, hidden: true},
   {
     path:'/',component:Layout1,
     children: [
@@ -79,7 +81,12 @@ export const rou = [
       {
         path: 'setting',
         component: _import('setting/index'),
-
+        children:[
+        ]
       }]
   },
+  {
+    path: '*',
+    redirect: { path: '/404' }
+  }
 ] 

@@ -44,11 +44,11 @@
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" v-on:click="getOabMembers" size="small">查询</el-button>
-                <el-button type="success" @click="Oab_export_group" size="small" v-if="webmail_oab_dump_show">导出联系人</el-button>
+                <el-button type="success" @click="Oab_export_group" size="small" v-if="webmail_oabdump_show">导出联系人</el-button>
                 <a :href="blobUrl" download="" style="display:none;" ref="download"></a>
-                <el-button type="primary" @click="Oab_export_foxmail" size="small" v-if="webmail_oab_dump_show">导出为Foxmail格式</el-button>
-                <el-button type="success" @click="Oab_export_outlook" size="small" v-if="webmail_oab_dump_show">导出为outlook格式</el-button>
-                <span v-if="webmail_oab_dump_show">
+                <el-button type="primary" @click="Oab_export_foxmail" size="small" v-if="webmail_oabdump_show">导出为Foxmail格式</el-button>
+                <el-button type="success" @click="Oab_export_outlook" size="small" v-if="webmail_oabdump_show">导出为outlook格式</el-button>
+                <span v-show="webmail_oabdump_show">
                   （<el-button type="button" class="el-button control-button el-tooltip el-button--text el-button--small" @click="Oab_export_tutorial">客户端工具导入企业通讯录教程</el-button>）
                 </span>
               </el-form-item>
@@ -78,6 +78,7 @@
 
           <!--列表-->
           <el-table :data="oab_tables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>
+          <!--<el-table :data="oab_tables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
             <el-table-column type="selection" width="50"></el-table-column>
             <el-table-column type="index" label="No." width="60"></el-table-column>
             <el-table-column prop="name" label="姓名" width="200"></el-table-column>
@@ -120,7 +121,6 @@
           label: 'label'
         },
 
-        webmail_oab_dump_show:false,
         filters: {
           search: ''
         },
@@ -136,11 +136,20 @@
     created: function() {
       // console.log("子组件调用了'created'");
       this.oab_cid = window.sessionStorage['oab_cid'];
-      this.webmail_oab_dump_show = window.sessionStorage['webmail_oab_dump_show'];
+    },
+    computed: {
+      webmail_oabdump_show: function () {
+        let isTrueSet = window.sessionStorage['webmail_oabdump_show'];
+        if ( isTrueSet == "true" ){
+          return true;
+        }
+        return false;
+      }
     },
     mounted: function(){
       // console.log("子组件调用了'mounted'");
       this.$parent.activeIndex = "oab";
+      // this.webmail_oabdump_show = window.sessionStorage['webmail_oabdump_show'];
       this.getOabGroups();
       this.getOabMembers();
     },
