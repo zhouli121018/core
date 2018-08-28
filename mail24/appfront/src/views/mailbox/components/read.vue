@@ -218,33 +218,8 @@
       moreHandleCommand:function(index){
         this.moreCheckIndex = index;
       },
-      setIframeHeight:function (id){
-        try{
-            var iframe = document.getElementById(id);
-            if(iframe.attachEvent){
-              console.log('height1: '+iframe.height )
-                iframe.attachEvent("onload", function(){
-                    iframe.height =  iframe.contentWindow.document.documentElement.scrollHeight;
-                });
-                return;
-            }else{
-              console.log('height2: '+iframe.height )
-                iframe.onload = function(){
-                    iframe.height = iframe.contentDocument.body.scrollHeight;
-                    console.log(iframe.contentDocument.body.scrollHeight)
-                     console.log('height: '+iframe.height )
-                };
-                return;
-            }
-
-        }catch(e){
-          console.log('height3: '+iframe.height )
-            throw new Error('setIframeHeight Error');
-        }
-      }
-    },
-    mounted:function(){
-      readMail(this.readId).then((data)=>{
+      getReadMail(){
+        readMail(this.readId).then((data)=>{
         this.msg = data.data
         this.subject = data.data.subject;
         this.mfrom = data.data.mfrom[1]+' < '+data.data.mfrom[0]+' > ';
@@ -252,18 +227,28 @@
         console.log(data.data)
 
         const oIframe = document.getElementById('show-iframe');
-      //-30padding
-      const deviceWidth = this.$refs.companyStyle.getBoundingClientRect().width-30;
-      console.log(deviceWidth)
-      oIframe.style.width = deviceWidth + 'px';
-      let html_text = data.data.html_text;
-      oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = html_text;
+        //-30padding
+        const deviceWidth = this.$refs.companyStyle.getBoundingClientRect().width-30;
+        console.log(deviceWidth)
+        oIframe.style.width = deviceWidth + 'px';
+        let html_text = data.data.html_text;
+        oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = html_text;
 
-      const deviceHeight = oIframe.contentDocument.body.scrollHeight ;
-      oIframe.style.height = deviceHeight +'px';
-      });
+        const deviceHeight = oIframe.contentDocument.body.scrollHeight ;
+        oIframe.style.height = deviceHeight +'px';
+        });
+      }
+    },
+    mounted:function(){
+      this.getReadMail();
 
     },
+    watch: {
+        readId(newValue, oldValue) {
+          console.log(newValue)
+            this.getReadMail();
+        }
+    }
   }
 </script>
 <style>

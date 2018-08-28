@@ -93,9 +93,9 @@
   .el-tabs__nav-wrap{
     padding-left: 12px;
   }
-  .el-tabs__header{
-    margin:0;
-  }
+  /*.el-tabs__header{*/
+    /*margin:0;*/
+  /*}*/
   .nopanel .el-tabs__content{
     display:none;
   }

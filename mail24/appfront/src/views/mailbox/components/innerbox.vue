@@ -134,7 +134,7 @@
                     <div class="m-mllist-row mllist-list-row">
                       <div class="j-module-content j-maillist mllist-list u-scroll">
                           <el-collapse v-model="activeNames" @change="handleChange">
-                            <el-collapse-item v-for="t in collapseItems" :key="t.id" :title="t.title" :name="t.id">
+                            <el-collapse-item v-for="t in collapseItems" :key="t.id" :title="'更早（'+titleCount+'）'" :name="t.id">
                                 <ul class="list-wrap j-mail-list ">
                                     <li class="list-item j-mail display-summary"  v-for="(l,k) in t.lists" :key="l.uid" :class="{flagged:l.flagged,'label0-0':l.flagged,selected:l.checked,read:l.isread,unread:!l.isread}" >
                                         <div @click="readmail(t.id,k,l.uid,l.subject)" class="item-content mail-info">
@@ -160,7 +160,7 @@
                                             </div>
                                             <div class="info-summary">
                                                 <p class="summary-text">
-                                                    <span class="fromto from"> {{(l.mfrom[1]==null?'':l.mfrom[1]) + " <"+l.mfrom[0]+">"}}</span>
+                                                    <span class="fromto from" v-if="l.mfrom"> {{(l.mfrom[1]==null?'':l.mfrom[1]) + " <"+l.mfrom[0]+">"}}</span>
                                                     <span class="fromto" v-if="l.plain">：</span>
                                                     <span class="summary"> {{l.plain}}</span>
                                                 </p>
@@ -217,12 +217,7 @@
   export default {
     name:'Innerbox',
     props:{
-      collapseItems:{
-        type:Array,
-        default:[
-
-        ]
-      },
+      boxId:'',
       curr_folder:{
         type:String,
         default:''
@@ -289,6 +284,15 @@
           showMoreMenu:false,
           activeNames: [0],
           activeLi:[0,0],
+          collapseItems:[
+            {
+                  id:0,
+
+                  lists:[
+
+                    ]
+              }
+          ]
 
         }
     },
@@ -367,8 +371,20 @@
           // this.jumpTo('read',mid)
 
       },
-
-
+      getMessageList(){
+        getMailMessage({folder:this.boxId}).then((res)=>{
+          var items = res.data
+          for(var i=0;i<items.length;i++){
+            items[i].flagged = (items[i].flags.indexOf('Flagged')>=0);
+            items[i].isread = (items[i].flags.indexOf('Seen')>=0);
+            items[i].plain = '';
+            items[i].checked = false;
+          }
+          this.collapseItems[0].lists = items;
+        },(err)=>{
+          console.log(err)
+        })
+      },
     },
     computed:{
         selectCounts:function(){
@@ -381,10 +397,19 @@
             }
 
             return count;
-        }
+        },
+      titleCount:function(){
+          return this.collapseItems[0].lists.length;
+      }
+
     },
     mounted(){
-      console.log(this.collapseItems)
+      this.getMessageList();
+    },
+    watch: {
+        boxId(newValue, oldValue) {
+            this.getMessageList();
+        },
     }
 
 }

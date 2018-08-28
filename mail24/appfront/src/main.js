@@ -17,6 +17,11 @@ Vue.prototype.$http=axios
 import './assets/style/skin.css'
 import './assets/style/main.css'
 import './assets/iconfont/iconfont.css'
+import VueKindEditor from 'vue-kindeditor'
+import 'kindeditor/kindeditor-all-min.js'
+import 'kindeditor/themes/default/default.css'
+
+Vue.use(VueKindEditor)
 
 Vue.use(Vuex)
 Vue.config.productionTip = false

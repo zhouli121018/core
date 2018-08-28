@@ -85,3 +85,13 @@ export const getFloder = params => { return axios.get(`${host}/mail/folder/`, { 
 
 //读邮件
 export const readMail = params => { return axios.get(`${host}/mail/message/${params}/`) };
+
+
+
+/* ***********************  设置中心 *********************** */
+// 获取个人资料
+export const settingUsersGet = params => { return axios.get(`${host}/setting/users/get/`, { params: params }) }
+// 更新个人资料
+export const settingUsersUpdate = params => { return axios.post(`${host}/setting/users/update/`, params) }
+// 修改密码
+export const settingUsersSetpassword = params => { return axios.post(`${host}/setting/users/set-password/`, params) }

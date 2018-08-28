@@ -63,9 +63,9 @@
     padding-left: 10px;
     padding-right: 10px;
   }
-  .el-form-item {
-    margin-bottom: 10px;
-  }
+  /*.el-form-item {*/
+    /*margin-bottom: 10px;*/
+  /*}*/
   .breadcrumb-container {
     margin-top: 7px;
     margin-bottom: 7px;

@@ -163,8 +163,7 @@
 
       },
       handleNodeClick(data) {
-        console.log(data);
-        this.$emit('getData', {id:data.id,'curr_folder':data.label,activeTab:1});
+        this.$emit('getData', data);
         this.$router.push('/mailbox')
       },
       goToCompose(){

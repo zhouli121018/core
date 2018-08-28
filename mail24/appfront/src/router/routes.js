@@ -9,7 +9,7 @@ export const rou = [
   {path:'/',redirect:'/login'},
   {path:'/lockscreen',component:_import('lockscreen/index')},
   {path:'/login',component:_import('login/Login')},
-  {path: '/404', component: NotFound, hidden: true},
+  // {path: '/404', component: NotFound, hidden: true},
   {
     path:'/',component:Layout1,
     children: [
@@ -82,11 +82,14 @@ export const rou = [
         path: 'setting',
         component: _import('setting/index'),
         children:[
+          {path:'/',redirect:'user'},
+          {path:'user',component:_import('setting/page/user')},
+          {path:'password',component:_import('setting/page/password')},
         ]
       }]
   },
-  {
-    path: '*',
-    redirect: { path: '/404' }
-  }
+  // {
+  //   path: '*',
+  //   redirect: { path: '/404' }
+  // }
 ] 

@@ -46,7 +46,7 @@
         <el-row>
           <el-col :span="24" class="breadcrumb-container">
             <el-breadcrumb separator="/">
-              <el-breadcrumb-item :to="{ path: '/mailbox/home' }">首页</el-breadcrumb-item>
+              <el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item>
               <el-breadcrumb-item><a href="#">个人通讯录</a></el-breadcrumb-item>
               <el-breadcrumb-item>当前联系人组：&nbsp;{{pab_cname}}</el-breadcrumb-item>
             </el-breadcrumb>
@@ -123,7 +123,7 @@
     <el-dialog title="修改联系组"  :visible.sync="editPabFormVisible" :close-on-click-modal="false" :append-to-body="true">
       <el-form :model="editPabForm" label-width="100px" :rules="editPabFormRules" ref="editPabForm">
         <el-form-item label="联系组名称" prop="groupname" :error="pab_groupname_error">
-          <el-input v-model="editPabForm.groupname" auto-complete="off"></el-input>
+          <el-input v-model.trim="editPabForm.groupname" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -136,7 +136,7 @@
     <el-dialog title="新增联系组"  :visible.sync="addPabFormVisible" :close-on-click-modal="false" :append-to-body="true">
       <el-form :model="addPabForm" label-width="100px" :rules="addPabFormRules" ref="addPabForm">
         <el-form-item label="联系组名称" prop="groupname" :error="pab_groupname_error">
-          <el-input v-model="addPabForm.groupname" auto-complete="off"></el-input>
+          <el-input v-model.trim="addPabForm.groupname" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -150,22 +150,22 @@
       <el-form :model="editPabMerberForm" label-width="100px" :rules="editPabMerberFormRules" ref="editPabMerberForm" size="mini">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="邮箱" prop="email" :error="pab_email_error"><el-input v-model="editPabMerberForm.email" auto-complete="off"></el-input></el-form-item>
+            <el-form-item label="邮箱" prop="email" :error="pab_email_error"><el-input v-model.trim="editPabMerberForm.email" auto-complete="off"></el-input></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="姓名" prop="fullname"><el-input v-model="editPabMerberForm.fullname" auto-complete="off"></el-input></el-form-item>
+            <el-form-item label="姓名" prop="fullname"><el-input v-model.trim="editPabMerberForm.fullname" auto-complete="off"></el-input></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="手机号码" prop="mobile"><el-input v-model="editPabMerberForm.mobile" auto-complete="off"></el-input></el-form-item>
+            <el-form-item label="手机号码" prop="mobile"><el-input v-model.trim="editPabMerberForm.mobile" auto-complete="off"></el-input></el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="生日" prop="birthday"><el-date-picker type="date" placeholder="选择日期" v-model="editPabMerberForm.birthday" style="width: 100%;" value-format="yyyy-MM-dd"></el-date-picker></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="单位电话" prop="work_tel"><el-input v-model="editPabMerberForm.work_tel" auto-complete="off"></el-input></el-form-item>
+            <el-form-item label="单位电话" prop="work_tel"><el-input v-model.trim="editPabMerberForm.work_tel" auto-complete="off"></el-input></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="住宅电话" prop="home_tel"><el-input v-model="editPabMerberForm.home_tel" auto-complete="off"></el-input></el-form-item>
+            <el-form-item label="住宅电话" prop="home_tel"><el-input v-model.trim="editPabMerberForm.home_tel" auto-complete="off"></el-input></el-form-item>
           </el-col>
         </el-row>
         <el-form-item label="所属联系人组" >
@@ -184,58 +184,58 @@
           <p><strong>电话/即时通讯ID</strong></p>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="QQ" prop="im_qq"><el-input v-model="editPabMerberForm.im_qq" auto-complete="off"></el-input></el-form-item>
+              <el-form-item label="QQ" prop="im_qq"><el-input v-model.trim="editPabMerberForm.im_qq" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="MSN" prop="im_msn"><el-input v-model="editPabMerberForm.im_msn" auto-complete="off"></el-input></el-form-item>
+              <el-form-item label="MSN" prop="im_msn"><el-input v-model.trim="editPabMerberForm.im_msn" auto-complete="off"></el-input></el-form-item>
             </el-col>
           </el-row>
 
-          <el-form-item label="个人主页" prop="homepage"><el-input v-model="editPabMerberForm.homepage" auto-complete="off"></el-input></el-form-item>
+          <el-form-item label="个人主页" prop="homepage"><el-input v-model.trim="editPabMerberForm.homepage" auto-complete="off"></el-input></el-form-item>
 
 
           <p><strong>家庭资料</strong></p>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="国家或地区" prop="home_country"><el-input v-model="editPabMerberForm.home_country" auto-complete="off"></el-input></el-form-item>
+              <el-form-item label="国家或地区" prop="home_country"><el-input v-model.trim="editPabMerberForm.home_country" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="省份或地区" prop="home_state"><el-input v-model="editPabMerberForm.home_state" auto-complete="off"></el-input></el-form-item>
+              <el-form-item label="省份或地区" prop="home_state"><el-input v-model.trim="editPabMerberForm.home_state" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="城市" prop="home_city"><el-input v-model="editPabMerberForm.home_city" auto-complete="off"></el-input></el-form-item>
+              <el-form-item label="城市" prop="home_city"><el-input v-model.trim="editPabMerberForm.home_city" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="邮政编码" prop="home_zip"><el-input v-model="editPabMerberForm.home_zip" auto-complete="off"></el-input></el-form-item>
+              <el-form-item label="邮政编码" prop="home_zip"><el-input v-model.trim="editPabMerberForm.home_zip" auto-complete="off"></el-input></el-form-item>
             </el-col>
           </el-row>
 
-          <el-form-item label="详细地址" prop="home_address"><el-input v-model="editPabMerberForm.home_address" auto-complete="off"></el-input></el-form-item>
+          <el-form-item label="详细地址" prop="home_address"><el-input v-model.trim="editPabMerberForm.home_address" auto-complete="off"></el-input></el-form-item>
 
 
           <p><strong>单位/公司</strong></p>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="单位名称" prop="work_name"><el-input v-model="editPabMerberForm.work_name" auto-complete="off"></el-input></el-form-item>
+              <el-form-item label="单位名称" prop="work_name"><el-input v-model.trim="editPabMerberForm.work_name" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="部门" prop="work_dept"><el-input v-model="editPabMerberForm.work_dept" auto-complete="off"></el-input></el-form-item>
+              <el-form-item label="部门" prop="work_dept"><el-input v-model.trim="editPabMerberForm.work_dept" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="职位" prop="work_position"><el-input v-model="editPabMerberForm.work_position" auto-complete="off"></el-input></el-form-item>
+              <el-form-item label="职位" prop="work_position"><el-input v-model.trim="editPabMerberForm.work_position" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="详细地址" prop="work_address"><el-input v-model="editPabMerberForm.work_address" auto-complete="off"></el-input></el-form-item>
+              <el-form-item label="详细地址" prop="work_address"><el-input v-model.trim="editPabMerberForm.work_address" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="邮政编码" prop="work_zip"><el-input v-model="editPabMerberForm.work_zip" auto-complete="off"></el-input></el-form-item>
+              <el-form-item label="邮政编码" prop="work_zip"><el-input v-model.trim="editPabMerberForm.work_zip" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="传真号码" prop="work_fax"><el-input v-model="editPabMerberForm.work_fax" auto-complete="off"></el-input></el-form-item>
+              <el-form-item label="传真号码" prop="work_fax"><el-input v-model.trim="editPabMerberForm.work_fax" auto-complete="off"></el-input></el-form-item>
             </el-col>
           </el-row>
 
-          <el-form-item label="备注" prop="remark"><el-input v-model="editPabMerberForm.remark" auto-complete="off"></el-input></el-form-item>
+          <el-form-item label="备注" prop="remark"><el-input v-model.trim="editPabMerberForm.remark" auto-complete="off"></el-input></el-form-item>
         </div>
 
       </el-form>
@@ -246,26 +246,26 @@
     </el-dialog>
 
     <!--添加 个人联系人组成员 界面-->
-    <el-dialog title="修改联系人"  :visible.sync="addPabMerberFormVisible" :close-on-click-modal="false" :append-to-body="true">
+    <el-dialog title="添加联系人"  :visible.sync="addPabMerberFormVisible" :close-on-click-modal="false" :append-to-body="true">
       <el-form :model="addPabMerberForm" label-width="100px" :rules="addPabMerberFormRules" ref="addPabMerberForm" size="mini">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="邮箱" prop="email" :error="pab_email_error"><el-input v-model="addPabMerberForm.email" auto-complete="off"></el-input></el-form-item>
+            <el-form-item label="邮箱" prop="email" :error="pab_email_error"><el-input v-model.trim="addPabMerberForm.email" auto-complete="off"></el-input></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="姓名" prop="fullname"><el-input v-model="addPabMerberForm.fullname" auto-complete="off"></el-input></el-form-item>
+            <el-form-item label="姓名" prop="fullname"><el-input v-model.trim="addPabMerberForm.fullname" auto-complete="off"></el-input></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="手机号码" prop="mobile"><el-input v-model="addPabMerberForm.mobile" auto-complete="off"></el-input></el-form-item>
+            <el-form-item label="手机号码" prop="mobile"><el-input v-model.trim="addPabMerberForm.mobile" auto-complete="off"></el-input></el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="生日" prop="birthday"><el-date-picker type="date" placeholder="选择日期" v-model="addPabMerberForm.birthday" style="width: 100%;" value-format="yyyy-MM-dd"></el-date-picker></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="单位电话" prop="work_tel"><el-input v-model="addPabMerberForm.work_tel" auto-complete="off"></el-input></el-form-item>
+            <el-form-item label="单位电话" prop="work_tel"><el-input v-model.trim="addPabMerberForm.work_tel" auto-complete="off"></el-input></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="住宅电话" prop="home_tel"><el-input v-model="addPabMerberForm.home_tel" auto-complete="off"></el-input></el-form-item>
+            <el-form-item label="住宅电话" prop="home_tel"><el-input v-model.trim="addPabMerberForm.home_tel" auto-complete="off"></el-input></el-form-item>
           </el-col>
         </el-row>
         <el-form-item label="所属联系人组" >
@@ -284,14 +284,14 @@
           <p><strong>电话/即时通讯ID</strong></p>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="QQ" prop="im_qq"><el-input v-model="addPabMerberForm.im_qq" auto-complete="off"></el-input></el-form-item>
+              <el-form-item label="QQ" prop="im_qq"><el-input v-model.trim="addPabMerberForm.im_qq" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="MSN" prop="im_msn"><el-input v-model="addPabMerberForm.im_msn" auto-complete="off"></el-input></el-form-item>
+              <el-form-item label="MSN" prop="im_msn"><el-input v-model.trim="addPabMerberForm.im_msn" auto-complete="off"></el-input></el-form-item>
             </el-col>
           </el-row>
 
-          <el-form-item label="个人主页" prop="homepage"><el-input v-model="addPabMerberForm.homepage" auto-complete="off"></el-input></el-form-item>
+          <el-form-item label="个人主页" prop="homepage"><el-input v-model.trim="addPabMerberForm.homepage" auto-complete="off"></el-input></el-form-item>
 
           <p><strong>家庭资料</strong></p>
           <el-row>
@@ -309,7 +309,7 @@
             </el-col>
           </el-row>
 
-          <el-form-item label="详细地址" prop="home_address"><el-input v-model="addPabMerberForm.home_address" auto-complete="off"></el-input></el-form-item>
+          <el-form-item label="详细地址" prop="home_address"><el-input v-model.trim="addPabMerberForm.home_address" auto-complete="off"></el-input></el-form-item>
 
           <p><strong>单位/公司</strong></p>
           <el-row>
@@ -333,7 +333,7 @@
             </el-col>
           </el-row>
 
-          <el-form-item label="备注" prop="remark"><el-input v-model="addPabMerberForm.remark" auto-complete="off"></el-input></el-form-item>
+          <el-form-item label="备注" prop="remark"><el-input v-model.trim="addPabMerberForm.remark" auto-complete="off"></el-input></el-form-item>
         </div>
 
       </el-form>

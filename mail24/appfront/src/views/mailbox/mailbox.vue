@@ -2,7 +2,7 @@
     <div>
         <section class="m-mail">
             <MailAside @getData="getData" @getCompose="getCompose"></MailAside>
-            <article class="mlmain mltabview" :class="{position_top0:!tabList.length}">
+            <article class="mlmain mltabview" :class="{position_top0:!tabList.length}" ref="editor_h">
                     <div class="u-tab u-tab-seamless u-tab-highlight j-mltab" v-if="tabList.length">
                               <ul class="mltabview-nav">
                                 <li class="mltabview-trigger" :class="{'z-current':activeTab==0}" @click="changeTab1" :title="tab1.text"><span class="bar"></span><div class="trigger-wrap"><a href="#" trigger-title="" class="" :title="tab1.text" >{{tab1.text}}</a></div></li>
@@ -12,9 +12,9 @@
                               <div class="iconfont icon-iconcloseall closeall" @click="closeAllTab"></div>
                         </div>
                     <Home v-if="showTabIndex==0"></Home>
-                    <Innerbox v-if="showTabIndex==1" :collapseItems="collapseItems" :curr_folder="curr_folder" @getRead="getRead"></Innerbox>
+                    <Innerbox v-if="showTabIndex==1" :boxId="boxId" :curr_folder="curr_folder" @getRead="getRead"></Innerbox>
                     <Read v-if="showTabIndex==2" :readId="readId"></Read>
-                    <Compose v-if="showTabIndex==3" ></Compose>
+                    <Compose v-if="showTabIndex==3" :iframe_height="iframe_height" ></Compose>
             </article>
         </section>
 
@@ -34,6 +34,7 @@ export default {
     },
     data:function(){
         return{
+          iframe_height:'',
             showTabIndex:0,
             activeTab:0,
             readId:'',
@@ -43,20 +44,8 @@ export default {
 
             ],
           titleHash:[],
-          collapseItems:[
-            {
-                  id:0,
-                  title:"更早 （3）",
-                  lists:[
-                    {uid:0,isread:false,flagged:true,subject:'[召回邮件失败] MEMZ彩虹猫病毒/[Recall mail 失败] MEMZ彩虹猫病毒',internaldate:'08-09',mfrom:'postman',
-                    plain:'发给751296883@qq.com的邮件召回失败,原因：不支持召回  email sent to 751296883@qq.com has been recalled unsucce',checked:false},
-                    {uid:1,isread:true,flagged:false,subject:' MEMZ彩虹猫病毒/[Recall mail 失败] MEMZ彩虹猫病毒',internaldate:'08-08',mfrom:'postman',
-                    plain:'发给751296883@qq.com的邮件召回失败,原因：不支持召回  email sent to 751296883@qq.com has been recalled unsucce',checked:false},
-                    {uid:2,isread:true,flagged:false,subject:'欢迎进入XT5体验中心',internaldate:'08-06',mfrom:'postman',
-                    plain:'',checked:false}
-                    ]
-              }
-          ]
+          boxId:''
+
 
         }
     },
@@ -67,12 +56,12 @@ export default {
       changeTab1(){
         this.activeTab = 0;
         this.showTabIndex = 1;
-        this.jumpTo('/mailbox/');
       },
       changeTabs(vid,key){
         this.jumpTo('/mailbox');
         if(vid == 'compose'){this.showTabIndex = 3;}else{
           this.showTabIndex = 2;
+          this.readId = vid;
         }
 
         this.activeTab = vid;
@@ -89,28 +78,13 @@ export default {
         this.titleHash = [];
         this.changeTab1();
       },
-      getMessageList(param){
-        getMailMessage(param).then((res)=>{
-          var items = res.data;
-          for(var i=0;i<items.length;i++){
-            items[i].flagged = (items[i].flags.indexOf('Flagged')>=0);
-            items[i].isread = (items[i].flags.indexOf('Seen')>=0);
-            items[i].plain = '';
-            items[i].checked = false;
-          }
-          this.collapseItems[0].lists = items;
-        },(err)=>{
-          console.log(err)
-        })
-      },
+
       getData(obj){
-        this.showTabIndex = obj.activeTab;
-        if(obj.curr_folder){
-          this.curr_folder = obj.curr_folder;
-        }
-        if(obj.id){
-          this.getMessageList({folder:obj.id});
-        }
+        this.showTabIndex = 1;
+        this.activeTab = 0;
+        this.curr_folder = obj.label;
+        this.tab1.text = obj.label;
+        this.boxId = obj.id;
       },
       getCompose(obj){
         this.showTabIndex = obj.activeTab;
@@ -123,7 +97,6 @@ export default {
         this.activeTab = 'compose';
       },
       getRead(obj){
-
         console.log(obj);
         if(this.titleHash[obj.id]){
 
@@ -142,6 +115,11 @@ export default {
       // this.getMessageList();
 
     },
+    mounted(){
+      const fheight = this.$refs.editor_h.getBoundingClientRect().height-50-50-220-80;
+      console.log(fheight)
+      this.iframe_height = fheight+'px'
+    }
 }
 </script>
 

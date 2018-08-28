@@ -29,7 +29,7 @@
         <el-row>
           <el-col :span="24" class="breadcrumb-container">
             <el-breadcrumb separator="/">
-              <el-breadcrumb-item :to="{ path: '/mailbox/home' }">首页</el-breadcrumb-item>
+              <el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item>
               <el-breadcrumb-item><a href="#">公共通讯录</a></el-breadcrumb-item>
               <el-breadcrumb-item>&nbsp;{{cate_name}}</el-breadcrumb-item>
             </el-breadcrumb>
