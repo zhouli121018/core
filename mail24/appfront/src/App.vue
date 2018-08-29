@@ -71,5 +71,24 @@
     margin-bottom: 7px;
     margin-left: 7px;
   }
+  /*修改editor toolbar 背景颜色*/
+  .ke-toolbar{
+    background:#fff;
+    font-size:16px;
+  }
+  .compose_editor .ke-toolbar>span{
+    margin:6px 4px;
+  }
+  .ke-dialog-body .ke-textarea{
+    border-color:#e0e0e0;
+  }
+  .ke-dialog-header{
+    background:#f5f6f7;
+  }
+  .ke-button-common{
+    background:#057ab8;
+    color:#fff;
+    border-color:#057ab8;
+  }
 
 </style>

@@ -92,6 +92,14 @@ export const readMail = params => { return axios.get(`${host}/mail/message/${par
 // 获取个人资料
 export const settingUsersGet = params => { return axios.get(`${host}/setting/users/get/`, { params: params }) }
 // 更新个人资料
-export const settingUsersUpdate = params => { return axios.post(`${host}/setting/users/update/`, params) }
+export const settingUsersUpdate = params => { return axios.post(`${host}/setting/users/set/`, params) }
 // 修改密码
 export const settingUsersSetpassword = params => { return axios.post(`${host}/setting/users/set-password/`, params) }
+// 获取密保
+export const settingUsersGetSecurity = params => { return axios.get(`${host}/setting/users/get-security/`, { params: params }) }
+// 设置密保
+export const settingUsersSetSecurity = params => { return axios.post(`${host}/setting/users/set-security/`, params) }
+// 获取参数
+export const settingUsersGetParam = params => { return axios.get(`${host}/setting/users/get-param/`, { params: params }) }
+// 设置参数
+export const settingUsersSetParam = params => { return axios.post(`${host}/setting/users/set-param/`, params) }

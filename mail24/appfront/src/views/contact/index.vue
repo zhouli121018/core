@@ -90,7 +90,7 @@
     overflow-y: auto;
     overflow-x:hidden;
   }
-  .el-tabs__nav-wrap{
+  .relat .el-tabs__nav-wrap{
     padding-left: 12px;
   }
   /*.el-tabs__header{*/

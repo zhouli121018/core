@@ -11,7 +11,7 @@
                       :data="folderList"
                       node-key="id"
                       default-expand-all
-                      :expand-on-click-node="false" @node-click="handleNodeClick">
+                      @node-click="handleNodeClick">
                       <span class="custom-tree-node" slot-scope="{ node, data }" :title="node.label">
 
 

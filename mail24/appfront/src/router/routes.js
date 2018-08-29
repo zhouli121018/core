@@ -85,6 +85,18 @@ export const rou = [
           {path:'/',redirect:'user'},
           {path:'user',component:_import('setting/page/user')},
           {path:'password',component:_import('setting/page/password')},
+          {path:'param',component:_import('setting/page/param')},
+          {path:'signature',component:_import('setting/page/signature')},
+          {path:'autoreply',component:_import('setting/page/autoreply')},
+          {path:'autoforward',component:_import('setting/page/autoforward')},
+          {path:'whitelist',component:_import('setting/page/whitelist')},
+          {path:'blacklist',component:_import('setting/page/blacklist')},
+          {path:'accountlist',component:_import('setting/page/accountlist')},
+          {path:'sms',component:_import('setting/page/sms')},
+          {path:'feedback',component:_import('setting/page/feedback')},
+          {path:'zhaohui',component:_import('setting/page/zhaohui')},
+          {path:'filter',component:_import('setting/page/filter')},
+          {path:'transfer',component:_import('setting/page/transfer')},
         ]
       }]
   },
