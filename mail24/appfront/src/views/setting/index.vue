@@ -47,14 +47,14 @@
               <span slot="title" title="设置黑名单，自行过滤垃圾邮件">黑名单</span>
             </el-menu-item>
 
-            <el-menu-item index="/setting/accountlist" style="text-align: left">
+            <el-menu-item index="/setting/mailboxmove" style="text-align: left">
               <img src="./img/userwlist.gif" style="width:20px;">
               <span slot="title" title="将其它邮箱的邮件数据迁移过来">邮箱搬家</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/sms" style="text-align: left">
               <img src="./img/o_sms.png" style="width:20px;">
-              <span slot="title" title="将其它邮箱的邮件数据迁移过来">邮箱搬家</span>
+              <span slot="title" title="将其它邮箱的邮件数据迁移过来">收件短信通知</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/feedback" style="text-align: left">
@@ -72,9 +72,19 @@
               <span slot="title" title="邮件过滤规则">邮件过滤</span>
             </el-menu-item>
 
+            <el-menu-item index="/setting/relatelist" style="text-align: left">
+              <img src="./img/op_sharemailbox.gif" style="width:20px;">
+              <span slot="title" title="把邮箱关联共享给其他用户">关联共享邮箱</span>
+            </el-menu-item>
+
             <el-menu-item index="/setting/transfer" style="text-align: left">
               <img src="./img/op_autoforward.gif" style="width:20px;">
               <span slot="title" title="利用其他邮件服务器代发出站邮件">外发邮件中转</span>
+            </el-menu-item>
+
+            <el-menu-item index="/setting/accountcancel" style="text-align: left" v-if="menuShow.setting_accountcancel_show">
+              <img src="./img/op_accountcancel.jpg" style="width:20px;">
+              <span slot="title" title="利用其他邮件服务器代发出站邮件">申请注销用户</span>
             </el-menu-item>
 
           </el-menu>
@@ -93,34 +103,48 @@
 </template>
 
 <script>
-  import router from '@/router'
-  import { getContactInfo } from '@/api/api'
+  import { settingShow } from '@/api/api'
 
   export default {
     data() {
       return {
-
+        menuShow: {
+          setting_password_show: false,
+          setting_param_show: false,
+          setting_signature_show: false,
+          setting_autoreply_show: false,
+          setting_autoforward_show: false,
+          setting_bwlist_show: false,
+          setting_mailboxmove_show: false,
+          setting_sms_show: false,
+          setting_feedback_show: false,
+          setting_zhaohui_show: false,
+          setting_filter_show: false,
+          setting_transfer_show: false,
+          setting_accountcancel_show: false,
+          setting_relatelist_show: false,
+        }
       };
     },
     components: {
 
     },
     created: function() {
-
+      this.getShows();
     },
     mounted: function() {
 
     },
     methods: {
-
+      getShows: function(){
+        settingShow().then(res=>{
+          this.menuShow = res.data.results;
+        });
+      },
     },
     computed: {
       default_active_menu: function () {
-        if (this.$route.path.indexOf('/user') >= 0) {
-          return "/setting/user";
-        } else if (this.$route.path.indexOf('/password') >= 0) {
-          return "/setting/password";
-        }
+        return this.$route.path;
       }
     },
 

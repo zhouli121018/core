@@ -1,12 +1,13 @@
 <template>
   <div class="j-module-content j-maillist mllist-list height100 ">
-    <el-row class="toolbar" style="padding: 0px;">
+    <el-row class="" style="padding: 0px;">
       <el-col :span="24" class="breadcrumb-container">
         <el-breadcrumb separator="/"><el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item><el-breadcrumb-item><a href="#">设置中心</a></el-breadcrumb-item><el-breadcrumb-item>参数设置</el-breadcrumb-item></el-breadcrumb>
       </el-col>
     </el-row>
     <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;">
       <el-form :model="sForm" label-width="180px" :rules="sFormRules" ref="sForm" size="mini" style="margin-left:13px;margin-right:13px;margin-top: 13px" :inline="true">
+        <el-row><el-col :span="24"><div class="demo-block-control"><p style="margin-bottom: 3px; margin-left: 13px"> 参数设置</p></div></el-col></el-row>
         <el-row><el-form-item label="邮件显示格式" prop="read_type"><el-select v-model="sForm.read_type" style="width: 200px"><el-option v-for="item in read_types" :key="item.value" :label="item.label" :value="item.value"></el-option></el-select></el-form-item></el-row>
         <el-row><el-form-item label="发送邮件编码" prop="send_charset"><el-select v-model="sForm.send_charset" style="width: 200px"><el-option v-for="item in send_charsets" :key="item.value" :label="item.label" :value="item.value"></el-option></el-select></el-form-item></el-row>
         <el-row><el-form-item label="每页显示邮件数" prop="page_limit"><el-input-number v-model.trim="sForm.page_limit" auto-complete="off" :min="1" style="width: 200px"></el-input-number></el-form-item></el-row>
@@ -85,7 +86,7 @@
                 // console.log(res.data)
                 // this.$refs['sForm'].resetFields();
                 this.sFormLoading = false;
-                this.$message({message: '密码修改成功', type: 'success'});
+                this.$message({message: '参数修改成功', type: 'success'});
               }, (data)=>{
                 console.log(data)
               }).catch(function (error) {

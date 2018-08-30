@@ -73,7 +73,7 @@
                     <el-input type="text" value="myself@test.com" readonly auto-complete="off"></el-input>
                   </el-form-item>
 
-                  <el-form-item label="收件人:">
+                  <el-form-item label="收件人:" @click.native="transform_dialog = true">
                     <div class="padding_15">
                       <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist" :key="k" :title="v.mailbox"><b>{{v.mailbox}}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v)"></i></div>
                       <el-autocomplete  class="no_padding"  v-model="state1" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox"
@@ -128,6 +128,16 @@
           </div>
         </section>
       </div>
+
+
+      <el-dialog title="收货地址" :visible.sync="transform_dialog" :append-to-body="true">
+
+        <div slot="footer" class="dialog-footer" >
+          <el-button @click="transform_dialog = false">取 消</el-button>
+          <el-button type="primary" @click="transform_dialog = false">确 定</el-button>
+        </div>
+      </el-dialog>
+
     </div>
 
 </template>
@@ -139,6 +149,7 @@
     },
     data(){
       return {
+        transform_dialog:true,
         filterText:'',
         hashMail:[],
         insertMailbox:1,

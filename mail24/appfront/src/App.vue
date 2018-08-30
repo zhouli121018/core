@@ -90,5 +90,8 @@
     color:#fff;
     border-color:#057ab8;
   }
+  .inline_block{
+    display:inline-block;
+  }
 
 </style>

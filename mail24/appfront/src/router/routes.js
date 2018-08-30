@@ -91,12 +91,14 @@ export const rou = [
           {path:'autoforward',component:_import('setting/page/autoforward')},
           {path:'whitelist',component:_import('setting/page/whitelist')},
           {path:'blacklist',component:_import('setting/page/blacklist')},
-          {path:'accountlist',component:_import('setting/page/accountlist')},
+          {path:'mailboxmove',component:_import('setting/page/mailboxmove')},
           {path:'sms',component:_import('setting/page/sms')},
           {path:'feedback',component:_import('setting/page/feedback')},
           {path:'zhaohui',component:_import('setting/page/zhaohui')},
           {path:'filter',component:_import('setting/page/filter')},
+          {path:'relatelist',component:_import('setting/page/relatelist')},
           {path:'transfer',component:_import('setting/page/transfer')},
+          {path:'accountcancel',component:_import('setting/page/accountcancel')},
         ]
       }]
   },

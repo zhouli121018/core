@@ -1,7 +1,7 @@
 <template>
   <div class="j-module-content j-maillist mllist-list height100 ">
 
-    <el-row class="toolbar" style="padding: 0px;">
+    <el-row class="" style="padding: 0px;">
       <el-col :span="24" class="breadcrumb-container">
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item>
@@ -11,10 +11,10 @@
       </el-col>
     </el-row>
 
+    <el-alert title="提示：修改申请已提交，请等待审核" type="warning" :closable="false" v-if="need_alert"></el-alert>
+
     <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;">
       <el-form :model="editform" :rules="formRules" ref="editform" label-width="100px" style="margin-left:13px;margin-right:13px;margin-top: 13px" size="mini">
-
-        <el-alert title="提示：修改申请已提交，请等待审核" type="warning" :closable="false" v-if="need_alert"></el-alert>
 
         <el-row>
           <el-col :span="24">

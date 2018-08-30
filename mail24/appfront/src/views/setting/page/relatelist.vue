@@ -1,8 +1,8 @@
 <template>
   <div class="j-module-content j-maillist mllist-list height100 ">
-    <el-row class="toolbar" style="padding: 0px;">
+    <el-row class="" style="padding: 0px;">
       <el-col :span="24" class="breadcrumb-container">
-        <el-breadcrumb separator="/"><el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item><el-breadcrumb-item><a href="#">设置中心</a></el-breadcrumb-item><el-breadcrumb-item>邮箱搬家</el-breadcrumb-item></el-breadcrumb>
+        <el-breadcrumb separator="/"><el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item><el-breadcrumb-item><a href="#">设置中心</a></el-breadcrumb-item><el-breadcrumb-item>关联共享邮箱</el-breadcrumb-item></el-breadcrumb>
       </el-col>
     </el-row>
     <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;">

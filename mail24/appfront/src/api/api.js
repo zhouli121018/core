@@ -84,11 +84,20 @@ export const getMailMessage = params => { return axios.get(`${host}/mail/message
 export const getFloder = params => { return axios.get(`${host}/mail/folder/`, { params: params }) };
 
 //读邮件
-export const readMail = params => { return axios.get(`${host}/mail/message/${params}/`) };
+export const readMail = (params,folder) => { return axios.get(`${host}/mail/message/${params}/`,{params:folder}) };
+// 创建文件夹
+export const creatFolder = params => {return axios.post(`${host}/mail/folder/`,params)}
+// 删除文件夹
+export const deleteFolder = params => {return axios.delete(`${host}/mail/folder/${params}/`)};
+// 移动邮件
+export const moveMails = params => {return axios.post(`${host}/mail/message/move/`,params)}
+
 
 
 
 /* ***********************  设置中心 *********************** */
+// 展现
+export const settingShow = params => { return axios.get(`${host}/setting/show/`, { params: params })}
 // 获取个人资料
 export const settingUsersGet = params => { return axios.get(`${host}/setting/users/get/`, { params: params }) }
 // 更新个人资料
@@ -103,3 +112,7 @@ export const settingUsersSetSecurity = params => { return axios.post(`${host}/se
 export const settingUsersGetParam = params => { return axios.get(`${host}/setting/users/get-param/`, { params: params }) }
 // 设置参数
 export const settingUsersSetParam = params => { return axios.post(`${host}/setting/users/set-param/`, params) }
+// 获取注销申请
+export const settingUsersGetCancel = params => { return axios.get(`${host}/setting/users/get-cancel/`, { params: params }) }
+// 设置注销申请
+export const settingUsersSetCancel = params => { return axios.post(`${host}/setting/users/set-cancel/`, params) }

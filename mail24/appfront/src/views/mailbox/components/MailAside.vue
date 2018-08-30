@@ -35,16 +35,12 @@
                     </el-tree>
                 </div>
 
-                      <el-dialog :title="'在 '+form.title+' 文件夹下新建'" :visible.sync="dialogFormVisible" :append-to-body="true">
-                    <el-form :model="form">
-                      <el-form-item label="文件夹名称" :label-width="formLabelWidth">
+                      <el-dialog title="新建文件夹" :visible.sync="dialogFormVisible" :append-to-body="true">
+                    <el-form :model="form" :rules="rules" ref="ruleForm">
+                      <el-form-item label="文件夹名称" :label-width="formLabelWidth" prop="name">
                         <el-input v-model="form.name" auto-complete="off"></el-input>
                       </el-form-item>
-                      <!--<el-form-item label="活动区域" :label-width="formLabelWidth">-->
-                        <!--<el-select v-model="form.region" placeholder="请选择活动区域">-->
-                          <!--<el-option v-for="(v,k) in optionList" :key="k" :label="v.label" :value="v.id"></el-option>-->
-                        <!--</el-select>-->
-                      <!--</el-form-item>-->
+
                     </el-form>
                     <div slot="footer" class="dialog-footer">
                       <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -55,9 +51,7 @@
             </aside>
 </template>
 <script>
-  import {getFloder} from "@/api/api";
-
-  let id = 100;
+  import {getFloder,creatFolder,deleteFolder} from "@/api/api";
 
   export default {
     name:'MailAside',
@@ -69,20 +63,6 @@
               url:'innerbox',
               label: '收件箱',
 
-            }, {
-              id: 2,
-              url:'outbox',
-              label: '代办邮件',
-
-            }, {
-              id: 3,
-              url:'innerbox',
-              label: '草稿箱',
-
-            },{
-              id:4,
-              url:'outbox',
-              label:'已发送',
             },{
               id:5,
               label:'其他文件夹',
@@ -93,13 +73,15 @@
           defaultProps: {
             children: 'children',
             label: 'label',
-            unseen: 'unseen',
           },
         dialogFormVisible: false,
         form: {
           title:'',
           name: '',
           region: '',
+        },
+        rules:{
+          name:[{required:true,message:'请填写文件夹名称！',trigger:'blur'}]
         },
         formLabelWidth: '120px',
         rootFloder:''
@@ -131,29 +113,59 @@
 
       },
       append(){
-        const newChild = { id: id++, label: this.form.name, children: [] };
-        if (!this.rootFloder.children) {
-          this.$set(this.rootFloder, 'children', []);
-        }
-        this.rootFloder.children.push(newChild);
-        this.form.name='';
-        this.dialogFormVisible = false;
+        this.$refs['ruleForm'].validate((valid) => {
+          if (valid) {
+            let newName = this.form.name;
+            if (!this.rootFloder.children) {
+              this.$set(this.rootFloder, 'children', []);
+            }
+            creatFolder({"name":this.form.name}).then((suc)=>{
+              let obj={ id: suc.data['raw_name'],label: newName, children: [] };
+              this.folderList.push(obj);
+              this.form.name='';
+              this.$message({
+                type: 'success',
+                message: '添加成功!'
+              });
+            },(err)=>{
+              this.$message({
+                type: 'error',
+                message: '添加失败！'
+              });
+              console.log(err);
+            })
+
+            this.dialogFormVisible = false;
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+
       },
 
       remove(node, data) {
         const parent = node.parent;
         const children = parent.data.children || parent.data;
         const index = children.findIndex(d => d.id === data.id);
-        this.$confirm('删除该文件夹, 是否继续?', '提示', {
+        this.$confirm('删除 "'+data.label+'" 文件夹, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          children.splice(index, 1);
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
+          deleteFolder(data.id).then((suc)=>{
+            children.splice(index, 1);
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+          },(err)=>{
+            console.log(err)
+            this.$message({
+              type: 'error',
+              message: '删除失败!'
+            });
+          })
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -169,12 +181,9 @@
       goToCompose(){
         this.$emit('getCompose', {activeTab:3});
         this.$router.push('/mailbox')
-      }
-
-    },
-
-    beforeMount(){
-      getFloder().then((res)=>{
+      },
+      getFloderfn(){
+        getFloder().then((res)=>{
         let folder = res.data
         let arr = [];
         for(let i=0;i<folder.length;i++){
@@ -189,6 +198,12 @@
       },(err)=>{
         console.log(err)
       });
+      }
+
+    },
+
+    beforeMount(){
+      this.getFloderfn();
 
 
 

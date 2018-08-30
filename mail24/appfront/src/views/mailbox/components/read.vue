@@ -2,7 +2,7 @@
   <!--<article class="mlmain mltabview">-->
     <div class="mltabview-content">
       <div class="mltabview-panel">
-        <section class="m-read">
+        <section class="m-read" v-show="!notFond">
           <div class="toolbar" style="background:#fff;">
 
                               <div id="pagination" class="f-fr">
@@ -159,6 +159,9 @@
             </footer>
           </div>
         </section>
+        <div v-show="notFond">
+          <h3 style="margin:30px 0 0 20px;font-size:24px;font-weight:normal;">  邮件没找到！是否已移动到其他文件夹？</h3>
+        </div>
       </div>
     </div>
 
@@ -170,10 +173,12 @@
   export default  {
     name:'Read',
     props:{
-      readId:''
+      readId:'',
+      readFolderId: ''
     },
     data(){
       return {
+        notFond:false,
         msg:'',
         replying:false,
         showDetails:false,
@@ -219,23 +224,24 @@
         this.moreCheckIndex = index;
       },
       getReadMail(){
-        readMail(this.readId).then((data)=>{
-        this.msg = data.data
-        this.subject = data.data.subject;
-        this.mfrom = data.data.mfrom[1]+' < '+data.data.mfrom[0]+' > ';
-        this.to = data.data.to[0][1]+' < '+data.data.to[0][0]+' > ';
-        console.log(data.data)
+        readMail(this.readId,{"folder":this.readFolderId}).then((data)=>{
+          this.notFond = false;
+          this.msg = data.data
+          this.subject = data.data.subject;
+          this.mfrom = data.data.mfrom[1]+' < '+data.data.mfrom[0]+' > ';
+          this.to = data.data.to[0][1]+' < '+data.data.to[0][0]+' > ';
 
-        const oIframe = document.getElementById('show-iframe');
-        //-30padding
-        const deviceWidth = this.$refs.companyStyle.getBoundingClientRect().width-30;
-        console.log(deviceWidth)
-        oIframe.style.width = deviceWidth + 'px';
-        let html_text = data.data.html_text;
-        oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = html_text;
+          const oIframe = document.getElementById('show-iframe');
+          //-30padding
+          const deviceWidth = this.$refs.companyStyle.getBoundingClientRect().width-30;
+          oIframe.style.width = deviceWidth + 'px';
+          let html_text = data.data.html_text;
+          oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = html_text;
 
-        const deviceHeight = oIframe.contentDocument.body.scrollHeight ;
-        oIframe.style.height = deviceHeight +'px';
+          const deviceHeight = oIframe.contentDocument.body.scrollHeight ;
+          oIframe.style.height = deviceHeight +'px';
+        },(err)=>{
+          this.notFond=true;
         });
       }
     },
@@ -245,7 +251,6 @@
     },
     watch: {
         readId(newValue, oldValue) {
-          console.log(newValue)
             this.getReadMail();
         }
     }

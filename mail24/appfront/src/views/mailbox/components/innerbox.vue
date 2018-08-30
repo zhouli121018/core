@@ -69,7 +69,7 @@
                             </el-dropdown>
 
                             <!-- 更多按钮 -->
-                            <div v-if="showMoreMenu" class="inline_block">
+                            <div v-if="selectCounts" class="inline_block">
                                 <el-button  size="small" plain>
                                     删除
                                 </el-button>
@@ -211,7 +211,8 @@
         </div>
 </template>
 <script>
-  import {getMailMessage} from "@/api/api";
+  import {getMailMessage,moveMails,getFloder} from "@/api/api";
+
   import router from '@/router'
 
   export default {
@@ -223,6 +224,7 @@
         default:''
       }
     },
+
     data() {
         return {
           checkIndex:'',
@@ -281,7 +283,6 @@
             {id:8,text:'打包下载',divided:false},
             {id:9,text:'彻底删除',divided:false}
           ],
-          showMoreMenu:false,
           activeNames: [0],
           activeLi:[0,0],
           collapseItems:[
@@ -338,7 +339,25 @@
         this.viewCheckIndex = index;
       },
       moveHandleCommand:function(index){
-        this.moveCheckIndex = index;
+        var params={
+          uids:this.checkedMails,
+          src_folder:this.$parent.activeMenubar.id,
+          dst_folder:index
+        }
+        moveMails(params).then((suc)=>{
+          console.log(suc.data)
+          console.log(suc.data.msg)
+          if(suc.data.msg=='success'){
+            this.$message({
+              type:'success',
+              message: '邮件移动成功!'
+            })
+            this.getMessageList();
+            this.$parent.refreshMenu()
+          }
+        },(err)=>{
+          console.log(err);
+        })
       },
       moreHandleCommand:function(index){
         this.moreCheckIndex = index;
@@ -398,18 +417,49 @@
 
             return count;
         },
+      checkedMails:function(){
+          let list=[];
+          for (var i=0,count=0;i<this.collapseItems.length;i++){
+                for(var k=0;k<this.collapseItems[i].lists.length;k++){
+                    if(this.collapseItems[i].lists[k].checked){
+                        list.push(this.collapseItems[i].lists[k].uid)
+                    }
+                }
+          }
+          return list;
+      },
       titleCount:function(){
           return this.collapseItems[0].lists.length;
-      }
+      },
+
 
     },
     mounted(){
       this.getMessageList();
+      getFloder().then((res)=>{
+        let folder = res.data
+        let arr = [];
+        for(let i=0;i<folder.length;i++){
+          let obj={};
+          obj['text'] = folder[i]['name'];
+          obj['id'] = folder[i]['raw_name'];
+          obj['divided'] = false;
+          arr.push(obj);
+        }
+        this.moveItems = arr
+      },(err)=>{
+        console.log(err)
+      });
+
+
     },
     watch: {
         boxId(newValue, oldValue) {
             this.getMessageList();
         },
+      checkedMails(v){
+          console.log(v)
+      }
     }
 
 }

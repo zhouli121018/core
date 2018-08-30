@@ -24,6 +24,11 @@ router.beforeEach((to, from, next)=>{
         path: '/login',
       });
       return;
+    }else if(to.path === '/login'){
+      next({
+        path: '/mailbox',
+      });
+      return;
     }
     next()
   } else {

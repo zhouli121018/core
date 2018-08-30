@@ -1,19 +1,19 @@
 <template>
     <div>
         <section class="m-mail">
-            <MailAside @getData="getData" @getCompose="getCompose"></MailAside>
+            <MailAside @getData="getData" @getCompose="getCompose" ref="menubar"></MailAside>
             <article class="mlmain mltabview" :class="{position_top0:!tabList.length}" ref="editor_h">
                     <div class="u-tab u-tab-seamless u-tab-highlight j-mltab" v-if="tabList.length">
                               <ul class="mltabview-nav">
                                 <li class="mltabview-trigger" :class="{'z-current':activeTab==0}" @click="changeTab1" :title="tab1.text"><span class="bar"></span><div class="trigger-wrap"><a href="#" trigger-title="" class="" :title="tab1.text" >{{tab1.text}}</a></div></li>
-                                <li v-for="(v,k) in tabList" :class="{'z-current':activeTab==v.id}"><span class="bar"></span><div class="trigger-wrap"><a href="#" @click="changeTabs(v.id,k)" :title="v.text">{{v.text}}</a><span class="iconfont icon-icontabclose30x30 close" @click.stop="delTabs(k,v.id)"></span></div></li>
+                                <li v-for="(v,k) in tabList" :class="{'z-current':activeTab==v.id}"><span class="bar"></span><div class="trigger-wrap"><a href="#" @click="changeTabs(v,k)" :title="v.text">{{v.text}}</a><span class="iconfont icon-icontabclose30x30 close" @click.stop="delTabs(k,v.id)"></span></div></li>
 
                               </ul>
                               <div class="iconfont icon-iconcloseall closeall" @click="closeAllTab"></div>
                         </div>
                     <Home v-if="showTabIndex==0"></Home>
-                    <Innerbox v-if="showTabIndex==1" :boxId="boxId" :curr_folder="curr_folder" @getRead="getRead"></Innerbox>
-                    <Read v-if="showTabIndex==2" :readId="readId"></Read>
+                    <Innerbox v-show="showTabIndex==1" :boxId="boxId" :curr_folder="curr_folder" @getRead="getRead"></Innerbox>
+                    <Read v-if="showTabIndex==2" :readId="readId" :readFolderId="readFolderId"></Read>
                     <Compose v-if="showTabIndex==3" :iframe_height="iframe_height" ></Compose>
             </article>
         </section>
@@ -34,17 +34,19 @@ export default {
     },
     data:function(){
         return{
+          activeMenubar:{},
           iframe_height:'',
             showTabIndex:0,
             activeTab:0,
             readId:'',
+            readFolderId:'',
             curr_folder:'收件箱',
             tab1:{id:0,url:'home',text:'收件箱'},
             tabList:[
 
             ],
           titleHash:[],
-          boxId:''
+          boxId:'INBOX'
 
 
         }
@@ -53,18 +55,22 @@ export default {
       jumpTo(path){
           router.push(path);
       },
+      refreshMenu(){
+        this.$refs['menubar'].getFloderfn();
+      },
       changeTab1(){
         this.activeTab = 0;
         this.showTabIndex = 1;
       },
-      changeTabs(vid,key){
+      changeTabs(v,key){
         this.jumpTo('/mailbox');
-        if(vid == 'compose'){this.showTabIndex = 3;}else{
+        if(v.id == 'compose'){this.showTabIndex = 3;}else{
           this.showTabIndex = 2;
-          this.readId = vid;
+          this.readId = v.id;
+          this.readFolderId = v.folder;
         }
 
-        this.activeTab = vid;
+        this.activeTab = v.id;
       },
       delTabs(id,vid){
           this.tabList.splice(id,1);
@@ -80,6 +86,8 @@ export default {
       },
 
       getData(obj){
+        this.activeMenubar = obj;
+        console.log(this.activeMenubar)
         this.showTabIndex = 1;
         this.activeTab = 0;
         this.curr_folder = obj.label;
@@ -102,9 +110,10 @@ export default {
 
         }else{
           this.titleHash[obj.id]=true;
-          this.tabList.push({id:obj.id,text:obj.subject})
+          this.tabList.push({id:obj.id,text:obj.subject,folder:this.activeMenubar.id})
         }
         this.readId = obj.id;
+        this.readFolderId = this.activeMenubar.id;
         this.activeTab = obj.id;
         this.showTabIndex = obj.activeTab;
       }
