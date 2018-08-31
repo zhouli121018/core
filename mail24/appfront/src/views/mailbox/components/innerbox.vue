@@ -70,7 +70,7 @@
 
                             <!-- 更多按钮 -->
                             <div v-if="selectCounts" class="inline_block">
-                                <el-button  size="small" plain>
+                                <el-button  size="small" plain @click="deleteMailById">
                                     删除
                                 </el-button>
 
@@ -124,16 +124,29 @@
                         <a href="#" >未读</a>
                         ,<a href="#" >全部设为已读</a>
                         )
+
                         </div>
                     </div>
                     <div class="j-select-count select-count" v-if="selectCounts">
                         <span class="j-desc desc">已选择 {{selectCounts}} 封</span>
                         <a class="j-cancel cancel" href="#" @click="noSelect">取消</a>
                     </div>
+                      <div style="text-align:right;padding:4px;height:32px;">
+                        <el-pagination
+                              @size-change="handleSizeChange"
+                              @current-change="handleCurrentChange"
+                              background
+                              :current-page="currentPage"
+                              :page-sizes="[5,10, 15, 20,30, 50,100,300,500]"
+                              :page-size="pageSize"
+                              layout="total, sizes, prev, pager, next, jumper"
+                              :total="totalCount">
+                            </el-pagination>
+                      </div>
                     </div>
                     <div class="m-mllist-row mllist-list-row">
                       <div class="j-module-content j-maillist mllist-list u-scroll">
-                          <el-collapse v-model="activeNames" @change="handleChange">
+                        <el-collapse v-show="false" v-model="activeNames" @change="handleChange">
                             <el-collapse-item v-for="t in collapseItems" :key="t.id" :title="'更早（'+titleCount+'）'" :name="t.id">
                                 <ul class="list-wrap j-mail-list ">
                                     <li class="list-item j-mail display-summary"  v-for="(l,k) in t.lists" :key="l.uid" :class="{flagged:l.flagged,'label0-0':l.flagged,selected:l.checked,read:l.isread,unread:!l.isread}" >
@@ -150,7 +163,7 @@
                                                     </div>
                                                     <div class="desc-text">
                                                         <span class="icon"><i class="j-priorityIcon iconfont " title=""></i></span>
-                                                        <span class="subject" title="l.text">{{l.subject}}</span>
+                                                        <span class="subject" title="l.text">{{l.subject||'无主题'}}</span>
                                                     </div>
                                                 </div>
 
@@ -183,22 +196,43 @@
                             </el-collapse-item>
                         </el-collapse>
 
-                          <div class="mllist-pagination">
-                            <el-button-group>
-                                <el-button  icon="el-icon-arrow-left"  round></el-button>
-                                <el-button>
-                                    <el-dropdown trigger="click">
-                                        <span class="el-dropdown-link">
-                                            1 / 1 <i class="el-icon-arrow-down el-icon--right"></i>
-                                        </span>
-                                        <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item>1</el-dropdown-item>
-                                            <el-dropdown-item>2</el-dropdown-item>
-                                        </el-dropdown-menu>
-                                    </el-dropdown>
-                                </el-button>
-                                <el-button  icon="el-icon-arrow-right" round></el-button>
-                            </el-button-group>
+                        <!--<div class="mllist-pagination">-->
+                        <!--</div>-->
+                        <div>
+                          <el-table :data="collapseItems[0].lists" style="width: 100%;" class="vertical_align_top"
+                              highlight-current-row
+                            >
+                            <el-table-column
+                              type="selection"
+                              width="36"
+                              @selection-change="handleSelectionChange"
+                            >
+                            </el-table-column>
+
+                            <el-table-column prop="subject"  label="" @click="">
+                              <template slot-scope="scope">
+                                <div class="clear" style="font-size:16px;" :class="{flagged:scope.row.flagged,unseen:!scope.row.isread}">
+                                  <span class="fl_l" >{{scope.row.subject}}</span>
+                                  <span class="fl_r">
+                                    <i title="点击取消旗帜" class="iconfont" :class="{'icon-iconflatcolor':scope.row.flagged,'icon-iconflat':!scope.row.flagged}"></i>
+                                  </span>
+                                </div>
+                                <div class="info-summary">
+                                  <p class="summary-text">
+                                    <span class="fromto from" v-if="scope.row.mfrom">{{scope.row.mfrom[1]}} <{{scope.row.mfrom[0]}}></span>
+                                    <span class="fromto">:</span>
+                                    <span class="summary">
+                                      sdajpofjsdfhup测试
+                                    </span>
+                                  </p>
+                                </div>
+                              </template>
+                            </el-table-column>
+
+
+
+                            <el-table-column  prop="date" label=""  width="160" :formatter="formatter"></el-table-column>
+                          </el-table>
                         </div>
                       </div>
 
@@ -211,7 +245,7 @@
         </div>
 </template>
 <script>
-  import {getMailMessage,moveMails,getFloder} from "@/api/api";
+  import {getMailMessage,moveMails,getFloder,getFloderMsg,deleteMail} from "@/api/api";
 
   import router from '@/router'
 
@@ -227,6 +261,31 @@
 
     data() {
         return {
+          multipleSelection:[],
+          tableData: [{
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+          tag: '家'
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄',
+          tag: '公司'
+        }, {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄',
+          tag: '家'
+        }, {
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1516 弄',
+          tag: '公司'
+        }],
+          totalCount:100,
+          currentPage:1,
+          pageSize:10,
           checkIndex:'',
           checkAll:false,
           checkItems:[
@@ -298,6 +357,20 @@
         }
     },
     methods:{
+       handleSelectionChange(val) {
+        this.multipleSelection = val;
+        console.log(this.multipleSelection)
+      },
+      formatter(row, column) {
+        return row.date.replace('T','  ');
+      },
+      filterTag(value, row) {
+        return row.tag === value;
+      },
+      filterHandler(value, row, column) {
+        const property = column['property'];
+        return row[property] === value;
+      },
       jumpTo(path,rid){
             router.push({
              name: path,
@@ -359,6 +432,27 @@
           console.log(err);
         })
       },
+      deleteMailById(){
+        var params={
+          uids:this.checkedMails,
+          folder:this.$parent.activeMenubar.id,
+        };
+        deleteMail(params).then((suc)=>{
+          if(suc.data.msg=='success'){
+            this.$message({
+              type:'success',
+              message: '邮件删除成功!'
+            })
+            this.getMessageList();
+            this.$parent.refreshMenu()
+          }
+        },(err)=>{
+          this.$message({
+              type:'error',
+              message: '删除失败！!'
+            })
+        })
+      },
       moreHandleCommand:function(index){
         this.moreCheckIndex = index;
       },
@@ -391,11 +485,17 @@
 
       },
       getMessageList(){
-        getMailMessage({folder:this.boxId}).then((res)=>{
+        let params = {
+          folder:this.boxId,
+          limit:this.pageSize,
+          offset:(this.currentPage-1)*this.pageSize
+        }
+        getMailMessage(params).then((res)=>{
           var items = res.data
           for(var i=0;i<items.length;i++){
-            items[i].flagged = (items[i].flags.indexOf('Flagged')>=0);
-            items[i].isread = (items[i].flags.indexOf('Seen')>=0);
+            items[i].flagged = (items[i].flags.join('').indexOf('Flagged')>=0);
+            console.log(items[i].flags)
+            items[i].isread = (items[i].flags.join(' ').indexOf('Seen')>=0);
             items[i].plain = '';
             items[i].checked = false;
           }
@@ -404,6 +504,21 @@
           console.log(err)
         })
       },
+      getFloderMsgById(param){
+        getFloderMsg(param).then((suc)=>{
+          this.totalCount = suc.data.count;
+        },(err)=>{
+          console.log(err)
+        })
+      },
+      handleSizeChange(val) {
+        this.pageSize = val;
+        this.getMessageList();
+      },
+      handleCurrentChange(val) {
+        this.currentPage = val;
+        this.getMessageList();
+      }
     },
     computed:{
         selectCounts:function(){
@@ -434,8 +549,9 @@
 
 
     },
-    mounted(){
+    beforeMount(){
       this.getMessageList();
+      this.getFloderMsgById(this.boxId)
       getFloder().then((res)=>{
         let folder = res.data
         let arr = [];
@@ -455,10 +571,12 @@
     },
     watch: {
         boxId(newValue, oldValue) {
+          this.currentPage = 1;
             this.getMessageList();
+            this.getFloderMsgById(this.boxId)
         },
       checkedMails(v){
-          console.log(v)
+          // console.log(v)
       }
     }
 
@@ -483,5 +601,14 @@
 .m-mllist .el-collapse-item__content{
     padding-bottom:0;
 }
+  .flagged{
+    color:#c00;
+  }
+  .unseen .fl_l{
+    font-weight:700;
+  }
+  .fromto{
+    color:#057ab8;
+  }
 </style>
 

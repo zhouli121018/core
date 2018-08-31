@@ -10,6 +10,7 @@
                     <el-tree
                       :data="folderList"
                       node-key="id"
+                      :default-checked-keys="checkNodes"
                       default-expand-all
                       @node-click="handleNodeClick">
                       <span class="custom-tree-node" slot-scope="{ node, data }" :title="node.label">
@@ -57,6 +58,7 @@
     name:'MailAside',
     data(){
       return{
+        checkNodes:[],
         folderList: [
             {
               id: 1,
@@ -176,6 +178,7 @@
       },
       handleNodeClick(data) {
         this.$emit('getData', data);
+        this.checkNodes=[data.id];
         this.$router.push('/mailbox')
       },
       goToCompose(){

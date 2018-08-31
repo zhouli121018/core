@@ -149,7 +149,7 @@
     },
     data(){
       return {
-        transform_dialog:true,
+        transform_dialog:false,
         filterText:'',
         hashMail:[],
         insertMailbox:1,

@@ -82,9 +82,13 @@ export const getMailMessage = params => { return axios.get(`${host}/mail/message
 
 //获取文件夹列表
 export const getFloder = params => { return axios.get(`${host}/mail/folder/`, { params: params }) };
+//获取某文件夹数据
+export const getFloderMsg = params => { return axios.get(`${host}/mail/folder/${params}/`) };
 
 //读邮件
 export const readMail = (params,folder) => { return axios.get(`${host}/mail/message/${params}/`,{params:folder}) };
+// 删除邮件
+export const deleteMail = params => {return axios.post(`${host}/mail/message/delete/`,params)};
 // 创建文件夹
 export const creatFolder = params => {return axios.post(`${host}/mail/folder/`,params)}
 // 删除文件夹
@@ -116,3 +120,13 @@ export const settingUsersSetParam = params => { return axios.post(`${host}/setti
 export const settingUsersGetCancel = params => { return axios.get(`${host}/setting/users/get-cancel/`, { params: params }) }
 // 设置注销申请
 export const settingUsersSetCancel = params => { return axios.post(`${host}/setting/users/set-cancel/`, params) }
+// 获取签名列表
+export const settingSignatureGet = params => { return axios.get(`${host}/setting/signatures/`, { params: params })}
+// 创建签名
+export const settingSignatureCreate = params => { return axios.post(`${host}/setting/signatures/`, params)}
+// 删除签名
+export const settingSignatureDelete = signatureID => { return axios.delete(`${host}/setting/signatures/`+signatureID+'/') }
+// 更新签名
+export const settingSignatureUpdate = (signatureID, params) => { return axios.patch(`${host}/setting/signatures/`+signatureID+'/', params) }
+// 更新签名默认值
+export const settingSignatureDefaultlSet = params => { return axios.post(`${host}/setting/signatures/set-default/`, params) }

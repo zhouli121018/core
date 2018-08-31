@@ -93,5 +93,16 @@
   .inline_block{
     display:inline-block;
   }
+  .el-table{
+    color:#222;
+  }
+  .clear:after{
+    content:"";
+    display:block;
+    clear:both;
+  }
+  .vertical_align_top td{
+    vertical-align:top;
+  }
 
 </style>

@@ -186,7 +186,7 @@
                 this.passeordFormLoading = false;
                 this.$message({message: '密码修改成功', type: 'success'});
               }, (data)=>{
-                // console.log(data)
+                console.log(data)
                 this.passeordFormLoading = false;
                 if("password" in data) {
                   this.password_error = data.password[0];

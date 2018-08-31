@@ -63,7 +63,6 @@ export default {
         this.showTabIndex = 1;
       },
       changeTabs(v,key){
-        this.jumpTo('/mailbox');
         if(v.id == 'compose'){this.showTabIndex = 3;}else{
           this.showTabIndex = 2;
           this.readId = v.id;

@@ -367,7 +367,10 @@
     <el-dialog title="导入联系人"  :visible.sync="importPabFormVisible" :close-on-click-modal="false" :append-to-body="true">
       <el-form :model="importPabForm" label-width="130px" :rules="importPabFormRules" ref="importPabForm" enctype="multipart/form-data">
 
-        <el-form-item label="上传文件" prop="file"><el-input v-model="importPabForm.file" auto-complete="off" type="file"></el-input></el-form-item>
+        <el-form-item label="上传文件" prop="file">
+          <el-input v-model="importPabForm.file" auto-complete="off" type="file" id="fileUpload"></el-input>
+
+        </el-form-item>
 
         <!--<el-form-item label="上传文件" prop="file">-->
         <!--<el-upload-->
@@ -587,6 +590,7 @@
         //编辑界面数据
         importPabForm: {
           file: '',
+          fileUpload:'',
           group_id: '',
           import_mode: 'ignore',
         },
@@ -761,25 +765,36 @@
       importPabSubmit: function(){
         let that = this;
         this.$refs. importPabForm.validate((valid) => {
+          let self = this;
           if (valid) {
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
               // this.listLoading = true;
               this.importPabLoading = true;
-              let para = Object.assign({}, this.importPabForm);
-              para.group_id = (!para.group_id || para.group_id == '') ? 0 : para.group_id;
-              // para.file = this.$refs.importPabForm.file.uploadFiles;
-              console.log(para);
-              contactPabMembersImport(para.group_id, para).then((res) => {
-                this.$refs['importPabForm'].resetFields();
-                this.importPabLoading = false;
-                // this.listLoading = false;
-                that.$message({message: '导入成功', type: 'success'});
-                this.getPabs();
-              }).catch(function (error) {
-                that.importPabLoading = false;
-                that.$message({ message: '导入失败，请重试',  type: 'error' });
-                console.log(error);
-              });
+
+              let selectedFile = document.getElementById('fileUpload').files[0];
+                 let para = {file:selectedFile,import_mode:'ignore',group_id:0,filename:self.importPabForm.file};
+
+                    para.group_id = (!para.group_id || para.group_id == '') ? 0 : para.group_id;
+                    // para.file = this.$refs.importPabForm.file.uploadFiles;
+
+                let formData = new FormData();
+                formData.append('id', this.importPabForm.group_id||0);
+                formData.append('import_mode', this.importPabForm.import_mode);
+                formData.append('file', selectedFile);
+                console.log(formData)
+                    contactPabMembersImport(para.group_id, formData).then((res) => {
+                      this.$refs['importPabForm'].resetFields();
+                      this.importPabLoading = false;
+                      // this.listLoading = false;
+                      that.$message({message: '导入成功', type: 'success'});
+                      this.getPabs();
+                    }).catch(function (error) {
+                      that.importPabLoading = false;
+                      that.$message({ message: '导入失败，请重试',  type: 'error' });
+                      console.log(error);
+                    });
+
+
             });
           }
         });
