@@ -1,6 +1,6 @@
 <template>
         <div class="mltabview-content">
-            <div v-if="collapseItems[0].lists.length>0" class="mltabview-panel">
+            <div v-if="tableData.length>0" class="mltabview-panel">
                 <div class="m-mllist">
                     <div class="list-bg"></div>
                     <div class="m-mllist-row">
@@ -199,8 +199,8 @@
                         <!--<div class="mllist-pagination">-->
                         <!--</div>-->
                         <div>
-                          <el-table :data="collapseItems[0].lists" style="width: 100%;" class="vertical_align_top"
-                              highlight-current-row
+                          <el-table :data="tableData" style="width: 100%;" class="vertical_align_top"
+                              highlight-current-row  @cell-mouse-enter="hoverfn" @cell-mouse-leave="noHover" @cell-click="readMail"
                             >
                             <el-table-column
                               type="selection"
@@ -209,17 +209,18 @@
                             >
                             </el-table-column>
 
-                            <el-table-column prop="subject"  label="" @click="">
+                            <el-table-column prop="subject"  label="" >
                               <template slot-scope="scope">
-                                <div class="clear" style="font-size:16px;" :class="{flagged:scope.row.flagged,unseen:!scope.row.isread}">
+                                <div class="clear mainMsg" style="font-size:16px;" :class="{flagged:scope.row.flagged,unseen:!scope.row.isread,hoverStyle:scope.row.uid==hoverIndex}" >
                                   <span class="fl_l" >{{scope.row.subject}}</span>
                                   <span class="fl_r">
-                                    <i title="点击取消旗帜" class="iconfont" :class="{'icon-iconflatcolor':scope.row.flagged,'icon-iconflat':!scope.row.flagged}"></i>
+                                    <i title="点击取消旗帜" class="iconfont" :class="{'icon-iconflatcolor':scope.row.flagged,'icon-iconflat':!scope.row.flagged}"
+                                    @click.stop="changeFlags(scope.row)"></i>
                                   </span>
                                 </div>
                                 <div class="info-summary">
                                   <p class="summary-text">
-                                    <span class="fromto from" v-if="scope.row.mfrom">{{scope.row.mfrom[1]}} <{{scope.row.mfrom[0]}}></span>
+                                    <span class="fromto from" v-if="scope.row.mfrom">{{scope.row.mfrom[1]}} {{'&lt;'+scope.row.mfrom[0]+'&gt;'}}</span>
                                     <span class="fromto">:</span>
                                     <span class="summary">
                                       sdajpofjsdfhup测试
@@ -239,7 +240,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="collapseItems[0].lists.length==0" class="mltabview-panel">
+            <div v-if="tableData.length==0" class="mltabview-panel">
                <h3 style="margin:30px 0 0 20px;font-size:24px;font-weight:normal;"> "{{curr_folder}}" 没有邮件</h3>
             </div>
         </div>
@@ -262,27 +263,11 @@
     data() {
         return {
           multipleSelection:[],
-          tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-          tag: '家'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄',
-          tag: '公司'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄',
-          tag: '家'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄',
-          tag: '公司'
-        }],
+          hoverIndex:'',
+          tableData: [
+            {uid:1,mfrom:['anna@test.com','安娜'],subject:'安娜主题',to:'me@test.com',flagged:false,isread:false,date:'2018-09-02T15:01:05'},
+            {uid:2,mfrom:['anna@test.com','安娜2'],subject:'安娜主题222',to:'me@test.com2',flagged:false,isread:false,date:'2018-09-02T15:01:05'}
+          ],
           totalCount:100,
           currentPage:1,
           pageSize:10,
@@ -349,7 +334,7 @@
                   id:0,
 
                   lists:[
-
+                    
                     ]
               }
           ]
@@ -357,19 +342,28 @@
         }
     },
     methods:{
+      hoverfn(row, column, cell, event){
+        console.log(row)
+        this.hoverIndex = row.uid;
+      },
+      noHover(){
+        this.hoverIndex = '';
+      },
+      changeFlags(row){
+        row.flagged=!row.flagged;
+      },
+      readMail(row, column, cell, event){
+          row.isread = true;
+          // this.$parent.showTabIndex=2;
+          console.log(row)
+          // this.$emit('getRead', {'id':mid,'subject':subject,'activeTab':2});
+      },
        handleSelectionChange(val) {
         this.multipleSelection = val;
         console.log(this.multipleSelection)
       },
       formatter(row, column) {
         return row.date.replace('T','  ');
-      },
-      filterTag(value, row) {
-        return row.tag === value;
-      },
-      filterHandler(value, row, column) {
-        const property = column['property'];
-        return row[property] === value;
       },
       jumpTo(path,rid){
             router.push({
@@ -550,8 +544,8 @@
 
     },
     beforeMount(){
-      this.getMessageList();
-      this.getFloderMsgById(this.boxId)
+      // this.getMessageList();
+      // this.getFloderMsgById(this.boxId)
       getFloder().then((res)=>{
         let folder = res.data
         let arr = [];
@@ -584,6 +578,12 @@
 </script>
 
 <style>
+.mainMsg .icon-iconflat{
+  display:none;
+}
+.mainMsg.hoverStyle .icon-iconflat{
+  display:inline;
+}
 .dropdown_item.active{
   color:#409EFF;
 }
