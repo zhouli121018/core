@@ -95,6 +95,8 @@ export const creatFolder = params => {return axios.post(`${host}/mail/folder/`,p
 export const deleteFolder = params => {return axios.delete(`${host}/mail/folder/${params}/`)};
 // 移动邮件
 export const moveMails = params => {return axios.post(`${host}/mail/message/move/`,params)}
+//标记
+export const messageFlag = params => { return axios.post(`${host}/mail/message/flag/`,params)};
 
 
 

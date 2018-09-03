@@ -53,7 +53,7 @@
                 <el-input v-model="filters.search" placeholder="邮箱或姓名" size="small"></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" v-on:click="getSoabMembers" size="small">查询</el-button>
+                <el-button type="primary" v-on:click="searchSoabMembers" size="small">查询</el-button>
               </el-form-item>
             </el-form>
           </el-col>
@@ -81,7 +81,7 @@
 
           <!--列表-->
           <el-table :data="oab_tables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>
-          <!--<el-table :data="oab_tables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
+            <!--<el-table :data="oab_tables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
             <el-table-column type="selection" width="50"></el-table-column>
             <el-table-column type="index" label="No." width="60"></el-table-column>
             <el-table-column prop="name" label="姓名" width="200"></el-table-column>
@@ -175,6 +175,28 @@
           this.setCurrentKey();
         });
       },
+      // 查询部门成员
+      searchSoabMembers() {
+        let keys = new Array();
+        this.page = 1;
+        keys.push(Number(this.soab_cid));
+        this.default_expanded_keys = keys;
+        this.default_checked_keys = keys;
+        var param = {
+          "page": this.page,
+          "page_size": this.page_size,
+          "search": this.filters.search,
+          "dept_id": this.soab_cid,
+          "domain_id": this.soab_domain_cid,
+        };
+        this.listLoading = true;
+        contactSoabMembersGet(param).then((res) => {
+          this.total = res.data.count;
+          this.oab_tables = res.data.results;
+          this.listLoading = false;
+          //NProgress.done();
+        });
+      },
       // 获取部门成员
       getSoabMembers() {
         let keys = new Array();
@@ -198,6 +220,7 @@
       },
 
       oab_handleNodeClick(data) {
+        this.page = 1;
         this.soab_cid = data.id;
         this.department_name = data.label;
         window.sessionStorage['soab_cid'] = data.id;

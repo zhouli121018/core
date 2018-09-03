@@ -129,6 +129,7 @@
               <div class="mail-content" ref="companyStyle">
                   <!--<iframe width="100%" id="mail-1534902112297" class="j-mail-content" frameborder="0" allowtransparency="true" sandbox="allow-scripts allow-popups" src="jsp/viewMailHTML.jsp?mid=1%3A1tbiAQAJEFXEqdgAXgADsl&amp;mailCipherPassword=&amp;partId=&amp;isSearch=&amp;priority=&amp;supportSMIME=&amp;striptTrs=true&amp;mboxa=&amp;iframeId=1534902112297&amp;sspurl=false" style="width: 1642px; height: 198px;">-->
                   <!--</iframe>-->
+
                 <iframe   id="show-iframe" frameborder="0" scrolling="auto" height="100%" onload="this.height=this.contentWindow.document.documentElement.scrollHeight"></iframe>
               </div>
             </div>
@@ -169,6 +170,7 @@
 </template>
 
 <script>
+
   import {readMail} from '@/api/api';
   export default  {
     name:'Read',

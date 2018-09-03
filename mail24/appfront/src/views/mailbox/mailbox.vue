@@ -114,7 +114,6 @@ export default {
         this.readId = obj.id;
         this.readFolderId = this.activeMenubar.id;
         this.activeTab = obj.id;
-        this.showTabIndex = obj.activeTab;
       }
 
     },

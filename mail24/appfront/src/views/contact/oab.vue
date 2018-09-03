@@ -43,7 +43,8 @@
                 <el-input v-model="filters.search" placeholder="邮箱或姓名" size="small"></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" v-on:click="getOabMembers" size="small">查询</el-button>
+                <!--<el-button type="primary" v-on:click="getOabMembers" size="small">查询</el-button>-->
+                <el-button type="primary" v-on:click="searchOabMembers" size="small">查询</el-button>
                 <el-button type="success" @click="Oab_export_group" size="small" v-if="webmail_oabdump_show">导出联系人</el-button>
                 <a :href="blobUrl" download="" style="display:none;" ref="download"></a>
                 <el-button type="primary" @click="Oab_export_foxmail" size="small" v-if="webmail_oabdump_show">导出为Foxmail格式</el-button>
@@ -78,7 +79,7 @@
 
           <!--列表-->
           <el-table :data="oab_tables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>
-          <!--<el-table :data="oab_tables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
+            <!--<el-table :data="oab_tables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
             <el-table-column type="selection" width="50"></el-table-column>
             <el-table-column type="index" label="No." width="60"></el-table-column>
             <el-table-column prop="name" label="姓名" width="200"></el-table-column>
@@ -162,6 +163,7 @@
         })
       },
       oab_handleNodeClick(data) {
+        this.page = 1;
         this.oab_cid = data.id;
         this.department_name = data.label;
         window.sessionStorage['oab_cid'] = data.id;
@@ -181,6 +183,27 @@
         contactOabDepartsGet().then(res=>{
           this.oab_departs = res.data.results;
           this.setCurrentKey();
+        });
+      },
+      // 查询部门成员
+      searchOabMembers() {
+        this.page = 1;
+        let keys = new Array();
+        keys.push(Number(this.oab_cid));
+        this.default_expanded_keys = keys;
+        this.default_checked_keys = keys;
+        var param = {
+          "page": this.page,
+          "page_size": this.page_size,
+          "search": this.filters.search,
+          "dept_id": this.oab_cid,
+        };
+        this.listLoading = true;
+        contactOabMembersGet(param).then((res) => {
+          this.total = res.data.count;
+          this.oab_tables = res.data.results;
+          this.listLoading = false;
+          //NProgress.done();
         });
       },
       // 获取部门成员

@@ -44,7 +44,8 @@
                 <el-input v-model="filters.search" placeholder="邮箱或姓名" size="small"></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" v-on:click="getCabMembers" size="small">查询</el-button>
+                <el-button type="primary" v-on:click="searchCabMembers" size="small">查询</el-button>
+                <!--<el-button type="primary" v-on:click="getCabMembers" size="small">查询</el-button>-->
               </el-form-item>
             </el-form>
           </el-col>
@@ -72,7 +73,7 @@
 
           <!--列表-->
           <el-table :data="oab_tables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>
-          <!--<el-table :data="oab_tables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
+            <!--<el-table :data="oab_tables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
             <el-table-column type="selection" width="50"></el-table-column>
             <el-table-column type="index" label="No." width="60"></el-table-column>
             <el-table-column prop="fullname" label="姓名" width="200"></el-table-column>
@@ -140,6 +141,7 @@
         })
       },
       oab_handleNodeClick(data) {
+        this.page = 1;
         this.cab_cid = data.id;
         this.cate_name = data.label;
         window.sessionStorage['cab_cid'] = data.id;
@@ -159,6 +161,27 @@
         contactCabGroupsGet().then(res=>{
           this.cab_groups = res.data.results;
           this.setCurrentKey();
+        });
+      },
+      // 查询成员
+      searchCabMembers() {
+        this.page = 1;
+        let keys = new Array();
+        keys.push(Number(this.cab_cid));
+        this.default_expanded_keys = keys;
+        this.default_checked_keys = keys;
+        var param = {
+          "page": this.page,
+          "page_size": this.page_size,
+          "search": this.filters.search,
+          "cate_id": this.cab_cid,
+        };
+        this.listLoading = true;
+        contactCabMembersGet(param).then((res) => {
+          this.total = res.data.count;
+          this.oab_tables = res.data.results;
+          this.listLoading = false;
+          //NProgress.done();
         });
       },
       // 获取成员

@@ -56,12 +56,17 @@
         <!--工具条-->
         <el-row class="toolbar">
           <el-col :span="24" class="" style="padding-bottom: 0px;">
-            <el-form :inline="true" :model="filters">
-              <el-form-item>
+            <el-form :inline="true" :model="filters" size="small">
+              <el-form-item label="邮箱:">
                 <el-input v-model="filters.search" placeholder="邮箱或姓名" size="small"></el-input>
               </el-form-item>
+              <el-form-item v-if="filters_options_show" label="是否分组:">
+                <el-select v-model="filters.search2" placeholder="请选择" size="small">
+                  <el-option v-for="item in filters_options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                </el-select>
+              </el-form-item>
               <el-form-item>
-                <el-button type="primary" v-on:click="getPabMembers" size="small">查询</el-button>
+                <el-button type="primary" v-on:click="searchPabMembers" size="small">查询</el-button>
                 <el-button type="success" @click="handlePabMemberAdd" size="small">添加联系人</el-button>
                 <el-button type="primary" @click="Oab_import_to_group" size="small"> 导入联系人</el-button>
                 <el-button type="success" @click="Oab_export_group" size="mini">导出联系人</el-button>
@@ -86,6 +91,7 @@
                              @size-change="Oab_handleSizeChange"
                              @current-change="Oab_handleCurrentChange"
                              :page-sizes="[15, 30, 50, 100]"
+                             :current-page="page"
                              :page-size="page_size"
                              :total="total" style="float: right">
               </el-pagination>
@@ -94,7 +100,7 @@
 
           <!--列表-->
           <el-table :data="oab_tables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>
-          <!--<el-table :data="oab_tables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
+            <!--<el-table :data="oab_tables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
             <el-table-column type="selection" width="60"></el-table-column>
             <el-table-column type="index" label="No." width="80"></el-table-column>
             <el-table-column prop="fullname" label="姓名"></el-table-column>
@@ -367,26 +373,9 @@
     <el-dialog title="导入联系人"  :visible.sync="importPabFormVisible" :close-on-click-modal="false" :append-to-body="true">
       <el-form :model="importPabForm" label-width="130px" :rules="importPabFormRules" ref="importPabForm" enctype="multipart/form-data">
 
-        <el-form-item label="上传文件" prop="file">
-          <el-input v-model="importPabForm.file" auto-complete="off" type="file" id="fileUpload"></el-input>
-
+        <el-form-item label="上传文件" prop="file" ref="fileUpload" :error="fileUpload_error">
+          <el-input v-model="importPabForm.file" auto-complete="off" type="file" @change="fileChange(this)" id="fileUpload" ></el-input>
         </el-form-item>
-
-        <!--<el-form-item label="上传文件" prop="file">-->
-        <!--<el-upload-->
-        <!--class="upload-demo"-->
-        <!--v-model="importPabForm.file"-->
-        <!--action="mixinUploadUrl"-->
-        <!--:before-upload="onBeforeUpload"-->
-        <!--accept=".xls,.xlsx,.csv,.XLS,.XLSX,.CSV"-->
-        <!--:multiple='false'-->
-        <!--:file-list="fileList"-->
-        <!--:auto-upload="false">-->
-        <!--<el-button slot="trigger" size="mini" type="primary">选取文件</el-button>-->
-        <!--&lt;!&ndash;<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>&ndash;&gt;-->
-        <!--<div slot="tip" class="el-upload__tip">只能上传xls、xlsx、csv格式文件，且不超过10M;</div>-->
-        <!--</el-upload>-->
-        <!--</el-form-item>-->
 
         <el-form-item label="把联系人导入到" prop="group_id" style="margin-top: 20px;">
           <el-select v-model="importPabForm.group_id" placeholder="请选择" style="width: 100%">
@@ -439,6 +428,23 @@
         }
       };
       return {
+        filters: {
+          search: '',
+          search2: '',
+        },
+        filters_options_show: false,
+        filters_options: [{
+          value: '',
+          label: '全部'
+        }, {
+          value: '1',
+          label: '已分组',
+        }, {
+          value: '0',
+          label: '未分组'
+        }],
+
+
         blobUrl:'',
         pab_contact_groups: [],
         import_mode_groups: [
@@ -467,9 +473,6 @@
          pab 表格初始化
          ************************
          ************************/
-        filters: {
-          search: ''
-        },
         total: 0,
         page: 1,
         page_size: 15,
@@ -580,6 +583,7 @@
          ************************
          ************************/
         // pob 编辑
+        fileUpload_error: '',
         importPabFormVisible: false,//编辑界面是否显示
         importPabLoading: false,
         importPabFormRules: {
@@ -600,6 +604,11 @@
     },
     created: function() {
       this.pab_cid = window.sessionStorage['pab_cid'];
+      if ( Number(this.pab_cid) == 0 ){
+        this.filters_options_show = true;
+      } else {
+        this.filters_options_show = false;
+      }
       // console.log("子组件调用了'created'");
     },
     mounted: function(){
@@ -608,6 +617,7 @@
     },
 
     methods: {
+
       setCurrentKey() {
         this.$nextTick(() =>{
           this.$refs.treeForm.setCurrentKey(Number(this.pab_cid));
@@ -628,6 +638,35 @@
           this.setCurrentKey();
         });
       },
+      // 查询联系人
+      searchPabMembers() {
+        this.page = 1;
+        var param = {
+          "page": this.page,
+          "page_size": this.page_size,
+          "search": this.filters.search,
+          "group_id": this.pab_cid,
+          "is_group": this.filters.search2,
+        };
+        this.listLoading = true;
+        if (this.pab_cid >0){
+          contactPabMapsGet(param).then((res) => {
+            this.total = res.data.count;
+            this.oab_tables = res.data.results;
+            this.pab_iscan_distribute = res.data.pab_iscan_distribute;
+            this.listLoading = false;
+            //NProgress.done();
+          });
+        } else {
+          contactPabMembersGet(param).then((res) => {
+            this.total = res.data.count;
+            this.oab_tables = res.data.results;
+            this.pab_iscan_distribute = res.data.pab_iscan_distribute;
+            this.listLoading = false;
+            //NProgress.done();
+          });
+        }
+      },
       // 获取联系人列表
       getPabMembers() {
         var param = {
@@ -635,6 +674,7 @@
           "page_size": this.page_size,
           "search": this.filters.search,
           "group_id": this.pab_cid,
+          "is_group": this.filters.search2,
         };
         this.listLoading = true;
         if (this.pab_cid >0){
@@ -657,7 +697,13 @@
       },
       // 右侧菜单 联系组改变
       oab_handleNodeClick(data) {
+        this.page = 1;
         this.pab_cid = data.id;
+        if ( data.id == 0 ){
+          this.filters_options_show = true;
+        } else {
+          this.filters_options_show = false;
+        }
         this.pab_cname = data.groupname;
         window.sessionStorage['pab_cid']=data.id;
         this.getPabMembers();
@@ -763,56 +809,95 @@
       },
       // 导入联系人 提交
       importPabSubmit: function(){
+        this.fileUpload_error = '';
         let that = this;
-        this.$refs. importPabForm.validate((valid) => {
-          let self = this;
+        this.$refs.importPabForm.validate((valid) => {
           if (valid) {
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
-              // this.listLoading = true;
               this.importPabLoading = true;
-
               let selectedFile = document.getElementById('fileUpload').files[0];
-                 let para = {file:selectedFile,import_mode:'ignore',group_id:0,filename:self.importPabForm.file};
-
-                    para.group_id = (!para.group_id || para.group_id == '') ? 0 : para.group_id;
-                    // para.file = this.$refs.importPabForm.file.uploadFiles;
-
-                let formData = new FormData();
-                formData.append('id', this.importPabForm.group_id||0);
-                formData.append('import_mode', this.importPabForm.import_mode);
-                formData.append('file', selectedFile);
-                console.log(formData)
-                    contactPabMembersImport(para.group_id, formData).then((res) => {
-                      this.$refs['importPabForm'].resetFields();
-                      this.importPabLoading = false;
-                      // this.listLoading = false;
-                      that.$message({message: '导入成功', type: 'success'});
-                      this.getPabs();
-                    }).catch(function (error) {
-                      that.importPabLoading = false;
-                      that.$message({ message: '导入失败，请重试',  type: 'error' });
-                      console.log(error);
-                    });
-
+              let para = Object.assign({}, this.importPabForm);
+              para.group_id = (!para.group_id || para.group_id == '') ? 0 : para.group_id;
+              let formData = new FormData();
+              formData.append('import_mode', this.importPabForm.import_mode);
+              formData.append('file', selectedFile);
+              contactPabMembersImport(para.group_id, formData).then((res) => {
+                this.$refs['importPabForm'].resetFields();
+                this.importPabLoading = false;
+                this.importPabFormVisible = false;
+                that.$message({message: '导入成功', type: 'success'});
+                this.getPabs();
+              }, (data)=>{
+                this.importPabLoading = false;
+                if("error" in data) {
+                  this.fileUpload_error = data.error;
+                }
+              }).catch(function (error) {
+                that.importPabLoading = false;
+                that.$message({ message: '导入失败，请重试',  type: 'error' });
+                console.log(error);
+              });
 
             });
           }
         });
       },
-      onBeforeUpload: function(file) {
-        // const isIMAGE = file.type === 'image/jpeg'||'image/gif'||'image/png';
-        const isLt5M = file.size / 1024 / 1024 < 1;
-        let filename =file.name;
-        console.log(filename);
-
-        // if (!isIMAGE) {
-        //   this.$message.error('上传文件只能是图片格式!');
-        // }
-        if (!isLt5M) {
-          this.$message.error('上传文件大小不能超过 1MB!');
+      // 文件上传检测
+      fileChange(){
+        var imgName = document.all.fileUpload.value;
+        var target = document.getElementById('fileUpload')
+        var ext,idx;
+        if (imgName == ''){
+          return;
+        } else {
+          idx = imgName.lastIndexOf(".");
+          if (idx != -1){
+            ext = imgName.substr(idx+1).toUpperCase();
+            ext = ext.toLowerCase( );
+            if (ext != 'xls' && ext != 'xlsx' && ext != 'csv' ){
+              this.fileUpload_error = '只能上传.xls  .xlsx  .csv  类型的文件!';
+              this.$refs['fileUpload'].resetField();
+              // this.$alert('只能上传.xls  .xlsx  .csv  类型的文件!', '提示：', {
+              //   confirmButtonText: '确定',});
+              // this.$refs['importPabForm'].resetField();
+              return;
+            }
+          } else {
+            // this.$alert('只能上传.xls  .xlsx  .csv  类型的文件!', '提示：', {
+            //   confirmButtonText: '确定',});
+            this.fileUpload_error = '只能上传.xls  .xlsx  .csv  类型的文件!';
+            this.$refs['fileUpload'].resetField();
+            // this.$refs['importPabForm'].resetField();
+            return;
+          }
         }
-        return isIMAGE && isLt1M;
+
+        //检测上传文件的大小
+        var isIE = /msie/i.test(navigator.userAgent) && !window.opera;
+        var fileSize = 0;
+        if (isIE && !target.files){
+          var filePath = target.value;
+          var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+          var file = fileSystem.GetFile (filePath);
+          fileSize = file.Size;
+        } else {
+          fileSize = target.files[0].size;
+        }
+
+        var size = fileSize / (1024*1024);
+        console.log(fileSize,size)
+        if(size>(1024*1024*10)){
+          // this.$alert('文件大小不能超过10M！', '提示：', {
+          //   confirmButtonText: '确定',});
+          this.fileUpload_error = '文件大小不能超过10M！';
+          this.$refs['fileUpload'].resetField();
+          return;
+        }else{
+
+        }
+        this.$refs.importPabForm.validateField('file')
       },
+
       //点击下载
       download(){
         this.$refs.download.click();

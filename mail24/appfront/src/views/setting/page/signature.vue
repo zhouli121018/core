@@ -71,14 +71,8 @@
 
           <el-form-item label="签名内容" prop="content">
             <!--<el-input type="textarea" id="editor_id" v-model.trim="addForm.content"></el-input>-->
-            <editor id="editor_id" ref="editor_id" height="400px" maxWidth="100%" width="100%" :content="content"
-
-                    pluginsPath="/static/kindeditor/plugins/"
-                    :loadStyleMode="false"
-                        :items="toolbarItems"
-                    >
-
-                </editor>
+            <editor id="editor_id" ref="editor_id" height="400px" maxWidth="100%" width="100%" :content="addForm.content"
+                    pluginsPath="/static/kindeditor/plugins/" :loadStyleMode="false" :items="toolbarItems" @on-content-change="onContentChange"></editor>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -98,14 +92,14 @@
   export default {
     data() {
       return {
-        content:'内容',
+        // content:'内容',
         toolbarItems:
-        ['source', '|','formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
-        'italic', 'underline',  'lineheight', '|',  'justifyleft', 'justifycenter', 'justifyright',
-        'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', '|','subscript',
-        'superscript', 'link', 'unlink','image',  'table','hr','|', 'undo', 'redo', 'preview',
-           'fullscreen',
-         ],
+          ['source', '|','formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+            'italic', 'underline',  'lineheight', '|',  'justifyleft', 'justifycenter', 'justifyright',
+            'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', '|','subscript',
+            'superscript', 'link', 'unlink','image',  'table','hr','|', 'undo', 'redo', 'preview',
+            'fullscreen',
+          ],
         listLoading: false,
         total: 0,
         page: 1,
@@ -134,6 +128,9 @@
 
     },
     methods: {
+      onContentChange (val) {
+        this.addForm.content = val;
+      },
       getTables: function(){
         settingSignatureGet().then(res=>{
           this.total = res.data.total;
@@ -174,7 +171,25 @@
         this.addForm = Object.assign({}, this.addForm);
       },
       addFormSubmit: function(){
-
+        this.$refs.addForm.validate((valid) => {
+          if (valid) {
+            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+              this.addFormLoading = true;
+              let para = Object.assign({}, this.addForm);
+              settingSignatureCreate(para).then((res) => {
+                this.$message({message: '添加成功', type: 'success'});
+                this.$refs['addForm'].resetFields();
+                this.addFormLoading = false;
+                this.addFormVisible = false;
+                this.getTables();
+              }, (data)=>{
+                console.log(data)
+              }).catch(function (error) {
+                console.log(error);
+              });
+            });
+          }
+        });
       },
 
       editSig: function (index, row) {

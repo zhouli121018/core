@@ -95,9 +95,14 @@
                     <el-input v-model.number="ruleForm2.secret" readonly></el-input>
                   </el-form-item>
                   <el-button type="primary" size="small" @click="submitForm('ruleForm2')">添加附件</el-button>
+                  <el-button type="primary" size="small" @click="imgUpload">添加图片</el-button>
+                  <el-input type="file" ref="img_upload" @change="imgChange(this)" id="img_upload" style="display:none;"></el-input>
+                  <img src="#" alt="" id="avatar">
                 </el-form>
               </div>
               <div class="form-edr compose_editor" ref="editor_box">
+
+                <div v-html="content"></div>
 
                 <editor id="editor_id" ref="editor_id" :height="iframe_height" width="100%" :content="content"
                     :afterChange="afterChange()"
@@ -143,12 +148,15 @@
 </template>
 <script>
   import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet } from '@/api/api'
+
   export default {
     props:{
       iframe_height:'',
     },
+
     data(){
       return {
+        imgSrc:'',
         transform_dialog:false,
         filterText:'',
         hashMail:[],
@@ -208,6 +216,24 @@
       };
     },
     methods:{
+      imgUpload(){
+        document.getElementById('img_upload').click();
+      },
+      imgChange(){
+        var o = document.getElementById('img_upload');
+        var file= o.files[0];
+
+        var reader=new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload=function (e) {//上传成功，执行上传成功之后的事件
+        var str=e.target.result;
+        //将上传成功后的图片显示在特定位置
+        // console.log(str);
+        this.imgSrc = str;
+        console.log(this.imgSrc)
+          // document.getElementById('avatar').src=str;
+        }
+      },
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
@@ -220,6 +246,7 @@
         });
       },
       onContentChange (val) {
+        this.content = this.$refs.editor_id.$data.outContent;
         console.log(this.$refs.editor_id.$data.outContent)
       },
       afterChange (val) {

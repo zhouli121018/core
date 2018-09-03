@@ -31,8 +31,8 @@ axios.interceptors.response.use(
     switch (res.status) {
       case 401:
         // 返回 401 清除token信息并跳转到登录页面
-        // cookie.delCookie('token');
-        // store.dispatch('setInfo');
+        cookie.delCookie('token');
+        store.dispatch('setInfo');
         console.log('未登录 或者token过期');
         router.push('/')
         break;
