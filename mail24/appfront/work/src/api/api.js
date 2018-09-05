@@ -100,7 +100,7 @@ export const messageFlag = params => { return axios.post(`${host}/mail/message/f
 //上传附件 /api/mail/attach/
 export const postAttach = (params) => {
   return axios.post(`${host}/mail/attach/`, params, {headers:{ 'Content-Type': 'multipart/form-data' }}) }
-  // 删除附件
+// 删除附件
 export const deleteAttach = params => {return axios.delete(`${host}/mail/attach/${params}/`)};
 //获取附件列表 /api/mail/attach/
 export const getAttach = params => { return axios.get(`${host}/mail/attach/`, { params: params }) };
@@ -140,6 +140,8 @@ export const settingSignatureUpdate = (signatureID, params) => { return axios.pa
 export const settingSignatureDefaultlSet = params => { return axios.post(`${host}/setting/signatures/set-default/`, params) }
 // 获取单个用户签名
 export const settingSignatureGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/signatures/`+signatureID+'/', params) }
+// 邮箱意见反馈
+export const settingFeedbackSet = params => { return axios.post(`${host}/setting/users/set-feedback/`, params) }
 
 
 // 获取白名单
@@ -151,7 +153,7 @@ export const settingWhiteDelete = signatureID => { return axios.delete(`${host}/
 // 更新白名单
 export const settingWhiteUpdate = (signatureID, params) => { return axios.patch(`${host}/setting/whiters/`+signatureID+'/', params) }
 // 更新白名单状态
-export const settingWhiteStatusSet = (signatureID, params) => { return axios.post(`${host}/setting/whiters/`+signatureID+'/set-disabled', params) }
+export const settingWhiteStatusSet = (signatureID, params) => { return axios.post(`${host}/setting/whiters/`+signatureID+'/set-disabled/', params) }
 // 获取单个白名单
 export const settingWhiteGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/whiters/`+signatureID+'/', params) }
 
@@ -165,6 +167,10 @@ export const settingBlackDelete = signatureID => { return axios.delete(`${host}/
 // 更新黑名单
 export const settingBlackUpdate = (signatureID, params) => { return axios.patch(`${host}/setting/blackers/`+signatureID+'/', params) }
 // 更新黑名单状态
-export const settingBlackStatusSet = (signatureID, params) => { return axios.post(`${host}/setting/blackers/`+signatureID+'/set-disabled', params) }
+export const settingBlackStatusSet = (signatureID, params) => { return axios.post(`${host}/setting/blackers/`+signatureID+'/set-disabled/', params) }
 // 获取单个黑名单
 export const settingBlackGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/blackers/`+signatureID+'/', params) }
+
+
+// 邮件召回
+export const settingZhaohuiGet = params => { return axios.get(`${host}/setting/zhaohui/`, { params: params })}

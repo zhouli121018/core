@@ -4,7 +4,7 @@
         <section class="m-mlcompose">
           <div class="toolbar" style="background:#fff;">
             <div id="pagination" class="f-fr">
-                <div class="">
+                <div class="" @click="show_contact = !show_contact">
                     <el-button size="small">通讯录</el-button>
                 </div>
             </div>
@@ -22,7 +22,7 @@
 
 
           <div class="main" ref="iframe_height">
-            <div class="mn-aside right_menu">
+            <div class="mn-aside right_menu" :class="{show_contact:show_contact}">
               <el-tabs v-model="activeName">
                 <!--个人通讯录-->
                 <el-tab-pane label="个人通讯录" name="first">
@@ -66,7 +66,7 @@
                 <el-tab-pane label="模板信" name="third">模板信</el-tab-pane>
               </el-tabs>
             </div>
-            <form class="u-form mn-form">
+            <form class="u-form mn-form"  :class="{right0:show_contact}">
               <div class="form-tt compose_title">
                 <el-form size="mini" inline-message :model="ruleForm2" status-icon ref="ruleForm2" label-width="80px" class="demo-ruleForm" style="font-size:16px;">
                   <el-form-item label="发件人:">
@@ -110,18 +110,42 @@
                     </div>
                   </el-form-item>
                   <el-upload
-                    class="upload-demo"
-                    action=""
-                    :http-request="uploadFile"
-                    :show-file-list="false"
-                    multiple :on-progress="uploadProgress" :on-success="sucUpload">
-                    <el-button size="small" type="primary"><i class="el-icon-upload"></i> 添加附件</el-button>
-                    <div slot="tip" class="el-upload__tip"></div>
+                      class="upload-demo"
+                      action=""
+                      :http-request="uploadFile"
+                      :show-file-list="false"
+                      multiple :on-progress="uploadProgress" :on-success="sucUpload">
+                      <el-button size="small" type="primary" id="addAttachBtn"><i class="el-icon-upload"></i> 添加附件</el-button>
+                      <div slot="tip" class="el-upload__tip"></div>
                   </el-upload>
-                  <!--<el-button type="primary" size="small" @click="imgUpload">添加图片</el-button>-->
-                  <!--<el-input type="file" ref="img_upload" @change="imgChange(this)" id="img_upload" style="display:none;"></el-input>-->
+                  <el-dropdown  placement="bottom" @command="selectUpload" style="margin-right:20px;">
+                      <i class="el-icon-caret-bottom"></i>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item  command="filecore">从文件中心添加</el-dropdown-item>
+                      <el-dropdown-item  command="upload">上传到文件中转站</el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
 
-                  <img src="#" alt="" id="avatar" >
+                  <el-dropdown trigger="click" placement="bottom-start">
+                    <el-button type="primary" size="small">
+                      签名<i class="el-icon-caret-bottom el-icon--right"></i>
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item>不使用签名档</el-dropdown-item>
+                      <el-dropdown-item divided>aaa</el-dropdown-item>
+                      <el-dropdown-item>dadsaf</el-dropdown-item>
+                      <el-dropdown-item divided>编辑签名档</el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+
+                  <el-upload
+                      action=""
+                      :http-request="imgChange"
+                      :show-file-list="false"
+                      multiple  style="display:inline-block;">
+                      <el-button size="small" type="primary"> 插入图片</el-button>
+                  </el-upload>
+
                 </el-form>
               </div>
               <div class="form-edr compose_editor" ref="editor_box">
@@ -129,11 +153,11 @@
                 <!--<div v-html="content"></div>-->
 
                 <editor id="editor_id" ref="editor_id" height="400px" width="100%" :content="content"
-                    :afterChange="afterChange()"
+                    :afterChange="afterChange"
                     pluginsPath="/static/kindeditor/plugins/"
-                    :loadStyleMode="false"
-                        :items="toolbarItems"
-                    @on-content-change="onContentChange">
+
+                    :loadStyleMode="false" :items="toolbarItems" :uploadJson="uploadJson"
+                    @on-content-change="onContentChange"  :autoHeightMode="false">
 
                 </editor>
 
@@ -167,6 +191,28 @@
         </div>
       </el-dialog>
 
+      <el-dialog title="文件中心" :visible.sync="coreFileDialog" :modal-append-to-body="false">
+        <el-pagination class="margin-bottom-5"
+          @size-change="attachSizeChange"
+          @current-change="attachCurrentChange"
+          :current-page="attachCurrentPage"
+          :page-sizes="[5,10,20,50,100, 200, 300, 400]"
+          :page-size="attachPageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="attachTotal" small>
+        </el-pagination>
+        <el-table @selection-change="fileSelectionChange"
+          ref="multipleTable" :data="coreFileList" tooltip-effect="dark" style="width: 100%"
+          >
+          <el-table-column type="selection"  width="55"></el-table-column>
+          <el-table-column prop="filename" label="文件名" ></el-table-column>
+          <el-table-column prop="size" label="文件大小" width="100" :formatter="sizeFormatter"></el-table-column>
+        </el-table>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="coreFileDialog = false" size="small">取 消</el-button>
+          <el-button type="primary" @click="addAttachfn" size="small">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
 
 </template>
@@ -180,6 +226,29 @@
 
     data(){
       return {
+      extraFileUploadParams : {
+                        csrfmiddlewaretoken:this.$store.state.userInfo.token,
+                         id:123
+                },
+        afterChange:function (val) {
+          console.log(val)
+        },
+        afterUpload:function(){
+          console.log('afterupload')
+        },
+        afterSelectFile:function(){
+          console.log('afterselect')
+        },
+        attachCurrentPage:1,
+        attachPageSize:10,
+        attachTotal:0,
+        coreFileList:[
+
+        ],
+        hashFile:[],
+        fileSelection:[],
+        coreFileDialog:false,
+        show_contact:false,
         attachIndex:'',
         fileList: [],
         imgSrc:'',
@@ -242,14 +311,48 @@
       };
     },
     methods:{
+      sizeFormatter(row,col){
+        return (row.size/1024).toFixed(2) +' KB';
+      },
+      attachSizeChange(val){
+        this.attachPageSize = val;
+        this.getAttachList();
+      },
+      attachCurrentChange(val){
+        this.attachCurrentPage = val;
+        this.getAttachList();
+      },
+
+      addAttachfn(){
+        for(let i=0;i<this.fileSelection.length;i++){
+          if(!(this.hashFile[this.fileSelection[i].id])){
+            this.hashFile[this.fileSelection[i].id] = true
+            this.fileList.push(this.fileSelection[i]);
+          }
+        }
+        this.coreFileDialog = false;
+        this.fileSelection = [];
+      },
+      fileSelectionChange(val) {
+        this.fileSelection = val;
+        console.log(this.fileSelection)
+      },
+      selectUpload(command){
+        if(command == 'filecore'){
+          this.coreFileDialog = true;
+        }else if(command == 'upload'){
+          document.getElementById('addAttachBtn').click()
+        }
+      },
       getAttachList(){
-        var param={
-          limit:15,
-          offset:0
+        let param={
+          limit:this.attachPageSize,
+          offset:(this.attachCurrentPage-1)*this.attachPageSize
         };
         getAttach(param).then((suc)=>{
           console.log(suc.data)
-          this.fileList = suc.data.results;
+          this.attachTotal = suc.data.count;
+          this.coreFileList = suc.data.results;
         },(err)=>{
           console.log(err);
         })
@@ -257,6 +360,7 @@
       delete_attach(id,k){
         deleteAttach(id).then((suc)=>{
           console.log(suc);
+          this.hashFile[this.fileList[k].id]=false;
           this.fileList.splice(k,1);
         },(err)=>{
           console.log(err);
@@ -275,6 +379,7 @@
         postAttach(formData).then((res)=>{
           console.log(res.data)
           var obj = res.data;
+          this.hashFile[res.data.id]=true;
           this.fileList.push(res.data)
           console.log(this.fileList)
          this.$message({
@@ -306,22 +411,43 @@
         console.log('filelist')
         console.log(fileList)
       },
-      imgUpload(){
-        document.getElementById('img_upload').click();
-      },
-      imgChange(){
-        var o = document.getElementById('img_upload');
-        var file= o.files[0];
+      imgChange(param){
+        console.log(this.$store.state.userInfo.token)
+        var file= param.file;
+        // this.imageFileName.push(file.name);
+            const isJPG = file.type === 'image/jpeg';
+            const isGIF = file.type === 'image/gif';
+            const isPNG = file.type === 'image/png';
+            const isBMP = file.type === 'image/bmp';
+            const isLt2M = file.size / 1024 / 1024 < 10;
+
+            if (!isJPG && !isGIF && !isPNG && !isBMP) {
+                this.$alert('上传图片必须是JPG/GIF/PNG/BMP 格式!', '提示：', {
+                  confirmButtonText: '确定'
+                });
+                return;
+            }
+            if (!isLt2M) {
+                this.$alert('上传图片大小不能超过 10MB!', '提示：', {
+                  confirmButtonText: '确定'
+                });
+                return;
+            }
+
+        var _this = this;
+        console.log(param)
+        // var o = document.getElementById('img_upload');
 
         var reader=new FileReader();
         reader.readAsDataURL(file);
         reader.onload=function (e) {//上传成功，执行上传成功之后的事件
         var str=e.target.result;
         //将上传成功后的图片显示在特定位置
-        // console.log(str);
         this.imgSrc = str;
-        console.log(this.imgSrc)
-          // document.getElementById('avatar').src=str;
+        console.log(_this.$refs.editor_id)
+          _this.$refs.editor_id.editor.insertHtml(`<img src=${str} />`)
+
+
         }
       },
       submitForm(formName) {
@@ -337,11 +463,8 @@
       },
       onContentChange (val) {
         this.content = this.$refs.editor_id.$data.outContent;
-        console.log(this.$refs.editor_id.$data.outContent)
       },
-      afterChange (val) {
 
-      },
       preview(){
         //ke-toolbar-icon ke-toolbar-icon-url ke-icon-preview
         let btn = document.querySelector('.ke-toolbar-icon.ke-toolbar-icon-url.ke-icon-preview');
@@ -458,7 +581,12 @@
     mounted() {
       this.restaurants = this.loadAll();
       // this.getPabGroups();
-      // this.getAttachList();
+      this.getAttachList();
+    },
+    computed:{
+      uploadJson:function(){
+        return this.$store.state.uploadJson;
+      }
     },
     watch: {
       filterText(val) {
@@ -469,6 +597,20 @@
   }
 </script>
 <style>
+  .margin-bottom-5{
+    margin-bottom:5px;
+  }
+  .show_contact{
+    opacity: 0;
+    filter: alpha(opacity=0);
+  }
+  .m-mlcompose .mn-form.right0{
+    right:0;
+
+  }
+  .m-mlcompose .upload-demo{
+    display:inline-block;
+  }
   .attach_actions{
     display:none;
   }

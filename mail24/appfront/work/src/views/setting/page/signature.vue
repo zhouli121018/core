@@ -72,7 +72,7 @@
           <el-form-item label="签名内容" prop="content">
             <!--<el-input type="textarea" id="editor_id" v-model.trim="createForm.content"></el-input>-->
             <editor id="editor_id" ref="editor_id" height="400px" maxWidth="100%" width="100%" :content="createForm.content"
-                    pluginsPath="/static/kindeditor/plugins/" :loadStyleMode="false" :items="toolbarItems" @on-content-change="createContentChange"></editor>
+                    pluginsPath="/static/kindeditor/plugins/" :loadStyleMode="false" :uploadJson="uploadJson"  :items="toolbarItems" @on-content-change="createContentChange"></editor>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -83,7 +83,7 @@
 
 
       <!--更新 签名-->
-      <el-dialog title="新增签名"  :visible.sync="editFormVisible" :modal-append-to-body="false">
+      <el-dialog title="修改签名"  :visible.sync="editFormVisible" :modal-append-to-body="false">
         <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
           <el-form-item label="签名标题" prop="caption">
             <el-input v-model.trim="editForm.caption" auto-complete="off"></el-input>
@@ -91,7 +91,7 @@
 
           <el-form-item label="签名内容" prop="content">
             <editor id="editor_id2" ref="editor_id2" height="400px" maxWidth="100%" width="100%" :content="editForm.content"
-                    pluginsPath="/static/kindeditor/plugins/" :loadStyleMode="false" :items="toolbarItems" @on-content-change="editContentChange"></editor>
+                    pluginsPath="/static/kindeditor/plugins/" :uploadJson="uploadJson"  :loadStyleMode="false" :items="toolbarItems" @on-content-change="editContentChange"></editor>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -119,7 +119,6 @@
             'superscript', 'link', 'unlink','image',  'table','hr','|', 'undo', 'redo', 'preview',
             'fullscreen',
           ],
-        listLoading: false,
         total: 0,
         page: 1,
         page_size: 15,
@@ -312,6 +311,11 @@
         this.sels = sels;
       },
 
+    },
+    computed:{
+      uploadJson:function(){
+        return this.$store.state.uploadJson;
+      }
     },
   }
 </script>
