@@ -56,8 +56,8 @@
 
 
                       </div>
-          <div>
-            <div class="mail" ref="iframe_height">
+
+            <div class="mail" ref="iframe_height"  v-loading="loading">
               <div class="j-read-alert f-pr"></div>
               <div class="mail-top j-mail-top f-pr">
                   <div class="top-bar">
@@ -126,12 +126,24 @@
                       </a>
                   </div>
               </div>
-              <div class="mail-content" ref="companyStyle">
+              <div class="mail-content" ref="companyStyle" >
                   <!--<iframe width="100%" id="mail-1534902112297" class="j-mail-content" frameborder="0" allowtransparency="true" sandbox="allow-scripts allow-popups" src="jsp/viewMailHTML.jsp?mid=1%3A1tbiAQAJEFXEqdgAXgADsl&amp;mailCipherPassword=&amp;partId=&amp;isSearch=&amp;priority=&amp;supportSMIME=&amp;striptTrs=true&amp;mboxa=&amp;iframeId=1534902112297&amp;sspurl=false" style="width: 1642px; height: 198px;">-->
                   <!--</iframe>-->
 
                 <iframe   id="show-iframe" frameborder="0" scrolling="auto" height="100%" onload="this.height=this.contentWindow.document.documentElement.scrollHeight"></iframe>
+                <el-collapse v-model="activeNames" v-if="attachments.length>0" class="attach_box">
+                  <el-collapse-item :title="'附件 ('+attachments.length+' 个)'" name="1">
+                    <div v-for="a in attachments" class="attach_item">
+                      <div class="attach_type">
+                        <span class="file-big-icon icon-big-jpg"></span>
+                      </div>
+                      <div class="f-ellipsis">{{a.name}}</div>
+                      <div class="attach_size">{{a.size | mailsize}}</div>
+                    </div>
+                  </el-collapse-item>
+                </el-collapse>
               </div>
+
             </div>
             <footer class="quick-reply j-quick-reply ">
               <div class="quick-reply-default quick-reply-item j-reply-default" v-show="!replying" @click="replying=true">快捷回复给所有人
@@ -158,7 +170,7 @@
               <div class="j-footer-btn j-toolbar-footer u-btns f-fr f-dn"></div>
 
             </footer>
-          </div>
+
         </section>
         <div v-show="notFond">
           <h3 style="margin:30px 0 0 20px;font-size:24px;font-weight:normal;">  邮件没找到！是否已移动到其他文件夹？</h3>
@@ -180,6 +192,9 @@
     },
     data(){
       return {
+        loading:false,
+        attachments:[],
+        activeNames: ['1'],
         notFond:false,
         msg:'',
         replying:false,
@@ -226,6 +241,7 @@
         this.moreCheckIndex = index;
       },
       getReadMail(){
+        this.loading = true;
         readMail(this.readId,{"folder":this.readFolderId}).then((data)=>{
           this.notFond = false;
           this.msg = data.data
@@ -235,13 +251,26 @@
 
           const oIframe = document.getElementById('show-iframe');
           //-30padding
-          const deviceWidth = this.$refs.companyStyle.getBoundingClientRect().width-30;
-          oIframe.style.width = deviceWidth + 'px';
-          let html_text = data.data.html_text;
+          // const deviceWidth = this.$refs.companyStyle.getBoundingClientRect().width-30;
+
+          oIframe.style.height = 'auto';
+          oIframe.style.width = 'auto';
           oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = data.data.html_text||data.data.plain_text;
 
-          const deviceHeight = oIframe.contentDocument.body.scrollHeight ;
-          oIframe.style.height = deviceHeight +'px';
+          this.attachments = data.data.attachments;
+
+
+          // const deviceHeight = oIframe.contentDocument.body.scrollHeight ;
+          const deviceHeight = oIframe.contentWindow.document.body.scrollHeight ;
+          const deviceWidth = oIframe.contentWindow.document.body.scrollWidth ;
+          oIframe.style.width = '100%';
+          console.log('width: '+deviceWidth)
+          console.log('height: '+deviceHeight)
+          oIframe.style.height = deviceHeight + 50 +'px';
+
+
+          console.log(oIframe.contentWindow.document.body.scrollHeight)
+          this.loading = false;
         },(err)=>{
           this.notFond=true;
         });
@@ -259,5 +288,34 @@
   }
 </script>
 <style>
+.attach_box .el-collapse-item__header{
+  font-weight:bold;
+}
+.attach_item{
+  padding-bottom: 20px;
+  width: 110px;
+  padding: 0 2px;
+  margin: 6px 16px 6px 6px;
+  border: 1px solid transparent;
+  float:left;
+}
+  .attach_item:hover{
+    border: 1px solid #e3e4e5;
+    background-color: #f0f1f3;
+  }
+  .attach_type{
 
+    text-align: center;
+    padding: 3px 0;
+    font-size: 12px;
+  }
+  .file-big-icon{
+    background-image: url(../../../assets/img/file-sprite.png);
+    display:inline-block;
+  }
+  .attach_size{
+    text-align: center;
+    padding: 3px 0;
+    font-size: 12px;
+  }
 </style>

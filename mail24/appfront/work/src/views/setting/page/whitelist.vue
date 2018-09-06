@@ -49,7 +49,7 @@
 
 
       <!--新增 签名-->
-      <el-dialog title="添加白名单"  :visible.sync="createFormVisible"  :modal-append-to-body="false">
+      <el-dialog title="添加白名单"  :visible.sync="createFormVisible"  :modal-append-to-body="true">
         <el-form :model="createForm" label-width="100px" :rules="createFormRules" ref="createForm">
           <el-form-item label="邮箱" prop="email" :error="email_error">
             <el-input v-model.trim="createForm.email" auto-complete="off"></el-input>

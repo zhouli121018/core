@@ -27,6 +27,17 @@ Vue.use(Vuex)
 Vue.config.productionTip = false
 
 Vue.component('Menubar', Menubar)
+Vue.filter('mailsize', function (value) {
+  if (!value) return ''
+  let s = (value/1024).toFixed(2);
+  if(s>=1024){
+    s = (s/1024).toFixed(2) + ' M'
+  }else{
+    s = s +' KB'
+  }
+  return s
+
+})
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

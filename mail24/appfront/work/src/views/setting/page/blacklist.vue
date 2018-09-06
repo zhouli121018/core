@@ -48,7 +48,7 @@
       <el-col :span="24" class="toolbar"></el-col>
 
       <!--新增 签名-->
-      <el-dialog title="添加黑名单"  :visible.sync="createFormVisible"  :modal-append-to-body="false">
+      <el-dialog title="添加黑名单"  :visible.sync="createFormVisible"  :close-on-click-modal="false" :append-to-body="true">
         <el-form :model="createForm" label-width="100px" :rules="createFormRules" ref="createForm">
           <el-form-item label="邮箱" prop="email" :error="email_error">
             <el-input v-model.trim="createForm.email" auto-complete="off"></el-input>

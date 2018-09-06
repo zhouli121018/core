@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 
-let host = '/api/api';
+let host = '/api';
 // let host = 'http://192.168.1.39:9999/api';
 //登录
 export const login = params => { return axios.post(`${host}/login/`, params) }
@@ -139,7 +139,7 @@ export const settingSignatureUpdate = (signatureID, params) => { return axios.pa
 // 更新签名默认值
 export const settingSignatureDefaultlSet = params => { return axios.post(`${host}/setting/signatures/set-default/`, params) }
 // 获取单个用户签名
-export const settingSignatureGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/signatures/`+signatureID+'/', params) }
+export const settingSignatureGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/signatures/`+signatureID+'/', { params: params }) }
 // 邮箱意见反馈
 export const settingFeedbackSet = params => { return axios.post(`${host}/setting/users/set-feedback/`, params) }
 
@@ -155,7 +155,7 @@ export const settingWhiteUpdate = (signatureID, params) => { return axios.patch(
 // 更新白名单状态
 export const settingWhiteStatusSet = (signatureID, params) => { return axios.post(`${host}/setting/whiters/`+signatureID+'/set-disabled/', params) }
 // 获取单个白名单
-export const settingWhiteGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/whiters/`+signatureID+'/', params) }
+export const settingWhiteGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/whiters/`+signatureID+'/', { params: params }) }
 
 
 // 获取黑名单
@@ -169,8 +169,39 @@ export const settingBlackUpdate = (signatureID, params) => { return axios.patch(
 // 更新黑名单状态
 export const settingBlackStatusSet = (signatureID, params) => { return axios.post(`${host}/setting/blackers/`+signatureID+'/set-disabled/', params) }
 // 获取单个黑名单
-export const settingBlackGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/blackers/`+signatureID+'/', params) }
+export const settingBlackGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/blackers/`+signatureID+'/', { params: params }) }
 
 
 // 邮件召回
 export const settingZhaohuiGet = params => { return axios.get(`${host}/setting/zhaohui/`, { params: params })}
+// 收件短信通知
+export const settingSmsGet = params => { return axios.get(`${host}/setting/users/get-sms/`, { params: params })}
+// 设置收件短信通知
+export const settingSmsSet = params => { return axios.post(`${host}/setting/users/set-sms/`, params) }
+// 获取收件短信通知白名单
+export const settingSmsWhiterGet = params => { return axios.get(`${host}/setting/smswhiters/`, { params: params })}
+// 创建收件短信通知白名单
+export const settingSmsWhiterCreate = params => { return axios.post(`${host}/setting/smswhiters/`, params)}
+// 删除收件短信通知白名单
+export const settingSmsWhiterDelete = signatureID => { return axios.delete(`${host}/setting/smswhiters/`+signatureID+'/') }
+// 更新收件短信通知白名单
+export const settingSmsWhiterUpdate = (signatureID, params) => { return axios.patch(`${host}/setting/smswhiters/`+signatureID+'/', params) }
+// 更新收件短信通知白名单状态
+export const settingSmsWhiterStatusSet = (signatureID, params) => { return axios.post(`${host}/setting/smswhiters/`+signatureID+'/set-disabled/', params) }
+// 获取单个收件短信通知白名单
+export const settingSmsWhiterGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/smswhiters/`+signatureID+'/', params) }
+
+// 外发邮件中转
+export const settingTransferGet = params => { return axios.get(`${host}/setting/transefers/`, { params: params })}
+export const settingTransferCreate = params => { return axios.post(`${host}/setting/transefers/`, params)}
+export const settingTransferDelete = signatureID => { return axios.delete(`${host}/setting/transefers/`+signatureID+'/') }
+export const settingTransferUpdate = (signatureID, params) => { return axios.patch(`${host}/setting/transefers/`+signatureID+'/', params) }
+export const settingTransferGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/transefers/`+signatureID+'/', { params: params }) }
+
+// 邮箱搬家
+export const settingMovingGet = params => { return axios.get(`${host}/setting/movings/`, { params: params })}
+export const settingMovingCreate = params => { return axios.post(`${host}/setting/movings/`, params)}
+export const settingMovingDelete = signatureID => { return axios.delete(`${host}/setting/movings/`+signatureID+'/') }
+export const settingMovingUpdate = (signatureID, params) => { return axios.patch(`${host}/setting/movings/`+signatureID+'/', params) }
+export const settingMovingGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/movings/`+signatureID+'/', { params: params }) }
+export const settingMovingReceive = (signatureID, params) => { return axios.post(`${host}/setting/movings/`+signatureID+'/receive/', params) }

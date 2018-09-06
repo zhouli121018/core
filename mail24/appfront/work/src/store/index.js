@@ -19,7 +19,7 @@ const store = new Vuex.Store({
     userInfo,
     rememberUserInfo:cookie.getCookie('rememberName'),
     lastUrl:'/',
-    uploadJson:'/api/api/setting/upload-img/'
+    uploadJson:'/api/setting/upload-img/'
   },
   actions,
   mutations,

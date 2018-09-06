@@ -8,24 +8,8 @@
                             <span class=" f-fr j-setting">
                             <el-button  icon="el-icon-setting" circle></el-button></span>
 
-
-                            <!--选择-->
-                            <el-dropdown @command="handleCommand">
-                                <el-button  size="small" plain>
-                                    <span><el-checkbox v-model="checkAll" @change="tabCheckAll"></el-checkbox></span>
-                                    <i class="el-icon-arrow-down el-icon--right"></i>
-                                </el-button>
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-for="item in checkItems" :key="item.id" class="dropdown_item" :class="{ active: checkIndex===item.id }"
-                                    :divided="item.divided" :command="item.id">
-                                    <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: checkIndex===item.id }"></i>
-                                    </b> {{item.text}}
-                                    </el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
-
                             <!--排序-->
-                            <el-dropdown @command="orderHandleCommand">
+                            <el-dropdown @command="orderHandleCommand" placement="bottom-start">
                                 <el-button  size="small" plain>
                                     <span>排序</span>
                                     <i class="el-icon-arrow-down el-icon--right"></i>
@@ -39,7 +23,7 @@
                             </el-dropdown>
 
                             <!--查看-->
-                            <el-dropdown @command="viewHandleCommand">
+                            <el-dropdown @command="viewHandleCommand" placement="bottom-start">
                                 <el-button  size="small" plain>
                                     <span>查看</span>
                                     <i class="el-icon-arrow-down el-icon--right"></i>
@@ -160,7 +144,7 @@
                         <div>
                           <el-table :data="collapseItems[0].lists" style="width: 100%;" class="vertical_align_top maillist"
                               highlight-current-row  @cell-mouse-enter="hoverfn" @cell-mouse-leave="noHover" @cell-click="readMail"
-                                    @selection-change="handleSelectionChange"
+                                    @selection-change="handleSelectionChange"  v-loading="loading"
                             >
                             <el-table-column
                               type="selection"
@@ -191,7 +175,20 @@
 
 
 
-                            <el-table-column  prop="date" label="时间" sortable  width="160" :formatter="formatter"></el-table-column>
+                            <el-table-column class="plan_style" prop="date" label="时间" sortable  width="160"  >
+                              <template slot-scope="scope">
+                                <div class="plan_style">
+                                  {{scope.row.date.replace('T',' ')}}
+                                </div>
+                              </template>
+                            </el-table-column>
+                            <el-table-column class="plan_style" prop="size" label="大小" sortable  width="100" :formatter="formatterSize">
+                              <template slot-scope="scope">
+                                <div class="plan_style">
+                                  {{scope.row.size | mailsize}}
+                                </div>
+                              </template>
+                            </el-table-column>
                           </el-table>
                         </div>
                       </div>
@@ -227,6 +224,7 @@
             subject: '',
             body: ''
           },
+          loading: false,
           sort:'',
           search:'',
           hoverIndex:'',
@@ -317,6 +315,7 @@
     },
     methods:{
       moreSearchfn(){
+        this.loading = true;
         let params = {
           folder:this.boxId,
           limit:this.pageSize,
@@ -332,7 +331,7 @@
         if(this.searchForm.body){
           str += ' body "'+this.searchForm.body+'"';
         }
-        params['search'] = str;
+        if(str){params['search'] = str;}
         getMailMessage(params).then((res)=>{
           this.totalCount = res.data.count;
           var items = res.data.results;
@@ -343,6 +342,7 @@
             items[i].checked = false;
           }
           this.collapseItems[0].lists = items;
+          this.loading = false;
         },(err)=>{
           console.log(err)
         })
@@ -397,6 +397,15 @@
       },
       formatter(row, column) {
         return row.date.replace('T','  ');
+      },
+      formatterSize(row,col){
+        var s = (row.size/1024).toFixed(2);
+        if(s>1024){
+          s = (s/1024).toFixed(2) + ' M'
+        }else{
+          s = s +' KB'
+        }
+        return s
       },
       jumpTo(path,rid){
             router.push({
@@ -514,6 +523,7 @@
           }
       },
       getMessageList(){
+        this.loading = true;
         let params = {
           folder:this.boxId,
           limit:this.pageSize,
@@ -551,8 +561,10 @@
             items[i].checked = false;
           }
           this.collapseItems[0].lists = items;
+          this.loading = false;
         },(err)=>{
           console.log(err)
+          this.loading = false;
         })
       },
       getFloderMsgById(param){
@@ -624,6 +636,7 @@
 </script>
 
 <style>
+
   .maillist.el-table td{
     padding:18px 0;
   }

@@ -104,5 +104,9 @@
   .vertical_align_top td{
     vertical-align:top;
   }
+  .plan_style{
+    font-size: 12px;
+    color: #777;
+  }
 
 </style>

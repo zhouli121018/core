@@ -100,7 +100,7 @@
                       <i class="el-icon-document"></i>
                       <span >[非密] {{f.filename}}</span>
                       <i class="el-icon-check" style="margin:0 5px;color:#26af1e;font-weight:bold;"></i>
-                      <span>{{(f.size/1024).toFixed(2)}} KB</span>
+                      <span class="plan_style">{{f.size | mailsize}}</span>
                       <span class="attach_actions">
                         <el-button size="mini" type="primary" plain @click="delete_attach(f.id,k)">删除</el-button>
                         <el-button size="mini" type="primary" plain>下载</el-button>
@@ -206,7 +206,11 @@
           >
           <el-table-column type="selection"  width="55"></el-table-column>
           <el-table-column prop="filename" label="文件名" ></el-table-column>
-          <el-table-column prop="size" label="文件大小" width="100" :formatter="sizeFormatter"></el-table-column>
+          <el-table-column prop="size" label="文件大小" width="100" >
+            <template slot-scope="scope">
+                <span  class="plan_style">{{scope.row.size | mailsize}}</span>
+            </template>
+          </el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
           <el-button @click="coreFileDialog = false" size="small">取 消</el-button>
