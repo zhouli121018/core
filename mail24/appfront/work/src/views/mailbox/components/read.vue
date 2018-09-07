@@ -81,7 +81,7 @@
                   <div class="mail-top-info">
                       <h3 class="mail-subject j-mail-subject ">
                           <!--<span class="icon"><i class="j-sourceIcon iconfont state-icon icon-SYSTEM" title="系统认证可信任来源"></i></span>-->
-                           {{subject}}
+                           {{subject?subject:'无主题'}}
                       </h3>
                       <div class="short-info f-ellipsis j-short-info" v-show="!showDetails">
                           <a class="j-u-email" href="javascript:void(0);" >{{mfrom}}</a>
@@ -130,7 +130,7 @@
                   <!--<iframe width="100%" id="mail-1534902112297" class="j-mail-content" frameborder="0" allowtransparency="true" sandbox="allow-scripts allow-popups" src="jsp/viewMailHTML.jsp?mid=1%3A1tbiAQAJEFXEqdgAXgADsl&amp;mailCipherPassword=&amp;partId=&amp;isSearch=&amp;priority=&amp;supportSMIME=&amp;striptTrs=true&amp;mboxa=&amp;iframeId=1534902112297&amp;sspurl=false" style="width: 1642px; height: 198px;">-->
                   <!--</iframe>-->
 
-                <iframe   id="show-iframe" frameborder="0" scrolling="auto" height="100%" onload="this.height=this.contentWindow.document.documentElement.scrollHeight"></iframe>
+                <iframe   id="show-iframe" frameborder="0" scrolling="100%" height="auto" width="auto"></iframe>
                 <el-collapse v-model="activeNames" v-if="attachments.length>0" class="attach_box">
                   <el-collapse-item :title="'附件 ('+attachments.length+' 个)'" name="1">
                     <div v-for="a in attachments" class="attach_item">
@@ -254,29 +254,30 @@
           // const deviceWidth = this.$refs.companyStyle.getBoundingClientRect().width-30;
 
           oIframe.style.height = 'auto';
-          oIframe.style.width = 'auto';
+          oIframe.style.width = '100%';
           oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = data.data.html_text||data.data.plain_text;
 
           this.attachments = data.data.attachments;
+          setTimeout(function(){
+            const deviceHeight = oIframe.contentWindow.document.body.offsetHeight ;
+            const deviceWidth = oIframe.contentWindow.document.body.scrollWidth ;
+            oIframe.style.width = deviceWidth + 'px';
+            console.log('width1: '+deviceWidth)
+            console.log('height1: '+deviceHeight)
+            oIframe.style.height = deviceHeight + 46+'px';
+          },100)
 
 
-          // const deviceHeight = oIframe.contentDocument.body.scrollHeight ;
-          const deviceHeight = oIframe.contentWindow.document.body.scrollHeight ;
-          const deviceWidth = oIframe.contentWindow.document.body.scrollWidth ;
-          oIframe.style.width = '100%';
-          console.log('width: '+deviceWidth)
-          console.log('height: '+deviceHeight)
-          oIframe.style.height = deviceHeight + 50 +'px';
 
 
-          console.log(oIframe.contentWindow.document.body.scrollHeight)
           this.loading = false;
         },(err)=>{
           this.notFond=true;
         });
       }
     },
-    mounted:function(){
+    created:function(){
+      console.log('mounted')
       this.getReadMail();
 
     },

@@ -72,7 +72,7 @@
               <span slot="title" title="邮件过滤规则">邮件过滤</span>
             </el-menu-item>
 
-            <el-menu-item index="/setting/relatelist" style="text-align: left">
+            <el-menu-item index="/setting/relatelist" style="text-align: left" v-if="menuShow.setting_relatelist_show">
               <img src="./img/op_sharemailbox.gif" style="width:20px;">
               <span slot="title" title="把邮箱关联共享给其他用户">关联共享邮箱</span>
             </el-menu-item>

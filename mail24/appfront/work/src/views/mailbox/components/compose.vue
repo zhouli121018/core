@@ -30,7 +30,7 @@
                   </el-input>
 
                   <el-tree class="filter-tree" :data="contactList" :props="defaultProps" :filter-node-method="filterNode"
-                   @node-click="selectContact"  accordion ref="tree2">
+                   @node-click="selectContact"  accordion :indent="2" ref="tree2" v-loading="contact_loading">
                   </el-tree>
                 </el-tab-pane>
 
@@ -73,11 +73,20 @@
                     <el-input type="text" value="myself@test.com" readonly auto-complete="off"></el-input>
                   </el-form-item>
 
-                  <el-form-item label="收件人:" @click.native="transform_dialog = true">
+                  <el-form-item label="收件人:" >
                     <div class="padding_15">
-                      <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist" :key="k" :title="v.mailbox"><b>{{v.mailbox}}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v)"></i></div>
-                      <el-autocomplete  class="no_padding"  v-model="state1" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox"
-                        @blur="addMailbox" @focus="insertMailbox=1" placeholder="" @select="handleSelect" :trigger-on-focus="false"></el-autocomplete>
+                        <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist" :key="k" :title="v.mailbox"><b>{{ v.mailbox }}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v)"></i></div>
+                        <el-autocomplete  class="no_padding"  v-model="state1" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox"
+                        @blur="addMailbox" @focus="insertMailbox=1" placeholder="" @select="handleSelect">
+
+                          <!--<template slot-scope="{ item }" :trigger-on-focus="false">-->
+                            <!--<div class="name" style="width:300px;">{{ item.value }}</div>-->
+                          <!--</template>-->
+                        </el-autocomplete>
+
+
+
+                      <el-button class="" @click.native="transform_dialog = true" style="float:right;">选择收件人</el-button>
                     </div>
 
                   </el-form-item>
@@ -183,8 +192,39 @@
       </div>
 
 
-      <el-dialog title="收货地址" :visible.sync="transform_dialog" :append-to-body="true">
+      <el-dialog title="通讯录" :visible.sync="transform_dialog" :append-to-body="true" width="1032px">
+        <el-row  :gutter="20">
+          <el-col :span="6" >
+            <el-tree
 
+              show-checkbox
+              :data="transform_menu"
+              :props="defaultPropsCon">
+            </el-tree>
+          </el-col>
+          <el-col :span="18" style="border-left:1px solid #dcdfe6;">
+            <div>
+              <el-transfer
+                style="text-align: left; display: inline-block"
+                v-model="value4"
+                filterable
+                :titles="['联系人', '选中联系人']"
+
+                :format="{
+                  noChecked: '${total}',
+                  hasChecked: '${checked}/${total}'
+                }"
+
+                :data="transformData">
+                <!--@change="handleChange"-->
+                <span slot-scope="{ option }">{{ option.key }} - {{ option.label }}</span>
+                <el-button class="transfer-footer" slot="left-footer" size="small">操作</el-button>
+                <el-button class="transfer-footer" slot="right-footer" size="small">操作</el-button>
+              </el-transfer>
+            </div>
+          </el-col>
+
+        </el-row>
         <div slot="footer" class="dialog-footer" >
           <el-button @click="transform_dialog = false">取 消</el-button>
           <el-button type="primary" @click="transform_dialog = false">确 定</el-button>
@@ -221,7 +261,8 @@
 
 </template>
 <script>
-  import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach } from '@/api/api'
+  import axios from 'axios';
+  import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach,contactOabDepartsGet } from '@/api/api'
 
   export default {
     props:{
@@ -229,8 +270,58 @@
     },
 
     data(){
+      const generateData = _ => {
+        const data = [];
+        for (let i = 1; i <= 15; i++) {
+          data.push({
+            key: i,
+            label: `备选项 ${ i }`,
+            disabled: false
+          });
+        }
+        console.log(data)
+        return data;
+      };
       return {
-      extraFileUploadParams : {
+        contact_loading:false,
+
+        transform_menu: [{
+          id: 1,
+          label: '个人通讯录',
+          children: []
+        }, {
+          id: 2,
+          label: '组织通讯录',
+          children: [{
+            id: 5,
+            label: '二级 2-1'
+          }, {
+            id: 6,
+            label: '二级 2-2'
+          }]
+        }, {
+          id: 3,
+          label: '公共通讯录',
+          children: [{
+            id: 7,
+            label: '二级 3-1'
+          }, {
+            id: 8,
+            label: '二级 3-2'
+          }]
+        }, {
+          id: 4,
+          label: '其它域通讯录',
+
+        }],
+        defaultPropsCon: {
+          id:'id',
+          label: 'label',
+          children: 'children',
+        },
+        transformData: generateData(),
+        value4: [],
+        extraFileUploadParams : {
                         csrfmiddlewaretoken:this.$store.state.userInfo.token,
                          id:123
                 },
@@ -315,6 +406,32 @@
       };
     },
     methods:{
+      get_transform_menu(){
+        let arr = [];
+        let _this = this;
+        contactPabGroupsGet().then(res=>{
+          arr.push()
+        })
+        axios.all([contactPabGroupsGet(),contactOabDepartsGet()]).then(axios.spread(function (acct, perms) {
+          // 两个请求现在都执行完成
+          let cc =
+          arr[0] = {
+            id:'pab',
+            label:'个人通讯录',
+            children:acct.data.pab_contact_groups
+          }
+          arr[1] = {
+            id:'oab',
+            label:'组织通讯录',
+            children:perms.data.results
+          }
+          _this.transform_menu = arr;
+
+        }))
+      },
+      handleChange(value, direction, movedKeys) {
+        console.log(value, direction, movedKeys);
+      },
       sizeFormatter(row,col){
         return (row.size/1024).toFixed(2) +' KB';
       },
@@ -454,17 +571,6 @@
 
         }
       },
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            console.log(this.ruleForm2.reciver)
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
       onContentChange (val) {
         this.content = this.$refs.editor_id.$data.outContent;
       },
@@ -540,14 +646,14 @@
       },
       createFilter(queryString) {
         return (restaurant) => {
-          return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+          return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) >= 0);
         };
       },
       loadAll() {
         return [
-          { "value": "anna@test.com" },
-          { "value": "lw@test.com" },
-          { "value": "system@domain.com" },
+          { "value": "anna<Anna@test.com>" },
+          { "value": "李威<lw@test.com>" },
+          { "value": "系统<system@domain.com>"  },
         ];
       },
       filterNode(value, data) {
@@ -555,7 +661,6 @@
         return data.label.indexOf(value) !== -1;
       },
       selectContact(data){
-        console.log(data)
         if(!data.children){
           if(this.insertMailbox==1){
           if(!this.hashMail[data.label]){
@@ -574,18 +679,73 @@
       },
       //获取个人通讯录组数据
       getPabGroups(){
-        contactPabMembersGet({"group_id": 0}).then((suc)=>{
-          console.log(suc)
+        let _this = this;
+        let param = {
+          "group_id":0,
+          "page_size":10000,
+          "page":1
+        }
+        contactPabMembersGet(param).then((suc)=>{
+          let arr = [];
+          for(let i=0;i<suc.data.results.length;i++){
+            let o = suc.data.results[i];
+            let obj = {};
+            obj.id = o.contact_id;
+            let str = o.fullname + '<'+o.email+'>';
+            obj.value = str;
+            arr.push(obj);
+          }
+          this.restaurants = arr;
         },(err)=>{
           console.log(err);
+        })
+
+        contactPabGroupsGet().then(res=>{
+          this.contact_loading = true;
+          let resultArr = [];
+          let total = res.data.results[res.data.results.length-1].count;
+          let axiosArr = [];
+          for(let i=0;i<res.data.pab_contact_groups.length;i++){
+            let ob = res.data.pab_contact_groups[i];
+            let param = {
+              "page": 1,
+              "page_size":total,
+              "search": '',
+              "group_id": ob.id,
+              "is_group": 1,
+            };
+            axiosArr.push(contactPabMapsGet(param))
+            resultArr.push({label:ob.label,id:ob.id,children:[]})
+          }
+          axiosArr.push(contactPabMembersGet({"page":1,"page_size":total,"group_id":0,"is_group":0,"search":''}))
+          resultArr.push({label:'未分组联系人',id:0,children:[]})
+
+          axios.all(axiosArr).then(axios.spread(function () {
+            // 所有请求现在都执行完成
+            for(let k = 0;k<arguments.length;k++){
+              let ko = arguments[k];
+              resultArr[k]['label'] += ' （'+ko.data.count+'）'
+              for(let j=0;j<ko.data.results.length;j++){
+                let obj = {};
+                obj.id = ko.data.results[j].contact_id;
+                obj.email = ko.data.results[j].email;
+                obj.fullname = ko.data.results[j].fullname;
+                obj.label = ko.data.results[j].fullname + '<'+ko.data.results[j].email+'>';
+                resultArr[k]['children'].push(obj)
+              }
+            }
+            _this.contactList = resultArr
+            _this.contact_loading = false;
+          }))
         })
       },
 
     },
     mounted() {
-      this.restaurants = this.loadAll();
-      // this.getPabGroups();
+      // this.restaurants = this.loadAll();
+      this.getPabGroups();
       this.getAttachList();
+      this.get_transform_menu();
     },
     computed:{
       uploadJson:function(){

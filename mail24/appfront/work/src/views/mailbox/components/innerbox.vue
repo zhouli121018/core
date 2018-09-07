@@ -382,13 +382,13 @@
           flags:['\\Seen']
         }
         messageFlag(param).then((suc)=>{
-          this.getMessageList();
+          // this.getMessageList();
           this.getFloderMsgById(this.boxId);
           this.$parent.$refs.menubar.getFloderfn();
         },(err)=>{
 
         })
-        this.$parent.getRead({'id':row.uid,'subject':row.subject});
+        this.$parent.getRead({'id':row.uid,'subject':row.subject?row.subject:'无主题'});
 
       },
       handleSelectionChange(val) {

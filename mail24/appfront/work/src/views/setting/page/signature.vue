@@ -43,7 +43,7 @@
       <el-col :span="24" class="toolbar"></el-col>
 
       <!-- 默认签名设置 -->
-      <el-dialog title="默认签名设置"  :visible.sync="defaultSigFormVisible"  :close-on-click-modal="false" :append-to-body="true">
+      <el-dialog title="默认签名设置"  :visible.sync="defaultSigFormVisible"  :append-to-body="true">
         <el-form :model="defaultSigForm" label-width="100px" :rules="defaultSigFormRules" ref="defaultSigForm">
           <el-form-item label="新邮件">
             <el-select v-model="defaultSigForm.default" clearable  style="width: 100%" placeholder="默认不使用签名">
@@ -63,7 +63,7 @@
       </el-dialog>
 
       <!--新增 签名-->
-      <el-dialog title="新增签名"  :visible.sync="createFormVisible"  :close-on-click-modal="false" :append-to-body="true">
+      <el-dialog title="新增签名"  :visible.sync="createFormVisible"   :modal-append-to-body="false">
         <el-form :model="createForm" label-width="100px" :rules="createFormRules" ref="createForm">
           <el-form-item label="签名标题" prop="caption">
             <el-input v-model.trim="createForm.caption" auto-complete="off"></el-input>
@@ -83,7 +83,7 @@
 
 
       <!--更新 签名-->
-      <el-dialog title="修改签名"  :visible.sync="editFormVisible" :close-on-click-modal="false" :append-to-body="true">
+      <el-dialog title="修改签名"  :visible.sync="editFormVisible"  :modal-append-to-body="false">
         <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
           <el-form-item label="签名标题" prop="caption">
             <el-input v-model.trim="editForm.caption" auto-complete="off"></el-input>

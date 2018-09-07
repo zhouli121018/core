@@ -10,7 +10,7 @@ export const welcome = params => { return axios.get(`${host}/core/welcome/`, { p
 //锁屏
 export const lockscreen = params => { return axios.post(`${host}/core/lockscreen/`, { params: params }) }
 // 设置联系人数据
-export const getContactInfo = params => { return axios.get(`${host}/core/contact/`, { params: params }) }
+export const getContactInfo = params => { return axios.get(`${host}/contact/show/`, { params: params }) }
 
 /* ***********************  个人通讯录 *********************** */
 // 获取个人通讯录数据
