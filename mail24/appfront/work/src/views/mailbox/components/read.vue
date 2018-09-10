@@ -246,7 +246,7 @@
           this.notFond = false;
           this.msg = data.data
           this.subject = data.data.subject;
-          this.mfrom = data.data.mfrom[1]+' < '+data.data.mfrom[0]+' > ';
+          if(data.data.mfrom){this.mfrom = data.data.mfrom[1]+' < '+data.data.mfrom[0]+' > ';}
           this.to = data.data.to[0][1]+' < '+data.data.to[0][0]+' > ';
 
           const oIframe = document.getElementById('show-iframe');

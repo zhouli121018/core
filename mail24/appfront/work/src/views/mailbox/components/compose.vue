@@ -409,9 +409,6 @@
       get_transform_menu(){
         let arr = [];
         let _this = this;
-        contactPabGroupsGet().then(res=>{
-          arr.push()
-        })
         axios.all([contactPabGroupsGet(),contactOabDepartsGet()]).then(axios.spread(function (acct, perms) {
           // 两个请求现在都执行完成
           let cc =

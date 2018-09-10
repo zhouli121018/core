@@ -45,11 +45,23 @@
             <li id="cloud">
               <a target="_blank" href="https://cloud.icoremail.net/icmcenter/expCenter/showEvaXT5?userid=1qfUTJjqUn7UT7jmUntU7UjgUexUfJjmUntUa7jWUerUr7UAU1fUrJULUnrUTJjl" style="color:red;font-weight: bold;" data-target="title" data-i18n="main.CommentAward">评价赢大奖</a>
             </li>
-            <li><a target="_blank" href="#" data-i18n="main.Webadmin">后台管理</a></li>
+            <li><a target="_blank" href="#">后台管理</a></li>
             <li><a href="#" class="skin-primary-hover-color f-dn lunkr-bandage f-pr">移动端</a></li>
             <li><a href="#" class="skin-primary-hover-color f-dn f-pr" >即时沟通</a></li>
             <li><a href="#" class="skin-primary-hover-color f-dn j-migrate-mbox" >马上搬家</a></li>
             <li><a href="#" class="skin-primary-hover-color" @click.prevent.stop="lockscreen">锁屏</a></li>
+            <li class="hover_bg_box">
+              <el-dropdown trigger="click" placement="bottom-start" @command="switchShared">
+                <span class="el-dropdown-link" title="切换邮箱账号">
+                  {{this.$store.state.userInfo.name}}<i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item disabled>关联共享邮箱</el-dropdown-item>
+                  <el-dropdown-item v-if="isSharedUser" command="back">返回我的邮箱{{ '<' + mainUsername + '>'}}</el-dropdown-item>
+                  <el-dropdown-item v-if="!isSharedUser" v-for="v in sharedList" :key="v.id" :command="v">{{v.realname + '<' + v.username + '>'}}</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </li>
             <li><a href="#" class="skin-primary-hover-color" @click="logout">退出</a></li>
             <li class="header-divider">
               <a href="javascript:void(0);" class="skin-primary-hover-color history-notification-trigger j-history-notification-trigger unread">
@@ -83,9 +95,13 @@
   import store from '@/store'
   import router from '@/router'
   import cookie from '@/assets/js/cookie';
+  import { settingRelateShared,shareLogin,backLogin } from '@/api/api'
   export default {
     data:function(){
       return {
+        isSharedUser:false,
+        sharedList:[],
+        mainUsername:'',
         activeTab:0,
         tabs:[
           {id:0,title:'我的邮箱',iconclass:'icon-youxiang'},
@@ -102,7 +118,7 @@
         router.push(path)
       },
       goHome(){
-        this.jumpTo('/mailbox');
+        this.jumpTo('/mailbox/welcome');
         this.activeTab = 0;
       },
       changeTab(index){
@@ -140,28 +156,100 @@
           .catch(action => {
 
           });
-      }
+      },
+      getShared(){
+        settingRelateShared().then(suc=>{
+          console.log(suc.data)
+          this.isSharedUser = suc.data.is_shareduser;
+          if(suc.data.is_shareduser){
+            this.mainUsername = suc.data.results.username;
+          }else{
+            this.sharedList = suc.data.results;
+          }
+
+        },(err)=>{
+          console.log(err)
+        })
+      },
+      switchShared(v){
+        console.log(v)
+        let _this = this;
+        if(v == 'back'){
+          backLogin().then(suc=>{
+            cookie.setCookie('name',this.mainUsername,1);
+            cookie.setCookie('token',suc.data.token,1);
+            _this.$store.dispatch('setInfo');
+            this.isSharedUser = false;
+            this.$router.push('/mailbox/welcome')
+            _this.getShared();
+          },err=>{
+            console.log('s')
+            console.log(err)
+          })
+        }else{
+          let param = {"share_id":v.share_id}
+          shareLogin(param).then(suc=>{
+            cookie.setCookie('name',v.username,1);
+            cookie.setCookie('token',suc.data.token,1);
+            _this.$store.dispatch('setInfo');
+            _this.getShared();
+            this.$router.push('/mailbox/welcome')
+          },(err)=>{
+            let str = err.non_field_errors[0] || '切换共享邮箱出错！';
+            _this.$alert(str, '提示：', {
+              confirmButtonText: '确定'}
+            )
+          })
+        }
+
+      },
 
     },
     mounted(){
+      this.getShared();
       if(this.$route.path.indexOf('/mailbox')==0){
-        this.activeTab = 0;
-      }else if(this.$route.path.indexOf('/calendar')==0){
-        this.activeTab = 1;
-      }else if(this.$route.path.indexOf('/file')==0){
-        this.activeTab = 2;
-      }else if(this.$route.path.indexOf('/contact')==0){
-        this.activeTab = 3;
-      }else if(this.$route.path.indexOf('/appcenter')==0){
-        this.activeTab = 4;
-      }else if(this.$route.path.indexOf('/setting')==0){
-        this.activeTab = 5;
+          this.activeTab = 0;
+        }else if(this.$route.path.indexOf('/calendar')==0){
+          this.activeTab = 1;
+        }else if(this.$route.path.indexOf('/file')==0){
+          this.activeTab = 2;
+        }else if(this.$route.path.indexOf('/contact')==0){
+          this.activeTab = 3;
+        }else if(this.$route.path.indexOf('/appcenter')==0){
+          this.activeTab = 4;
+        }else if(this.$route.path.indexOf('/setting')==0){
+          this.activeTab = 5;
+        }
+    },
+    watch:{
+      $route(nv,ov){
+        if(this.$route.path.indexOf('/mailbox')==0){
+          this.activeTab = 0;
+        }else if(this.$route.path.indexOf('/calendar')==0){
+          this.activeTab = 1;
+        }else if(this.$route.path.indexOf('/file')==0){
+          this.activeTab = 2;
+        }else if(this.$route.path.indexOf('/contact')==0){
+          this.activeTab = 3;
+        }else if(this.$route.path.indexOf('/appcenter')==0){
+          this.activeTab = 4;
+        }else if(this.$route.path.indexOf('/setting')==0){
+          this.activeTab = 5;
+        }
       }
     }
   }
 </script>
 
 <style>
+  .hover_bg_box .el-dropdown-link{
+    padding: 4px;
+    color: #333;
+  }
+  .hover_bg_box:hover .el-dropdown-link{
+    background-color: #d4d7d9;
+    border-radius: 2px;
+  }
   .lymain .lybg .bg3{
     background:url(../../assets/img/bg_bottom.jpg) repeat-x bottom;
     background-size: contain;

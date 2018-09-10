@@ -22,6 +22,12 @@ export default {
   },
   setLastUrl (state,path){
     state.lastUrl = path;
+  },
+  setIsCompose (state,param){
+    state.isCompose = param;
+  },
+  setSharedStatus(state,param){
+    state.sharedStatus = param;
   }
 
 

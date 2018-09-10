@@ -205,3 +205,12 @@ export const settingMovingDelete = signatureID => { return axios.delete(`${host}
 export const settingMovingUpdate = (signatureID, params) => { return axios.patch(`${host}/setting/movings/`+signatureID+'/', params) }
 export const settingMovingGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/movings/`+signatureID+'/', { params: params }) }
 export const settingMovingReceive = (signatureID, params) => { return axios.post(`${host}/setting/movings/`+signatureID+'/receive/', params) }
+
+// 关联邮箱共享
+export const settingRelateGet = params => { return axios.get(`${host}/core/shareusers/`, { params: params })}
+export const settingRelateCreate = params => { return axios.post(`${host}/core/shareusers/`, params)}
+export const settingRelateDelete = signatureID => { return axios.delete(`${host}/core/shareusers/`+signatureID+'/') }
+export const settingRelateGetSingle = (signatureID, params) => { return axios.get(`${host}/core/shareusers/`+signatureID+'/', { params: params }) }
+export const settingRelateShared = params => { return axios.get(`${host}/core/shareusers/shared/`, { params: params })}
+export const shareLogin = params => { return axios.post(`${host}/share-login/`,params)};
+export const backLogin = () => { return axios.post(`${host}/back-login/`)};

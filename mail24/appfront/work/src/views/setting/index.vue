@@ -27,12 +27,12 @@
               <span slot="title" title="检查或修改发件时的签名">签名</span>
             </el-menu-item>
 
-            <el-menu-item index="/setting/autoreply" style="text-align: left">
+            <el-menu-item index="/setting/autoreply" style="text-align: left" v-if="menuShow.setting_autoreply_show">
               <img src="./img/op_autoreply.gif" style="width:20px;">
               <span slot="title" title="检查或重新设置自动回复">自动回复</span>
             </el-menu-item>
 
-            <el-menu-item index="/setting/autoforward" style="text-align: left">
+            <el-menu-item index="/setting/autoforward" style="text-align: left" v-if="menuShow.setting_autoforward_show">
               <img src="./img/op_autoforward.gif" style="width:20px;">
               <span slot="title" title="检查或重新设置自动转发">自动转发</span>
             </el-menu-item>
@@ -67,7 +67,7 @@
               <span slot="title" title="查看邮件召回结果">邮件召回记录</span>
             </el-menu-item>
 
-            <el-menu-item index="/setting/filter" style="text-align: left">
+            <el-menu-item index="/setting/filter" style="text-align: left" v-if="menuShow.setting_filter_show">
               <img src="./img/op_filters.gif" style="width:20px;">
               <span slot="title" title="邮件过滤规则">邮件过滤</span>
             </el-menu-item>

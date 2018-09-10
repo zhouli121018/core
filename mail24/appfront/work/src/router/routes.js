@@ -29,7 +29,24 @@ export const rou = [
       {
         path: 'mailbox',
         component: _import('mailbox/mailbox'),
-      }]
+      },
+      {
+        path: 'mailbox/welcome',
+        component: _import('mailbox/mailbox'),
+      },
+      {
+        path: 'mailbox/innerbox',
+        component: _import('mailbox/mailbox'),
+      },
+      {
+        path: 'mailbox/readmail',
+        component: _import('mailbox/mailbox'),
+      },
+      {
+        path: 'mailbox/compose',
+        component: _import('mailbox/mailbox'),
+      },
+    ]
   },
   {
     path: '/calendar',

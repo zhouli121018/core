@@ -12,6 +12,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next)=>{
   // console.log(to,from,next)
+
   store.commit('setLastUrl',from.path)
   // console.log(store.state.lastUrl)
   if (store.state.userInfo.token) {
@@ -29,7 +30,18 @@ router.beforeEach((to, from, next)=>{
         path: '/mailbox',
       });
       return;
+    }else{
+      if(to.path!='/mailbox/innerbox'&&to.path!='/mailbox/readmail'&&to.path!='/mailbox/compose'&&store.state.isCompose){
+        if(confirm('还在写信，确定离开？')){
+          store.commit('setIsCompose',false);
+          next();
+          return;
+        }else{
+          return;
+        }
+      }
     }
+
     next()
   } else {
     //防止无限循环

@@ -178,11 +178,11 @@
                             <el-table-column class="plan_style" prop="date" label="时间" sortable  width="160"  >
                               <template slot-scope="scope">
                                 <div class="plan_style">
-                                  {{scope.row.date.replace('T',' ')}}
+                                  {{(scope.row.internaldate ||scope.row.date).replace('T',' ')}}
                                 </div>
                               </template>
                             </el-table-column>
-                            <el-table-column class="plan_style" prop="size" label="大小" sortable  width="100" :formatter="formatterSize">
+                            <el-table-column class="plan_style" prop="size" label="大小" sortable  width="100">
                               <template slot-scope="scope">
                                 <div class="plan_style">
                                   {{scope.row.size | mailsize}}
@@ -389,7 +389,7 @@
 
         })
         this.$parent.getRead({'id':row.uid,'subject':row.subject?row.subject:'无主题'});
-
+        this.$router.push('/mailbox/readmail')
       },
       handleSelectionChange(val) {
         this.multipleSelection = val;
@@ -397,15 +397,6 @@
       },
       formatter(row, column) {
         return row.date.replace('T','  ');
-      },
-      formatterSize(row,col){
-        var s = (row.size/1024).toFixed(2);
-        if(s>1024){
-          s = (s/1024).toFixed(2) + ' M'
-        }else{
-          s = s +' KB'
-        }
-        return s
       },
       jumpTo(path,rid){
             router.push({
@@ -421,24 +412,6 @@
           this.checkAll=true;
         }else{
           this.checkAll=false;
-        }
-      },
-      tabCheckAll:function(){
-        if(this.checkAll){
-          this.checkIndex=0;
-          for(var i=0;i<this.collapseItems.length;i++){
-              for(var k=0;k<this.collapseItems[i].lists.length;k++){
-                  this.collapseItems[i].lists[k].checked = true;
-
-              }
-          }
-        }else{
-          this.checkIndex='';
-          for(var i=0;i<this.collapseItems.length;i++){
-              for(var k=0;k<this.collapseItems[i].lists.length;k++){
-                  this.collapseItems[i].lists[k].checked = false;
-              }
-          }
         }
       },
       orderHandleCommand:function(index){
