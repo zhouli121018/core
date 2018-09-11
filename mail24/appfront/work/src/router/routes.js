@@ -65,7 +65,11 @@ export const rou = [
       {
         path: 'file',
         component: _import('file/index'),
-
+        children:[
+          {path:'/',redirect:'pfile'},
+          {path:'pfile',component:_import('file/pfile')},
+          {path:'afile',component:_import('file/afile')},
+        ]
       }]
   },
   {

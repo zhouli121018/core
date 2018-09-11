@@ -9,15 +9,8 @@
         </div>
 
         <el-row>
-          <el-tree
-            :data="pab_groups"
-            :props="pab_defaultProps"
-            highlight-current
-            node-key="id"
-            :default-expanded-keys="default_expanded_keys"
-            :default-checked-keys="default_checked_keys"
-            @node-click="oab_handleNodeClick"
-            ref="treeForm">
+          <el-tree :data="pab_groups" :props="pab_defaultProps" highlight-current node-key="id"
+                   :default-expanded-keys="default_expanded_keys" :default-checked-keys="default_checked_keys" @node-click="f_TreeNodeClick" ref="treeForm">
             <table class="custom-tree-node" slot-scope="{ node, data }" style="margin-left: -5px;">
               <tr>
                 <td style="text-align: left;"><span class="text_slice" style="float: left" :title="node.label">{{ node.label }}</span></td>
@@ -87,20 +80,15 @@
               <el-button type="danger" @click="Oab_delete_select" :disabled="this.sels.length===0" size="mini"> 批量删除</el-button>
             </el-col>
             <el-col :span="12" >
-              <el-pagination layout="total, sizes, prev, pager, next, jumper"
-                             @size-change="Oab_handleSizeChange"
-                             @current-change="Oab_handleCurrentChange"
-                             :page-sizes="[15, 30, 50, 100]"
-                             :current-page="page"
-                             :page-size="page_size"
-                             :total="total" style="float: right">
+              <el-pagination layout="total, sizes, prev, pager, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange"
+                             :page-sizes="[15, 30, 50, 100]" :current-page="page" :page-size="page_size" :total="total" style="float: right">
               </el-pagination>
             </el-col>
           </el-row>
 
           <!--列表-->
-          <el-table :data="oab_tables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>
-            <!--<el-table :data="oab_tables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
+          <el-table :data="listTables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
+            <!--<el-table :data="listTables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
             <el-table-column type="selection" width="60"></el-table-column>
             <el-table-column type="index" label="No." width="80"></el-table-column>
             <el-table-column prop="fullname" label="姓名"></el-table-column>
@@ -477,7 +465,7 @@
         page_size: 15,
         listLoading: false,
         sels: [],//列表选中列
-        oab_tables: [],
+        listTables: [],
 
         // groupname错误信息展示
         pab_groupname_error:'',
@@ -651,7 +639,7 @@
         if (this.pab_cid >0){
           contactPabMapsGet(param).then((res) => {
             this.total = res.data.count;
-            this.oab_tables = res.data.results;
+            this.listTables = res.data.results;
             this.pab_iscan_distribute = res.data.pab_iscan_distribute;
             this.listLoading = false;
             //NProgress.done();
@@ -659,7 +647,7 @@
         } else {
           contactPabMembersGet(param).then((res) => {
             this.total = res.data.count;
-            this.oab_tables = res.data.results;
+            this.listTables = res.data.results;
             this.pab_iscan_distribute = res.data.pab_iscan_distribute;
             this.listLoading = false;
             //NProgress.done();
@@ -679,7 +667,7 @@
         if (this.pab_cid >0){
           contactPabMapsGet(param).then((res) => {
             this.total = res.data.count;
-            this.oab_tables = res.data.results;
+            this.listTables = res.data.results;
             this.pab_iscan_distribute = res.data.pab_iscan_distribute;
             this.listLoading = false;
             //NProgress.done();
@@ -687,7 +675,7 @@
         } else {
           contactPabMembersGet(param).then((res) => {
             this.total = res.data.count;
-            this.oab_tables = res.data.results;
+            this.listTables = res.data.results;
             this.pab_iscan_distribute = res.data.pab_iscan_distribute;
             this.listLoading = false;
             //NProgress.done();
@@ -695,7 +683,7 @@
         }
       },
       // 右侧菜单 联系组改变
-      oab_handleNodeClick(data) {
+      f_TreeNodeClick(data) {
         this.page = 1;
         this.pab_cid = data.id;
         if ( data.id == 0 ){
@@ -708,17 +696,17 @@
         this.getPabMembers();
       },
       // 列表选中改变
-      Oab_selsChange: function (sels) {
+      f_TableSelsChange: function (sels) {
         this.sels = sels;
       },
       // 每页数目改变
-      Oab_handleSizeChange(val) {
+      f_TableSizeChange(val) {
         this.page_size = val;
         this.getPabMembers();
         // console.log(`当前页: ${val}`);
       },
       // 翻页改变
-      Oab_handleCurrentChange(val) {
+      f_TableCurrentChange(val) {
         this.page = val;
         this.getPabMembers();
       },

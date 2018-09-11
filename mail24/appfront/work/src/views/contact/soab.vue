@@ -5,30 +5,12 @@
       <div class="wrapper u-scroll top0">
         <input type="hidden" v-model="soab_domain_cid"/>
         <input type="hidden" v-model="soab_cid"/>
-
         <el-select v-model="soab_domain_cid" placeholder="请选择" @change="soabChangeDomain">
-          <el-option
-            v-for="item in soab_domain_options"
-            :key="item.id"
-            :label="item.label"
-            :value="item.id">
-          </el-option>
+          <el-option v-for="item in soab_domain_options" :key="item.id" :label="item.label" :value="item.id"></el-option>
         </el-select>
-
-        <el-tree
-          class="filter-tree"
-          :data="oab_departs"
-          :props="oab_defaultProps"
-          :render-after-expand="true"
-          :highlight-current="true"
-          node-key="id"
-          :indent="13"
-          :default-expanded-keys="default_expanded_keys"
-          :default-checked-keys="default_checked_keys"
-          @node-click="oab_handleNodeClick"
-          ref="treeForm">
+        <el-tree class="filter-tree" :data="oab_departs" :props="oab_defaultProps" :render-after-expand="true" :highlight-current="true" node-key="id" :indent="13"
+                 :default-expanded-keys="default_expanded_keys" :default-checked-keys="default_checked_keys" @node-click="f_TreeNodeClick" ref="treeForm">
         </el-tree>
-
       </div>
     </aside>
 
@@ -69,20 +51,15 @@
               <el-button type="info" @click="Oab_to_pab" :disabled="this.sels.length===0" size="mini"> 添加至个人通讯录</el-button>
             </el-col>
             <el-col :span="12">
-              <el-pagination layout="total, sizes, prev, pager, next, jumper"
-                             @size-change="Oab_handleSizeChange"
-                             @current-change="Oab_handleCurrentChange"
-                             :page-sizes="[15, 30, 50, 100]"
-                             :current-page="page"
-                             :page-size="page_size"
-                             :total="total" style="float: right">
+              <el-pagination layout="total, sizes, prev, pager, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange"
+                             :page-sizes="[15, 30, 50, 100]" :current-page="page" :page-size="page_size" :total="total" style="float: right">
               </el-pagination>
             </el-col>
           </el-row>
 
           <!--列表-->
-          <el-table :data="oab_tables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>
-            <!--<el-table :data="oab_tables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
+          <el-table :data="listTables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
+            <!--<el-table :data="listTables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
             <el-table-column type="selection" width="50"></el-table-column>
             <el-table-column type="index" label="No." width="60"></el-table-column>
             <el-table-column prop="name" label="姓名" width="200"></el-table-column>
@@ -129,7 +106,7 @@
         page_size: 15,
         listLoading: false,
         sels: [],//列表选中列
-        oab_tables: [],
+        listTables: [],
         department_name: ""
       };
     },
@@ -193,7 +170,7 @@
         this.listLoading = true;
         contactSoabMembersGet(param).then((res) => {
           this.total = res.data.count;
-          this.oab_tables = res.data.results;
+          this.listTables = res.data.results;
           this.listLoading = false;
           //NProgress.done();
         });
@@ -214,29 +191,29 @@
         this.listLoading = true;
         contactSoabMembersGet(param).then((res) => {
           this.total = res.data.count;
-          this.oab_tables = res.data.results;
+          this.listTables = res.data.results;
           this.listLoading = false;
           //NProgress.done();
         });
       },
 
-      oab_handleNodeClick(data) {
+      f_TreeNodeClick(data) {
         this.page = 1;
         this.soab_cid = data.id;
         this.department_name = data.label;
         window.sessionStorage['soab_cid'] = data.id;
         this.getSoabMembers();
       },
-      Oab_handleSizeChange(val) {
+      f_TableSizeChange(val) {
         this.page_size = val;
         this.getSoabMembers();
         // console.log(`当前页: ${val}`);
       },
-      Oab_handleCurrentChange(val) {
+      f_TableCurrentChange(val) {
         this.page = val;
         this.getSoabMembers();
       },
-      Oab_selsChange: function (sels) {
+      f_TableSelsChange: function (sels) {
         this.sels = sels;
       },
       Oab_send_to_select: function () {

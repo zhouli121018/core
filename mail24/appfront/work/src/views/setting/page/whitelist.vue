@@ -12,16 +12,11 @@
 
       <el-row class="toolbar">
         <el-col :span="12">
-          <el-button type="primary" @click="createWhiter" size="mini">添加白名单</el-button>
+          <el-button type="primary" @click="createFormShow" size="mini">添加白名单</el-button>
         </el-col>
         <el-col :span="12" >
-          <el-pagination layout="total, sizes, prev, pager, next, jumper"
-                         @size-change="f_TableSizeChange"
-                         @current-change="f_TableCurrentChange"
-                         :page-sizes="[15, 30, 50, 100]"
-                         :current-page="page"
-                         :page-size="page_size"
-                         :total="total" style="float: right">
+          <el-pagination layout="total, sizes, prev, pager, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange"
+                         :page-sizes="[15, 30, 50, 100]" :current-page="page" :page-size="page_size" :total="total" style="float: right">
           </el-pagination>
         </el-col>
       </el-row>
@@ -38,9 +33,9 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="editWhiter(scope.$index, scope.row)" type="warning" v-if="scope.row.disabled=='-1'">禁用</el-button>
-            <el-button size="mini" @click="editWhiter(scope.$index, scope.row)" type="primary" v-if="scope.row.disabled=='1'">启用</el-button>
-            <el-button type="danger" size="mini" @click="delWhiter(scope.$index, scope.row)">删除</el-button>
+            <el-button size="mini" @click="updateRowStatus(scope.$index, scope.row)" type="warning" v-if="scope.row.disabled=='-1'">禁用</el-button>
+            <el-button size="mini" @click="updateRowStatus(scope.$index, scope.row)" type="primary" v-if="scope.row.disabled=='1'">启用</el-button>
+            <el-button type="danger" size="mini" @click="deleteRow(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -135,7 +130,7 @@
         });
       },
 
-      createWhiter: function () {
+      createFormShow: function () {
         this.createForm = Object.assign({}, this.createForm);
         this.createFormLoading = false;
         this.createFormVisible = true;
@@ -168,7 +163,7 @@
           }
         });
       },
-      editWhiter: function (index, row) {
+      updateRowStatus: function (index, row) {
         let that = this;
         var msg, disabled, message;
         if (row.disabled == '-1') {
@@ -193,7 +188,7 @@
             });
         });
       },
-      delWhiter: function (index, row) {
+      deleteRow: function (index, row) {
         let that = this;
         this.$confirm('确认删除该白名单吗?', '提示', {
           type: 'warning'

@@ -214,3 +214,11 @@ export const settingRelateGetSingle = (signatureID, params) => { return axios.ge
 export const settingRelateShared = params => { return axios.get(`${host}/core/shareusers/shared/`, { params: params })}
 export const shareLogin = params => { return axios.post(`${host}/share-login/`,params)};
 export const backLogin = () => { return axios.post(`${host}/back-login/`)};
+
+// 内容过滤
+export const settingFilterGet = params => { return axios.get(`${host}/setting/filters/`, { params: params })}
+export const settingFilterCreate = params => { return axios.post(`${host}/setting/filters/`, params)}
+export const settingFilterDelete = signatureID => { return axios.delete(`${host}/setting/filters/`+signatureID+'/') }
+export const settingFilterUpdate = (signatureID, params) => { return axios.patch(`${host}/setting/filters/`+signatureID+'/', params) }
+export const settingFilterGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/filters/`+signatureID+'/', { params: params }) }
+

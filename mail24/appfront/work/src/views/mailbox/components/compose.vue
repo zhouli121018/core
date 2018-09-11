@@ -77,7 +77,7 @@
                     <div class="padding_15">
                         <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist" :key="k" :title="v.mailbox"><b>{{ v.mailbox }}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v)"></i></div>
                         <el-autocomplete  class="no_padding"  v-model="state1" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox"
-                        @blur="addMailbox" @focus="insertMailbox=1" placeholder="" @select="handleSelect">
+                        @blur="addMailbox" @focus="insertMailbox=1" placeholder="" @select="handleSelect" :trigger-on-focus="false">
 
                           <!--<template slot-scope="{ item }" :trigger-on-focus="false">-->
                             <!--<div class="name" style="width:300px;">{{ item.value }}</div>-->
@@ -94,7 +94,7 @@
                     <div class="padding_15">
                       <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_copyer" :key="k" :title="v.mailbox"><b>{{v.mailbox}}</b><i class="el-icon-close" @click="deleteMailboxForKey_copyer(k,v)"></i></div>
                       <el-autocomplete  class="no_padding" v-model="state_copyer" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox_copyer"
-                        @blur="addMailbox_copyer" @focus="insertMailbox=2" placeholder=""  @select="handleSelect_copyer" ></el-autocomplete>
+                        @blur="addMailbox_copyer" @focus="insertMailbox=2" placeholder=""  @select="handleSelect_copyer" :trigger-on-focus="false"></el-autocomplete>
                     </div>
                   </el-form-item>
                   <el-form-item label="主  题:" prop="subject">
@@ -645,13 +645,6 @@
         return (restaurant) => {
           return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) >= 0);
         };
-      },
-      loadAll() {
-        return [
-          { "value": "anna<Anna@test.com>" },
-          { "value": "李威<lw@test.com>" },
-          { "value": "系统<system@domain.com>"  },
-        ];
       },
       filterNode(value, data) {
         if (!value) return true;

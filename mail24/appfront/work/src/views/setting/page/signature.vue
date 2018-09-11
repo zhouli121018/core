@@ -9,7 +9,7 @@
 
       <el-row class="toolbar">
         <el-col :span="12">
-          <el-button type="primary" @click="createSig" size="mini">添加签名</el-button>
+          <el-button type="primary" @click="createFormShow" size="mini">添加签名</el-button>
           <el-button type="success" @click="setDefaultSig" size="mini">设置默认签名</el-button>
         </el-col>
         <el-col :span="12">
@@ -34,8 +34,8 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="editSig(scope.$index, scope.row)">修改</el-button>
-            <el-button type="danger" size="mini" @click="delSig(scope.$index, scope.row)">删除</el-button>
+            <el-button size="mini" @click="updateFormShow(scope.$index, scope.row)">修改</el-button>
+            <el-button type="danger" size="mini" @click="deleteRow(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -83,20 +83,20 @@
 
 
       <!--更新 签名-->
-      <el-dialog title="修改签名"  :visible.sync="editFormVisible"  :modal-append-to-body="false">
-        <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
+      <el-dialog title="修改签名"  :visible.sync="updateFormVisible"  :modal-append-to-body="false">
+        <el-form :model="updateForm" label-width="100px" :rules="updateFormRules" ref="updateForm">
           <el-form-item label="签名标题" prop="caption">
-            <el-input v-model.trim="editForm.caption" auto-complete="off"></el-input>
+            <el-input v-model.trim="updateForm.caption" auto-complete="off"></el-input>
           </el-form-item>
 
           <el-form-item label="签名内容" prop="content">
-            <editor id="editor_id2" ref="editor_id2" height="400px" maxWidth="100%" width="100%" :content="editForm.content"
+            <editor id="editor_id2" ref="editor_id2" height="400px" maxWidth="100%" width="100%" :content="updateForm.content"
                     pluginsPath="/static/kindeditor/plugins/" :uploadJson="uploadJson"  :loadStyleMode="false" :items="toolbarItems" @on-content-change="editContentChange"></editor>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="editFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="editFormSubmit()" :loading="editFormLoading">提交</el-button>
+          <el-button @click.native="updateFormVisible = false">取消</el-button>
+          <el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -140,10 +140,10 @@
           content: [{ required: true, message: '请填写签名内容', trigger: 'blur' }],
         },
 
-        editFormVisible: false,
-        editFormLoading: false,
-        editForm: {caption: '', content: ''},
-        editFormRules: {
+        updateFormVisible: false,
+        updateFormLoading: false,
+        updateForm: {caption: '', content: ''},
+        updateFormRules: {
           caption: [{ required: true, message: '请填写签名标题', trigger: 'blur' }],
           content: [{ required: true, message: '请填写签名内容', trigger: 'blur' }],
         },
@@ -159,14 +159,16 @@
         this.createForm.content = val;
       },
       editContentChange (val) {
-        this.editForm.content = val;
+        this.updateForm.content = val;
       },
       getTables: function(){
+        this.listLoading = true;
         settingSignatureGet().then(res=>{
           this.total = res.data.total;
           this.listTables = res.data.results;
           this.defaultSigForm = res.data.defaults;
           this.default_content = res.data.default_content;
+          this.listLoading = false;
         });
       },
       setDefaultSig: function(){
@@ -196,7 +198,7 @@
           }
         });
       },
-      createSig: function(){
+      createFormShow: function(){
         let form =this.createForm;
         form.content = this.htmlDecodeByRegExp(this.default_content);
         this.createForm = Object.assign({}, form);
@@ -257,26 +259,26 @@
         s = s.replace(/&quot;/g,"\"");
         return s;
       },
-      editSig: function (index, row) {
+      updateFormShow: function (index, row) {
         settingSignatureGetSingle(row.id).then(res=>{
           let form = Object.assign({}, res.data);
           form.content = this.htmlDecodeByRegExp(form.content);
-          this.editForm = form;
-          this.editFormVisible = true;
-          this.editFormLoading = false;
+          this.updateForm = form;
+          this.updateFormVisible = true;
+          this.updateFormLoading = false;
         });
       },
-      editFormSubmit: function(){
-        this.$refs.editForm.validate((valid) => {
+      updateFormSubmit: function(){
+        this.$refs.updateForm.validate((valid) => {
           if (valid) {
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
-              this.editFormLoading = true;
-              let para = Object.assign({}, this.editForm);
+              this.updateFormLoading = true;
+              let para = Object.assign({}, this.updateForm);
               settingSignatureUpdate(para.id, para)
                 .then((res) => {
-                  this.$refs['editForm'].resetFields();
-                  this.editFormLoading = false;
-                  this.editFormVisible = false;
+                  this.$refs['updateForm'].resetFields();
+                  this.updateFormLoading = false;
+                  this.updateFormVisible = false;
                   this.$message({message: '提交成功', type: 'success'});
                   this.getTables();
                 }, (data)=>{
@@ -291,7 +293,7 @@
       },
 
 
-      delSig: function (index, row) {
+      deleteRow: function (index, row) {
         let that = this;
         this.$confirm('确认删除该签名吗?', '提示', {
           type: 'warning'

@@ -2,7 +2,11 @@
   <div class="j-module-content j-maillist mllist-list height100 ">
     <el-row class="" style="padding: 0px;">
       <el-col :span="24" class="breadcrumb-container">
-        <el-breadcrumb separator="/"><el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item><el-breadcrumb-item><a href="#">设置中心</a></el-breadcrumb-item><el-breadcrumb-item>邮箱搬家</el-breadcrumb-item></el-breadcrumb>
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item><a href="#">设置中心</a></el-breadcrumb-item>
+          <el-breadcrumb-item>邮箱搬家</el-breadcrumb-item>
+        </el-breadcrumb>
       </el-col>
     </el-row>
 
@@ -16,7 +20,8 @@
           <el-button type="success" @click="receiveALL" size="mini">收取所有邮件</el-button>
         </el-col>
         <el-col :span="12" >
-          <el-pagination layout="total, sizes, prev, pager, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange" :page-sizes="[15, 30, 50, 100]" :current-page="page" :page-size="page_size" :total="total" style="float: right"></el-pagination>
+          <el-pagination layout="total, sizes, prev, pager, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange"
+                         :page-sizes="[15, 30, 50, 100]" :current-page="page" :page-size="page_size" :total="total" style="float: right"></el-pagination>
         </el-col>
       </el-row>
 
@@ -27,7 +32,10 @@
         <el-table-column prop="protocol" label="协议"></el-table-column>
         <el-table-column prop="desc" label="任务信息"></el-table-column>
         <el-table-column label="激活状态">
-          <template slot-scope="scope"><i class="el-alert--success el-alert__icon el-icon-success" v-if="scope.row.disabled=='-1'"></i><i class="el-alert--error el-alert__icon el-icon-error" v-if="scope.row.disabled=='1'"></i></template>
+          <template slot-scope="scope">
+            <i class="el-alert--success el-alert__icon el-icon-success" v-if="scope.row.disabled=='-1'"></i>
+            <i class="el-alert--error el-alert__icon el-icon-error" v-if="scope.row.disabled=='1'">
+            </i></template>
         </el-table-column>
         <el-table-column prop="status" label="迁移状态"></el-table-column>
         <el-table-column prop="updated" label="最后收取时间"></el-table-column>
@@ -44,11 +52,24 @@
       <!--新增 -->
       <el-dialog title="添加"  :visible.sync="createFormVisible" :close-on-click-modal="false" :append-to-body="true">
         <el-form :model="createForm" label-width="170px" :rules="createFormRules" ref="createForm" size="mini">
-          <el-form-item label="接收邮件服务器(IMAP)" prop="server"><el-input v-model.trim="createForm.server" auto-complete="off"></el-input></el-form-item>
+          <el-form-item label="接收邮件服务器(IMAP)" prop="server">
+            <el-input v-model.trim="createForm.server" auto-complete="off"></el-input>
+          </el-form-item>
           <el-form-item label="搬家协议">IMAP</el-form-item>
-          <el-form-item label="搬家邮箱地址" prop="account" :error="account_error"><el-input v-model.trim="createForm.account" auto-complete="off"></el-input></el-form-item>
-          <el-form-item label="对应密码" prop="password"><el-input v-model.trim="createForm.password" auto-complete="off" type="password"></el-input><small>请输入以上邮箱对应的密码，有些邮件服务商只允许第三方客户端用"授权码"登录，则需要改为输入该服务商提供的"授权码"</small></el-form-item>
-          <el-form-item label="ssl"><el-radio-group v-model="createForm.ssl"><el-radio label="1">是</el-radio><el-radio label="-1">否</el-radio></el-radio-group><br><small>ssl方式登录，是否勾选此项请咨询对方服务器商了解设置要求</small></el-form-item>
+          <el-form-item label="搬家邮箱地址" prop="account" :error="account_error">
+            <el-input v-model.trim="createForm.account" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="对应密码" prop="password">
+            <el-input v-model.trim="createForm.password" auto-complete="off" type="password"></el-input>
+            <small>请输入以上邮箱对应的密码，有些邮件服务商只允许第三方客户端用"授权码"登录，则需要改为输入该服务商提供的"授权码"</small>
+          </el-form-item>
+          <el-form-item label="ssl">
+            <el-radio-group v-model="createForm.ssl">
+              <el-radio label="1">是</el-radio>
+              <el-radio label="-1">否</el-radio>
+            </el-radio-group>
+            <br><small>ssl方式登录，是否勾选此项请咨询对方服务器商了解设置要求</small>
+          </el-form-item>
           <el-form-item label="迁移目录">
             <el-radio-group v-model="createForm.folder">
               <el-radio label="all">收取所有邮件</el-radio>
@@ -56,17 +77,32 @@
             </el-radio-group>
           </el-form-item>
         </el-form>
-        <div slot="footer" class="dialog-footer"><el-button @click.native="createFormVisible = false">取消</el-button><el-button type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">提交</el-button></div>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click.native="createFormVisible = false">取消</el-button>
+          <el-button type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">提交</el-button>
+        </div>
       </el-dialog>
 
       <!--修改 -->
       <el-dialog title="修改"  :visible.sync="updateFormVisible" :close-on-click-modal="false" :append-to-body="true">
         <el-form :model="updateForm" label-width="170px" :rules="updateFormRules" ref="updateForm" size="mini">
-          <el-form-item label="接收邮件服务器(IMAP)" prop="server"><el-input v-model.trim="updateForm.server" auto-complete="off"></el-input></el-form-item>
+          <el-form-item label="接收邮件服务器(IMAP)" prop="server">
+            <el-input v-model.trim="updateForm.server" auto-complete="off"></el-input>
+          </el-form-item>
           <el-form-item label="搬家协议">IMAP</el-form-item>
-          <el-form-item label="搬家邮箱地址" prop="account" :error="account_error"><el-input v-model.trim="updateForm.account" auto-complete="off"></el-input></el-form-item>
-          <el-form-item label="对应密码" prop="password"><el-input v-model.trim="updateForm.password" auto-complete="off" type="password"></el-input><small>请输入以上邮箱对应的密码，有些邮件服务商只允许第三方客户端用"授权码"登录，则需要改为输入该服务商提供的"授权码"</small></el-form-item>
-          <el-form-item label="ssl"><el-radio-group v-model="updateForm.ssl"><el-radio label="1">是</el-radio><el-radio label="-1">否</el-radio></el-radio-group><br><small>ssl方式登录，是否勾选此项请咨询对方服务器商了解设置要求</small></el-form-item>
+          <el-form-item label="搬家邮箱地址" prop="account" :error="account_error">
+            <el-input v-model.trim="updateForm.account" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="对应密码" prop="password">
+            <el-input v-model.trim="updateForm.password" auto-complete="off" type="password"></el-input>
+            <small>请输入以上邮箱对应的密码，有些邮件服务商只允许第三方客户端用"授权码"登录，则需要改为输入该服务商提供的"授权码"</small>
+          </el-form-item>
+          <el-form-item label="ssl">
+            <el-radio-group v-model="updateForm.ssl">
+              <el-radio label="1">是</el-radio>
+              <el-radio label="-1">否</el-radio>
+            </el-radio-group>
+            <br><small>ssl方式登录，是否勾选此项请咨询对方服务器商了解设置要求</small></el-form-item>
           <el-form-item label="迁移目录">
             <el-radio-group v-model="updateForm.folder">
               <el-radio label="all">收取所有邮件</el-radio>
@@ -74,7 +110,10 @@
             </el-radio-group>
           </el-form-item>
         </el-form>
-        <div slot="footer" class="dialog-footer"><el-button @click.native="updateFormVisible = false">取消</el-button><el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">提交</el-button></div>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click.native="updateFormVisible = false">取消</el-button>
+          <el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">提交</el-button>
+        </div>
       </el-dialog>
 
     </section>
