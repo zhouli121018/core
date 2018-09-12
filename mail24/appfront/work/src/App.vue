@@ -108,5 +108,8 @@
     font-size: 12px;
     color: #777;
   }
+  .text-center{
+    text-align:center;
+  }
 
 </style>

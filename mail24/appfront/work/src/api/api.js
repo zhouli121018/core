@@ -104,6 +104,10 @@ export const postAttach = (params) => {
 export const deleteAttach = params => {return axios.delete(`${host}/mail/attach/${params}/`)};
 //获取附件列表 /api/mail/attach/
 export const getAttach = params => { return axios.get(`${host}/mail/attach/`, { params: params }) };
+//发信/存草稿 /api/mail/message/sent/
+export const mailSent = params =>{ return axios.post(`${host}/mail/message/sent/`,params) };
+//下载附件 /api/mail/attach/{id}/
+export const downloadAttach = params => { return axios.get(`${host}/mail/attach/0`, { params: params,responseType:'blob' }) };
 
 
 

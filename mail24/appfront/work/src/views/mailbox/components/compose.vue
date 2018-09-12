@@ -9,10 +9,10 @@
                 </div>
             </div>
 
-            <el-button size="small" type="primary">发送</el-button>
+            <el-button size="small" type="primary" @click="sentMail('sent')">发送</el-button>
             <el-button-group >
               <el-button size="small" @click="preview">预览</el-button>
-              <el-button size="small">存草稿</el-button>
+              <el-button size="small" @click="sentMail('save_draft')">存草稿</el-button>
             </el-button-group>
 
              <el-button  size="small" plain>
@@ -70,7 +70,7 @@
               <div class="form-tt compose_title">
                 <el-form size="mini" inline-message :model="ruleForm2" status-icon ref="ruleForm2" label-width="80px" class="demo-ruleForm" style="font-size:16px;">
                   <el-form-item label="发件人:">
-                    <el-input type="text" value="myself@test.com" readonly auto-complete="off"></el-input>
+                    <el-input type="text" :value="this.$parent.username" readonly auto-complete="off"></el-input>
                   </el-form-item>
 
                   <el-form-item label="收件人:" >
@@ -90,7 +90,7 @@
                     </div>
 
                   </el-form-item>
-                  <el-form-item label="抄   送:" prop="copyer">
+                  <el-form-item label="抄   送:" prop="cc">
                     <div class="padding_15">
                       <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_copyer" :key="k" :title="v.mailbox"><b>{{v.mailbox}}</b><i class="el-icon-close" @click="deleteMailboxForKey_copyer(k,v)"></i></div>
                       <el-autocomplete  class="no_padding" v-model="state_copyer" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox_copyer"
@@ -100,7 +100,7 @@
                   <el-form-item label="主  题:" prop="subject">
                     <el-input v-model="ruleForm2.subject"></el-input>
                   </el-form-item>
-                  <el-form-item label="密  级:" prop="secret">
+                  <el-form-item label="密  级:" prop="secret" v-if="false">
                     <el-input v-model.number="ruleForm2.secret" readonly></el-input>
                   </el-form-item>
 
@@ -162,9 +162,7 @@
                 <!--<div v-html="content"></div>-->
 
                 <editor id="editor_id" ref="editor_id" height="400px" width="100%" :content="content"
-                    :afterChange="afterChange"
                     pluginsPath="/static/kindeditor/plugins/"
-
                     :loadStyleMode="false" :items="toolbarItems" :uploadJson="uploadJson"
                     @on-content-change="onContentChange"  :autoHeightMode="false">
 
@@ -173,17 +171,17 @@
               </div>
               <div class="form-toolbar compose_footer">
                 <div>
-                  <el-checkbox v-model="number_sign">数字签名</el-checkbox>
-                  <el-checkbox v-model="safe_secret">安全加密</el-checkbox>
+                  <el-checkbox>数字签名</el-checkbox>
+                  <el-checkbox >安全加密</el-checkbox>
                 </div>
                 <div class="bt-hd-wrap">
-                  <el-checkbox v-model="number_sign">保存到"已发送"</el-checkbox>
-                  <el-checkbox v-model="safe_secret">设为"紧急"</el-checkbox>
-                  <el-checkbox v-model="number_sign">已读回执</el-checkbox>
-                  <el-checkbox v-model="safe_secret">定时发送</el-checkbox>
-                  <el-checkbox v-model="number_sign">阅后即焚</el-checkbox>
-                  <el-checkbox v-model="safe_secret">邮件加密</el-checkbox>
-                  <el-checkbox v-model="number_sign">禁止转发</el-checkbox>
+                  <el-checkbox v-model="ruleForm2.is_save_sent">保存到"已发送"</el-checkbox>
+                  <el-checkbox >设为"紧急"</el-checkbox>
+                  <el-checkbox >已读回执</el-checkbox>
+                  <el-checkbox >定时发送</el-checkbox>
+                  <el-checkbox >阅后即焚</el-checkbox>
+                  <el-checkbox >邮件加密</el-checkbox>
+                  <el-checkbox >禁止转发</el-checkbox>
                 </div>
               </div>
             </form>
@@ -262,7 +260,8 @@
 </template>
 <script>
   import axios from 'axios';
-  import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach,contactOabDepartsGet } from '@/api/api'
+  import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach,contactOabDepartsGet,
+  mailSent} from '@/api/api'
 
   export default {
     props:{
@@ -325,21 +324,10 @@
                         csrfmiddlewaretoken:this.$store.state.userInfo.token,
                          id:123
                 },
-        afterChange:function (val) {
-          console.log(val)
-        },
-        afterUpload:function(){
-          console.log('afterupload')
-        },
-        afterSelectFile:function(){
-          console.log('afterselect')
-        },
         attachCurrentPage:1,
         attachPageSize:10,
         attachTotal:0,
-        coreFileList:[
-
-        ],
+        coreFileList:[],
         hashFile:[],
         fileSelection:[],
         coreFileDialog:false,
@@ -352,13 +340,9 @@
         hashMail:[],
         insertMailbox:1,
         hashMail_copyer:[],
-        maillist:[
-
-        ],
+        maillist:[],
         maillist_copyer:[],
-        restaurants:[
-
-        ],
+        restaurants:[],
         state1:'',
         state_copyer:'',
         toolbarItems:
@@ -373,10 +357,14 @@
         number_sign:false,
         safe_secret:true,
         ruleForm2: {
-          reciver: [],
-          copyer: '',
-          subject: '',
-          secret:'非密'
+          to: [["512167072@qq.com",'zhouli']],
+          cc: [],
+          subject: '测试发信',
+          secret:'非密',
+          is_save_sent:true,
+          html_text:'',
+          plain_text:'',
+          attachments:[],
         },
         contactList: [
           {
@@ -406,6 +394,37 @@
       };
     },
     methods:{
+      format (fromArr,toArr){
+        for(let i=0;i<fromArr.length;i++){
+          let o = fromArr[i].mailbox;
+          let index = o.indexOf('<');
+          if(index>=0){
+            let to1 = o.slice(index+1,o.length-1)
+            let to2 = o.slice(0,index);
+            toArr.push([to1,to2]);
+          }
+        }
+      },
+      sentMail(type){
+        this.ruleForm2.to = [];
+        this.ruleForm2.cc = [];
+        this.ruleForm2.attachments = [];
+        this.format(this.maillist,this.ruleForm2.to)
+        this.format(this.maillist_copyer,this.ruleForm2.cc)
+        this.ruleForm2.html_text = this.content;
+        this.ruleForm2.plain_text = this.content;
+
+        for(let i=0;i<this.fileList.length;i++){
+          this.ruleForm2.attachments.push(this.fileList[i].id)
+        }
+        let param = this.ruleForm2;
+        param.action=type;// save_draft
+        mailSent(param).then(res=>{
+          console.log(res)
+        },err=>{
+          console.log(err)
+        })
+      },
       get_transform_menu(){
         let arr = [];
         let _this = this;
@@ -458,6 +477,7 @@
       selectUpload(command){
         if(command == 'filecore'){
           this.coreFileDialog = true;
+          this.getAttachList();
         }else if(command == 'upload'){
           document.getElementById('addAttachBtn').click()
         }
@@ -734,7 +754,7 @@
     mounted() {
       // this.restaurants = this.loadAll();
       this.getPabGroups();
-      this.getAttachList();
+      // this.getAttachList();
       this.get_transform_menu();
     },
     computed:{

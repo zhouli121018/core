@@ -126,32 +126,29 @@
                       <el-option label="邮件大小(MB)" value="mail_size"></el-option>
                       <el-option label="邮件大小(Byte)" value="mail_size2"></el-option>
                       <el-option label="邮件正文大小(Byte)" value="content_size"></el-option>
-                      <el-option label="邮件头Received" value="header_received"></el-option>
-                      <el-option label="用户通讯录" value="address_list"></el-option>
-                      <el-option label="发信人白名单" value="send_whitelist"></el-option>
-                      <el-option label="收信人白名单" value="recv_whitelist"></el-option>
-                      <el-option label="发信人黑名单" value="send_blacklist"></el-option>
-                      <el-option label="时间" value="date"></el-option>
                     </el-select>
                   </el-col>
                   <el-col :span="5">
-                    <el-select v-model="c.action" placeholder="请选择">
+                    <el-select v-model="c.action" v-if="c.suboption=='attachments'||c.suboption=='sender'||c.suboption=='cc'||c.suboption=='recipient'||c.suboption=='subject'||c.suboption=='body'||c.suboption=='header_received'" placeholder="请选择">
                       <el-option label="包含" value="contains"></el-option>
                       <el-option label="不包含" value="not_contains"></el-option>
                       <el-option label="等于" value="=="></el-option>
+                    </el-select>
+                    <el-select v-model.number="c.action" v-if="c.suboption=='mail_size'||c.suboption=='mail_size2'||c.suboption=='content_size'" placeholder="请选择">
+                      <el-option label="大于等于" value=">="></el-option>
+                      <el-option label="小于等于" value="<="></el-option>
+                    </el-select>
+                    <el-select v-model.number="c.action" v-if="c.suboption=='sender_dept'||c.suboption=='cc_dept'||c.suboption=='rcpt_dept'" placeholder="请选择">
+                      <el-option label="属于" value="in"></el-option>
+                      <el-option label="不属于" value="not_in"></el-option>
                     </el-select>
                   </el-col>
                   <el-col :span="10">
                     <el-input v-if="c.suboption=='attachments' || c.suboption=='sender' || c.suboption == 'cc'|| c.suboption == 'recipient'|| c.suboption=='subject'|| c.suboption=='body'" placeholder="请输入内容" v-model="c.value"></el-input>
                     <el-input v-if="c.suboption=='mail_size' || c.suboption=='mail_size2' || c.suboption == 'content_size'" placeholder="" v-model.number="c.value"></el-input>
-                    <el-date-picker v-if="c.suboption=='date'"
-                      v-model="c.value"
-                      type="date"
-                      placeholder="选择日期">
-                    </el-date-picker>
                     <el-cascader v-if="c.suboption == 'sender_dept' || c.suboption == 'cc_dept'||c.suboption == 'rcpt_dept'"
                        change-on-select style="width:100%" expand-trigger="hover"
-                      :options="deptOptions"
+                      :options="deptOptions" v-model="selss"
                       >
                     </el-cascader>
                   </el-col>
@@ -176,29 +173,26 @@
                       <el-option label="邮件大小(MB)" value="mail_size"></el-option>
                       <el-option label="邮件大小(Byte)" value="mail_size2"></el-option>
                       <el-option label="邮件正文大小(Byte)" value="content_size"></el-option>
-                      <el-option label="邮件头Received" value="header_received"></el-option>
-                      <el-option label="用户通讯录" value="address_list"></el-option>
-                      <el-option label="发信人白名单" value="send_whitelist"></el-option>
-                      <el-option label="收信人白名单" value="recv_whitelist"></el-option>
-                      <el-option label="发信人黑名单" value="send_blacklist"></el-option>
-                      <el-option label="时间" value="date"></el-option>
                     </el-select>
                   </el-col>
                   <el-col :span="5">
-                    <el-select v-model="cc.action" placeholder="请选择">
+                    <el-select v-model="cc.action" v-if="cc.suboption=='attachments'||cc.suboption=='sender'||cc.suboption=='cc'||cc.suboption=='recipient'||cc.suboption=='subject'||cc.suboption=='body'||cc.suboption=='header_received'" placeholder="请选择">
                       <el-option label="包含" value="contains"></el-option>
                       <el-option label="不包含" value="not_contains"></el-option>
                       <el-option label="等于" value="=="></el-option>
+                    </el-select>
+                    <el-select v-model.number="cc.action" v-if="cc.suboption=='mail_size'||cc.suboption=='mail_size2'||cc.suboption=='content_size'" placeholder="请选择">
+                      <el-option label="大于等于" value=">="></el-option>
+                      <el-option label="小于等于" value="<="></el-option>
+                    </el-select>
+                    <el-select v-model.number="cc.action" v-if="cc.suboption=='sender_dept'||cc.suboption=='cc_dept'||cc.suboption=='rcpt_dept'" placeholder="请选择">
+                      <el-option label="属于" value="in"></el-option>
+                      <el-option label="不属于" value="not_in"></el-option>
                     </el-select>
                   </el-col>
                   <el-col :span="10">
                     <el-input v-if="cc.suboption=='attachments' || cc.suboption=='sender' || cc.suboption == 'cc'|| cc.suboption == 'recipient'|| cc.suboption=='subject'|| cc.suboption=='body'" placeholder="请输入内容" v-model="cc.value"></el-input>
                     <el-input v-if="cc.suboption=='mail_size' || cc.suboption=='mail_size2' || cc.suboption == 'content_size'" placeholder="" v-model.number="c.value"></el-input>
-                    <el-date-picker v-if="cc.suboption=='date'"
-                      v-model="cc.value"
-                      type="date"
-                      placeholder="选择日期">
-                    </el-date-picker>
                     <el-cascader v-if="cc.suboption == 'sender_dept' || cc.suboption == 'cc_dept'||cc.suboption == 'rcpt_dept'"
                        change-on-select style="width:100%" expand-trigger="hover"
                       :options="deptOptions"
@@ -221,23 +215,11 @@
                 <el-row  style="margin-bottom: 4px;"  v-for="(a,k) in updateForm.actions" :key="k">
                   <el-col :span="5">
                     <el-select v-model="a.action"  placeholder="请选择">
-                      <el-option label="中断执行规则" value="break"></el-option>
-                      <el-option label="跳过后面N个规则" value="jump_to"></el-option>
                       <el-option label="删除邮件" value="delete"></el-option>
                       <el-option label="隔离邮件" value="sequester"></el-option>
                       <el-option label="移动邮件至文件夹" value="move_to"></el-option>
                       <el-option label="复制邮件至文件夹" value="copy_to"></el-option>
                       <el-option label="转发" value="forward"></el-option>
-                      <el-option label="删除邮件头" value="delete_header"></el-option>
-                      <el-option label="追加头部" value="append_header"></el-option>
-                      <el-option label="追加邮件内容" value="append_body"></el-option>
-                      <el-option label="发送邮件" value="mail"></el-option>
-                      <el-option label="邮件外发代理" value="smtptransfer"></el-option>
-                      <el-option label="邮件主题替换" value="replace_subject"></el-option>
-                      <el-option label="邮件正文替换" value="replace_body"></el-option>
-                      <el-option label="添加到发信人白名单" value="add_send_white"></el-option>
-                      <el-option label="添加到收信人白名单" value="add_recv_white"></el-option>
-                      <el-option label="添加到发信人黑名单" value="add_send_black"></el-option>
                     </el-select>
                   </el-col>
                   <el-col :span="5">
@@ -248,7 +230,10 @@
                       <el-option label="收件箱" value="Inbox"></el-option>
                       <el-option label="发件箱" value="Sent"></el-option>
                     </el-select>
-                    <!--<el-input v-model="a.json_value.value"></el-input>-->
+                    <el-input v-if="a.action=='jump_to'||a.action == 'append_header'||a.action == 'replace_subject' ||a.action == 'replace_body'"></el-input>
+                  </el-col>
+                  <el-col :span="5">
+                    <el-input v-if="a.action=='forward' ||a.action == 'delete_header' ||a.action == 'append_header'||a.action == 'replace_subject' ||a.action == 'replace_body'  "></el-input>
                   </el-col>
                   <el-col :span="5">
                     <el-input v-model.number="a.sequence"></el-input>
@@ -279,6 +264,7 @@
   export default {
     data() {
       return {
+        selss:[],
         activeAction:['action_panel'],
         activeNames:[],
         deptOptions:[],
@@ -333,15 +319,38 @@
     },
 
     methods: {
+
       addAction(k){
-        let obj = {action:'forward',sequence:999,json_value:{value:''}}
+        let obj = {action:'break',sequence:999,json_value:{value:''}}
         this.updateForm.actions.push(obj);
       },
       deleteAction(k){
         this.updateForm.actions.splice(k,1);
       },
       updateFormSubmit(){
-        console.log(this.updateForm)
+        console.log(this.selss);
+        console.log(this.updateForm);
+        this.$refs.updateForm.validate((valid) => {
+          if (valid) {
+            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+              this.updateFormLoading = true;
+              let para = Object.assign({}, this.updateForm);
+              settingFilterUpdate(para.id, para)
+                .then((res) => {
+                  this.$refs['updateForm'].resetFields();
+                  this.updateFormLoading = false;
+                  this.updateFormVisible = false;
+                  this.$message({message: '提交成功', type: 'success'});
+                  this.getTables();
+                }, (data)=>{
+                  console.log(data);
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
+            });
+          }
+        });
       },
       addCondition(){
         let obj = {action:'contains',logic:'all',parent_id:0,suboption:'subject',value:'',children:[]};
@@ -469,8 +478,10 @@
 
     },
     computed:{
-
-    }
+      uploadJson:function(){
+        return this.$store.state.uploadJson;
+      }
+    },
 
   }
 </script>

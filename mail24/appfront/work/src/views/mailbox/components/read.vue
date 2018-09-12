@@ -86,7 +86,7 @@
                       <div class="short-info f-ellipsis j-short-info" v-show="!showDetails">
                           <a class="j-u-email" href="javascript:void(0);" >{{mfrom}}</a>
                           <span>发送给</span>
-                          <a class="j-u-email" href="javascript:void(0)" >{{to}}</a>
+                          <a class="j-u-email" href="javascript:void(0)" v-for="(t,k) in to" :key="k">{{t}}; </a>
 
                       </div>
                       <div class="full-info j-full-info" v-show="showDetails">
@@ -133,13 +133,42 @@
                 <iframe   id="show-iframe" frameborder="0" scrolling="100%" height="auto" width="auto"></iframe>
                 <el-collapse v-model="activeNames" v-if="attachments.length>0" class="attach_box">
                   <el-collapse-item :title="'附件 ('+attachments.length+' 个)'" name="1">
-                    <div v-for="a in attachments" class="attach_item">
-                      <div class="attach_type">
-                        <span class="file-big-icon icon-big-jpg"></span>
-                      </div>
-                      <div class="f-ellipsis">{{a.name}}</div>
-                      <div class="attach_size">{{a.size | mailsize}}</div>
+                    <div v-for="a in attachments">
+                      <el-popover
+                        placement="top-start"
+                        width="160"
+                        trigger="hover" popper-class="bg000">
+                        <div>
+                          <div style="margin-bottom:10px;width:100%;" class="f-ellipsis">{{a.name}}</div>
+                          <el-row>
+                            <el-col class="text-center cursorP" :span="8" title="下载"  @click.native="downloadAttach(a.sid,a.name)">
+                              <i class="el-icon-download"></i>
+                              <p>下载</p>
+                            </el-col>
+                            <el-col class="text-center cursorP" :span="8" title="预览">
+                              <i class="el-icon-view"></i>
+                              <p>预览</p>
+                            </el-col>
+                            <el-col class="text-center cursorP" :span="8" title="保存到个人网盘">
+                              <i class="el-icon-star-off" ></i>
+                              <p>保存</p>
+                            </el-col>
+                          </el-row>
+                        </div>
+
+                        <el-button   class="attach_item" slot="reference" style="padding-bottom:20px;border-radius:0;">
+                          <div class="attach_type">
+                            <span class="file-big-icon" :class="a.classObject"></span>
+                          </div>
+                          <div class="f-ellipsis">{{a.name}}</div>
+                          <div class="attach_size">{{a.size | mailsize}}</div>
+                        </el-button>
+                      </el-popover>
+
+
                     </div>
+
+
                   </el-collapse-item>
                 </el-collapse>
               </div>
@@ -183,7 +212,7 @@
 
 <script>
 
-  import {readMail} from '@/api/api';
+  import {readMail,downloadAttach} from '@/api/api';
   export default  {
     name:'Read',
     props:{
@@ -192,6 +221,7 @@
     },
     data(){
       return {
+        visible:false,
         loading:false,
         attachments:[],
         activeNames: ['1'],
@@ -226,6 +256,37 @@
       }
     },
     methods:{
+      downloadAttach(sid,sname){
+        let param = {
+          uid:this.readId,
+          folder:this.readFolderId,
+          sid:sid,
+          download:true
+        };
+        downloadAttach(param).then(response=>{
+          let blob = new Blob([response.data], { type: response.headers["content-type"] })
+          let objUrl = URL.createObjectURL(blob);
+          // let filenameHeader = response.headers['content-disposition']
+          let filename = sname;
+          if (window.navigator.msSaveOrOpenBlob) {
+            // if browser is IE
+            navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
+          } else {
+            // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
+            let link = document.createElement("a");
+            link.setAttribute("href", objUrl);
+            link.setAttribute("download", filename);
+
+            document.body.appendChild(link);
+            link.click();
+          }
+          this.$message({ message: '下载成功！', type: 'success' });
+        },err=>{
+          console.log(err);
+          this.$message({ message: '下载失败！', type: 'error' });
+        })
+
+      },
       handleCommand:function(index){
         this.checkIndex = index;
         if(index===0){
@@ -247,7 +308,12 @@
           this.msg = data.data
           this.subject = data.data.subject;
           if(data.data.mfrom){this.mfrom = data.data.mfrom[1]+' < '+data.data.mfrom[0]+' > ';}
-          this.to = data.data.to[0][1]+' < '+data.data.to[0][0]+' > ';
+          this.to = [];
+          for(let i=0;i<data.data.to.length;i++){
+            let o = data.data.to[i];
+            let t = o[1]+' <'+o[0]+'>'
+            this.to.push(t);
+          }
 
           const oIframe = document.getElementById('show-iframe');
           //-30padding
@@ -258,6 +324,15 @@
           oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = data.data.html_text||data.data.plain_text;
 
           this.attachments = data.data.attachments;
+          for(let i=0;i<this.attachments.length;i++){
+            let aa = this.attachments[i];
+            let aname = aa.name;
+            let index = aname.lastIndexOf('.');
+            let type = aname.slice(index+1);
+            let className = "icon-big-"+type;
+            aa.classObject = {};
+            aa.classObject[className] = true;
+          }
           setTimeout(function(){
             const deviceHeight = oIframe.contentWindow.document.body.offsetHeight ;
             const deviceWidth = oIframe.contentWindow.document.body.scrollWidth ;
@@ -291,6 +366,32 @@
 <style>
 .attach_box .el-collapse-item__header{
   font-weight:bold;
+}
+.cursorP{
+  border:1px solid #000;
+}
+.cursorP:hover{
+  cursor:pointer;
+  border:1px solid #fff;
+}
+.cursorP>p{
+  visibility:hidden;
+}
+.cursorP>i{
+  font-size:18px;
+}
+.cursorP:hover>p{
+  visibility:visible;
+}
+.bg000{
+  background:#000;
+  color:#fff;
+}
+.el-popper.bg000[x-placement^=top] .popper__arrow::after{
+  border-top-color:#000;
+}
+.attach_box .f-ellipsis{
+  text-align:center;
 }
 .attach_item{
   padding-bottom: 20px;
