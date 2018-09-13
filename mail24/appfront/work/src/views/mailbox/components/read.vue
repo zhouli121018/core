@@ -133,6 +133,7 @@
                 <iframe   id="show-iframe" frameborder="0" scrolling="100%" height="auto" width="auto"></iframe>
                 <el-collapse v-model="activeNames" v-if="attachments.length>0" class="attach_box">
                   <el-collapse-item :title="'附件 ('+attachments.length+' 个)'" name="1">
+
                     <div v-for="a in attachments">
                       <el-popover
                         placement="top-start"

@@ -75,8 +75,8 @@
 
                   <el-form-item label="收件人:" >
                     <div class="padding_15">
-                        <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist" :key="k" :title="v.mailbox"><b>{{ v.mailbox }}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v)"></i></div>
-                        <el-autocomplete  class="no_padding"  v-model="state1" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox"
+                        <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist" :key="k" :title="v.email"><b>{{ v.value }}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v)"></i></div>
+                        <el-autocomplete  class="no_padding"  v-model.trim="state1" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox"
                         @blur="addMailbox" @focus="insertMailbox=1" placeholder="" @select="handleSelect" :trigger-on-focus="false">
 
                           <!--<template slot-scope="{ item }" :trigger-on-focus="false">-->
@@ -92,8 +92,8 @@
                   </el-form-item>
                   <el-form-item label="抄   送:" prop="cc">
                     <div class="padding_15">
-                      <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_copyer" :key="k" :title="v.mailbox"><b>{{v.mailbox}}</b><i class="el-icon-close" @click="deleteMailboxForKey_copyer(k,v)"></i></div>
-                      <el-autocomplete  class="no_padding" v-model="state_copyer" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox_copyer"
+                      <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_copyer" :key="k" :title="v.email"><b>{{v.value}}</b><i class="el-icon-close" @click="deleteMailboxForKey_copyer(k,v)"></i></div>
+                      <el-autocomplete  class="no_padding" v-model.trim="state_copyer" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox_copyer"
                         @blur="addMailbox_copyer" @focus="insertMailbox=2" placeholder=""  @select="handleSelect_copyer" :trigger-on-focus="false"></el-autocomplete>
                     </div>
                   </el-form-item>
@@ -262,13 +262,21 @@
   import axios from 'axios';
   import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach,contactOabDepartsGet,
   mailSent} from '@/api/api'
-
+  const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     props:{
       iframe_height:'',
     },
 
     data(){
+
+      const isEmail = function(rule,value,callback){
+        if(emailReg.test(value) == false){
+          callback(new Error("请输入正确的邮箱"));
+        }else{
+          callback();
+        }
+      };
       const generateData = _ => {
         const data = [];
         for (let i = 1; i <= 15; i++) {
@@ -396,13 +404,7 @@
     methods:{
       format (fromArr,toArr){
         for(let i=0;i<fromArr.length;i++){
-          let o = fromArr[i].mailbox;
-          let index = o.indexOf('<');
-          if(index>=0){
-            let to1 = o.slice(index+1,o.length-1)
-            let to2 = o.slice(0,index);
-            toArr.push([to1,to2]);
-          }
+          toArr.push([fromArr[i].email,fromArr[i].fullname||""]);
         }
       },
       sentMail(type){
@@ -411,6 +413,10 @@
         this.ruleForm2.attachments = [];
         this.format(this.maillist,this.ruleForm2.to)
         this.format(this.maillist_copyer,this.ruleForm2.cc)
+        if(type=='sent'&&this.ruleForm2.to.length<=0){
+          this.$alert('请输入收件人！');
+          return;
+        }
         this.ruleForm2.html_text = this.content;
         this.ruleForm2.plain_text = this.content;
 
@@ -421,8 +427,17 @@
         param.action=type;// save_draft
         mailSent(param).then(res=>{
           console.log(res)
+          let info = type=='sent'?"发送成功！":"保存草稿成功！";
+          this.$message({
+             message:info,
+             type:'success'
+          })
         },err=>{
           console.log(err)
+          this.$message({
+             message:"操作失败！",
+             type:'error'
+          })
         })
       },
       get_transform_menu(){
@@ -447,9 +462,6 @@
       },
       handleChange(value, direction, movedKeys) {
         console.log(value, direction, movedKeys);
-      },
-      sizeFormatter(row,col){
-        return (row.size/1024).toFixed(2) +' KB';
       },
       attachSizeChange(val){
         this.attachPageSize = val;
@@ -611,20 +623,38 @@
         this.maillist.splice(k,1)
       },
       handleSelect(item) {
-        // console.log(item);
-        if(this.state1){
-          if(this.hashMail[this.state1]){
+        if(item){
+          if(this.state1){
+            if(this.hashMail[this.state1]){
 
-          }else{
-            this.hashMail[this.state1] = true;
-            let obj = {};
-            obj.mailbox = this.state1;
-            obj.status = true;
-            this.maillist.push(obj);
-            this.state1 = '';
+            }else{
+              this.hashMail[this.state1] = true;
+              this.maillist.push(item);
+              this.state1 = '';
+            }
           }
+          this.state1 = '';
+        }else{
+          if(this.state1){
+            if(this.hashMail[this.state1]){
+
+            }else{
+              this.hashMail[this.state1] = true;
+              let obj = {};
+              obj.value = this.state1;
+              obj.email = this.state1;
+              if(emailReg.test(this.state1)){
+                obj.status = true;
+              }else{
+                obj.status = false;
+              }
+              this.maillist.push(obj);
+              this.state1 = '';
+            }
+          }
+          this.state1 = '';
         }
-        this.state1 = '';
+
       },
       addMailbox_copyer(){
         setTimeout(()=>{this.handleSelect_copyer()},300)
@@ -640,20 +670,37 @@
         this.maillist_copyer.splice(k,1)
       },
       handleSelect_copyer(item) {
-        // console.log(item);
-        if(this.state_copyer){
-          if(this.hashMail_copyer[this.state_copyer]){
+        if(item){
+          if(this.state_copyer){
+            if(this.hashMail_copyer[this.state_copyer]){
 
-          }else{
-            this.hashMail_copyer[this.state_copyer] = true;
-            let obj = {};
-            obj.mailbox = this.state_copyer;
-            obj.status = true;
-            this.maillist_copyer.push(obj);
-            this.state_copyer = '';
+            }else{
+              this.hashMail_copyer[this.state_copyer] = true;
+              this.maillist_copyer.push(item);
+              this.state_copyer = '';
+            }
           }
+          this.state_copyer = '';
+        }else{
+          if(this.state_copyer){
+            if(this.hashMail_copyer[this.state_copyer]){
+
+            }else{
+              this.hashMail_copyer[this.state_copyer] = true;
+              let obj = {};
+              obj.value = this.state_copyer;
+              obj.email = this.state_copyer;
+              if(emailReg.test(this.state_copyer)){
+                obj.status = true;
+              }else{
+                obj.status = false;
+              }
+              this.maillist_copyer.push(obj);
+              this.state_copyer = '';
+            }
+          }
+          this.state_copyer = '';
         }
-        this.state_copyer = '';
       },
       querySearch(queryString, cb) {
         var restaurants = this.restaurants;
@@ -673,19 +720,18 @@
       selectContact(data){
         if(!data.children){
           if(this.insertMailbox==1){
-          if(!this.hashMail[data.label]){
-            this.hashMail[data.label]=true;
-            this.maillist.push({mailbox:data.label,status:true});
-          }
-        }else if(this.insertMailbox == 2){
-          if(!this.hashMail_copyer[data.label]){
-            this.hashMail_copyer[data.label]=true;
-            this.maillist_copyer.push({mailbox:data.label,status:true});
-          }
+            if(!this.hashMail[data.label]){
+              this.hashMail[data.label]=true;
+              this.maillist.push({value:data.label,status:true,email:data.email,fullname:data.fullname});
+            }
+          }else if(this.insertMailbox == 2){
+            if(!this.hashMail_copyer[data.label]){
+              this.hashMail_copyer[data.label]=true;
+              this.maillist_copyer.push({value:data.label,status:true,email:data.email,fullname:data.fullname});
+            }
 
+          }
         }
-        }
-
       },
       //获取个人通讯录组数据
       getPabGroups(){
@@ -703,6 +749,9 @@
             obj.id = o.contact_id;
             let str = o.fullname + '<'+o.email+'>';
             obj.value = str;
+            obj.fullname = o.fullname;
+            obj.email = o.email;
+            obj.status = true;
             arr.push(obj);
           }
           this.restaurants = arr;
