@@ -175,4 +175,32 @@
     font-weight: 500;
     margin-bottom: 13px;
   }
+  .mlmain.mltabview.overflow_auto{
+    overflow-y: auto;
+    overflow-x:hidden;
+  }
+  .clear:after{
+    content:"";
+    display:block;
+    clear:both;
+  }
+  .m-mllist-row .el-form-item{
+    margin:0px 0px 14px 0px;
+  }
+  .m-mllist-row .el-form{
+    border-bottom:1px solid #d4d7d9;
+  }
+
+  .el-form--inline .el-form-item {
+    display: inline-block;
+    margin-right: 0px;
+    vertical-align: top;
+  }
+  .el-breadcrumb {
+    font-size: 13px;
+    line-height: 1;
+  }
+  .height100{
+    height:100%;
+  }
 </style>

@@ -189,7 +189,11 @@
       },
       getTables: function(){
         this.listLoading = true;
-        settingMovingGet().then(res=>{
+        var param = {
+          "page": this.page,
+          "page_size": this.page_size,
+        };
+        settingMovingGet(param).then(res=>{
           this.total = res.data.count;
           this.listTables = res.data.results;
           this.listLoading = false;

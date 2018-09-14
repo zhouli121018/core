@@ -68,6 +68,10 @@
   }
 </script>
 <style>
+  .content.content-list.height100{
+    overflow-y:auto;
+    overflow-x:hidden;
+  }
   .menu_icon_box{
     /*width:48px;height:45px;background:#ddd;*/
     /*display:inline-block;*/
@@ -80,12 +84,12 @@
     right: 0;
     top: 0;
     bottom: 0;
-}
+  }
   .fl-m-nav li:first-child a {
     border-top: none;
-}
+  }
 
-.fl-m-nav a {
+  .fl-m-nav a {
     position: relative;
     display: block;
     height: 100px;
@@ -98,23 +102,23 @@
     -webkit-transition: 200ms background-color ease;
     transition: 200ms background-color ease;
     outline: none;
-}
-.fl-m-nav a>span {
+  }
+  .fl-m-nav a>span {
     display: inline-block;
     vertical-align: middle;
     padding-top:20px;
     font-size: 12px;
     color: #555;
     word-break: normal;
-}
-.fl-m-nav a.fl-nav-current {
+  }
+  .fl-m-nav a.fl-nav-current {
     border-color: #e3e4e5;
     border-right-color: #fff;
 
-}
-.fl-m-nav a.fl-nav-current>span{
-  color: #3f86e1;
-}
+  }
+  .fl-m-nav a.fl-nav-current>span{
+    color: #3f86e1;
+  }
   .fl-m-nav-bg {
     position: absolute;
     top: 0;
@@ -124,12 +128,43 @@
     background-color: #fff;
     opacity: .6;
     filter: alpha(opacity=60);
-}
+  }
   .fl-g-sidebar {
     position: relative;
     width: 100px;
     height: 100%;
     border-right: 1px solid #e3e4e5;
     text-align: center;
+  }
+  .wrapper.u-scroll.top0{
+    top:0
+  }
+  .mlmain.mltabview.overflow_auto{
+    overflow-y: auto;
+    overflow-x:hidden;
+  }
+  .clear:after{
+    content:"";
+    display:block;
+    clear:both;
+  }
+  .m-mllist-row .el-form-item{
+    margin:0px 0px 14px 0px;
+  }
+  .m-mllist-row .el-form{
+    border-bottom:1px solid #d4d7d9;
+  }
+
+  .el-form--inline .el-form-item {
+    display: inline-block;
+    margin-right: 0px;
+    vertical-align: top;
+  }
+  .el-breadcrumb {
+    font-size: 13px;
+    line-height: 1;
+  }
+  .height100{
+    height:100%;
   }
 </style>

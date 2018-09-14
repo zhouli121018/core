@@ -192,7 +192,11 @@
       },
       getTables: function(){
         this.listLoading = true;
-        settingTransferGet().then(res=>{
+        var param = {
+          "page": this.page,
+          "page_size": this.page_size,
+        };
+        settingTransferGet(param).then(res=>{
           this.total = res.data.count;
           this.listTables = res.data.results;
           this.listLoading = false;

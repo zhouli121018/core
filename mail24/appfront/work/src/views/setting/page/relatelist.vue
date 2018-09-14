@@ -49,8 +49,8 @@
             </el-radio-group>
           </el-form-item>
           <!--<el-form-item v-show="addType == '1'" label="邮箱：" prop="email" :error="email_error">-->
-            <!--<el-input v-model.trim="createForm.email" auto-complete="off"></el-input>-->
-            <!--<br><small>邮箱必须在系统中存在</small>-->
+          <!--<el-input v-model.trim="createForm.email" auto-complete="off"></el-input>-->
+          <!--<br><small>邮箱必须在系统中存在</small>-->
           <!--</el-form-item>-->
           <el-form-item v-show="addType == '0'" label="选择邮箱：">
             <el-select v-if="false" v-model="selectedMails" multiple filterable placeholder="请选择" style="width:100%">
@@ -107,11 +107,11 @@
 
           <el-form-item v-show="addType == '2'" label="请选择：">
             <el-upload
-                action=""
-                :http-request="uploadFile"
-                :show-file-list="false" style="display:inline-block">
-                <el-button size="small" type="primary"><i class="el-icon-upload"></i> 导入excel</el-button>
-                <div slot="tip" class="el-upload__tip"></div>
+              action=""
+              :http-request="uploadFile"
+              :show-file-list="false" style="display:inline-block">
+              <el-button size="small" type="primary"><i class="el-icon-upload"></i> 导入excel</el-button>
+              <div slot="tip" class="el-upload__tip"></div>
             </el-upload>
             <el-button plan size="small">查看模板excel</el-button>
           </el-form-item>
@@ -137,9 +137,9 @@
   </div>
 </template>
 <script>
-   import axios from 'axios';
+  import axios from 'axios';
   import {settingRelateGet, settingRelateCreate, settingRelateDelete, settingRelateGetSingle,contactPabGroupsGet,contactOabDepartsGet,
-  contactPabMembersGet,contactOabMembersGet} from '@/api/api'
+    contactPabMembersGet,contactOabMembersGet} from '@/api/api'
 
   export default {
     data() {
@@ -255,11 +255,11 @@
         axios.all([contactPabGroupsGet(),contactOabDepartsGet()]).then(axios.spread(function (acct, perms) {
           // 两个请求现在都执行完成
           let cc =
-          arr[0] = {
-            id:'pab',
-            label:'个人通讯录',
-            children:acct.data.pab_contact_groups
-          }
+            arr[0] = {
+              id:'pab',
+              label:'个人通讯录',
+              children:acct.data.pab_contact_groups
+            }
           arr[1] = {
             id:'oab',
             label:'组织通讯录',
@@ -304,7 +304,11 @@
       },
       getTables: function(){
         this.listLoading = true;
-        settingRelateGet().then(res=>{
+        var param = {
+          "page": this.page,
+          "page_size": this.page_size,
+        };
+        settingRelateGet(param).then(res=>{
           this.total = res.data.count;
           this.listTables = res.data.results;
           this.listLoading = false;

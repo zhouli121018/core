@@ -226,3 +226,30 @@ export const settingFilterDelete = signatureID => { return axios.delete(`${host}
 export const settingFilterUpdate = (signatureID, params) => { return axios.patch(`${host}/setting/filters/`+signatureID+'/', params) }
 export const settingFilterGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/filters/`+signatureID+'/', { params: params }) }
 
+// 个人网盘
+// 获取文件夹以及文件夹下的文件
+export const netdiskGet = params => { return axios.get(`${host}/netdisk/netdisks/`, { params: params })}
+// 获取个人网盘容量
+export const netdiskCapacityGet = params => { return axios.get(`${host}/netdisk/netdisks/capacity/`, { params: params })}
+// 获取所有文件夹的路径
+export const netdiskPathGet = params => { return axios.get(`${host}/netdisk/netdisks/paths/`, { params: params })}
+// 创建文件夹
+export const netdiskFolderCreate = params => { return axios.post(`${host}/netdisk/netdisks/folders/`, params)}
+// 文件夹重命名
+export const netdiskFolderUpdate = (signatureID, params) => { return axios.patch(`${host}/netdisk/netdisks/`+signatureID+'/folders/', params) }
+// 文件上传
+export const netdiskFileUpload = (params) => { return axios.post(`${host}/netdisk/netdisks/files/`, params, {headers:{ 'Content-Type': 'multipart/form-data' }}) }
+// 文件重命名
+export const netdiskFileUpdate = (signatureID, params) => { return axios.patch(`${host}/netdisk/netdisks/`+signatureID+'/files/', params) }
+// 删除文件或文件夹
+export const netdiskDelete = params => { return axios.post(`${host}/netdisk/netdisks/delete/`, params)}
+// 批量删除文件或文件夹
+export const netdiskBatchDelete = params => { return axios.post(`${host}/netdisk/netdisks/batchdelete/`, params)}
+// 移动文件或文件夹
+export const netdiskMove = params => { return axios.post(`${host}/netdisk/netdisks/batchmove/`, params)}
+// 批量移动文件或文件夹
+export const netdiskBatchMove = params => { return axios.post(`${host}/netdisk/netdisks/batchdelete/`, params)}
+// 文件下载
+export const netdiskFileDownload = params => { return axios.get(`${host}/netdisk/netdisks/`+signatureID+'/download/', { params: params,responseType:'blob' }) };
+// zip下载
+export const netdiskZipDownload = params => { return axios.post(`${host}/netdisk/netdisks/zip/`, params, { responseType:'blob' }) };

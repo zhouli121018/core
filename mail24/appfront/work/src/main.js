@@ -12,6 +12,9 @@ import './axios/';
 import axios from 'axios'
 import router from './router'
 Vue.prototype.$http=axios
+import fullCalendar from 'vue-fullcalendar'
+
+Vue.component('full-calendar', fullCalendar)
 
 
 import './assets/style/skin.css'
