@@ -141,6 +141,7 @@
         cookie.delCookie('token');
         cookie.delCookie('name');
         this.$store.dispatch('setInfo');
+        store.commit('setIsCompose',false);
         router.push('/login')
       },
       lockscreen() {

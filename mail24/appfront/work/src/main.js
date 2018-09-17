@@ -12,9 +12,9 @@ import './axios/';
 import axios from 'axios'
 import router from './router'
 Vue.prototype.$http=axios
-import fullCalendar from 'vue-fullcalendar'
 
-Vue.component('full-calendar', fullCalendar)
+import FullCalendar from 'vue-full-calendar'
+Vue.use(FullCalendar)
 
 
 import './assets/style/skin.css'
@@ -24,21 +24,29 @@ import VueKindEditor from 'vue-kindeditor'
 import 'kindeditor/kindeditor-all-min.js'
 import 'kindeditor/themes/default/default.css'
 
+
 Vue.use(VueKindEditor)
 
 Vue.use(Vuex)
 Vue.config.productionTip = false
 
 Vue.component('Menubar', Menubar)
-Vue.filter('mailsize', function (value) {
-  if (!value) return ''
-  let s = (value/1024).toFixed(2);
-  if(s>=1024){
-    s = (s/1024).toFixed(2) + ' M'
-  }else{
-    s = s +' KB'
-  }
-  return s
+Vue.filter('mailsize', function (bytes) {
+  if (isNaN(bytes)) {
+        return '';
+    }
+    var symbols = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    var exp = Math.floor(Math.log(bytes)/Math.log(2));
+    if (exp < 1) {
+        exp = 0;
+    }
+    var i = Math.floor(exp / 10);
+    bytes = bytes / Math.pow(2, 10 * i);
+
+    if (bytes.toString().length > bytes.toFixed(2).toString().length) {
+        bytes = bytes.toFixed(2);
+    }
+    return bytes + ' ' + symbols[i];
 
 })
 /* eslint-disable no-new */

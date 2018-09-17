@@ -144,7 +144,7 @@
                         <div>
                           <el-table :data="collapseItems[0].lists" style="width: 100%;" class="vertical_align_top maillist"
                               highlight-current-row  @cell-mouse-enter="hoverfn" @cell-mouse-leave="noHover" @cell-click="readMail"
-                                    @selection-change="handleSelectionChange"  v-loading="loading"
+                                    @selection-change="handleSelectionChange"  v-loading="loading" :header-cell-style="{background:'#f0f1f3'}"
                             >
                             <el-table-column
                               type="selection"
@@ -163,6 +163,8 @@
                                 </div>
                                 <div class="info-summary">
                                   <p class="summary-text">
+                                    <span class="fromto">from</span>
+                                    <span class="fromto">:</span>
                                     <span class="fromto from" v-if="scope.row.mfrom">{{scope.row.mfrom[1]}} <{{scope.row.mfrom[0]}}></span>
                                     <!--<span class="fromto">:</span>-->
                                     <!--<span class="summary">-->

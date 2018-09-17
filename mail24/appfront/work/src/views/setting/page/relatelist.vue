@@ -40,8 +40,8 @@
 
 
       <!--新增 签名-->
-      <el-dialog title="添加关联共享邮箱"  :visible.sync="createFormVisible"  :append-to-body="true" class="add_share_mail">
-        <el-form :model="createForm" label-width="100px" :rules="createFormRules" ref="createForm">
+      <el-dialog title="添加关联共享邮箱"  :visible.sync="createFormVisible"  :append-to-body="true" class="add_share_mail" width="60%">
+        <el-form :model="createForm" label-width="100px" :rules="createFormRules" ref="createForm" >
           <el-form-item label="添加方式：" >
             <el-radio-group v-model="addType">
               <el-radio :label="0">从通讯录中选择</el-radio>
@@ -63,45 +63,54 @@
             </el-select>
             <el-input type="textarea" autosize v-model="this.selectedMailbox" placeholder="支持多个邮箱，请用分号( ; )隔开"></el-input>
             <el-row style="border:1px solid #ddd;">
-              <el-col :span="8">
-                <el-tree
-                  :data="transform_menu"
-                  :props="defaultPropsCon" @node-click="treeNodeClick">
-                </el-tree>
-              </el-col>
-              <el-col :span="16">
-                <el-input v-model="searchMailbox" size="small" placeholder="请输入内容"></el-input>
-                <el-button size="small" type="primary" @click="searchOabMembers(1)">搜索</el-button>
+              <el-col :span="24">
 
-                <el-table
-                  :data="contactData"
-                  tooltip-effect="dark"
-                  style="width: 100%" border
-                  @selection-change="handleSelectionChange" @row-click="rowClick" ref="contactTable">
-                  <el-table-column
-                    type="selection"
-                    width="55">
-                  </el-table-column>
-                  <el-table-column prop="name" label="姓名&邮箱">
-                    <template slot-scope="scope">
-                      <span>{{ scope.row.name +'<' +scope.row.username +'>'}}</span>
-                    </template>
-                  </el-table-column>
-                </el-table>
-                <el-pagination
-                  @size-change="handleSizeChange" small
-                  @current-change="handleCurrentChange"
-                  :current-page="currentPage"
-                  :page-sizes="[5,10, 20,50,100,200, 300, 400]"
-                  :page-size="pageSize"
-                  layout="   prev, pager, next,sizes"
-                  :total="totalCount">
-                </el-pagination>
-
+                <!--<el-tree-->
+                  <!--:data="transform_menu"-->
+                  <!--:props="defaultPropsCon" @node-click="treeNodeClick">-->
+                <!--</el-tree>-->
               </el-col>
 
             </el-row>
 
+          </el-form-item>
+          <el-form-item v-show="addType == '0'" label="选择部门：">
+            <el-cascader  change-on-select style="width:100%"
+                                 :options="deptOptions" @change="menu_change">
+            </el-cascader>
+          </el-form-item>
+          <el-form-item v-show="addType == '0'" label="选择邮箱：">
+            <div style="text-align:right;">
+              <el-input v-model="searchMailbox" size="small" placeholder="请输入内容" style="width:auto;"></el-input>
+              <el-button size="small" type="primary" @click="searchOabMembers(1)">搜索</el-button>
+            </div>
+
+
+
+            <el-table
+              :data="contactData"
+              tooltip-effect="dark"
+              style="width: 100%" border
+              @selection-change="handleSelectionChange" @row-click="rowClick" ref="contactTable" :header-cell-style="{background:'#f0f1f3'}">
+              <el-table-column
+                type="selection"
+                width="55">
+              </el-table-column>
+              <el-table-column prop="name" label="姓名&邮箱">
+                <template slot-scope="scope">
+                  <span>{{ scope.row.name +'<' +scope.row.username +'>'}}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-pagination
+              @size-change="handleSizeChange" small
+              @current-change="handleCurrentChange"
+              :current-page="currentPage"
+              :page-sizes="[5,10, 20,50,100,200, 300, 400]"
+              :page-size="pageSize"
+              layout="   prev, pager, next,sizes"
+              :total="totalCount">
+            </el-pagination>
           </el-form-item>
 
 
@@ -151,6 +160,7 @@
         }
       };
       return {
+        deptOptions:[],
         totalCount:0,
         pageSize:10,
         currentPage:1,
@@ -170,12 +180,6 @@
         ],
         selectedMailbox:'',
         selectedMails:[],
-        transform_menu:[],
-        defaultPropsCon: {
-          id:'id',
-          label: 'label',
-          children: 'children',
-        },
         addType: 0,
         total: 0,
         page: 1,
@@ -202,21 +206,40 @@
     mounted: function () {
       this.getTables();
       this.getContactList();
-      this.get_transform_menu();
       this.searchOabMembers();
     },
 
     methods: {
+      menu_change(arr){
+        let v = arr[arr.length-1];
+        this.oab_cid = v;
+        this.searchOabMembers(1);
+      },
+      getDeptOptions(){
+        contactOabDepartsGet().then(res=>{
+          function idToValue(arr){
+            for(let i=0;i<arr.length;i++){
+              arr[i].value = arr[i].id;
+              if(arr[i].children && arr[i].children.length==0){
+                arr[i].children = null;
+              }
+              if(arr[i].children && arr[i].children.length>0){
+                idToValue(arr[i].children)
+              }
+            }
+            return arr;
+          }
+
+          this.deptOptions = res.data.results;
+          this.deptOptions = idToValue(this.deptOptions);
+        },err=>{
+          console.log(err);
+        })
+
+      },
       rowClick(row,e,col){
         this.$refs.contactTable.toggleRowSelection(row)
         console.log(row);
-      },
-      treeNodeClick(data){
-        if(data.id>=0){
-          this.oab_cid = data.id;
-          this.searchOabMembers(1);
-        }
-
       },
       handleSizeChange(val) {
         this.pageSize = val;
@@ -248,26 +271,6 @@
         }
         this.selectedMailbox = str;
         console.log(v)
-      },
-      get_transform_menu(){
-        let arr = [];
-        let _this = this;
-        axios.all([contactPabGroupsGet(),contactOabDepartsGet()]).then(axios.spread(function (acct, perms) {
-          // 两个请求现在都执行完成
-          let cc =
-            arr[0] = {
-              id:'pab',
-              label:'个人通讯录',
-              children:acct.data.pab_contact_groups
-            }
-          arr[1] = {
-            id:'oab',
-            label:'组织通讯录',
-            children:perms.data.results
-          }
-          _this.transform_menu = arr;
-
-        }))
       },
       uploadFile(param){
         var file = param.file;
@@ -319,6 +322,7 @@
         this.createForm = Object.assign({}, this.createForm);
         this.createFormLoading = false;
         this.createFormVisible = true;
+        this.getDeptOptions();
       },
       createFormSubmit: function(){
         this.email_error='';
@@ -326,6 +330,7 @@
           if (valid) {
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
               this.createFormLoading = true;
+              this.createForm.email = this.selectedMailbox;
               let para = Object.assign({}, this.createForm);
               settingRelateCreate(para)
                 .then((res) => {

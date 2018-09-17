@@ -27,20 +27,7 @@
 
       <article class="fl-g-content">
         <div class="cal-content-wrap">
-          <full-calendar lang="zh" ref="calendar" defaultView="basicWeek" :options="config" :events="fcEvents"  @changeMonth="changeMonth" @dayClick="dayClick" @eventClick="eventClick" @moreClick="moreClick">
-
-            <template slot="fc-body-card">
-              <div  class="more-events">
-                <p>modsfo</p>
-                <p>modsfojosdf</p>
-              </div>
-
-            </template>
-            <template slot="fc-header-right" >
-
-              <el-button>123</el-button>
-            </template>
-          </full-calendar>
+          <full-calendar :events="fcEvents" :config="config" @event-selected="eventClick" @day-click="dayClick"></full-calendar>
         </div>
       </article>
 
@@ -53,17 +40,28 @@
     data() {
       return {
 
-        config:{
-          lang: 'en',
-          weekends: false
+        config: {
+          locale: "zh-cn",
+          defaultView: 'month',
+          editable: true,
+          droppable: true,
+          buttonText: {
+            today: '今天',
+            month:'月',
+            agendaWeek:'周',
+            agendaDay:'日',
+            listMonth:'事件',
+          },
+          header:{
+            right:  'month,agendaWeek,agendaDay,listMonth'
+          }
         },
         fcEvents : [
           {
             title : '标记32测试测试吃测试吃测试测试测试测色测色测试',
-            start : '2018-09-11',
+            start : '2018-09-11 14:30:00',
             backgroundColor: 'red',
             borderColor: 'red',
-            className: 'done'
           },
           {
             title : '标记2',
@@ -75,7 +73,7 @@
       };
     },
     components: {
-      'full-calendar': require('vue-fullcalendar'),
+
 
     },
     created: function() {
@@ -85,32 +83,18 @@
 
     },
     methods: {
-      changeView() {
-
-      },
       jumpTo(path){
         this.$router.push(path);
       },
-      changeMonth(){
-        console.log('month')
-      },
-      dayClick (t,e){
-        alert(t.toLocaleString())
-        console.log(e.target)
-
+      dayClick (t){
+        console.log(t.toLocaleString())
         // e.target.style.boxShadow="0 0 5px #60CAFF"
 
       },
-      eventClick (data,event,pos){
+      eventClick (data){
         console.log(arguments)
-        document.getElementsByClassName('more-events')[1].style.display='block'
-        document.getElementsByClassName('more-events')[1].style.left=pos.left+'px';
-        document.getElementsByClassName('more-events')[1].style.top=pos.top+'px';
+        alert(data.title)
       },
-      moreClick (day, events, jsEvent) {
-        console.log('moreCLick', day, events, jsEvent)
-      }
-
     },
     computed: {
 
@@ -119,6 +103,10 @@
   }
 </script>
 <style>
+  @import 'fullcalendar/dist/fullcalendar.css';
+  .cal-content-wrap>div{
+    background: rgba(255,255,255,.8);
+  }
   .more-events{
     display:none;
   }
@@ -138,8 +126,9 @@
   .cal-content-wrap {
     position: relative;
     height: 100%;
-    padding: 0 8px;
+    padding: 8px;
     overflow-y:auto;
+    box-sizing:border-box;
 }
   .menu_icon_box{
     /*width:48px;height:45px;background:#ddd;*/

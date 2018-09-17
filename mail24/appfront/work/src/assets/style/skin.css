@@ -21,13 +21,34 @@ background-position:-672px -384px;
 .bico.bfMSEXCEL{
 background-position:-32px -352px;
 }
+.bico.bfXLSX{
+background-position:-32px -352px;
+}
+.bico.bfXLS{
+background-position:-32px -352px;
+}
 .bico.bfMSWORD{
+background-position:-64px -352px;
+}
+.bico.bfDOC{
+background-position:-64px -352px;
+}
+.bico.bfDOCX{
 background-position:-64px -352px;
 }
 .bico.bfMSPOWERPOINT{
 background-position:-96px -352px;
 }
+.bico.bfPPT{
+background-position:-96px -352px;
+}
+.bico.bfPPTX{
+background-position:-96px -352px;
+}
 .bico.bf7ZIP{
+background-position:-128px -352px;
+}
+.bico.bfZIP{
 background-position:-128px -352px;
 }
 .bico.bfRAR {

@@ -31,7 +31,7 @@ router.beforeEach((to, from, next)=>{
       });
       return;
     }else{
-      if(to.path!='/mailbox/innerbox'&&to.path!='/mailbox/readmail'&&to.path!='/mailbox/compose'&&store.state.isCompose){
+      if(to.path!='/mailbox'&&to.path!='/mailbox/innerbox'&&to.path!='/mailbox/readmail'&&to.path!='/mailbox/compose'&&store.state.isCompose){
         if(confirm('还在写信，确定离开？')){
           store.commit('setIsCompose',false);
           next();

@@ -108,8 +108,12 @@ export const getAttach = params => { return axios.get(`${host}/mail/attach/`, { 
 export const mailSent = params =>{ return axios.post(`${host}/mail/message/sent/`,params) };
 //下载附件 /api/mail/attach/{id}/
 export const downloadAttach = params => { return axios.get(`${host}/mail/attach/0`, { params: params,responseType:'blob' }) };
-
-
+//下载来往附件 /api/mail/attach/{id}/
+export const downloadAttach2 = (signatureID, params) => { return axios.get(`${host}/mail/attach/`+signatureID+'/', { params: params,responseType:'blob' }) };
+// 保存附件到个人网盘
+export const moveAttach2Netdisk = params =>{ return axios.post(`${host}/mail/attach/move-to-disk/`,params) };
+//下载附件 /api/mail/attach/{id}/
+export const downloadZipAttach = params => { return axios.get(`${host}/mail/attach/download/`, { params: params, responseType:'blob' }) };
 
 /* ***********************  设置中心 *********************** */
 // 展现
@@ -236,11 +240,11 @@ export const netdiskPathGet = params => { return axios.get(`${host}/netdisk/netd
 // 创建文件夹
 export const netdiskFolderCreate = params => { return axios.post(`${host}/netdisk/netdisks/folders/`, params)}
 // 文件夹重命名
-export const netdiskFolderUpdate = (signatureID, params) => { return axios.patch(`${host}/netdisk/netdisks/`+signatureID+'/folders/', params) }
+export const netdiskFolderUpdate = (signatureID, params) => { return axios.post(`${host}/netdisk/netdisks/`+signatureID+'/folders/', params) }
 // 文件上传
 export const netdiskFileUpload = (params) => { return axios.post(`${host}/netdisk/netdisks/files/`, params, {headers:{ 'Content-Type': 'multipart/form-data' }}) }
 // 文件重命名
-export const netdiskFileUpdate = (signatureID, params) => { return axios.patch(`${host}/netdisk/netdisks/`+signatureID+'/files/', params) }
+export const netdiskFileUpdate = (signatureID, params) => { return axios.post(`${host}/netdisk/netdisks/`+signatureID+'/files/', params) }
 // 删除文件或文件夹
 export const netdiskDelete = params => { return axios.post(`${host}/netdisk/netdisks/delete/`, params)}
 // 批量删除文件或文件夹
@@ -248,7 +252,7 @@ export const netdiskBatchDelete = params => { return axios.post(`${host}/netdisk
 // 移动文件或文件夹
 export const netdiskMove = params => { return axios.post(`${host}/netdisk/netdisks/batchmove/`, params)}
 // 批量移动文件或文件夹
-export const netdiskBatchMove = params => { return axios.post(`${host}/netdisk/netdisks/batchdelete/`, params)}
+export const netdiskBatchMove = params => { return axios.post(`${host}/netdisk/netdisks/batchmove/`, params)}
 // 文件下载
 export const netdiskFileDownload = params => { return axios.get(`${host}/netdisk/netdisks/`+signatureID+'/download/', { params: params,responseType:'blob' }) };
 // zip下载
