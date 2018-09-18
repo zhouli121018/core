@@ -179,7 +179,7 @@
 
           <el-form-item label=" ">
 
-            <el-upload action="" :http-request="uploadFile" multiple>
+            <el-upload action="" :http-request="uploadFile" multiple :file-list="uploadForm.fileList">
               <el-button size="small" type="primary"  plain icon="el-icon-upload" :on-success="uploadSuccess">点击上传</el-button>
               <!--<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
 
@@ -513,7 +513,7 @@
                   this.$message({message: '移动成功', type: 'success'});
                   this.getTables();
                 }, (data) => {
-                  console.log(data);
+                  // console.log(data);
                   if("non_field_errors" in data) {
                     this.folder_id_error = data.non_field_errors[0];
                   }
@@ -637,16 +637,16 @@
         this.listLoading = true;
         param.file.percent = 0.7*100
         param.onProgress(param.file)
-         netdiskFileUpload(formData).then((res) => {
-          param.file.percent = 1*100
-          param.onProgress(param.file)
+        netdiskFileUpload(formData).then((res) => {
+          param.file.percent = 1*100;
+          param.onProgress(param.file);
           this.$message({message: '上传成功', type: 'success'});
           this.listLoading = false;
           this.getCapacity();
           this.getTables();
         }, (data)=>{
-           param.file.percent = 0;
-           param.onProgress(param.file)
+          param.file.percent = 0;
+          param.onProgress(param.file);
           console.log(data);
           this.listLoading = false;
           if("non_field_errors" in data) {
@@ -657,7 +657,7 @@
         }).catch(function (error) {
           console.log(error);
           param.file.percent = 0;
-           param.onProgress(param.file)
+          param.onProgress(param.file)
           this.listLoading = false;
           this.$message({ message: '上传失败，请重试',  type: 'error' });
         });
@@ -700,7 +700,7 @@
   .el-progress__text{
     display: none!important;
   }
-  /*.el-upload-list__item .el-icon-close::before{*/
-    /*content: "";*/
-  /*}*/
+  .el-upload-list__item .el-icon-close::before{
+    content: "";
+  }
 </style>

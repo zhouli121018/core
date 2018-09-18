@@ -222,6 +222,11 @@ export const settingRelateGetSingle = (signatureID, params) => { return axios.ge
 export const settingRelateShared = params => { return axios.get(`${host}/core/shareusers/shared/`, { params: params })}
 export const shareLogin = params => { return axios.post(`${host}/share-login/`,params)};
 export const backLogin = () => { return axios.post(`${host}/back-login/`)};
+///api/core/shareusers/import/
+export const settingRelateImport = ( params) => {
+  return axios.post(`${host}/core/shareusers/import/`, params, {headers:{ 'Content-Type': 'multipart/form-data' }}) }
+  //导出关联共享邮箱 /api/core/shareusers/tutorial/
+export const settingRelateTutorial = () => { return axios.get(`${host}/core/shareusers/tutorial/`, { responseType:'blob'})  }
 
 // 内容过滤
 export const settingFilterGet = params => { return axios.get(`${host}/setting/filters/`, { params: params })}

@@ -41,49 +41,58 @@
 
       <!--新增 签名-->
       <el-dialog title="添加关联共享邮箱"  :visible.sync="createFormVisible"  :append-to-body="true" class="add_share_mail" width="60%">
-        <el-form :model="createForm" label-width="100px" :rules="createFormRules" ref="createForm" >
+        <el-form :model="createForm" label-width="100px" :rules="createFormRules" ref="createForm" size="small">
           <el-form-item label="添加方式：" >
             <el-radio-group v-model="addType">
-              <el-radio :label="0">从通讯录中选择</el-radio>
+              <el-radio :label="0">输入或从通讯录中选择</el-radio>
               <el-radio :label="2">导入excel</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="权限：">
+            <el-radio-group v-model="createForm.access">
+              <el-radio label="read">只读</el-radio>
+              <el-radio label="edit">读写</el-radio>
+              <el-radio label="send">代理发送</el-radio>
+              <el-radio label="all">完全控制</el-radio>
             </el-radio-group>
           </el-form-item>
           <!--<el-form-item v-show="addType == '1'" label="邮箱：" prop="email" :error="email_error">-->
           <!--<el-input v-model.trim="createForm.email" auto-complete="off"></el-input>-->
           <!--<br><small>邮箱必须在系统中存在</small>-->
           <!--</el-form-item>-->
-          <el-form-item v-show="addType == '0'" label="选择邮箱：">
-            <el-select v-if="false" v-model="selectedMails" multiple filterable placeholder="请选择" style="width:100%">
-              <el-option
-                v-for="item in contactList"
-                :key="item.contact_id"
-                :label="item.fullname+'<'+item.email+'>'"
-                :value="item.contact_id">
-              </el-option>
-            </el-select>
-            <el-input type="textarea" autosize v-model="this.selectedMailbox" placeholder="支持多个邮箱，请用分号( ; )隔开"></el-input>
-            <el-row style="border:1px solid #ddd;">
-              <el-col :span="24">
+          <el-form-item v-show="addType == '0'" label="邮箱：">
+            <div style="min-height:80px;border:1px solid #dcdfe6;max-width:460px;padding:4px 10px;margin-bottom:4px;max-height:400px;overflow:auto;">
+              <el-row v-for="(v,k) in selectedMailbox" :key="k">
+                <el-col :span="18">
+                  <div>{{v}}</div>
+                </el-col>
+                <el-col :span="6" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="deleteMailbox(k)" type="warning" plain></el-button></el-col>
+              </el-row>
+            </div>
+            <el-input type="textarea" v-if="false" autosize v-model="selectedMailbox" placeholder="支持多个邮箱，请用分号( ; )隔开"></el-input>
+            <el-input placeholder="输入邮箱" v-model="addmailbox" style="width:auto;" type="email"></el-input><el-button @click="addMailbox">添加</el-button>
+            <el-button @click="deleteAll" type="danger" plain>清空添加的邮箱</el-button>
+            <el-button @click="showChoice=!showChoice">{{showChoice?"隐藏通讯录":"打开通讯录"}}</el-button>
 
-                <!--<el-tree-->
-                  <!--:data="transform_menu"-->
-                  <!--:props="defaultPropsCon" @node-click="treeNodeClick">-->
-                <!--</el-tree>-->
+          </el-form-item>
+          <el-form-item v-show="addType == '0'&&showChoice" label="选择邮箱：">
+
+            <el-row style="margin-bottom:6px;">
+              <el-col :span="16">
+                <el-cascader  change-on-select style="width:100%"
+                                 :options="deptOptions" @change="menu_change" placeholder="请选择部门">
+                </el-cascader>
               </el-col>
+              <el-col :span="5" :offset="1">
+                <el-input v-model="searchMailbox" size="small" placeholder="请输入内容"></el-input>
 
+              </el-col>
+              <el-col :span="2" style="text-align:right">
+                <el-button size="small" type="primary" @click="searchOabMembers(1)">搜索</el-button>
+              </el-col>
             </el-row>
 
-          </el-form-item>
-          <el-form-item v-show="addType == '0'" label="选择部门：">
-            <el-cascader  change-on-select style="width:100%"
-                                 :options="deptOptions" @change="menu_change">
-            </el-cascader>
-          </el-form-item>
-          <el-form-item v-show="addType == '0'" label="选择邮箱：">
-            <div style="text-align:right;">
-              <el-input v-model="searchMailbox" size="small" placeholder="请输入内容" style="width:auto;"></el-input>
-              <el-button size="small" type="primary" @click="searchOabMembers(1)">搜索</el-button>
-            </div>
+
 
 
 
@@ -117,27 +126,24 @@
           <el-form-item v-show="addType == '2'" label="请选择：">
             <el-upload
               action=""
+              ref="uploadFile"
               :http-request="uploadFile"
-              :show-file-list="false" style="display:inline-block">
-              <el-button size="small" type="primary"><i class="el-icon-upload"></i> 导入excel</el-button>
+              :show-file-list="false" style="display:inline-block"
+
+            >
+              <el-button slot="trigger" size="small" type="primary"><i class="el-icon-upload"></i>选取文件</el-button>
               <div slot="tip" class="el-upload__tip"></div>
             </el-upload>
-            <el-button plan size="small">查看模板excel</el-button>
+            <el-button plan size="small" @click="checkModel">查看模板excel</el-button>
           </el-form-item>
 
 
-          <el-form-item label="权限：">
-            <el-radio-group v-model="createForm.access">
-              <el-radio label="read">只读</el-radio>
-              <el-radio label="edit">读写</el-radio>
-              <el-radio label="send">代理发送</el-radio>
-              <el-radio label="all">完全控制</el-radio>
-            </el-radio-group>
-          </el-form-item>
+
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="createFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">提交</el-button>
+          <el-button v-if="addType == '0'" type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">提交</el-button>
+          <el-button v-if="addType == '2'" type="primary" @click.native="submitFile">提交</el-button>
         </div>
       </el-dialog>
 
@@ -148,7 +154,8 @@
 <script>
   import axios from 'axios';
   import {settingRelateGet, settingRelateCreate, settingRelateDelete, settingRelateGetSingle,contactPabGroupsGet,contactOabDepartsGet,
-    contactPabMembersGet,contactOabMembersGet} from '@/api/api'
+    contactPabMembersGet,contactOabMembersGet,settingRelateImport,settingRelateTutorial} from '@/api/api'
+  const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
 
   export default {
     data() {
@@ -166,6 +173,7 @@
         currentPage:1,
         searchMailbox:'',
         oab_cid:0,
+        showChoice:false,
         contactList:[
           {contact_id:1,email:'lw@test.com1',fullname:'李威1'},
           {contact_id:2,email:'lw@test.com2',fullname:'李威2'},
@@ -178,7 +186,9 @@
           {contact_id:3,email:'lw@test.com3',fullname:'李威3'},
           {contact_id:4,email:'lw@test.com4',fullname:'李威4'},
         ],
-        selectedMailbox:'',
+        selectedMailbox:[],
+        hashMailbox:[],
+        addmailbox:'',
         selectedMails:[],
         addType: 0,
         total: 0,
@@ -191,9 +201,9 @@
         email_error: '',
         createFormVisible: false,
         createFormLoading: false,
-        createForm: {email: '', access: 'read'},
+        createForm: {emails: '', access: 'read'},
         createFormRules: {
-          email: [
+          emails: [
             { required: true, message: '请填写邮箱', trigger: 'blur' },
             {validator: isEmail, trigger: 'blur'}
           ],
@@ -210,6 +220,55 @@
     },
 
     methods: {
+      submitFile(){
+        this.$refs.uploadFile.submit();
+      },
+      checkModel(){
+        settingRelateTutorial().then(response=>{
+          let blob = new Blob([response.data], { type: response.headers["content-type"] })
+          let objUrl = URL.createObjectURL(blob);
+          let filename = 'excel_share.xls';
+          if (window.navigator.msSaveOrOpenBlob) {
+            // if browser is IE
+            navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
+          } else {
+            // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
+            let link = document.createElement("a");
+            link.setAttribute("href", objUrl);
+            link.setAttribute("download", filename);
+            document.body.appendChild(link);
+            link.click();
+          }
+          this.$message({ message: '下载成功！', type: 'success' });
+        },err=>{
+          console.log(err);
+          this.$message({ message: '下载失败！', type: 'error' });
+        })
+
+      },
+      deleteAll(){
+        this.selectedMailbox = [];
+        this.hashMailbox = [];
+      },
+      addMailbox(){
+
+        if(this.addmailbox){
+          if(emailReg.test(this.addmailbox)){
+            if(!this.hashMailbox[this.addmailbox]){
+              this.selectedMailbox.push(this.addmailbox);
+              this.hashMailbox[this.addmailbox] = true;
+              this.addmailbox = '';
+            }
+          }else{
+            this.$alert('邮箱格式不正确！')
+          }
+
+        }
+      },
+      deleteMailbox(k){
+        this.hashMailbox[this.selectedMailbox[k]] = false;
+        this.selectedMailbox.splice(k,1)
+      },
       menu_change(arr){
         let v = arr[arr.length-1];
         this.oab_cid = v;
@@ -265,18 +324,26 @@
         });
       },
       handleSelectionChange(v){
-        let str = '';
         for(let i=0;i<v.length;i++){
-          str += v[i].username+';'
+          if(!this.hashMailbox[v[i].username]){
+            this.selectedMailbox.push(v[i].username)
+            this.hashMailbox[v[i].username] = true;
+          }
         }
-        this.selectedMailbox = str;
         console.log(v)
       },
       uploadFile(param){
-        var file = param.file;
-        var formData=new FormData();
-        formData.append('filepath', file)
-        return true;
+        let file = param.file;
+        let formData=new FormData();
+        formData.append('file', file)
+        formData.append('access',this.createForm.access)
+
+        settingRelateImport(formData).then(res=>{
+          console.log(res)
+        },err=>{
+          console.log(err)
+        })
+
       },
       getContactList(){
         let _this = this;
@@ -330,7 +397,7 @@
           if (valid) {
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
               this.createFormLoading = true;
-              this.createForm.email = this.selectedMailbox;
+              this.createForm.emails = this.selectedMailbox;
               let para = Object.assign({}, this.createForm);
               settingRelateCreate(para)
                 .then((res) => {

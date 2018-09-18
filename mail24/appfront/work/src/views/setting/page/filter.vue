@@ -39,14 +39,14 @@
       <el-col :span="24" class="toolbar"></el-col>
 
 
-      <el-dialog title="新增规则"  :visible.sync="createFormVisible"   :modal-append-to-body="false">
+      <el-dialog title="新增规则"  :visible.sync="createFormVisible"   :modal-append-to-body="false" width="70%" top="10vh">
         <el-form :model="createForm" label-width="100px" :rules="createFormRules" ref="createForm" size="small">
 
-          <el-form-item label="规则名称" prop="caption">
+          <el-form-item label="规则名称" prop="name">
             <el-input v-model.trim="createForm.name" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="优先级" prop="sequence">
-            <el-input v-model.number="createForm.sequence" auto-complete="off"></el-input>
+            <el-input v-model.number="createForm.sequence" auto-complete="off" type="number"></el-input>
           </el-form-item>
           <el-form-item label="规则用于" prop="type">
             <el-radio-group v-model="createForm.type">
@@ -55,7 +55,7 @@
             </el-radio-group>
           </el-form-item>
 
-          <el-form-item label="状态" prop="type">
+          <el-form-item label="状态" prop="disabled">
             <el-radio-group v-model="createForm.disabled">
               <el-radio :label="-1">启用</el-radio>
               <el-radio :label="1">禁用</el-radio>
@@ -97,7 +97,7 @@
                     </el-form-item>
                   </el-col>
                   <el-col :span="5">
-                    <el-select v-model="c.suboption"  placeholder="请选择">
+                    <el-select v-model="c.suboption"  placeholder="请选择" @change="changeOption(c)">
                       <el-option label="所有邮件" value="all_mail"></el-option>
                       <el-option label="有附件" value="has_attach"></el-option>
                       <el-option label="附件名" value="attachments"></el-option>
@@ -131,11 +131,9 @@
                   </el-col>
                   <el-col :span="10">
                     <el-input v-if="c.suboption=='attachments' || c.suboption=='sender' || c.suboption == 'cc'|| c.suboption == 'recipient'|| c.suboption=='subject'|| c.suboption=='body'" placeholder="请输入内容" v-model="c.value"></el-input>
-                    <el-input v-if="c.suboption=='mail_size' || c.suboption=='mail_size2' || c.suboption == 'content_size'" placeholder="" v-model.number="c.value"></el-input>
+                    <el-input v-if="c.suboption=='mail_size' || c.suboption=='mail_size2' || c.suboption == 'content_size'" placeholder="" v-model.number="c.value"  type="number"></el-input>
                     <el-cascader v-if="c.suboption == 'sender_dept' || c.suboption == 'cc_dept'||c.suboption == 'rcpt_dept'"
-                                 change-on-select style="width:100%" expand-trigger="hover"
-                                 :options="deptOptions" v-model="selss"
-                    >
+                                 change-on-select style="width:100%" expand-trigger="hover" :options="deptOptions" v-model="selss">
                     </el-cascader>
                   </el-col>
                   <el-col :span="4">
@@ -144,7 +142,7 @@
                 </el-row>
                 <el-row v-for="(cc,kk) in c.children" :key="kk" style="margin-bottom: 4px;">
                   <el-col :span="5">
-                    <el-select v-model="cc.suboption"  placeholder="请选择">
+                    <el-select v-model="cc.suboption"  placeholder="请选择" @change="changeOption(cc)">
                       <el-option label="所有邮件" value="all_mail"></el-option>
                       <el-option label="有附件" value="has_attach"></el-option>
                       <el-option label="附件名" value="attachments"></el-option>
@@ -178,11 +176,9 @@
                   </el-col>
                   <el-col :span="10">
                     <el-input v-if="cc.suboption=='attachments' || cc.suboption=='sender' || cc.suboption == 'cc'|| cc.suboption == 'recipient'|| cc.suboption=='subject'|| cc.suboption=='body'" placeholder="请输入内容" v-model="cc.value"></el-input>
-                    <el-input v-if="cc.suboption=='mail_size' || cc.suboption=='mail_size2' || cc.suboption == 'content_size'" placeholder="" v-model.number="c.value"></el-input>
+                    <el-input v-if="cc.suboption=='mail_size' || cc.suboption=='mail_size2' || cc.suboption == 'content_size'" placeholder="" v-model.number="cc.value" type="number"></el-input>
                     <el-cascader v-if="cc.suboption == 'sender_dept' || cc.suboption == 'cc_dept'||cc.suboption == 'rcpt_dept'"
-                                 change-on-select style="width:100%" expand-trigger="hover"
-                                 :options="deptOptions"
-                    >
+                                 change-on-select style="width:100%" expand-trigger="hover" :options="deptOptions">
                     </el-cascader>
                   </el-col>
                   <el-col :span="4">
@@ -198,7 +194,7 @@
                 <template slot="title">动作</template>
                 <el-row  style="margin-bottom: 4px;"  v-for="(a,k) in createForm.actions" :key="k">
                   <el-col :span="5">
-                    <el-select v-model="a.action"  placeholder="请选择">
+                    <el-select v-model="a.action"  placeholder="请选择" @change="change_action(a)">
                       <el-option label="删除邮件" value="delete"></el-option>
                       <el-option label="隔离邮件" value="sequester"></el-option>
                       <el-option label="移动邮件至文件夹" value="move_to"></el-option>
@@ -213,15 +209,14 @@
                       <el-option label="收件箱" value="Inbox"></el-option>
                       <el-option label="发件箱" value="Sent"></el-option>
                     </el-select>
-                    <el-input v-if="a.action=='jump_to'||a.action == 'append_header'||a.action == 'replace_subject' ||a.action == 'replace_body'"></el-input>
                   </el-col>
 
                   <el-col :span="5">
-                    <el-input v-if="a.action=='forward' ||a.action == 'delete_header' ||a.action == 'append_header'||a.action == 'replace_subject' ||a.action == 'replace_body'  "></el-input>
+                    <el-input v-if="a.action=='forward' " v-model="a.json_value.value" placeholder="请填写转发邮箱"></el-input>
                   </el-col>
 
                   <el-col :span="5">
-                    <el-input v-model.number="a.sequence"></el-input>
+                    <el-input v-model="a.sequence" type="number" placeholder="请填写序号"></el-input>
                   </el-col>
 
                   <el-col :span="4">
@@ -242,14 +237,14 @@
       </el-dialog>
 
 
-      <el-dialog title="修改规则"  :visible.sync="updateFormVisible"   :modal-append-to-body="false">
+      <el-dialog title="修改规则"  :visible.sync="updateFormVisible"  :modal-append-to-body="false" width="70%" top="10vh">
         <el-form :model="updateForm" label-width="100px" :rules="updateFormRules" ref="updateForm" size="small">
 
-          <el-form-item label="规则名称" prop="caption">
+          <el-form-item label="规则名称" prop="name">
             <el-input v-model.trim="updateForm.name" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="优先级" prop="sequence">
-            <el-input v-model.number="updateForm.sequence" auto-complete="off"></el-input>
+            <el-input v-model.number="updateForm.sequence" auto-complete="off" type="number"></el-input>
           </el-form-item>
           <el-form-item label="规则用于" prop="type">
             <el-radio-group v-model="updateForm.type">
@@ -258,7 +253,7 @@
             </el-radio-group>
           </el-form-item>
 
-          <el-form-item label="状态" prop="type">
+          <el-form-item label="状态" prop="disabled">
             <el-radio-group v-model="updateForm.disabled">
               <el-radio :label="-1" >启用</el-radio>
               <el-radio :label="1">禁用</el-radio>
@@ -300,7 +295,7 @@
                     </el-form-item>
                   </el-col>
                   <el-col :span="5">
-                    <el-select v-model="c.suboption"  placeholder="请选择">
+                    <el-select v-model="c.suboption"  placeholder="请选择" @change="changeOption(c)">
                       <el-option label="所有邮件" value="all_mail"></el-option>
                       <el-option label="有附件" value="has_attach"></el-option>
                       <el-option label="附件名" value="attachments"></el-option>
@@ -334,12 +329,9 @@
                   </el-col>
                   <el-col :span="10">
                     <el-input v-if="c.suboption=='attachments' || c.suboption=='sender' || c.suboption == 'cc'|| c.suboption == 'recipient'|| c.suboption=='subject'|| c.suboption=='body'" placeholder="请输入内容" v-model="c.value"></el-input>
-                    <el-input v-if="c.suboption=='mail_size' || c.suboption=='mail_size2' || c.suboption == 'content_size'" placeholder="" v-model.number="c.value"></el-input>
+                    <el-input v-if="c.suboption=='mail_size' || c.suboption=='mail_size2' || c.suboption == 'content_size'" placeholder="" v-model.number="c.value" type="number"></el-input>
                     <el-cascader v-if="c.suboption == 'sender_dept' || c.suboption == 'cc_dept'||c.suboption == 'rcpt_dept'"
-                                 change-on-select style="width:100%" expand-trigger="hover"
-                                 :options="deptOptions" v-model="selss"
-                    >
-                    </el-cascader>
+                                 change-on-select style="width:100%" expand-trigger="hover" :options="deptOptions" v-model="selss"></el-cascader>
                   </el-col>
                   <el-col :span="4">
                     <el-button  icon="el-icon-plus" type="primary" @click="addSubCondition(c.id,k)"></el-button>
@@ -347,7 +339,7 @@
                 </el-row>
                 <el-row v-for="(cc,kk) in c.children" :key="kk" style="margin-bottom: 4px;">
                   <el-col :span="5">
-                    <el-select v-model="cc.suboption"  placeholder="请选择">
+                    <el-select v-model="cc.suboption"  placeholder="请选择" @change="changeOption(cc)">
                       <el-option label="所有邮件" value="all_mail"></el-option>
                       <el-option label="有附件" value="has_attach"></el-option>
                       <el-option label="附件名" value="attachments"></el-option>
@@ -381,11 +373,9 @@
                   </el-col>
                   <el-col :span="10">
                     <el-input v-if="cc.suboption=='attachments' || cc.suboption=='sender' || cc.suboption == 'cc'|| cc.suboption == 'recipient'|| cc.suboption=='subject'|| cc.suboption=='body'" placeholder="请输入内容" v-model="cc.value"></el-input>
-                    <el-input v-if="cc.suboption=='mail_size' || cc.suboption=='mail_size2' || cc.suboption == 'content_size'" placeholder="" v-model.number="c.value"></el-input>
+                    <el-input v-if="cc.suboption=='mail_size' || cc.suboption=='mail_size2' || cc.suboption == 'content_size'" placeholder="" v-model.number="cc.value" type="number"></el-input>
                     <el-cascader v-if="cc.suboption == 'sender_dept' || cc.suboption == 'cc_dept'||cc.suboption == 'rcpt_dept'"
-                                 change-on-select style="width:100%" expand-trigger="hover"
-                                 :options="deptOptions"
-                    >
+                                 change-on-select style="width:100%" expand-trigger="hover" :options="deptOptions">
                     </el-cascader>
                   </el-col>
                   <el-col :span="4">
@@ -401,7 +391,7 @@
                 <template slot="title">动作</template>
                 <el-row  style="margin-bottom: 4px;"  v-for="(a,k) in updateForm.actions" :key="k">
                   <el-col :span="5">
-                    <el-select v-model="a.action"  placeholder="请选择">
+                    <el-select v-model="a.action"  placeholder="请选择"  @change="change_action(a)">
                       <el-option label="删除邮件" value="delete"></el-option>
                       <el-option label="隔离邮件" value="sequester"></el-option>
                       <el-option label="移动邮件至文件夹" value="move_to"></el-option>
@@ -416,15 +406,13 @@
                       <el-option label="收件箱" value="Inbox"></el-option>
                       <el-option label="发件箱" value="Sent"></el-option>
                     </el-select>
-                    <el-input v-if="a.action=='jump_to'||a.action == 'append_header'||a.action == 'replace_subject' ||a.action == 'replace_body'"></el-input>
+                  </el-col>
+                  <el-col :span="5">
+                    <el-input v-if="a.action=='forward' " v-model="a.json_value.value" placeholder="请填写转发邮箱"></el-input>
                   </el-col>
 
                   <el-col :span="5">
-                    <el-input v-if="a.action=='forward' ||a.action == 'delete_header' ||a.action == 'append_header'||a.action == 'replace_subject' ||a.action == 'replace_body'  "></el-input>
-                  </el-col>
-
-                  <el-col :span="5">
-                    <el-input v-model.number="a.sequence"></el-input>
+                    <el-input v-model="a.sequence" type="number" placeholder="请填写序号"></el-input>
                   </el-col>
 
                   <el-col :span="4">
@@ -472,7 +460,7 @@
         createForm: {
           name: '',
           content: '',
-          sequence:0,
+          sequence:999,
           type:1,
           type_display:'接收',
           disabled:-1,
@@ -494,7 +482,7 @@
         updateForm: {
           name: '',
           content: '',
-          sequence:0,
+          sequence:999,
           type:1,
           type_display:'接收',
           disabled:-1,
@@ -523,8 +511,12 @@
     },
 
     methods: {
-      createFormSubmit(){
-        console.log(this.createForm)
+      change_action(a){
+        a.json_value.value='';
+      },
+      changeOption(data){
+        data.action = '';
+        data.value = '';
       },
       f_TableSelsChange: function (sels) {
         this.sels = sels;
@@ -550,6 +542,32 @@
           this.total = res.data.count;
           this.listTables = res.data.results;
           this.listLoading = false;
+        });
+      },
+
+      createFormSubmit(){
+        console.log(this.selss);
+        console.log(this.createForm);
+        this.$refs.createForm.validate((valid) => {
+          if (valid) {
+            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+              this.createFormLoading = true;
+              let para = Object.assign({}, this.createForm);
+              settingFilterCreate(para)
+                .then((res) => {
+                  this.$refs['createForm'].resetFields();
+                  this.createFormLoading = false;
+                  this.createFormVisible = false;
+                  this.$message({message: '提交成功', type: 'success'});
+                  this.getTables();
+                }, (data)=>{
+                  console.log(data);
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
+            });
+          }
         });
       },
 
@@ -628,8 +646,8 @@
         this.createFormVisible = true;
       },
       updateFormSubmit(){
-        console.log(this.selss);
-        console.log(this.updateForm);
+        // console.log(this.selss);
+        // console.log(this.updateForm);
         this.$refs.updateForm.validate((valid) => {
           if (valid) {
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
