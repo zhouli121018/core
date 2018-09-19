@@ -188,13 +188,20 @@
           {
             title : '标记32测试测试吃测试吃测试测试测试测色测色测试',
             start : '2018-09-11 14:30:00',
+            end : '2018-10-31  00:00:00',
+            backgroundColor: 'red',
+            borderColor: 'red',
+          },
+          {
+            title : '试测试测色测色测试',
+            start : '2018-09-11 14:30:00',
             backgroundColor: 'red',
             borderColor: 'red',
           },
           {
             title : '标记2',
             start : '2018-09-10',
-            end : '2018-09-10',
+            end : '2018-09-20',
           }
         ],
 

@@ -169,7 +169,10 @@
 
 
       <el-dialog title="上传文件"  :visible.sync="uploadFormVisible"  :close-on-click-modal="false" :append-to-body="true">
-        <el-form :model="uploadForm" label-width="130px" :rules="uploadFormRules" ref="uploadForm">
+        <el-form :model="uploadForm" label-width="130px" :rules="uploadFormRules" ref="uploadForm"
+          v-loading="fileloading"
+          element-loading-text="正在上传文件，请稍候..."
+          element-loading-spinner="el-icon-loading" >
 
           <el-form-item label="上传位置" prop="folder_id">
             <el-select v-model="uploadForm.folder_id" style="width: 100%">
@@ -179,7 +182,7 @@
 
           <el-form-item label=" ">
 
-            <el-upload action="" :http-request="uploadFile" multiple :file-list="uploadForm.fileList">
+            <el-upload action="" :http-request="uploadFile" multiple  :file-list="uploadForm.fileList" ref="uploadFile">
               <el-button size="small" type="primary"  plain icon="el-icon-upload" :on-success="uploadSuccess">点击上传</el-button>
               <!--<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
 
@@ -211,6 +214,7 @@
   export default {
     data() {
       return {
+        fileloading:false,
         percent:0,
         is_filters_search: false,
         filters: {
@@ -628,16 +632,17 @@
         });
       },
       uploadFile(param){
-        console.log('-aaa-1', this.uploadForm.folder_id);
         let folder_id = this.uploadForm.folder_id?this.uploadForm.folder_id:this.current_folder_id;
         var file = param.file;
         var formData=new FormData();
         formData.append('file', file);
         formData.append('folder_id', folder_id);
         this.listLoading = true;
-        param.file.percent = 0.7*100
-        param.onProgress(param.file)
+        this.fileloading = true;
+        let _this = this;
         netdiskFileUpload(formData).then((res) => {
+          // _this.$refs.uploadFile.clearFiles();
+          _this.fileloading = false;
           param.file.percent = 1*100;
           param.onProgress(param.file);
           this.$message({message: '上传成功', type: 'success'});
@@ -649,6 +654,7 @@
           param.onProgress(param.file);
           console.log(data);
           this.listLoading = false;
+          _this.fileloading = false;
           if("non_field_errors" in data) {
             this.$message({ message: data.non_field_errors[0],  type: 'error' });
           } else {
@@ -659,6 +665,7 @@
           param.file.percent = 0;
           param.onProgress(param.file)
           this.listLoading = false;
+          this.fileloading = false;
           this.$message({ message: '上传失败，请重试',  type: 'error' });
         });
 

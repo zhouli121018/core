@@ -41,7 +41,11 @@
 
       <!--新增 签名-->
       <el-dialog title="添加关联共享邮箱"  :visible.sync="createFormVisible"  :append-to-body="true" class="add_share_mail" width="60%">
-        <el-form :model="createForm" label-width="100px" :rules="createFormRules" ref="createForm" size="small">
+        <el-form :model="createForm" label-width="100px" :rules="createFormRules" ref="createForm" size="small"
+          v-loading="fileloading"
+          element-loading-text="正在导入文件..."
+          element-loading-spinner="el-icon-loading"
+        >
           <el-form-item label="添加方式：" >
             <el-radio-group v-model="addType">
               <el-radio :label="0">输入或从通讯录中选择</el-radio>
@@ -124,17 +128,24 @@
 
 
           <el-form-item v-show="addType == '2'" label="请选择：">
-            <el-upload
-              action=""
-              ref="uploadFile"
-              :http-request="uploadFile"
-              :show-file-list="false" style="display:inline-block"
+            <el-col :span="12">
+              <el-upload
+                action=""
+                ref="uploadFile"
+                :http-request="uploadFile"
+                style="display:inline-block"
+                :auto-upload="false"
+                :on-change="changeFile"
+              >
+                <el-button slot="trigger" size="small" type="primary"><i class="el-icon-upload"></i>选取文件</el-button>
+                <div slot="tip" class="el-upload__tip"></div>
+              </el-upload>
+            </el-col>
+            <el-col :span="12">
+              <el-button plan size="small" @click="checkModel">查看模板excel</el-button>
+            </el-col>
 
-            >
-              <el-button slot="trigger" size="small" type="primary"><i class="el-icon-upload"></i>选取文件</el-button>
-              <div slot="tip" class="el-upload__tip"></div>
-            </el-upload>
-            <el-button plan size="small" @click="checkModel">查看模板excel</el-button>
+
           </el-form-item>
 
 
@@ -167,6 +178,7 @@
         }
       };
       return {
+        fileloading:false,
         deptOptions:[],
         totalCount:0,
         pageSize:10,
@@ -220,6 +232,9 @@
     },
 
     methods: {
+      changeFile(file,filelist){
+        filelist.splice(0,filelist.length-1)
+      },
       submitFile(){
         this.$refs.uploadFile.submit();
       },
@@ -333,15 +348,19 @@
         console.log(v)
       },
       uploadFile(param){
+        this.fileloading = true;
+        let _this = this;
         let file = param.file;
         let formData=new FormData();
         formData.append('file', file)
         formData.append('access',this.createForm.access)
-
         settingRelateImport(formData).then(res=>{
-          console.log(res)
+          this.$refs.uploadFile.clearFiles();
+          _this.fileloading = false;
+          _this.$message({message: '导入成功', type: 'success'});
         },err=>{
-          console.log(err)
+          _this.fileloading = false;
+          _this.$message({ message: err.error,  type: 'error' });
         })
 
       },

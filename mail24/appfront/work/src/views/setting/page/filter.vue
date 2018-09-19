@@ -132,9 +132,20 @@
                   <el-col :span="10">
                     <el-input v-if="c.suboption=='attachments' || c.suboption=='sender' || c.suboption == 'cc'|| c.suboption == 'recipient'|| c.suboption=='subject'|| c.suboption=='body'" placeholder="请输入内容" v-model="c.value"></el-input>
                     <el-input v-if="c.suboption=='mail_size' || c.suboption=='mail_size2' || c.suboption == 'content_size'" placeholder="" v-model.number="c.value"  type="number"></el-input>
-                    <el-cascader v-if="c.suboption == 'sender_dept' || c.suboption == 'cc_dept'||c.suboption == 'rcpt_dept'"
-                                 change-on-select style="width:100%" expand-trigger="hover" :options="deptOptions" v-model="selss">
-                    </el-cascader>
+
+                    <el-row  v-if="c.suboption == 'sender_dept' || c.suboption == 'cc_dept'||c.suboption == 'rcpt_dept'">
+                      <el-col :span="12">
+
+                        <el-input readonly v-model="c.value" placeholder="点击右侧选择部门" title="点击右侧选择部门"></el-input>
+                      </el-col>
+                      <el-col :span="12">
+                        <el-cascader :clearable="true" placeholder="请选择部门"
+                                 change-on-select style="width:100%;" :show-all-levels="false" expand-trigger="click" :options="deptOptions"  @change="deptChange(c,k)" :ref="'dept_choice_'+k">
+                        </el-cascader>
+                      </el-col>
+                    </el-row>
+
+
                   </el-col>
                   <el-col :span="4">
                     <el-button  icon="el-icon-plus" type="primary" @click="addSubCondition_create(c.id,k)"></el-button>
@@ -177,9 +188,19 @@
                   <el-col :span="10">
                     <el-input v-if="cc.suboption=='attachments' || cc.suboption=='sender' || cc.suboption == 'cc'|| cc.suboption == 'recipient'|| cc.suboption=='subject'|| cc.suboption=='body'" placeholder="请输入内容" v-model="cc.value"></el-input>
                     <el-input v-if="cc.suboption=='mail_size' || cc.suboption=='mail_size2' || cc.suboption == 'content_size'" placeholder="" v-model.number="cc.value" type="number"></el-input>
-                    <el-cascader v-if="cc.suboption == 'sender_dept' || cc.suboption == 'cc_dept'||cc.suboption == 'rcpt_dept'"
-                                 change-on-select style="width:100%" expand-trigger="hover" :options="deptOptions">
-                    </el-cascader>
+
+                    <el-row v-if="cc.suboption == 'sender_dept' || cc.suboption == 'cc_dept'||cc.suboption == 'rcpt_dept'">
+                      <el-col :span="12">
+
+                        <el-input readonly v-model="cc.value" @focus="focusTest"  placeholder="点击右侧选择部门" title="点击右侧选择部门"></el-input>
+                      </el-col>
+                      <el-col :span="12">
+                        <el-cascader :clearable="true" placeholder="请选择部门" change-on-select style="width:100%" :show-all-levels="false" expand-trigger="click" :options="deptOptions"  @change="deptChange(cc,k+'_'+kk)" :ref="'dept_choice_'+k+'_'+kk">
+                        </el-cascader>
+                      </el-col>
+                    </el-row>
+
+
                   </el-col>
                   <el-col :span="4">
                     <el-button  icon="el-icon-delete" type="warning" @click="deleteSubCondition_create(k,kk)"></el-button>
@@ -330,8 +351,17 @@
                   <el-col :span="10">
                     <el-input v-if="c.suboption=='attachments' || c.suboption=='sender' || c.suboption == 'cc'|| c.suboption == 'recipient'|| c.suboption=='subject'|| c.suboption=='body'" placeholder="请输入内容" v-model="c.value"></el-input>
                     <el-input v-if="c.suboption=='mail_size' || c.suboption=='mail_size2' || c.suboption == 'content_size'" placeholder="" v-model.number="c.value" type="number"></el-input>
-                    <el-cascader v-if="c.suboption == 'sender_dept' || c.suboption == 'cc_dept'||c.suboption == 'rcpt_dept'"
-                                 change-on-select style="width:100%" expand-trigger="hover" :options="deptOptions" v-model="selss"></el-cascader>
+
+                    <el-row v-if="c.suboption == 'sender_dept' || c.suboption == 'cc_dept'||c.suboption == 'rcpt_dept'">
+                      <el-col :span="12">
+
+                        <el-input readonly v-model="c.value"  placeholder="点击右侧选择部门" title="点击右侧选择部门"></el-input>
+                      </el-col>
+                      <el-col :span="12">
+                        <el-cascader :clearable="true" placeholder="请选择部门" change-on-select style="width:100%" :show-all-levels="false" expand-trigger="click" :options="deptOptions"  @change="deptChange(c,k)" :ref="'dept_choice_'+k">
+                        </el-cascader>
+                      </el-col>
+                    </el-row>
                   </el-col>
                   <el-col :span="4">
                     <el-button  icon="el-icon-plus" type="primary" @click="addSubCondition(c.id,k)"></el-button>
@@ -374,9 +404,16 @@
                   <el-col :span="10">
                     <el-input v-if="cc.suboption=='attachments' || cc.suboption=='sender' || cc.suboption == 'cc'|| cc.suboption == 'recipient'|| cc.suboption=='subject'|| cc.suboption=='body'" placeholder="请输入内容" v-model="cc.value"></el-input>
                     <el-input v-if="cc.suboption=='mail_size' || cc.suboption=='mail_size2' || cc.suboption == 'content_size'" placeholder="" v-model.number="cc.value" type="number"></el-input>
-                    <el-cascader v-if="cc.suboption == 'sender_dept' || cc.suboption == 'cc_dept'||cc.suboption == 'rcpt_dept'"
-                                 change-on-select style="width:100%" expand-trigger="hover" :options="deptOptions">
-                    </el-cascader>
+                    <el-row v-if="cc.suboption == 'sender_dept' || cc.suboption == 'cc_dept'||cc.suboption == 'rcpt_dept'">
+                      <el-col :span="12">
+
+                        <el-input readonly v-model="cc.value"  placeholder="点击右侧选择部门" title="点击右侧选择部门"></el-input>
+                      </el-col>
+                      <el-col :span="12">
+                        <el-cascader :clearable="true" placeholder="请选择部门" change-on-select style="width:100%" :show-all-levels="false" expand-trigger="click" :options="deptOptions"  @change="deptChange(cc,k+'_'+kk)" :ref="'dept_choice_'+k+'_'+kk">
+                        </el-cascader>
+                      </el-col>
+                    </el-row>
                   </el-col>
                   <el-col :span="4">
                     <el-button  icon="el-icon-delete" type="warning" @click="deleteSubCondition(k,kk)"></el-button>
@@ -511,6 +548,16 @@
     },
 
     methods: {
+      focusTest(k){
+
+      },
+      trigger_dept(k){
+        // document.getElementById('dept_choice_'+k).click();
+      },
+      deptChange(c,k){
+        let deptArr = this.$refs['dept_choice_'+k][0].currentValue;
+        c.value = deptArr[deptArr.length-1];
+      },
       change_action(a){
         a.json_value.value='';
       },
@@ -546,10 +593,52 @@
       },
 
       createFormSubmit(){
-        console.log(this.selss);
         console.log(this.createForm);
+        let _this = this;
+
         this.$refs.createForm.validate((valid) => {
           if (valid) {
+            if(!this.createForm.sequence){
+              _this.$message({message:'请输入过滤条件优先级！',type:'error'});
+              return
+            }
+            for(let i=0;i<this.createForm.conditions.length;i++){
+              let o = this.createForm.conditions[i];
+
+              if(!o.action){
+                _this.$message({message:'请选择条件动作！',type:'error'});
+                return
+              }
+              if(!o.value){
+                _this.$message({message:'请填写条件内容！',type:'error'});
+                return
+              }
+              if(o.children&&o.children.length>0){
+                for(let k = 0;k<o.children.length;k++){
+                  let subO = o.children[k];
+                  console.log(k.action)
+                  if(!subO.action){
+                    _this.$message({message:'请选择条件动作！',type:'error'});
+                    return
+                  }
+                  if(!subO.value){
+                    _this.$message({message:'请填写条件内容！',type:'error'});
+                    return
+                  }
+                }
+              }
+            }
+            for(let i=0;i<this.createForm.actions.length;i++){
+              let a = this.createForm.actions[i];
+              if(!a.json_value.value){
+                 _this.$message({message:'请选择或输入动作内容！',type:'error'});
+                return
+              }
+              if(!a.sequence){
+                _this.$message({message:'请输入动作优先级！',type:'error'});
+                return
+              }
+            }
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
               this.createFormLoading = true;
               let para = Object.assign({}, this.createForm);
