@@ -31,6 +31,7 @@
                          @event-selected="eventClick"
                          @day-click="dayClick"
                          @event-created="eventCreated"
+                         @eventMouseover="eventMouseover"
 
           ></full-calendar>
         </div>
@@ -40,58 +41,87 @@
 
     <el-dialog title="新建事件" :visible.sync="newEventDialog" :modal-append-to-body="false">
       <el-form :model="newForm" :rules="rules" ref="newForm" label-width="100px" class="demo-ruleForm" size="small">
-        <el-form-item label="标题" prop="name">
-          <el-input v-model="newForm.name"></el-input>
+        <el-form-item label="标题" prop="title">
+          <el-input v-model="newForm.title"></el-input>
         </el-form-item>
-        <el-form-item label="时间" required prop="date">
-            <el-date-picker
-              v-if="newForm.allday"
-              v-model="newForm.date"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期">
-            </el-date-picker>
+        <el-form-item label="开始日期">
+          <el-date-picker
+            v-model="newForm.start_day"
+            type="date"
+            placeholder="请选择开始日期">
+          </el-date-picker>
+          <el-time-picker
+            v-if="!newForm.is_allday"
+            v-model="newForm.start_time"
+            :picker-options="{
+              selectableRange: '00:00:00 - 23:59:59'
+            }"
+            placeholder="请选择时间点">
+          </el-time-picker>
 
-            <el-date-picker
-              v-if="!newForm.allday"
-              v-model="newForm.date"
-              type="datetimerange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期">
-            </el-date-picker>
-            <el-checkbox v-model="newForm.allday">全天事件</el-checkbox>
-
-
+          <el-checkbox v-model="newForm.is_allday">全天事件</el-checkbox>
         </el-form-item>
-        <el-form-item label="地点" prop="place">
-          <el-input type="textarea" autosize v-model.trim="newForm.place"></el-input>
-        </el-form-item>
-        <el-form-item label="说明" prop="content">
-          <el-input type="textarea" autosize v-model.trim="newForm.content"></el-input>
+        <el-form-item label="截止日期">
+          <el-date-picker
+
+            v-model="newForm.end_day"
+            type="date"
+            placeholder="选择截止日期">
+          </el-date-picker>
+          <el-time-picker
+            v-if="!newForm.is_allday"
+            v-model="newForm.end_time"
+            :picker-options="{
+              selectableRange: '00:00:00 - 23:59:59'
+            }"
+            placeholder="请选择时间点">
+          </el-time-picker>
         </el-form-item>
 
-        <el-form-item label="提醒" prop="email">
-          <el-checkbox v-model="newForm.email">电子邮件</el-checkbox>
-          提前
-          <el-input v-model="newForm.advanceValue" type="number" style="width:80px;" min="0"></el-input><el-select v-model="newForm.advanceType" placeholder="请选择">
-            <el-option label="分钟" value="min"></el-option>
-            <el-option label="小时" value="hour"></el-option>
-            <el-option label="日" value="day"></el-option>
-            <el-option label="周" value="week"></el-option>
+        <el-form-item label="地点" prop="address">
+          <el-input type="textarea" autosize v-model.trim="newForm.address"></el-input>
+        </el-form-item>
+        <el-form-item label="说明" prop="remark">
+          <el-input type="textarea" autosize v-model.trim="newForm.remark"></el-input>
+        </el-form-item>
+
+        <el-form-item label="提醒" prop="is_remind">
+          <el-checkbox v-model="newForm.is_remind">是否提醒(电子邮件)</el-checkbox>
+
+          <div v-show="newForm.is_remind">
+            提前
+            <el-input v-model="newForm.remind_before" type="number" style="width:80px;" min="0"></el-input><el-select v-model="newForm.remind_unit" placeholder="请选择">
+            <el-option label="分钟" value="60"></el-option>
+            <el-option label="小时" value="3600"></el-option>
+            <el-option label="日" value="86400"></el-option>
+            <el-option label="周" value="604800"></el-option>
           </el-select>
           提醒
+          </div>
+
         </el-form-item>
 
-        <el-form-item label="重复事件" prop="status">
-          <el-select v-model="newForm.status" placeholder="请选择">
-            <el-option label="不重复" value="once"></el-option>
-            <el-option label="每天重复" value="everyday"></el-option>
-            <el-option label="每周重复" value="everyweek"></el-option>
-            <el-option label="每月重复" value="everymonth"></el-option>
-            <el-option label="每年重复" value="everyyear"></el-option>
+        <el-form-item label="重复事件" prop="cycle_mode">
+          <el-select v-model="newForm.cycle_mode" placeholder="请选择重复事件">
+            <el-option label="不重复" value="0"></el-option>
+            <el-option label="每天重复" value="1"></el-option>
+            <el-option label="每周重复" value="2"></el-option>
+            <el-option label="每月重复" value="3"></el-option>
+            <el-option label="每年重复" value="4"></el-option>
           </el-select>
+
+        </el-form-item>
+        <el-form-item label="" v-show="newForm.cycle_mode!=0">
+          <el-select v-model="newForm.cycle_type" placeholder="请选择重复类型">
+            <el-option label="重复至" value="0"></el-option>
+            <el-option label="永远重复" value="1"></el-option>
+          </el-select>
+          <el-date-picker
+            v-model="newForm.cycle_date"
+            type="date"
+            placeholder="请选择重复截止日期">
+          </el-date-picker>
+          <p>重复摘要： </p>
         </el-form-item>
 
         <el-form-item label="邀请对象" prop="invite">
@@ -121,33 +151,42 @@
   export default {
     data() {
       return {
-        newEventDialog:true,
+        newEventDialog:false,
         addemail:'',
         newForm: {
-          name: '',
-          status: '',
-          date:'',
-          advanceValue:'',
-          advanceType:'',
-          allday:false,
-          email:false,
+          title: '',
+          cycle_mode: '',
+          cycle_type:'',
+          cycle_date:'',
+          remind_before:10,
+          remind_unit:"60",
+          is_allday:false,
+          is_remind:false,
           delivery: false,
-          content: '',
-          place:'',
+          start_day:'',
+          start_time:'',
+          end_day:'',
+          end_time:'',
+          remark: '',
+          address:'',
           invite:[],
         },
         rules: {
-          name: [
+          title: [
             { required: true, message: '请输入事件标题', trigger: 'blur' },
             // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
           ],
-          status: [
+          cycle_mode: [
             { required: true, message: '请选择重复事件', trigger: 'change' }
           ],
-          date: [
-            {  required: true, message: '请选择时间', trigger: 'change' }
+          start_day:[
+            {required:true,message:'请选择开始日期',trigger:'blur'}
           ],
-          content: [
+          end_day:[
+            {required:true,message:'请选择截止日期',trigger:'blur'}
+          ],
+
+          remark: [
             { required: true, message: '请填写日程说明', trigger: 'blur' }
           ],
 
@@ -155,6 +194,8 @@
         },
 
         config: {
+          // eventColor:"#fff",
+          // eventTextColor:"#333",
           locale: "zh-cn",
           defaultView: 'month',
           editable: true,
@@ -184,21 +225,32 @@
             }
           }
         },
+        addEvent:false,
         fcEvents : [
           {
-            title : '标记32测试测试吃测试吃测试测试测试测色测色测试',
-            start : '2018-09-11 14:30:00',
-            end : '2018-10-31  00:00:00',
-            backgroundColor: 'red',
-            borderColor: 'red',
+            id:0,
+            title:"新建事件...",
+            start:'',
+            color: '#EDF8FB',
+            textColor:'#aaa'
           },
           {
+            id:1,
+            title : '标记32测试测试吃测试吃测试测试测试测色测色测试',
+            start : '2018-09-11',
+            end : '2018-9-30',
+            // backgroundColor: 'red',
+            // borderColor: 'red',
+          },
+          {
+            id:2,
             title : '试测试测色测色测试',
             start : '2018-09-11 14:30:00',
             backgroundColor: 'red',
             borderColor: 'red',
           },
           {
+            id:3,
             title : '标记2',
             start : '2018-09-10',
             end : '2018-09-20',
@@ -245,17 +297,27 @@
         console.log(t.toLocaleString())
         // e.target.style.boxShadow="0 0 5px #60CAFF"
         // this.$refs.calendar.fireMethod('changeView', 'agendaDay')
+        console.log(arguments)
+        this.fcEvents[0].start=t;
 
       },
       eventClick (data){
         console.log(arguments)
-        alert(data.title)
+        if(!data.id){
+          this.newEventDialog = true;
+        }
 
       },
       eventCreated(){
         console.log('eventcreate')
         console.log(arguments)
       },
+      eventMouseover(){
+        console.log('eventmouseover')
+        console.log(arguments)
+      },
+      eventMouseout(){},
+
 
     },
     computed: {

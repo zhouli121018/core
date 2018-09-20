@@ -26,18 +26,18 @@
       </el-row>
 
       <el-table :data="listTables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
-        <el-table-column type="selection" width="60"></el-table-column>
-        <el-table-column type="index" label="No." width="80"></el-table-column>
+        <el-table-column type="selection" width="40"></el-table-column>
+        <el-table-column type="index" label="No." width="50"></el-table-column>
         <el-table-column prop="account" label="邮箱地址"></el-table-column>
-        <el-table-column prop="protocol" label="协议"></el-table-column>
-        <el-table-column prop="desc" label="任务信息"></el-table-column>
-        <el-table-column label="激活状态">
+        <el-table-column prop="protocol" label="协议" width="80"></el-table-column>
+        <el-table-column prop="desc" label="任务信息" width="100"></el-table-column>
+        <el-table-column label="激活状态" width="70">
           <template slot-scope="scope">
             <i class="el-alert--success el-alert__icon el-icon-success" v-if="scope.row.disabled=='-1'"></i>
             <i class="el-alert--error el-alert__icon el-icon-error" v-if="scope.row.disabled=='1'">
             </i></template>
         </el-table-column>
-        <el-table-column prop="status" label="迁移状态"></el-table-column>
+        <el-table-column prop="status" label="迁移状态" width="100"></el-table-column>
         <el-table-column prop="updated" label="最后收取时间"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">

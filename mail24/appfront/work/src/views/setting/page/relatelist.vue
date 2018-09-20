@@ -136,6 +136,7 @@
                 style="display:inline-block"
                 :auto-upload="false"
                 :on-change="changeFile"
+                accept=".csv,.xls,.xlsx"
               >
                 <el-button slot="trigger" size="small" type="primary"><i class="el-icon-upload"></i>选取文件</el-button>
                 <div slot="tip" class="el-upload__tip"></div>
@@ -357,6 +358,7 @@
         settingRelateImport(formData).then(res=>{
           this.$refs.uploadFile.clearFiles();
           _this.fileloading = false;
+          this.createFormVisible = false;
           _this.$message({message: '导入成功', type: 'success'});
         },err=>{
           _this.fileloading = false;
