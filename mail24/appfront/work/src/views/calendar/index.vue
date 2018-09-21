@@ -194,8 +194,8 @@
         },
 
         config: {
-          // eventColor:"#fff",
-          // eventTextColor:"#333",
+          eventColor:"#fff",
+          eventTextColor:"#474545",
           locale: "zh-cn",
           defaultView: 'month',
           editable: true,
@@ -223,7 +223,15 @@
             agendaDay:{
               titleFormat:'YYYY年MM月D日',
             }
-          }
+          },
+          eventMouseover: function (event, jsEvent, view) {
+            console.log('in');
+            $(jsEvent.currentTarget).attr('title',event.title)
+          },
+          eventMouseout: function (event, jsEvent, view) {
+            console.log('out');
+
+          },
         },
         addEvent:false,
         fcEvents : [
@@ -238,21 +246,22 @@
             id:1,
             title : '标记32测试测试吃测试吃测试测试测试测色测色测试',
             start : '2018-09-11',
-            end : '2018-9-30',
+            end : '2018-9-13',
+            url:'http://www.baidu.com'
             // backgroundColor: 'red',
             // borderColor: 'red',
           },
           {
             id:2,
-            title : '试测试测色测色测试',
-            start : '2018-09-11 14:30:00',
+            title : '试测试测色你哦士大夫hi上的i和迫使对方屁哦士大夫横批哦撒旦测色测试',
+            start : '2018-09-13 14:30:00',
             backgroundColor: 'red',
             borderColor: 'red',
           },
           {
             id:3,
             title : '标记2',
-            start : '2018-09-10',
+            start : '2018-09-20',
             end : '2018-09-20',
           }
         ],
@@ -328,6 +337,17 @@
 </script>
 <style>
   @import 'fullcalendar/dist/fullcalendar.css';
+
+  .fc-day-grid-event .fc-content{
+    text-overflow: ellipsis;
+  }
+  .fc-event-container:hover>a{
+    background-color:#c9e9ff !important;
+    border-color:#c9e9ff !important;
+  }
+  .fc-event-container:hover{
+    background-color:#c9e9ff !important;
+  }
   .fc-agendaWeek-view.fc-agenda-view{
     width:60%;
   }
