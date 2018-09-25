@@ -96,10 +96,6 @@
               </el-col>
             </el-row>
 
-
-
-
-
             <el-table
               :data="contactData"
               tooltip-effect="dark"
