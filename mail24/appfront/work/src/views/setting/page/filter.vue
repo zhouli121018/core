@@ -39,7 +39,7 @@
       <el-col :span="24" class="toolbar"></el-col>
 
 
-      <el-dialog title="新增规则"  :visible.sync="createFormVisible"   :modal-append-to-body="false" width="70%" top="10vh">
+      <el-dialog title="新增规则"  :visible.sync="createFormVisible" :close-on-click-modal="false" :append-to-body="true" width="70%" top="10vh">
         <el-form :model="createForm" label-width="100px" :rules="createFormRules" ref="createForm" size="small">
 
           <el-form-item label="规则名称" prop="name">
@@ -258,7 +258,7 @@
       </el-dialog>
 
 
-      <el-dialog title="修改规则"  :visible.sync="updateFormVisible"  :modal-append-to-body="false" width="70%" top="10vh">
+      <el-dialog title="修改规则"  :visible.sync="updateFormVisible" :close-on-click-modal="false" :append-to-body="true" width="70%" top="10vh">
         <el-form :model="updateForm" label-width="100px" :rules="updateFormRules" ref="updateForm" size="small">
 
           <el-form-item label="规则名称" prop="name">

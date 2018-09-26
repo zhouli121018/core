@@ -7,18 +7,26 @@
         <div class="fl-m-nav-bg"></div>
         <ul class="fl-m-nav j-file-nav">
           <li>
-            <a class="fl-m-nav-trigger"  href="#"  title="日程管理"  @click.prevent.stop="jumpTo('/setting/user')">
+            <a class="fl-m-nav-trigger" :class="{'fl-nav-current':selectedIndex == 0}"  href="#"  title="日程管理"  @click.prevent.stop="jumpTo('/calendar/set',{id:0})">
                 <span>
                   <i class="menu_icon_box el-icon-goods"></i>
                   <div>日程管理</div>
                 </span>
             </a>
           </li>
-          <li>
-            <a class="fl-m-nav-trigger fl-nav-current" href="#"  title="我的日程" @click.prevent.stop="jumpTo('/calendar/index')">
+          <li v-for="(c,k) in calendars" :key="c.id">
+            <a class="fl-m-nav-trigger" :class="{'fl-nav-current':selectedIndex == c.id}" href="#"  :title="c.name" @click.prevent.stop="jumpTo('/calendar/index',c)">
                 <span>
-                  <i class="el-icon-sort menu_icon_box"></i>
-                  <div>我的日程</div>
+                  <i class="el-icon-date menu_icon_box"></i>
+                  <div>{{c.name}}</div>
+                </span>
+            </a>
+          </li>
+          <li v-for="(c,k) in share_calendars" :key="c.id">
+            <a class="fl-m-nav-trigger" :class="{'fl-nav-current':selectedIndex == c.id}" href="#"  :title="c.name" @click.prevent.stop="jumpTo('/calendar/index',c)">
+                <span>
+                  <i class="el-icon-share menu_icon_box"></i>
+                  <div>{{c.name}}</div>
                 </span>
             </a>
           </li>
@@ -27,13 +35,7 @@
 
       <article class="fl-g-content">
         <div class="cal-content-wrap">
-          <full-calendar :events="fcEvents" ref="calendar" :config="config"
-                         @event-selected="eventClick"
-                         @day-click="dayClick"
-                         @event-created="eventCreated"
-
-          ></full-calendar>
-
+          <router-view></router-view>
         </div>
       </article>
 
@@ -360,11 +362,21 @@
   </div>
 </template>
 <script>
-  import {contactOabDepartsGet,contactOabMembersGet} from '@/api/api'
+  import {contactOabDepartsGet,contactOabMembersGet,getCalendarsList} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     data() {
       return {
+        selectedIndex:'1',
+        calendars:[
+          {id:1,mailbox_id:7368,name:'我的日程'},
+          {id:2,mailbox_id:7368,name:'xx的日程'},
+          ],
+        share_calendars:[
+          {id:6,mailbox_id:7368,name:'共享日程1'},
+          {id:7,mailbox_id:7368,name:'共享日程2'},
+          {id:8,mailbox_id:7368,name:'共享日程3'},
+        ],
         showChoice: false,
         deptOptions: [],
         searchMailbox: '',
@@ -531,6 +543,7 @@
     },
     mounted: function() {
       console.log(this.$refs.calendar)
+      this.getCalendars();
     },
     methods: {
       getDeptOptions(){
@@ -673,36 +686,20 @@
           }
         });
       },
-      jumpTo(path){
+      jumpTo(path,c){
         this.$router.push(path);
+        this.selectedIndex = c.id;
       },
-      dayClick (t){
-        console.log(t.toLocaleString())
-        // e.target.style.boxShadow="0 0 5px #60CAFF"
-        // this.$refs.calendar.fireMethod('changeView', 'agendaDay')
-        console.log(arguments)
-        this.fcEvents[0].start=t;
-      },
-      eventClick (data){
-        this.getDeptOptions();
-        this.searchOabMembers(1);
-        console.log(arguments)
-        if(!data.id){
-          // this.newForm.start_day
-          this.newEventDialog = true;
-
-        }else{
-          console.log(data.start._i)
-          if(data.end)console.log(data.end._i)
-          this.viewForm.title = data.title
-          this.viewForm.start_day = data.start
-          this.viewForm.end_day = data.end
-          this.viewEventDialog = true;
-        }
-
-      },
-      eventCreated(){
-      },
+      getCalendars(){
+        getCalendarsList().then(res=>{
+          console.log(res.data)
+          this.calendars = res.data.results;
+          this.selectedIndex = res.data.results[0].id;
+          this.share_calendars = res.data.share_results;
+        },err=>{
+          console.log(err);
+        })
+      }
 
     },
     computed: {
@@ -809,6 +806,7 @@
     right: 0;
     bottom: 0;
     left: 0;
+    height: 100%;
     background-color: #fff;
     opacity: .6;
     filter: alpha(opacity=60);
@@ -819,5 +817,8 @@
     height: 100%;
     border-right: 1px solid #e3e4e5;
     text-align: center;
+  }
+  .fl-g-sidebar>ul{
+    background:rgba(255,255,255,.6)
   }
 </style>

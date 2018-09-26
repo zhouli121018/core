@@ -4,7 +4,7 @@
              text-color="#fff"
              active-text-color="#ffd04b" >
       <el-menu-item index="pab">个人通讯录</el-menu-item>
-      <el-menu-item index="oab" v-if="webmail_oab_show">组织通讯录</el-menu-item>
+      <el-menu-item index="oab">组织通讯录</el-menu-item>
       <el-menu-item index="cab" v-if="webmail_cab_show">公共通讯录</el-menu-item>
       <el-menu-item index="soab" v-if="webmail_soab_show">其它域通讯录</el-menu-item>
     </el-menu>
@@ -20,7 +20,7 @@
     data() {
       return {
         activeIndex:'pab',
-        webmail_oab_show: false,
+        webmail_oab_show: true,
         webmail_cab_show: false,
         webmail_soab_show: false,
       };

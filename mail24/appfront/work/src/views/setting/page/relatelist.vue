@@ -40,7 +40,7 @@
 
 
       <!--新增 签名-->
-      <el-dialog title="添加关联共享邮箱"  :visible.sync="createFormVisible"  :append-to-body="true" class="add_share_mail" width="60%">
+      <el-dialog title="添加关联共享邮箱"  :visible.sync="createFormVisible"  :close-on-click-modal="false" :append-to-body="true" class="add_share_mail" width="60%">
         <el-form :model="createForm" label-width="100px" :rules="createFormRules" ref="createForm" size="small"
           v-loading="fileloading"
           element-loading-text="正在导入文件..."

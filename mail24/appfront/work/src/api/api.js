@@ -262,3 +262,10 @@ export const netdiskBatchMove = params => { return axios.post(`${host}/netdisk/n
 export const netdiskFileDownload = params => { return axios.get(`${host}/netdisk/netdisks/`+signatureID+'/download/', { params: params,responseType:'blob' }) };
 // zip下载
 export const netdiskZipDownload = params => { return axios.post(`${host}/netdisk/netdisks/zip/`, params, { responseType:'blob' }) };
+
+//日历
+//获取日程列表 /api/calendars/calendars/
+export const getCalendarsList = () => { return axios.get(`${host}/calendars/calendars/`)}
+//创建日程 /api/calendars/calendars/
+export const createCalendar = params => { return axios.post(`${host}/calendars/calendars/`, params) };
+//删除日程 /api/calendars/calendars/{id}/    delete

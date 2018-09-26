@@ -48,17 +48,17 @@ export const rou = [
       },
     ]
   },
-  {
-    path: '/calendar',
-    component: Layout1,
-    redirect: '/calendar/index',
-    children: [{
-      path: 'index',
-      component: _import('calendar/index'),
-      name: 'calendar',
-      meta: { title: 'U-Mail calendar'}
-    }]
-  },
+  // {
+  //   path: '/calendar',
+  //   component: Layout1,
+  //   redirect: '/calendar/index',
+  //   children: [{
+  //     path: 'index',
+  //     component: _import('calendar/index'),
+  //     name: 'calendar',
+  //     meta: { title: 'U-Mail calendar'}
+  //   }]
+  // },
   {
     path:'/',component:Layout1,
     children: [
@@ -70,7 +70,17 @@ export const rou = [
           {path:'pfile',component:_import('file/pfile')},
           {path:'afile',component:_import('file/afile')},
         ]
-      }]
+      },
+      {
+        path:'calendar',
+        component: _import('calendar/index'),
+        children:[
+          {path:'/',redirect:'index'},
+          {path:'index',component: _import('calendar/page/calendar')},
+          {path:'set',component: _import('calendar/page/set')},
+        ]
+      }
+      ]
   },
   {
     path:'/',component:Layout1,
