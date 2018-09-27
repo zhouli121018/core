@@ -266,6 +266,16 @@ export const netdiskZipDownload = params => { return axios.post(`${host}/netdisk
 //日历
 //获取日程列表 /api/calendars/calendars/
 export const getCalendarsList = () => { return axios.get(`${host}/calendars/calendars/`)}
+//获取具体某个日程信息 /api/calendars/calendars/{id}/
+export const getCalendarById = (id) => { return axios.get(`${host}/calendars/calendars/${id}/`)}
 //创建日程 /api/calendars/calendars/
 export const createCalendar = params => { return axios.post(`${host}/calendars/calendars/`, params) };
 //删除日程 /api/calendars/calendars/{id}/    delete
+export const deleteCalendar = id => { return axios.delete(`${host}/calendars/calendars/${id}/`) }
+//删除共享给我的日程  /api/calendars/calendars/{id}/delete-invitor/
+export const deleteInvitorCalendar = id => { return axios.post(`${host}/calendars/calendars/${id}/delete-invitor/`) }
+//更新日程  /api/calendars/calendars/{id}/  put
+export const updateCalendar = (id,params) => { return axios.put(`${host}/calendars/calendars/${id}/`, params) };
+//显示或隐藏共享日程 /api/calendars/calendars/show/
+export const showCalendar = params => { return axios.post(`${host}/calendars/calendars/show/`, params) };
+
