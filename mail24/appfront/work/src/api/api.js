@@ -278,4 +278,10 @@ export const deleteInvitorCalendar = id => { return axios.post(`${host}/calendar
 export const updateCalendar = (id,params) => { return axios.put(`${host}/calendars/calendars/${id}/`, params) };
 //显示或隐藏共享日程 /api/calendars/calendars/show/
 export const showCalendar = params => { return axios.post(`${host}/calendars/calendars/show/`, params) };
+//获取事件列表 /api/calendars/events/
+export const getEvents = params => { return axios.get(`${host}/calendars/events/`, { params: params }) }
+//创建事件  /api/calendars/events/
+export const createEvent = params => { return axios.post(`${host}/calendars/events/`, params) };
+//获取某个事件 /api/calendars/events/{id}/ get
+export const getEventById = (id) => { return axios.get(`${host}/calendars/events/${id}/`)}
 

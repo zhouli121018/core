@@ -112,13 +112,13 @@
   .fc-event{
     position:relative;
   }
-  .fc-event-container:hover>a{
+  .fc-event-container>a:hover{
     background-color:#c9e9ff !important;
     border-color:#c9e9ff !important;
   }
-  .fc-event-container:hover{
-    background-color:#c9e9ff !important;
-  }
+  /*.fc-event-container:hover{*/
+    /*background-color:#c9e9ff !important;*/
+  /*}*/
   .fc-agendaWeek-view.fc-agenda-view{
     width:60%;
   }

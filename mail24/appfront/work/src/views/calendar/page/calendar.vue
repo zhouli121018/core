@@ -15,11 +15,13 @@
         <el-form-item label="开始日期">
           <el-date-picker
             v-model="newForm.start_day"
+            format="yyyy-MM-dd" value-format="yyyy-MM-dd"
             type="date"
             placeholder="请选择开始日期">
           </el-date-picker>
           <el-time-picker
             v-if="!newForm.is_allday"
+            format="HH:mm:ss" value-format="HH:mm:ss"
             v-model="newForm.start_time"
             :picker-options="{
               selectableRange: '00:00:00 - 23:59:59'
@@ -31,7 +33,7 @@
         </el-form-item>
         <el-form-item label="截止日期">
           <el-date-picker
-
+            format="yyyy-MM-dd" value-format="yyyy-MM-dd"
             v-model="newForm.end_day"
             type="date"
             placeholder="选择截止日期">
@@ -39,6 +41,7 @@
           <el-time-picker
             v-if="!newForm.is_allday"
             v-model="newForm.end_time"
+            format="HH:mm:ss" value-format="HH:mm:ss"
             :picker-options="{
               selectableRange: '00:00:00 - 23:59:59'
             }"
@@ -81,34 +84,35 @@
         </el-form-item>
         <el-form-item label="" v-show="newForm.cycle_mode!=0">
           <el-checkbox-group v-if="newForm.cycle_mode==2" v-model="newForm.cycle_week">
-            <el-checkbox label="周一" value="1"></el-checkbox>
-            <el-checkbox label="周二" value="2"></el-checkbox>
-            <el-checkbox label="周三" value="3"></el-checkbox>
-            <el-checkbox label="周四" value="4"></el-checkbox>
-            <el-checkbox label="周五" value="5"></el-checkbox>
-            <el-checkbox label="周六" value="6"></el-checkbox>
-            <el-checkbox label="周日" value="7"></el-checkbox>
+            <el-checkbox label="周一" :value="1"></el-checkbox>
+            <el-checkbox label="周二" :value="2"></el-checkbox>
+            <el-checkbox label="周三" :value="3"></el-checkbox>
+            <el-checkbox label="周四" :value="4"></el-checkbox>
+            <el-checkbox label="周五" :value="5"></el-checkbox>
+            <el-checkbox label="周六" :value="6"></el-checkbox>
+            <el-checkbox label="周日" :value="7"></el-checkbox>
           </el-checkbox-group>
           <el-select v-model="newForm.cycle_type" placeholder="请选择重复类型">
             <el-option label="重复至" value="0"></el-option>
             <el-option label="永远重复" value="1"></el-option>
           </el-select>
           <el-date-picker
-            v-model="newForm.cycle_date"
+            v-model="newForm.cycle_day"
+            format="yyyy-MM-dd" value-format="yyyy-MM-dd"
             v-show="newForm.cycle_type==0"
             type="date"
             placeholder="请选择重复截止日期">
           </el-date-picker>
-          <p>重复摘要：{{newForm.cycle_mode==1?'每天重复':(newForm.cycle_mode==2?'每周重复':newForm.cycle_mode==3?'每月重复':newForm.cycle_mode==4?'每年重复':'不重复')}} <span v-if="newForm.cycle_mode!=0">{{newForm.cycle_type==0?'重复至 ':'永远重复'}} <i v-if="newForm.cycle_type==0">{{newForm.cycle_date.toLocaleString()}}</i></span> </p>
+          <p>重复摘要：{{newForm.cycle_mode==1?'每天重复':(newForm.cycle_mode==2?'每周重复':newForm.cycle_mode==3?'每月重复':newForm.cycle_mode==4?'每年重复':'不重复')}} <span v-if="newForm.cycle_mode!=0">{{newForm.cycle_type==0?'重复至 ':'永远重复'}} <i v-if="newForm.cycle_type==0">{{newForm.cycle_day}}</i></span> </p>
         </el-form-item>
 
-        <el-form-item label="邀请对象" prop="invite">
+        <el-form-item label="邀请对象" prop="invitors">
           <div style="min-height:80px;border:1px solid #dcdfe6;max-width:400px;padding:4px 10px;max-height:400px;overflow: auto;">
-            <el-row v-for="(v,k) in newForm.invite" :key="k">
+            <el-row v-for="(v,k) in newForm.invitors" :key="k">
               <el-col :span="18">
                 <div>{{v}}</div>
               </el-col>
-              <el-col :span="6" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="delete_invite(k)"></el-button></el-col>
+              <el-col :span="6" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="delete_invitors(k)"></el-button></el-col>
             </el-row>
           </div>
           <el-input placeholder="输入邀请人" style="width:auto;" v-model.trim="addemail"></el-input> <el-button @click="addEmail">添加</el-button>
@@ -174,12 +178,14 @@
         <el-form-item label="开始日期">
           <el-date-picker
             v-model="viewForm.start_day"
+            format="yyyy-MM-dd" value-format="yyyy-MM-dd"
             type="date"
             placeholder="请选择开始日期">
           </el-date-picker>
           <el-time-picker
             v-if="!viewForm.is_allday"
             v-model="viewForm.start_time"
+            format="HH:mm:ss" value-format="HH:mm:ss"
             :picker-options="{
               selectableRange: '00:00:00 - 23:59:59'
             }"
@@ -190,7 +196,7 @@
         </el-form-item>
         <el-form-item label="截止日期">
           <el-date-picker
-
+            format="yyyy-MM-dd" value-format="yyyy-MM-dd"
             v-model="viewForm.end_day"
             type="date"
             placeholder="选择截止日期">
@@ -198,6 +204,7 @@
           <el-time-picker
             v-if="!viewForm.is_allday"
             v-model="viewForm.end_time"
+            format="HH:mm:ss" value-format="HH:mm:ss"
             :picker-options="{
               selectableRange: '00:00:00 - 23:59:59'
             }"
@@ -230,44 +237,45 @@
 
         <el-form-item label="重复事件" prop="cycle_mode">
           <el-select v-model="viewForm.cycle_mode" placeholder="请选择重复事件">
-            <el-option label="不重复" value="0"></el-option>
-            <el-option label="每天重复" value="1"></el-option>
-            <el-option label="每周重复" value="2"></el-option>
-            <el-option label="每月重复" value="3"></el-option>
-            <el-option label="每年重复" value="4"></el-option>
+            <el-option label="不重复" :value="0"></el-option>
+            <el-option label="每天重复" :value="1"></el-option>
+            <el-option label="每周重复" :value="2"></el-option>
+            <el-option label="每月重复" :value="3"></el-option>
+            <el-option label="每年重复" :value="4"></el-option>
           </el-select>
 
         </el-form-item>
         <el-form-item label="" v-show="viewForm.cycle_mode!=0">
           <el-checkbox-group v-if="viewForm.cycle_mode==2" v-model="viewForm.cycle_week">
-            <el-checkbox label="周一" value="1"></el-checkbox>
-            <el-checkbox label="周二" value="2"></el-checkbox>
-            <el-checkbox label="周三" value="3"></el-checkbox>
-            <el-checkbox label="周四" value="4"></el-checkbox>
-            <el-checkbox label="周五" value="5"></el-checkbox>
-            <el-checkbox label="周六" value="6"></el-checkbox>
-            <el-checkbox label="周日" value="7"></el-checkbox>
+            <el-checkbox label="周一" :value="1"></el-checkbox>
+            <el-checkbox label="周二" :value="2"></el-checkbox>
+            <el-checkbox label="周三" :value="3"></el-checkbox>
+            <el-checkbox label="周四" :value="4"></el-checkbox>
+            <el-checkbox label="周五" :value="5"></el-checkbox>
+            <el-checkbox label="周六" :value="6"></el-checkbox>
+            <el-checkbox label="周日" :value="7"></el-checkbox>
           </el-checkbox-group>
           <el-select v-model="viewForm.cycle_type" placeholder="请选择重复类型">
-            <el-option label="重复至" value="0"></el-option>
-            <el-option label="永远重复" value="1"></el-option>
+            <el-option label="重复至" :value="false"></el-option>
+            <el-option label="永远重复" :value="true"></el-option>
           </el-select>
           <el-date-picker
-            v-model="viewForm.cycle_date"
-            v-show="viewForm.cycle_type==0"
+            v-model="viewForm.cycle_day"
+            v-show="viewForm.cycle_type==false"
+            format="yyyy-MM-dd" value-format="yyyy-MM-dd"
             type="date"
             placeholder="请选择重复截止日期">
           </el-date-picker>
-          <p>重复摘要：{{viewForm.cycle_mode==1?'每天重复':(viewForm.cycle_mode==2?'每周重复':viewForm.cycle_mode==3?'每月重复':viewForm.cycle_mode==4?'每年重复':'不重复')}} <span v-if="viewForm.cycle_mode!=0">{{viewForm.cycle_type==0?'重复至 ':'永远重复'}} <i v-if="viewForm.cycle_type==0">{{viewForm.cycle_date.toLocaleString()}}</i></span> </p>
+          <p>重复摘要：{{viewForm.cycle_mode==1?'每天重复':(viewForm.cycle_mode==2?'每周重复':viewForm.cycle_mode==3?'每月重复':viewForm.cycle_mode==4?'每年重复':'不重复')}} <span v-if="viewForm.cycle_mode!=0">{{viewForm.cycle_type==0?'重复至 ':'永远重复'}} <i v-if="viewForm.cycle_type==false">{{viewForm.cycle_day}}</i></span> </p>
         </el-form-item>
 
-        <el-form-item label="邀请对象" prop="invite">
+        <el-form-item label="邀请对象" prop="invitors">
           <div style="min-height:80px;border:1px solid #dcdfe6;max-width:400px;padding:4px 10px;max-height:400px;overflow: auto;">
-            <el-row v-for="(v,k) in viewForm.invite" :key="k">
+            <el-row v-for="(v,k) in viewForm.invitors" :key="k">
               <el-col :span="18">
                 <div>{{v}}</div>
               </el-col>
-              <el-col :span="6" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="delete_invite_view(k)"></el-button></el-col>
+              <el-col :span="6" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="delete_invitors_view(k)"></el-button></el-col>
             </el-row>
           </div>
           <el-input placeholder="输入邀请人" style="width:auto;" v-model.trim="addemail_view"></el-input> <el-button @click="addEmail_view">添加</el-button>
@@ -327,11 +335,12 @@
   </div>
 </template>
 <script>
-  import {contactOabDepartsGet,contactOabMembersGet,getCalendarsList} from '@/api/api'
+  import {contactOabDepartsGet,contactOabMembersGet,getCalendarsList,getEvents,createEvent,getEventById} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     data() {
       return {
+        newEvent:false,
         showChoice: false,
         deptOptions: [],
         searchMailbox: '',
@@ -344,23 +353,24 @@
         hashMailbox: [],
         addemail: '',
         newForm: {
+          calender_id:5,
           title: '',
           cycle_mode: '',
-          cycle_week: [],
+          cycle_week: [1,2],
           cycle_type: '1',
-          cycle_date: '',
+          cycle_day: '',
           remind_before: 10,
           remind_unit: "60",
           is_allday: false,
           is_remind: false,
           delivery: false,
           start_day: '',
-          start_time: '',
+          start_time: '00:00:00',
           end_day: '',
-          end_time: '',
+          end_time: '00:00:00',
           remark: '',
           address: '',
-          invite: [],
+          invitors: [],
         },
         rules: {
           title: [
@@ -390,8 +400,8 @@
           title: '',
           cycle_mode: '',
           cycle_week: [],
-          cycle_type: '1',
-          cycle_date: '',
+          cycle_type: true,
+          cycle_day: '',
           remind_before: 10,
           remind_unit: "60",
           is_allday: false,
@@ -403,15 +413,16 @@
           end_time: '',
           remark: '',
           address: '',
-          invite: [],
+          invitors: [],
         },
         view_rules:{},
         hashMailbox_view:[],
         addemail_view:'',
 
         config: {
+          // firstDay: 1,
           height : window.innerHeight-120,
-          eventColor:"#fff",
+          eventColor:"transparent",
           eventTextColor:"#474545",
           locale: "zh-cn",
           defaultView: 'month',
@@ -448,9 +459,15 @@
               $('#calendar').fullCalendar('option', 'height', window.innerHeight-120);
           },
           eventRender: function(event, element) {
-              $(element).attr('title',event.title)
-            $(element).find('.fc-content').prepend('4455')
-          }
+            $(element).attr('title',event.title)
+            let html = '<span class="fc_time"></span><i class="el-icon-info" style="color:#409EFF"></i><span class="fc-title">'+event.title+'</span>';
+
+            $(element).find('.fc-content').html(html)
+          },
+          eventAfterAllRender:function(view){
+            // console.log(view)
+          },
+
         },
         fcEvents : [
           {
@@ -464,7 +481,6 @@
             id:1,
             title : '标记32测试测试吃测试吃测试测试测试测色测色测试',
             start : '2018-09-11',
-            end : '2018-9-13',
             allDay:true,
             // url:'http://www.baidu.com'
             // backgroundColor: 'red',
@@ -474,16 +490,9 @@
             id:2,
             title : '试测试测色你哦士大夫hi上的i和迫使对方屁哦士大夫横批哦撒旦测色测试',
             start : '2018-09-13 14:30:00',
+            end:'2018-09-30 15:30:00',
             allDay:false,
-            backgroundColor: 'red',
-            borderColor: 'red'
           },
-          {
-            id:3,
-            title : '标记2',
-            start : '2018-09-20',
-            end : '2018-09-20'
-          }
         ],
       };
     },
@@ -493,9 +502,73 @@
 
     },
     mounted: function() {
-
+      this.getEventList()
+      console.log(this.$refs.calendar)
     },
     methods: {
+
+      getEventList(){
+        let params = {
+          page:'',
+          page_size:'',
+          search:'',
+          calender_id:5,
+          mode:'month',
+          start:'2018-09-01',
+          end:'2018-09-30',
+        }
+        getEvents(params).then(res=>{
+          console.log(res)
+          this.fcEvents = [];
+
+          for(let i=0;i<res.data.results.length;i++){
+            let o = res.data.results[i];
+            let ddArr = this.getDiffDate(o.start,o.end);
+            console.log(ddArr)
+            for(let k=0;k<ddArr.length;k++){
+              let b = ddArr[k];
+              let obj = {};
+              obj.start = b;
+              obj.title = o.title;
+              obj.id = o.id;
+              obj.allDay = o.is_allday;
+              this.fcEvents.push(obj)
+            }
+          }
+          console.log(this.fcEvents)
+        },err=>{
+          console.log(err);
+        })
+      },
+      getDate   (datestr) {
+        var temp = datestr.split("-");
+        if (temp[1] === '01') {
+            temp[0] = parseInt(temp[0],10) - 1;
+            temp[1] = '12';
+        } else {
+            temp[1] = parseInt(temp[1],10) - 1;
+        }
+        //new Date()的月份入参实际都是当前值-1
+        var date = new Date(temp[0], temp[1], temp[2]);
+        return date;
+      },
+      getDiffDate  (start, end) {
+        var startTime = this.getDate(start);
+        var endTime = this.getDate(end);
+        var dateArr = [];
+        while ((endTime.getTime() - startTime.getTime()) > 0) {
+            var year = startTime.getFullYear();
+            console.log(startTime.getMonth().toString().length)
+            var month = startTime.getMonth().toString().length === 1 ? "0" + (parseInt(startTime.getMonth().toString(),10) + 1) : (startTime.getMonth() + 1);
+            var day = startTime.getDate().toString().length === 1 ? "0" + startTime.getDate() : startTime.getDate();
+            month = parseInt(month)
+            if(month<10){month = '0'+month}
+            dateArr.push(year + "-" + month + "-" + day);
+            startTime.setDate(startTime.getDate() + 1);
+        }
+        dateArr.push(end);
+        return dateArr;
+      },
       getDeptOptions(){
         contactOabDepartsGet().then(res=>{
           function idToValue(arr){
@@ -551,7 +624,7 @@
       handleSelectionChange(v){
         for(let i=0;i<v.length;i++){
           if(!this.hashMailbox[v[i].username]){
-            this.newForm.invite.push(v[i].username)
+            this.newForm.invitors.push(v[i].username)
             this.hashMailbox[v[i].username] = true;
           }
         }
@@ -560,7 +633,7 @@
         if(this.addemail){
           if(emailReg.test(this.addemail)){
             if(!this.hashMailbox[this.addemail]){
-              this.newForm.invite.push(this.addemail);
+              this.newForm.invitors.push(this.addemail);
               this.hashMailbox[this.addemail] = true;
               this.addemail = '';
             }
@@ -570,9 +643,9 @@
 
         }
       },
-      delete_invite(k){
-        this.hashMailbox[this.newForm.invite[k]] = false;
-        this.newForm.invite.splice(k,1)
+      delete_invitors(k){
+        this.hashMailbox[this.newForm.invitors[k]] = false;
+        this.newForm.invitors.splice(k,1)
       },
       rowClick_view(row,e,col){
         this.$refs.contactTable_view.toggleRowSelection(row)
@@ -580,7 +653,7 @@
       handleSelectionChange_view(v){
         for(let i=0;i<v.length;i++){
           if(!this.hashMailbox_view[v[i].username]){
-            this.viewForm.invite.push(v[i].username)
+            this.viewForm.invitors.push(v[i].username)
             this.hashMailbox_view[v[i].username] = true;
           }
         }
@@ -589,7 +662,7 @@
         if(this.addemail_view){
           if(emailReg.test(this.addemail_view)){
             if(!this.hashMailbox_view[this.addemail_view]){
-              this.viewForm.invite.push(this.addemail_view);
+              this.viewForm.invitors.push(this.addemail_view);
               this.hashMailbox_view[this.addemail_view] = true;
               this.addemail_view = '';
             }
@@ -599,9 +672,9 @@
 
         }
       },
-      delete_invite_view(k){
-        this.hashMailbox_view[this.viewForm.invite[k]] = false;
-        this.viewForm.invite.splice(k,1)
+      delete_invitors_view(k){
+        this.hashMailbox_view[this.viewForm.invitors[k]] = false;
+        this.viewForm.invitors.splice(k,1)
       },
 
       submitForm(formName) {
@@ -616,17 +689,19 @@
               _this.$message({message:'请选择事件截止日期！',type:'error'});
               return;
             }
-            if(this.newForm.cycle_type==0&& !this.newForm.cycle_date){
+            if(this.newForm.cycle_type==0&& !this.newForm.cycle_day){
               _this.$message({message:'请选择重复截止日期！',type:'error'});
               return;
             }
-            alert('submit!');
+
             this.newEventDialog = false;
-            this.fcEvents.push({
-                title : '测试新建新建测试新建新建测试新建新建',
-                start : '2018-09-30',
+            console.log(this.newForm);
+            createEvent(this.newForm).then(res=>{
+              console.log('suc')
+            },err=>{
+              console.log(err)
             })
-            _this.$refs[formName].resetFields();
+
           } else {
             return false;
           }
@@ -637,7 +712,21 @@
         // e.target.style.boxShadow="0 0 5px #60CAFF"
         // this.$refs.calendar.fireMethod('changeView', 'agendaDay')
         console.log(arguments)
-        this.fcEvents[0].start=t;
+        if(this.newEvent){
+          this.fcEvents[this.fcEvents.length-1].start = t;
+        }else{
+          this.newEvent = true;
+          this.fcEvents.push(
+          {
+            id:0,
+            title:"新建事件...",
+            start:t,
+            color: '#EDF8FB',
+            textColor:'#aaa'
+          }
+          );
+        }
+
       },
       eventClick (data){
         this.getDeptOptions();
@@ -649,11 +738,13 @@
 
         }else{
           console.log(data.start._i)
-          if(data.end)console.log(data.end._i)
-          this.viewForm.title = data.title
-          this.viewForm.start_day = data.start
-          this.viewForm.end_day = data.end
-          this.viewForm.is_allday = data.allDay
+          getEventById(data.id).then(res=>{
+            console.log(res)
+            this.viewForm = res.data.results;
+          },err=>{
+            console.log(err);
+          })
+
           this.viewEventDialog = true;
         }
 
@@ -667,3 +758,23 @@
 
   }
 </script>
+<style>
+  /*今天背景颜色和字体样式*/
+  .fc-unthemed td.fc-today {
+    /*background: #FF6633;  color:#3300FF ;  font-weight:bold;*/
+  }
+  /*星期六背景色和字体颜色wheat */
+  .fc-unthemed td.fc-sat{
+    /*background: #F5DEB3;*/
+    color:#0000FF;
+  }
+  /*星期天背景色和字体颜色burlywood */
+  .fc-unthemed td.fc-sun{
+    /*background: #DEB887;*/
+    color:#FF0000 ;}
+  .fc_time{
+    float:right;
+    color:#999;
+  }
+
+</style>
