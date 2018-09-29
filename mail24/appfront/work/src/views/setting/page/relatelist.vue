@@ -110,6 +110,11 @@
                   <span>{{ scope.row.name +'<' +scope.row.username +'>'}}</span>
                 </template>
               </el-table-column>
+              <el-table-column  label="部门">
+                <template slot-scope="scope">
+                  <span>{{scope.row.department}}</span>
+                </template>
+              </el-table-column>
             </el-table>
             <el-pagination
               @size-change="handleSizeChange" small

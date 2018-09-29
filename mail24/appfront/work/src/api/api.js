@@ -284,4 +284,8 @@ export const getEvents = params => { return axios.get(`${host}/calendars/events/
 export const createEvent = params => { return axios.post(`${host}/calendars/events/`, params) };
 //获取某个事件 /api/calendars/events/{id}/ get
 export const getEventById = (id) => { return axios.get(`${host}/calendars/events/${id}/`)}
+//修改事件 PUT /api/calendars/events/{id}/
+export const updateEvent = (id,params) => { return axios.put(`${host}/calendars/events/${id}/`, params) };
+//删除事件 /api/calendars/events/{id}/
+export const deleteEvent = id => { return axios.delete(`${host}/calendars/events/${id}/`) }
 

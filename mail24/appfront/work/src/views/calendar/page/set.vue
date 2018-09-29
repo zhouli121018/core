@@ -131,6 +131,11 @@
                   <span>{{ scope.row.name +'<' +scope.row.username +'>'}}</span>
                 </template>
               </el-table-column>
+              <el-table-column  label="部门">
+                <template slot-scope="scope">
+                  <span>{{scope.row.department}}</span>
+                </template>
+              </el-table-column>
             </el-table>
             <el-pagination
               @size-change="handleSizeChange" small
@@ -220,6 +225,11 @@
               <el-table-column prop="name" label="姓名&邮箱">
                 <template slot-scope="scope">
                   <span>{{ scope.row.name +'<' +scope.row.username +'>'}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column  label="部门">
+                <template slot-scope="scope">
+                  <span>{{scope.row.department}}</span>
                 </template>
               </el-table-column>
             </el-table>

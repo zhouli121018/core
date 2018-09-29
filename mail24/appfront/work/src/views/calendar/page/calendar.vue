@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <full-calendar :events="fcEvents" ref="calendar" :config="config"
                          @event-selected="eventClick"
                          @day-click="dayClick"
@@ -16,6 +17,7 @@
           <el-date-picker
             v-model="newForm.start_day"
             format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+            :picker-options="pickerBeginDateBefore"
             type="date"
             placeholder="请选择开始日期">
           </el-date-picker>
@@ -150,6 +152,11 @@
                   <span>{{ scope.row.name +'<' +scope.row.username +'>'}}</span>
                 </template>
               </el-table-column>
+              <el-table-column  label="部门">
+                <template slot-scope="scope">
+                  <span>{{scope.row.department}}</span>
+                </template>
+              </el-table-column>
             </el-table>
             <el-pagination
               @size-change="handleSizeChange" small
@@ -170,7 +177,7 @@
         </div>
       </el-dialog>
 
-    <el-dialog title="编辑事件" :visible.sync="viewEventDialog" :modal-append-to-body="false">
+    <el-dialog title="编辑事件" :visible.sync="viewEventDialog" :modal-append-to-body="false" :close-on-click-modal="false">
       <el-form :model="viewForm" :rules="view_rules" ref="viewForm" label-width="100px"  size="small">
         <el-form-item label="标题" prop="title">
           <el-input v-model="viewForm.title"></el-input>
@@ -272,10 +279,13 @@
         <el-form-item label="邀请对象" prop="invitors">
           <div style="min-height:80px;border:1px solid #dcdfe6;max-width:400px;padding:4px 10px;max-height:400px;overflow: auto;">
             <el-row v-for="(v,k) in viewForm.invitors" :key="k">
-              <el-col :span="18">
-                <div>{{v}}</div>
+              <el-col :span="15">
+                <div>{{v.email || v}}</div>
               </el-col>
-              <el-col :span="6" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="delete_invitors_view(k)"></el-button></el-col>
+              <el-col :span="6" style="text-align:right;" v-if="v.email">
+                <el-input v-model="v.status" readonly size="mini"></el-input>
+              </el-col>
+              <el-col :span="3" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="delete_invitors_view(k)"></el-button></el-col>
             </el-row>
           </div>
           <el-input placeholder="输入邀请人" style="width:auto;" v-model.trim="addemail_view"></el-input> <el-button @click="addEmail_view">添加</el-button>
@@ -313,6 +323,11 @@
                   <span>{{ scope.row.name +'<' +scope.row.username +'>'}}</span>
                 </template>
               </el-table-column>
+              <el-table-column  label="部门">
+                <template slot-scope="scope">
+                  <span>{{scope.row.department}}</span>
+                </template>
+              </el-table-column>
             </el-table>
             <el-pagination
               @size-change="handleSizeChange" small
@@ -328,19 +343,36 @@
       </el-form>
 
         <div slot="footer" class="dialog-footer">
-          <el-button @click="newEventDialog = false" size="small">取 消</el-button>
-          <el-button type="primary"  size="small"  @click="submitForm('newForm')">立即创建</el-button>
+          <el-button @click="viewEventDialog = false" size="small">取 消</el-button>
+          <el-button type="warning"  size="small"  @click="deleteEventSubmit(viewForm.id)">删除事件</el-button>
+          <el-button type="primary"  size="small"  @click="updateEventSubmit">确定修改</el-button>
         </div>
       </el-dialog>
+    <el-popover
+      :offset="150"
+      placement="top"
+      id="dd"
+      ref="popoverfile"
+      >
+      <div style="text-align: right; margin: 0">
+        <el-button size="mini" type="primary" >编辑</el-button>
+        <el-button type="warning" size="mini">删除</el-button>
+      </div>
+    </el-popover>
   </div>
 </template>
 <script>
-  import {contactOabDepartsGet,contactOabMembersGet,getCalendarsList,getEvents,createEvent,getEventById} from '@/api/api'
+  import {contactOabDepartsGet,contactOabMembersGet,getCalendarsList,getEvents,createEvent,getEventById,updateEvent,deleteEvent} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     data() {
+      let _self = this;
       return {
-        newEvent:false,
+        visible2: false,
+        eventStart: '',
+        eventEnd: '',
+        eventMode: '',
+        newEvent: false,
         showChoice: false,
         deptOptions: [],
         searchMailbox: '',
@@ -353,10 +385,10 @@
         hashMailbox: [],
         addemail: '',
         newForm: {
-          calender_id:5,
+          calender_id: 5,
           title: '',
-          cycle_mode: '',
-          cycle_week: [1,2],
+          cycle_mode: '0',
+          cycle_week: [1, 2],
           cycle_type: '1',
           cycle_day: '',
           remind_before: 10,
@@ -365,9 +397,9 @@
           is_remind: false,
           delivery: false,
           start_day: '',
-          start_time: '00:00:00',
+          start_time: '08:00:00',
           end_day: '',
-          end_time: '00:00:00',
+          end_time: '18:00:00',
           remark: '',
           address: '',
           invitors: [],
@@ -396,7 +428,7 @@
 
         viewEventDialog: false,
         viewForm: {
-          id:'',
+          id: '',
           title: '',
           cycle_mode: '',
           cycle_week: [],
@@ -415,86 +447,122 @@
           address: '',
           invitors: [],
         },
-        view_rules:{},
-        hashMailbox_view:[],
-        addemail_view:'',
+        view_rules: {},
+        hashMailbox_view: [],
+        addemail_view: '',
 
         config: {
           // firstDay: 1,
-          height : window.innerHeight-120,
-          eventColor:"transparent",
-          eventTextColor:"#474545",
+          height: window.innerHeight - 120,
+          eventColor: "transparent",
+          eventTextColor: "#474545",
           locale: "zh-cn",
           defaultView: 'month',
           editable: true,
           droppable: true,
           selectable: true,
-          diableResizing:true,
+          diableResizing: true,
           // columnFormat:'周dd',
-          titleFormat:'YYYY年MM月',
+          titleFormat: 'YYYY年MM月',
           buttonText: {
             today: '今天',
-            month:'月',
-            agendaWeek:'周',
-            agendaDay:'日',
-            listMonth:'事件',
+            month: '月',
+            agendaWeek: '周',
+            agendaDay: '日',
+            listMonth: '事件',
           },
-          header:{
-            center:"prev title next",
-            left:"today",
-            right:  'month,agendaWeek,agendaDay,listMonth,timelineDay'
+          header: {
+            center: "prev title next",
+            left: "today",
+            right: 'month,agendaWeek,agendaDay,listMonth,timelineDay'
           },
-          views:{
+          views: {
             agendaWeek: {
-              titleFormat:'YYYY年MM月D日',
+              titleFormat: 'YYYY年MM月D日',
             },
-            agendaDay:{
-              titleFormat:'YYYY年MM月D日',
+            agendaDay: {
+              titleFormat: 'YYYY年MM月D日',
             }
+          },
+          eventMouseover: function (event, jsEvent, view) {
+
           },
 
           eventMouseout: function (event, jsEvent, view) {
-          },
-          windowResize: function(view) {
-              $('#calendar').fullCalendar('option', 'height', window.innerHeight-120);
-          },
-          eventRender: function(event, element) {
-            $(element).attr('title',event.title)
-            let html = '<span class="fc_time"></span><i class="el-icon-info" style="color:#409EFF"></i><span class="fc-title">'+event.title+'</span>';
 
-            $(element).find('.fc-content').html(html)
           },
-          eventAfterAllRender:function(view){
+          windowResize: function (view) {
+            $('#calendar').fullCalendar('option', 'height', window.innerHeight - 120);
+          },
+          eventRender: function (event, element) {
+            console.log(event)
+            if (event.title) {
+              $(element).attr('title', event.title)
+              let html = '<span class="fc_time"></span><i class="el-icon-info" style="color:#409EFF"></i><span class="fc-title">' + event.title + '</span>';
+              $(element).find('.fc-content').html(html)
+            }
+          },
+          eventAfterAllRender: function (view) {
             // console.log(view)
           },
+          viewRender(view, element) {
+            console.log(view)
+            if (view.name == 'agendaWeek') {
+              _self.eventMode = 'week'
+            } else if (view.name == 'month') {
+              _self.eventMode = 'month'
+            } else if (view.name == 'agendaDay') {
+              _self.eventMode = 'day'
+            }
+            _self.eventStart = new Date(view.intervalStart).Format('yyyy-MM-dd')
+            let ed = new Date(view.intervalEnd);
+            ed.setDate(ed.getDate() - 1);
+            console.log()
+            _self.eventEnd = new Date(ed).Format('yyyy-MM-dd');
+            _self.getEventList();
+
+
+          },
+
 
         },
-        fcEvents : [
+
+        fcEvents: [
           {
-            id:0,
-            title:"新建事件...",
-            start:'',
+            id: 0,
+            title: "新建事件...",
+            start: '',
             color: '#EDF8FB',
-            textColor:'#aaa'
+            textColor: '#aaa'
           },
           {
-            id:1,
-            title : '标记32测试测试吃测试吃测试测试测试测色测色测试',
-            start : '2018-09-11',
-            allDay:true,
+            id: 1,
+            title: '标记32测试测试吃测试吃测试测试测试测色测色测试',
+            start: '2018-09-11',
+            allDay: true,
             // url:'http://www.baidu.com'
             // backgroundColor: 'red',
             // borderColor: 'red',
           },
           {
-            id:2,
-            title : '试测试测色你哦士大夫hi上的i和迫使对方屁哦士大夫横批哦撒旦测色测试',
-            start : '2018-09-13 14:30:00',
-            end:'2018-09-30 15:30:00',
-            allDay:false,
+            id: 2,
+            title: '试测试测色你哦士大夫hi上的i和迫使对方屁哦士大夫横批哦撒旦测色测试',
+            start: '2018-09-13 14:30:00',
+            end: '2018-09-30 15:30:00',
+            allDay: false,
           },
         ],
-      };
+        pickerBeginDateBefore: {
+          disabledDate: time => {
+            let beginDateVal = new Date();
+            beginDateVal.setDate(beginDateVal.getDate()-1);
+            if (beginDateVal) {
+              return time.getTime() < beginDateVal;
+            }
+          }
+        },
+
+      }
     },
     components: {
     },
@@ -502,8 +570,6 @@
 
     },
     mounted: function() {
-      this.getEventList()
-      console.log(this.$refs.calendar)
     },
     methods: {
 
@@ -513,18 +579,16 @@
           page_size:'',
           search:'',
           calender_id:5,
-          mode:'month',
-          start:'2018-09-01',
-          end:'2018-09-30',
+          mode:this.eventMode,
+          start:this.eventStart,
+          end:this.eventEnd,
         }
         getEvents(params).then(res=>{
-          console.log(res)
+          this.newEvent = false;
           this.fcEvents = [];
-
           for(let i=0;i<res.data.results.length;i++){
             let o = res.data.results[i];
             let ddArr = this.getDiffDate(o.start,o.end);
-            console.log(ddArr)
             for(let k=0;k<ddArr.length;k++){
               let b = ddArr[k];
               let obj = {};
@@ -535,7 +599,11 @@
               this.fcEvents.push(obj)
             }
           }
-          console.log(this.fcEvents)
+          this.fcEvents.push({
+            title:"新建事件...",
+            start:'',
+            textColor:'#aaa'
+          })
         },err=>{
           console.log(err);
         })
@@ -558,7 +626,6 @@
         var dateArr = [];
         while ((endTime.getTime() - startTime.getTime()) > 0) {
             var year = startTime.getFullYear();
-            console.log(startTime.getMonth().toString().length)
             var month = startTime.getMonth().toString().length === 1 ? "0" + (parseInt(startTime.getMonth().toString(),10) + 1) : (startTime.getMonth() + 1);
             var day = startTime.getDate().toString().length === 1 ? "0" + startTime.getDate() : startTime.getDate();
             month = parseInt(month)
@@ -696,9 +763,18 @@
 
             this.newEventDialog = false;
             console.log(this.newForm);
-            createEvent(this.newForm).then(res=>{
-              console.log('suc')
+            let obj = {};
+            for(let key in this.newForm){
+              if(key=='cycle_day' && !this.newForm[key]){
+                continue;
+              }
+              obj[key] = this.newForm[key];
+            }
+            createEvent(obj).then(res=>{
+              this.$message({message:'创建事件成功！',type:'success'});
+              this.getEventList();
             },err=>{
+              this.$message({message:err.non_field_errors||'创建事件失败！',type:'error'});
               console.log(err)
             })
 
@@ -707,31 +783,74 @@
           }
         });
       },
+      updateEventSubmit() {
+        let _this = this;
+        this.$refs['viewForm'].validate((valid) => {
+          if (valid) {
+            if(!this.viewForm.start_day){
+              _this.$message({message:'请选择事件开始日期！',type:'error'});
+              return;
+            }
+            if(!this.viewForm.end_day){
+              _this.$message({message:'请选择事件截止日期！',type:'error'});
+              return;
+            }
+            if(this.viewForm.cycle_type && !this.viewForm.cycle_day){
+              _this.$message({message:'请选择重复截止日期！',type:'error'});
+              return;
+            }
+            this.viewEventDialog = false;
+            console.log(this.viewForm);
+            let obj = {};
+            for(let key in this.viewForm){
+              if(key=='cycle_day' && !this.viewForm[key]){
+                continue;
+              }
+              obj[key] = this.viewForm[key];
+            }
+            updateEvent(this.viewForm.id,obj).then(res=>{
+              this.$message({message:'修改成功！',type:'success'});
+              this.getEventList();
+            },err=>{
+              this.$message({message:'修改成功！',type:'error'});
+              console.log(err)
+            })
 
-      dayClick (t){
+          } else {
+            return false;
+          }
+        });
+      },
+      deleteEventSubmit(id){
+        deleteEvent(id).then(res=>{
+          this.$message({message:'删除事件成功！',type:'success'});
+          this.getEventList();
+        },err=>{
+          this.$message({message:'删除事件失败！',type:'error'});
+          console.log(err);
+        })
+      },
+
+      dayClick (t,jsEvent,view){
         // e.target.style.boxShadow="0 0 5px #60CAFF"
         // this.$refs.calendar.fireMethod('changeView', 'agendaDay')
         console.log(arguments)
-        if(this.newEvent){
+        console.log(view.name=='month')
+        if(view.name=='month'&&this.fcEvents.length>0){
           this.fcEvents[this.fcEvents.length-1].start = t;
-        }else{
-          this.newEvent = true;
-          this.fcEvents.push(
-          {
-            id:0,
-            title:"新建事件...",
-            start:t,
-            color: '#EDF8FB',
-            textColor:'#aaa'
+          if(this.newEvent){
+
+          }else{
+            this.newEvent = true;
+
           }
-          );
         }
+
 
       },
       eventClick (data){
         this.getDeptOptions();
         this.searchOabMembers(1);
-        console.log(arguments)
         if(!data.id){
           // this.newForm.start_day
           this.newEventDialog = true;
