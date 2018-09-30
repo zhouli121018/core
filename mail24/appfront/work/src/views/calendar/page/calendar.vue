@@ -10,40 +10,41 @@
 
     <el-dialog title="新建事件" :visible.sync="newEventDialog" :modal-append-to-body="false">
       <el-form :model="newForm" :rules="rules" ref="newForm" label-width="100px" class="demo-ruleForm" size="small">
-        <el-form-item label="标题" prop="title">
+        <el-form-item label="标 题" prop="title">
           <el-input v-model="newForm.title"></el-input>
         </el-form-item>
-        <el-form-item label="开始日期">
+        <el-form-item label="开始截止日期">
           <el-date-picker
             v-model="newForm.start_day"
             format="yyyy-MM-dd" value-format="yyyy-MM-dd"
             :picker-options="pickerBeginDateBefore"
             type="date"
+            @change="pickBeginDate"
             placeholder="请选择开始日期">
+          </el-date-picker> -
+          <el-date-picker
+            format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+            :picker-options="pickerBeginDateAfter"
+            v-model="newForm.end_day"
+            type="date"
+            placeholder="选择截止日期">
           </el-date-picker>
+
+
+          <el-checkbox v-model="newForm.is_allday">全天事件</el-checkbox>
+        </el-form-item>
+        <el-form-item label="开始截止时间" v-if="!newForm.is_allday">
           <el-time-picker
-            v-if="!newForm.is_allday"
-            format="HH:mm:ss" value-format="HH:mm:ss"
+            format="HH:mm" value-format="HH:mm"
             v-model="newForm.start_time"
             :picker-options="{
               selectableRange: '00:00:00 - 23:59:59'
             }"
             placeholder="请选择时间点">
-          </el-time-picker>
-
-          <el-checkbox v-model="newForm.is_allday">全天事件</el-checkbox>
-        </el-form-item>
-        <el-form-item label="截止日期">
-          <el-date-picker
-            format="yyyy-MM-dd" value-format="yyyy-MM-dd"
-            v-model="newForm.end_day"
-            type="date"
-            placeholder="选择截止日期">
-          </el-date-picker>
+          </el-time-picker> -
           <el-time-picker
-            v-if="!newForm.is_allday"
             v-model="newForm.end_time"
-            format="HH:mm:ss" value-format="HH:mm:ss"
+            format="HH:mm" value-format="HH:mm"
             :picker-options="{
               selectableRange: '00:00:00 - 23:59:59'
             }"
@@ -51,14 +52,14 @@
           </el-time-picker>
         </el-form-item>
 
-        <el-form-item label="地点" prop="address">
+        <el-form-item label="地 点" prop="address">
           <el-input type="textarea" autosize v-model.trim="newForm.address"></el-input>
         </el-form-item>
-        <el-form-item label="说明" prop="remark">
+        <el-form-item label="说 明" prop="remark">
           <el-input type="textarea" autosize v-model.trim="newForm.remark"></el-input>
         </el-form-item>
 
-        <el-form-item label="提醒" prop="is_remind">
+        <el-form-item label="提 醒" prop="is_remind">
           <el-checkbox v-model="newForm.is_remind">是否提醒(电子邮件)</el-checkbox>
 
           <div v-show="newForm.is_remind">
@@ -101,6 +102,7 @@
           <el-date-picker
             v-model="newForm.cycle_day"
             format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+            :picker-options="pickerBeginDateEnd"
             v-show="newForm.cycle_type==0"
             type="date"
             placeholder="请选择重复截止日期">
@@ -114,7 +116,7 @@
               <el-col :span="18">
                 <div>{{v}}</div>
               </el-col>
-              <el-col :span="6" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="delete_invitors(k)"></el-button></el-col>
+              <el-col :span="6" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="delete_invitors(k)" title="取消邀请"></el-button></el-col>
             </el-row>
           </div>
           <el-input placeholder="输入邀请人" style="width:auto;" v-model.trim="addemail"></el-input> <el-button @click="addEmail">添加</el-button>
@@ -177,123 +179,178 @@
         </div>
       </el-dialog>
 
-    <el-dialog title="编辑事件" :visible.sync="viewEventDialog" :modal-append-to-body="false" :close-on-click-modal="false">
+    <el-dialog :title="viewForm.title" :visible.sync="viewEventDialog" :modal-append-to-body="false" :close-on-click-modal="false">
       <el-form :model="viewForm" :rules="view_rules" ref="viewForm" label-width="100px"  size="small">
-        <el-form-item label="标题" prop="title">
+        <el-card class="box-card" v-if="permisson.invite" style="background:#FFFFE1;margin-bottom:16px;">
+            <h3>您是否参加活动？</h3>
+            <el-radio-group v-model="invitor_status">
+              <el-radio label="pass">参加</el-radio>
+              <el-radio label="reject">拒绝</el-radio>
+              <el-radio label="wait">待定</el-radio>
+            </el-radio-group>
+
+              <el-select v-model="invitor_status" @change="changeStatus($event,event_id)" placeholder="请选择权限" size="mini">
+                <el-option label="待回复" value="start" disabled></el-option>
+                <el-option label="同意" value="pass"></el-option>
+                <el-option label="拒绝" value="reject"></el-option>
+                <el-option label="待定" value="wait"></el-option>
+              </el-select>
+            <div>
+              <el-button type="primary" size="mini">保 存</el-button>
+              <el-button  size="mini">取 消</el-button>
+            </div>
+        </el-card>
+
+        <div v-if="!permisson.edit">
+          <el-form-item label="日 期：" >
+            <span>{{viewForm.start_day+' 至 '+viewForm.end_day }}</span>
+          </el-form-item>
+          <el-form-item label="时 间：" v-if="!viewForm.is_allday">
+            <span>{{viewForm.start_time+' 至 '+viewForm.end_time }}</span>
+          </el-form-item>
+          <el-form-item label="地 点：" v-if="viewForm.address">
+            <span>{{viewForm.address}}</span>
+          </el-form-item>
+          <el-form-item label="说 明：">
+            <span>{{viewForm.remark}}</span>
+          </el-form-item>
+          <el-form-item label="提 醒：" >
+            <span>{{viewForm.is_remind? '提前 '+viewForm.remind_before + ' '+(viewForm.remind_unit==60?'分钟':viewForm.remind_unit==3600?'小时':viewForm.remind_unit==86400?'天':'周') :'无'}}</span>
+          </el-form-item>
+          <el-form-item label="状 态：" >
+            <span>{{viewForm.cycle_mode==0?'不重复':(viewForm.cycle_mode==1?'每天重复 ':viewForm.cycle_mode==2?'每周重复 ':viewForm.cycle_mode==3?'每月重复 ':'每年重复 ')}}</span> <span v-if="viewForm.cycle_mode>0"> {{viewForm.cycle_type?' 永远重复':' 重复至 '}}</span> <span v-if="viewForm.cycle_mode>0 && !viewForm.cycle_type">{{viewForm.cycle_day}}</span>
+          </el-form-item>
+          <el-form-item label="组织者：">
+            <span>{{viewForm.name+'<'+viewForm.email+'>'}}; </span>
+          </el-form-item>
+          <el-form-item label="参与者：" v-if="viewForm.invitors.length>0">
+            <span v-for="v in viewForm.invitors">{{v.name+'<'+v.email+'>'}}; </span>
+          </el-form-item>
+        </div>
+
+        <div  v-if="permisson.edit">
+          <el-form-item label="标 题" prop="title">
           <el-input v-model="viewForm.title"></el-input>
         </el-form-item>
-        <el-form-item label="开始日期">
-          <el-date-picker
-            v-model="viewForm.start_day"
-            format="yyyy-MM-dd" value-format="yyyy-MM-dd"
-            type="date"
-            placeholder="请选择开始日期">
-          </el-date-picker>
-          <el-time-picker
-            v-if="!viewForm.is_allday"
-            v-model="viewForm.start_time"
-            format="HH:mm:ss" value-format="HH:mm:ss"
-            :picker-options="{
-              selectableRange: '00:00:00 - 23:59:59'
-            }"
-            placeholder="请选择时间点">
-          </el-time-picker>
+          <el-form-item label="开始截止日期">
+            <el-date-picker
+              v-model="viewForm.start_day"
+              format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+              :picker-options="pickerBeginDateBefore"
+              @change="pickBeginDate_view"
+              type="date"
+              placeholder="请选择开始日期">
+            </el-date-picker> -
+            <el-date-picker
+              format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+              :picker-options="pickerBeginDateAfter_edit"
+              v-model="viewForm.end_day"
+              type="date"
+              placeholder="选择截止日期">
+            </el-date-picker>
+            <el-checkbox v-model="viewForm.is_allday">全天事件</el-checkbox>
+          </el-form-item>
+          <el-form-item label="开始截止时间" v-if="!viewForm.is_allday">
+            <el-time-picker
 
-          <el-checkbox v-model="viewForm.is_allday">全天事件</el-checkbox>
-        </el-form-item>
-        <el-form-item label="截止日期">
-          <el-date-picker
-            format="yyyy-MM-dd" value-format="yyyy-MM-dd"
-            v-model="viewForm.end_day"
-            type="date"
-            placeholder="选择截止日期">
-          </el-date-picker>
-          <el-time-picker
-            v-if="!viewForm.is_allday"
-            v-model="viewForm.end_time"
-            format="HH:mm:ss" value-format="HH:mm:ss"
-            :picker-options="{
-              selectableRange: '00:00:00 - 23:59:59'
-            }"
-            placeholder="请选择时间点">
-          </el-time-picker>
-        </el-form-item>
+              v-model="viewForm.start_time"
+              format="HH:mm" value-format="HH:mm"
+              :picker-options="{
+                selectableRange: '00:00:00 - 23:59:59'
+              }"
+              placeholder="请选择时间点">
+            </el-time-picker> -
+            <el-time-picker
+              v-if="!viewForm.is_allday"
+              v-model="viewForm.end_time"
+              format="HH:mm" value-format="HH:mm"
+              :picker-options="{
+                selectableRange: '00:00:00 - 23:59:59'
+              }"
+              placeholder="请选择时间点">
+            </el-time-picker>
+          </el-form-item>
 
-        <el-form-item label="地点" prop="address">
-          <el-input type="textarea" autosize v-model.trim="viewForm.address"></el-input>
-        </el-form-item>
-        <el-form-item label="说明" prop="remark">
-          <el-input type="textarea" autosize v-model.trim="viewForm.remark"></el-input>
-        </el-form-item>
+          <el-form-item label="地 点" prop="address">
+            <el-input type="textarea" autosize v-model.trim="viewForm.address"></el-input>
+          </el-form-item>
+          <el-form-item label="说 明" prop="remark">
+            <el-input type="textarea" autosize v-model.trim="viewForm.remark"></el-input>
+          </el-form-item>
 
-        <el-form-item label="提醒" prop="is_remind">
-          <el-checkbox v-model="viewForm.is_remind">是否提醒(电子邮件)</el-checkbox>
+          <el-form-item label="提 醒" prop="is_remind">
+            <el-checkbox v-model="viewForm.is_remind">是否提醒(电子邮件)</el-checkbox>
 
-          <div v-show="viewForm.is_remind">
-            提前
-            <el-input v-model="viewForm.remind_before" type="number" style="width:80px;" min="0"></el-input><el-select v-model="viewForm.remind_unit" placeholder="请选择">
-            <el-option label="分钟" value="60"></el-option>
-            <el-option label="小时" value="3600"></el-option>
-            <el-option label="日" value="86400"></el-option>
-            <el-option label="周" value="604800"></el-option>
-          </el-select>
-          提醒
-          </div>
+            <div v-show="viewForm.is_remind">
+              提前
+              <el-input v-model="viewForm.remind_before" type="number" style="width:80px;" min="0"></el-input><el-select v-model="viewForm.remind_unit" placeholder="请选择">
+              <el-option label="分钟" :value="60"></el-option>
+              <el-option label="小时" :value="3600"></el-option>
+              <el-option label="天" :value="86400"></el-option>
+              <el-option label="周" :value="604800"></el-option>
+            </el-select>
+            提醒
+            </div>
 
-        </el-form-item>
+          </el-form-item>
 
-        <el-form-item label="重复事件" prop="cycle_mode">
-          <el-select v-model="viewForm.cycle_mode" placeholder="请选择重复事件">
-            <el-option label="不重复" :value="0"></el-option>
-            <el-option label="每天重复" :value="1"></el-option>
-            <el-option label="每周重复" :value="2"></el-option>
-            <el-option label="每月重复" :value="3"></el-option>
-            <el-option label="每年重复" :value="4"></el-option>
-          </el-select>
+          <el-form-item label="重复事件" prop="cycle_mode">
+            <el-select v-model="viewForm.cycle_mode" placeholder="请选择重复事件">
+              <el-option label="不重复" :value="0"></el-option>
+              <el-option label="每天重复" :value="1"></el-option>
+              <el-option label="每周重复" :value="2"></el-option>
+              <el-option label="每月重复" :value="3"></el-option>
+              <el-option label="每年重复" :value="4"></el-option>
+            </el-select>
 
-        </el-form-item>
-        <el-form-item label="" v-show="viewForm.cycle_mode!=0">
-          <el-checkbox-group v-if="viewForm.cycle_mode==2" v-model="viewForm.cycle_week">
-            <el-checkbox label="周一" :value="1"></el-checkbox>
-            <el-checkbox label="周二" :value="2"></el-checkbox>
-            <el-checkbox label="周三" :value="3"></el-checkbox>
-            <el-checkbox label="周四" :value="4"></el-checkbox>
-            <el-checkbox label="周五" :value="5"></el-checkbox>
-            <el-checkbox label="周六" :value="6"></el-checkbox>
-            <el-checkbox label="周日" :value="7"></el-checkbox>
-          </el-checkbox-group>
-          <el-select v-model="viewForm.cycle_type" placeholder="请选择重复类型">
-            <el-option label="重复至" :value="false"></el-option>
-            <el-option label="永远重复" :value="true"></el-option>
-          </el-select>
-          <el-date-picker
-            v-model="viewForm.cycle_day"
-            v-show="viewForm.cycle_type==false"
-            format="yyyy-MM-dd" value-format="yyyy-MM-dd"
-            type="date"
-            placeholder="请选择重复截止日期">
-          </el-date-picker>
-          <p>重复摘要：{{viewForm.cycle_mode==1?'每天重复':(viewForm.cycle_mode==2?'每周重复':viewForm.cycle_mode==3?'每月重复':viewForm.cycle_mode==4?'每年重复':'不重复')}} <span v-if="viewForm.cycle_mode!=0">{{viewForm.cycle_type==0?'重复至 ':'永远重复'}} <i v-if="viewForm.cycle_type==false">{{viewForm.cycle_day}}</i></span> </p>
-        </el-form-item>
+          </el-form-item>
+          <el-form-item label="" v-show="viewForm.cycle_mode!=0">
+            <el-checkbox-group v-if="viewForm.cycle_mode==2" v-model="viewForm.cycle_week">
+              <el-checkbox label="周一" :value="1"></el-checkbox>
+              <el-checkbox label="周二" :value="2"></el-checkbox>
+              <el-checkbox label="周三" :value="3"></el-checkbox>
+              <el-checkbox label="周四" :value="4"></el-checkbox>
+              <el-checkbox label="周五" :value="5"></el-checkbox>
+              <el-checkbox label="周六" :value="6"></el-checkbox>
+              <el-checkbox label="周日" :value="7"></el-checkbox>
+            </el-checkbox-group>
+            <el-select v-model="viewForm.cycle_type" placeholder="请选择重复类型">
+              <el-option label="重复至" :value="false"></el-option>
+              <el-option label="永远重复" :value="true"></el-option>
+            </el-select>
+            <el-date-picker
+              v-model="viewForm.cycle_day"
+              v-show="viewForm.cycle_type==false"
+              format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+              :picker-options="pickerBeginDateEnd_edit"
+              type="date"
+              placeholder="请选择重复截止日期">
+            </el-date-picker>
+            <p>重复摘要：{{viewForm.cycle_mode==1?'每天重复':(viewForm.cycle_mode==2?'每周重复':viewForm.cycle_mode==3?'每月重复':viewForm.cycle_mode==4?'每年重复':'不重复')}} <span v-if="viewForm.cycle_mode!=0">{{viewForm.cycle_type==0?'重复至 ':'永远重复'}} <i v-if="viewForm.cycle_type==false">{{viewForm.cycle_day}}</i></span> </p>
+          </el-form-item>
+          <el-form-item label="组织者：">
+            <span>{{viewForm.name+'<'+viewForm.email+'>'}}; </span>
+          </el-form-item>
 
-        <el-form-item label="邀请对象" prop="invitors">
-          <div style="min-height:80px;border:1px solid #dcdfe6;max-width:400px;padding:4px 10px;max-height:400px;overflow: auto;">
-            <el-row v-for="(v,k) in viewForm.invitors" :key="k">
-              <el-col :span="15">
-                <div>{{v.email || v}}</div>
-              </el-col>
-              <el-col :span="6" style="text-align:right;" v-if="v.email">
-                <el-input v-model="v.status" readonly size="mini"></el-input>
-              </el-col>
-              <el-col :span="3" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="delete_invitors_view(k)"></el-button></el-col>
-            </el-row>
-          </div>
-          <el-input placeholder="输入邀请人" style="width:auto;" v-model.trim="addemail_view"></el-input> <el-button @click="addEmail_view">添加</el-button>
-          <el-button @click="showChoice = !showChoice">{{showChoice?"隐藏通讯录":"打开通讯录"}}</el-button>
-        </el-form-item>
+          <el-form-item label="邀请对象" prop="invitors">
+            <div style="min-height:80px;border:1px solid #dcdfe6;max-width:400px;padding:4px 10px;max-height:400px;overflow: auto;">
+              <el-row v-for="(v,k) in viewForm.invitors" :key="k">
+                <el-col :span="15">
+                  <div v-if="v.email">{{v.name+'<'+v.email+'>'}}</div>
+                  <div v-if="!v.email">{{v}}</div>
+                </el-col>
+                <el-col :span="6" style="text-align:right;" v-if="v.email">
+                  <el-button v-if="v.status" :type="v.status=='wait'?'warning':v.status=='pass'?'success':v.status=='reject'?'danger':'info'" plain size="mini">{{v.status=='start'?'待回复':v.status=='pass'?'已参加':v.status=='reject'?'已拒绝':'待定'}}</el-button>
 
-        <el-form-item v-show="showChoice" label="选择邮箱：">
+                </el-col>
+                <el-col :span="3" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="delete_invitors_view(k,v.id)" title="取消邀请"></el-button></el-col>
+              </el-row>
+            </div>
+            <el-input placeholder="输入邀请人" style="width:auto;" v-model.trim="addemail_view"></el-input> <el-button @click="addEmail_view">添加</el-button>
+            <el-button @click="showChoice = !showChoice">{{showChoice?"隐藏通讯录":"打开通讯录"}}</el-button>
+          </el-form-item>
 
+          <el-form-item v-show="showChoice" label="选择邮箱：">
             <el-row style="margin-bottom:6px;">
               <el-col :span="16">
                 <el-cascader  change-on-select style="width:100%"
@@ -339,13 +396,14 @@
               :total="totalCount">
             </el-pagination>
           </el-form-item>
+        </div>
 
       </el-form>
 
         <div slot="footer" class="dialog-footer">
-          <el-button @click="viewEventDialog = false" size="small">取 消</el-button>
-          <el-button type="warning"  size="small"  @click="deleteEventSubmit(viewForm.id)">删除事件</el-button>
-          <el-button type="primary"  size="small"  @click="updateEventSubmit">确定修改</el-button>
+          <el-button @click="viewEventDialog = false" size="small">关 闭</el-button>
+          <el-button type="warning"  size="small"  @click="deleteEventSubmit(viewForm.id)"  v-if="permisson.edit">删除事件</el-button>
+          <el-button type="primary"  size="small"  @click="updateEventSubmit"  v-if="permisson.edit">确定修改</el-button>
         </div>
       </el-dialog>
     <el-popover
@@ -362,12 +420,22 @@
   </div>
 </template>
 <script>
-  import {contactOabDepartsGet,contactOabMembersGet,getCalendarsList,getEvents,createEvent,getEventById,updateEvent,deleteEvent} from '@/api/api'
+  import {contactOabDepartsGet,contactOabMembersGet,getCalendarsList,getEvents,createEvent,getEventById,updateEvent,deleteEvent,cancelInvitorEvent,setStatus} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
+    name:'Calendar',
+    props:{
+      calendar_id:''
+    },
     data() {
       let _self = this;
       return {
+        permisson:{
+          edit: true,
+          invite: true
+        },
+        invitor_status:'',
+        event_id:'',
         visible2: false,
         eventStart: '',
         eventEnd: '',
@@ -397,9 +465,9 @@
           is_remind: false,
           delivery: false,
           start_day: '',
-          start_time: '08:00:00',
+          start_time: '08:00',
           end_day: '',
-          end_time: '18:00:00',
+          end_time: '18:00',
           remark: '',
           address: '',
           invitors: [],
@@ -417,10 +485,6 @@
           ],
           end_day: [
             {required: true, message: '请选择截止日期', trigger: 'blur'}
-          ],
-
-          remark: [
-            {required: true, message: '请填写日程说明', trigger: 'blur'}
           ],
 
 
@@ -447,7 +511,12 @@
           address: '',
           invitors: [],
         },
-        view_rules: {},
+        view_rules: {
+          title: [
+            {required: true, message: '请输入事件标题', trigger: 'blur'},
+            // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          ],
+        },
         hashMailbox_view: [],
         addemail_view: '',
 
@@ -519,7 +588,7 @@
             ed.setDate(ed.getDate() - 1);
             console.log()
             _self.eventEnd = new Date(ed).Format('yyyy-MM-dd');
-            _self.getEventList();
+            if(_self.calendar_id)_self.getEventList();
 
 
           },
@@ -561,6 +630,38 @@
             }
           }
         },
+        pickerBeginDateAfter: {
+          disabledDate: time => {
+            let beginDateVal = this.getDate(this.newForm.start_day);
+            if (beginDateVal) {
+              return time.getTime() < beginDateVal;
+            }
+          }
+        },
+        pickerBeginDateEnd: {
+          disabledDate: time => {
+            let beginDateVal = this.getDate(this.newForm.end_day);
+            if (beginDateVal) {
+              return time.getTime() < beginDateVal;
+            }
+          }
+        },
+        pickerBeginDateAfter_edit: {
+          disabledDate: time => {
+            let beginDateVal = this.getDate(this.viewForm.start_day);
+            if (beginDateVal) {
+              return time.getTime() < beginDateVal;
+            }
+          }
+        },
+        pickerBeginDateEnd_edit: {
+          disabledDate: time => {
+            let beginDateVal = this.getDate(this.viewForm.end_day);
+            if (beginDateVal) {
+              return time.getTime() < beginDateVal;
+            }
+          }
+        },
 
       }
     },
@@ -570,15 +671,27 @@
 
     },
     mounted: function() {
+      console.log(this.getDate('2018-09-02'))
     },
     methods: {
-
+      pickBeginDate(d){
+        console.log(arguments)
+        if(new Date(this.getDate(d)).getTime()>new Date(this.getDate(this.newForm.end_day)).getTime()){
+          this.newForm.end_day = this.newForm.start_day
+        }
+      },
+      pickBeginDate_view(d){
+        console.log(arguments)
+        if(new Date(this.getDate(d)).getTime()>new Date(this.getDate(this.viewForm.end_day)).getTime()){
+          this.viewForm.end_day = this.viewForm.start_day
+        }
+      },
       getEventList(){
         let params = {
           page:'',
           page_size:'',
           search:'',
-          calender_id:5,
+          calender_id:this.calendar_id,
           mode:this.eventMode,
           start:this.eventStart,
           end:this.eventEnd,
@@ -739,11 +852,31 @@
 
         }
       },
-      delete_invitors_view(k){
-        this.hashMailbox_view[this.viewForm.invitors[k]] = false;
-        this.viewForm.invitors.splice(k,1)
-      },
+      delete_invitors_view(k,id){
+        if(id){
+          cancelInvitorEvent(id).then(res=>{
+            console.log(res)
+            this.$message({message:'取消邀请成功！',type:'success'});
+            this.hashMailbox_view[this.viewForm.invitors[k]] = false;
+            this.viewForm.invitors.splice(k,1)
+          },err=>{
+            this.$message({message:'取消邀请失败！',type:'error'});
+          })
+        }else{
+          this.hashMailbox_view[this.viewForm.invitors[k]] = false;
+          this.viewForm.invitors.splice(k,1)
+        }
 
+
+      },
+      changeStatus(v,id){
+        console.log(v,id);
+        setStatus(id,v).then(res=>{
+          this.$message({message:'操作成功！',type:'success'});
+        },err=>{
+          this.$message({message:'操作失败！',type:'error'});
+        })
+      },
       submitForm(formName) {
         let _this = this;
         this.$refs[formName].validate((valid) => {
@@ -769,7 +902,10 @@
                 continue;
               }
               obj[key] = this.newForm[key];
+              obj['calender_id']=this.calendar_id;
             }
+            console.log(this.calender_id)
+            console.log(obj)
             createEvent(obj).then(res=>{
               this.$message({message:'创建事件成功！',type:'success'});
               this.getEventList();
@@ -808,11 +944,22 @@
               }
               obj[key] = this.viewForm[key];
             }
+            let invitors=[];
+            for(let i=0;i<this.viewForm.invitors.length;i++){
+              let o = this.viewForm.invitors[i];
+              if(o.email){
+                invitors.push(o.email)
+              }else{
+                invitors.push(o);
+              }
+            }
+            obj.invitors = invitors;
+            console.log(obj)
             updateEvent(this.viewForm.id,obj).then(res=>{
               this.$message({message:'修改成功！',type:'success'});
               this.getEventList();
             },err=>{
-              this.$message({message:'修改成功！',type:'error'});
+              this.$message({message:'修改失败！',type:'error'});
               console.log(err)
             })
 
@@ -824,6 +971,7 @@
       deleteEventSubmit(id){
         deleteEvent(id).then(res=>{
           this.$message({message:'删除事件成功！',type:'success'});
+          this.viewEventDialog = false;
           this.getEventList();
         },err=>{
           this.$message({message:'删除事件失败！',type:'error'});
@@ -854,12 +1002,27 @@
         if(!data.id){
           // this.newForm.start_day
           this.newEventDialog = true;
-
+          if(new Date(data.start).getTime() <= new Date().getTime()){
+            this.newForm.start_day = new Date().Format('yyyy-MM-dd');
+          }else{
+            this.newForm.start_day = new Date(data.start).Format('yyyy-MM-dd');
+          }
+          this.newForm.end_day = this.newForm.start_day
         }else{
           console.log(data.start._i)
           getEventById(data.id).then(res=>{
             console.log(res)
             this.viewForm = res.data.results;
+            this.permisson = res.data.permisson;
+            if(res.data.permisson.invite==true){
+              for(let i=0;i<this.viewForm.invitors.length;i++){
+                let o = this.viewForm.invitors[i];
+                if(o.email == this.$store.state.userInfo.name){
+                  this.invitor_status = o.status;
+                  this.event_id = o.event_id;
+                }
+              }
+            }
           },err=>{
             console.log(err);
           })
@@ -871,8 +1034,10 @@
       eventCreated(){
       },
     },
-    computed: {
-
+    watch: {
+      calendar_id: function(newv,oldv){
+        this.getEventList();
+      }
     },
 
   }

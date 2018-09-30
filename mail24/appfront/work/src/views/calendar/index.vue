@@ -9,7 +9,7 @@
           <li>
             <a class="fl-m-nav-trigger" :class="{'fl-nav-current':selectedIndex == 0}"  href="#"  title="日程管理"  @click.prevent.stop="jumpTo('/calendar/set',{id:0})">
                 <span>
-                  <i class="menu_icon_box el-icon-goods"></i>
+                  <i class="menu_icon_box iconfont icon-iconsetschedule"></i>
                   <div>日程管理</div>
                 </span>
             </a>
@@ -17,7 +17,7 @@
           <li v-for="(c,k) in calendars" :key="c.id">
             <a class="fl-m-nav-trigger" :class="{'fl-nav-current':selectedIndex == c.id}" href="#"  :title="c.name" @click.prevent.stop="jumpTo('/calendar/index',c)">
                 <span>
-                  <i class="el-icon-date menu_icon_box"></i>
+                  <i class="iconfont icon-iconmyschedule menu_icon_box"></i>
                   <div>{{c.name}}</div>
                 </span>
             </a>
@@ -25,7 +25,7 @@
           <li v-for="(c,k) in share_calendars" :key="c.calender_id">
             <a class="fl-m-nav-trigger" :class="{'fl-nav-current':selectedIndex == c.calender_id}" href="#"  :title="c.name" @click.prevent.stop="jumpTo('/calendar/index',c)">
                 <span>
-                  <i class="el-icon-share menu_icon_box"></i>
+                  <i class="iconfont icon-iconmyschedule menu_icon_box"></i>
                   <div>{{c.name}}</div>
                 </span>
             </a>
@@ -35,7 +35,8 @@
 
       <article class="fl-g-content">
         <div class="cal-content-wrap">
-          <router-view></router-view>
+          <router-view :calendar_id="calendar_id"></router-view>
+          <!--<Calendar :calendar_id="calendar_id"></Calendar>-->
         </div>
       </article>
 
@@ -52,6 +53,7 @@
     data() {
       return {
         selectedIndex:'1',
+        calendar_id:'',
         calendars:[
           {id:1,mailbox_id:7368,name:'我的日程'},
           {id:2,mailbox_id:7368,name:'xx的日程'},
@@ -72,17 +74,29 @@
     mounted: function() {
       this.getCalendars();
       if(this.$route.path.indexOf('/calendar/set')>=0){
-        this.selectedIndex = 0;
+
       }
     },
     methods: {
       jumpTo(path,c){
         this.$router.push(path);
         this.selectedIndex = c.calender_id||c.id;
+        if(c.id&&c.id!=0){this.calendar_id = c.calender_id||c.id;}
       },
       getCalendars(){
         getCalendarsList().then(res=>{
           this.calendars = res.data.results;
+          for(let i=0;i<res.data.results.length;i++){
+            let o = res.data.results[i];
+            if(o.is_default){
+              this.calendar_id = o.id;
+              if(this.$route.path.indexOf('/calendar/index')>=0){
+                this.selectedIndex = o.id;
+              }else{
+                this.selectedIndex = 0;
+              }
+            }
+          }
           this.share_calendars = [];
           for(let i=0;i<res.data.share_results.length;i++){
             let o = res.data.share_results[i];

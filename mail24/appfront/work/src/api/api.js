@@ -288,4 +288,7 @@ export const getEventById = (id) => { return axios.get(`${host}/calendars/events
 export const updateEvent = (id,params) => { return axios.put(`${host}/calendars/events/${id}/`, params) };
 //删除事件 /api/calendars/events/{id}/
 export const deleteEvent = id => { return axios.delete(`${host}/calendars/events/${id}/`) }
-
+//取消邀请 /api/calendars/events/{id}/cancel-invitor/
+export const cancelInvitorEvent = id => { return axios.post(`${host}/calendars/events/${id}/cancel-invitor/`) }
+//修改参与者状态 /api/calendars/events/{id}/status/
+export const setStatus = (id,params) => { return axios.post(`${host}/calendars/events/${id}/status/`, {status:params}) };
