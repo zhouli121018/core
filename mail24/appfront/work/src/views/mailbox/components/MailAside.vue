@@ -3,7 +3,7 @@
                 <div class="mlsidebar-bg"></div>
                 <div class="u-btns">
                     <button class="u-btn u-btn-default u-btn-large btn-compose j-mlsb" type="button" @click="goToCompose"><i class="iconfont icon-iconcreate"></i> <span class="title">写 信</span></button>
-                    <button class="u-btn u-btn-default u-btn-large btn-inbox j-mlsb" type="button" data-op="inbox"><i class="iconfont icon-iconinbox"></i></button>
+                    <button class="u-btn u-btn-default u-btn-large btn-inbox j-mlsb" type="button" @click="reloadMails"><i class="iconfont icon-iconinbox"></i></button>
                 </div>
 
                 <div class="wrapper u-scroll">
@@ -22,12 +22,13 @@
                           <el-button
                             type="text"
                             size="mini"
-                            @click.stop.prevent="() => showDialog(data)" title="添加">
+                            @click.stop.prevent="() => showDialog(data)" title="新建文件夹">
                             <i class="el-icon-plus"></i>
                           </el-button>
                           <el-button
                             type="text"
                             size="mini"
+                            v-if="!data.is_default"
                             @click.stop="() => remove(node, data)" title="删除">
                             <i class="el-icon-delete"></i>
                           </el-button>
@@ -58,19 +59,29 @@
     name:'MailAside',
     data(){
       return{
+        floderResult:[],
         checkNodes:[],
         folderList: [
             {
-              id: 1,
-              url:'innerbox',
+              id: 'INBOX',
               label: '收件箱',
-
+              is_default:true
             },{
-              id:5,
-              label:'其他文件夹',
-              children:[
-                {id:6,label:'病毒文件夹'},
-              ]
+              id: 'Drafts',
+              label: '草稿箱',
+              is_default:true
+            },{
+              id: 'Sent',
+              label: '发件箱',
+              is_default:true
+            },{
+              id: 'Trash',
+              label: '废件箱',
+              is_default:true
+            },{
+              id: 'Spam',
+              label: '垃圾箱',
+              is_default:true
             }],
           defaultProps: {
             children: 'children',
@@ -189,19 +200,24 @@
         getFloder().then((res)=>{
         let folder = res.data
         let arr = [];
+        this.floderResult = res.data;
         for(let i=0;i<folder.length;i++){
           let obj={};
           obj['label'] = folder[i]['name'];
           obj['id'] = folder[i]['raw_name'];
           obj['flags'] = folder[i]['flags'];
           obj['unseen'] = folder[i]['unseen_count'];
+          obj['is_default'] = folder[i]['is_default'];
           arr.push(obj);
         }
         this.folderList = arr
       },(err)=>{
         console.log(err)
       });
-      }
+      },
+      reloadMails(){
+        this.$parent.$refs.innerbox.getMessageList()
+      },
 
     },
 

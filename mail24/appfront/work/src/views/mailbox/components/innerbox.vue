@@ -357,6 +357,21 @@
       },
       changeFlags(row){
         row.flagged=!row.flagged;
+        console.log(row)
+        let ac = row.flagged?'add':'remove';
+        let param = {
+          uids:[row.uid],
+          folder:this.$parent.activeMenubar.id,
+          action:ac,
+          flags:['\\flagged']
+        }
+        messageFlag(param).then((suc)=>{
+          this.getMessageList();
+          this.getFloderMsgById(this.boxId);
+          this.$parent.$refs.menubar.getFloderfn();
+        },(err)=>{
+
+        })
       },
       readAll(){
         let param = {
@@ -468,21 +483,33 @@
           uids:this.checkedMails,
           folder:this.$parent.activeMenubar.id,
         };
-        deleteMail(params).then((suc)=>{
-          if(suc.data.msg=='success'){
+        this.$confirm('永久删除此邮件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteMail(params).then((suc)=>{
+            if(suc.data.msg=='success'){
+              this.$message({
+                type:'success',
+                message: '邮件删除成功!'
+              })
+              this.getMessageList();
+              this.$parent.refreshMenu()
+            }
+          },(err)=>{
             this.$message({
-              type:'success',
-              message: '邮件删除成功!'
-            })
-            this.getMessageList();
-            this.$parent.refreshMenu()
-          }
-        },(err)=>{
+                type:'error',
+                message: '删除失败！!'
+              })
+          })
+        }).catch(() => {
           this.$message({
-              type:'error',
-              message: '删除失败！!'
-            })
-        })
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+
       },
       moreHandleCommand:function(index){
         this.moreCheckIndex = index;
@@ -573,23 +600,19 @@
         return this.$parent.activeMenubar.label
       }
     },
-    beforeMount(){
+    mounted(){
       this.getMessageList();
       this.getFloderMsgById(this.boxId)
-      getFloder().then((res)=>{
-        let folder = res.data
-        let arr = [];
-        for(let i=0;i<folder.length;i++){
-          let obj={};
-          obj['text'] = folder[i]['name'];
-          obj['id'] = folder[i]['raw_name'];
-          obj['divided'] = false;
-          arr.push(obj);
-        }
-        this.moveItems = arr
-      },(err)=>{
-        console.log(err)
-      });
+      let folder = this.$parent.$refs.menubar.floderResult;
+      let arr = [];
+      for(let i=0;i<folder.length;i++){
+        let obj={};
+        obj['text'] = folder[i]['name'];
+        obj['id'] = folder[i]['raw_name'];
+        obj['divided'] = false;
+        arr.push(obj);
+      }
+      this.moveItems = arr
 
 
     },

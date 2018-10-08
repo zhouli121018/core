@@ -179,25 +179,19 @@
         </div>
       </el-dialog>
 
-    <el-dialog :title="viewForm.title" :visible.sync="viewEventDialog" :modal-append-to-body="false" :close-on-click-modal="false">
+    <el-dialog :title="viewForm.title" :visible.sync="viewEventDialog"  :close-on-click-modal="false" :append-to-body="true">
       <el-form :model="viewForm" :rules="view_rules" ref="viewForm" label-width="100px"  size="small">
         <el-card class="box-card" v-if="permisson.invite" style="background:#FFFFE1;margin-bottom:16px;">
             <h3>您是否参加活动？</h3>
-            <el-radio-group v-model="invitor_status">
+            <el-radio-group v-model="invitor_status" style="padding:16px 0;">
               <el-radio label="pass">参加</el-radio>
               <el-radio label="reject">拒绝</el-radio>
               <el-radio label="wait">待定</el-radio>
             </el-radio-group>
 
-              <el-select v-model="invitor_status" @change="changeStatus($event,event_id)" placeholder="请选择权限" size="mini">
-                <el-option label="待回复" value="start" disabled></el-option>
-                <el-option label="同意" value="pass"></el-option>
-                <el-option label="拒绝" value="reject"></el-option>
-                <el-option label="待定" value="wait"></el-option>
-              </el-select>
             <div>
-              <el-button type="primary" size="mini">保 存</el-button>
-              <el-button  size="mini">取 消</el-button>
+              <el-button type="primary" size="mini" @click="saveStatus">保 存</el-button>
+              <!--<el-button  size="mini">取 消</el-button>-->
             </div>
         </el-card>
 
@@ -402,7 +396,7 @@
 
         <div slot="footer" class="dialog-footer">
           <el-button @click="viewEventDialog = false" size="small">关 闭</el-button>
-          <el-button type="warning"  size="small"  @click="deleteEventSubmit(viewForm.id)"  v-if="permisson.edit">删除事件</el-button>
+          <el-button type="danger"  size="small"  @click="deleteEventSubmit(viewForm.id)"  v-if="permisson.edit">删除事件</el-button>
           <el-button type="primary"  size="small"  @click="updateEventSubmit"  v-if="permisson.edit">确定修改</el-button>
         </div>
       </el-dialog>
@@ -567,8 +561,26 @@
             console.log(event)
             if (event.title) {
               $(element).attr('title', event.title)
-              let html = '<span class="fc_time"></span><i class="el-icon-info" style="color:#409EFF"></i><span class="fc-title">' + event.title + '</span>';
-              $(element).find('.fc-content').html(html)
+              let html = '<span class="fc_time"></span>'
+              if(event.id>0){
+                  let per = event.permisson
+                  if(per.invite && per.edit){
+                    html += '<i class="el-icon-edit" style="color:#409EFF"></i>'
+                  }else if(per.edit && !per.invite){
+                    html += '<i class="el-icon-edit" style="color:red"></i>'
+                  }else if(!per.edit && per.invite){
+                    html += '<i class="el-icon-star-on" style="color:#409EFF"></i>'
+                  }else if(!per.edit && !per.invite){
+                    html += '<i class="el-icon-star-on" style="color:red"></i>'
+                  }
+                  html += '<span class="fc-title">' + event.title + '</span>';
+                  $(element).find('.fc-content').html(html)
+              }else{
+                html += '<i class="el-icon-info" style="color:#409EFF"></i>'
+                html += '<span class="fc-title">' + event.title + '</span>';
+                $(element).find('.fc-content').html(html)
+              }
+
             }
           },
           eventAfterAllRender: function (view) {
@@ -709,6 +721,7 @@
               obj.title = o.title;
               obj.id = o.id;
               obj.allDay = o.is_allday;
+              obj.permisson = o.permisson;
               this.fcEvents.push(obj)
             }
           }
@@ -869,12 +882,11 @@
 
 
       },
-      changeStatus(v,id){
-        console.log(v,id);
-        setStatus(id,v).then(res=>{
+      saveStatus(){
+        setStatus(this.event_id,this.invitor_status).then(res=>{
           this.$message({message:'操作成功！',type:'success'});
         },err=>{
-          this.$message({message:'操作失败！',type:'error'});
+          this.$message({message:err.non_field_errors[0]?err.non_field_errors[0]:'操作失败！',type:'error'});
         })
       },
       submitForm(formName) {
@@ -969,14 +981,26 @@
         });
       },
       deleteEventSubmit(id){
-        deleteEvent(id).then(res=>{
-          this.$message({message:'删除事件成功！',type:'success'});
-          this.viewEventDialog = false;
-          this.getEventList();
-        },err=>{
-          this.$message({message:'删除事件失败！',type:'error'});
-          console.log(err);
-        })
+        this.$confirm('此操作将永久删除该事件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteEvent(id).then(res=>{
+            this.$message({message:'删除事件成功！',type:'success'});
+            this.viewEventDialog = false;
+            this.getEventList();
+          },err=>{
+            this.$message({message:'删除事件失败！',type:'error'});
+            console.log(err);
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+
       },
 
       dayClick (t,jsEvent,view){
@@ -997,8 +1021,10 @@
 
       },
       eventClick (data){
-        this.getDeptOptions();
-        this.searchOabMembers(1);
+        if(this.deptOptions.length<=0){
+          this.getDeptOptions();
+          this.searchOabMembers(1);
+        }
         if(!data.id){
           // this.newForm.start_day
           this.newEventDialog = true;

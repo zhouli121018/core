@@ -9,7 +9,7 @@
           <li>
             <a class="fl-m-nav-trigger" :class="{'fl-nav-current':activeT=='pfile'}" href="#"  title="个人网盘"  @click.prevent.stop="jumpTo('pfile')">
                 <span>
-                  <i class="menu_icon_box el-icon-goods"></i>
+                  <i class="menu_icon_box iconfont icon-iconmyfile"></i>
                   <div>个人网盘</div>
                 </span>
             </a>
@@ -17,7 +17,7 @@
           <li>
             <a class="fl-m-nav-trigger" href="#" :class="{'fl-nav-current':activeT=='afile'}" title="来往附件" @click.prevent.stop="jumpTo('afile')">
                 <span>
-                  <i class="el-icon-sort menu_icon_box"></i>
+                  <i class="iconfont icon-iconaccfile menu_icon_box"></i>
                   <div>来往附件</div>
                 </span>
             </a>
