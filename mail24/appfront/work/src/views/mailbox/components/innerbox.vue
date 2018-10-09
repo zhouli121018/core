@@ -274,12 +274,7 @@
             // {id:11,text:'已转发',divided:false},
           ],
           moveCheckIndex:'',
-          moveItems:[
-            {id:0,text:'已发送',divided:false},
-            {id:1,text:'已删除',divided:false},
-            {id:2,text:'垃圾邮件',divided:false},
-            {id:3,text:'病毒文件夹',divided:false}
-          ],
+
           signItems:[
 
 
@@ -598,23 +593,23 @@
       },
       boxName:function(){
         return this.$parent.activeMenubar.label
+      },
+      moveItems:function(){
+        let folder = this.$parent.floderResult;
+        let arr = [];
+        for(let i=0;i<folder.length;i++){
+          let obj={};
+          obj['text'] = folder[i]['name'];
+          obj['id'] = folder[i]['raw_name'];
+          obj['divided'] = false;
+          arr.push(obj);
+        }
+        return arr;
       }
     },
     mounted(){
       this.getMessageList();
       this.getFloderMsgById(this.boxId)
-      let folder = this.$parent.$refs.menubar.floderResult;
-      let arr = [];
-      for(let i=0;i<folder.length;i++){
-        let obj={};
-        obj['text'] = folder[i]['name'];
-        obj['id'] = folder[i]['raw_name'];
-        obj['divided'] = false;
-        arr.push(obj);
-      }
-      this.moveItems = arr
-
-
     },
     watch: {
         boxId(newValue, oldValue) {

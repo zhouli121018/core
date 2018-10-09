@@ -393,7 +393,6 @@
         </div>
 
       </el-form>
-
         <div slot="footer" class="dialog-footer">
           <el-button @click="viewEventDialog = false" size="small">关 闭</el-button>
           <el-button type="danger"  size="small"  @click="deleteEventSubmit(viewForm.id)"  v-if="permisson.edit">删除事件</el-button>
@@ -411,6 +410,67 @@
         <el-button type="warning" size="mini">删除</el-button>
       </div>
     </el-popover>
+    <div v-if="!show_calendar" id="ces">
+        <el-row style="padding:6px 0;">
+          <el-col :span="6">
+            <el-input
+              placeholder="请输入事件标题"
+              prefix-icon="el-icon-search"
+              v-model="event_search" size="small" style="width:auto">
+            </el-input>
+            <el-button size="small" type="primary" plain @click="event_search_fn">查询</el-button>
+          </el-col>
+          <el-col :span="18" style="text-align:right">
+            <el-pagination
+              @size-change="handleSizeChange_list"
+              @current-change="handleCurrentChange_list"
+              background
+              :current-page="currentPage_list"
+              :page-sizes="[5,10,20,50,100,200]"
+              :page-size="pageSize_list"
+              layout="total, prev, pager, next, sizes"
+              :total="totalCount_list">
+            </el-pagination>
+          </el-col>
+        </el-row>
+       <el-table
+          :header-cell-style="{background:'#f0f1f3'}"
+          :data="event_list"
+          stripe
+          style="width: 100%">
+          <el-table-column
+            sortable
+            prop="start_day"
+            label="开始时间"
+            width="200"
+            >
+            <template slot-scope="scope">
+              {{scope.row.start_day}} {{scope.row.start_time?' '+scope.row.start_time:''}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="title"
+            label="标题"
+            >
+          </el-table-column>
+          <el-table-column
+            prop="status"
+            label="状态"
+            width="300"
+            >
+            <template slot-scope="scope">
+              <span>{{scope.row.cycle_mode==0?'不重复':(scope.row.cycle_mode==1?'每天重复 ':scope.row.cycle_mode==2?'每周重复 ':scope.row.cycle_mode==3?'每月重复 ':'每年重复 ')}}</span> <span v-if="scope.row.cycle_mode>0"> {{scope.row.cycle_type?' 永远重复':' 重复至 '}}</span> <span v-if="scope.row.cycle_mode>0 && !scope.row.cycle_type">{{scope.row.cycle_day}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作" width="200">
+            <template slot-scope="scope">
+              <el-button  type="text" size="small" @click="editEvent(scope.row)">{{scope.row.permisson.edit?'编辑':'查看'}}</el-button>
+              <el-button size="mini" type="text"  @click="deleteEventSubmit(scope.row.id)"  v-if="scope.row.permisson.edit" style="color:red">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+    </div>
   </div>
 </template>
 <script>
@@ -424,6 +484,25 @@
     data() {
       let _self = this;
       return {
+        currentPage_list:1,
+        pageSize_list:10,
+        totalCount_list:200,
+        event_search:'',
+        event_list:[
+          {
+            id:0,
+            title: '我的共享日程',
+            start_day: '2018-10-01',
+            start_time: '09:00:00',
+            status:'不重复'
+          }, {
+            id:1,
+            title: 'yc日程',
+            start_day: '2018-10-05',
+            start_time: '10:00:05',
+            status:'每天重复 重复至2018-10-20'
+          }],
+        show_calendar:true,
         permisson:{
           edit: true,
           invite: true
@@ -558,7 +637,6 @@
             $('#calendar').fullCalendar('option', 'height', window.innerHeight - 120);
           },
           eventRender: function (event, element) {
-            console.log(event)
             if (event.title) {
               $(element).attr('title', event.title)
               let html = '<span class="fc_time"></span>'
@@ -588,19 +666,29 @@
           },
           viewRender(view, element) {
             console.log(view)
-            if (view.name == 'agendaWeek') {
-              _self.eventMode = 'week'
-            } else if (view.name == 'month') {
-              _self.eventMode = 'month'
-            } else if (view.name == 'agendaDay') {
-              _self.eventMode = 'day'
+            if(view.name == 'listMonth'){
+              _self.eventMode = 'event'
+              // if(_self.calendar_id)_self.getEventList();
+              _self.show_calendar = false;
+              $('.fc-view-container').hide();
+              if(_self.calendar_id)_self.getEventList();
+            }else{
+              _self.show_calendar = true;
+              $('.fc-view-container').show();
+              if (view.name == 'agendaWeek') {
+                _self.eventMode = 'week'
+              } else if (view.name == 'month') {
+                _self.eventMode = 'month'
+              } else if (view.name == 'agendaDay') {
+                _self.eventMode = 'day'
+              }
+              _self.eventStart = new Date(view.intervalStart).Format('yyyy-MM-dd')
+              let ed = new Date(view.intervalEnd);
+              ed.setDate(ed.getDate() - 1);
+              _self.eventEnd = new Date(ed).Format('yyyy-MM-dd');
+              if(_self.calendar_id)_self.getEventList();
             }
-            _self.eventStart = new Date(view.intervalStart).Format('yyyy-MM-dd')
-            let ed = new Date(view.intervalEnd);
-            ed.setDate(ed.getDate() - 1);
-            console.log()
-            _self.eventEnd = new Date(ed).Format('yyyy-MM-dd');
-            if(_self.calendar_id)_self.getEventList();
+
 
 
           },
@@ -683,9 +771,24 @@
 
     },
     mounted: function() {
-      console.log(this.getDate('2018-09-02'))
+
     },
     methods: {
+      event_search_fn(){
+        this.currentPage_list = 1;
+        this.getEventList();
+      },
+      handleSizeChange_list(val) {
+        this.pageSize_list = val;
+        this.getEventList();
+      },
+      handleCurrentChange_list(val) {
+        this.currentPage_list = val;
+        this.getEventList();
+      },
+      editEvent(row){
+        this.eventClick(row)
+      },
       pickBeginDate(d){
         console.log(arguments)
         if(new Date(this.getDate(d)).getTime()>new Date(this.getDate(this.newForm.end_day)).getTime()){
@@ -700,16 +803,28 @@
       },
       getEventList(){
         let params = {
-          page:'',
-          page_size:'',
-          search:'',
+          // page:'',
+          // page_size:'',
+          // search:'',
           calender_id:this.calendar_id,
           mode:this.eventMode,
           start:this.eventStart,
           end:this.eventEnd,
         }
+        if(!this.show_calendar){
+          params.page = this.currentPage_list;
+          params.page_size = this.pageSize_list;
+          if(this.event_search){
+            params.search = this.event_search;
+          }
+        }
         getEvents(params).then(res=>{
           this.newEvent = false;
+          this.totalCount_list = res.data.count;
+          this.event_list = res.data.results;
+          if(!this.show_calendar){
+            return;
+          }
           this.fcEvents = [];
           for(let i=0;i<res.data.results.length;i++){
             let o = res.data.results[i];
@@ -1035,7 +1150,6 @@
           }
           this.newForm.end_day = this.newForm.start_day
         }else{
-          console.log(data.start._i)
           getEventById(data.id).then(res=>{
             console.log(res)
             this.viewForm = res.data.results;

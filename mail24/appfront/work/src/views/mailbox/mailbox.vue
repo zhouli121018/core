@@ -23,7 +23,7 @@
 <script>
 import router from '@/router'
 import MailAside from './components/MailAside'
-import {getMailMessage} from "@/api/api"
+import {getMailMessage,getFloder} from "@/api/api"
 import Innerbox from './components/innerbox'
 import Home from './components/home'
 import Read from './components/read'
@@ -34,6 +34,7 @@ export default {
     },
     data:function(){
         return{
+          floderResult:[],
           activeMenubar:{},
           iframe_height:'',
           showTabIndex:0,
@@ -42,13 +43,9 @@ export default {
           readFolderId:'',
           curr_folder:'收件箱',
           tab1:{id:0,url:'home',text:'收件箱'},
-          tabList:[
-
-          ],
+          tabList:[],
           titleHash:[],
           boxId:'INBOX'
-
-
         }
     },
     methods:{
@@ -123,7 +120,14 @@ export default {
         this.readId = obj.id;
         this.readFolderId = this.activeMenubar.id;
         this.activeTab = obj.id;
-      }
+      },
+      getFloderfn(){
+        getFloder().then((res)=>{
+          this.floderResult = res.data;
+        },(err)=>{
+          console.log(err)
+        });
+      },
 
     },
     beforeMount:function(){
@@ -131,6 +135,7 @@ export default {
       // this.getMessageList();
     },
     mounted(){
+      this.getFloderfn();
       const fheight = this.$refs.editor_h.getBoundingClientRect().height-50-50-220-80;
       console.log(fheight)
       this.iframe_height = fheight+'px';

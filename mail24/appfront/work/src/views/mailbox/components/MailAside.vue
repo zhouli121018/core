@@ -61,28 +61,7 @@
       return{
         floderResult:[],
         checkNodes:[],
-        folderList: [
-            {
-              id: 'INBOX',
-              label: '收件箱',
-              is_default:true
-            },{
-              id: 'Drafts',
-              label: '草稿箱',
-              is_default:true
-            },{
-              id: 'Sent',
-              label: '发件箱',
-              is_default:true
-            },{
-              id: 'Trash',
-              label: '废件箱',
-              is_default:true
-            },{
-              id: 'Spam',
-              label: '垃圾箱',
-              is_default:true
-            }],
+
           defaultProps: {
             children: 'children',
             label: 'label',
@@ -115,6 +94,20 @@
         }
         digui(this.folderList);
         return result;
+      },
+      folderList(){
+        let folder = this.$parent.floderResult;
+        let arr = [];
+        for(let i=0;i<folder.length;i++){
+          let obj={};
+          obj['label'] = folder[i]['name'];
+          obj['id'] = folder[i]['raw_name'];
+          obj['flags'] = folder[i]['flags'];
+          obj['unseen'] = folder[i]['unseen_count'];
+          obj['is_default'] = folder[i]['is_default'];
+          arr.push(obj);
+        }
+        return arr;
       }
     }
     ,
@@ -197,10 +190,8 @@
         this.$router.push('/mailbox/compose')
       },
       getFloderfn(){
-        getFloder().then((res)=>{
-        let folder = res.data
+        let folder = this.$parent.floderResult;
         let arr = [];
-        this.floderResult = res.data;
         for(let i=0;i<folder.length;i++){
           let obj={};
           obj['label'] = folder[i]['name'];
@@ -211,9 +202,6 @@
           arr.push(obj);
         }
         this.folderList = arr
-      },(err)=>{
-        console.log(err)
-      });
       },
       reloadMails(){
         this.$parent.$refs.innerbox.getMessageList()
@@ -222,7 +210,7 @@
     },
 
     beforeMount(){
-      this.getFloderfn();
+      // this.getFloderfn();
     },
 
 

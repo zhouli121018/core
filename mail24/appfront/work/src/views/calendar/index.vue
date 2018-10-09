@@ -134,7 +134,7 @@
     /*background-color:#c9e9ff !important;*/
   /*}*/
   .fc-agendaWeek-view.fc-agenda-view{
-    width:60%;
+    /*width:60%;*/
   }
   .cal-content-wrap>div{
     background: rgba(255,255,255,.8);

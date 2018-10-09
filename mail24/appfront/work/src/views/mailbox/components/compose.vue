@@ -191,6 +191,8 @@
 
 
       <el-dialog title="通讯录" :visible.sync="transform_dialog" :append-to-body="true" width="1032px">
+        <!--<tree-transfer :title="tree_title" :from_data='fromData' :to_data='toData' :defaultProps="{label:'label'}" @addBtn='add' @removeBtn='remove' :mode='mode' height='540px' filter openAll>-->
+    <!--</tree-transfer>-->
         <el-row  :gutter="20">
           <el-col :span="6" >
             <el-tree
@@ -230,7 +232,9 @@
       </el-dialog>
 
       <el-dialog title="文件中心" :visible.sync="coreFileDialog" :modal-append-to-body="false">
-        <el-pagination class="margin-bottom-5"
+        <el-tabs v-model="activeName_file" @tab-click="" style="min-height:200px;">
+          <el-tab-pane label="来往附件" name="first">
+            <el-pagination class="margin-bottom-5"
           @size-change="attachSizeChange"
           @current-change="attachCurrentChange"
           :current-page="attachCurrentPage"
@@ -239,17 +243,21 @@
           layout="total, sizes, prev, pager, next, jumper"
           :total="attachTotal" small>
         </el-pagination>
-        <el-table @selection-change="fileSelectionChange"
-          ref="multipleTable" :data="coreFileList" tooltip-effect="dark" style="width: 100%"
-          >
-          <el-table-column type="selection"  width="55"></el-table-column>
-          <el-table-column prop="filename" label="文件名" ></el-table-column>
-          <el-table-column prop="size" label="文件大小" width="100" >
-            <template slot-scope="scope">
-                <span  class="plan_style">{{scope.row.size | mailsize}}</span>
-            </template>
-          </el-table-column>
-        </el-table>
+            <el-table @selection-change="fileSelectionChange"
+              ref="multipleTable" :data="coreFileList" tooltip-effect="dark" style="width: 100%"
+              >
+              <el-table-column type="selection"  width="55"></el-table-column>
+              <el-table-column prop="filename" label="文件名" ></el-table-column>
+              <el-table-column prop="size" label="文件大小" width="100" >
+                <template slot-scope="scope">
+                    <span  class="plan_style">{{scope.row.size | mailsize}}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+
+          </el-tab-pane>
+          <el-tab-pane label="个人网盘" name="second">个人网盘</el-tab-pane>
+        </el-tabs>
         <div slot="footer" class="dialog-footer">
           <el-button @click="coreFileDialog = false" size="small">取 消</el-button>
           <el-button type="primary" @click="addAttachfn" size="small">确 定</el-button>
@@ -260,8 +268,9 @@
 </template>
 <script>
   import axios from 'axios';
+  // import treeTransfer from 'el-tree-transfer'
   import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach,contactOabDepartsGet,
-  mailSent} from '@/api/api'
+  mailSent,netdiskGet} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     props:{
@@ -290,8 +299,45 @@
         return data;
       };
       return {
+        activeName_file:'first',
+        tree_title:['组织通讯录','收件人','抄送人'],
+        mode: "addressList", // transfer addressList
+        fromData:[
+          {
+            id: "1",
+            pid: 0,
+            label: "一级 1",
+            children: [
+              {
+                id: "1-1",
+                pid: "1",
+                label: "二级 1-1",
+                children: []
+              },
+              {
+                id: "1-2",
+                pid: "1",
+                label: "二级 1-2",
+                children: [
+                  {
+                    id: "1-2-1",
+                    pid: "1-2",
+                    children: [],
+                    label: "二级 1-2-1"
+                  },
+                  {
+                    id: "1-2-2",
+                    pid: "1-2",
+                    children: [],
+                    label: "二级 1-2-2"
+                  }
+                ]
+              }
+            ]
+          },
+        ],
+        toData:[],
         contact_loading:false,
-
         transform_menu: [{
           id: 1,
           label: '个人通讯录',
@@ -798,6 +844,30 @@
           }))
         })
       },
+      // 切换模式 现有树形穿梭框模式transfer 和通讯录模式addressList
+      changeMode() {
+        if (this.mode == "transfer") {
+          this.mode = "addressList";
+        } else {
+          this.mode = "transfer";
+        }
+      },
+      // 监听穿梭框组件添加
+      add(fromData,toData,obj){
+        // 树形穿梭框模式transfer时，返回参数为左侧树移动后数据、右侧树移动后数据、移动的{keys,nodes,halfKeys,halfNodes}对象
+        // 通讯录模式addressList时，返回参数为右侧收件人列表、右侧抄送人列表、右侧密送人列表
+        console.log("fromData:", fromData);
+        console.log("toData:", toData);
+        console.log("obj:", obj);
+      },
+      // 监听穿梭框组件移除
+      remove(fromData,toData,obj){
+        // 树形穿梭框模式transfer时，返回参数为左侧树移动后数据、右侧树移动后数据、移动的{keys,nodes,halfKeys,halfNodes}对象
+        // 通讯录模式addressList时，返回参数为右侧收件人列表、右侧抄送人列表、右侧密送人列表
+        console.log("fromData:", fromData);
+        console.log("toData:", toData);
+        console.log("obj:", obj);
+      }
 
     },
     mounted() {
@@ -816,6 +886,7 @@
         this.$refs.tree2.filter(val);
       }
     },
+    // components:{ treeTransfer } // 注册
 
   }
 </script>
