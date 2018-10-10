@@ -74,6 +74,11 @@
                   </el-form-item>
 
                   <el-form-item label="收件人:" >
+                    <label slot="label">
+                      <template>
+                        <span @click="show_contact_fn" class="show_contact_style">收件人:</span>
+                      </template>
+                    </label>
                     <div class="padding_15">
                         <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist" :key="k" :title="v.email"><b>{{ v.value }}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v)"></i></div>
                         <el-autocomplete  class="no_padding"  v-model.trim="state1" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox"
@@ -84,13 +89,15 @@
                           <!--</template>-->
                         </el-autocomplete>
 
-
-
-                      <el-button class="" @click.native="transform_dialog = true" style="float:right;">选择收件人</el-button>
                     </div>
 
                   </el-form-item>
                   <el-form-item label="抄   送:" prop="cc">
+                    <label slot="label">
+                      <template>
+                        <span @click="show_contact_fn" class="show_contact_style">抄送人:</span>
+                      </template>
+                    </label>
                     <div class="padding_15">
                       <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_copyer" :key="k" :title="v.email"><b>{{v.value}}</b><i class="el-icon-close" @click="deleteMailboxForKey_copyer(k,v)"></i></div>
                       <el-autocomplete  class="no_padding" v-model.trim="state_copyer" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox_copyer"
@@ -107,14 +114,13 @@
                   <el-form-item v-show="fileList.length>0" label="附  件:" prop="attach">
                     <div  v-for="(f,k) in fileList" :key="f.id" class="attach_box" @mouseenter="attach_hoverfn(f.id)" @mouseleave="remove_attach_hover" :class="{attach_hover:attachIndex == f.id}">
                       <i class="el-icon-document"></i>
-                      <span >[非密] {{f.filename}}</span>
+                      <span >[非密] {{f.filename||f.name}}</span>
                       <i class="el-icon-check" style="margin:0 5px;color:#26af1e;font-weight:bold;"></i>
-                      <span class="plan_style">{{f.size | mailsize}}</span>
+                      <span class="plan_style" v-if="f.size">{{f.size | mailsize }}</span>
+                      <span class="plan_style" v-if="!f.size">{{f.file_size }}</span>
                       <span class="attach_actions">
                         <el-button size="mini" type="primary" plain @click="delete_attach(f.id,k)">删除</el-button>
                         <el-button size="mini" type="primary" plain>下载</el-button>
-                        <el-button size="mini" type="primary" plain>预览</el-button>
-                        <el-button size="mini" type="primary" plain>密级修改</el-button>
                       </span>
                     </div>
                   </el-form-item>
@@ -170,17 +176,13 @@
 
               </div>
               <div class="form-toolbar compose_footer">
-                <div>
-                  <el-checkbox>数字签名</el-checkbox>
-                  <el-checkbox >安全加密</el-checkbox>
-                </div>
                 <div class="bt-hd-wrap">
                   <el-checkbox v-model="ruleForm2.is_save_sent">保存到"已发送"</el-checkbox>
                   <el-checkbox >设为"紧急"</el-checkbox>
                   <el-checkbox >已读回执</el-checkbox>
+                  <el-checkbox >邮件加密</el-checkbox>
                   <el-checkbox >定时发送</el-checkbox>
                   <el-checkbox >阅后即焚</el-checkbox>
-                  <el-checkbox >邮件加密</el-checkbox>
                   <el-checkbox >禁止转发</el-checkbox>
                 </div>
               </div>
@@ -193,35 +195,83 @@
       <el-dialog title="通讯录" :visible.sync="transform_dialog" :append-to-body="true" width="1032px">
         <!--<tree-transfer :title="tree_title" :from_data='fromData' :to_data='toData' :defaultProps="{label:'label'}" @addBtn='add' @removeBtn='remove' :mode='mode' height='540px' filter openAll>-->
     <!--</tree-transfer>-->
-        <el-row  :gutter="20">
-          <el-col :span="6" >
-            <el-tree
-
-              show-checkbox
-              :data="transform_menu"
-              :props="defaultPropsCon">
-            </el-tree>
-          </el-col>
-          <el-col :span="18" style="border-left:1px solid #dcdfe6;">
+        <el-row :gutter="10" style="margin-bottom:10px;">
+          <el-col :span="6">
             <div>
-              <el-transfer
-                style="text-align: left; display: inline-block"
-                v-model="value4"
-                filterable
-                :titles="['联系人', '选中联系人']"
-
-                :format="{
-                  noChecked: '${total}',
-                  hasChecked: '${checked}/${total}'
-                }"
-
-                :data="transformData">
-                <!--@change="handleChange"-->
-                <span slot-scope="{ option }">{{ option.key }} - {{ option.label }}</span>
-                <el-button class="transfer-footer" slot="left-footer" size="small">操作</el-button>
-                <el-button class="transfer-footer" slot="right-footer" size="small">操作</el-button>
-              </el-transfer>
+              <input type="hidden" v-model="soab_domain_cid"/>
+              域名：
+              <el-select v-model="soab_domain_cid" placeholder="请选择" @change="soabChangeDomain" size="mini">
+                <el-option v-for="item in soab_domain_options" :key="item.id" :label="item.label" :value="item.id"></el-option>
+              </el-select>
             </div>
+          </el-col>
+          <el-col :span="18">
+            <el-row>
+              <el-col :span="6">
+                <el-input placeholder="请输入内容" v-model="contact_search" class="input-with-select" size="small">
+                  <el-button slot="append" icon="el-icon-search"  @click="search_dept"></el-button>
+                </el-input>
+              </el-col>
+              <el-col :span="18" style="text-align:right">
+                <el-pagination
+                  @size-change="handleSizeChange_contact"
+                  @current-change="handleCurrentChange_contact"
+                  :current-page="currentPage"
+                  :page-sizes="[5,10, 20,50,100,200, 300, 400]"
+                  :page-size="pageSize"
+                  small
+                  layout="total,prev, pager, next,sizes"
+                  :total="totalCount">
+                </el-pagination>
+              </el-col>
+            </el-row>
+          </el-col>
+        </el-row>
+        <el-row  :gutter="10">
+          <el-col :span="6" >
+
+            <div style="height:400px;overflow: auto;width:100%">
+              <el-tree
+                show-checkbox
+                node-key="id"
+                :default-expanded-keys="default_expanded"
+                :data="transform_menu"
+                :props="defaultPropsCon"
+                @node-click="contact_tree_click">
+              </el-tree>
+            </div>
+
+          </el-col>
+          <el-col :span="12" style="height:420px;border-left:2px dotted #dcdfe6;border-right:2px dotted #dcdfe6;">
+            <el-table
+              height="420"
+              :data="contactData"
+              tooltip-effect="dark"
+              style="width: 100%"
+              @selection-change="selectionChange_contact" @row-click="rowClick" ref="contactTable" :header-cell-style="{background:'#f0f1f3'}">
+              <el-table-column
+                type="selection"
+                width="55">
+              </el-table-column>
+              <el-table-column prop="fullname" label="姓名">
+                <template slot-scope="scope">
+                  <span>{{ scope.row.fullname|| scope.row.name}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column  label="邮件地址">
+                <template slot-scope="scope">
+                  <span>{{scope.row.email || scope.row.pref_email || scope.row.username}}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+
+
+          </el-col>
+          <el-col :span="6" style="height:350px;">
+            收件人：
+            <div class="address_box"></div>
+            抄送人：
+            <div class="address_box"></div>
           </el-col>
 
         </el-row>
@@ -232,19 +282,19 @@
       </el-dialog>
 
       <el-dialog title="文件中心" :visible.sync="coreFileDialog" :modal-append-to-body="false">
-        <el-tabs v-model="activeName_file" @tab-click="" style="min-height:200px;">
+        <el-tabs v-model="activeName_file" @tab-click="switch_file" style="min-height:200px;">
           <el-tab-pane label="来往附件" name="first">
             <el-pagination class="margin-bottom-5"
-          @size-change="attachSizeChange"
-          @current-change="attachCurrentChange"
-          :current-page="attachCurrentPage"
-          :page-sizes="[5,10,20,50,100, 200, 300, 400]"
-          :page-size="attachPageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="attachTotal" small>
-        </el-pagination>
-            <el-table @selection-change="fileSelectionChange"
-              ref="multipleTable" :data="coreFileList" tooltip-effect="dark" style="width: 100%"
+              @size-change="attachSizeChange"
+              @current-change="attachCurrentChange"
+              :current-page="attachCurrentPage"
+              :page-sizes="[5,10,20,50,100, 200, 300, 400]"
+              :page-size="attachPageSize" background
+              layout="total, prev, pager, next, sizes"
+              :total="attachTotal" small>
+            </el-pagination>
+            <el-table @selection-change="fileSelectionChange" @row-click="rowClick_afile"
+              ref="afileTable" :data="coreFileList" tooltip-effect="dark" style="width: 100%"
               >
               <el-table-column type="selection"  width="55"></el-table-column>
               <el-table-column prop="filename" label="文件名" ></el-table-column>
@@ -256,7 +306,37 @@
             </el-table>
 
           </el-tab-pane>
-          <el-tab-pane label="个人网盘" name="second">个人网盘</el-tab-pane>
+          <el-tab-pane label="个人网盘" name="second">
+            <div style="padding:0 0 8px 4px;">
+              路径：<span v-for="fn in folder_names"><b style="cursor: pointer;color:blue;" @click="getNetfile(fn.id)">{{fn.name}}</b> / </span>
+            </div>
+            <el-pagination class="margin-bottom-5"
+              @size-change="attachSizeChange_net"
+              @current-change="attachCurrentChange_net"
+              :current-page="attachCurrentPage_net"
+              :page-sizes="[5,10,20,50,100, 200, 300, 400]"
+              :page-size="attachPageSize_net" background
+              layout="total, prev, pager, next, sizes"
+              :total="attachTotal_net" small>
+            </el-pagination>
+            <el-table @selection-change="fileSelectionChange" @row-click="rowClick_nfile"
+              ref="nfileTable" :data="nfileList" tooltip-effect="dark" style="width: 100%"
+
+              >
+              <el-table-column type="selection"  width="55" :selectable="selectablee"></el-table-column>
+              <el-table-column prop="name" label="文件名" >
+                <template slot-scope="scope">
+                    <div v-if="scope.row.nettype=='folder'"><span @click="getNetfile(scope.row.id)" style="color:blue;text-decoration: underline;font-weight:bold;cursor:pointer;">{{scope.row.name}}</span></div>
+                    <div v-if="scope.row.nettype!='folder'"><span>{{scope.row.name}}</span></div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="file_size" label="文件大小" width="100" >
+                <template slot-scope="scope">
+                    <span  class="plan_style">{{scope.row.file_size}}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
         </el-tabs>
         <div slot="footer" class="dialog-footer">
           <el-button @click="coreFileDialog = false" size="small">取 消</el-button>
@@ -270,7 +350,7 @@
   import axios from 'axios';
   // import treeTransfer from 'el-tree-transfer'
   import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach,contactOabDepartsGet,
-  mailSent,netdiskGet} from '@/api/api'
+  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     props:{
@@ -286,19 +366,15 @@
           callback();
         }
       };
-      const generateData = _ => {
-        const data = [];
-        for (let i = 1; i <= 15; i++) {
-          data.push({
-            key: i,
-            label: `备选项 ${ i }`,
-            disabled: false
-          });
-        }
-        console.log(data)
-        return data;
-      };
       return {
+        contact_search:'',
+        pid:'',
+        default_expanded:['pab'],
+        soab_domain_cid:'',
+        soab_domain_options:[],
+        contactData:[],
+        folder_names:[],
+        nfileList:[],
         activeName_file:'first',
         tree_title:['组织通讯录','收件人','抄送人'],
         mode: "addressList", // transfer addressList
@@ -338,49 +414,25 @@
         ],
         toData:[],
         contact_loading:false,
-        transform_menu: [{
-          id: 1,
-          label: '个人通讯录',
-          children: []
-        }, {
-          id: 2,
-          label: '组织通讯录',
-          children: [{
-            id: 5,
-            label: '二级 2-1'
-          }, {
-            id: 6,
-            label: '二级 2-2'
-          }]
-        }, {
-          id: 3,
-          label: '公共通讯录',
-          children: [{
-            id: 7,
-            label: '二级 3-1'
-          }, {
-            id: 8,
-            label: '二级 3-2'
-          }]
-        }, {
-          id: 4,
-          label: '其它域通讯录',
-
-        }],
+        transform_menu: [],
         defaultPropsCon: {
           id:'id',
           label: 'label',
           children: 'children',
         },
-        transformData: generateData(),
-        value4: [],
         extraFileUploadParams : {
                         csrfmiddlewaretoken:this.$store.state.userInfo.token,
                          id:123
                 },
+        currentPage:1,
+        pageSize:10,
+        totalCount:0,
         attachCurrentPage:1,
         attachPageSize:10,
         attachTotal:0,
+        attachCurrentPage_net:1,
+        attachPageSize_net:10,
+        attachTotal_net:0,
         coreFileList:[],
         hashFile:[],
         fileSelection:[],
@@ -448,10 +500,150 @@
       };
     },
     methods:{
+      getPabMembers() {
+        var param = {
+          "page": this.currentPage,
+          "page_size": this.pageSize,
+          "search": this.contact_search,
+          "group_id": this.pid,
+          "is_group": '',
+        };
+        contactPabMapsGet(param).then((res) => {
+          this.totalCount = res.data.count;
+          this.contactData = res.data.results;
+        });
+      },
+      getOabMembers() {
+        let keys = new Array();
+        // keys.push(Number(this.oab_cid));
+        // this.default_expanded_keys = keys;
+        // this.default_checked_keys = keys;
+        var param = {
+          "page": this.currentPage,
+          "page_size": this.pageSize,
+          "search": this.contact_search,
+          "dept_id": this.pid,
+        };
+        contactOabMembersGet(param).then((res) => {
+          this.totalCount = res.data.count;
+          this.contactData = res.data.results;
+        });
+      },
+      getCabMembers() {
+        let keys = new Array();
+        // keys.push(Number(this.cab_cid));
+        // this.default_expanded_keys = keys;
+        // this.default_checked_keys = keys;
+        var param = {
+          "page": this.currentPage,
+          "page_size": this.pageSize,
+          "search": this.contact_search,
+          "cate_id": this.pid,
+        };
+        contactCabMembersGet(param).then((res) => {
+          this.totalCount = res.data.count;
+          this.contactData = res.data.results;
+        });
+      },
+      getSoabMembers() {
+        let keys = new Array();
+        // keys.push(Number(this.soab_cid));
+        // this.default_expanded_keys = keys;
+        // this.default_checked_keys = keys;
+        var param = {
+          "page": this.currentPage,
+          "page_size": this.pageSize,
+          "search": this.contact_search,
+          "dept_id": this.pid,
+          "domain_id": this.soab_domain_cid,
+        };
+        contactSoabMembersGet(param).then((res) => {
+          this.totalCount = res.data.count;
+          this.contactData = res.data.results;
+
+        });
+      },
+      show_contact_fn(){
+        this.transform_dialog = true;
+        this.get_transform_menu();
+      },
+      soabChangeDomain(selected){
+        this.soab_domain_cid = selected;
+        this.get_transform_menu();
+      },
+      getSoabDomains(){
+        contactSoabDomainsGet().then(res=>{
+          let data = res.data.results;
+          if ( data.length>=1 ){
+            this.soab_domain_options = data;
+            this.soab_domain_cid = data[0].id
+          }
+        });
+      },
+      contact_tree_click(data){
+        console.log(data)
+        if(data.id=='oab'||data.id=='pab'||data.id=='cab'||data.id=='soab'){
+          sessionStorage['openGroup'] = data.id;
+          return;
+        }
+        this.pid = data.id;
+        this.currentPage = 1;
+        if(sessionStorage['openGroup']=='pab'){
+          this.getPabMembers();
+        }else if(sessionStorage['openGroup']=='oab'){
+          this.getOabMembers();
+        }else if(sessionStorage['openGroup']=='cab'){
+          this.getCabMembers();
+        }else if(sessionStorage['openGroup']=='soab'){
+          this.getSoabMembers();
+        }
+
+      },
+      selectionChange_contact(){
+
+      },
+      selectablee(row,index){
+        if(row.nettype=='folder'){
+          return false
+        }else{
+          return true;
+        }
+      },
+      rowClick(row){
+        this.$refs.contactTable.toggleRowSelection(row)
+      },
+      rowClick_afile(row,e,col){
+        this.$refs.afileTable.toggleRowSelection(row)
+      },
+      rowClick_nfile(row,e,col){
+        if(row.nettype=='folder'){
+          return
+        }
+        this.$refs.nfileTable.toggleRowSelection(row)
+      },
+      switch_file(tab,event){
+        console.log(tab)
+        if(tab.$data.index==1){
+          this.getNetfile(-1);
+        }
+      },
       format (fromArr,toArr){
         for(let i=0;i<fromArr.length;i++){
           toArr.push([fromArr[i].email,fromArr[i].fullname||""]);
         }
+      },
+      getNetfile(n){
+        var param = {
+          "page": this.attachCurrentPage_net,
+          "page_size": this.attachPageSize_net,
+          "folder_id": n,
+        };
+        netdiskGet(param).then(res=>{
+          console.log(res)
+          this.attachTotal_net = res.data.count;
+          this.nfileList = res.data.results;
+          this.folder_names = res.data.folder_names;
+        });
       },
       sentMail(type){
         this.ruleForm2.to = [];
@@ -489,8 +681,8 @@
       get_transform_menu(){
         let arr = [];
         let _this = this;
-        axios.all([contactPabGroupsGet(),contactOabDepartsGet()]).then(axios.spread(function (acct, perms) {
-          // 两个请求现在都执行完成
+        axios.all([contactPabGroupsGet(),contactOabDepartsGet(),contactCabGroupsGet(),contactSoabGroupsGet(this.soab_domain_cid)]).then(axios.spread(function (acct, perms,cabs,soabs) {
+          // 请求现在都执行完成
           let cc =
           arr[0] = {
             id:'pab',
@@ -501,6 +693,16 @@
             id:'oab',
             label:'组织通讯录',
             children:perms.data.results
+          }
+          arr[2] = {
+            id:'cab',
+            label:'公共通讯录',
+            children:cabs.data.results
+          }
+          arr[3] = {
+            id:'soab',
+            label:'其它域通讯录',
+            children:soabs.data.results
           }
           _this.transform_menu = arr;
 
@@ -516,6 +718,51 @@
       attachCurrentChange(val){
         this.attachCurrentPage = val;
         this.getAttachList();
+      },
+      attachSizeChange_net(val){
+        this.attachPageSize_net = val;
+        this.getAttachList();
+      },
+      attachCurrentChange_net(val){
+        this.attachCurrentPage_net = val;
+        this.getAttachList();
+      },
+      handleSizeChange_contact(val){
+        this.currentPage = 1
+        this.pageSize = val;
+        if(sessionStorage['openGroup']=='pab'){
+          this.getPabMembers();
+        }else if(sessionStorage['openGroup']=='oab'){
+          this.getOabMembers();
+        }else if(sessionStorage['openGroup']=='cab'){
+          this.getCabMembers();
+        }else if(sessionStorage['openGroup']=='soab'){
+          this.getSoabMembers();
+        }
+      },
+      handleCurrentChange_contact(val){
+        this.currentPage = val
+        if(sessionStorage['openGroup']=='pab'){
+          this.getPabMembers();
+        }else if(sessionStorage['openGroup']=='oab'){
+          this.getOabMembers();
+        }else if(sessionStorage['openGroup']=='cab'){
+          this.getCabMembers();
+        }else if(sessionStorage['openGroup']=='soab'){
+          this.getSoabMembers();
+        }
+      },
+      search_dept(){
+        this.currentPage = 1
+        if(sessionStorage['openGroup']=='pab'){
+          this.getPabMembers();
+        }else if(sessionStorage['openGroup']=='oab'){
+          this.getOabMembers();
+        }else if(sessionStorage['openGroup']=='cab'){
+          this.getCabMembers();
+        }else if(sessionStorage['openGroup']=='soab'){
+          this.getSoabMembers();
+        }
       },
 
       addAttachfn(){
@@ -554,13 +801,8 @@
         })
       },
       delete_attach(id,k){
-        deleteAttach(id).then((suc)=>{
-          console.log(suc);
-          this.hashFile[this.fileList[k].id]=false;
-          this.fileList.splice(k,1);
-        },(err)=>{
-          console.log(err);
-        })
+        this.hashFile[this.fileList[k].id]=false;
+        this.fileList.splice(k,1);
       },
       attach_hoverfn(key){
         this.attachIndex = key;
@@ -844,37 +1086,19 @@
           }))
         })
       },
-      // 切换模式 现有树形穿梭框模式transfer 和通讯录模式addressList
-      changeMode() {
-        if (this.mode == "transfer") {
-          this.mode = "addressList";
-        } else {
-          this.mode = "transfer";
-        }
-      },
-      // 监听穿梭框组件添加
-      add(fromData,toData,obj){
-        // 树形穿梭框模式transfer时，返回参数为左侧树移动后数据、右侧树移动后数据、移动的{keys,nodes,halfKeys,halfNodes}对象
-        // 通讯录模式addressList时，返回参数为右侧收件人列表、右侧抄送人列表、右侧密送人列表
-        console.log("fromData:", fromData);
-        console.log("toData:", toData);
-        console.log("obj:", obj);
-      },
-      // 监听穿梭框组件移除
-      remove(fromData,toData,obj){
-        // 树形穿梭框模式transfer时，返回参数为左侧树移动后数据、右侧树移动后数据、移动的{keys,nodes,halfKeys,halfNodes}对象
-        // 通讯录模式addressList时，返回参数为右侧收件人列表、右侧抄送人列表、右侧密送人列表
-        console.log("fromData:", fromData);
-        console.log("toData:", toData);
-        console.log("obj:", obj);
-      }
+
 
     },
     mounted() {
       // this.restaurants = this.loadAll();
       this.getPabGroups();
       // this.getAttachList();
-      this.get_transform_menu();
+      this.getSoabDomains();
+      sessionStorage['openGroup'] = 'oab'
+
+    },
+    beforeMount() {
+
     },
     computed:{
       uploadJson:function(){
@@ -891,6 +1115,40 @@
   }
 </script>
 <style>
+  .address_box{
+    border:1px solid #dcdfe6;height:50%;margin-bottom:20px;
+  }
+  .address_box:hover,.address_box.active{
+    border-color:#409EFF
+  }
+  .show_contact_style{
+    color:#409EFF;
+    text-decoration: underline;
+  }
+  .show_contact_style:hover{
+    background:#409EFF;
+    color:#fff;
+    padding:4px 0;
+    border-radius: 3px;
+  }
+  .tree {
+  overflow-y: auto;
+  overflow-x: auto;
+  /* width: 80px; */
+  height: 500px;
+  background-color: #ffffff;
+}
+.el-tree {
+  min-width: 100%;
+  font-size: 14px;
+  display: inline-block !important;
+}
+  .bico {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-image: url(../../../assets/img/icons.png);
+  }
   .margin-bottom-5{
     margin-bottom:5px;
   }

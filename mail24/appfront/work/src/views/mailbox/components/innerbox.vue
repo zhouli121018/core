@@ -142,8 +142,8 @@
                     <div class="m-mllist-row mllist-list-row">
                       <div class="j-module-content j-maillist mllist-list u-scroll">
                         <div>
-                          <el-table :data="collapseItems[0].lists" style="width: 100%;" class="vertical_align_top maillist"
-                              highlight-current-row  @cell-mouse-enter="hoverfn" @cell-mouse-leave="noHover" @cell-click="readMail"
+                          <el-table ref="innerTable" :data="collapseItems[0].lists" style="width: 100%;" class="vertical_align_top maillist"
+                              highlight-current-row  @cell-mouse-enter="hoverfn" @cell-mouse-leave="noHover" @row-click="rowClick"
                                     @selection-change="handleSelectionChange"  v-loading="loading" :header-cell-style="{background:'#f0f1f3'}"
                             >
                             <el-table-column
@@ -156,7 +156,7 @@
                             <el-table-column prop="subject"  label="" @click="">
                               <template slot-scope="scope">
                                 <div class="clear mainMsg" style="font-size:16px;" :class="{flagged:scope.row.flagged,unseen:!scope.row.isread,hoverStyle:scope.row.uid==hoverIndex}">
-                                  <span class="fl_l" style="width:80%;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{scope.row.subject||'无主题'}}</span>
+                                  <span class="fl_l subject_hover" style="width:80%;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" @click.stop.prevent="readMail(scope.row)">{{scope.row.subject||'无主题'}}</span>
                                   <span class="fl_r">
                                     <i :title="scope.row.flagged?'点击取消旗帜':'设为红旗'" @click.stop="changeFlags(scope.row)" class="iconfont" :class="{'icon-iconflatcolor':scope.row.flagged,'icon-iconflat':!scope.row.flagged}" style="cursor:pointer;"></i>
                                   </span>
@@ -311,6 +311,9 @@
         }
     },
     methods:{
+      rowClick(row,e,col){
+        this.$refs.innerTable.toggleRowSelection(row)
+      },
       moreSearchfn(){
         this.loading = true;
         let params = {
@@ -361,9 +364,7 @@
           flags:['\\flagged']
         }
         messageFlag(param).then((suc)=>{
-          this.getMessageList();
-          this.getFloderMsgById(this.boxId);
-          this.$parent.$refs.menubar.getFloderfn();
+
         },(err)=>{
 
         })
@@ -378,12 +379,12 @@
         messageFlag(param).then((suc)=>{
           this.getMessageList();
           this.getFloderMsgById(this.boxId);
-          this.$parent.$refs.menubar.getFloderfn();
+          this.$parent.getFloderfn();
         },(err)=>{
 
         })
       },
-      readMail(row, column, cell, event){
+      readMail(row){
           row.isread = true;
           this.$parent.showTabIndex=2;
           console.log(row)
@@ -396,7 +397,7 @@
         messageFlag(param).then((suc)=>{
           // this.getMessageList();
           this.getFloderMsgById(this.boxId);
-          this.$parent.$refs.menubar.getFloderfn();
+          this.$parent.getFloderfn();
         },(err)=>{
 
         })
@@ -451,7 +452,7 @@
               message: '邮件移动成功!'
             })
             this.getMessageList();
-            this.$parent.refreshMenu()
+            this.$parent.getFloderfn();
           }
         },(err)=>{
           console.log(err);
@@ -468,7 +469,7 @@
         messageFlag(param).then((suc)=>{
           this.getMessageList();
           this.getFloderMsgById(this.boxId);
-          this.$parent.$refs.menubar.getFloderfn();
+          this.$parent.getFloderfn();
         },(err)=>{
 
         })
@@ -664,6 +665,9 @@
   }
   .fromto{
     color:#057ab8;
+  }
+  .subject_hover:hover{
+    cursor:pointer;
   }
 </style>
 

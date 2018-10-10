@@ -87,13 +87,13 @@
         </el-form-item>
         <el-form-item label="" v-show="newForm.cycle_mode!=0">
           <el-checkbox-group v-if="newForm.cycle_mode==2" v-model="newForm.cycle_week">
-            <el-checkbox label="周一" :value="1"></el-checkbox>
-            <el-checkbox label="周二" :value="2"></el-checkbox>
-            <el-checkbox label="周三" :value="3"></el-checkbox>
-            <el-checkbox label="周四" :value="4"></el-checkbox>
-            <el-checkbox label="周五" :value="5"></el-checkbox>
-            <el-checkbox label="周六" :value="6"></el-checkbox>
-            <el-checkbox label="周日" :value="7"></el-checkbox>
+            <el-checkbox :label="0">周一</el-checkbox>
+            <el-checkbox :label="1">周二</el-checkbox>
+            <el-checkbox :label="2">周三</el-checkbox>
+            <el-checkbox :label="3">周四</el-checkbox>
+            <el-checkbox :label="4">周五</el-checkbox>
+            <el-checkbox :label="5">周六</el-checkbox>
+            <el-checkbox :label="6">周日</el-checkbox>
           </el-checkbox-group>
           <el-select v-model="newForm.cycle_type" placeholder="请选择重复类型">
             <el-option label="重复至" value="0"></el-option>
@@ -300,13 +300,13 @@
           </el-form-item>
           <el-form-item label="" v-show="viewForm.cycle_mode!=0">
             <el-checkbox-group v-if="viewForm.cycle_mode==2" v-model="viewForm.cycle_week">
-              <el-checkbox label="周一" :value="1"></el-checkbox>
-              <el-checkbox label="周二" :value="2"></el-checkbox>
-              <el-checkbox label="周三" :value="3"></el-checkbox>
-              <el-checkbox label="周四" :value="4"></el-checkbox>
-              <el-checkbox label="周五" :value="5"></el-checkbox>
-              <el-checkbox label="周六" :value="6"></el-checkbox>
-              <el-checkbox label="周日" :value="7"></el-checkbox>
+              <el-checkbox :label="0">周一</el-checkbox>
+              <el-checkbox :label="1">周二</el-checkbox>
+              <el-checkbox :label="2">周三</el-checkbox>
+              <el-checkbox :label="3">周四</el-checkbox>
+              <el-checkbox :label="4">周五</el-checkbox>
+              <el-checkbox :label="5">周六</el-checkbox>
+              <el-checkbox :label="6">周日</el-checkbox>
             </el-checkbox-group>
             <el-select v-model="viewForm.cycle_type" placeholder="请选择重复类型">
               <el-option label="重复至" :value="false"></el-option>
@@ -529,7 +529,7 @@
           calender_id: 5,
           title: '',
           cycle_mode: '0',
-          cycle_week: [1, 2],
+          cycle_week: [0,1, 2,3,4],
           cycle_type: '1',
           cycle_day: '',
           remind_before: 10,
@@ -1016,12 +1016,10 @@
               _this.$message({message:'请选择事件截止日期！',type:'error'});
               return;
             }
-            if(this.newForm.cycle_type==0&& !this.newForm.cycle_day){
+            if(this.newForm.cycle_mode!=0 &&this.newForm.cycle_type==0&& !this.newForm.cycle_day){
               _this.$message({message:'请选择重复截止日期！',type:'error'});
               return;
             }
-
-            this.newEventDialog = false;
             console.log(this.newForm);
             let obj = {};
             for(let key in this.newForm){
@@ -1034,6 +1032,7 @@
             console.log(this.calender_id)
             console.log(obj)
             createEvent(obj).then(res=>{
+              this.newEventDialog = false;
               this.$message({message:'创建事件成功！',type:'success'});
               this.getEventList();
             },err=>{
@@ -1058,11 +1057,10 @@
               _this.$message({message:'请选择事件截止日期！',type:'error'});
               return;
             }
-            if(this.viewForm.cycle_type && !this.viewForm.cycle_day){
+            if(this.viewForm.cycle_mode!=0 && !this.viewForm.cycle_type && !this.viewForm.cycle_day){
               _this.$message({message:'请选择重复截止日期！',type:'error'});
               return;
             }
-            this.viewEventDialog = false;
             console.log(this.viewForm);
             let obj = {};
             for(let key in this.viewForm){
@@ -1083,6 +1081,7 @@
             obj.invitors = invitors;
             console.log(obj)
             updateEvent(this.viewForm.id,obj).then(res=>{
+              this.viewEventDialog = false;
               this.$message({message:'修改成功！',type:'success'});
               this.getEventList();
             },err=>{

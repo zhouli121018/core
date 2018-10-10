@@ -53,7 +53,7 @@ export default {
           router.push(path);
       },
       refreshMenu(){
-        this.$refs['menubar'].getFloderfn();
+        this.getFloderfn();
       },
       changeTab1(){
         this.activeTab = 0;

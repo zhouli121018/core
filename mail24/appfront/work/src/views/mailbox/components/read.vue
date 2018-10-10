@@ -235,12 +235,7 @@
         mfrom:'anshanshan@test.com',
         to:'anshanshan@test.com',
         moveCheckIndex:'',
-        moveItems:[
-          {id:0,text:'已发送',divided:false},
-          {id:1,text:'已删除',divided:false},
-          {id:2,text:'垃圾邮件',divided:false},
-          {id:3,text:'病毒文件夹',divided:false}
-        ],
+
         moreCheckIndex:'',
         moreItems:[
           {id:0,text:'回复',divided:false},
@@ -361,6 +356,20 @@
         readId(newValue, oldValue) {
             this.getReadMail();
         }
+    },
+    computed:{
+      moveItems:function(){
+        let folder = this.$parent.floderResult;
+        let arr = [];
+        for(let i=0;i<folder.length;i++){
+          let obj={};
+          obj['text'] = folder[i]['name'];
+          obj['id'] = folder[i]['raw_name'];
+          obj['divided'] = false;
+          arr.push(obj);
+        }
+        return arr;
+      }
     }
   }
 </script>
