@@ -179,11 +179,48 @@
                 <div class="bt-hd-wrap">
                   <el-checkbox v-model="ruleForm2.is_save_sent">保存到"已发送"</el-checkbox>
                   <el-checkbox >设为"紧急"</el-checkbox>
-                  <el-checkbox >已读回执</el-checkbox>
-                  <el-checkbox >邮件加密</el-checkbox>
-                  <el-checkbox >定时发送</el-checkbox>
-                  <el-checkbox >阅后即焚</el-checkbox>
-                  <el-checkbox >禁止转发</el-checkbox>
+                  <el-checkbox v-model="ruleForm2.is_confirm_read">已读回执</el-checkbox>
+                  <el-checkbox v-model="ruleForm2.is_password" :disabled="ruleForm2.is_schedule||ruleForm2.is_burn">邮件加密</el-checkbox>
+                  <el-checkbox v-model="ruleForm2.is_schedule" :disabled="ruleForm2.is_password||ruleForm2.is_burn">定时发送</el-checkbox>
+                  <el-checkbox v-model="ruleForm2.is_burn" :disabled="ruleForm2.is_password||ruleForm2.is_schedule">阅后即焚</el-checkbox>
+                </div>
+                <div class="bt-cnt" v-show="ruleForm2.is_password||ruleForm2.is_schedule||ruleForm2.is_burn">
+                  <div v-show="ruleForm2.is_password">
+                    <p ><b>邮件加密 </b> 收信人需要密码才能查看邮件</p>
+                    <div style="border-top:1px dashed #e3e4e5;padding:12px 0;">
+                      设置查看密码：<el-input style="width:auto;" size="mini" v-model="ruleForm2.password"></el-input> <span style="font-size:12px;color:#aaa;">(请输入6个字符，数字或英文字母，字母区分大小写，首尾不能有空格)</span>
+                    </div>
+                  </div>
+
+                  <div v-show="ruleForm2.is_schedule">
+                    <div style="border-top:1px dashed #e3e4e5;padding:12px 0;">
+                     <el-date-picker
+                        v-model="ruleForm2.schedule_day"
+                        type="datetime" size="small"
+                        placeholder="选择定时发送的时间">
+                      </el-date-picker>
+                      <p style="margin-top:10px;" v-show="ruleForm2.schedule_day"><b>本邮件将在 {{ruleForm2.schedule_day.toLocaleString()}} 投递到对方邮箱</b></p>
+                    </div>
+                  </div>
+
+                  <div v-show="ruleForm2.is_burn">
+                    <p><b>阅后即焚 </b> 超过阅读次数或限定时间后，该邮件将自动销毁</p>
+                    <div style="border-top:1px dashed #e3e4e5;padding:12px 0;">
+                      <div>
+                        限定阅读次数：<el-input style="width:auto;" size="mini" type="number" v-model="ruleForm2.burn_limit"></el-input> <span style="font-size:12px;color:#aaa;">（可统一向每个收件人设置1~99次，超出阅读次数后读信链接将自动失效）</span>
+                      </div>
+                      <div style="padding-top:12px;">
+                        邮件销毁时间：
+                        <el-date-picker
+                          v-model="ruleForm2.burn_day"
+                          type="date" style="display:inline-block"
+                          placeholder="选择日期" size="mini">
+                        </el-date-picker>
+                        <span style="font-size:12px;color:#aaa;">（邮件在所设日期当天24时自动销毁）</span>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </form>
@@ -197,7 +234,7 @@
     <!--</tree-transfer>-->
         <el-row :gutter="10" style="margin-bottom:10px;">
           <el-col :span="6">
-            <div>
+            <div v-if="false">
               <input type="hidden" v-model="soab_domain_cid"/>
               域名：
               <el-select v-model="soab_domain_cid" placeholder="请选择" @change="soabChangeDomain" size="mini">
@@ -205,7 +242,7 @@
               </el-select>
             </div>
           </el-col>
-          <el-col :span="18">
+          <el-col :span="18" :offset="6">
             <el-row>
               <el-col :span="6">
                 <el-input placeholder="请输入内容" v-model="contact_search" class="input-with-select" size="small">
@@ -230,9 +267,8 @@
         <el-row  :gutter="10">
           <el-col :span="6" >
 
-            <div style="height:400px;overflow: auto;width:100%">
+            <div style="height:420px;overflow: auto;width:100%;border:1px solid #dcdfe6">
               <el-tree
-                show-checkbox
                 node-key="id"
                 :default-expanded-keys="default_expanded"
                 :data="transform_menu"
@@ -248,7 +284,7 @@
               :data="contactData"
               tooltip-effect="dark"
               style="width: 100%"
-              @selection-change="selectionChange_contact" @row-click="rowClick" ref="contactTable" :header-cell-style="{background:'#f0f1f3'}">
+              @select="selectionChange_contact" @select-all="selectionChange_contact"  ref="contactTable" :header-cell-style="{background:'#f0f1f3'}">
               <el-table-column
                 type="selection"
                 width="55">
@@ -267,11 +303,25 @@
 
 
           </el-col>
-          <el-col :span="6" style="height:350px;">
-            收件人：
-            <div class="address_box"></div>
-            抄送人：
-            <div class="address_box"></div>
+          <el-col :span="6" style="height:420px;">
+            收件人：(<b>{{toList.length}}</b>)
+            <div class="address_box" :class="{active:active_box=='to'}" @click="switch_to('to',toList)">
+              <el-row v-for="(t,k) in toList" :key="k" class="hover_show_box">
+                <el-col :span="22">{{t.name}}</el-col>
+                <el-col :span="2" style="text-align: right">
+                  <i class="el-icon-error delete_hover" @click="deleteList('to',t.id,k)"></i>
+                </el-col>
+              </el-row>
+            </div>
+            抄送人：(<b>{{ccList.length}}</b>)
+            <div class="address_box" :class="{active:active_box=='cc'}" @click="switch_to('cc',ccList)">
+              <el-row v-for="(t,k) in ccList" :key="k" class="hover_show_box">
+                <el-col :span="22">{{t.name}}</el-col>
+                <el-col :span="2" style="text-align: right">
+                  <i class="el-icon-error delete_hover" @click="deleteList('cc',t.id,k)"></i>
+                </el-col>
+              </el-row>
+            </div>
           </el-col>
 
         </el-row>
@@ -350,7 +400,7 @@
   import axios from 'axios';
   // import treeTransfer from 'el-tree-transfer'
   import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach,contactOabDepartsGet,
-  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet} from '@/api/api'
+  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     props:{
@@ -367,6 +417,25 @@
         }
       };
       return {
+        active_box:'to',
+        checkedList:[
+          {
+            department:"万国城店C组",
+            id:1246,
+            mailbox:1246,
+            mobile:'',
+            name:'王巧月',
+            position:'买卖顾问',
+            tel_group:null,
+            tell_work:'None / None',
+            username:"wangqiaoyue@test.com"
+          }
+        ],
+        allSeclect: [],
+        toList:[],
+        hashTo:[],
+        ccList:[],
+        hashCc:[],
         contact_search:'',
         pid:'',
         default_expanded:['pab'],
@@ -376,43 +445,6 @@
         folder_names:[],
         nfileList:[],
         activeName_file:'first',
-        tree_title:['组织通讯录','收件人','抄送人'],
-        mode: "addressList", // transfer addressList
-        fromData:[
-          {
-            id: "1",
-            pid: 0,
-            label: "一级 1",
-            children: [
-              {
-                id: "1-1",
-                pid: "1",
-                label: "二级 1-1",
-                children: []
-              },
-              {
-                id: "1-2",
-                pid: "1",
-                label: "二级 1-2",
-                children: [
-                  {
-                    id: "1-2-1",
-                    pid: "1-2",
-                    children: [],
-                    label: "二级 1-2-1"
-                  },
-                  {
-                    id: "1-2-2",
-                    pid: "1-2",
-                    children: [],
-                    label: "二级 1-2-2"
-                  }
-                ]
-              }
-            ]
-          },
-        ],
-        toData:[],
         contact_loading:false,
         transform_menu: [],
         defaultPropsCon: {
@@ -420,10 +452,6 @@
           label: 'label',
           children: 'children',
         },
-        extraFileUploadParams : {
-                        csrfmiddlewaretoken:this.$store.state.userInfo.token,
-                         id:123
-                },
         currentPage:1,
         pageSize:10,
         totalCount:0,
@@ -468,30 +496,19 @@
           subject: '测试发信',
           secret:'非密',
           is_save_sent:true,
+          is_confirm_read:true,
+          is_schedule:false,
+          schedule_day:'',
+          is_password:false,
+          password:'',
+          is_burn:false,
+          burn_limit:1,
+          burn_day:'',
           html_text:'',
           plain_text:'',
           attachments:[],
         },
-        contactList: [
-          {
-          id: 1,
-          label: 'aaa组',
-          children: [{
-            id: 4,
-            label: 'yc@test.com',
-          }]},
-          {
-          id: 2,
-          label: '未分组联系人',
-          children: [{
-            id: 5,
-            label: 'lw@test.com'
-          }, {
-            id: 6,
-            label: 'system@domain.com'
-          }]},
-
-          ],
+        contactList: [],
         defaultProps: {
           children: 'children',
           label: 'label'
@@ -500,6 +517,133 @@
       };
     },
     methods:{
+      deleteList(a,id,k){
+        if(a=='to'){
+          this.hashTo[id] = false;
+          this.toList.splice(k,1)
+          if(this.active_box == 'to'){
+            this.bang(this.toList)
+          }
+        }else if(a == 'cc'){
+          this.hashCc[id] = false;
+          this.ccList.splice(k,1)
+          if(this.active_box == 'cc'){
+            this.bang(this.ccList)
+          }
+        }
+      },
+      getParams(){
+        getParamBool().then(res=>{
+          console.log(res)
+          this.ruleForm2.is_save_sent = res.data.results.is_save_sent;
+          this.ruleForm2.is_confirm_read = res.data.results.is_confirm_read;
+        },err=>{
+          console.log(err)
+        })
+      },
+      render_list(arr){
+        for(let i=0;i<this.allSeclect.length;i++){
+          for(let k=0;k<arr.length;k++){
+            if(this.allSeclect[i].id == arr[k].id){
+              this.$refs.contactTable.toggleRowSelection(arr[k],true);
+              break;
+            }
+          }
+        }
+      },
+      switch_to(a,arr){
+        this.active_box=a;
+        this.bang(arr);
+      },
+      selectionChange_contact(v,row){
+        if(this.active_box=='to'){
+          if(!row){
+            let rows = this.contactData;
+            if(v.length>0){
+              for(let key in rows){
+                if(!this.hashTo[rows[key].id]){
+                  this.hashTo[rows[key].id] = true;
+                  this.toList.push(rows[key]);
+                }
+              }
+            }else{
+              for(let i=0;i<rows.length;i++){
+                if(this.hashTo[rows[i].id]){
+                  this.hashTo[rows[i].id] = false;
+                  for(let j=0;j<this.toList.length;j++){
+                    if(this.toList[j].id == rows[i].id){
+                      this.toList.splice(j,1);
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+          }else{
+            if(this.hashTo[row.id]){
+              this.hashTo[row.id] = false;
+              for(let i=0;i<this.toList.length;i++){
+                if(row.id == this.toList[i].id){
+                  this.toList.splice(i,1);
+                  break;
+                }
+              }
+            }else{
+              this.hashTo[row.id] = true;
+              this.toList.push(row);
+            }
+          }
+
+        }else if(this.active_box == 'cc'){
+          if(!row){
+            let rows = this.contactData;
+            if(v.length>0){
+              for(let key in rows){
+                if(!this.hashCc[rows[key].id]){
+                  this.hashCc[rows[key].id] = true;
+                  this.ccList.push(rows[key]);
+                }
+              }
+            }else{
+              for(let i=0;i<rows.length;i++){
+                if(this.hashCc[rows[i].id]){
+                  this.hashCc[rows[i].id] = false;
+                  for(let j=0;j<this.ccList.length;j++){
+                    if(this.ccList[j].id == rows[i].id){
+                      this.ccList.splice(j,1);
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+          }else{
+            if(this.hashCc[row.id]){
+              this.hashCc[row.id] = false;
+              for(let i=0;i<this.ccList.length;i++){
+                if(row.id == this.ccList[i].id){
+                  this.ccList.splice(i,1);
+                  break;
+                }
+              }
+            }else{
+              this.hashCc[row.id] = true;
+              this.ccList.push(row);
+            }
+          }
+        }
+      },
+      bang(arr){
+        this.$refs.contactTable.clearSelection()
+        for(let i=0;i<arr.length;i++){
+          for(let k=0;k<this.contactData.length;k++){
+            if(arr[i].id == this.contactData[k].id){
+              this.$refs.contactTable.toggleRowSelection(this.contactData[k],true);
+              break;
+            }
+          }
+        }
+      },
       getPabMembers() {
         var param = {
           "page": this.currentPage,
@@ -511,6 +655,9 @@
         contactPabMapsGet(param).then((res) => {
           this.totalCount = res.data.count;
           this.contactData = res.data.results;
+          setTimeout(() => {
+            this.bang(this.allSeclect)
+          }, 50)
         });
       },
       getOabMembers() {
@@ -527,13 +674,12 @@
         contactOabMembersGet(param).then((res) => {
           this.totalCount = res.data.count;
           this.contactData = res.data.results;
+          setTimeout(() => {
+            this.bang(this.allSeclect)
+          }, 50)
         });
       },
       getCabMembers() {
-        let keys = new Array();
-        // keys.push(Number(this.cab_cid));
-        // this.default_expanded_keys = keys;
-        // this.default_checked_keys = keys;
         var param = {
           "page": this.currentPage,
           "page_size": this.pageSize,
@@ -546,10 +692,6 @@
         });
       },
       getSoabMembers() {
-        let keys = new Array();
-        // keys.push(Number(this.soab_cid));
-        // this.default_expanded_keys = keys;
-        // this.default_checked_keys = keys;
         var param = {
           "page": this.currentPage,
           "page_size": this.pageSize,
@@ -581,7 +723,6 @@
         });
       },
       contact_tree_click(data){
-        console.log(data)
         if(data.id=='oab'||data.id=='pab'||data.id=='cab'||data.id=='soab'){
           sessionStorage['openGroup'] = data.id;
           return;
@@ -597,9 +738,6 @@
         }else if(sessionStorage['openGroup']=='soab'){
           this.getSoabMembers();
         }
-
-      },
-      selectionChange_contact(){
 
       },
       selectablee(row,index){
@@ -663,6 +801,7 @@
         }
         let param = this.ruleForm2;
         param.action=type;// save_draft
+        console.log(param);
         mailSent(param).then(res=>{
           console.log(res)
           let info = type=='sent'?"发送成功！":"保存草稿成功！";
@@ -681,9 +820,9 @@
       get_transform_menu(){
         let arr = [];
         let _this = this;
-        axios.all([contactPabGroupsGet(),contactOabDepartsGet(),contactCabGroupsGet(),contactSoabGroupsGet(this.soab_domain_cid)]).then(axios.spread(function (acct, perms,cabs,soabs) {
+        axios.all([contactPabGroupsGet(),contactOabDepartsGet()]).then(axios.spread(function (acct, perms) {
           // 请求现在都执行完成
-          let cc =
+
           arr[0] = {
             id:'pab',
             label:'个人通讯录',
@@ -693,16 +832,6 @@
             id:'oab',
             label:'组织通讯录',
             children:perms.data.results
-          }
-          arr[2] = {
-            id:'cab',
-            label:'公共通讯录',
-            children:cabs.data.results
-          }
-          arr[3] = {
-            id:'soab',
-            label:'其它域通讯录',
-            children:soabs.data.results
           }
           _this.transform_menu = arr;
 
@@ -1017,7 +1146,6 @@
               this.hashMail_copyer[data.label]=true;
               this.maillist_copyer.push({value:data.label,status:true,email:data.email,fullname:data.fullname});
             }
-
           }
         }
       },
@@ -1090,12 +1218,9 @@
 
     },
     mounted() {
-      // this.restaurants = this.loadAll();
+      this.getParams();
       this.getPabGroups();
-      // this.getAttachList();
-      this.getSoabDomains();
       sessionStorage['openGroup'] = 'oab'
-
     },
     beforeMount() {
 
@@ -1103,11 +1228,29 @@
     computed:{
       uploadJson:function(){
         return this.$store.state.uploadJson;
-      }
+      },
+
     },
     watch: {
       filterText(val) {
         this.$refs.tree2.filter(val);
+      },
+      toList(val){
+        if(this.active_box == 'to'){
+          this.allSeclect = val;
+        }
+      },
+      ccList(val){
+        if(this.active_box == 'cc'){
+          this.allSeclect = val;
+        }
+      },
+      active_box(val){
+        if(this.active_box == 'cc'){
+          this.allSeclect = this.ccList;
+        }else{
+          this.allSeclect = this.toList;
+        }
       }
     },
     // components:{ treeTransfer } // 注册
@@ -1115,11 +1258,25 @@
   }
 </script>
 <style>
+  .delete_hover{
+    color:red;
+    display:none;
+  }
+  .hover_show_box:hover .delete_hover{
+    display:inline-block;
+  }
   .address_box{
-    border:1px solid #dcdfe6;height:50%;margin-bottom:20px;
+    border:1px solid #dcdfe6;height:180px;margin-bottom:20px;overflow-y: auto;padding:4px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
   }
   .address_box:hover,.address_box.active{
     border-color:#409EFF
+  }
+  .address_box.active{
+    border-color:#409EFF;
+    box-shadow: 0 0 5px #409eff;
   }
   .show_contact_style{
     color:#409EFF;

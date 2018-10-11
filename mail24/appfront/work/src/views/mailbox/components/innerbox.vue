@@ -401,8 +401,14 @@
         },(err)=>{
 
         })
-        this.$parent.getRead({'id':row.uid,'subject':row.subject?row.subject:'无主题'});
-        this.$router.push('/mailbox/readmail')
+        if(this.boxId == 'Drafts'){
+          this.$parent.getRead({'id':row.uid,'subject':row.subject?row.subject:'无主题'});
+          this.$router.push('/mailbox/compose')
+        }else{
+          this.$parent.getRead({'id':row.uid,'subject':row.subject?row.subject:'无主题'});
+          this.$router.push('/mailbox/readmail')
+        }
+
       },
       handleSelectionChange(val) {
         this.multipleSelection = val;

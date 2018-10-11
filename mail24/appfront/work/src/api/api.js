@@ -115,6 +115,9 @@ export const moveAttach2Netdisk = params =>{ return axios.post(`${host}/mail/att
 //下载附件 /api/mail/attach/{id}/
 export const downloadZipAttach = params => { return axios.get(`${host}/mail/attach/download/`, { params: params, responseType:'blob' }) };
 
+//写信  获取当前用户参数设置 /api/setting/users/get-param-bool/
+export const getParamBool = params => { return axios.get(`${host}/setting/users/get-param-bool/`) };
+
 /* ***********************  设置中心 *********************** */
 // 展现
 export const settingShow = params => { return axios.get(`${host}/setting/show/`, { params: params })}
