@@ -14,7 +14,7 @@
                     <Home v-if="showTabIndex==0"></Home>
                     <Innerbox v-show="showTabIndex==1" :boxId="boxId" :curr_folder="curr_folder" @getRead="getRead" ref="innerbox"></Innerbox>
                     <Read v-if="showTabIndex==2" :readId="readId" :readFolderId="readFolderId"></Read>
-                    <Compose v-show="showTabIndex==3" :iframe_height="iframe_height" ></Compose>
+                    <Compose v-if="showTabIndex==3" :iframe_height="iframe_height" ></Compose>
             </article>
         </section>
 

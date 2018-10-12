@@ -117,6 +117,8 @@ export const downloadZipAttach = params => { return axios.get(`${host}/mail/atta
 
 //写信  获取当前用户参数设置 /api/setting/users/get-param-bool/
 export const getParamBool = params => { return axios.get(`${host}/setting/users/get-param-bool/`) };
+//邮件解密 /api/mail/message/password/
+export const mailDecode = params =>{ return axios.post(`${host}/mail/message/password/`,params) };
 
 /* ***********************  设置中心 *********************** */
 // 展现

@@ -66,8 +66,8 @@
                 <el-tab-pane label="模板信" name="third">模板信</el-tab-pane>
               </el-tabs>
             </div>
-            <form class="u-form mn-form"  :class="{right0:show_contact}">
-              <div class="form-tt compose_title">
+            <form class="u-form mn-form"  :class="{right0:show_contact}" id="box_height">
+              <div class="form-tt compose_title" id="title_height">
                 <el-form size="mini" inline-message :model="ruleForm2" status-icon ref="ruleForm2" label-width="80px" class="demo-ruleForm" style="font-size:16px;">
                   <el-form-item label="发件人:">
                     <el-input type="text" :value="this.$parent.username" readonly auto-complete="off"></el-input>
@@ -163,28 +163,30 @@
 
                 </el-form>
               </div>
-              <div class="form-edr compose_editor" ref="editor_box">
+              <div class="form-edr compose_editor" ref="editor_box" :style="{height:editor_height+'px'}">
 
                 <!--<div v-html="content"></div>-->
 
-                <editor id="editor_id" ref="editor_id" height="400px" width="100%" :content="content"
-                    pluginsPath="/static/kindeditor/plugins/"
+                <editor id="editor_id" ref="editor_id" :height="editor_height+'px'" width="100%" :content="content"
+                    pluginsPath="/static/kindeditor/plugins/" :resizeType="0"
                     :loadStyleMode="false" :items="toolbarItems" :uploadJson="uploadJson"
                     @on-content-change="onContentChange"  :autoHeightMode="false">
 
                 </editor>
 
               </div>
-              <div class="form-toolbar compose_footer">
+              <div class="form-toolbar compose_footer" style="background: #fff;" id="footer_height">
                 <div class="bt-hd-wrap">
                   <el-checkbox v-model="ruleForm2.is_save_sent">保存到"已发送"</el-checkbox>
                   <el-checkbox >设为"紧急"</el-checkbox>
                   <el-checkbox v-model="ruleForm2.is_confirm_read">已读回执</el-checkbox>
-                  <el-checkbox v-model="ruleForm2.is_password" :disabled="ruleForm2.is_schedule||ruleForm2.is_burn">邮件加密</el-checkbox>
-                  <el-checkbox v-model="ruleForm2.is_schedule" :disabled="ruleForm2.is_password||ruleForm2.is_burn">定时发送</el-checkbox>
-                  <el-checkbox v-model="ruleForm2.is_burn" :disabled="ruleForm2.is_password||ruleForm2.is_schedule">阅后即焚</el-checkbox>
+                  <el-checkbox v-model="ruleForm2.is_password" :disabled="ruleForm2.is_schedule||ruleForm2.is_burn" @change="changeBottom">邮件加密</el-checkbox>
+                  <el-checkbox v-model="ruleForm2.is_schedule" :disabled="ruleForm2.is_password||ruleForm2.is_burn" @change="changeBottom('sch')">定时发送</el-checkbox>
+                  <el-checkbox v-model="ruleForm2.is_burn" :disabled="ruleForm2.is_password||ruleForm2.is_schedule" @change="changeBottom('burn')">阅后即焚</el-checkbox>
+
                 </div>
-                <div class="bt-cnt" v-show="ruleForm2.is_password||ruleForm2.is_schedule||ruleForm2.is_burn">
+                <div >
+                  <div class="bt-cnt" v-show="ruleForm2.is_password||ruleForm2.is_schedule||ruleForm2.is_burn">
                   <div v-show="ruleForm2.is_password">
                     <p ><b>邮件加密 </b> 收信人需要密码才能查看邮件</p>
                     <div style="border-top:1px dashed #e3e4e5;padding:12px 0;">
@@ -213,6 +215,7 @@
                         邮件销毁时间：
                         <el-date-picker
                           v-model="ruleForm2.burn_day"
+                          format="yyyy-MM-dd" value-format="yyyy-MM-dd"
                           type="date" style="display:inline-block"
                           placeholder="选择日期" size="mini">
                         </el-date-picker>
@@ -222,6 +225,8 @@
                   </div>
 
                 </div>
+                </div>
+
               </div>
             </form>
           </div>
@@ -417,6 +422,7 @@
         }
       };
       return {
+        editor_height:300,
         active_box:'to',
         checkedList:[
           {
@@ -517,6 +523,25 @@
       };
     },
     methods:{
+      changeBottom(a){
+        let _this = this
+        setTimeout(_this.setEditorHeight,50)
+        if(a=='sch' && !this.ruleForm2.schedule_day){
+          let now = new Date();
+          now.setHours(now.getHours()+1)
+          this.ruleForm2.schedule_day = now;
+        }else if(a=='burn' && !this.ruleForm2.burn_day){
+          let now= new Date();
+          now.setDate(now.getDate()+3);
+          this.ruleForm2.burn_day = now;
+        }
+      },
+      setEditorHeight(){
+        this.editor_height = $('#box_height').height()-$('#title_height').outerHeight()-$('#footer_height').outerHeight();
+        let th =this.editor_height - $('.ke-toolbar').outerHeight()-30;
+        $('.ke-edit').css({'height': th+'px','maxHeight':th+'px','minHeight':'200px'})
+        $('.ke-edit-iframe').css({'height': th+'px','maxHeight':th+'px','minHeight':'200px'})
+      },
       deleteList(a,id,k){
         if(a=='to'){
           this.hashTo[id] = false;
@@ -1220,7 +1245,10 @@
     mounted() {
       this.getParams();
       this.getPabGroups();
-      sessionStorage['openGroup'] = 'oab'
+      sessionStorage['openGroup'] = 'oab';
+      console.log(this.editor_height)
+      this.setEditorHeight();
+
     },
     beforeMount() {
 
@@ -1229,6 +1257,7 @@
       uploadJson:function(){
         return this.$store.state.uploadJson;
       },
+
 
     },
     watch: {

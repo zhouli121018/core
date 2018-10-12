@@ -126,6 +126,29 @@
                       </a>
                   </div>
               </div>
+              <div class="mail-cipher-encrypted j-mailCipherEncrypted" v-if="is_password &&  password">
+                <div class="decryption-success">
+                    <span class="iconfont iconunlock"></span>
+                    邮件已解密，以下是解密后的邮件内容：
+                </div>
+              </div>
+              <div class="mail-cipher-encrypted j-mailCipherEncrypted" v-if="is_password && !password">
+                  <div class="no-decryption">
+                      <div class="lock-item" style="padding:20px;"><i class="lock_style"></i></div>
+                      <div class="action-item">
+                          <input type="password" placeholder="输入密码" class="u-input" v-model="de_password" name="password" maxlength="6">
+                      </div>
+                      <div class="decryption-msg">
+                          <span class="j-decryption-error decryption-error" v-show="decryption_error">密码错误，请重新输入</span>
+                      </div>
+
+                      <div class="action-item">
+                          <span class="u-btn u-btn-primary j-decrypt-submit" @click="mailDecodeFn">确 定</span>
+                      </div>
+                      <div class="label-item">这是一封由 <span class="highlight ">{{mfrom}}</span> 发出的加密邮件。</div>
+                      <div class="label-item">输入发件人提供给您的密码，即可查阅完整邮件。</div>
+                  </div>
+              </div>
               <div class="mail-content" ref="companyStyle" >
                   <!--<iframe width="100%" id="mail-1534902112297" class="j-mail-content" frameborder="0" allowtransparency="true" sandbox="allow-scripts allow-popups" src="jsp/viewMailHTML.jsp?mid=1%3A1tbiAQAJEFXEqdgAXgADsl&amp;mailCipherPassword=&amp;partId=&amp;isSearch=&amp;priority=&amp;supportSMIME=&amp;striptTrs=true&amp;mboxa=&amp;iframeId=1534902112297&amp;sspurl=false" style="width: 1642px; height: 198px;">-->
                   <!--</iframe>-->
@@ -213,7 +236,7 @@
 
 <script>
 
-  import {readMail,downloadAttach} from '@/api/api';
+  import {readMail,downloadAttach,mailDecode} from '@/api/api';
   export default  {
     name:'Read',
     props:{
@@ -222,6 +245,10 @@
     },
     data(){
       return {
+        de_password:'',
+        decryption_error:false,
+        is_password:false,
+        password:false,
         visible:false,
         loading:false,
         attachments:[],
@@ -252,6 +279,18 @@
       }
     },
     methods:{
+      mailDecodeFn(){
+        let param = {
+          uid:this.readId,
+          folder:this.readFolderId,
+          password:this.de_password
+        }
+        mailDecode(param).then(res=>{
+          this.getReadMail();
+        },err=>{
+          this.decryption_error=true;
+        })
+      },
       downloadAttach(sid,sname){
         let param = {
           uid:this.readId,
@@ -259,6 +298,9 @@
           sid:sid,
           download:true
         };
+        if(this.password){
+          param.password = 1;
+        }
         downloadAttach(param).then(response=>{
           let blob = new Blob([response.data], { type: response.headers["content-type"] })
           let objUrl = URL.createObjectURL(blob);
@@ -302,6 +344,8 @@
         readMail(this.readId,{"folder":this.readFolderId}).then((data)=>{
           this.notFond = false;
           this.msg = data.data
+          this.is_password = data.data.attrs.is_password;
+          this.password = data.data.attrs.password;
           this.subject = data.data.subject;
           if(data.data.mfrom){this.mfrom = data.data.mfrom[1]+' < '+data.data.mfrom[0]+' > ';}
           this.to = [];
@@ -345,7 +389,7 @@
         },(err)=>{
           this.notFond=true;
         });
-      }
+      },
     },
     created:function(){
       console.log('mounted')
@@ -374,6 +418,12 @@
   }
 </script>
 <style>
+  .lock_style{
+    display:inline-block;
+    width:62px;
+    height:62px;
+    background:url('../../../assets/img/iconlock.png') no-repeat;
+  }
 .attach_box .el-collapse-item__header{
   font-weight:bold;
 }
