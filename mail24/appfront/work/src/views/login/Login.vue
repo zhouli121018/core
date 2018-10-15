@@ -40,7 +40,7 @@
                 <el-input v-model.trim="formLabelAlign.username"></el-input>
               </el-form-item>
               <el-form-item label="密码">
-                <el-input type="password" v-model="formLabelAlign.password"></el-input>
+                <el-input type="password" v-model="formLabelAlign.password" autocomplete="new-password"></el-input>
               </el-form-item>
               <el-checkbox v-model="rememberUserInfo" :class="{'is-checked el-checkbox__input':rememberUserInfo}">记住用户名和密码</el-checkbox>
             </el-form>

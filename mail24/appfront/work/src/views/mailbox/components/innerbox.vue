@@ -386,28 +386,29 @@
       },
       readMail(row){
           row.isread = true;
-          this.$parent.showTabIndex=2;
+          this.$parent.showTabIndex=5;
           console.log(row)
-        let param = {
-          uids:[row.uid],
-          folder:this.$parent.activeMenubar.id,
-          action:'add',
-          flags:['\\Seen']
-        }
-        messageFlag(param).then((suc)=>{
-          // this.getMessageList();
-          this.getFloderMsgById(this.boxId);
-          this.$parent.getFloderfn();
-        },(err)=>{
-
-        })
-        if(this.boxId == 'Drafts'){
-          this.$parent.getRead({'id':row.uid,'subject':row.subject?row.subject:'无主题'});
-          this.$router.push('/mailbox/compose')
-        }else{
-          this.$parent.getRead({'id':row.uid,'subject':row.subject?row.subject:'无主题'});
-          this.$router.push('/mailbox/readmail')
-        }
+        // let param = {
+        //   uids:[row.uid],
+        //   folder:this.$parent.activeMenubar.id,
+        //   action:'add',
+        //   flags:['\\Seen']
+        // }
+        // messageFlag(param).then((suc)=>{
+        //   // this.getMessageList();
+        //   this.getFloderMsgById(this.boxId);
+        //   this.$parent.getFloderfn();
+        // },(err)=>{
+        //
+        // })
+        // if(this.boxId == 'Drafts'){
+        //   this.$parent.getRead({'id':row.uid,'subject':row.subject?row.subject:'无主题'});
+        //   this.$router.push('/mailbox/compose')
+        // }else{
+        //   this.$parent.getRead({'id':row.uid,'subject':row.subject?row.subject:'无主题'});
+        //   this.$router.push('/mailbox/readmail')
+        // }
+        this.$parent.addTab(row.uid,this.boxId)
 
       },
       handleSelectionChange(val) {

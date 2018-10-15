@@ -14,21 +14,9 @@ export const rou = [
     path:'/',component:Layout1,
     children: [
       {
-        path: 'welcome',
-        component: _import('mailbox/welcome'),
-      },
-      {
-        path: 'outbox',
-        component: _import('mailbox/outbox'),
-      },
-      {
-        path: 'read',
-        name:'read',
-        component: _import('mailbox/read'),
-      },
-      {
         path: 'mailbox',
         component: _import('mailbox/mailbox'),
+        redirect: 'mailbox/welcome',
       },
       {
         path: 'mailbox/welcome',
@@ -46,6 +34,10 @@ export const rou = [
         path: 'mailbox/compose',
         component: _import('mailbox/mailbox'),
       },
+      {
+        path:'mailboxTab',
+        component:_import('mailbox/mailboxTab')
+      }
     ]
   },
   // {

@@ -20,7 +20,7 @@
           <label>
             邮箱密码：
           </label>
-          <input type="password" class="u-input j-password u-screenlock-password" v-model="lockpassword">
+          <el-input type="password" class="" v-model="lockpassword" autocomplete="new-password"></el-input>
         </div>
 
         <div class="u-form-item">

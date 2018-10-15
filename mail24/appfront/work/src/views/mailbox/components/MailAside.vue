@@ -183,7 +183,7 @@
       handleNodeClick(data) {
         this.$emit('getData', data);
         this.checkNodes=[data.id];
-        this.$router.push('/mailbox/innerbox')
+        // this.$router.push('/mailbox/innerbox')
       },
       goToCompose(){
         this.$emit('getCompose', {activeTab:3});

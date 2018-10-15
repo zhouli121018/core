@@ -1,7 +1,7 @@
 <template>
     <div class="mltabview-content">
       <div class="mltabview-panel">
-        <section class="m-mlcompose">
+        <section class="m-mlcompose" v-if="!send_suc">
           <div class="toolbar" style="background:#fff;">
             <div id="pagination" class="f-fr">
                 <div class="" @click="show_contact = !show_contact">
@@ -190,7 +190,7 @@
                   <div v-show="ruleForm2.is_password">
                     <p ><b>邮件加密 </b> 收信人需要密码才能查看邮件</p>
                     <div style="border-top:1px dashed #e3e4e5;padding:12px 0;">
-                      设置查看密码：<el-input style="width:auto;" size="mini" v-model="ruleForm2.password"></el-input> <span style="font-size:12px;color:#aaa;">(请输入6个字符，数字或英文字母，字母区分大小写，首尾不能有空格)</span>
+                      设置查看密码：<el-input style="width:auto;" size="mini" v-model="ruleForm2.password" autocomplete="off"></el-input> <span style="font-size:12px;color:#aaa;">(请输入6个字符，数字或英文字母，字母区分大小写，首尾不能有空格)</span>
                     </div>
                   </div>
 
@@ -199,6 +199,8 @@
                      <el-date-picker
                         v-model="ruleForm2.schedule_day"
                         type="datetime" size="small"
+                        value-format="yyyy-MM-dd HH:mm" format="yyyy-MM-dd HH:mm"
+                        :picker-options="pickerBeginDateBefore"
                         placeholder="选择定时发送的时间">
                       </el-date-picker>
                       <p style="margin-top:10px;" v-show="ruleForm2.schedule_day"><b>本邮件将在 {{ruleForm2.schedule_day.toLocaleString()}} 投递到对方邮箱</b></p>
@@ -216,6 +218,7 @@
                         <el-date-picker
                           v-model="ruleForm2.burn_day"
                           format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+                          :picker-options="pickerBeginDateBefore"
                           type="date" style="display:inline-block"
                           placeholder="选择日期" size="mini">
                         </el-date-picker>
@@ -230,6 +233,54 @@
               </div>
             </form>
           </div>
+        </section>
+        <section class="m-mlcompose" v-if="send_suc">
+          <div class="suc-main u-scroll">
+            <div class="suc-title j-suc-title">
+                <div class="h2">
+                  <i class="el-icon-success" style="color:#26af1e"></i>
+                    邮件已发送
+                </div>
+                <el-button type="text" @click="show_result = !show_result">{{show_result?'[隐藏发送状态]':'[显示发送状态]'}}</el-button>
+                <el-button type="text">[召回邮件]</el-button>
+            </div>
+            <div class="suc-content">
+              <div class="j-status-detail" v-show="show_result">
+                <table class="u-table">
+                  <thead>
+                  <tr>
+                    <th>收件人</th>
+                    <th>发送状态</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td class="f-ellipsis" title="yc<yc@business1473.com>">
+                      <span class="name">yc</span>
+                      <span class="addr">yc@business1473.com</span>
+                    </td>
+                    <td>
+                      <span>成功召回</span>
+                      <span class="time">(2018年10月15日 10:51)</span>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="desc  j-autosave-desc">
+
+                <p class="autosave">
+                  如要自动保存联系人，您可以设置 <el-button type="text">自动保存</el-button>
+                </p>
+              </div>
+            </div>
+            <div class="suc-content">
+                <div class="more-action u-btns j-more-action">
+                  <el-button type="info" plain size="small">返回邮箱</el-button>
+                  <el-button type="primary" size="small">继续写信</el-button>
+                </div>
+            </div>
+        </div>
         </section>
       </div>
 
@@ -422,6 +473,8 @@
         }
       };
       return {
+        show_result:false,
+        send_suc:false,
         editor_height:300,
         active_box:'to',
         checkedList:[
@@ -518,22 +571,32 @@
         defaultProps: {
           children: 'children',
           label: 'label'
-        }
+        },
+        pickerBeginDateBefore: {
+          disabledDate(time) {
+            let beginDateVal = new Date();
+            beginDateVal.setDate(beginDateVal.getDate()-1);
+            if (beginDateVal) {
+              return time.getTime() < beginDateVal;
+            }
+          }
+        },
 
       };
     },
     methods:{
+
       changeBottom(a){
         let _this = this
         setTimeout(_this.setEditorHeight,50)
         if(a=='sch' && !this.ruleForm2.schedule_day){
           let now = new Date();
           now.setHours(now.getHours()+1)
-          this.ruleForm2.schedule_day = now;
+          this.ruleForm2.schedule_day = now.Format('yyyy-MM-dd hh:mm');
         }else if(a=='burn' && !this.ruleForm2.burn_day){
           let now= new Date();
           now.setDate(now.getDate()+3);
-          this.ruleForm2.burn_day = now;
+          this.ruleForm2.burn_day = now.Format('yyyy-MM-dd');
         }
       },
       setEditorHeight(){
@@ -834,6 +897,9 @@
              message:info,
              type:'success'
           })
+          if(res.data.type && res.data.type=='send'&& res.data.success && res.data.success){
+            this.send_suc = true;
+          }
         },err=>{
           console.log(err)
           this.$message({

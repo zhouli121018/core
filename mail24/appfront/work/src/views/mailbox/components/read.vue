@@ -136,7 +136,7 @@
                   <div class="no-decryption">
                       <div class="lock-item" style="padding:20px;"><i class="lock_style"></i></div>
                       <div class="action-item">
-                          <input type="password" placeholder="输入密码" class="u-input" v-model="de_password" name="password" maxlength="6">
+                          <input type="password" placeholder="输入密码" class="u-input" v-model="de_password" name="password" maxlength="6" autocomplete="off">
                       </div>
                       <div class="decryption-msg">
                           <span class="j-decryption-error decryption-error" v-show="decryption_error">密码错误，请重新输入</span>
@@ -153,7 +153,7 @@
                   <!--<iframe width="100%" id="mail-1534902112297" class="j-mail-content" frameborder="0" allowtransparency="true" sandbox="allow-scripts allow-popups" src="jsp/viewMailHTML.jsp?mid=1%3A1tbiAQAJEFXEqdgAXgADsl&amp;mailCipherPassword=&amp;partId=&amp;isSearch=&amp;priority=&amp;supportSMIME=&amp;striptTrs=true&amp;mboxa=&amp;iframeId=1534902112297&amp;sspurl=false" style="width: 1642px; height: 198px;">-->
                   <!--</iframe>-->
 
-                <iframe   id="show-iframe" frameborder="0" scrolling="100%" height="auto" width="auto"></iframe>
+                <iframe   :id="'show-iframe'+readId" frameborder="0" scrolling="100%" height="auto" width="100%"></iframe>
                 <el-collapse v-model="activeNames" v-if="attachments.length>0" class="attach_box">
                   <el-collapse-item :title="'附件 ('+attachments.length+' 个)'" name="1">
 
@@ -341,6 +341,7 @@
       },
       getReadMail(){
         this.loading = true;
+        let rid = this.readId;
         readMail(this.readId,{"folder":this.readFolderId}).then((data)=>{
           this.notFond = false;
           this.msg = data.data
@@ -355,7 +356,8 @@
             this.to.push(t);
           }
 
-          const oIframe = document.getElementById('show-iframe');
+          const oIframe = document.getElementById('show-iframe'+rid);
+          console.log(oIframe)
           //-30padding
           // const deviceWidth = this.$refs.companyStyle.getBoundingClientRect().width-30;
 
@@ -403,7 +405,8 @@
     },
     computed:{
       moveItems:function(){
-        let folder = this.$parent.floderResult;
+        // let folder = this.$parent.floderResult;
+        let folder = [];
         let arr = [];
         for(let i=0;i<folder.length;i++){
           let obj={};
