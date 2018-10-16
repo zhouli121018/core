@@ -3,20 +3,22 @@
         <section class="m-mail">
             <MailAside @getData="getData" @getCompose="getCompose" ref="menubar"></MailAside>
             <article class="mlmain mltabview tab_box" :class="{position_top0:!tabList.length}" ref="editor_h">
-              <el-button
-    size="small"
-    @click="addTab(editableTabsValue2)"
-  >
-    add tab
-  </el-button>
-                    <el-tabs v-model="editableTabsValue2" type="card" closable @tab-remove="removeTab" v-if="editableTabs2.length>1">
+
+                    <el-tabs v-model="editableTabsValue2" type="card" closable @tab-remove="removeTab"  @tab-click="tabClick" :class="{hide_tab_top:editableTabs2.length<=1}" v-if="showTabIndex==1">
                       <el-tab-pane
                         v-for="(item, index) in editableTabs2"
                         :key="item.name"
                         :label="item.title"
                         :name="item.name"
+
                       >
-                        <Read :readId="item.rid" :readFolderId="item.fid" v-if="item.rid"></Read>
+                         <span slot="label" class="tab_title" :class="{no_close:item.name==1}"><i class="" :class="{'iconfont icon-youxiang':item.type=='read','el-icon-edit':item.type=='compose'}"></i> {{item.title}}</span>
+                        <div :style="{height: tab_content_height}">
+
+                        </div>
+                        <Innerbox v-if="item.name=='1'" :boxId="boxId" :curr_folder="curr_folder"  @getRead="getRead" ref="innerbox"></Innerbox>
+                        <Read :readId="item.rid" :readFolderId="item.fid" v-if="item.type=='read'"></Read>
+                        <Compose  v-if="item.type=='compose'" :iframe_height="iframe_height" :rid="item.name"></Compose>
                       </el-tab-pane>
                     </el-tabs>
                     <div class="u-tab u-tab-seamless u-tab-highlight j-mltab" v-if="tabList.length">
@@ -28,7 +30,7 @@
                               <div class="iconfont icon-iconcloseall closeall" @click="closeAllTab"></div>
                         </div>
                     <Home v-if="showTabIndex==0"></Home>
-                    <Innerbox v-if="showTabIndex==1" :boxId="boxId" :curr_folder="curr_folder" @getRead="getRead" ref="innerbox"></Innerbox>
+                    <!--<Innerbox v-if="showTabIndex==1" :boxId="boxId" :curr_folder="curr_folder" @getRead="getRead" ref="innerbox"></Innerbox>-->
                     <!--<Read v-if="showTabIndex==2" :readId="readId" :readFolderId="readFolderId"></Read>-->
                     <!--<Compose v-if="showTabIndex==3" :iframe_height="iframe_height" ></Compose>-->
             </article>
@@ -50,6 +52,7 @@ export default {
     },
     data:function(){
         return{
+          tab_content_height:'',
           editableTabsValue2: '2',
           editableTabs2: [{
             title: '收件箱',
@@ -72,14 +75,19 @@ export default {
         }
     },
     methods:{
-      addTab(rid,fid) {
+      tabClick(tab,event){
+        this.showTabIndex=1;
+
+      },
+      addTab(type,subject,rid,fid) {
         let newTabName = ++this.tabIndex + '';
         this.editableTabs2.push({
-          title: 'New Tab',
+          title: subject||'无主题',
           name: newTabName,
           content: 'New Tab content',
           rid:rid,
-          fid:fid
+          fid:fid,
+          type:type
         });
         this.editableTabsValue2 = newTabName;
       },
@@ -148,6 +156,7 @@ export default {
         this.curr_folder = obj.label;
         this.tab1.text = obj.label;
         this.boxId = obj.id;
+        this.editableTabsValue2 = '1';
       },
       getCompose(obj){
         this.showTabIndex = obj.activeTab;
@@ -184,6 +193,13 @@ export default {
     beforeMount:function(){
       // this.test();
       // this.getMessageList();
+      console.log('router')
+      console.log(this.$route.path)
+      if(this.$route.path == '/mailbox/innerbox'){
+        this.showTabIndex = 1;
+      }else{
+        this.showTabIndex = 0;
+      }
     },
     mounted(){
       this.getFloderfn();
@@ -202,6 +218,8 @@ export default {
           this.showTabIndex = 3;
         };
       let th = $('.mlmain.mltabview.tab_box').height()-56;
+      console.log('th: '+th)
+      this.tab_content_height = th+'px'
       $('.tab_box .el-tabs__content').css({'height':th+'px'})
     },
   computed: {
@@ -230,7 +248,21 @@ export default {
 }
 </script>
 
-<style>
+<style >
+  /*.el-tabs__nav .el-tabs__item:nth-child(1) span.el-icon-close{*/
+    /*display: none;*/
+/*}*/
+  .no_close+.el-icon-close{
+    display:none;
+  }
+  .hide_tab_top .el-tabs__header.is-top{
+    display:none;
+  }
+  .tab_title{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
   .tab_box .el-tabs__content{
     overflow:auto;
     box-sizing: border-box;

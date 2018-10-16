@@ -104,6 +104,8 @@ export const postAttach = (params) => {
 export const deleteAttach = params => {return axios.delete(`${host}/mail/attach/${params}/`)};
 //获取附件列表 /api/mail/attach/
 export const getAttach = params => { return axios.get(`${host}/mail/attach/`, { params: params }) };
+// 删除附件 /api/mail/attach/batchdelete/
+export const mailAttachDelete = params => { return axios.post(`${host}/mail/attach/batchdelete/`,params)};
 //发信/存草稿 /api/mail/message/sent/
 export const mailSent = params =>{ return axios.post(`${host}/mail/message/sent/`,params) };
 //下载附件 /api/mail/attach/{id}/
@@ -119,6 +121,11 @@ export const downloadZipAttach = params => { return axios.get(`${host}/mail/atta
 export const getParamBool = params => { return axios.get(`${host}/setting/users/get-param-bool/`) };
 //邮件解密 /api/mail/message/password/
 export const mailDecode = params =>{ return axios.post(`${host}/mail/message/password/`,params) };
+//发送邮件后邮件召回 /api/mail/message/send-recall/
+export const sendRecall = params =>{ return axios.post(`${host}/mail/message/send-recall/`,params) };
+//查看邮件状态 /api/mail/message/status/
+export const getMessageStatus = params => { return axios.get(`${host}/mail/message/status/`, { params: params }) };
+
 
 /* ***********************  设置中心 *********************** */
 // 展现
@@ -230,7 +237,7 @@ export const backLogin = () => { return axios.post(`${host}/back-login/`)};
 ///api/core/shareusers/import/
 export const settingRelateImport = ( params) => {
   return axios.post(`${host}/core/shareusers/import/`, params, {headers:{ 'Content-Type': 'multipart/form-data' }}) }
-  //导出关联共享邮箱 /api/core/shareusers/tutorial/
+//导出关联共享邮箱 /api/core/shareusers/tutorial/
 export const settingRelateTutorial = () => { return axios.get(`${host}/core/shareusers/tutorial/`, { responseType:'blob'})  }
 
 // 内容过滤

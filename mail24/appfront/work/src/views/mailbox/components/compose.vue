@@ -1,5 +1,5 @@
 <template>
-    <div class="mltabview-content">
+    <div class="mltabview-content" :id="'compose'+rid">
       <div class="mltabview-panel">
         <section class="m-mlcompose" v-if="!send_suc">
           <div class="toolbar" style="background:#fff;">
@@ -19,8 +19,6 @@
                 取消
             </el-button>
           </div>
-
-
           <div class="main" ref="iframe_height">
             <div class="mn-aside right_menu" :class="{show_contact:show_contact}">
               <el-tabs v-model="activeName">
@@ -66,8 +64,8 @@
                 <el-tab-pane label="模板信" name="third">模板信</el-tab-pane>
               </el-tabs>
             </div>
-            <form class="u-form mn-form"  :class="{right0:show_contact}" id="box_height">
-              <div class="form-tt compose_title" id="title_height">
+            <form class="u-form mn-form box_height"  :class="{right0:show_contact}">
+              <div class="form-tt compose_title title_height">
                 <el-form size="mini" inline-message :model="ruleForm2" status-icon ref="ruleForm2" label-width="80px" class="demo-ruleForm" style="font-size:16px;">
                   <el-form-item label="发件人:">
                     <el-input type="text" :value="this.$parent.username" readonly auto-complete="off"></el-input>
@@ -167,7 +165,7 @@
 
                 <!--<div v-html="content"></div>-->
 
-                <editor id="editor_id" ref="editor_id" :height="editor_height+'px'" width="100%" :content="content"
+                <editor :id="editor_id" :ref="editor_id" :height="editor_height+'px'" width="100%" :content="content"
                     pluginsPath="/static/kindeditor/plugins/" :resizeType="0"
                     :loadStyleMode="false" :items="toolbarItems" :uploadJson="uploadJson"
                     @on-content-change="onContentChange"  :autoHeightMode="false">
@@ -175,7 +173,7 @@
                 </editor>
 
               </div>
-              <div class="form-toolbar compose_footer" style="background: #fff;" id="footer_height">
+              <div class="form-toolbar compose_footer footer_height" style="background: #fff;">
                 <div class="bt-hd-wrap">
                   <el-checkbox v-model="ruleForm2.is_save_sent">保存到"已发送"</el-checkbox>
                   <el-checkbox >设为"紧急"</el-checkbox>
@@ -239,33 +237,57 @@
             <div class="suc-title j-suc-title">
                 <div class="h2">
                   <i class="el-icon-success" style="color:#26af1e"></i>
-                    邮件已发送
+                    {{sendResult.type=='schedule'?"邮件将于 "+sendResult.schedule_day+" 发送，暂时保存到草稿箱":"邮件已发送"}}
                 </div>
-                <el-button type="text" @click="show_result = !show_result">{{show_result?'[隐藏发送状态]':'[显示发送状态]'}}</el-button>
-                <el-button type="text">[召回邮件]</el-button>
+                <el-button type="text" @click="show_result = !show_result" v-if="sendResult.type=='send'">{{show_result?'[隐藏发送状态]':'[显示发送状态]'}}</el-button>
+                <el-button type="text" @click="recall" v-if="sendResult.type=='send'">[召回邮件]</el-button>
+                <el-button type="text" v-if="sendResult.type=='schedule'">[查看已发邮件]</el-button>
             </div>
             <div class="suc-content">
+              <div style="margin-bottom:10px;">
+                <el-alert v-if="sendResult.is_password"
+                  :title="'邮件已加密，密码为：'+sendResult.password"
+                  type="warning"
+                  description="需要密码才能查看，您可以通过其他方式告知对方。"
+                          show-icon
+                  >
+                </el-alert>
+                <el-alert v-if="sendResult.is_burn"
+                  title="这是一封阅后即焚的邮件"
+                  type="warning"
+                  description=""
+                          show-icon
+                  >
+                </el-alert>
+              </div>
               <div class="j-status-detail" v-show="show_result">
-                <table class="u-table">
-                  <thead>
-                  <tr>
-                    <th>收件人</th>
-                    <th>发送状态</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr>
-                    <td class="f-ellipsis" title="yc<yc@business1473.com>">
-                      <span class="name">yc</span>
-                      <span class="addr">yc@business1473.com</span>
-                    </td>
-                    <td>
-                      <span>成功召回</span>
-                      <span class="time">(2018年10月15日 10:51)</span>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
+                <el-table
+                  type="expand"
+                  :header-cell-style="{background:'#f0f1f3'}"
+                  :data="mail_results"
+                  style="width: 100%">
+                  <el-table-column
+                    prop="email"
+                    label="收件人"
+                    >
+                  </el-table-column>
+
+                  <el-table-column
+                    prop="status"
+                    label="发送状态">
+                    <template slot-scope="scope">
+                      {{scope.row.status_info}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="recall_status"
+                    label="召回状态" >
+                    <template slot-scope="scope">
+                      {{scope.row.recall_status_info}}
+                    </template>
+                  </el-table-column>
+                </el-table>
+
               </div>
               <div class="desc  j-autosave-desc">
 
@@ -276,8 +298,8 @@
             </div>
             <div class="suc-content">
                 <div class="more-action u-btns j-more-action">
-                  <el-button type="info" plain size="small">返回邮箱</el-button>
-                  <el-button type="primary" size="small">继续写信</el-button>
+                  <el-button type="info" plain size="small" @click="backToBox">返回邮箱</el-button>
+                  <el-button type="primary" size="small" @click="backToBox(1)">继续写信</el-button>
                 </div>
             </div>
         </div>
@@ -449,6 +471,13 @@
           <el-button type="primary" @click="addAttachfn" size="small">确 定</el-button>
         </div>
       </el-dialog>
+
+      <el-dialog title="邮件召回" :visible.sync="recallTableVisible" :append-to-body="true">
+        <el-table :data="recallData">
+          <el-table-column property="email" label="收件人"></el-table-column>
+          <el-table-column property="recall_status_info" label="召回状态" width="200"></el-table-column>
+        </el-table>
+      </el-dialog>
     </div>
 
 </template>
@@ -456,11 +485,12 @@
   import axios from 'axios';
   // import treeTransfer from 'el-tree-transfer'
   import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach,contactOabDepartsGet,
-  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool} from '@/api/api'
+  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     props:{
       iframe_height:'',
+      rid:''
     },
 
     data(){
@@ -473,6 +503,13 @@
         }
       };
       return {
+        sendResult:{},
+        mail_results:[],
+        recallTableVisible:false,
+        recallData:[],
+        isRecall:false,
+        message_id:'',
+        recipient:'',
         show_result:false,
         send_suc:false,
         editor_height:300,
@@ -545,14 +582,14 @@
         'superscript', 'link', 'unlink','image',  'table','hr','|', 'undo', 'redo', 'preview',
            'fullscreen',
          ],
-        content:'<div>内容</div>',
+        content:'',
         activeName: 'first',
         number_sign:false,
         safe_secret:true,
         ruleForm2: {
           to: [["512167072@qq.com",'zhouli']],
           cc: [],
-          subject: '测试发信',
+          subject: '',
           secret:'非密',
           is_save_sent:true,
           is_confirm_read:true,
@@ -566,6 +603,7 @@
           html_text:'',
           plain_text:'',
           attachments:[],
+          net_attachments:[]
         },
         contactList: [],
         defaultProps: {
@@ -585,7 +623,83 @@
       };
     },
     methods:{
+      backToBox(compose){
+        if(compose){
+          this.content = '';
+          this.maillist = [];
+          this.maillist_copyer = [];
+          this.fileList = [];
+          this.ruleForm2 = {
+            to: [],
+            cc: [],
+            subject: '',
+            secret:'非密',
+            is_save_sent:true,
+            is_confirm_read:true,
+            is_schedule:false,
+            schedule_day:'',
+            is_password:false,
+            password:'',
+            is_burn:false,
+            burn_limit:1,
+            burn_day:'',
+            html_text:'',
+            plain_text:'',
+            attachments:[],
+            net_attachments:[]
+          };
+          this.send_suc = false;
+        }else{
+          $('.el-tabs__item.is-top.is-active .el-icon-close').click();
+        }
+      },
+      recall(){
+        if(this.isRecall){
+          this.recallTableVisible = true;
+        }else {
+          this.$confirm('<p>确定召回此邮件吗？</p>确定召回，系统将邮件通知您召回结果。', '召回邮件', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            dangerouslyUseHTMLString: true,
+            type: 'warning'
+          }).then(() => {
+            let param = {
+              message_id: this.message_id,
+              recipient: this.recipient
+            }
+            sendRecall(param).then(res => {
+              this.getMessageStatus();
+              if(res.data.results[0].recall_status=='recall_succ'){this.isRecall = true;}
+              this.recallData = res.data.results;
+              this.recallTableVisible = true;
 
+            }, err => {
+              console.log(err)
+              this.$message({
+                message: '邮件召回失败！',
+                type: 'error'
+              })
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消召回'
+            });
+          });
+        }
+      },
+      getMessageStatus(){
+        let param = {
+          message_id: this.message_id,
+          recipient: this.recipient
+        }
+        getMessageStatus(param).then(res=>{
+          console.log(res)
+          this.mail_results = res.data.results;
+        },err=>{
+          console.log(err);
+        })
+      },
       changeBottom(a){
         let _this = this
         setTimeout(_this.setEditorHeight,50)
@@ -600,7 +714,7 @@
         }
       },
       setEditorHeight(){
-        this.editor_height = $('#box_height').height()-$('#title_height').outerHeight()-$('#footer_height').outerHeight();
+        this.editor_height = $('#compose'+this.rid+' .box_height').height()-$('#compose'+this.rid+' .title_height').outerHeight()-$('#compose'+this.rid+' footer_height').outerHeight();
         let th =this.editor_height - $('.ke-toolbar').outerHeight()-30;
         $('.ke-edit').css({'height': th+'px','maxHeight':th+'px','minHeight':'200px'})
         $('.ke-edit-iframe').css({'height': th+'px','maxHeight':th+'px','minHeight':'200px'})
@@ -875,6 +989,7 @@
         this.ruleForm2.to = [];
         this.ruleForm2.cc = [];
         this.ruleForm2.attachments = [];
+        this.ruleForm2.net_attachments = [];
         this.format(this.maillist,this.ruleForm2.to)
         this.format(this.maillist_copyer,this.ruleForm2.cc)
         if(type=='sent'&&this.ruleForm2.to.length<=0){
@@ -882,10 +997,14 @@
           return;
         }
         this.ruleForm2.html_text = this.content;
-        this.ruleForm2.plain_text = this.content;
+        this.ruleForm2.plain_text = '';
 
         for(let i=0;i<this.fileList.length;i++){
-          this.ruleForm2.attachments.push(this.fileList[i].id)
+          if(this.fileList[i].filename){
+            this.ruleForm2.attachments.push(this.fileList[i].id)
+          }else{
+            this.ruleForm2.net_attachments.push(this.fileList[i].id)
+          }
         }
         let param = this.ruleForm2;
         param.action=type;// save_draft
@@ -897,7 +1016,11 @@
              message:info,
              type:'success'
           })
-          if(res.data.type && res.data.type=='send'&& res.data.success && res.data.success){
+          this.message_id = res.data.message_id;
+          this.recipient = res.data.recipient;
+          this.sendResult = res.data;
+          if(res.data.type && res.data.type=='send'){this.getMessageStatus();}
+          if(res.data.success && res.data.success){
             this.send_suc = true;
           }
         },err=>{
@@ -1102,14 +1225,14 @@
         var str=e.target.result;
         //将上传成功后的图片显示在特定位置
         this.imgSrc = str;
-        console.log(_this.$refs.editor_id)
-          _this.$refs.editor_id.editor.insertHtml(`<img src=${str} />`)
+        console.log(_this.$refs[this.editor_id])
+          _this.$refs[this.editor_id].editor.insertHtml(`<img src=${str} />`)
 
 
         }
       },
       onContentChange (val) {
-        this.content = this.$refs.editor_id.$data.outContent;
+        this.content = this.$refs[this.editor_id].$data.outContent;
       },
 
       preview(){
@@ -1323,6 +1446,9 @@
       uploadJson:function(){
         return this.$store.state.uploadJson;
       },
+      editor_id:function(){
+        return 'editor_id'+this.rid;
+      }
 
 
     },
@@ -1353,6 +1479,11 @@
   }
 </script>
 <style>
+  .label_style{
+    display:inline-block;
+    width:100px;
+    text-align:right;
+  }
   .delete_hover{
     color:red;
     display:none;

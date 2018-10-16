@@ -542,7 +542,7 @@
         let that = this;
         let zip_list = [];
         this.sels.map(item=>{ zip_list.push({'folder_id':item.id,'nettype':item.nettype}) });
-        this.$confirm('确认下载选中的文件以及文件夹？', '提示', {
+        this.$confirm('确认删除选中的文件以及文件夹？', '提示', {
           type: 'warning'
         }).then(() => {
           this.deleteCommonFolders(that, zip_list);

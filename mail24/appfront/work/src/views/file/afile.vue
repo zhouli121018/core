@@ -9,6 +9,7 @@
               <el-button plain size="small" type="primary" icon="el-icon-download" :disabled="this.sels.length===0"  @click="zipDownload">下载</el-button>
               <el-button plain size="small" type="primary" icon="el-icon-message" :disabled="this.sels.length===0">邮件发送</el-button>
               <el-button plain size="small" type="primary" :disabled="this.sels.length===0" @click="moveFormShow">保存到个人网盘</el-button>
+              <el-button plain size="small" type="danger" icon="el-icon-delete" :disabled="this.sels.length===0" @click="deleteFiles">删除</el-button>
             </el-form-item>
 
             <el-form-item style="margin-bottom: 0px!important;">
@@ -42,6 +43,7 @@
                     <span @click="zipRowDownload(scope.row)">下载</span>
                     <span>发信</span>
                     <span @click="moveFormShow2(scope.row)">保存到个人网盘</span>
+                    <span @click="deleteRowFiles(scope.row)">删除</span>
                   </div>
                 </el-col>
               </el-row>
@@ -89,7 +91,7 @@
 </template>
 
 <script>
-  import {downloadAttach2, getAttach, moveAttach2Netdisk, downloadZipAttach, netdiskPathGet } from '@/api/api'
+  import {downloadAttach2, getAttach, moveAttach2Netdisk, downloadZipAttach, netdiskPathGet, mailAttachDelete } from '@/api/api'
 
   export default {
     data() {
@@ -159,6 +161,42 @@
           this.listLoading = false;
         });
       },
+      deleteFiles(){
+        let that = this;
+        var ids = this.sels.map(item => item.id);
+        this.$confirm('确认删除选中的文件？', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.listLoading = true;
+          let para = {ids: ids};
+          mailAttachDelete(para).then((response)=> {
+            this.listLoading = false;
+            that.$message({ message: '删除成功', type: 'success' });
+            this.getTables();
+          }).catch(function (error) {
+            console.log(error)
+            that.$message({ message: '删除失败，请重试',  type: 'error' });
+          });
+        });
+      },
+      deleteRowFiles(row){
+        let that = this;
+        this.$confirm('确认删除该文件？', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.listLoading = true;
+          let para = {ids: [row.id]};
+          mailAttachDelete(para).then((response)=> {
+            this.listLoading = false;
+            that.$message({ message: '删除成功', type: 'success' });
+            this.getTables();
+          }).catch(function (error) {
+            console.log(error)
+            that.$message({ message: '删除失败，请重试',  type: 'error' });
+          });
+        });
+      },
+
       //点击下载
       download(){
         this.$refs.download.click();

@@ -183,11 +183,14 @@
       handleNodeClick(data) {
         this.$emit('getData', data);
         this.checkNodes=[data.id];
+        this.$parent.editableTabs2[0].title = data.label;
         // this.$router.push('/mailbox/innerbox')
       },
       goToCompose(){
-        this.$emit('getCompose', {activeTab:3});
-        this.$router.push('/mailbox/compose')
+        // this.$emit('getCompose', {activeTab:3});
+        // this.$router.push('/mailbox/compose')
+        this.$parent.showTabIndex = 1;
+        this.$parent.addTab('compose','写信')
       },
       getFloderfn(){
         let folder = this.$parent.floderResult;

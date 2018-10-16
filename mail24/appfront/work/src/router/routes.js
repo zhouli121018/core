@@ -20,11 +20,11 @@ export const rou = [
       },
       {
         path: 'mailbox/welcome',
-        component: _import('mailbox/mailbox'),
+        component: _import('mailbox/mailboxTab'),
       },
       {
         path: 'mailbox/innerbox',
-        component: _import('mailbox/mailbox'),
+        component: _import('mailbox/mailboxTab'),
       },
       {
         path: 'mailbox/readmail',
@@ -33,10 +33,6 @@ export const rou = [
       {
         path: 'mailbox/compose',
         component: _import('mailbox/mailbox'),
-      },
-      {
-        path:'mailboxTab',
-        component:_import('mailbox/mailboxTab')
       }
     ]
   },

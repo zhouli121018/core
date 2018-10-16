@@ -113,7 +113,7 @@
 
                     <div class="mail-totals j-mail-totals" v-if="multipleSelection.length==0">
                         <div class="totals-info">
-                        {{boxName}}(
+                        {{curr_folder}}(
                         <span class="all-mail">共<span class="number">{{totalAllCount}}</span>封</span>
                         <span class="unread-mail"><span class="number">{{unreadCount}}</span>封</span>
                         <a href="#" >未读</a>
@@ -408,7 +408,8 @@
         //   this.$parent.getRead({'id':row.uid,'subject':row.subject?row.subject:'无主题'});
         //   this.$router.push('/mailbox/readmail')
         // }
-        this.$parent.addTab(row.uid,this.boxId)
+        console.log(this.$parent);
+        this.$parent.$parent.$parent.addTab('read',row.subject,row.uid,this.boxId)
 
       },
       handleSelectionChange(val) {
@@ -600,7 +601,8 @@
           return list;
       },
       boxName:function(){
-        return this.$parent.activeMenubar.label
+        // return this.$parent.activeMenubar.label
+        return '随便'
       },
       moveItems:function(){
         let folder = this.$parent.floderResult;
