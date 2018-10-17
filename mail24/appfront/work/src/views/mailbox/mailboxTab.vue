@@ -12,23 +12,15 @@
                         :name="item.name"
 
                       >
-                         <span slot="label" class="tab_title" :class="{no_close:item.name==1}"><i class="" :class="{'iconfont icon-youxiang':item.type=='read','el-icon-edit':item.type=='compose'}"></i> {{item.title}}</span>
+                         <span slot="label" class="tab_title" :class="{no_close:item.name==1}" :title="item.title"><i class="" :class="{'el-icon-message':item.type=='read','el-icon-edit':item.type=='compose','el-icon-menu':item.name=='1'}"></i> {{item.title | hide_subject}}</span>
                         <div :style="{height: tab_content_height}">
 
                         </div>
-                        <Innerbox v-if="item.name=='1'" :boxId="boxId" :curr_folder="curr_folder"  @getRead="getRead" ref="innerbox"></Innerbox>
+                        <Innerbox v-if="item.name=='1'" :boxId="boxId" :curr_folder="curr_folder"  @getRead="getRead" :floderResult="floderResult" ref="innerbox"></Innerbox>
                         <Read :readId="item.rid" :readFolderId="item.fid" v-if="item.type=='read'"></Read>
                         <Compose  v-if="item.type=='compose'" :iframe_height="iframe_height" :rid="item.name"></Compose>
                       </el-tab-pane>
                     </el-tabs>
-                    <div class="u-tab u-tab-seamless u-tab-highlight j-mltab" v-if="tabList.length">
-                              <ul class="mltabview-nav">
-                                <li class="mltabview-trigger" :class="{'z-current':activeTab==0}" @click.stop.prevent="changeTab1" :title="tab1.text"><span class="bar"></span><div class="trigger-wrap"><a href="#" trigger-title="" class="" :title="tab1.text" >{{tab1.text}}</a></div></li>
-                                <li v-for="(v,k) in tabList" :class="{'z-current':activeTab==v.id}"><span class="bar"></span><div class="trigger-wrap"><a href="#" @click.stop.prevent="changeTabs(v,k)" :title="v.text">{{v.text}}</a><span class="iconfont icon-icontabclose30x30 close" @click.stop="delTabs(k,v.id)"></span></div></li>
-                              </ul>
-                      <div>123</div>
-                              <div class="iconfont icon-iconcloseall closeall" @click="closeAllTab"></div>
-                        </div>
                     <Home v-if="showTabIndex==0"></Home>
                     <!--<Innerbox v-if="showTabIndex==1" :boxId="boxId" :curr_folder="curr_folder" @getRead="getRead" ref="innerbox"></Innerbox>-->
                     <!--<Read v-if="showTabIndex==2" :readId="readId" :readFolderId="readFolderId"></Read>-->
@@ -52,6 +44,7 @@ export default {
     },
     data:function(){
         return{
+          hashTab:[],
           tab_content_height:'',
           editableTabsValue2: '2',
           editableTabs2: [{
@@ -59,7 +52,7 @@ export default {
             name: '1',
             fid:'INBOX'
           }],
-          tabIndex: 2,
+          tabIndex: 1,
           floderResult:[],
           activeMenubar:{},
           iframe_height:'',
@@ -77,21 +70,27 @@ export default {
     methods:{
       tabClick(tab,event){
         this.showTabIndex=1;
-
       },
       addTab(type,subject,rid,fid) {
-        let newTabName = ++this.tabIndex + '';
-        this.editableTabs2.push({
-          title: subject||'无主题',
-          name: newTabName,
-          content: 'New Tab content',
-          rid:rid,
-          fid:fid,
-          type:type
-        });
-        this.editableTabsValue2 = newTabName;
+        if(rid && this.hashTab[rid+fid+'']){
+          this.editableTabsValue2 = this.hashTab[rid+fid+''];
+        }else{
+          let newTabName = ++this.tabIndex + '';
+          this.hashTab[rid+fid+''] = newTabName;
+          this.editableTabs2.push({
+            title: subject||'无主题',
+            name: newTabName,
+            content: 'New Tab content',
+            rid:rid,
+            fid:fid,
+            type:type
+          });
+          this.editableTabsValue2 = newTabName;
+        }
+
       },
       removeTab(targetName) {
+        console.log(targetName)
         let tabs = this.editableTabs2;
         let activeName = this.editableTabsValue2;
         if (activeName === targetName) {
@@ -104,8 +103,14 @@ export default {
             }
           });
         }
-
         this.editableTabsValue2 = activeName;
+        for(let i=0;i<tabs.length;i++){
+          if(tabs[i].name == targetName){
+            if(tabs[i].type=='read' && tabs[i].rid && tabs[i].fid){
+              this.hashTab[tabs[i].rid+tabs[i].fid+''] = false;
+            }
+          }
+        }
         this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
       },
       jumpTo(path){
@@ -244,11 +249,25 @@ export default {
         this.$refs.menubar.getFloderfn();
       }
 
+  },
+  filters: {
+    hide_subject: function (value) {
+      if (!value) return ''
+      value = value.toString()
+      if(value.length>6){
+        return value.slice(0,6)+'...'
+      }else{
+        return value
+      }
+    }
   }
 }
 </script>
 
 <style >
+  .tab_box .el-tabs__header{
+    margin:0 0 5px;
+  }
   /*.el-tabs__nav .el-tabs__item:nth-child(1) span.el-icon-close{*/
     /*display: none;*/
 /*}*/

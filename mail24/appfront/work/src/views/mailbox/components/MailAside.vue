@@ -207,6 +207,7 @@
         this.folderList = arr
       },
       reloadMails(){
+        console.log(this.$parent.$refs.innerbox)
         this.$parent.$refs.innerbox.getMessageList()
       },
 

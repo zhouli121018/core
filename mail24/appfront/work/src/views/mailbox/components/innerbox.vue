@@ -9,21 +9,21 @@
                             <el-button  icon="el-icon-setting" circle></el-button></span>
 
                             <!--排序-->
-                            <el-dropdown @command="orderHandleCommand" placement="bottom-start">
+                            <el-dropdown @command="orderHandleCommand" placement="bottom-start" trigger="click">
                                 <el-button  size="small" plain>
                                     <span>排序</span>
                                     <i class="el-icon-arrow-down el-icon--right"></i>
                                 </el-button>
                                 <el-dropdown-menu slot="dropdown">
                                     <el-dropdown-item v-for="item in orderItems" :key="item.id" class="dropdown_item" :class="{ active: orderCheckIndex===item.id }"
-                                    :divided="item.divided" :command="item.id">
+                                    :divided="item.divided" :command="item">
                                     <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: orderCheckIndex===item.id }"></i> </b>
                                     {{ item.text}}</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
 
                             <!--查看-->
-                            <el-dropdown @command="viewHandleCommand" placement="bottom-start">
+                            <el-dropdown @command="viewHandleCommand" placement="bottom-start" trigger="click">
                                 <el-button  size="small" plain>
                                     <span>查看</span>
                                     <i class="el-icon-arrow-down el-icon--right"></i>
@@ -42,7 +42,7 @@
                                     删除
                                 </el-button>
 
-                                <el-dropdown @command="moveHandleCommand">
+                                <el-dropdown @command="moveHandleCommand" trigger="click">
                                     <el-button  size="small" plain>
                                     <span>移动到</span>
                                     <i class="el-icon-arrow-down el-icon--right"></i>
@@ -55,22 +55,36 @@
                                     </el-dropdown-menu>
                                 </el-dropdown>
 
-                                <el-dropdown @command="signHandleCommand">
+                                <el-dropdown @command="signHandleCommand" trigger="click">
                                     <el-button  size="small" plain >
                                         <span>标记为</span>
                                         <i class="el-icon-arrow-down el-icon--right"></i>
                                     </el-button>
                                     <el-dropdown-menu slot="dropdown">
-                                      <el-dropdown-item v-for="item in signItems" :key="item.id" class="dropdown_item"
+                                      <el-dropdown-item v-if="!item.children" v-for="item in signItems" :key="item.id" class="dropdown_item"
                                        :command="item">
                                           <b><i class="el-icon-check vibility_hide"></i> </b>
                                           {{ item.text}}
                                       </el-dropdown-item>
-                                    </el-dropdown-menu>
+                                      <el-dropdown-item class="dropdown_item" v-else="item.children">
+                                        <el-dropdown @command="signHandleCommand"  placement="right-start">
+                                          <span class="el-dropdown-link">
+                                            <b><i class="el-icon-check vibility_hide"></i> </b>
+                                          {{item.text}}<i class="el-icon-arrow-right el-icon--right"></i>
+                                          </span>
+                                            <el-dropdown-menu slot="dropdown">
+                                              <el-dropdown-item  v-for="(c,k) in item.children" :key="k" class="dropdown_item" :command="c">
+                                                  <i class="iconfont icon-iconflatcolor" :class="c.classN"></i> {{c.text}}
+                                              </el-dropdown-item>
 
+                                            </el-dropdown-menu>
+
+                                        </el-dropdown>
+                                      </el-dropdown-item>
+                                    </el-dropdown-menu>
                                 </el-dropdown>
 
-                                <el-dropdown @command="moreHandleCommand">
+                                <el-dropdown @command="moreHandleCommand" trigger="click">
                                     <el-button  size="small" plain>
                                     <span>更多</span>
                                     <i class="el-icon-arrow-down el-icon--right"></i>
@@ -86,7 +100,7 @@
                             </div>
 
                             <!--刷新-->
-                            <el-button  size="small" plain>
+                            <el-button  size="small" plain @click="refresh">
                                 刷新  <!-- <i class="el-icon-refresh el-icon--right"></i> -->
                             </el-button>
                             <el-button v-show="!moreSearch" @click="moreSearch=true" size="small">更多搜索</el-button>
@@ -132,7 +146,7 @@
                               @current-change="handleCurrentChange"
                               background
                               :current-page="currentPage"
-                              :page-sizes="[5,10, 15, 20,30, 50,100,300,500]"
+                              :page-sizes="[10, 20, 50,100]"
                               :page-size="pageSize"
                               layout="total, sizes, prev, pager, next, jumper"
                               :total="totalCount">
@@ -143,7 +157,7 @@
                       <div class="j-module-content j-maillist mllist-list u-scroll">
                         <div>
                           <el-table ref="innerTable" :data="collapseItems[0].lists" style="width: 100%;" class="vertical_align_top maillist"
-                              highlight-current-row  @cell-mouse-enter="hoverfn" @cell-mouse-leave="noHover" @row-click="rowClick"
+                              highlight-current-row  @cell-mouse-enter="hoverfn" @cell-mouse-leave="noHover" @row-click="rowClick" @cell-click="cellClick"
                                     @selection-change="handleSelectionChange"  v-loading="loading" :header-cell-style="{background:'#f0f1f3'}"
                             >
                             <el-table-column
@@ -155,13 +169,13 @@
 
                             <el-table-column prop="subject"  label="" @click="">
                               <template slot-scope="scope">
-                                <div class="clear mainMsg" style="font-size:16px;" :class="{flagged:scope.row.flagged,unseen:!scope.row.isread,hoverStyle:scope.row.uid==hoverIndex}">
-                                  <span class="fl_l subject_hover" style="width:80%;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" @click.stop.prevent="readMail(scope.row)">{{scope.row.subject||'无主题'}}</span>
+                                <div class="clear mainMsg" style="font-size:16px;" :class="[{flagged:scope.row.flagged,unseen:!scope.row.isread,hoverStyle:scope.row.uid==hoverIndex},scope.row.color]">
+                                  <span class="fl_l subject_hover" style="width:80%;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" @click.stop.prevent="readMail(scope.row)" >{{scope.row.subject||'无主题'}}</span>
                                   <span class="fl_r">
-                                    <i :title="scope.row.flagged?'点击取消旗帜':'设为红旗'" @click.stop="changeFlags(scope.row)" class="iconfont" :class="{'icon-iconflatcolor':scope.row.flagged,'icon-iconflat':!scope.row.flagged}" style="cursor:pointer;"></i>
+                                    <i :title="scope.row.flagged?'点击取消旗帜':'设为红旗'" @click.stop="changeFlags(scope.row)" class="iconfont" :class="{'icon-iconflatcolor':scope.row.flagged||scope.row.color,'icon-iconflat':!scope.row.flagged&&!scope.row.color}" style="cursor:pointer;"></i>
                                   </span>
                                 </div>
-                                <div class="info-summary">
+                                <div class="info-summary" :class="scope.row.color">
                                   <p class="summary-text">
                                     <span class="fromto">from</span>
                                     <span class="fromto">:</span>
@@ -177,14 +191,14 @@
 
 
 
-                            <el-table-column class="plan_style" prop="date" label="时间" sortable  width="160"  >
+                            <el-table-column class="plan_style" prop="date" label="时间"   width="160"  >
                               <template slot-scope="scope">
                                 <div class="plan_style">
                                   {{(scope.row.internaldate ||scope.row.date).replace('T',' ')}}
                                 </div>
                               </template>
                             </el-table-column>
-                            <el-table-column class="plan_style" prop="size" label="大小" sortable  width="100">
+                            <el-table-column class="plan_style" prop="size" label="大小"   width="100">
                               <template slot-scope="scope">
                                 <div class="plan_style">
                                   {{scope.row.size | mailsize}}
@@ -215,6 +229,10 @@
       curr_folder:{
         type:String,
         default:''
+      },
+      floderResult:{
+        type:Array,
+        default: []
       }
     },
 
@@ -249,15 +267,16 @@
           ],
           orderCheckIndex:'',
           orderItems:[
-            {id:0,text:'按时间从新到旧',divided:false},
-            {id:1,text:'按时间从旧到新',divided:false},
-            {id:2,text:'按发件人降序',divided:true},
-            {id:3,text:'按发件人升序',divided:false},
-            {id:4,text:'按主题降序',divided:true},
-            {id:5,text:'按主题升序',divided:false},
-            {id:6,text:'按附件降序',divided:true},
-            {id:7,text:'按附件升序',divided:false},
+            {id:0,text:'按时间从新到旧',divided:false,sort:'REVERSE ARRIVAL'},
+            {id:1,text:'按时间从旧到新',divided:false,sort:'ARRIVAL'},
+            {id:3,text:'按发件人升序',divided:true,sort:'FROM'},
+            {id:2,text:'按发件人降序',divided:false,sort:'REVERSE FROM'},
+            {id:4,text:'按邮件主题降序',divided:true,sort:'REVERSE SUBJECT '},
+            {id:5,text:'按邮件主题升序',divided:false,sort:'SUBJECT '},
+            {id:8,text:'按邮件大小（从小到大）',divided:true,sort:'SIZE'},
+            {id:9,text:'按邮件大小（从大到小）',divided:false,sort:'REVERSE SIZE'},
           ],
+
           viewCheckIndex:'',
           viewItems:[
             {id:'',text:'全部邮件',divided:false},
@@ -265,23 +284,24 @@
             {id:'seen',text:'已读邮件',divided:false},
             {id:'flagged',text:'已标记邮件',divided:true},
             {id:'unflagged',text:'未标记邮件',divided:false},
-            // {id:5,text:'紧急',divided:true},
-            // {id:6,text:'普通',divided:false},
-            // {id:7,text:'缓慢',divided:false},
-            // {id:8,text:'包含附件',divided:true},
-            // {id:9,text:'不包含附件',divided:false},
-            // {id:10,text:'已回复',divided:true},
-            // {id:11,text:'已转发',divided:false},
           ],
           moveCheckIndex:'',
 
           signItems:[
-
-
             {id:0,flags:'\\Seen',text:'已读邮件',divided:false,action:'add'},
             {id:1,flags:'\\Seen',text:'未读邮件',divided:false,action:'remove'},
             {id:2,flags:'\\flagged',text:'红旗',divided:true,action:'add'},
-            {id:3,flags:'\\flagged',text:'取消红旗',divided:true,action:'remove'},
+            {id:3,text:'其他旗帜',divided:false,children:[
+                {flags:'umail-green',action:'add',text:'绿旗',classN:{'flag-green':true}},
+                {flags:'umail-orange',action:'add',text:'橙旗',classN:{'flag-orange':true}},
+                {flags:'umail-blue',action:'add',text:'蓝旗',classN:{'flag-blue':true}},
+                {flags:'umail-pink',action:'add',text:'粉旗',classN:{'flag-pink':true}},
+                {flags:'umail-cyan',action:'add',text:'青旗',classN:{'flag-cyan':true}},
+                {flags:'umail-yellow',action:'add',text:'黄旗',classN:{'flag-yellow':true}},
+                {flags:'umail-purple',action:'add',text:'紫旗',classN:{'flag-purple':true}},
+                {flags:'umail-gray',action:'add',text:'灰旗',classN:{'flag-gray':true}}
+              ]},
+            {id:4,flags:'\\flagged',text:'取消旗帜',divided:false,action:'remove'},
           ],
           moreCheckIndex:'',
           moreItems:[
@@ -311,8 +331,21 @@
         }
     },
     methods:{
+      cellClick(row,col){
+        if(col.type=='default'){
+          this.readMail(row)
+        }else{
+          this.$refs.innerTable.toggleRowSelection(row)
+        }
+      },
+      refresh(){
+        this.sort = '';
+        this.orderCheckIndex = '';
+        this.search = '';
+        this.getMessageList();
+      },
       rowClick(row,e,col){
-        this.$refs.innerTable.toggleRowSelection(row)
+
       },
       moreSearchfn(){
         this.loading = true;
@@ -355,11 +388,14 @@
       },
       changeFlags(row){
         row.flagged=!row.flagged;
+        if(row.color){
+          row.color=null
+        }
         console.log(row)
         let ac = row.flagged?'add':'remove';
         let param = {
           uids:[row.uid],
-          folder:this.$parent.activeMenubar.id,
+          folder:this.$parent.$parent.$parent.activeMenubar.id,
           action:ac,
           flags:['\\flagged']
         }
@@ -372,43 +408,36 @@
       readAll(){
         let param = {
           uids:['all'],
-          folder:this.$parent.activeMenubar.id,
+          folder:this.$parent.$parent.$parent.activeMenubar.id,
           action:'add',
           flags:['\\Seen']
         }
         messageFlag(param).then((suc)=>{
           this.getMessageList();
           this.getFloderMsgById(this.boxId);
-          this.$parent.getFloderfn();
+          this.$parent.$parent.$parent.getFloderfn();
         },(err)=>{
 
         })
       },
       readMail(row){
           row.isread = true;
-          this.$parent.showTabIndex=5;
           console.log(row)
-        // let param = {
-        //   uids:[row.uid],
-        //   folder:this.$parent.activeMenubar.id,
-        //   action:'add',
-        //   flags:['\\Seen']
-        // }
-        // messageFlag(param).then((suc)=>{
-        //   // this.getMessageList();
-        //   this.getFloderMsgById(this.boxId);
-        //   this.$parent.getFloderfn();
-        // },(err)=>{
-        //
-        // })
-        // if(this.boxId == 'Drafts'){
-        //   this.$parent.getRead({'id':row.uid,'subject':row.subject?row.subject:'无主题'});
-        //   this.$router.push('/mailbox/compose')
-        // }else{
-        //   this.$parent.getRead({'id':row.uid,'subject':row.subject?row.subject:'无主题'});
-        //   this.$router.push('/mailbox/readmail')
-        // }
-        console.log(this.$parent);
+        let param = {
+          uids:[row.uid],
+          folder:this.$parent.$parent.$parent.activeMenubar.id,
+          action:'add',
+          flags:['\\Seen']
+        }
+        messageFlag(param).then((suc)=>{
+          // this.getMessageList();
+          this.getFloderMsgById(this.boxId);
+          this.$parent.$parent.$parent.getFloderfn();
+        },(err)=>{
+
+        })
+
+        console.log(this.$parent.$parent.$parent);
         this.$parent.$parent.$parent.addTab('read',row.subject,row.uid,this.boxId)
 
       },
@@ -435,8 +464,11 @@
           this.checkAll=false;
         }
       },
-      orderHandleCommand:function(index){
-        this.orderCheckIndex = index;
+      orderHandleCommand:function(item){
+        console.log(item)
+        this.orderCheckIndex = item.id;
+        this.sort = item.sort;
+        this.getMessageList();
       },
       viewHandleCommand:function(index){
         console.log(index);
@@ -448,7 +480,7 @@
       moveHandleCommand:function(index){
         var params={
           uids:this.checkedMails,
-          src_folder:this.$parent.activeMenubar.id,
+          src_folder:this.$parent.$parent.$parent.activeMenubar.id,
           dst_folder:index
         }
         moveMails(params).then((suc)=>{
@@ -460,7 +492,7 @@
               message: '邮件移动成功!'
             })
             this.getMessageList();
-            this.$parent.getFloderfn();
+            this.$parent.$parent.$parent.getFloderfn();
           }
         },(err)=>{
           console.log(err);
@@ -468,16 +500,19 @@
       },
       signHandleCommand:function(item){
         console.log(item);
+        if(!item){
+          return;
+        }
         let param = {
           uids:this.checkedMails,
-          folder:this.$parent.activeMenubar.id,
+          folder:this.$parent.$parent.$parent.activeMenubar.id,
           action:item.action,
           flags:[item.flags]
         }
         messageFlag(param).then((suc)=>{
           this.getMessageList();
           this.getFloderMsgById(this.boxId);
-          this.$parent.getFloderfn();
+          this.$parent.$parent.$parent.getFloderfn();
         },(err)=>{
 
         })
@@ -485,7 +520,7 @@
       deleteMailById(){
         var params={
           uids:this.checkedMails,
-          folder:this.$parent.activeMenubar.id,
+          folder:this.$parent.$parent.$parent.activeMenubar.id,
         };
         this.$confirm('永久删除此邮件, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -499,7 +534,7 @@
                 message: '邮件删除成功!'
               })
               this.getMessageList();
-              this.$parent.refreshMenu()
+              this.$parent.$parent.$parent.refreshMenu()
             }
           },(err)=>{
             this.$message({
@@ -559,10 +594,29 @@
         }
         getMailMessage(params).then((res)=>{
           this.totalCount = res.data.count;
-          var items = res.data.results;
-          for(var i=0;i<items.length;i++){
+          let items = res.data.results;
+          for(let i=0;i<items.length;i++){
             items[i].flagged = (items[i].flags.join('').indexOf('Flagged')>=0);
             items[i].isread = (items[i].flags.join(' ').indexOf('Seen')>=0);
+            if(items[i].flagged){
+              if(items[i].flags.join('').indexOf('umail-yellow')>=0){
+                items[i].color = {'flag-yellow':true};
+              }else if(items[i].flags.join('').indexOf('umail-green')>=0){
+                items[i].color = {'flag-green':true};
+              }else if(items[i].flags.join('').indexOf('umail-orange')>=0){
+                items[i].color = {'flag-orange':true};
+              }else if(items[i].flags.join('').indexOf('umail-blue')>=0){
+                items[i].color = {'flag-blue':true};
+              }else if(items[i].flags.join('').indexOf('umail-pink')>=0){
+                items[i].color = {'flag-pink':true};
+              }else if(items[i].flags.join('').indexOf('umail-cyan')>=0){
+                items[i].color = {'flag-cyan':true};
+              }else if(items[i].flags.join('').indexOf('umail-purple')>=0){
+                items[i].color = {'flag-purple':true};
+              }else if(items[i].flags.join('').indexOf('umail-gray')>=0){
+                items[i].color = {'flag-gray':true};
+              }
+            }
             items[i].plain = '';
             items[i].checked = false;
           }
@@ -600,12 +654,8 @@
           }
           return list;
       },
-      boxName:function(){
-        // return this.$parent.activeMenubar.label
-        return '随便'
-      },
       moveItems:function(){
-        let folder = this.$parent.floderResult;
+        let folder = this.floderResult;
         let arr = [];
         for(let i=0;i<folder.length;i++){
           let obj={};
@@ -639,6 +689,30 @@
 </script>
 
 <style>
+  .flag-green,.flag-green .fromto{
+    color: #349B08!important;
+  }
+  .flag-orange,.flag-orange .fromto{
+    color: #ED501A!important;
+  }
+  .flag-yellow,.flag-yellow .fromto{
+    color: #C79C17!important;
+  }
+  .flag-blue,.flag-blue .fromto{
+    color: #1797DC!important;
+  }
+  .flag-pink,.flag-pink .fromto{
+    color: #E33D97!important;
+  }
+  .flag-cyan,.flag-cyan .fromto{
+    color: #0FB38E!important;
+  }
+  .flag-purple,.flag-purple .fromto{
+    color: #AD50D8!important;
+  }
+  .flag-gray,.flag-gray .fromto{
+    color: #818181!important;
+  }
 
   .maillist.el-table td{
     padding:18px 0;

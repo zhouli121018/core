@@ -68,7 +68,7 @@
               <div class="form-tt compose_title title_height">
                 <el-form size="mini" inline-message :model="ruleForm2" status-icon ref="ruleForm2" label-width="80px" class="demo-ruleForm" style="font-size:16px;">
                   <el-form-item label="发件人:">
-                    <el-input type="text" :value="this.$parent.username" readonly auto-complete="off"></el-input>
+                    <el-input type="text" :value="this.$parent.$parent.$parent.username" readonly auto-complete="off"></el-input>
                   </el-form-item>
 
                   <el-form-item label="收件人:" >
