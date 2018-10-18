@@ -31,7 +31,11 @@
                                 <el-dropdown-menu slot="dropdown">
                                     <el-dropdown-item v-for="item in viewItems" :key="item.id" class="dropdown_item" :class="{ active: viewCheckIndex===item.id }"
                                     :divided="item.divided" :command="item.id">
-                                    <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: viewCheckIndex===item.id }"></i> </b>
+                                    <b>
+                                      <i v-if="item.className" :class="item.className" style="color: #2ea962;"></i>
+                                      <i v-if="!item.className" class="el-icon-check vibility_hide" :class="{ vibility_show: viewCheckIndex===item.id }"></i>
+
+                                    </b>
                                     {{ item.text}}</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
@@ -90,8 +94,8 @@
                                     <i class="el-icon-arrow-down el-icon--right"></i>
                                     </el-button>
                                     <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-for="item in moreItems" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }"
-                                    :divided="item.divided" :command="item.id">
+                                    <el-dropdown-item v-for="item in moreItems" v-if="!item.checkone||checkedMails.length==1" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }"
+                                    :divided="item.divided" :command="item">
                                         <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moreCheckIndex===item.id }"></i> </b>
                                         {{ item.text}}</el-dropdown-item>
                                     </el-dropdown-menu>
@@ -195,7 +199,11 @@
                               <template slot-scope="scope">
                                 <div class="plan_style">
                                   {{(scope.row.internaldate ||scope.row.date).replace('T',' ')}}
+                                  <p style="text-align:center;" v-if="scope.row.has_attachment" >
+                                    <i class="iconfont icon-attachment"></i>
+                                  </p>
                                 </div>
+
                               </template>
                             </el-table-column>
                             <el-table-column class="plan_style" prop="size" label="大小"   width="100">
@@ -218,7 +226,7 @@
         </div>
 </template>
 <script>
-  import {getMailMessage,moveMails,getFloder,getFloderMsg,deleteMail,messageFlag} from "@/api/api";
+  import {getMailMessage,moveMails,getFloder,getFloderMsg,deleteMail,messageFlag,readMail} from "@/api/api";
 
   import router from '@/router'
 
@@ -284,6 +292,8 @@
             {id:'seen',text:'已读邮件',divided:false},
             {id:'flagged',text:'已标记邮件',divided:true},
             {id:'unflagged',text:'未标记邮件',divided:false},
+            {id:'ANSWERED',text:'已回复',divided:true,className:'iconfont icon-iconback'},
+            {id:'KEYWORD umail-forword',text:'已转发',divided:false,className:'iconfont icon-Forward'},
           ],
           moveCheckIndex:'',
 
@@ -305,16 +315,14 @@
           ],
           moreCheckIndex:'',
           moreItems:[
-            {id:0,text:'回复',divided:false},
-            {id:1,text:'回复全部',divided:false},
-            {id:2,text:'转发',divided:true},
-            {id:3,text:'附件方式转发',divided:false},
-            {id:4,text:'举报',divided:true},
-            {id:5,text:'拒收邮件',divided:false},
-            {id:6,text:'来信分类',divided:false},
-            {id:7,text:'再次发送',divided:true},
-            {id:8,text:'打包下载',divided:false},
-            {id:9,text:'彻底删除',divided:false}
+            {id:0,text:'回复',divided:false,checkone:true},
+            {id:1,text:'回复全部',divided:false,checkone:true},
+            {id:2,text:'转发',divided:true,checkone:true},
+            {id:3,text:'附件方式转发',divided:false,checkone:true},
+            {id:4,text:'拒收邮件',divided:true,checkone:false},
+            {id:5,text:'再次发送',divided:true,checkone:true},
+            {id:6,text:'打包下载',divided:false,checkone:false},
+            {id:7,text:'彻底删除',divided:false,checkone:false}
           ],
           activeNames: [0],
           activeLi:[0,0],
@@ -550,8 +558,44 @@
         });
 
       },
-      moreHandleCommand:function(index){
-        this.moreCheckIndex = index;
+      moreHandleCommand:function(item){
+        this.moreCheckIndex = item;
+        console.log(this.checkedMails)
+        console.log(this.multipleSelection)
+        if(item.id==0 || item.id==1 || item.id==2 || item.id==3 || item.id==5){
+          let pp = this.$parent.$parent.$parent;
+          let fid = pp.activeMenubar.id;
+          readMail(this.multipleSelection[0].uid,{"folder":fid}).then(res=>{
+            let data = res.data
+            pp.ruleForm2 = res.data;
+            pp.content = data.html_text || data.plain_text;
+            pp.ruleForm2.refw_type = 're';
+            pp.ruleForm2.uid = this.multipleSelection[0].uid;
+            pp.ruleForm2.folder = fid;
+            if(item.id == 0){
+              pp.ruleForm2.subject = "回复：" + pp.ruleForm2.subject
+              pp.maillist = [
+                {fullname:data.mfrom[1],email:data.mfrom[0],status:true,value:data.mfrom[1]+'<'+data.mfrom[0]+'>'}
+              ]
+            }else if(item.id == 1){
+              pp.maillist = [];
+              pp.ruleForm2.subject = "回复全部：" + pp.ruleForm2.subject
+            }else if(item.id == 2){
+              pp.maillist = [];
+              pp.ruleForm2.subject = "转发：" + pp.ruleForm2.subject
+            }else if(item.id == 3){
+              pp.maillist = [];
+              pp.ruleForm2.subject = "附件方式转发：" + pp.ruleForm2.subject
+            }else if(item.id == 5){
+              pp.maillist = [];
+              pp.ruleForm2.subject = "再次发送：" + pp.ruleForm2.subject
+            }
+            pp.addTab('compose',data.subject,data.uid,fid)
+          }).catch(err=>{
+            console.log(err)
+          })
+
+        }
       },
       handleChange(value) {
         console.log(value);
@@ -658,11 +702,13 @@
         let folder = this.floderResult;
         let arr = [];
         for(let i=0;i<folder.length;i++){
-          let obj={};
-          obj['text'] = folder[i]['name'];
-          obj['id'] = folder[i]['raw_name'];
-          obj['divided'] = false;
-          arr.push(obj);
+          if(folder[i]['raw_name']!='Drafts'){
+            let obj={};
+            obj['text'] = folder[i]['name'];
+            obj['id'] = folder[i]['raw_name'];
+            obj['divided'] = false;
+            arr.push(obj);
+          }
         }
         return arr;
       }

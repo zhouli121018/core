@@ -5,6 +5,7 @@
             <article class="mlmain mltabview" :class="{position_top0:!tabList.length}" ref="editor_h">
                     <div class="u-tab u-tab-seamless u-tab-highlight j-mltab" v-if="tabList.length">
                               <ul class="mltabview-nav">
+
                                 <li class="mltabview-trigger" :class="{'z-current':activeTab==0}" @click.stop.prevent="changeTab1" :title="tab1.text"><span class="bar"></span><div class="trigger-wrap"><a href="#" trigger-title="" class="" :title="tab1.text" >{{tab1.text}}</a></div></li>
                                 <li v-for="(v,k) in tabList" :class="{'z-current':activeTab==v.id}"><span class="bar"></span><div class="trigger-wrap"><a href="#" @click.stop.prevent="changeTabs(v,k)" :title="v.text">{{v.text}}</a><span class="iconfont icon-icontabclose30x30 close" @click.stop="delTabs(k,v.id)"></span></div></li>
 

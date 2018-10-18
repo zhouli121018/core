@@ -1,7 +1,7 @@
 <template>
     <div class="mltabview-content" :id="'compose'+rid">
       <div class="mltabview-panel">
-        <section class="m-mlcompose" v-if="!send_suc">
+        <section class="m-mlcompose m_box_height" v-if="!send_suc">
           <div class="toolbar" style="background:#fff;">
             <div id="pagination" class="f-fr">
                 <div class="" @click="show_contact = !show_contact">
@@ -9,7 +9,7 @@
                 </div>
             </div>
 
-            <el-button size="small" type="primary" @click="sentMail('sent')">发送</el-button>
+            <el-button size="small" type="primary" @click="sentMail('sent')">{{ruleForm2.is_schedule?"定时发送":"发送"}}</el-button>
             <el-button-group >
               <el-button size="small" @click="preview">预览</el-button>
               <el-button size="small" @click="sentMail('save_draft')">存草稿</el-button>
@@ -19,7 +19,7 @@
                 取消
             </el-button>
           </div>
-          <div class="main" ref="iframe_height">
+          <div class="main" ref="iframe_height" :style="{'min-height':main_min_height+'px'}">
             <div class="mn-aside right_menu" :class="{show_contact:show_contact}">
               <el-tabs v-model="activeName">
                 <!--个人通讯录-->
@@ -68,13 +68,19 @@
               <div class="form-tt compose_title title_height">
                 <el-form size="mini" inline-message :model="ruleForm2" status-icon ref="ruleForm2" label-width="80px" class="demo-ruleForm" style="font-size:16px;">
                   <el-form-item label="发件人:">
-                    <el-input type="text" :value="this.$parent.$parent.$parent.username" readonly auto-complete="off"></el-input>
+                    <el-col :span="12">
+                      <el-input type="text" :value="this.$parent.$parent.$parent.username" readonly auto-complete="off"></el-input>
+                    </el-col>
+                    <el-col :span="12" style="text-align:right;">
+                      <el-button v-show="!ruleForm2.is_partsend" type="text"  @click="changeCc">{{ruleForm2.is_cc?"取消抄送":"抄送"}} &nbsp;&nbsp;|</el-button><el-button type="text" @click="ruleForm2.is_partsend = !ruleForm2.is_partsend">{{ruleForm2.is_partsend?"取消群发单显":"群发单显"}}</el-button>
+                    </el-col>
+
                   </el-form-item>
 
                   <el-form-item label="收件人:" >
                     <label slot="label">
                       <template>
-                        <span @click="show_contact_fn" class="show_contact_style">收件人:</span>
+                        <span @click="show_contact_fn" class="show_contact_style">{{ruleForm2.is_partsend?"群发单显":"收件人"}}:</span>
                       </template>
                     </label>
                     <div class="padding_15">
@@ -90,7 +96,7 @@
                     </div>
 
                   </el-form-item>
-                  <el-form-item label="抄   送:" prop="cc">
+                  <el-form-item label="抄   送:" prop="cc" v-if="ruleForm2.is_cc" v-show="!ruleForm2.is_partsend">
                     <label slot="label">
                       <template>
                         <span @click="show_contact_fn" class="show_contact_style">抄送人:</span>
@@ -161,7 +167,7 @@
 
                 </el-form>
               </div>
-              <div class="form-edr compose_editor" ref="editor_box" :style="{height:editor_height+'px'}">
+              <div class="form-edr compose_editor" ref="editor_box" style="min-height:280px;" :style="{height:editor_height+'px'}">
 
                 <!--<div v-html="content"></div>-->
 
@@ -173,7 +179,8 @@
                 </editor>
 
               </div>
-              <div class="form-toolbar compose_footer footer_height" style="background: #fff;">
+              <!-- form-toolbar compose_footer -->
+              <div class=" footer_height" style="padding-left: 10px;">
                 <div class="bt-hd-wrap">
                   <el-checkbox v-model="ruleForm2.is_save_sent">保存到"已发送"</el-checkbox>
                   <el-checkbox >设为"紧急"</el-checkbox>
@@ -188,7 +195,7 @@
                   <div v-show="ruleForm2.is_password">
                     <p ><b>邮件加密 </b> 收信人需要密码才能查看邮件</p>
                     <div style="border-top:1px dashed #e3e4e5;padding:12px 0;">
-                      设置查看密码：<el-input style="width:auto;" size="mini" v-model="ruleForm2.password" autocomplete="off"></el-input> <span style="font-size:12px;color:#aaa;">(请输入6个字符，数字或英文字母，字母区分大小写，首尾不能有空格)</span>
+                      设置查看密码：<el-input style="width:auto;" size="mini" v-model="ruleForm2.password" auto-complete="off"></el-input> <span style="font-size:12px;color:#aaa;">(请输入6个字符，数字或英文字母，字母区分大小写，首尾不能有空格)</span>
                     </div>
                   </div>
 
@@ -201,7 +208,7 @@
                         :picker-options="pickerBeginDateBefore"
                         placeholder="选择定时发送的时间">
                       </el-date-picker>
-                      <p style="margin-top:10px;" v-show="ruleForm2.schedule_day"><b>本邮件将在 {{ruleForm2.schedule_day.toLocaleString()}} 投递到对方邮箱</b></p>
+                      <p style="margin-top:10px;" v-if="ruleForm2.schedule_day"><b>本邮件将在 {{ruleForm2.schedule_day.toLocaleString()}} 投递到对方邮箱</b></p>
                     </div>
                   </div>
 
@@ -490,11 +497,44 @@
   export default {
     props:{
       iframe_height:'',
-      rid:''
+      rid:'',
+      ruleForm2: {
+          is_cc:true,
+          is_partsend:false,
+          to: [["512167072@qq.com",'zhouli']],
+          cc: [],
+          subject: '',
+          secret:'非密',
+          is_save_sent:true,
+          is_confirm_read:true,
+          is_schedule:false,
+          schedule_day:'',
+          is_password:false,
+          password:'',
+          is_burn:false,
+          burn_limit:1,
+          burn_day:'',
+          html_text:'',
+          plain_text:'',
+          attachments:[],
+          net_attachments:[]
+        },
+      content:'',
+      maillist:  {
+        type:Array,
+        default:[]
+      },
+      maillist_copyer: {
+        type:Array,
+        default:[]
+      },
+      fileList: {
+        type:Array,
+        default:[]
+      }
     },
 
     data(){
-
       const isEmail = function(rule,value,callback){
         if(emailReg.test(value) == false){
           callback(new Error("请输入正确的邮箱"));
@@ -503,6 +543,7 @@
         }
       };
       return {
+        main_min_height:800,
         sendResult:{},
         mail_results:[],
         recallTableVisible:false,
@@ -563,15 +604,12 @@
         coreFileDialog:false,
         show_contact:false,
         attachIndex:'',
-        fileList: [],
         imgSrc:'',
         transform_dialog:false,
         filterText:'',
         hashMail:[],
         insertMailbox:1,
         hashMail_copyer:[],
-        maillist:[],
-        maillist_copyer:[],
         restaurants:[],
         state1:'',
         state_copyer:'',
@@ -582,29 +620,10 @@
         'superscript', 'link', 'unlink','image',  'table','hr','|', 'undo', 'redo', 'preview',
            'fullscreen',
          ],
-        content:'',
         activeName: 'first',
         number_sign:false,
         safe_secret:true,
-        ruleForm2: {
-          to: [["512167072@qq.com",'zhouli']],
-          cc: [],
-          subject: '',
-          secret:'非密',
-          is_save_sent:true,
-          is_confirm_read:true,
-          is_schedule:false,
-          schedule_day:'',
-          is_password:false,
-          password:'',
-          is_burn:false,
-          burn_limit:1,
-          burn_day:'',
-          html_text:'',
-          plain_text:'',
-          attachments:[],
-          net_attachments:[]
-        },
+
         contactList: [],
         defaultProps: {
           children: 'children',
@@ -623,6 +642,29 @@
       };
     },
     methods:{
+      set_main_min_height(){
+        this.main_min_height = $('#compose'+this.rid+' .title_height').outerHeight()+$('#compose'+this.rid+' .compose_editor').outerHeight()+
+          $('#compose'+this.rid+' .footer_height').outerHeight()
+      },
+      changeCc(){
+        if(this.ruleForm2.is_cc && this.maillist_copyer.length>0){
+          this.$confirm('<p>要删除已经存在的所有抄送地址?</p>', '系统信息', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            dangerouslyUseHTMLString: true,
+            type: 'warning'
+          }).then(() => {
+            this.maillist_copyer = [];
+            this.ruleForm2.is_cc = !this.ruleForm2.is_cc
+          }).catch(() => {
+
+          });
+        }else{
+          this.ruleForm2.is_cc = !this.ruleForm2.is_cc
+        }
+
+
+      },
       backToBox(compose){
         if(compose){
           this.content = '';
@@ -630,6 +672,8 @@
           this.maillist_copyer = [];
           this.fileList = [];
           this.ruleForm2 = {
+            is_cc:true,
+            is_partsend:false,
             to: [],
             cc: [],
             subject: '',
@@ -703,6 +747,7 @@
       changeBottom(a){
         let _this = this
         setTimeout(_this.setEditorHeight,50)
+        setTimeout(_this.set_main_min_height,50)
         if(a=='sch' && !this.ruleForm2.schedule_day){
           let now = new Date();
           now.setHours(now.getHours()+1)
@@ -714,10 +759,12 @@
         }
       },
       setEditorHeight(){
-        this.editor_height = $('#compose'+this.rid+' .box_height').height()-$('#compose'+this.rid+' .title_height').outerHeight()-$('#compose'+this.rid+' footer_height').outerHeight();
-        let th =this.editor_height - $('.ke-toolbar').outerHeight()-30;
-        $('.ke-edit').css({'height': th+'px','maxHeight':th+'px','minHeight':'200px'})
-        $('.ke-edit-iframe').css({'height': th+'px','maxHeight':th+'px','minHeight':'200px'})
+        this.editor_height = $('#compose'+this.rid+'.mltabview-content').height()-$('#compose'+this.rid+' .title_height').outerHeight()-$('#compose'+this.rid+' .footer_height').outerHeight()-50;
+        let th =this.editor_height - $('#compose'+this.rid+' .ke-toolbar').outerHeight()-30;
+
+        // $('.ke-edit').css({'height': th+'px','maxHeight':th+'px','minHeight':'200px'})
+        $('#compose'+this.rid+' .ke-edit').css({'height': th+'px','minHeight':'200px'})
+        $('#compose'+this.rid+' .ke-edit-iframe').css({'height': th+'px','minHeight':'200px'})
       },
       deleteList(a,id,k){
         if(a=='to'){
@@ -1009,6 +1056,7 @@
         let param = this.ruleForm2;
         param.action=type;// save_draft
         console.log(param);
+        console.log(this.maillist)
         mailSent(param).then(res=>{
           console.log(res)
           let info = type=='sent'?"发送成功！":"保存草稿成功！";
@@ -1437,7 +1485,9 @@
       sessionStorage['openGroup'] = 'oab';
       console.log(this.editor_height)
       this.setEditorHeight();
-
+      this.set_main_min_height();
+      // let _this = this
+      //   setTimeout(_this.setEditorHeight,50)
     },
     beforeMount() {
 
@@ -1472,6 +1522,18 @@
         }else{
           this.allSeclect = this.toList;
         }
+      },
+      fileList(){
+        let _this = this;
+        setTimeout(_this.set_main_min_height,50);
+      },
+      "ruleForm2.is_cc"(nv){
+        let _this = this;
+        setTimeout(_this.set_main_min_height,50);
+      },
+      "ruleForm2.is_partsend"(nv){
+        let _this = this;
+        setTimeout(_this.set_main_min_height,50);
       }
     },
     // components:{ treeTransfer } // 注册
@@ -1479,6 +1541,9 @@
   }
 </script>
 <style>
+  .m-mlcompose{
+    overflow: auto;
+  }
   .label_style{
     display:inline-block;
     width:100px;

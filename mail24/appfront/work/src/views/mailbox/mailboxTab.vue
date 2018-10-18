@@ -4,7 +4,7 @@
             <MailAside @getData="getData" @getCompose="getCompose" ref="menubar"></MailAside>
             <article class="mlmain mltabview tab_box" :class="{position_top0:!tabList.length}" ref="editor_h">
 
-                    <el-tabs v-model="editableTabsValue2" type="card" closable @tab-remove="removeTab"  @tab-click="tabClick" :class="{hide_tab_top:editableTabs2.length<=1}" v-if="showTabIndex==1">
+                    <el-tabs v-model="editableTabsValue2" type="card" closable @tab-remove="removeTab" class="tab_style_tt" @tab-click="tabClick" :class="{hide_tab_top:editableTabs2.length<=1}" v-if="showTabIndex==1">
                       <el-tab-pane
                         v-for="(item, index) in editableTabs2"
                         :key="item.name"
@@ -13,12 +13,12 @@
 
                       >
                          <span slot="label" class="tab_title" :class="{no_close:item.name==1}" :title="item.title"><i class="" :class="{'el-icon-message':item.type=='read','el-icon-edit':item.type=='compose','el-icon-menu':item.name=='1'}"></i> {{item.title | hide_subject}}</span>
-                        <div :style="{height: tab_content_height}">
+                        <!--<div :style="{height: tab_content_height}">-->
 
-                        </div>
+                        <!--</div>-->
                         <Innerbox v-if="item.name=='1'" :boxId="boxId" :curr_folder="curr_folder"  @getRead="getRead" :floderResult="floderResult" ref="innerbox"></Innerbox>
                         <Read :readId="item.rid" :readFolderId="item.fid" v-if="item.type=='read'"></Read>
-                        <Compose  v-if="item.type=='compose'" :iframe_height="iframe_height" :rid="item.name"></Compose>
+                        <Compose  v-if="item.type=='compose'" :iframe_height="iframe_height" :rid="item.name" :ruleForm2="ruleForm2" :content="content" :maillist="maillist" :maillist_copyer="maillist_copyer" :fileList="fileList"></Compose>
                       </el-tab-pane>
                     </el-tabs>
                     <Home v-if="showTabIndex==0"></Home>
@@ -44,6 +44,33 @@ export default {
     },
     data:function(){
         return{
+          content:'',
+          maillist: [
+            // {email:'anna@test.com',fullname:'章太炎',id:12280,status:true,value:'章太炎<anna@test.com>'}
+          ],
+          maillist_copyer: [],
+          fileList: [],
+          ruleForm2: {
+            is_cc:true,
+            is_partsend:false,
+            to: [["512167072@qq.com",'zhouli']],
+            cc: [],
+            subject: '',
+            secret:'非密',
+            is_save_sent:true,
+            is_confirm_read:true,
+            is_schedule:false,
+            schedule_day:'',
+            is_password:false,
+            password:'',
+            is_burn:false,
+            burn_limit:1,
+            burn_day:'',
+            html_text:'',
+            plain_text:'',
+            attachments:[],
+            net_attachments:[]
+          },
           hashTab:[],
           tab_content_height:'',
           editableTabsValue2: '2',
@@ -72,11 +99,11 @@ export default {
         this.showTabIndex=1;
       },
       addTab(type,subject,rid,fid) {
-        if(rid && this.hashTab[rid+fid+'']){
-          this.editableTabsValue2 = this.hashTab[rid+fid+''];
+        if(rid && this.hashTab[type+rid+fid+'']){
+          this.editableTabsValue2 = this.hashTab[type+rid+fid+''];
         }else{
           let newTabName = ++this.tabIndex + '';
-          this.hashTab[rid+fid+''] = newTabName;
+          this.hashTab[type+rid+fid+''] = newTabName;
           this.editableTabs2.push({
             title: subject||'无主题',
             name: newTabName,
@@ -222,10 +249,6 @@ export default {
         }else if(v.path == '/mailbox/compose'){
           this.showTabIndex = 3;
         };
-      let th = $('.mlmain.mltabview.tab_box').height()-56;
-      console.log('th: '+th)
-      this.tab_content_height = th+'px'
-      $('.tab_box .el-tabs__content').css({'height':th+'px'})
     },
   computed: {
     username() { // 获取store中的数据
@@ -264,7 +287,7 @@ export default {
 }
 </script>
 
-<style >
+<style>
   .tab_box .el-tabs__header{
     margin:0 0 5px;
   }
@@ -282,10 +305,22 @@ export default {
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-  .tab_box .el-tabs__content{
+  .tab_box>div.el-tabs.el-tabs--card{
+    position:relative;
+  }
+  .tab_box>div.el-tabs.hide_tab_top.tab_style_tt>.el-tabs__content{
+    top:0 !important;
+  }
+  .tab_box>div.el-tabs.tab_style_tt>.el-tabs__content{
     overflow:auto;
     box-sizing: border-box;
     padding-bottom:10px;
+    /*min-height:600px;*/
+    position: absolute;
+    top: 56px;
+    bottom: 0;
+    left: 0;
+    right: 0;
   }
   .tab_box .el-tabs.el-tabs--card.el-tabs--top{
     height:100%;

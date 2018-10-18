@@ -63,14 +63,14 @@
                   <div class="top-bar">
                       <div class="f-tar">
                                   <span class="mail-flagged f-pr f-csp" data-dropdown="flag-color" role="dropdown">
-                                      <i class="iconfont iconflat j-mail-flagged" title="设置标记"></i>
+                                      <i class="iconfont icon-iconflat j-mail-flagged" title="设置标记"></i>
                                       <i class="iconfont icondown"></i>
-                                  <ul class="u-menu u-menu-hidden"><li value="mark:flagged"><i class="iconfont left iconflatcolor flagged label0-0"></i><a href="javascript:void(0);" tabindex="-1">红旗</a></li><li class="divider"></li><li value="mark:noflagged"><a href="javascript:void(0);" tabindex="-1">取消标记</a></li></ul></span>
+                                  <ul class="u-menu u-menu-hidden"><li value="mark:flagged"><i class="iconfont left icon-iconflatcolor flagged label0-0"></i><a href="javascript:void(0);" tabindex="-1">红旗</a></li><li class="divider"></li><li value="mark:noflagged"><a href="javascript:void(0);" tabindex="-1">取消标记</a></li></ul></span>
 
 
-                              <a class="iconfont iconemailcontacts" href="javascript:void(0)" title="查看邮件往来" data-type="dealings"></a>
+                              <a class="iconfont icon-iconemailcontacts" href="javascript:void(0)" title="查看邮件往来" data-type="dealings"></a>
 
-                          <a class="iconfont iconnewtab" href="./detach.jsp?sid=BAcpKTaaYBZiTuHsrlaaUOhLUZiBhfEu#mail.read?mid=1:1tbiAQAJEFXEqdgAXgADsl&amp;fid=1&amp;mboxa=&amp;start=2" target="_blank" title="在新窗口打开"></a>
+                          <a class="iconfont icon-iconnewtab" href="./detach.jsp?sid=BAcpKTaaYBZiTuHsrlaaUOhLUZiBhfEu#mail.read?mid=1:1tbiAQAJEFXEqdgAXgADsl&amp;fid=1&amp;mboxa=&amp;start=2" target="_blank" title="在新窗口打开"></a>
 
                           <a href="javascript:void(0)" title="发起会议" data-type="mail_event">发起会议</a>
                       </div>

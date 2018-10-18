@@ -24,11 +24,11 @@
           <span></span>
         </div>
       </div>
-      <div class="icon icon-help j-to-helpcenter" data-i18n="common/nav_help" i18n-target="title" title="帮助中心">
-        <i class="iconfont iconhelp"></i>
+      <div class="icon icon-help j-to-helpcenter " data-i18n="common/nav_help" i18n-target="title" title="帮助中心">
+        <i class="iconfont icon-iconhelp"></i>
       </div>
-      <div class="icon icon-bottom" data-trigger="setting" role="toggle" data-i18n="common/nav_setting" i18n-target="title" title="设置">
-        <i class="iconfont iconsetupcenter"></i>
+      <div class="icon icon-bottom" :class="{active:activeTab==5}" data-trigger="setting" role="toggle" data-i18n="common/nav_setting" i18n-target="title" title="设置" @click="changeTab(5)">
+        <i class="iconfont icon-iconsetupcenter"></i>
       </div>
     </aside>
 
@@ -104,12 +104,11 @@
         mainUsername:'',
         activeTab:0,
         tabs:[
-          {id:0,title:'我的邮箱',iconclass:'icon-youxiang'},
+          {id:0,title:'我的邮箱',iconclass:'icon-icon-email'},
           {id:1,title:'我的日程',iconclass:'icon-iconschedule'},
           {id:2,title:'文件中心',iconclass:'icon-iconfiler'},
-          {id:3,title:'联系人',iconclass:'icon-iconcontacts'},
+          {id:3,title:'联系人',iconclass:'icon-iconcontacts1'},
           {id:4,title:'应用中心',iconclass:'icon-iconmore'},
-          {id:5,title:'设置',iconclass:'icon-iconset'},
         ]
       }
     },
