@@ -446,7 +446,39 @@
         })
 
         console.log(this.$parent.$parent.$parent);
-        this.$parent.$parent.$parent.addTab('read',row.subject,row.uid,this.boxId)
+        if(this.boxId=='Drafts'){
+          let pp = this.$parent.$parent.$parent;
+          readMail(row.uid,{"folder":this.boxId}).then(res=>{
+            let data = res.data
+            // pp.ruleForm2 = res.data;
+            pp.ruleForm2 = res.data;
+            pp.content = data.html_text || data.plain_text;
+            pp.maillist = []
+            pp.maillist_copyer = [];
+            pp.fileList = data.attachments;
+            pp.ruleForm2.is_html = true;
+            for(let i=0;i<data.to.length;i++){
+              pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
+
+            }
+            console.log('maillist')
+            console.log(pp.maillist)
+            if(data.cc){
+              for(let i=0;i<data.cc.length;i++){
+                pp.maillist_copyer.push({fullname:data.cc[i][1]||'',email:data.cc[i][0],status:true})
+              }
+            }
+
+            pp.addTab('composedrafts',data.subject,row.uid,this.boxId)
+
+          }).catch(err=>{
+            console.log(err)
+          })
+        }else{
+          this.$parent.$parent.$parent.addTab('read',row.subject,row.uid,this.boxId)
+        }
+
+
 
       },
       handleSelectionChange(val) {
@@ -565,32 +597,48 @@
         if(item.id==0 || item.id==1 || item.id==2 || item.id==3 || item.id==5){
           let pp = this.$parent.$parent.$parent;
           let fid = pp.activeMenubar.id;
-          readMail(this.multipleSelection[0].uid,{"folder":fid}).then(res=>{
+          let view = 3; //回复
+          if(item.id == 0){
+            view = 3;
+          }else if(item.id == 1){
+            view = 4;
+          }else if(item.id == 2){
+            view = 5;
+          }else if(item.id == 3){
+            view = 6;
+          }else if(item.id == 5){
+            view = 7;
+          }
+          readMail(this.multipleSelection[0].uid,{"folder":fid,"view":view}).then(res=>{
             let data = res.data
-            pp.ruleForm2 = res.data;
+            // pp.ruleForm2 = res.data;
             pp.content = data.html_text || data.plain_text;
-            pp.ruleForm2.refw_type = 're';
             pp.ruleForm2.uid = this.multipleSelection[0].uid;
             pp.ruleForm2.folder = fid;
-            if(item.id == 0){
-              pp.ruleForm2.subject = "回复：" + pp.ruleForm2.subject
-              pp.maillist = [
-                {fullname:data.mfrom[1],email:data.mfrom[0],status:true,value:data.mfrom[1]+'<'+data.mfrom[0]+'>'}
-              ]
-            }else if(item.id == 1){
-              pp.maillist = [];
-              pp.ruleForm2.subject = "回复全部：" + pp.ruleForm2.subject
-            }else if(item.id == 2){
-              pp.maillist = [];
-              pp.ruleForm2.subject = "转发：" + pp.ruleForm2.subject
-            }else if(item.id == 3){
-              pp.maillist = [];
-              pp.ruleForm2.subject = "附件方式转发：" + pp.ruleForm2.subject
-            }else if(item.id == 5){
-              pp.maillist = [];
-              pp.ruleForm2.subject = "再次发送：" + pp.ruleForm2.subject
+            pp.maillist = []
+            pp.maillist_copyer = [];
+            pp.fileList = data.attachments;
+            pp.ruleForm2['refw_type'] = data['refw_type']
+            pp.ruleForm2['uid'] = data['uid']
+            pp.ruleForm2['folder'] = data['folder']
+            pp.ruleForm2.is_html = true;
+            if(item.id == 0 || item.id ==1 || item.id==5){
+              for(let i=0;i<data.to.length;i++){
+                pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
+              }
+              if(data.cc){
+                for(let i=0;i<data.cc.length;i++){
+                  pp.maillist_copyer.push({fullname:data.cc[i][1]||'',email:data.cc[i][0],status:true})
+                }
+              }
             }
-            pp.addTab('compose',data.subject,data.uid,fid)
+            if(item.id==5){
+              pp.ruleForm2['refw_type']=undefined;
+              pp.ruleForm2['uid'] = undefined;
+              pp.ruleForm2['folder'] = undefined;
+            }
+            pp.addTab('compose'+view+' ',data.subject,data.uid,fid)
+
           }).catch(err=>{
             console.log(err)
           })

@@ -10,7 +10,7 @@
       <el-row class="toolbar">
         <el-col :span="24" >
           <el-pagination layout="total, sizes, prev, pager, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange"
-                         :page-sizes="[15, 30, 50, 100]" :current-page="page" :page-size="page_size" :total="total" style="float: right">
+                         :page-sizes="[10, 20, 50, 100]" :current-page="page" :page-size="page_size" :total="total" style="float: right">
           </el-pagination>
         </el-col>
       </el-row>
@@ -34,7 +34,7 @@
       return {
         total: 0,
         page: 1,
-        page_size: 15,
+        page_size: 10,
         listLoading: false,
         listTables: [],
       }

@@ -223,7 +223,7 @@
         sels:[],
         total: 0,
         page: 1,
-        page_size: 20,
+        page_size: 10,
         listLoading: false,
         listTables: [],
         current_name: {},

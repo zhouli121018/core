@@ -99,7 +99,7 @@
         sels: [],
         total: 0,
         page: 1,
-        page_size: 15,
+        page_size: 10,
         listLoading: false,
         listTables: [],
         filters: {

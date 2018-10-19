@@ -84,7 +84,7 @@
                       </template>
                     </label>
                     <div class="padding_15">
-                        <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist" :key="k" :title="v.email"><b>{{ v.value }}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v)"></i></div>
+                        <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist" :key="k" :title="v.email"><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v)"></i></div>
                         <el-autocomplete  class="no_padding"  v-model.trim="state1" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox"
                         @blur="addMailbox" @focus="insertMailbox=1" placeholder="" @select="handleSelect" :trigger-on-focus="false">
 
@@ -103,7 +103,7 @@
                       </template>
                     </label>
                     <div class="padding_15">
-                      <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_copyer" :key="k" :title="v.email"><b>{{v.value}}</b><i class="el-icon-close" @click="deleteMailboxForKey_copyer(k,v)"></i></div>
+                      <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_copyer" :key="k" :title="v.email"><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey_copyer(k,v)"></i></div>
                       <el-autocomplete  class="no_padding" v-model.trim="state_copyer" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox_copyer"
                         @blur="addMailbox_copyer" @focus="insertMailbox=2" placeholder=""  @select="handleSelect_copyer" :trigger-on-focus="false"></el-autocomplete>
                     </div>
@@ -128,42 +128,51 @@
                       </span>
                     </div>
                   </el-form-item>
-                  <el-upload
-                      class="upload-demo"
-                      action=""
-                      :http-request="uploadFile"
-                      :show-file-list="false"
-                      multiple :on-progress="uploadProgress" :on-success="sucUpload">
-                      <el-button size="small" type="primary" id="addAttachBtn"><i class="el-icon-upload"></i> 添加附件</el-button>
-                      <div slot="tip" class="el-upload__tip"></div>
-                  </el-upload>
-                  <el-dropdown  placement="bottom" @command="selectUpload" style="margin-right:20px;">
-                      <i class="el-icon-caret-bottom"></i>
-                    <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item  command="filecore">从文件中心添加</el-dropdown-item>
-                      <el-dropdown-item  command="upload">上传到文件中转站</el-dropdown-item>
-                    </el-dropdown-menu>
-                  </el-dropdown>
+                  <el-row>
+                    <el-col :span="18">
+                      <el-upload
+                          class="upload-demo"
+                          action=""
+                          :http-request="uploadFile"
+                          :show-file-list="false"
+                          multiple :on-progress="uploadProgress" :on-success="sucUpload">
+                          <el-button size="small" type="primary" id="addAttachBtn"><i class="el-icon-upload"></i> 添加附件</el-button>
+                          <div slot="tip" class="el-upload__tip"></div>
+                      </el-upload>
+                      <el-dropdown  placement="bottom" @command="selectUpload" style="margin-right:20px;">
+                          <i class="el-icon-caret-bottom"></i>
+                        <el-dropdown-menu slot="dropdown">
+                          <el-dropdown-item  command="filecore">从文件中心添加</el-dropdown-item>
+                          <el-dropdown-item  command="upload">上传到文件中转站</el-dropdown-item>
+                        </el-dropdown-menu>
+                      </el-dropdown>
 
-                  <el-dropdown trigger="click" placement="bottom-start">
-                    <el-button type="primary" size="small">
-                      签名<i class="el-icon-caret-bottom el-icon--right"></i>
-                    </el-button>
-                    <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item>不使用签名档</el-dropdown-item>
-                      <el-dropdown-item divided>aaa</el-dropdown-item>
-                      <el-dropdown-item>dadsaf</el-dropdown-item>
-                      <el-dropdown-item divided>编辑签名档</el-dropdown-item>
-                    </el-dropdown-menu>
-                  </el-dropdown>
+                      <el-dropdown trigger="click" placement="bottom-start">
+                        <el-button type="primary" size="small">
+                          签名<i class="el-icon-caret-bottom el-icon--right"></i>
+                        </el-button>
+                        <el-dropdown-menu slot="dropdown">
+                          <el-dropdown-item>不使用签名档</el-dropdown-item>
+                          <el-dropdown-item divided>aaa</el-dropdown-item>
+                          <el-dropdown-item>dadsaf</el-dropdown-item>
+                          <el-dropdown-item divided>编辑签名档</el-dropdown-item>
+                        </el-dropdown-menu>
+                      </el-dropdown>
 
-                  <el-upload
-                      action=""
-                      :http-request="imgChange"
-                      :show-file-list="false"
-                      multiple  style="display:inline-block;">
-                      <el-button size="small" type="primary"> 插入图片</el-button>
-                  </el-upload>
+                      <!--<el-upload-->
+                          <!--action=""-->
+                          <!--:http-request="imgChange"-->
+                          <!--:show-file-list="false"-->
+                          <!--multiple  style="display:inline-block;">-->
+                          <!--<el-button size="small" type="primary"> 插入图片</el-button>-->
+                      <!--</el-upload>-->
+                    </el-col>
+                    <el-col :span="6" style="text-align: right;">
+                      <el-button type="text" @click="changeIsHtml" size="">{{ruleForm2.is_html?"纯文本":"多媒体文本"}}</el-button>
+                    </el-col>
+                  </el-row>
+
+
 
                 </el-form>
               </div>
@@ -174,7 +183,7 @@
                 <editor :id="editor_id" :ref="editor_id" :height="editor_height+'px'" width="100%" :content="content"
                     pluginsPath="/static/kindeditor/plugins/" :resizeType="0"
                     :loadStyleMode="false" :items="toolbarItems" :uploadJson="uploadJson"
-                    @on-content-change="onContentChange"  :autoHeightMode="false">
+                    @on-content-change="onContentChange"  :autoHeightMode="false" :afterChange="onContentChange" @afterFocus="editorfocus">
 
                 </editor>
 
@@ -498,7 +507,8 @@
     props:{
       iframe_height:'',
       rid:'',
-      ruleForm2: {
+      parent_ruleForm2: {
+          is_html:true,
           is_cc:true,
           is_partsend:false,
           to: [["512167072@qq.com",'zhouli']],
@@ -519,16 +529,16 @@
           attachments:[],
           net_attachments:[]
         },
-      content:'',
-      maillist:  {
+      parent_content:'',
+      parent_maillist:  {
         type:Array,
         default:[]
       },
-      maillist_copyer: {
+      parent_maillist_copyer: {
         type:Array,
         default:[]
       },
-      fileList: {
+      parent_fileList: {
         type:Array,
         default:[]
       }
@@ -543,6 +553,32 @@
         }
       };
       return {
+        maillist:[],
+        maillist_copyer:[],
+        fileList:[],
+        ruleForm2:{
+          is_html:true,
+          is_cc:true,
+          is_partsend:false,
+          to: [["512167072@qq.com",'zhouli']],
+          cc: [],
+          subject: '',
+          secret:'非密',
+          is_save_sent:true,
+          is_confirm_read:true,
+          is_schedule:false,
+          schedule_day:'',
+          is_password:false,
+          password:'',
+          is_burn:false,
+          burn_limit:1,
+          burn_day:'',
+          html_text:'',
+          plain_text:'',
+          attachments:[],
+          net_attachments:[]
+        },
+        content:'',
         main_min_height:800,
         sendResult:{},
         mail_results:[],
@@ -642,6 +678,64 @@
       };
     },
     methods:{
+      editorfocus(){
+        this.setEditorHeight();
+      },
+      htmlToText(html){
+        // return html.replace(/<(style|script|iframe)[^>]*?>[\s\S]+?<\/\1\s*>/gi,'').replace(/<[^>]+?>/g,'').replace(/\s+/g,' ').replace(/ /g,' ').replace(/>/g,' ')
+        // var htmlTagReg = /<(\/)?[^>].*?>/g;
+        var htmlTagReg = /<(?!\/?br\/?.+?>|\/?img.+?>)[^<>]*>/g;
+        var p = /<p(([\s\S])*?)<\/p>/g;
+
+        html = html.replace(/<p>([\s\S]*?)<\/p>/ig, '$1<br/>')
+        html = html.replace(/<div>([\s\S]*?)<\/div>/ig, '$1<br/>')
+        html = html.replace(/<h1>([\s\S]*?)<\/h1>/ig, '$1<br/>')
+        html = html.replace(/<h2>([\s\S]*?)<\/h2>/ig, '$1<br/>')
+        html = html.replace(/<h3>([\s\S]*?)<\/h3>/ig, '$1<br/>')
+        html = html.replace(/<h4>([\s\S]*?)<\/h4>/ig, '$1<br/>')
+        html = html.replace(/<h5>([\s\S]*?)<\/h5>/ig, '$1<br/>')
+        html = html.replace(/<h6>([\s\S]*?)<\/h6>/ig, '$1<br/>')
+        html = html.replace(/<ul>([\s\S]*?)<\/ul>/ig, '$1<br/>')
+        html = html.replace(/<li>([\s\S]*?)<\/li>/ig, '$1<br/>')
+
+        return html.replace(htmlTagReg,'');
+
+      },
+      changeIsHtml(){
+        if(this.ruleForm2.is_html && this.content){
+          this.$confirm('切换到纯文本编辑方式将丢失当前文本的格式，确定？', '系统信息', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            dangerouslyUseHTMLString: true,
+            type: 'warning'
+          }).then(() => {
+            let text = this.htmlToText(this.content)
+            this.content = text;
+            $('#compose'+this.rid+' .ke-outline').addClass('ke-disabled')
+            $('#compose'+this.rid+' .ke-outline').css({'opacity':0.5})
+
+            $('#compose'+this.rid+' .ke-outline[data-name="preview"]').removeClass('ke-disabled')
+            // $('#compose'+this.rid+' .ke-outline[data-name="fullscreen"]').css({'opacity':1})
+
+            this.ruleForm2.is_html = !this.ruleForm2.is_html;
+          }).catch(() => {
+
+          });
+        }else{
+          if(!$('#compose'+this.rid+' .ke-outline[data-name="source"]').hasClass('ke-selected')){
+            $('#compose'+this.rid+' .ke-outline').removeClass('ke-disabled')
+            $('#compose'+this.rid+' .ke-outline').css({'opacity':1})
+          }
+          $('#compose'+this.rid+' .ke-outline[data-name="source"]').removeClass('ke-disabled')
+          $('#compose'+this.rid+' .ke-outline[data-name="source"]').css({'opacity':1})
+          $('#compose'+this.rid+' .ke-outline[data-name="fullscreen"]').removeClass('ke-disabled')
+          $('#compose'+this.rid+' .ke-outline[data-name="fullscreen"]').css({'opacity':1})
+
+          this.ruleForm2.is_html = !this.ruleForm2.is_html;
+        }
+
+
+      },
       set_main_min_height(){
         this.main_min_height = $('#compose'+this.rid+' .title_height').outerHeight()+$('#compose'+this.rid+' .compose_editor').outerHeight()+
           $('#compose'+this.rid+' .footer_height').outerHeight()
@@ -672,6 +766,7 @@
           this.maillist_copyer = [];
           this.fileList = [];
           this.ruleForm2 = {
+            is_html:true,
             is_cc:true,
             is_partsend:false,
             to: [],
@@ -759,6 +854,7 @@
         }
       },
       setEditorHeight(){
+        console.log('set')
         this.editor_height = $('#compose'+this.rid+'.mltabview-content').height()-$('#compose'+this.rid+' .title_height').outerHeight()-$('#compose'+this.rid+' .footer_height').outerHeight()-50;
         let th =this.editor_height - $('#compose'+this.rid+' .ke-toolbar').outerHeight()-30;
 
@@ -1043,8 +1139,17 @@
           this.$alert('请输入收件人！');
           return;
         }
-        this.ruleForm2.html_text = this.content;
-        this.ruleForm2.plain_text = '';
+        if(type=='sent' && !this.ruleForm2.subject){
+          this.$alert('请填写邮件主题！');
+          return;
+        }
+        if(this.ruleForm2.is_html){
+          this.ruleForm2.html_text = this.content;
+          this.ruleForm2.plain_text = '';
+        }else{
+          this.ruleForm2.html_text = '';
+          this.ruleForm2.plain_text = this.htmlToText(this.content);
+        }
 
         for(let i=0;i<this.fileList.length;i++){
           if(this.fileList[i].filename){
@@ -1059,6 +1164,7 @@
         console.log(this.maillist)
         mailSent(param).then(res=>{
           console.log(res)
+          this.$parent.$parent.$parent.getFloderfn();
           let info = type=='sent'?"发送成功！":"保存草稿成功！";
           this.$message({
              message:info,
@@ -1067,6 +1173,9 @@
           this.message_id = res.data.message_id;
           this.recipient = res.data.recipient;
           this.sendResult = res.data;
+          if(res.data.draft_id){
+            this.ruleForm2.draft_id = res.data.draft_id
+          }
           if(res.data.type && res.data.type=='send'){this.getMessageStatus();}
           if(res.data.success && res.data.success){
             this.send_suc = true;
@@ -1280,12 +1389,13 @@
         }
       },
       onContentChange (val) {
+        this.setEditorHeight();
         this.content = this.$refs[this.editor_id].$data.outContent;
       },
 
       preview(){
         //ke-toolbar-icon ke-toolbar-icon-url ke-icon-preview
-        let btn = document.querySelector('.ke-toolbar-icon.ke-toolbar-icon-url.ke-icon-preview');
+        let btn = document.querySelector('#compose'+this.rid+' .ke-toolbar-icon.ke-toolbar-icon-url.ke-icon-preview');
         btn.click();
       },
       addMailbox(){
@@ -1436,6 +1546,7 @@
         },(err)=>{
           console.log(err);
         })
+        return;
 
         contactPabGroupsGet().then(res=>{
           this.contact_loading = true;
@@ -1480,13 +1591,25 @@
 
     },
     mounted() {
+      this.content = this.parent_content;
+      this.maillist = this.parent_maillist;
+      this.maillist_copyer = this.parent_maillist_copyer;
+      this.fileList = this.parent_fileList;
+      this.ruleForm2 = this.parent_ruleForm2;
       this.getParams();
       this.getPabGroups();
       sessionStorage['openGroup'] = 'oab';
       console.log(this.editor_height)
       this.setEditorHeight();
       this.set_main_min_height();
-      // let _this = this
+      // this.$refs[this.editor_id].editor.insertHtml(' ');
+      $('#compose'+this.rid+' .ke-edit-iframe').focus();
+      let _this = this
+       window.addEventListener("resize", function () {
+            // 得到屏幕尺寸 (内部/外部宽度，内部/外部高度)
+            _this.setEditorHeight();
+       }, false);
+
       //   setTimeout(_this.setEditorHeight,50)
     },
     beforeMount() {

@@ -12,13 +12,13 @@
                         :name="item.name"
 
                       >
-                         <span slot="label" class="tab_title" :class="{no_close:item.name==1}" :title="item.title"><i class="" :class="{'el-icon-message':item.type=='read','el-icon-edit':item.type=='compose','el-icon-menu':item.name=='1'}"></i> {{item.title | hide_subject}}</span>
+                         <span slot="label" class="tab_title" :class="{no_close:item.name==1}" :title="item.title"><i class="" :class="{'el-icon-message':item.type=='read','el-icon-edit':item.type!='read'&&item.name!='1','el-icon-menu':item.name=='1'}"></i> {{item.title | hide_subject}}</span>
                         <!--<div :style="{height: tab_content_height}">-->
 
                         <!--</div>-->
                         <Innerbox v-if="item.name=='1'" :boxId="boxId" :curr_folder="curr_folder"  @getRead="getRead" :floderResult="floderResult" ref="innerbox"></Innerbox>
                         <Read :readId="item.rid" :readFolderId="item.fid" v-if="item.type=='read'"></Read>
-                        <Compose  v-if="item.type=='compose'" :iframe_height="iframe_height" :rid="item.name" :ruleForm2="ruleForm2" :content="content" :maillist="maillist" :maillist_copyer="maillist_copyer" :fileList="fileList"></Compose>
+                        <Compose  v-if="item.type!='read'&&item.name!='1'" :iframe_height="iframe_height" :rid="item.name" :parent_ruleForm2="ruleForm2" :parent_content="content" :parent_maillist="maillist" :parent_maillist_copyer="maillist_copyer" :parent_fileList="fileList"></Compose>
                       </el-tab-pane>
                     </el-tabs>
                     <Home v-if="showTabIndex==0"></Home>
@@ -51,6 +51,7 @@ export default {
           maillist_copyer: [],
           fileList: [],
           ruleForm2: {
+            is_html:true,
             is_cc:true,
             is_partsend:false,
             to: [["512167072@qq.com",'zhouli']],
@@ -99,6 +100,35 @@ export default {
         this.showTabIndex=1;
       },
       addTab(type,subject,rid,fid) {
+        if(type=='compose'){
+          this.ruleForm2['refw_type']=undefined;
+          this.ruleForm2 = {
+            is_html:true,
+            is_cc:true,
+            is_partsend:false,
+            to: [],
+            cc: [],
+            subject: '',
+            secret:'非密',
+            is_save_sent:true,
+            is_confirm_read:true,
+            is_schedule:false,
+            schedule_day:'',
+            is_password:false,
+            password:'',
+            is_burn:false,
+            burn_limit:1,
+            burn_day:'',
+            html_text:'',
+            plain_text:'',
+            attachments:[],
+            net_attachments:[]
+          };
+          this.content = '';
+          this.maillist = [];
+          this.maillist_copyer = [];
+          this.fileList = [];
+        }
         if(rid && this.hashTab[type+rid+fid+'']){
           this.editableTabsValue2 = this.hashTab[type+rid+fid+''];
         }else{
@@ -133,8 +163,8 @@ export default {
         this.editableTabsValue2 = activeName;
         for(let i=0;i<tabs.length;i++){
           if(tabs[i].name == targetName){
-            if(tabs[i].type=='read' && tabs[i].rid && tabs[i].fid){
-              this.hashTab[tabs[i].rid+tabs[i].fid+''] = false;
+            if(tabs[i].rid && tabs[i].fid){
+              this.hashTab[tabs[i].type+tabs[i].rid+tabs[i].fid+''] = false;
             }
           }
         }
