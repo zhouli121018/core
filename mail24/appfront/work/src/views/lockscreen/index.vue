@@ -66,7 +66,7 @@ export default {
                 that.$router.push(that.$store.state.lastUrl)
               }
             }, (data)=>{
-              this.$message.error('用户名或密码错误！请重新输入！');
+              this.$message.error('密码错误！请重新输入！');
                 // this.open('用户名或密码错误！请重新输入！');
             });
         }

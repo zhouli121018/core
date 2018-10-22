@@ -8,7 +8,7 @@ export const login = params => { return axios.post(`${host}/login/`, params) }
 //获取欢迎页面信息
 export const welcome = params => { return axios.get(`${host}/core/welcome/`, { params: params }) }
 //锁屏
-export const lockscreen = params => { return axios.post(`${host}/core/lockscreen/`, { params: params }) }
+export const lockscreen = params => { return axios.post(`${host}/core/lockscreen/`,  params ) }
 // 设置联系人数据
 export const getContactInfo = params => { return axios.get(`${host}/contact/show/`, { params: params }) }
 
@@ -125,6 +125,17 @@ export const mailDecode = params =>{ return axios.post(`${host}/mail/message/pas
 export const sendRecall = params =>{ return axios.post(`${host}/mail/message/send-recall/`,params) };
 //查看邮件状态 /api/mail/message/status/
 export const getMessageStatus = params => { return axios.get(`${host}/mail/message/status/`, { params: params }) };
+//拒收邮件 /api/mail/message/reject/
+export const rejectMessage = params =>{ return axios.post(`${host}/mail/message/reject/`,params) };
+//彻底（直接）删除邮件 /api/mail/message/prune/
+export const pruneMessage = params =>{ return axios.post(`${host}/mail/message/prune/`,params) };
+//打包下载邮件 /api/mail/message/zip/
+export const zipMessage = params => { return axios.get(`${host}/mail/message/zip/`, { params: params,responseType:'blob'  }) };
+//下载某个邮件 /api/mail/message/eml/
+export const emlMessage = params => { return axios.get(`${host}/mail/message/eml/`, { params: params,responseType:'blob'  }) };
+//添加到个人通讯录 /api/mail/message/pab/
+export const pabMessage = params => { return axios.post(`${host}/mail/message/pab/`,  params) };
+
 
 
 /* ***********************  设置中心 *********************** */

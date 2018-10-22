@@ -23,20 +23,33 @@
                             </el-dropdown>
 
                             <!--查看-->
-                            <el-dropdown @command="viewHandleCommand" placement="bottom-start" trigger="click">
-                                <el-button  size="small" plain>
+
+                            <el-dropdown @command="viewHandleCommand" trigger="click">
+                                <el-button  size="small" plain >
                                     <span>查看</span>
                                     <i class="el-icon-arrow-down el-icon--right"></i>
                                 </el-button>
                                 <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-for="item in viewItems" :key="item.id" class="dropdown_item" :class="{ active: viewCheckIndex===item.id }"
-                                    :divided="item.divided" :command="item.id">
-                                    <b>
-                                      <i v-if="item.className" :class="item.className" style="color: #2ea962;"></i>
-                                      <i v-if="!item.className" class="el-icon-check vibility_hide" :class="{ vibility_show: viewCheckIndex===item.id }"></i>
+                                  <el-dropdown-item v-if="!item.children" v-for="(item,k) in viewItems" :key="k" class="dropdown_item"
+                                   :command="item.id" :divided="item.divided">
+                                      <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
+                                      {{ item.text}}
+                                  </el-dropdown-item>
+                                  <el-dropdown-item class="dropdown_item" v-else="item.children" :divided="item.divided">
+                                    <el-dropdown @command="viewHandleCommand"  placement="right-start">
+                                      <span class="el-dropdown-link">
+                                        <b><i class="el-icon-check vibility_hide" :class="item.classN"></i> </b>
+                                      {{item.text}}<i class="el-icon-arrow-right el-icon--right"></i>
+                                      </span>
+                                        <el-dropdown-menu slot="dropdown">
+                                          <el-dropdown-item  v-for="(c,k) in item.children" :key="k" class="dropdown_item" :command="c.id">
+                                              <i class="iconfont icon-iconflatcolor" :class="c.classN"></i> {{c.text}}
+                                          </el-dropdown-item>
 
-                                    </b>
-                                    {{ item.text}}</el-dropdown-item>
+                                        </el-dropdown-menu>
+
+                                    </el-dropdown>
+                                  </el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
 
@@ -46,7 +59,7 @@
                                     删除
                                 </el-button>
 
-                                <el-dropdown @command="moveHandleCommand" trigger="click">
+                                <el-dropdown @command="moveHandleCommand" trigger="click" v-if="boxId!='Drafts'">
                                     <el-button  size="small" plain>
                                     <span>移动到</span>
                                     <i class="el-icon-arrow-down el-icon--right"></i>
@@ -66,14 +79,14 @@
                                     </el-button>
                                     <el-dropdown-menu slot="dropdown">
                                       <el-dropdown-item v-if="!item.children" v-for="item in signItems" :key="item.id" class="dropdown_item"
-                                       :command="item">
-                                          <b><i class="el-icon-check vibility_hide"></i> </b>
+                                       :command="item" :divided="item.divided">
+                                          <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
                                           {{ item.text}}
                                       </el-dropdown-item>
-                                      <el-dropdown-item class="dropdown_item" v-else="item.children">
+                                      <el-dropdown-item class="dropdown_item" v-else="item.children" :divided="item.divided">
                                         <el-dropdown @command="signHandleCommand"  placement="right-start">
                                           <span class="el-dropdown-link">
-                                            <b><i class="el-icon-check vibility_hide"></i> </b>
+                                            <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
                                           {{item.text}}<i class="el-icon-arrow-right el-icon--right"></i>
                                           </span>
                                             <el-dropdown-menu slot="dropdown">
@@ -94,7 +107,7 @@
                                     <i class="el-icon-arrow-down el-icon--right"></i>
                                     </el-button>
                                     <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-for="item in moreItems" v-if="!item.checkone||checkedMails.length==1" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }"
+                                    <el-dropdown-item v-if="boxId!='Drafts'||item.id==6||item.id==7" v-for="item in moreItems" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }"
                                     :divided="item.divided" :command="item">
                                         <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moreCheckIndex===item.id }"></i> </b>
                                         {{ item.text}}</el-dropdown-item>
@@ -226,7 +239,7 @@
         </div>
 </template>
 <script>
-  import {getMailMessage,moveMails,getFloder,getFloderMsg,deleteMail,messageFlag,readMail} from "@/api/api";
+  import {getMailMessage,moveMails,getFloder,getFloderMsg,deleteMail,messageFlag,readMail,rejectMessage,pruneMessage,zipMessage} from "@/api/api";
 
   import router from '@/router'
 
@@ -290,17 +303,27 @@
             {id:'',text:'全部邮件',divided:false},
             {id:'unseen',text:'未读邮件',divided:false},
             {id:'seen',text:'已读邮件',divided:false},
-            {id:'flagged',text:'已标记邮件',divided:true},
-            {id:'unflagged',text:'未标记邮件',divided:false},
-            {id:'ANSWERED',text:'已回复',divided:true,className:'iconfont icon-iconback'},
-            {id:'KEYWORD umail-forword',text:'已转发',divided:false,className:'iconfont icon-Forward'},
+            {id:'flagged',text:'已标记邮件',divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
+            {id:'other',text:'其他标记',divided:false,children:[
+                {id:'KEYWORD umail-green',text:'绿旗',classN:'flag-green'},
+                {id:'KEYWORD umail-orange',text:'橙旗',classN:'flag-orange'},
+                {id:'KEYWORD umail-blue',text:'蓝旗',classN:'flag-blue'},
+                {id:'KEYWORD umail-pink',text:'粉旗',classN:'flag-pink'},
+                {id:'KEYWORD umail-cyan',text:'青旗',classN:'flag-cyan'},
+                {id:'KEYWORD umail-yellow',text:'黄旗',classN:'flag-yellow'},
+                {id:'KEYWORD umail-purple',text:'紫旗',classN:'flag-purple'},
+                {id:'KEYWORD umail-gray',text:'灰旗',classN:'flag-gray'}
+              ]},
+            {id:'unflagged',text:'未标记邮件',divided:false,classN:'iconfont icon-iconflat'},
+            {id:'ANSWERED',text:'已回复',divided:true,classN:'iconfont icon-iconback greencolor'},
+            {id:'KEYWORD umail-forword',text:'已转发',divided:false,classN:'iconfont icon-Forward greencolor'},
           ],
           moveCheckIndex:'',
 
           signItems:[
             {id:0,flags:'\\Seen',text:'已读邮件',divided:false,action:'add'},
             {id:1,flags:'\\Seen',text:'未读邮件',divided:false,action:'remove'},
-            {id:2,flags:'\\flagged',text:'红旗',divided:true,action:'add'},
+            {id:2,flags:'\\flagged',text:'红旗',divided:true,action:'add',classN:'iconfont icon-iconflatcolor redcolor'},
             {id:3,text:'其他旗帜',divided:false,children:[
                 {flags:'umail-green',action:'add',text:'绿旗',classN:{'flag-green':true}},
                 {flags:'umail-orange',action:'add',text:'橙旗',classN:{'flag-orange':true}},
@@ -512,10 +535,12 @@
       },
       viewHandleCommand:function(index){
         console.log(index);
+        if(index == 'other'){
+          return;
+        }
         this.search = index;
         this.currentPage = 1;
         this.getMessageList();
-        this.viewCheckIndex = index;
       },
       moveHandleCommand:function(index){
         var params={
@@ -591,11 +616,18 @@
 
       },
       moreHandleCommand:function(item){
-        this.moreCheckIndex = item;
+        if(item.checkone && this.checkedMails.length > 1){
+          this.$alert('您只能选择一封邮件进行 '+item.text+' !','提示');
+          return;
+        }
         console.log(this.checkedMails)
         console.log(this.multipleSelection)
+        let pp = this.$parent.$parent.$parent;
+        let param = {
+          uids:this.checkedMails,
+          folder:pp.activeMenubar.id
+        }
         if(item.id==0 || item.id==1 || item.id==2 || item.id==3 || item.id==5){
-          let pp = this.$parent.$parent.$parent;
           let fid = pp.activeMenubar.id;
           let view = 3; //回复
           if(item.id == 0){
@@ -610,19 +642,40 @@
             view = 7;
           }
           readMail(this.multipleSelection[0].uid,{"folder":fid,"view":view}).then(res=>{
+            pp.ruleForm2 = {
+              is_html:true,
+              is_cc:true,
+              is_partsend:false,
+              to: [["512167072@qq.com",'zhouli']],
+              cc: [],
+              subject: '',
+              secret:'非密',
+              is_save_sent:true,
+              is_confirm_read:true,
+              is_schedule:false,
+              schedule_day:'',
+              is_password:false,
+              password:'',
+              is_burn:false,
+              burn_limit:1,
+              burn_day:'',
+              html_text:'',
+              plain_text:'',
+              attachments:[],
+              net_attachments:[]
+            }
             let data = res.data
             // pp.ruleForm2 = res.data;
-            pp.content = data.html_text || data.plain_text;
-            pp.ruleForm2.uid = this.multipleSelection[0].uid;
-            pp.ruleForm2.folder = fid;
             pp.maillist = []
             pp.maillist_copyer = [];
+            pp.content = data.html_text || data.plain_text;
             pp.fileList = data.attachments;
-            pp.ruleForm2['refw_type'] = data['refw_type']
-            pp.ruleForm2['uid'] = data['uid']
-            pp.ruleForm2['folder'] = data['folder']
+            pp.ruleForm2.subject = data.subject;
+            if(data.uid)pp.ruleForm2.uid = data.uid;
+            if(data.folder)pp.ruleForm2.folder = data.folder;
+            if(data.refw_type)pp.ruleForm2.refw_type = data.refw_type
             pp.ruleForm2.is_html = true;
-            if(item.id == 0 || item.id ==1 || item.id==5){
+            // if(item.id == 0 || item.id ==1 || item.id==5){
               for(let i=0;i<data.to.length;i++){
                 pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
               }
@@ -631,16 +684,65 @@
                   pp.maillist_copyer.push({fullname:data.cc[i][1]||'',email:data.cc[i][0],status:true})
                 }
               }
-            }
-            if(item.id==5){
-              pp.ruleForm2['refw_type']=undefined;
-              pp.ruleForm2['uid'] = undefined;
-              pp.ruleForm2['folder'] = undefined;
-            }
+            // }
             pp.addTab('compose'+view+' ',data.subject,data.uid,fid)
 
           }).catch(err=>{
             console.log(err)
+          })
+
+        }else if(item.id==4){ //拒收邮件
+          rejectMessage(param).then(res=>{
+            console.log(res)
+            this.$message(
+              {type:'success',message:'邮件拒收成功！'}
+            )
+          })
+            .catch(err=>{
+            console.log(err)
+              this.$message(
+              {type:'error',message:'邮件拒收失败！'}
+            )
+          })
+        }else if(item.id==6){//打包下载
+          zipMessage(param).then(response=>{
+            let blob = new Blob([response.data], { type: response.headers["content-type"] })
+            let objUrl = URL.createObjectURL(blob);
+            this.blobUrl = objUrl;
+            let filenameHeader = response.headers['content-disposition']
+            let filename = filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1);
+            if (window.navigator.msSaveOrOpenBlob) {
+              // if browser is IE
+              navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
+            } else {
+              // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
+              var link = document.createElement("a");
+              link.setAttribute("href", objUrl);
+              link.setAttribute("download", filename);
+
+              document.body.appendChild(link);
+              link.click();
+            }
+            this.$message(
+              {type:'success',message:'打包下载邮件成功！'}
+            )
+          }).catch(err=>{
+            console.log(err)
+            this.$message(
+              {type:'error',message:'打包下载邮件失败！'}
+            )
+          })
+
+        }else if(item.id == 7){//彻底删除
+          pruneMessage(param).then(res=>{
+            console.log(res)
+            this.$message(
+              {type:'success',message:'彻底删除邮件成功！'}
+            )
+            pp.getFloderfn();
+            this.getMessageList();
+          }).catch(err=>{
+            console.log('彻底删除失败！',err);
           })
 
         }
@@ -783,6 +885,12 @@
 </script>
 
 <style>
+  .greencolor{
+    color:rgb(46, 169, 98);
+  }
+  .redcolor{
+    color:#c00;
+  }
   .flag-green,.flag-green .fromto{
     color: #349B08!important;
   }

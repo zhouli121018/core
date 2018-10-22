@@ -84,7 +84,8 @@
                       </template>
                     </label>
                     <div class="padding_15">
-                        <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist" :key="k" :title="v.email"><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v)"></i></div>
+                        <div class="mailbox_s" v-if="!ruleForm2.is_partsend" :class="{error:!v.status}" v-for="(v,k) in maillist" :key="k" :title="v.email"><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v)"></i></div>
+                        <div class="mailbox_s" v-if="ruleForm2.is_partsend" :class="{error:!v.status}" v-for="(v,k) in partSendList" :key="k" :title="v.email"><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v,1)"></i></div>
                         <el-autocomplete  class="no_padding"  v-model.trim="state1" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox"
                         @blur="addMailbox" @focus="insertMailbox=1" placeholder="" @select="handleSelect" :trigger-on-focus="false">
 
@@ -701,38 +702,47 @@
         return html.replace(htmlTagReg,'');
 
       },
+      no_html(){
+        let text = this.htmlToText(this.content)
+        this.content = text;
+        // $('#compose'+this.rid+' .ke-outline').addClass('ke-disabled')
+        // $('#compose'+this.rid+' .ke-outline').css({'opacity':0.5})
+
+        // $('#compose'+this.rid+' .ke-outline[data-name="preview"]').removeClass('ke-disabled')
+        // $('#compose'+this.rid+' .ke-outline[data-name="fullscreen"]').css({'opacity':1})
+
+        $('#compose'+this.rid+' .ke-toolbar').hide()
+
+        this.ruleForm2.is_html = !this.ruleForm2.is_html;
+      },
       changeIsHtml(){
-        if(this.ruleForm2.is_html && this.content){
-          this.$confirm('切换到纯文本编辑方式将丢失当前文本的格式，确定？', '系统信息', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            dangerouslyUseHTMLString: true,
-            type: 'warning'
-          }).then(() => {
-            let text = this.htmlToText(this.content)
-            this.content = text;
-            $('#compose'+this.rid+' .ke-outline').addClass('ke-disabled')
-            $('#compose'+this.rid+' .ke-outline').css({'opacity':0.5})
+        if(this.ruleForm2.is_html){
+          if(this.content){
+            this.$confirm('切换到纯文本编辑方式将丢失当前文本的格式，确定？', '系统信息', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              dangerouslyUseHTMLString: true,
+              type: 'warning'
+            }).then(() => {
+              this.no_html();
+            }).catch(() => {
 
-            $('#compose'+this.rid+' .ke-outline[data-name="preview"]').removeClass('ke-disabled')
-            // $('#compose'+this.rid+' .ke-outline[data-name="fullscreen"]').css({'opacity':1})
+            });
+          }else{
+            this.no_html();
+          }
 
-            this.ruleForm2.is_html = !this.ruleForm2.is_html;
-          }).catch(() => {
-
-          });
         }else{
           if(!$('#compose'+this.rid+' .ke-outline[data-name="source"]').hasClass('ke-selected')){
-            $('#compose'+this.rid+' .ke-outline').removeClass('ke-disabled')
-            $('#compose'+this.rid+' .ke-outline').css({'opacity':1})
+            // $('#compose'+this.rid+' .ke-outline').removeClass('ke-disabled')
+            // $('#compose'+this.rid+' .ke-outline').css({'opacity':1})
           }
-          $('#compose'+this.rid+' .ke-outline[data-name="source"]').removeClass('ke-disabled')
-          $('#compose'+this.rid+' .ke-outline[data-name="source"]').css({'opacity':1})
-          $('#compose'+this.rid+' .ke-outline[data-name="fullscreen"]').removeClass('ke-disabled')
-          $('#compose'+this.rid+' .ke-outline[data-name="fullscreen"]').css({'opacity':1})
+          $('#compose'+this.rid+' .ke-toolbar').show()
 
           this.ruleForm2.is_html = !this.ruleForm2.is_html;
+
         }
+        this.setEditorHeight();
 
 
       },
@@ -854,13 +864,12 @@
         }
       },
       setEditorHeight(){
-        console.log('set')
         this.editor_height = $('#compose'+this.rid+'.mltabview-content').height()-$('#compose'+this.rid+' .title_height').outerHeight()-$('#compose'+this.rid+' .footer_height').outerHeight()-50;
-        let th =this.editor_height - $('#compose'+this.rid+' .ke-toolbar').outerHeight()-30;
-
-        // $('.ke-edit').css({'height': th+'px','maxHeight':th+'px','minHeight':'200px'})
-        $('#compose'+this.rid+' .ke-edit').css({'height': th+'px','minHeight':'200px'})
-        $('#compose'+this.rid+' .ke-edit-iframe').css({'height': th+'px','minHeight':'200px'})
+        let th = this.editor_height - $('#compose'+this.rid+' .ke-toolbar').outerHeight()-30;
+        if(th>0){
+          $('#compose'+this.rid+' .ke-edit').css({'height': th+'px','minHeight':'200px'})
+          $('#compose'+this.rid+' .ke-edit-iframe').css({'height': th+'px','minHeight':'200px'})
+        }
       },
       deleteList(a,id,k){
         if(a=='to'){
@@ -1133,8 +1142,13 @@
         this.ruleForm2.cc = [];
         this.ruleForm2.attachments = [];
         this.ruleForm2.net_attachments = [];
-        this.format(this.maillist,this.ruleForm2.to)
-        this.format(this.maillist_copyer,this.ruleForm2.cc)
+
+        if(this.ruleForm2.is_partsend){
+          this.format(this.partSendList,this.ruleForm2.to)
+        }else{
+          this.format(this.maillist,this.ruleForm2.to)
+          this.format(this.maillist_copyer,this.ruleForm2.cc)
+        }
         if(type=='sent'&&this.ruleForm2.to.length<=0){
           this.$alert('请输入收件人！');
           return;
@@ -1403,21 +1417,43 @@
       },
       deleteMailbox(){
         if(!this.state1&&this.maillist.length>0){
-          this.hashMail[this.maillist[this.maillist.length-1].mailbox] = false;
+          this.hashMail[this.maillist[this.maillist.length-1].email] = false;
           this.maillist.pop();
         }
       },
-      deleteMailboxForKey(k,v){
-        this.hashMail[v.mailbox] = false;
-        this.maillist.splice(k,1)
+      deleteMailboxForKey(k,v,p){
+        if(p){
+          let c = 0;
+          for(let i=0;i<this.maillist.length;i++){
+            if(this.maillist[i].email == v.email){
+              this.hashMail[v.email] =false;
+              this.maillist.splice(i,1);
+              c--;
+              break;
+            }
+            c ++;
+          }
+          if(c>=this.maillist.length){
+            for(let j=0;j<this.maillist_copyer.length;j++){
+              if(this.maillist_copyer[j].email == v.email){
+                this.hashMail_copyer[v.email] =false;
+                this.maillist_copyer.splice(j,1);
+                break;
+              }
+            }
+          }
+        }else{
+          this.hashMail[v.email] = false;
+          this.maillist.splice(k,1)
+        }
       },
       handleSelect(item) {
         if(item){
           if(this.state1){
-            if(this.hashMail[this.state1]){
+            if(this.hashMail[item.email]){
 
             }else{
-              this.hashMail[this.state1] = true;
+              this.hashMail[item.email] = true;
               this.maillist.push(item);
               this.state1 = '';
             }
@@ -1432,6 +1468,7 @@
               let obj = {};
               obj.value = this.state1;
               obj.email = this.state1;
+              obj.fullname = '';
               if(emailReg.test(this.state1)){
                 obj.status = true;
               }else{
@@ -1450,21 +1487,21 @@
       },
       deleteMailbox_copyer(){
         if(!this.state_copyer&&this.maillist_copyer.length>0){
-          this.hashMail_copyer[this.maillist_copyer[this.maillist_copyer.length-1].mailbox] = false;
+          this.hashMail_copyer[this.maillist_copyer[this.maillist_copyer.length-1].email] = false;
           this.maillist_copyer.pop();
         }
       },
       deleteMailboxForKey_copyer(k,v){
-        this.hashMail_copyer[v.mailbox] = false;
+        this.hashMail_copyer[v.email] = false;
         this.maillist_copyer.splice(k,1)
       },
       handleSelect_copyer(item) {
         if(item){
           if(this.state_copyer){
-            if(this.hashMail_copyer[this.state_copyer]){
+            if(this.hashMail_copyer[item.email]){
 
             }else{
-              this.hashMail_copyer[this.state_copyer] = true;
+              this.hashMail_copyer[item.email] = true;
               this.maillist_copyer.push(item);
               this.state_copyer = '';
             }
@@ -1479,6 +1516,7 @@
               let obj = {};
               obj.value = this.state_copyer;
               obj.email = this.state_copyer;
+              obj.fullname = '';
               if(emailReg.test(this.state_copyer)){
                 obj.status = true;
               }else{
@@ -1621,7 +1659,25 @@
       },
       editor_id:function(){
         return 'editor_id'+this.rid;
+      },
+      partSendList:function(){
+        let arr = [];
+        for(let i=0;i<this.maillist.length;i++){
+          arr.push(this.maillist[i])
+        }
+        for(let i=0;i<this.maillist_copyer.length;i++){
+          for(var j=0;j<this.maillist.length;j++){
+            if(this.maillist_copyer[i].email == this.maillist[j].email){
+              break;
+            }
+          }
+          if( j ==this.maillist.length){
+            arr.push(this.maillist_copyer[i])
+          }
+        }
+        return arr;
       }
+
 
 
     },

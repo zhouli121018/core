@@ -15,44 +15,65 @@
                               </div>
 
                               <el-button-group >
-                                <el-button size="small">回复</el-button>
-                                <el-button size="small">回复全部</el-button>
+                                <el-button size="small" @click="actionView(3)">回复</el-button>
+                                <el-button size="small"  @click="actionView(4)">回复全部</el-button>
                               </el-button-group>
 
-                              <el-button size="small">转发</el-button>
-                              <el-dropdown @command="moveHandleCommand">
-                                      <el-button  size="small" plain>
-                                      <span>移动到</span>
-                                      <i class="el-icon-arrow-down el-icon--right"></i>
-                                      </el-button>
-                                      <el-dropdown-menu slot="dropdown">
-                                      <el-dropdown-item v-for="item in moveItems" :key="item.id" class="dropdown_item" :class="{ active: moveCheckIndex===item.id }"
-                                      :divided="item.divided" :command="item.id">
-                                          <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moveCheckIndex===item.id }"></i> </b>
-                                          {{ item.text}}</el-dropdown-item>
-                                      </el-dropdown-menu>
+                              <el-button size="small"  @click="actionView(5)">转发</el-button>
+                              <el-dropdown @command="moveHandleCommand" trigger="click">
+                                  <el-button  size="small" plain>
+                                  <span>移动到</span>
+                                  <i class="el-icon-arrow-down el-icon--right"></i>
+                                  </el-button>
+                                  <el-dropdown-menu slot="dropdown">
+                                  <el-dropdown-item v-for="item in moveItems" :key="item.id" class="dropdown_item" :class="{ active: moveCheckIndex===item.id }"
+                                  :divided="item.divided" :command="item.id">
+                                      <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moveCheckIndex===item.id }"></i> </b>
+                                      {{ item.text}}</el-dropdown-item>
+                                  </el-dropdown-menu>
+                              </el-dropdown>
+
+                                  <el-dropdown @command="signHandleCommand" trigger="click">
+                                    <el-button  size="small" plain >
+                                        <span>标记为</span>
+                                        <i class="el-icon-arrow-down el-icon--right"></i>
+                                    </el-button>
+                                    <el-dropdown-menu slot="dropdown">
+                                      <el-dropdown-item v-if="!item.children" v-for="item in signItems" :key="item.id" class="dropdown_item"
+                                       :command="item" :divided="item.divided">
+                                          <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
+                                          {{ item.text}}
+                                      </el-dropdown-item>
+                                      <el-dropdown-item class="dropdown_item" v-else="item.children" :divided="item.divided">
+                                        <el-dropdown @command="signHandleCommand"  placement="right-start">
+                                          <span class="el-dropdown-link">
+                                            <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
+                                          {{item.text}}<i class="el-icon-arrow-right el-icon--right"></i>
+                                          </span>
+                                            <el-dropdown-menu slot="dropdown">
+                                              <el-dropdown-item  v-for="(c,k) in item.children" :key="k" class="dropdown_item" :command="c">
+                                                  <i class="iconfont icon-iconflatcolor" :class="c.classN"></i> {{c.text}}
+                                              </el-dropdown-item>
+
+                                            </el-dropdown-menu>
+
+                                        </el-dropdown>
+                                      </el-dropdown-item>
+                                    </el-dropdown-menu>
                                   </el-dropdown>
 
-                                  <el-button  size="small" plain >
-                                      <span>标记为</span>
-                                      <i class="el-icon-arrow-down el-icon--right"></i>
-                                  </el-button>
-
-                                  <el-dropdown @command="moreHandleCommand">
-                                      <el-button  size="small" plain>
-                                      <span>更多</span>
-                                      <i class="el-icon-arrow-down el-icon--right"></i>
-                                      </el-button>
-                                      <el-dropdown-menu slot="dropdown">
-                                      <el-dropdown-item v-for="item in moreItems" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }"
-                                      :divided="item.divided" :command="item.id">
-                                          <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moreCheckIndex===item.id }"></i> </b>
-                                          {{ item.text}}</el-dropdown-item>
-                                      </el-dropdown-menu>
-                                  </el-dropdown>
-                                   <el-button  size="small" plain>
-                                      删除
-                                  </el-button>
+                                  <el-dropdown @command="moreHandleCommand" trigger="click">
+                                    <el-button  size="small" plain>
+                                    <span>更多</span>
+                                    <i class="el-icon-arrow-down el-icon--right"></i>
+                                    </el-button>
+                                    <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item v-for="item in moreItems" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }"
+                                    :divided="item.divided" :command="item">
+                                        <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
+                                        {{ item.text}}</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
 
 
                       </div>
@@ -64,7 +85,7 @@
                       <div class="f-tar">
                                   <span class="mail-flagged f-pr f-csp" data-dropdown="flag-color" role="dropdown">
                                       <i class="iconfont icon-iconflat j-mail-flagged" title="设置标记"></i>
-                                      <i class="iconfont icondown"></i>
+                                      <i class="el-icon-arrow-down"></i>
                                   <ul class="u-menu u-menu-hidden"><li value="mark:flagged"><i class="iconfont left icon-iconflatcolor flagged label0-0"></i><a href="javascript:void(0);" tabindex="-1">红旗</a></li><li class="divider"></li><li value="mark:noflagged"><a href="javascript:void(0);" tabindex="-1">取消标记</a></li></ul></span>
 
 
@@ -236,12 +257,12 @@
 
 <script>
 
-  import {readMail,downloadAttach,mailDecode} from '@/api/api';
+  import {readMail,downloadAttach,mailDecode,moveMails,messageFlag,rejectMessage,zipMessage,pruneMessage,emlMessage,pabMessage} from '@/api/api';
   export default  {
     name:'Read',
     props:{
       readId:'',
-      readFolderId: ''
+      readFolderId: '',
     },
     data(){
       return {
@@ -265,20 +286,257 @@
 
         moreCheckIndex:'',
         moreItems:[
-          {id:0,text:'回复',divided:false},
-          {id:1,text:'回复全部',divided:false},
-          {id:2,text:'转发',divided:true},
-          {id:3,text:'附件方式转发',divided:false},
-          {id:4,text:'举报',divided:true},
-          {id:5,text:'拒收邮件',divided:false},
-          {id:6,text:'来信分类',divided:false},
-          {id:7,text:'再次发送',divided:true},
-          {id:8,text:'打包下载',divided:false},
-          {id:9,text:'彻底删除',divided:false}
-        ],
+            {id:0,text:'回复',divided:false,checkone:true},
+            {id:1,text:'回复全部',divided:false,checkone:true},
+            {id:2,text:'转发',divided:true,checkone:true,classN:'iconfont icon-Forward'},
+            {id:3,text:'附件方式转发',divided:false,checkone:true},
+            {id:8,text:'全部添加到个人通讯录',divided:false,classN:'iconfont icon-iconcontacts1'},
+            {id:9,text:'邮件下载',divided:false,classN:'el-icon-download'},
+            {id:4,text:'拒收邮件',divided:true,checkone:false},
+            {id:5,text:'再次发送',divided:true,checkone:true},
+            {id:6,text:'打包下载',divided:false,checkone:false},
+            {id:7,text:'彻底删除',divided:false,checkone:false},
+            {id:10,text:'查看信头',divided:true,checkone:true},
+            {id:11,text:'查看原文',divided:false,checkone:true},
+
+          ],
+        signItems:[
+            {id:1,flags:'\\Seen',text:'未读邮件',divided:false,action:'remove'},
+            {id:2,flags:'\\flagged',text:'红旗',divided:true,action:'add',classN:'iconfont icon-iconflatcolor redcolor'},
+            {id:3,text:'其他旗帜',divided:false,children:[
+                {flags:'umail-green',action:'add',text:'绿旗',classN:{'flag-green':true}},
+                {flags:'umail-orange',action:'add',text:'橙旗',classN:{'flag-orange':true}},
+                {flags:'umail-blue',action:'add',text:'蓝旗',classN:{'flag-blue':true}},
+                {flags:'umail-pink',action:'add',text:'粉旗',classN:{'flag-pink':true}},
+                {flags:'umail-cyan',action:'add',text:'青旗',classN:{'flag-cyan':true}},
+                {flags:'umail-yellow',action:'add',text:'黄旗',classN:{'flag-yellow':true}},
+                {flags:'umail-purple',action:'add',text:'紫旗',classN:{'flag-purple':true}},
+                {flags:'umail-gray',action:'add',text:'灰旗',classN:{'flag-gray':true}}
+              ]},
+            {id:4,flags:'\\flagged',text:'取消旗帜',divided:false,action:'remove'},
+          ],
       }
     },
     methods:{
+       moreHandleCommand:function(item){
+
+        let pp = this.$parent.$parent.$parent;
+        let fid = this.readFolderId;
+        let param = {
+          uids:[this.readId],
+          folder:this.readFolderId
+        }
+        let pa = {
+          uid:this.readId,
+          folder:this.readFolderId
+        }
+        if(item.id==0 || item.id==1 || item.id==2 || item.id==3 || item.id==5){
+          let view = 3; //回复
+          if(item.id == 0){
+            view = 3;
+          }else if(item.id == 1){
+            view = 4;
+          }else if(item.id == 2){
+            view = 5;
+          }else if(item.id == 3){
+            view = 6;
+          }else if(item.id == 5){
+            view = 7;
+          }
+          readMail(this.readId,{"folder":fid,"view":view}).then(res=>{
+            pp.ruleForm2 = {
+              is_html:true,
+              is_cc:true,
+              is_partsend:false,
+              to: [["512167072@qq.com",'zhouli']],
+              cc: [],
+              subject: '',
+              secret:'非密',
+              is_save_sent:true,
+              is_confirm_read:true,
+              is_schedule:false,
+              schedule_day:'',
+              is_password:false,
+              password:'',
+              is_burn:false,
+              burn_limit:1,
+              burn_day:'',
+              html_text:'',
+              plain_text:'',
+              attachments:[],
+              net_attachments:[]
+            }
+            let data = res.data
+            pp.maillist = []
+            pp.maillist_copyer = [];
+            pp.content = data.html_text || data.plain_text;
+            pp.fileList = data.attachments;
+            pp.ruleForm2.subject = data.subject;
+            if(data.uid)pp.ruleForm2.uid = data.uid;
+            if(data.folder)pp.ruleForm2.folder = data.folder;
+            if(data.refw_type)pp.ruleForm2.refw_type = data.refw_type
+            pp.ruleForm2.is_html = true;
+              for(let i=0;i<data.to.length;i++){
+                pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
+              }
+              if(data.cc){
+                for(let i=0;i<data.cc.length;i++){
+                  pp.maillist_copyer.push({fullname:data.cc[i][1]||'',email:data.cc[i][0],status:true})
+                }
+              }
+            pp.addTab('compose'+view+' ',data.subject,this.readId,fid)
+
+          }).catch(err=>{
+            console.log(err)
+          })
+
+        }else if(item.id==4){ //拒收邮件
+          rejectMessage(param).then(res=>{
+            console.log(res)
+            this.$message(
+              {type:'success',message:'邮件拒收成功！'}
+            )
+          })
+            .catch(err=>{
+            console.log(err)
+              this.$message(
+              {type:'error',message:'邮件拒收失败！'}
+            )
+          })
+        }else if(item.id==6){//打包下载
+          zipMessage(param).then(response=>{
+            let blob = new Blob([response.data], { type: response.headers["content-type"] })
+            let objUrl = URL.createObjectURL(blob);
+            let filenameHeader = response.headers['content-disposition']
+            let filename = filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1);
+            if (window.navigator.msSaveOrOpenBlob) {
+              // if browser is IE
+              navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
+            } else {
+              // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
+              var link = document.createElement("a");
+              link.setAttribute("href", objUrl);
+              link.setAttribute("download", filename);
+
+              document.body.appendChild(link);
+              link.click();
+            }
+            this.$message(
+              {type:'success',message:'打包下载邮件成功！'}
+            )
+          }).catch(err=>{
+            console.log(err)
+            this.$message(
+              {type:'error',message:'打包下载邮件失败！'}
+            )
+          })
+
+        }else if(item.id == 7){//彻底删除
+          pruneMessage(param).then(res=>{
+            console.log(res)
+            this.$message(
+              {type:'success',message:'彻底删除邮件成功！'}
+            )
+            pp.getFloderfn();
+            this.getMessageList();
+          }).catch(err=>{
+            console.log('彻底删除失败！',err);
+          })
+        }else if(item.id==8){//添加到通讯录
+          pabMessage(pa).then(res=>{
+            console.log(res)
+            this.$message(
+              {type:'success',message:'添加到通讯录成功！'}
+            )
+          }).catch(err=>{
+            this.$message(
+              {type:'error',message:'添加到通讯录失败！'}
+            )
+            console.log('添加到通讯录失败',err)
+          })
+        }else if(item.id==9){
+          emlMessage(pa).then(response=>{
+            let blob = new Blob([response.data], { type: response.headers["content-type"] })
+            let objUrl = URL.createObjectURL(blob)
+            let filenameHeader = response.headers['content-disposition']
+            let filename = filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1);
+            if (window.navigator.msSaveOrOpenBlob) {
+              // if browser is IE
+              navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
+            } else {
+              // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
+              var link = document.createElement("a");
+              link.setAttribute("href", objUrl);
+              link.setAttribute("download", filename);
+
+              document.body.appendChild(link);
+              link.click();
+            }
+            this.$message(
+              {type:'success',message:'邮件下载成功！'}
+            )
+          }).catch(err=>{
+            console.log(err)
+            this.$message(
+              {type:'error',message:'邮件下载失败！'}
+            )
+          })
+        }else if(item.id==10){
+          console.log('查看信头')
+        }else if(item.id==11){
+          console.log('查看原文')
+        }
+      },
+      actionView(view){
+        let pp = this.$parent.$parent.$parent;
+        let fid = this.readFolderId;
+        readMail(this.readId,{"folder":fid,"view":view}).then(res=>{
+            pp.ruleForm2 = {
+              is_html:true,
+              is_cc:true,
+              is_partsend:false,
+              to: [["512167072@qq.com",'zhouli']],
+              cc: [],
+              subject: '',
+              secret:'非密',
+              is_save_sent:true,
+              is_confirm_read:true,
+              is_schedule:false,
+              schedule_day:'',
+              is_password:false,
+              password:'',
+              is_burn:false,
+              burn_limit:1,
+              burn_day:'',
+              html_text:'',
+              plain_text:'',
+              attachments:[],
+              net_attachments:[]
+            }
+            let data = res.data
+            pp.maillist = []
+            pp.maillist_copyer = [];
+            pp.content = data.html_text || data.plain_text;
+            pp.fileList = data.attachments;
+            pp.ruleForm2.subject = data.subject;
+            if(data.uid)pp.ruleForm2.uid = data.uid;
+            if(data.folder)pp.ruleForm2.folder = data.folder;
+            if(data.refw_type)pp.ruleForm2.refw_type = data.refw_type
+            pp.ruleForm2.is_html = true;
+              for(let i=0;i<data.to.length;i++){
+                pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
+              }
+              if(data.cc){
+                for(let i=0;i<data.cc.length;i++){
+                  pp.maillist_copyer.push({fullname:data.cc[i][1]||'',email:data.cc[i][0],status:true})
+                }
+              }
+            pp.addTab('compose'+view+' ',data.subject,data.uid,fid)
+
+          }).catch(err=>{
+          console.log(err)
+        })
+      },
       mailDecodeFn(){
         let param = {
           uid:this.readId,
@@ -334,10 +592,57 @@
         }
       },
       moveHandleCommand:function(index){
-        this.moveCheckIndex = index;
+        var params={
+          uids:[this.readId],
+          src_folder:this.readFolderId,
+          dst_folder:index
+        }
+        moveMails(params).then((suc)=>{
+          console.log(suc.data)
+          console.log(suc.data.msg)
+          this.$message({
+              type:'success',
+              message: '邮件移动成功!'
+            })
+          this.readFolderId = index;
+          // this.$parent.$parent.$parent.getFloderfn();
+        },(err)=>{
+          this.$message({
+              type:'error',
+              message: '邮件移动失败!'
+            })
+        }).catch(err=>{
+          this.$message({
+              type:'error',
+              message: '邮件移动失败!'
+            })
+        })
       },
-      moreHandleCommand:function(index){
-        this.moreCheckIndex = index;
+      signHandleCommand:function(item){
+        console.log(item);
+        if(!item){
+          return;
+        }
+        let param = {
+          uids:[this.readId],
+          folder:this.readFolderId,
+          action:item.action,
+          flags:[item.flags]
+        }
+        messageFlag(param).then((suc)=>{
+          this.$message({
+              type:'success',
+              message: '邮件标记成功!'
+            })
+          this.$parent.$parent.$parent.getFloderfn();
+        },(err)=>{
+
+        }).catch(err=>{
+          this.$message({
+              type:'error',
+              message: '邮件标记失败!'
+            })
+        })
       },
       getReadMail(){
         this.loading = true;
@@ -405,15 +710,16 @@
     },
     computed:{
       moveItems:function(){
-        // let folder = this.$parent.floderResult;
-        let folder = [];
+        let folder = this.$parent.$parent.$parent.floderResult;
         let arr = [];
         for(let i=0;i<folder.length;i++){
-          let obj={};
-          obj['text'] = folder[i]['name'];
-          obj['id'] = folder[i]['raw_name'];
-          obj['divided'] = false;
-          arr.push(obj);
+          if(folder[i]['raw_name']!='Drafts'){
+            let obj={};
+            obj['text'] = folder[i]['name'];
+            obj['id'] = folder[i]['raw_name'];
+            obj['divided'] = false;
+            arr.push(obj);
+          }
         }
         return arr;
       }
