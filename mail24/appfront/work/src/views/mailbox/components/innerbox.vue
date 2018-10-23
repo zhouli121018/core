@@ -587,7 +587,7 @@
           uids:this.checkedMails,
           folder:this.$parent.$parent.$parent.activeMenubar.id,
         };
-        this.$confirm('永久删除此邮件, 是否继续?', '提示', {
+        this.$confirm('删除此邮件, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -734,16 +734,27 @@
           })
 
         }else if(item.id == 7){//彻底删除
-          pruneMessage(param).then(res=>{
-            console.log(res)
-            this.$message(
-              {type:'success',message:'彻底删除邮件成功！'}
-            )
-            pp.getFloderfn();
-            this.getMessageList();
-          }).catch(err=>{
-            console.log('彻底删除失败！',err);
-          })
+          this.$confirm('彻底删除此邮件, 是否继续?', '系统信息', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            pruneMessage(param).then(res=>{
+              console.log(res)
+              this.$message(
+                {type:'success',message:'彻底删除邮件成功！'}
+              )
+              pp.getFloderfn();
+              this.getMessageList();
+            }).catch(err=>{
+              console.log('彻底删除失败！',err);
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消彻底删除'
+            });
+          });
 
         }
       },
@@ -852,7 +863,7 @@
         let folder = this.floderResult;
         let arr = [];
         for(let i=0;i<folder.length;i++){
-          if(folder[i]['raw_name']!='Drafts'){
+          if(folder[i]['raw_name']!='Drafts'&&folder[i]['raw_name']!=this.$parent.$parent.$parent.activeMenubar.id){
             let obj={};
             obj['text'] = folder[i]['name'];
             obj['id'] = folder[i]['raw_name'];

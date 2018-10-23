@@ -135,6 +135,10 @@ export const zipMessage = params => { return axios.get(`${host}/mail/message/zip
 export const emlMessage = params => { return axios.get(`${host}/mail/message/eml/`, { params: params,responseType:'blob'  }) };
 //添加到个人通讯录 /api/mail/message/pab/
 export const pabMessage = params => { return axios.post(`${host}/mail/message/pab/`,  params) };
+//查看邮件的 召回邮件 /api/mail/message/recall/
+export const messageRecall = params =>{ return axios.post(`${host}/mail/message/recall/`,params) };
+//发送回执 /api/mail/message/notify/
+export const notifyRecall = params =>{ return axios.post(`${host}/mail/message/notify/`,params) };
 
 
 

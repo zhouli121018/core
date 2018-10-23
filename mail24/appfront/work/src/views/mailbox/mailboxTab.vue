@@ -19,6 +19,7 @@
                         <Innerbox v-if="item.name=='1'" :boxId="boxId" :curr_folder="curr_folder"  @getRead="getRead" :floderResult="floderResult" ref="innerbox"></Innerbox>
                         <Read :readId="item.rid" :readFolderId="item.fid" v-if="item.type=='read'"></Read>
                         <Compose  v-if="item.type!='read'&&item.name!='1'" :iframe_height="iframe_height" :rid="item.name" :parent_ruleForm2="ruleForm2" :parent_content="content" :parent_maillist="maillist" :parent_maillist_copyer="maillist_copyer" :parent_fileList="fileList"></Compose>
+
                       </el-tab-pane>
                     </el-tabs>
                     <Home v-if="showTabIndex==0"></Home>
@@ -99,7 +100,7 @@ export default {
     tabClick(tab,event){
       this.showTabIndex=1;
     },
-    addTab(type,subject,rid,fid) {
+    addTab(type,subject,rid,fid,info) {
       if(type=='compose'){
         this.ruleForm2['refw_type']=undefined;
         this.ruleForm2 = {
@@ -140,7 +141,8 @@ export default {
           content: 'New Tab content',
           rid:rid,
           fid:fid,
-          type:type
+          type:type,
+          info:info
         });
         this.editableTabsValue2 = newTabName;
       }
@@ -312,6 +314,12 @@ export default {
       }else{
         return value
       }
+    },
+    plain_rn:function(value){
+      if (!value) return '';
+      var reg = new RegExp("\r\n", "g");//g,表示全部替换
+      value = value.replace(reg, "<br/>");
+      return value;
     }
   },
   beforeRouteLeave (to, from , next) {

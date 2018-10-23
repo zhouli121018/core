@@ -7,6 +7,7 @@ Vue.use(Router)
 
 export const rou = [
   {path:'/',redirect:'/login'},
+  {path:'/messageInfo/:uid',component:_import('mailbox/components/messageInfo')},
   {path:'/lockscreen',component:_import('lockscreen/index')},
   {path:'/login',component:_import('login/Login')},
   // {path: '/404', component: NotFound, hidden: true},

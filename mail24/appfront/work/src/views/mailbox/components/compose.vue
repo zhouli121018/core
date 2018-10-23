@@ -205,7 +205,7 @@
                   <div v-show="ruleForm2.is_password">
                     <p ><b>邮件加密 </b> 收信人需要密码才能查看邮件</p>
                     <div style="border-top:1px dashed #e3e4e5;padding:12px 0;">
-                      设置查看密码：<el-input style="width:auto;" size="mini" v-model="ruleForm2.password" auto-complete="off"></el-input> <span style="font-size:12px;color:#aaa;">(请输入6个字符，数字或英文字母，字母区分大小写，首尾不能有空格)</span>
+                      设置查看密码：<el-input style="width:auto;" size="mini" v-model.trim="ruleForm2.password" auto-complete="off"></el-input> <span style="font-size:12px;color:#aaa;">(请输入6个字符，数字或英文字母，字母区分大小写，首尾不能有空格)</span>
                     </div>
                   </div>
 
@@ -315,7 +315,7 @@
             </div>
             <div class="suc-content">
                 <div class="more-action u-btns j-more-action">
-                  <el-button type="info" plain size="small" @click="backToBox">返回邮箱</el-button>
+                  <el-button type="info" plain size="small" @click="backToBox(0)">返回邮箱</el-button>
                   <el-button type="primary" size="small" @click="backToBox(1)">继续写信</el-button>
                 </div>
             </div>
@@ -770,36 +770,11 @@
 
       },
       backToBox(compose){
+        this.$parent.$parent.$parent.removeTab(this.$parent.$parent.$parent.editableTabsValue2);
         if(compose){
-          this.content = '';
-          this.maillist = [];
-          this.maillist_copyer = [];
-          this.fileList = [];
-          this.ruleForm2 = {
-            is_html:true,
-            is_cc:true,
-            is_partsend:false,
-            to: [],
-            cc: [],
-            subject: '',
-            secret:'非密',
-            is_save_sent:true,
-            is_confirm_read:true,
-            is_schedule:false,
-            schedule_day:'',
-            is_password:false,
-            password:'',
-            is_burn:false,
-            burn_limit:1,
-            burn_day:'',
-            html_text:'',
-            plain_text:'',
-            attachments:[],
-            net_attachments:[]
-          };
-          this.send_suc = false;
+          this.$parent.$parent.$parent.addTab('compose','写信')
         }else{
-          $('.el-tabs__item.is-top.is-active .el-icon-close').click();
+          this.$parent.$parent.$parent.editableTabsValue2 = '1';
         }
       },
       recall(){
@@ -894,16 +869,6 @@
         },err=>{
           console.log(err)
         })
-      },
-      render_list(arr){
-        for(let i=0;i<this.allSeclect.length;i++){
-          for(let k=0;k<arr.length;k++){
-            if(this.allSeclect[i].id == arr[k].id){
-              this.$refs.contactTable.toggleRowSelection(arr[k],true);
-              break;
-            }
-          }
-        }
       },
       switch_to(a,arr){
         this.active_box=a;
@@ -1157,6 +1122,17 @@
           this.$alert('请填写邮件主题！');
           return;
         }
+        if(type=='sent' && !this.content){
+          this.$alert('请填写邮件内容！');
+          return;
+        }
+        if(type=='sent'&& this.ruleForm2.is_password){
+          let reg = /^[0-9a-zA-Z]{6}$/;
+          if(!reg.test(this.ruleForm2.password)){
+            this.$alert('密码格式不正确！请重新填写');
+            return;
+          }
+        }
         if(this.ruleForm2.is_html){
           this.ruleForm2.html_text = this.content;
           this.ruleForm2.plain_text = '';
@@ -1187,6 +1163,8 @@
           this.message_id = res.data.message_id;
           this.recipient = res.data.recipient;
           this.sendResult = res.data;
+          this.$parent.$parent.$parent.getFloderfn()
+          this.$parent.$parent.$children[1].$children[0].getMessageList()
           if(res.data.draft_id){
             this.ruleForm2.draft_id = res.data.draft_id
           }
@@ -1197,7 +1175,7 @@
         },err=>{
           console.log(err)
           this.$message({
-             message:"操作失败！",
+             message:"操作失败！"+err.non_field_errors[0],
              type:'error'
           })
         })

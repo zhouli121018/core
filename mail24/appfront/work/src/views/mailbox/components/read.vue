@@ -5,245 +5,315 @@
         <section class="m-read" v-show="!notFond">
           <div class="toolbar" style="background:#fff;">
 
-                              <div id="pagination" class="f-fr">
-                                  <div class="">
-                                      <el-button-group>
-                                      <el-button  size="small" icon="el-icon-arrow-left" plain round></el-button>
-                                      <el-button  size="small" plain round><i class="el-icon-arrow-right el-icon--right"></i></el-button>
-                                      </el-button-group>
-                                  </div>
-                              </div>
-
-                              <el-button-group >
-                                <el-button size="small" @click="actionView(3)">回复</el-button>
-                                <el-button size="small"  @click="actionView(4)">回复全部</el-button>
-                              </el-button-group>
-
-                              <el-button size="small"  @click="actionView(5)">转发</el-button>
-                              <el-dropdown @command="moveHandleCommand" trigger="click">
-                                  <el-button  size="small" plain>
-                                  <span>移动到</span>
-                                  <i class="el-icon-arrow-down el-icon--right"></i>
-                                  </el-button>
-                                  <el-dropdown-menu slot="dropdown">
-                                  <el-dropdown-item v-for="item in moveItems" :key="item.id" class="dropdown_item" :class="{ active: moveCheckIndex===item.id }"
-                                  :divided="item.divided" :command="item.id">
-                                      <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moveCheckIndex===item.id }"></i> </b>
-                                      {{ item.text}}</el-dropdown-item>
-                                  </el-dropdown-menu>
-                              </el-dropdown>
-
-                                  <el-dropdown @command="signHandleCommand" trigger="click">
-                                    <el-button  size="small" plain >
-                                        <span>标记为</span>
-                                        <i class="el-icon-arrow-down el-icon--right"></i>
-                                    </el-button>
-                                    <el-dropdown-menu slot="dropdown">
-                                      <el-dropdown-item v-if="!item.children" v-for="item in signItems" :key="item.id" class="dropdown_item"
-                                       :command="item" :divided="item.divided">
-                                          <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
-                                          {{ item.text}}
-                                      </el-dropdown-item>
-                                      <el-dropdown-item class="dropdown_item" v-else="item.children" :divided="item.divided">
-                                        <el-dropdown @command="signHandleCommand"  placement="right-start">
-                                          <span class="el-dropdown-link">
-                                            <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
-                                          {{item.text}}<i class="el-icon-arrow-right el-icon--right"></i>
-                                          </span>
-                                            <el-dropdown-menu slot="dropdown">
-                                              <el-dropdown-item  v-for="(c,k) in item.children" :key="k" class="dropdown_item" :command="c">
-                                                  <i class="iconfont icon-iconflatcolor" :class="c.classN"></i> {{c.text}}
-                                              </el-dropdown-item>
-
-                                            </el-dropdown-menu>
-
-                                        </el-dropdown>
-                                      </el-dropdown-item>
-                                    </el-dropdown-menu>
-                                  </el-dropdown>
-
-                                  <el-dropdown @command="moreHandleCommand" trigger="click">
-                                    <el-button  size="small" plain>
-                                    <span>更多</span>
-                                    <i class="el-icon-arrow-down el-icon--right"></i>
-                                    </el-button>
-                                    <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-for="item in moreItems" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }"
-                                    :divided="item.divided" :command="item">
-                                        <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
-                                        {{ item.text}}</el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </el-dropdown>
-
-
-                      </div>
-
-            <div class="mail" ref="iframe_height"  v-loading="loading">
-              <div class="j-read-alert f-pr"></div>
-              <div class="mail-top j-mail-top f-pr">
-                  <div class="top-bar">
-                      <div class="f-tar">
-                                  <span class="mail-flagged f-pr f-csp" data-dropdown="flag-color" role="dropdown">
-                                      <i class="iconfont icon-iconflat j-mail-flagged" title="设置标记"></i>
-                                      <i class="el-icon-arrow-down"></i>
-                                  <ul class="u-menu u-menu-hidden"><li value="mark:flagged"><i class="iconfont left icon-iconflatcolor flagged label0-0"></i><a href="javascript:void(0);" tabindex="-1">红旗</a></li><li class="divider"></li><li value="mark:noflagged"><a href="javascript:void(0);" tabindex="-1">取消标记</a></li></ul></span>
-
-
-                              <a class="iconfont icon-iconemailcontacts" href="javascript:void(0)" title="查看邮件往来" data-type="dealings"></a>
-
-                          <a class="iconfont icon-iconnewtab" href="./detach.jsp?sid=BAcpKTaaYBZiTuHsrlaaUOhLUZiBhfEu#mail.read?mid=1:1tbiAQAJEFXEqdgAXgADsl&amp;fid=1&amp;mboxa=&amp;start=2" target="_blank" title="在新窗口打开"></a>
-
-                          <a href="javascript:void(0)" title="发起会议" data-type="mail_event">发起会议</a>
-                      </div>
-                      <div class="f-tar">
-                          <span>2018-08-09 17:11:37</span>
-                      </div>
-                  </div>
-                  <div class="mail-top-info">
-                      <h3 class="mail-subject j-mail-subject ">
-                          <!--<span class="icon"><i class="j-sourceIcon iconfont state-icon icon-SYSTEM" title="系统认证可信任来源"></i></span>-->
-                           {{subject?subject:'无主题'}}
-                      </h3>
-                      <div class="short-info f-ellipsis j-short-info" v-show="!showDetails">
-                          <a class="j-u-email" href="javascript:void(0);" >{{mfrom}}</a>
-                          <span>发送给</span>
-                          <a class="j-u-email" href="javascript:void(0)" v-for="(t,k) in to" :key="k">{{t}}; </a>
-
-                      </div>
-                      <div class="full-info j-full-info" v-show="showDetails">
-                          <table class="u-table u-table-row">
-                              <tbody><tr>
-                                  <td class="info-item">发件人 :</td>
-                                  <td>
-                                       <span class="u-email j-u-email">
-                                          <span class="name">{{mfrom}}</span>
-                                          <span class="address"></span>
-                                       </span>
-
-                                  </td>
-                              </tr>
-                              <tr>
-                                  <td class="info-item">收件人 :</td>
-                                  <td>
-
-                                      <div class="j-contacts ">
-                                          <span class="u-email j-u-email">
-                                              <span class="name">{{to}}</span>
-                                              <span class="address"></span>
-                                          </span>
-                                      </div>
-                                  </td>
-                              </tr>
-
-
-
-                            </tbody>
-                          </table>
-                      </div>
-                  </div>
-                  <div class="mail-divider">
-                      <a href="javascript:void(0)" class="u-btn u-btn-default u-btn-round f-fr" @click="showDetails=!showDetails">
-                          <i :class="{'el-icon-arrow-down':!showDetails,'el-icon-arrow-up':showDetails}"></i>
-                      </a>
-                  </div>
-              </div>
-              <div class="mail-cipher-encrypted j-mailCipherEncrypted" v-if="is_password &&  password">
-                <div class="decryption-success">
-                    <span class="iconfont iconunlock"></span>
-                    邮件已解密，以下是解密后的邮件内容：
+            <div id="pagination" class="f-fr">
+                <div class="">
+                    <el-button-group>
+                    <el-button  size="small" icon="el-icon-arrow-left" plain round></el-button>
+                    <el-button  size="small" plain round><i class="el-icon-arrow-right el-icon--right"></i></el-button>
+                    </el-button-group>
                 </div>
-              </div>
-              <div class="mail-cipher-encrypted j-mailCipherEncrypted" v-if="is_password && !password">
-                  <div class="no-decryption">
-                      <div class="lock-item" style="padding:20px;"><i class="lock_style"></i></div>
-                      <div class="action-item">
-                          <input type="password" placeholder="输入密码" class="u-input" v-model="de_password" name="password" maxlength="6" autocomplete="off">
-                      </div>
-                      <div class="decryption-msg">
-                          <span class="j-decryption-error decryption-error" v-show="decryption_error">密码错误，请重新输入</span>
-                      </div>
+            </div>
 
-                      <div class="action-item">
-                          <span class="u-btn u-btn-primary j-decrypt-submit" @click="mailDecodeFn">确 定</span>
-                      </div>
-                      <div class="label-item">这是一封由 <span class="highlight ">{{mfrom}}</span> 发出的加密邮件。</div>
-                      <div class="label-item">输入发件人提供给您的密码，即可查阅完整邮件。</div>
-                  </div>
-              </div>
-              <div class="mail-content" ref="companyStyle" >
-                  <!--<iframe width="100%" id="mail-1534902112297" class="j-mail-content" frameborder="0" allowtransparency="true" sandbox="allow-scripts allow-popups" src="jsp/viewMailHTML.jsp?mid=1%3A1tbiAQAJEFXEqdgAXgADsl&amp;mailCipherPassword=&amp;partId=&amp;isSearch=&amp;priority=&amp;supportSMIME=&amp;striptTrs=true&amp;mboxa=&amp;iframeId=1534902112297&amp;sspurl=false" style="width: 1642px; height: 198px;">-->
-                  <!--</iframe>-->
+            <el-button size="small" @click="recallMessage" v-if="msg.attrs" v-show="msg.attrs.is_canrecall" :disabled="msg.attrs.is_recall">召回邮件</el-button>
+            <el-button-group >
+              <el-button size="small" @click="actionView(3)">回复</el-button>
+              <el-button size="small"  @click="actionView(4)">回复全部</el-button>
+            </el-button-group>
 
-                <iframe   :id="'show-iframe'+readId" frameborder="0" scrolling="100%" height="auto" width="100%"></iframe>
-                <el-collapse v-model="activeNames" v-if="attachments.length>0" class="attach_box">
-                  <el-collapse-item :title="'附件 ('+attachments.length+' 个)'" name="1">
+            <el-button size="small"  @click="actionView(5)">转发</el-button>
+            <el-dropdown @command="moveHandleCommand" trigger="click">
+                <el-button  size="small" plain>
+                <span>移动到</span>
+                <i class="el-icon-arrow-down el-icon--right"></i>
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item v-for="item in moveItems" :key="item.id" class="dropdown_item" :class="{ active: moveCheckIndex===item.id }"
+                :divided="item.divided" :command="item.id">
+                    <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moveCheckIndex===item.id }"></i> </b>
+                    {{ item.text}}</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
 
-                    <div v-for="a in attachments">
-                      <el-popover
-                        placement="top-start"
-                        width="160"
-                        trigger="hover" popper-class="bg000">
-                        <div>
-                          <div style="margin-bottom:10px;width:100%;" class="f-ellipsis">{{a.name}}</div>
-                          <el-row>
-                            <el-col class="text-center cursorP" :span="8" title="下载"  @click.native="downloadAttach(a.sid,a.name)">
-                              <i class="el-icon-download"></i>
-                              <p>下载</p>
-                            </el-col>
-                            <el-col class="text-center cursorP" :span="8" title="预览">
-                              <i class="el-icon-view"></i>
-                              <p>预览</p>
-                            </el-col>
-                            <el-col class="text-center cursorP" :span="8" title="保存到个人网盘">
-                              <i class="el-icon-star-off" ></i>
-                              <p>保存</p>
-                            </el-col>
-                          </el-row>
-                        </div>
+            <el-dropdown @command="signHandleCommand" trigger="click">
+              <el-button  size="small" plain >
+                  <span>标记为</span>
+                  <i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item v-if="!item.children" v-for="item in signItems" :key="item.id" class="dropdown_item"
+                 :command="item" :divided="item.divided">
+                    <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
+                    {{ item.text}}
+                </el-dropdown-item>
+                <el-dropdown-item class="dropdown_item" v-else="item.children" :divided="item.divided">
+                  <el-dropdown @command="signHandleCommand"  placement="right-start">
+                    <span class="el-dropdown-link">
+                      <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
+                    {{item.text}}<i class="el-icon-arrow-right el-icon--right"></i>
+                    </span>
+                      <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item  v-for="(c,k) in item.children" :key="k" class="dropdown_item" :command="c">
+                            <i class="iconfont icon-iconflatcolor" :class="c.classN"></i> {{c.text}}
+                        </el-dropdown-item>
 
-                        <el-button   class="attach_item" slot="reference" style="padding-bottom:20px;border-radius:0;">
-                          <div class="attach_type">
-                            <span class="file-big-icon" :class="a.classObject"></span>
-                          </div>
-                          <div class="f-ellipsis">{{a.name}}</div>
-                          <div class="attach_size">{{a.size | mailsize}}</div>
-                        </el-button>
-                      </el-popover>
+                      </el-dropdown-menu>
 
+                  </el-dropdown>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+
+            <el-dropdown @command="moreHandleCommand" trigger="click">
+              <el-button  size="small" plain>
+              <span>更多</span>
+              <i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-for="item in moreItems" :key="item.id" class="dropdown_item"
+              :divided="item.divided" :command="item">
+                  <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
+                  {{ item.text}}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+
+            <el-button size="small" type="danger" plain @click="deleteMail">删除</el-button>
+          </div>
+
+          <div class="mail" ref="iframe_height"  v-loading="loading">
+            <div class="j-read-alert f-pr"></div>
+            <div class="mail-top j-mail-top f-pr">
+                <div class="top-bar">
+                    <div class="f-tar">
+                                <!--<span class="mail-flagged f-pr f-csp " :class="flag_color">-->
+                                    <!--<i class="iconfont icon-iconflat" title="设置标记" v-if="!flagged"></i>-->
+                                    <!--<i class="iconfont icon-iconflatcolor" v-if="flagged" :class="flag_color" title="设置标记"></i>-->
+
+                                    <!--<i class="el-icon-arrow-down"></i>-->
+                                <!--<ul class="u-menu u-menu-hidden"><li value="mark:flagged"><i class="iconfont left icon-iconflatcolor flagged label0-0"></i><a href="javascript:void(0);" tabindex="-1">红旗</a></li><li class="divider"></li><li value="mark:noflagged"><a href="javascript:void(0);" tabindex="-1">取消标记</a></li></ul></span>-->
+                      <el-dropdown trigger="click" @command="signHandleCommand">
+                        <span class="el-dropdown-link" :title="flagged?'设置标记':'取消标记'">
+                          <i class="iconfont icon-iconflat" v-if="!flagged"></i><i class="iconfont icon-iconflatcolor" v-if="flagged" style="color:#c00;" :class="flag_color"></i><i class="el-icon-arrow-down el-icon--right"></i>
+                        </span>
+                        <el-dropdown-menu slot="dropdown">
+                          <el-dropdown-item  v-for="(c,k) in flagsData" :key="k" class="dropdown_item" :command="c">
+                              <i class="iconfont icon-iconflatcolor" :class="[c.classN,{'icon-iconflat':k==flagsData.length-1}]" ></i> {{c.text}}
+                          </el-dropdown-item>
+
+                        </el-dropdown-menu>
+                      </el-dropdown>
+
+                      <a class="iconfont icon-iconemailcontacts" href="javascript:void(0)" title="查看邮件往来" data-type="dealings"></a>
+
+                      <a class="iconfont icon-iconnewtab" href="./detach.jsp?sid=BAcpKTaaYBZiTuHsrlaaUOhLUZiBhfEu#mail.read?mid=1:1tbiAQAJEFXEqdgAXgADsl&amp;fid=1&amp;mboxa=&amp;start=2" target="_blank" title="在新窗口打开"></a>
+
+                      <a href="javascript:void(0)" title="发起会议" data-type="mail_event">发起会议</a>
+                    </div>
+                    <div class="f-tar">
+                        <span>2018-08-09 17:11:37</span>
+                    </div>
+                </div>
+                <div class="mail-top-info">
+                    <h3 class="mail-subject j-mail-subject " :class="flag_color" style="font-size:18px;">
+                        <!--<span class="icon"><i class="j-sourceIcon iconfont state-icon icon-SYSTEM" title="系统认证可信任来源"></i></span>-->
+                         {{subject?subject:'无主题'}}
+                    </h3>
+                    <div class="short-info f-ellipsis j-short-info" v-show="!showDetails">
+                        <a class="j-u-email" href="javascript:void(0);" >{{mfrom}}</a>
+                        <span>发送给</span>
+                        <a class="j-u-email" href="javascript:void(0)" v-for="(t,k) in to" :key="k">{{t}}; </a>
 
                     </div>
+                    <div class="full-info j-full-info" v-show="showDetails">
+                        <table class="u-table u-table-row">
+                            <tbody><tr>
+                                <td class="info-item">发件人 :</td>
+                                <td>
+                                     <span class="u-email j-u-email">
+                                        <span class="name">{{mfrom}}</span>
+                                        <span class="address"></span>
+                                     </span>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="info-item">收件人 :</td>
+                                <td>
+
+                                    <div class="j-contacts ">
+                                        <span class="u-email j-u-email">
+                                            <span class="name">{{to}}</span>
+                                            <span class="address"></span>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
 
 
-                  </el-collapse-item>
-                </el-collapse>
-              </div>
 
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="mail-divider">
+                    <a href="javascript:void(0)" class="u-btn u-btn-default u-btn-round f-fr" @click="showDetails=!showDetails">
+                        <i :class="{'el-icon-arrow-down':!showDetails,'el-icon-arrow-up':showDetails}"></i>
+                    </a>
+                </div>
             </div>
-            <footer class="quick-reply j-quick-reply ">
-              <div class="quick-reply-default quick-reply-item j-reply-default" v-show="!replying" @click="replying=true">快捷回复给所有人
+            <div class="mail-cipher-encrypted j-mailCipherEncrypted" v-if="is_password &&  password">
+              <div class="decryption-success">
+                  <span class="iconfont icon-iconunlock"></span>
+                  邮件已解密，以下是解密后的邮件内容：
               </div>
-
-              <form class="quick-reply-form quick-reply-item j-reply-form tran" v-show="replying">
-                <textarea name="replyContent" class="reply-textarea" rows="6"></textarea>
-                <span class="u-btn u-btn-primary" >发送</span>
-                <span class="u-btn u-btn-default" @click="replying=false">取消</span>
-                <span class="f-fr"><a href="javascript:void(0)" data-type="compose">切换到完整写信模式</a></span>
-              </form>
-
-
-              <div class="quick-reply-item f-dn j-reply-sending">
-                  <span class="reply-state reply-sending">邮件发送中...</span>
+            </div>
+            <div class="u-alert u-alert-warning" v-if="msg.attrs && msg.attrs.is_notify" style="margin-bottom:0;">
+              <div class="decryption-success">
+                  发件人希望得到您的回执，是否发送？  
+                <el-button type="text"  style="padding:0">发送</el-button>
+                <el-button type="text"  style="padding:0">取消</el-button>
               </div>
-              <div class="quick-reply-item f-dn j-reply-result">
-                  <span class="reply-state reply-success j-reply-success">信件发送成功</span>
-                  <span class="reply-state reply-fail j-reply-fail">信件发送失败</span>
-                  <a href="javascript:void(0)" data-type="open-quick-reply">再回一封邮件</a>
-                  <a class="f-dn" href="javascript:void(0)" data-type="compose">切换到完整写信模式</a>
+            </div>
+            <div class="mail-sent-state j-sent-state" v-if="is_sender">
+              <div class="" >
+                  <span :class="show_result?'el-icon-caret-bottom':'el-icon-caret-right'" style="font-size: 16px;cursor:pointer;" @click="show_result=!show_result"></span>
+                  {{send_desc }}
+                <el-button type="text" style="padding:0;" @click="seeStatus" v-if="!show_result">[查看详情]</el-button>
+                <el-button type="text" style="padding:0;" @click="show_result=false" v-if="show_result">[隐藏详情]</el-button>
+                <el-button type="text" style="padding:0;" v-if="show_result" @click="refreshStatus">[刷新]</el-button>
+                共发给 {{mail_results.length}} 个收件人，其中
+                <span v-if="undeliverCount">{{undeliverCount}} 个信件 未投递，</span>
+                <span v-if="deliverCount">{{deliverCount}} 个信件 已投递，</span>
+                <span v-if="readedCount">{{readedCount}} 个信件 已读，</span>
+                <span v-if="deliver_failCount">{{deliver_failCount}} 个信件 投递失败</span>
               </div>
+              <div class="" v-show="show_result">
+                <el-table
+                  type="expand"
+                  border
+                  size="mini"
+                  :header-cell-style="{background:'#f0f1f3'}"
+                  :data="mail_results"
+                  style="width: 100%;margin:10px 0;">
+                  <el-table-column
+                    prop="email"
+                    label="收件人"
+                    >
+                    <template slot-scope="scope">
+                      {{scope.row.email}}
+                    </template>
+                  </el-table-column>
 
-              <div class="j-footer-btn j-toolbar-footer u-btns f-fr f-dn"></div>
+                  <el-table-column
+                    prop="status"
+                    label="状态" >
+                    <template slot-scope="scope">
+                      {{scope.row.status_info}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="recall_status"
+                    label="召回状态" >
+                    <template slot-scope="scope">
+                      {{scope.row.recall_status_info}}
+                    </template>
+                  </el-table-column>
 
-            </footer>
+                </el-table>
+
+              </div>
+            </div>
+
+            <div class="mail-cipher-encrypted j-mailCipherEncrypted" v-if="is_password && !password">
+                <div class="no-decryption">
+                    <div class="lock-item" style="padding:20px;"><i class="lock_style"></i></div>
+                    <div class="action-item">
+                        <input type="password" placeholder="输入密码" class="u-input" v-model="de_password" name="password" maxlength="6" autocomplete="off">
+                    </div>
+                    <div class="decryption-msg">
+                        <span class="j-decryption-error decryption-error" v-show="decryption_error">密码错误，请重新输入</span>
+                    </div>
+
+                    <div class="action-item">
+                        <span class="u-btn u-btn-primary j-decrypt-submit" @click="mailDecodeFn">确 定</span>
+                    </div>
+                    <div class="label-item">这是一封由 <span class="highlight ">{{mfrom}}</span> 发出的加密邮件。</div>
+                    <div class="label-item">输入发件人提供给您的密码，即可查阅完整邮件。</div>
+                </div>
+            </div>
+            <div class="mail-content" ref="companyStyle" >
+                <!--<iframe width="100%" id="mail-1534902112297" class="j-mail-content" frameborder="0" allowtransparency="true" sandbox="allow-scripts allow-popups" src="jsp/viewMailHTML.jsp?mid=1%3A1tbiAQAJEFXEqdgAXgADsl&amp;mailCipherPassword=&amp;partId=&amp;isSearch=&amp;priority=&amp;supportSMIME=&amp;striptTrs=true&amp;mboxa=&amp;iframeId=1534902112297&amp;sspurl=false" style="width: 1642px; height: 198px;">-->
+                <!--</iframe>-->
+
+              <iframe   :id="'show-iframe'+readId" frameborder="0" scrolling="100%" height="auto" width="100%"></iframe>
+              <el-collapse v-model="activeNames" v-if="attachments.length>0" class="attach_box">
+                <el-collapse-item :title="'附件 ('+attachments.length+' 个)'" name="1">
+
+                  <div v-for="a in attachments">
+                    <el-popover
+                      placement="top-start"
+                      width="160"
+                      trigger="hover" popper-class="bg000">
+                      <div>
+                        <div style="margin-bottom:10px;width:100%;" class="f-ellipsis">{{a.name}}</div>
+                        <el-row>
+                          <el-col class="text-center cursorP" :span="8" title="下载"  @click.native="downloadAttach(a.sid,a.name)">
+                            <i class="el-icon-download"></i>
+                            <p>下载</p>
+                          </el-col>
+                          <el-col class="text-center cursorP" :span="8" title="预览">
+                            <i class="el-icon-view"></i>
+                            <p>预览</p>
+                          </el-col>
+                          <el-col class="text-center cursorP" :span="8" title="保存到个人网盘">
+                            <i class="el-icon-star-off" ></i>
+                            <p>保存</p>
+                          </el-col>
+                        </el-row>
+                      </div>
+
+                      <el-button   class="attach_item" slot="reference" style="padding-bottom:20px;border-radius:0;">
+                        <div class="attach_type">
+                          <span class="file-big-icon" :class="a.classObject"></span>
+                        </div>
+                        <div class="f-ellipsis">{{a.name}}</div>
+                        <div class="attach_size">{{a.size | mailsize}}</div>
+                      </el-button>
+                    </el-popover>
+
+
+                  </div>
+
+
+                </el-collapse-item>
+              </el-collapse>
+            </div>
+
+          </div>
+          <footer class="quick-reply j-quick-reply ">
+            <div class="quick-reply-default quick-reply-item j-reply-default" v-show="!replying" @click="replying=true">快捷回复给所有人
+            </div>
+
+            <form class="quick-reply-form quick-reply-item j-reply-form tran" v-show="replying">
+              <textarea name="replyContent" class="reply-textarea" rows="6"></textarea>
+              <span class="u-btn u-btn-primary" >发送</span>
+              <span class="u-btn u-btn-default" @click="replying=false">取消</span>
+              <span class="f-fr"><a href="javascript:void(0)" data-type="compose">切换到完整写信模式</a></span>
+            </form>
+
+
+            <div class="quick-reply-item f-dn j-reply-sending">
+                <span class="reply-state reply-sending">邮件发送中...</span>
+            </div>
+            <div class="quick-reply-item f-dn j-reply-result">
+                <span class="reply-state reply-success j-reply-success">信件发送成功</span>
+                <span class="reply-state reply-fail j-reply-fail">信件发送失败</span>
+                <a href="javascript:void(0)" data-type="open-quick-reply">再回一封邮件</a>
+                <a class="f-dn" href="javascript:void(0)" data-type="compose">切换到完整写信模式</a>
+            </div>
+
+            <div class="j-footer-btn j-toolbar-footer u-btns f-fr f-dn"></div>
+
+          </footer>
 
         </section>
         <div v-show="notFond">
@@ -257,7 +327,7 @@
 
 <script>
 
-  import {readMail,downloadAttach,mailDecode,moveMails,messageFlag,rejectMessage,zipMessage,pruneMessage,emlMessage,pabMessage} from '@/api/api';
+  import {readMail,downloadAttach,mailDecode,moveMails,messageFlag,rejectMessage,zipMessage,pruneMessage,emlMessage,pabMessage,deleteMail,getMessageStatus,messageRecall,notifyRecall} from '@/api/api';
   export default  {
     name:'Read',
     props:{
@@ -266,6 +336,27 @@
     },
     data(){
       return {
+        is_sender:false,
+        show_result:false,
+        mail_results:[],
+        send_desc:'',
+        undeliverCount:0,
+        deliverCount:0,
+        readedCount:0,
+        deliver_failCount:0,
+        flagsData:[
+          {flags:'umail-green',action:'add',text:'绿旗',classN:'flag-green'},
+          {flags:'umail-orange',action:'add',text:'橙旗',classN:'flag-orange'},
+          {flags:'umail-blue',action:'add',text:'蓝旗',classN:'flag-blue'},
+          {flags:'umail-pink',action:'add',text:'粉旗',classN:'flag-pink'},
+          {flags:'umail-cyan',action:'add',text:'青旗',classN:'flag-cyan'},
+          {flags:'umail-yellow',action:'add',text:'黄旗',classN:'flag-yellow'},
+          {flags:'umail-purple',action:'add',text:'紫旗',classN:'flag-purple'},
+          {flags:'umail-gray',action:'add',text:'灰旗',classN:'flag-gray'},
+          {flags:'\\flagged',text:'取消旗帜',action:'remove'},
+        ],
+        flagged:false,
+        flag_color:'',
         de_password:'',
         decryption_error:false,
         is_password:false,
@@ -283,18 +374,17 @@
         mfrom:'anshanshan@test.com',
         to:'anshanshan@test.com',
         moveCheckIndex:'',
-
         moreCheckIndex:'',
         moreItems:[
-            {id:0,text:'回复',divided:false,checkone:true},
-            {id:1,text:'回复全部',divided:false,checkone:true},
-            {id:2,text:'转发',divided:true,checkone:true,classN:'iconfont icon-Forward'},
+            // {id:0,text:'回复',divided:false,checkone:true},
+            // {id:1,text:'回复全部',divided:false,checkone:true},
+            // {id:2,text:'转发',divided:true,checkone:true,classN:'iconfont icon-Forward'},
             {id:3,text:'附件方式转发',divided:false,checkone:true},
             {id:8,text:'全部添加到个人通讯录',divided:false,classN:'iconfont icon-iconcontacts1'},
             {id:9,text:'邮件下载',divided:false,classN:'el-icon-download'},
             {id:4,text:'拒收邮件',divided:true,checkone:false},
             {id:5,text:'再次发送',divided:true,checkone:true},
-            {id:6,text:'打包下载',divided:false,checkone:false},
+            // {id:6,text:'打包下载',divided:false,checkone:false},
             {id:7,text:'彻底删除',divided:false,checkone:false},
             {id:10,text:'查看信头',divided:true,checkone:true},
             {id:11,text:'查看原文',divided:false,checkone:true},
@@ -318,7 +408,84 @@
       }
     },
     methods:{
-       moreHandleCommand:function(item){
+      recallMessage(){
+        let param = {
+          uid:this.readId,
+          folder:this.readFolderId
+        }
+        messageRecall(param).then(res=>{
+          console.log(res)
+          this.$message({
+            type:'success',
+            message:'邮件召回成功！'
+          })
+          this.getReadMail();
+        }).catch(err=>{
+          this.$message({
+            type:'error',
+            message:'邮件召回失败！'+err.error
+          })
+          this.getReadMail();
+        })
+      },
+      seeStatus(){
+        this.show_result = true;
+      },
+      refreshStatus(){
+        this.getMessageStatus();
+      },
+      getMessageStatus(){
+        let recp = [];
+        let hashRecp = [];
+        let cc = this.msg.cc;
+        let to = this.msg.to;
+        if(to){
+          for(let i=0;i<to.length;i++){
+            hashRecp[to[i][0]] = true;
+            recp.push(to[i][0]);
+          }
+        }
+        if(cc){
+          for(let i=0;i<cc.length;i++){
+            if(!hashRecp[cc[i][0]]){
+              recp.push(cc[i][0]);
+            }
+          }
+        }
+        let param = {
+          message_id: this.msg.message_id,
+          recipient: recp.join(',')
+        }
+        getMessageStatus(param).then(res=>{
+          console.log(res)
+          this.mail_results = res.data.results;
+          let a=0,b=0,c=0,d=0;
+          for(let i=0;i<this.mail_results.length;i++){
+            let o = this.mail_results[i];
+            if(o.status == 'undeliver'){
+              a++;
+            }else if(o.status == 'deliver'){
+              b++;
+            }else if(o.status == 'readed'){
+              c++;
+            }else if(o.status == 'deliver_fail'){
+              d++;
+            }
+            if(d>0){
+              this.send_desc = '部分发送失败'
+            }else{
+              this.send_desc = '发送成功'
+            }
+          }
+          this.undeliverCount = a;
+          this.deliverCount = b;
+          this.readedCount = c;
+          this.deliver_failCount = d;
+        },err=>{
+          console.log(err);
+        })
+      },
+      moreHandleCommand:function(item){
 
         let pp = this.$parent.$parent.$parent;
         let fid = this.readFolderId;
@@ -330,7 +497,7 @@
           uid:this.readId,
           folder:this.readFolderId
         }
-        if(item.id==0 || item.id==1 || item.id==2 || item.id==3 || item.id==5){
+        if(item.id==0 || item.id==1 || item.id==2 || item.id==3 || item.id==5 || item.id==10 || item.id==11){
           let view = 3; //回复
           if(item.id == 0){
             view = 3;
@@ -342,7 +509,18 @@
             view = 6;
           }else if(item.id == 5){
             view = 7;
+          }else if(item.id == 10){
+            view = 2;
+          }else if(item.id == 11){
+            view = 1;
           }
+          if(item.id==10||item.id==11){
+            console.log(window.location.origin)
+            let href = window.location.origin+'/#/messageInfo/'+this.readId+'?folder='+this.readFolderId+'&view='+view;
+            window.open(href)
+            return;
+          }
+
           readMail(this.readId,{"folder":fid,"view":view}).then(res=>{
             pp.ruleForm2 = {
               is_html:true,
@@ -384,6 +562,7 @@
                   pp.maillist_copyer.push({fullname:data.cc[i][1]||'',email:data.cc[i][0],status:true})
                 }
               }
+
             pp.addTab('compose'+view+' ',data.subject,this.readId,fid)
 
           }).catch(err=>{
@@ -403,45 +582,30 @@
               {type:'error',message:'邮件拒收失败！'}
             )
           })
-        }else if(item.id==6){//打包下载
-          zipMessage(param).then(response=>{
-            let blob = new Blob([response.data], { type: response.headers["content-type"] })
-            let objUrl = URL.createObjectURL(blob);
-            let filenameHeader = response.headers['content-disposition']
-            let filename = filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1);
-            if (window.navigator.msSaveOrOpenBlob) {
-              // if browser is IE
-              navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
-            } else {
-              // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
-              var link = document.createElement("a");
-              link.setAttribute("href", objUrl);
-              link.setAttribute("download", filename);
-
-              document.body.appendChild(link);
-              link.click();
-            }
-            this.$message(
-              {type:'success',message:'打包下载邮件成功！'}
-            )
-          }).catch(err=>{
-            console.log(err)
-            this.$message(
-              {type:'error',message:'打包下载邮件失败！'}
-            )
-          })
-
         }else if(item.id == 7){//彻底删除
-          pruneMessage(param).then(res=>{
-            console.log(res)
-            this.$message(
-              {type:'success',message:'彻底删除邮件成功！'}
-            )
-            pp.getFloderfn();
-            this.getMessageList();
-          }).catch(err=>{
-            console.log('彻底删除失败！',err);
-          })
+          this.$confirm('彻底删除此邮件, 是否继续?', '系统信息', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            pruneMessage(param).then(res=>{
+              console.log(res)
+              this.$message(
+                {type:'success',message:'彻底删除邮件成功！'}
+              )
+              this.$parent.$parent.$parent.removeTab(this.$parent.$parent.$parent.editableTabsValue2);
+              pp.getFloderfn();
+              this.$parent.$parent.$children[1].$children[0].getMessageList()
+            }).catch(err=>{
+              console.log('彻底删除失败！',err);
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消彻底删除'
+            });
+          });
+
         }else if(item.id==8){//添加到通讯录
           pabMessage(pa).then(res=>{
             console.log(res)
@@ -481,11 +645,40 @@
               {type:'error',message:'邮件下载失败！'}
             )
           })
-        }else if(item.id==10){
-          console.log('查看信头')
-        }else if(item.id==11){
-          console.log('查看原文')
         }
+      },
+      deleteMail(){
+        var params={
+          uids:[this.readId],
+          folder:this.readFolderId,
+        };
+        this.$confirm('删除此邮件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteMail(params).then((suc)=>{
+            if(suc.data.msg=='success'){
+              this.$message({
+                type:'success',
+                message: '邮件删除成功!'
+              })
+              this.$parent.$parent.$parent.removeTab(this.$parent.$parent.$parent.editableTabsValue2);
+              this.$parent.$parent.$children[1].$children[0].getMessageList()
+            }
+          },(err)=>{
+            this.$message({
+                type:'error',
+                message: '删除失败！!'
+              })
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+
       },
       actionView(view){
         let pp = this.$parent.$parent.$parent;
@@ -635,6 +828,7 @@
               message: '邮件标记成功!'
             })
           this.$parent.$parent.$parent.getFloderfn();
+          this.getReadMail();
         },(err)=>{
 
         }).catch(err=>{
@@ -650,6 +844,14 @@
         readMail(this.readId,{"folder":this.readFolderId}).then((data)=>{
           this.notFond = false;
           this.msg = data.data
+
+          if(this.msg.attrs.is_canrecall){
+            this.is_sender = true;
+            this.getMessageStatus();
+          }else{
+            this.is_sender = false;
+          }
+
           this.is_password = data.data.attrs.is_password;
           this.password = data.data.attrs.password;
           this.subject = data.data.subject;
@@ -660,6 +862,27 @@
             let t = o[1]+' <'+o[0]+'>'
             this.to.push(t);
           }
+          this.flagged = (data.data.flags.join('').indexOf('Flagged')>=0);
+          this.flag_color = '';
+          if(this.flagged){
+              if(data.data.flags.join('').indexOf('umail-yellow')>=0){
+                this.flag_color = 'flag-yellow';
+              }else if(data.data.flags.join('').indexOf('umail-green')>=0){
+                this.flag_color = 'flag-green';
+              }else if(data.data.flags.join('').indexOf('umail-orange')>=0){
+                this.flag_color = 'flag-orange';
+              }else if(data.data.flags.join('').indexOf('umail-blue')>=0){
+                this.flag_color = 'flag-blue';
+              }else if(data.data.flags.join('').indexOf('umail-pink')>=0){
+                this.flag_color = 'flag-pink';
+              }else if(data.data.flags.join('').indexOf('umail-cyan')>=0){
+                this.flag_color = 'flag-cyan';
+              }else if(data.data.flags.join('').indexOf('umail-purple')>=0){
+                this.flag_color = 'flag-purple';
+              }else if(data.data.flags.join('').indexOf('umail-gray')>=0){
+                this.flag_color = 'flag-gray';
+              }
+            }
 
           const oIframe = document.getElementById('show-iframe'+rid);
           console.log(oIframe)
@@ -697,6 +920,7 @@
           this.notFond=true;
         });
       },
+
     },
     created:function(){
       console.log('mounted')
@@ -713,7 +937,7 @@
         let folder = this.$parent.$parent.$parent.floderResult;
         let arr = [];
         for(let i=0;i<folder.length;i++){
-          if(folder[i]['raw_name']!='Drafts'){
+          if(folder[i]['raw_name']!='Drafts'&&folder[i]['raw_name']!=this.readFolderId){
             let obj={};
             obj['text'] = folder[i]['name'];
             obj['id'] = folder[i]['raw_name'];
@@ -723,6 +947,8 @@
         }
         return arr;
       }
+    },
+    mounted(){
     }
   }
 </script>
