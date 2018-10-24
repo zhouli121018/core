@@ -181,6 +181,7 @@
             _this.$store.dispatch('setInfo');
             this.isSharedUser = false;
             this.$router.push('/mailbox/welcome')
+            console.log(this)
             _this.getShared();
           },err=>{
             console.log('s')

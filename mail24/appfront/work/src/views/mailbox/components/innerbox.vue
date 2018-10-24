@@ -246,11 +246,6 @@
   export default {
     name:'Innerbox',
     props:{
-      boxId:'',
-      curr_folder:{
-        type:String,
-        default:''
-      },
       floderResult:{
         type:Array,
         default: []
@@ -259,6 +254,8 @@
 
     data() {
         return {
+          boxId:'INBOX',
+          curr_folder:'收件箱',
           moreSearch:false,
           searchForm: {
             from: '',
@@ -373,6 +370,9 @@
         this.sort = '';
         this.orderCheckIndex = '';
         this.search = '';
+        console.log(1111111111)
+        console.log(this.$parent.$parent.$parent)
+        this.$parent.$parent.$parent.getFloderfn()
         this.getMessageList();
       },
       rowClick(row,e,col){
@@ -426,7 +426,7 @@
         let ac = row.flagged?'add':'remove';
         let param = {
           uids:[row.uid],
-          folder:this.$parent.$parent.$parent.activeMenubar.id,
+          folder:this.boxId,
           action:ac,
           flags:['\\flagged']
         }
@@ -439,7 +439,7 @@
       readAll(){
         let param = {
           uids:['all'],
-          folder:this.$parent.$parent.$parent.activeMenubar.id,
+          folder:this.boxId,
           action:'add',
           flags:['\\Seen']
         }
@@ -456,7 +456,7 @@
           console.log(row)
         let param = {
           uids:[row.uid],
-          folder:this.$parent.$parent.$parent.activeMenubar.id,
+          folder:this.boxId,
           action:'add',
           flags:['\\Seen']
         }
@@ -473,19 +473,45 @@
           let pp = this.$parent.$parent.$parent;
           readMail(row.uid,{"folder":this.boxId}).then(res=>{
             let data = res.data
+            pp.ruleForm2 = {
+              is_html:true,
+              is_cc:true,
+              is_partsend:false,
+              to: [],
+              cc: [],
+              subject: '',
+              secret:'非密',
+              is_save_sent:true,
+              is_confirm_read:true,
+              is_schedule:false,
+              schedule_day:'',
+              is_password:false,
+              password:'',
+              is_burn:false,
+              burn_limit:1,
+              burn_day:'',
+              html_text:'',
+              plain_text:'',
+              attachments:[],
+              net_attachments:[]
+            }
             // pp.ruleForm2 = res.data;
-            pp.ruleForm2 = res.data;
             pp.content = data.html_text || data.plain_text;
             pp.maillist = []
             pp.maillist_copyer = [];
             pp.fileList = data.attachments;
-            pp.ruleForm2.is_html = true;
+            pp.ruleForm2.subject = data.subject;
+            pp.ruleForm2.draft_id = data.attrs.draft_id;
+            pp.ruleForm2.is_burn = data.attrs.is_burn;
+            pp.ruleForm2.is_password = data.attrs.is_password;
+            pp.ruleForm2.is_schedule = data.attrs.is_schedule;
+            // pp.ruleForm2.password = data.attrs.password;
+            pp.ruleForm2.schedule_day = data.attrs.schedule_day;
+            // pp.ruleForm2.flags = data.flags;
             for(let i=0;i<data.to.length;i++){
               pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
 
             }
-            console.log('maillist')
-            console.log(pp.maillist)
             if(data.cc){
               for(let i=0;i<data.cc.length;i++){
                 pp.maillist_copyer.push({fullname:data.cc[i][1]||'',email:data.cc[i][0],status:true})
@@ -545,7 +571,7 @@
       moveHandleCommand:function(index){
         var params={
           uids:this.checkedMails,
-          src_folder:this.$parent.$parent.$parent.activeMenubar.id,
+          src_folder:this.boxId,
           dst_folder:index
         }
         moveMails(params).then((suc)=>{
@@ -570,7 +596,7 @@
         }
         let param = {
           uids:this.checkedMails,
-          folder:this.$parent.$parent.$parent.activeMenubar.id,
+          folder:this.boxId,
           action:item.action,
           flags:[item.flags]
         }
@@ -585,7 +611,7 @@
       deleteMailById(){
         var params={
           uids:this.checkedMails,
-          folder:this.$parent.$parent.$parent.activeMenubar.id,
+          folder:this.boxId,
         };
         this.$confirm('删除此邮件, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -599,7 +625,7 @@
                 message: '邮件删除成功!'
               })
               this.getMessageList();
-              this.$parent.$parent.$parent.refreshMenu()
+              this.$parent.$parent.$parent.getFloderfn()
             }
           },(err)=>{
             this.$message({
@@ -770,11 +796,11 @@
       },
       getMessageList(){
         this.loading = true;
+
         let params = {
           folder:this.boxId,
           limit:this.pageSize,
           offset:(this.currentPage-1)*this.pageSize,
-
         }
         if(this.search){
           params['search'] = this.search;
@@ -863,7 +889,7 @@
         let folder = this.floderResult;
         let arr = [];
         for(let i=0;i<folder.length;i++){
-          if(folder[i]['raw_name']!='Drafts'&&folder[i]['raw_name']!=this.$parent.$parent.$parent.activeMenubar.id){
+          if(folder[i]['raw_name']!='Drafts'&&folder[i]['raw_name']!=this.boxId){
             let obj={};
             obj['text'] = folder[i]['name'];
             obj['id'] = folder[i]['raw_name'];
@@ -874,7 +900,10 @@
         return arr;
       }
     },
-    mounted(){
+    created(){
+      this.boxId = this.$route.params.boxId || 'INBOX'
+      this.curr_folder = sessionStorage['checkNodeLabel'] || '收件箱'
+
       this.getMessageList();
       this.getFloderMsgById(this.boxId)
     },
@@ -889,8 +918,12 @@
         },
       checkedMails(v){
           // console.log(v)
-      }
-    }
+      },
+      $route(v,o){
+        this.boxId = this.$route.params.boxId;
+        this.curr_folder = sessionStorage['checkNodeLabel'] || '收件箱'
+      },
+    },
 
 }
 </script>

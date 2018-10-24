@@ -11,7 +11,7 @@
                       :data="folderList"
                       node-key="id"
                       :default-checked-keys="checkNodes"
-                      default-expand-all
+                      :highlight-current="true"
                       @node-click="handleNodeClick">
                       <span class="custom-tree-node" slot-scope="{ node, data }" :title="node.label">
 
@@ -62,10 +62,10 @@
         floderResult:[],
         checkNodes:[],
 
-          defaultProps: {
-            children: 'children',
-            label: 'label',
-          },
+        defaultProps: {
+          children: 'children',
+          label: 'label',
+        },
         dialogFormVisible: false,
         form: {
           title:'',
@@ -112,6 +112,7 @@
     }
     ,
     methods:{
+
       showDialog(data) {
         this.dialogFormVisible = true;
         this.rootFloder = data;
@@ -183,6 +184,7 @@
       handleNodeClick(data) {
         this.$emit('getData', data);
         this.checkNodes=[data.id];
+        sessionStorage['checkNodes']=data.id;
         this.$parent.editableTabs2[0].title = data.label;
         // this.$router.push('/mailbox/innerbox')
       },
@@ -192,20 +194,6 @@
         this.$parent.showTabIndex = 1;
         this.$parent.addTab('compose','写信')
       },
-      getFloderfn(){
-        let folder = this.$parent.floderResult;
-        let arr = [];
-        for(let i=0;i<folder.length;i++){
-          let obj={};
-          obj['label'] = folder[i]['name'];
-          obj['id'] = folder[i]['raw_name'];
-          obj['flags'] = folder[i]['flags'];
-          obj['unseen'] = folder[i]['unseen_count'];
-          obj['is_default'] = folder[i]['is_default'];
-          arr.push(obj);
-        }
-        this.folderList = arr
-      },
       reloadMails(){
         console.log(this.$parent.$refs.innerbox)
         this.$parent.$refs.innerbox.getMessageList()
@@ -213,8 +201,12 @@
 
     },
 
-    beforeMount(){
-      // this.getFloderfn();
+
+    mounted(){
+      if(sessionStorage['checkNodes']){
+        this.checkNodes = [];
+        this.checkNodes.push(this.checkNodes = [sessionStorage['checkNodes']])
+      }
     },
 
 

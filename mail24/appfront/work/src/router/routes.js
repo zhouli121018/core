@@ -21,10 +21,12 @@ export const rou = [
       },
       {
         path: 'mailbox/welcome',
+        name:'welcome',
         component: _import('mailbox/mailboxTab'),
       },
       {
-        path: 'mailbox/innerbox',
+        path: 'mailbox/innerbox/:boxId',
+        name:'innerbox',
         component: _import('mailbox/mailboxTab'),
       },
       {

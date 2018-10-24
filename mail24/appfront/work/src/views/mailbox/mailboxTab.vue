@@ -1,10 +1,62 @@
 <template>
     <div>
         <section class="m-mail">
-            <MailAside @getData="getData" @getCompose="getCompose" ref="menubar"></MailAside>
+            <!--<MailAside @getData="getData" @getCompose="getCompose" ref="menubar"></MailAside>-->
+            <aside class="mlsidebar">
+                <div class="mlsidebar-bg"></div>
+                <div class="u-btns">
+                    <button class="u-btn u-btn-default u-btn-large btn-compose j-mlsb" type="button" @click="goToCompose"><i class="iconfont icon-iconcreate"></i> <span class="title">写 信</span></button>
+                    <button class="u-btn u-btn-default u-btn-large btn-inbox j-mlsb" type="button" @click="reloadMails"><i class="iconfont icon-iconinbox"></i></button>
+                </div>
+
+                <div class="wrapper u-scroll">
+                    <el-tree
+                      :data="folderList"
+                      node-key="id"
+                      :default-checked-keys="checkNodes"
+                      :highlight-current="true"
+                      @node-click="handleNodeClick" ref="treeMenuBar">
+                      <span class="custom-tree-node" slot-scope="{ node, data }" :title="node.label">
+
+
+                        <span>{{ node.label }} <el-badge v-if="data.unseen" class="mark" :value="data.unseen" /></span>
+
+                        <span class="" style="position:absolute;right:2px;" class="hide_btn">
+                          <el-button
+                            type="text"
+                            size="mini"
+                            @click.stop.prevent="() => showDialog(data)" title="新建文件夹">
+                            <i class="el-icon-plus"></i>
+                          </el-button>
+                          <el-button
+                            type="text"
+                            size="mini"
+                            v-if="!data.is_default"
+                            @click.stop="() => remove(node, data)" title="删除">
+                            <i class="el-icon-delete"></i>
+                          </el-button>
+                        </span>
+                      </span>
+                    </el-tree>
+                </div>
+
+                      <el-dialog title="新建文件夹" :visible.sync="dialogFormVisible" :append-to-body="true">
+                    <el-form :model="form" :rules="rules" ref="ruleForm">
+                      <el-form-item label="文件夹名称" :label-width="formLabelWidth" prop="name">
+                        <el-input v-model="form.name" auto-complete="off"></el-input>
+                      </el-form-item>
+
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                      <el-button @click="dialogFormVisible = false">取 消</el-button>
+                      <el-button type="primary" @click="append">确 定</el-button>
+                    </div>
+                  </el-dialog>
+
+            </aside>
             <article class="mlmain mltabview tab_box" :class="{position_top0:!tabList.length}" ref="editor_h">
 
-                    <el-tabs v-model="editableTabsValue2" type="card" closable @tab-remove="removeTab" class="tab_style_tt" @tab-click="tabClick" :class="{hide_tab_top:editableTabs2.length<=1}" v-if="showTabIndex==1">
+                    <el-tabs v-model="editableTabsValue2" type="card" closable @tab-remove="removeTab" class="tab_style_tt" @tab-click="tabClick" :class="{hide_tab_top:editableTabs2.length<=1}" v-if="showTabIndex==1" ref="tabref">
                       <el-tab-pane
                         v-for="(item, index) in editableTabs2"
                         :key="item.name"
@@ -18,7 +70,7 @@
                         <!--</div>-->
                         <Innerbox v-if="item.name=='1'" :boxId="boxId" :curr_folder="curr_folder"  @getRead="getRead" :floderResult="floderResult" ref="innerbox"></Innerbox>
                         <Read :readId="item.rid" :readFolderId="item.fid" v-if="item.type=='read'"></Read>
-                        <Compose  v-if="item.type!='read'&&item.name!='1'" :iframe_height="iframe_height" :rid="item.name" :parent_ruleForm2="ruleForm2" :parent_content="content" :parent_maillist="maillist" :parent_maillist_copyer="maillist_copyer" :parent_fileList="fileList"></Compose>
+                        <Compose  v-if="item.type!='read'&&item.name!='1'" :iframe_height="iframe_height" :rid="item.name" :parent_ruleForm2="ruleForm2" :parent_content="content" :parent_maillist="maillist" :parent_maillist_copyer="maillist_copyer" :parent_fileList="fileList" :compose_type="item.type"></Compose>
 
                       </el-tab-pane>
                     </el-tabs>
@@ -34,7 +86,7 @@
 <script>
 import router from '@/router'
 import MailAside from './components/MailAside'
-import {getMailMessage,getFloder} from "@/api/api"
+import {getMailMessage,getFloder,creatFolder,deleteFolder } from "@/api/api"
 import Innerbox from './components/innerbox'
 import Home from './components/home'
 import Read from './components/read'
@@ -75,7 +127,7 @@ export default {
         },
         hashTab:[],
         tab_content_height:'',
-        editableTabsValue2: '2',
+        editableTabsValue2: '1',
         editableTabs2: [{
           title: '收件箱',
           name: '1',
@@ -93,7 +145,25 @@ export default {
         tab1:{id:0,url:'home',text:'收件箱'},
         tabList:[],
         titleHash:[],
-        boxId:'INBOX'
+        boxId:'INBOX',
+
+        checkNodes:[],
+
+        defaultProps: {
+          children: 'children',
+          label: 'label',
+        },
+        dialogFormVisible: false,
+        form: {
+          title:'',
+          name: '',
+          region: '',
+        },
+        rules:{
+          name:[{required:true,message:'请填写文件夹名称！',trigger:'blur'}]
+        },
+        formLabelWidth: '120px',
+        rootFloder:''
       }
   },
   methods:{
@@ -175,9 +245,6 @@ export default {
     jumpTo(path){
         router.push(path);
     },
-    refreshMenu(){
-      this.getFloderfn();
-    },
     changeTab1(){
       this.activeTab = 0;
       this.showTabIndex = 1;
@@ -212,9 +279,16 @@ export default {
       this.changeTab1();
     },
 
+    setCurrentKey(boxId) {
+      this.$nextTick(() =>{
+        this.$refs.treeMenuBar.setCurrentKey(boxId||'INBOX');
+        // let data = this.$refs.treeMenuBar.getCurrentNode();
+        // this.pab_cname = data.groupname;
+      })
+    },
     getData(obj){
+      console.log(obj)
       this.activeMenubar = obj;
-      console.log(this.activeMenubar)
       this.showTabIndex = 1;
       this.activeTab = 0;
       this.curr_folder = obj.label;
@@ -248,44 +322,144 @@ export default {
     getFloderfn(){
       getFloder().then((res)=>{
         this.floderResult = res.data;
+        if(sessionStorage['checkNodes']){
+          this.checkNodes = [];
+          this.checkNodes.push(sessionStorage['checkNodes'])
+        }
+        this.setCurrentKey(this.$route.params.boxId);
       },(err)=>{
         console.log(err)
       });
     },
 
-  },
-  beforeMount:function(){
-    // this.test();
-    // this.getMessageList();
-    console.log('router')
-    console.log(this.$route.path)
-    if(this.$route.path == '/mailbox/innerbox'){
+    showDialog(data) {
+        this.dialogFormVisible = true;
+        this.rootFloder = data;
+        this.form.title = data.label;
+
+      },
+    append(){
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          let newName = this.form.name;
+          if (!this.rootFloder.children) {
+            this.$set(this.rootFloder, 'children', []);
+          }
+          creatFolder({"name":this.form.name}).then((suc)=>{
+            this.getFloderfn();
+            this.form.name='';
+            this.$message({
+              type: 'success',
+              message: '添加成功!'
+            });
+          },(err)=>{
+            this.$message({
+              type: 'error',
+              message: '添加失败！'
+            });
+            console.log(err);
+          })
+
+          this.dialogFormVisible = false;
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
+
+    },
+
+    remove(node, data) {
+      const parent = node.parent;
+      const children = parent.data.children || parent.data;
+      const index = children.findIndex(d => d.id === data.id);
+      this.$confirm('删除 "'+data.label+'" 文件夹, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteFolder(data.id).then((suc)=>{
+          this.getFloderfn();
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        },(err)=>{
+          console.log(err)
+          this.$message({
+            type: 'error',
+            message: '删除失败!'
+          });
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
+    },
+    handleNodeClick(data) {
+      this.$router.push('/mailbox/innerbox/'+data.id)
+      this.getData(data);
+      this.checkNodes=[data.id];
+      sessionStorage['checkNodes']=data.id;
+      sessionStorage['checkNodeLabel']=data.label;
+      this.editableTabs2[0].title = data.label;
+      // this.$router.push('/mailbox/innerbox')
+    },
+    goToCompose(){
+      // this.$emit('getCompose', {activeTab:3});
+      // this.$router.push('/mailbox/compose')
       this.showTabIndex = 1;
-    }else{
-      this.showTabIndex = 0;
-    }
+      this.addTab('compose','写信')
+    },
+    reloadMails(){
+      this.getFloderfn();
+      if(this.$refs.innerbox[0]){
+        console.log(this.$refs.innerbox[0])
+        this.$refs.innerbox[0].getMessageList()
+      }
+
+    },
+
   },
   mounted(){
     this.getFloderfn();
     const fheight = this.$refs.editor_h.getBoundingClientRect().height-50-50-220-80;
     console.log(fheight)
     this.iframe_height = fheight+'px';
-    console.log(this.$route.path)
-    let v = this.$route;
-    if(v.path == '/mailbox/welcome'){
-        this.showTabIndex = 0;
-      }else if(v.path == '/mailbox/innerbox'){
-        this.showTabIndex = 1;
-      }else if(v.path == '/mailbox/readmail'){
-        this.showTabIndex = 2;
-      }else if(v.path == '/mailbox/compose'){
-        this.showTabIndex = 3;
-      };
   },
   computed: {
     username() { // 获取store中的数据
       return this.$store.state.userInfo.name;
+    },
+    folderList(){
+        let folder = this.floderResult;
+        let arr = [];
+        for(let i=0;i<folder.length;i++){
+          let obj={};
+          obj['label'] = folder[i]['name'];
+          obj['id'] = folder[i]['raw_name'];
+          obj['flags'] = folder[i]['flags'];
+          obj['unseen'] = folder[i]['unseen_count'];
+          obj['is_default'] = folder[i]['is_default'];
+          arr.push(obj);
+        }
+        return arr;
+      }
+  },
+  created(){
+    console.log(this.$route)
+    console.log(this.$route.path == '/mailbox/innerbox')
+    if(this.$route.name == 'innerbox'){
+      this.showTabIndex = 1;
+      // this.getData({id:'INBOX',label:'收件箱'})
+      this.setCurrentKey(this.$route.params)
+    }else{
+      this.showTabIndex = 0;
     }
+
   },
   watch:{
       $route(v,o){
@@ -294,14 +468,10 @@ export default {
           this.showTabIndex = 0;
         }else if(v.path == '/mailbox/innerbox'){
           this.showTabIndex = 1;
-        }else if(v.path == '/mailbox/readmail'){
-          this.showTabIndex = 2;
-        }else if(v.path == '/mailbox/compose'){
-          this.showTabIndex = 3;
         }
       },
       username(nv,ov){
-        this.$refs.menubar.getFloderfn();
+        this.getFloderfn();
       }
 
   },
@@ -330,6 +500,12 @@ export default {
       }
     }
     if(hasCompose){
+      console.log(to)
+      console.log(from)
+      if(to.path=='/login'){
+        next();
+        return;
+      }
       this.$confirm('您正在写信中，是否离开写信页面？', '系统信息', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -349,6 +525,15 @@ export default {
 </script>
 
 <style>
+  .fr{
+    float:right;
+  }
+  .hide_btn{
+    display:none;
+  }
+  .el-tree-node:hover .hide_btn{
+    display:inline-block;
+  }
   .tab_box .el-tabs__header{
     margin:0 0 5px;
   }

@@ -14,7 +14,7 @@
                 </div>
             </div>
 
-            <el-button size="small" @click="recallMessage" v-if="msg.attrs" v-show="msg.attrs.is_canrecall" :disabled="msg.attrs.is_recall">召回邮件</el-button>
+            <el-button size="small" @click="recallMessage" v-if="msg.attrs" v-show="msg.attrs.is_canrecall" :disabled="msg.attrs.is_recall">{{msg.attrs.is_recall?'已召回':'召回邮件'}}</el-button>
             <el-button-group >
               <el-button size="small" @click="actionView(3)">回复</el-button>
               <el-button size="small"  @click="actionView(4)">回复全部</el-button>
@@ -113,7 +113,7 @@
                     </div>
                 </div>
                 <div class="mail-top-info">
-                    <h3 class="mail-subject j-mail-subject " :class="flag_color" style="font-size:18px;">
+                    <h3 class="mail-subject j-mail-subject " :class="[{redcolor:flagged},flag_color]" style="font-size:18px;">
                         <!--<span class="icon"><i class="j-sourceIcon iconfont state-icon icon-SYSTEM" title="系统认证可信任来源"></i></span>-->
                          {{subject?subject:'无主题'}}
                     </h3>
@@ -166,11 +166,11 @@
                   邮件已解密，以下是解密后的邮件内容：
               </div>
             </div>
-            <div class="u-alert u-alert-warning" v-if="msg.attrs && msg.attrs.is_notify" style="margin-bottom:0;">
+            <div class="u-alert u-alert-warning" v-if="msg.attrs && msg.attrs.is_notify" style="margin-bottom:0;padding: 2px 12px;">
               <div class="decryption-success">
                   发件人希望得到您的回执，是否发送？  
-                <el-button type="text"  style="padding:0">发送</el-button>
-                <el-button type="text"  style="padding:0">取消</el-button>
+                <el-button type="text"  style="padding:0" @click="sendNotifyMessage">发送</el-button>
+                <el-button type="text"  style="padding:0" @click="msg.attrs.is_notify=false">取消</el-button>
               </div>
             </div>
             <div class="mail-sent-state j-sent-state" v-if="is_sender">
@@ -327,7 +327,7 @@
 
 <script>
 
-  import {readMail,downloadAttach,mailDecode,moveMails,messageFlag,rejectMessage,zipMessage,pruneMessage,emlMessage,pabMessage,deleteMail,getMessageStatus,messageRecall,notifyRecall} from '@/api/api';
+  import {readMail,downloadAttach,mailDecode,moveMails,messageFlag,rejectMessage,zipMessage,pruneMessage,emlMessage,pabMessage,deleteMail,getMessageStatus,messageRecall,notifyRecall,notifyMessage} from '@/api/api';
   export default  {
     name:'Read',
     props:{
@@ -345,6 +345,7 @@
         readedCount:0,
         deliver_failCount:0,
         flagsData:[
+          {flags:'\\flagged',action:'add',text:'红旗',classN:'redcolor'},
           {flags:'umail-green',action:'add',text:'绿旗',classN:'flag-green'},
           {flags:'umail-orange',action:'add',text:'橙旗',classN:'flag-orange'},
           {flags:'umail-blue',action:'add',text:'蓝旗',classN:'flag-blue'},
@@ -408,22 +409,42 @@
       }
     },
     methods:{
+      sendNotifyMessage(){
+        let param = {
+          uid:this.readId,
+          folder:this.readFolderId
+        }
+        notifyMessage(param).then(res=>{
+          console.log(res)
+          this.$message({
+            type:'success',
+            message:'回执发送成功！'
+          })
+          this.getReadMail();
+        }).catch(err=>{
+          this.$message({
+            type:'error',
+            message:'回执发送失败！'
+          })
+          this.getReadMail();
+        })
+      },
       recallMessage(){
         let param = {
           uid:this.readId,
           folder:this.readFolderId
         }
         messageRecall(param).then(res=>{
-          console.log(res)
+          let str = res.data.results[0].inform || res.data.results[0].recall_status_info
           this.$message({
             type:'success',
-            message:'邮件召回成功！'
+            message:'操作成功！'+ str
           })
           this.getReadMail();
         }).catch(err=>{
           this.$message({
             type:'error',
-            message:'邮件召回失败！'+err.error
+            message:'操作失败！'+err.error
           })
           this.getReadMail();
         })
@@ -553,7 +574,6 @@
             if(data.uid)pp.ruleForm2.uid = data.uid;
             if(data.folder)pp.ruleForm2.folder = data.folder;
             if(data.refw_type)pp.ruleForm2.refw_type = data.refw_type
-            pp.ruleForm2.is_html = true;
               for(let i=0;i<data.to.length;i++){
                 pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
               }

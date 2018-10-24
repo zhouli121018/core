@@ -256,7 +256,8 @@
                   <i class="el-icon-success" style="color:#26af1e"></i>
                     {{sendResult.type=='schedule'?"邮件将于 "+sendResult.schedule_day+" 发送，暂时保存到草稿箱":"邮件已发送"}}
                 </div>
-                <el-button type="text" @click="show_result = !show_result" v-if="sendResult.type=='send'">{{show_result?'[隐藏发送状态]':'[显示发送状态]'}}</el-button>
+                <el-button type="text" @click="change_show_result" v-if="sendResult.type=='send'">{{show_result?'[隐藏发送状态]':'[显示发送状态]'}}</el-button>
+                <el-button type="text" @click="getMessageStatus" v-if="sendResult.type=='send' && show_result">[刷新]</el-button>
                 <el-button type="text" @click="recall" v-if="sendResult.type=='send'">[召回邮件]</el-button>
                 <el-button type="text" v-if="sendResult.type=='schedule'">[查看已发邮件]</el-button>
             </div>
@@ -306,10 +307,10 @@
                 </el-table>
 
               </div>
-              <div class="desc  j-autosave-desc">
+              <div class="desc  j-autosave-desc" v-if="!is_save_contact">
 
                 <p class="autosave">
-                  如要自动保存联系人，您可以设置 <el-button type="text">自动保存</el-button>
+                  如要自动保存联系人，您可以 设置 <el-button type="text" @click="autoSave">自动保存</el-button>
                 </p>
               </div>
             </div>
@@ -506,6 +507,7 @@
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     props:{
+      compose_type:'',
       iframe_height:'',
       rid:'',
       parent_ruleForm2: {
@@ -554,6 +556,7 @@
         }
       };
       return {
+        is_save_contact:false,
         maillist:[],
         maillist_copyer:[],
         fileList:[],
@@ -679,6 +682,15 @@
       };
     },
     methods:{
+      change_show_result(){
+        if(!this.show_result && this.mail_results.length<1){
+          this.getMessageStatus();
+        }
+        this.show_result = !this.show_result;
+      },
+      autoSave(){
+        this.$router.push('/setting/param')
+      },
       editorfocus(){
         this.setEditorHeight();
       },
@@ -866,6 +878,14 @@
           console.log(res)
           this.ruleForm2.is_save_sent = res.data.results.is_save_sent;
           this.ruleForm2.is_confirm_read = res.data.results.is_confirm_read;
+          this.is_save_contact = res.data.results.is_save_contact;
+          if(this.compose_type=='compose'&&res.data.results.is_auto_save_draft){
+            if(this.$store.state.timer){clearInterval(this.$store.state.timer)}
+            this.$store.commit('setTimer',setInterval(()=>{
+              this.sentMail('save_draft')
+            },5*60*1000))
+
+          }
         },err=>{
           console.log(err)
         })
@@ -1168,7 +1188,6 @@
           if(res.data.draft_id){
             this.ruleForm2.draft_id = res.data.draft_id
           }
-          if(res.data.type && res.data.type=='send'){this.getMessageStatus();}
           if(res.data.success && res.data.success){
             this.send_suc = true;
           }

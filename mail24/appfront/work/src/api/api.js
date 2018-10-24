@@ -138,7 +138,7 @@ export const pabMessage = params => { return axios.post(`${host}/mail/message/pa
 //查看邮件的 召回邮件 /api/mail/message/recall/
 export const messageRecall = params =>{ return axios.post(`${host}/mail/message/recall/`,params) };
 //发送回执 /api/mail/message/notify/
-export const notifyRecall = params =>{ return axios.post(`${host}/mail/message/notify/`,params) };
+export const notifyMessage = params =>{ return axios.post(`${host}/mail/message/notify/`,params) };
 
 
 

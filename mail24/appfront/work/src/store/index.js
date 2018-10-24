@@ -14,10 +14,6 @@ const userInfo = {
   token:cookie.getCookie('token')||'',
   locked:cookie.getCookie('locked')||''
 }
-const mailboxVar = {
-  tabList:[],
-  activeTab:''
-}
 const sharedStatus = {
   shareuser_all:true,
   shareuser_get:true,
@@ -32,7 +28,8 @@ const store = new Vuex.Store({
     lastUrl:'/',
     uploadJson:'/api/setting/upload-img/',
     isCompose:false,
-    sharedStatus
+    sharedStatus,
+    timer:'1'
   },
   actions,
   mutations,

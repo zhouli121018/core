@@ -28,6 +28,9 @@ export default {
   },
   setSharedStatus(state,param){
     state.sharedStatus = param;
+  },
+  setTimer(state,param){
+    state.timer = param;
   }
 
 
