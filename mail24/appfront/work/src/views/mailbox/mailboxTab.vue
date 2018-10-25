@@ -64,7 +64,7 @@
                         :name="item.name"
 
                       >
-                         <span slot="label" class="tab_title" :class="{no_close:item.name==1}" :title="item.title"><i class="" :class="{'el-icon-message':item.type=='read','el-icon-edit':item.type!='read'&&item.name!='1','el-icon-menu':item.name=='1'}"></i> {{item.title | hide_subject}}</span>
+                         <span slot="label" class="tab_title" :class="{no_close:item.name==1}" :title="item.title"><i class="" :class="{'el-icon-message':item.type=='read','el-icon-edit':item.type!='read'&&item.name!='1','el-icon-menu':item.name=='1'}"></i> {{item.title | hide_subject}} </span>
                         <!--<div :style="{height: tab_content_height}">-->
 
                         <!--</div>-->

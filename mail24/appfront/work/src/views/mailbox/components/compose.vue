@@ -140,7 +140,7 @@
                           <el-button size="small" type="primary" id="addAttachBtn"><i class="el-icon-upload"></i> 添加附件</el-button>
                           <div slot="tip" class="el-upload__tip"></div>
                       </el-upload>
-                      <el-dropdown  placement="bottom" @command="selectUpload" style="margin-right:20px;">
+                      <el-dropdown  placement="bottom" @command="selectUpload" style="margin-right:20px;" trigger="click">
                           <i class="el-icon-caret-bottom"></i>
                         <el-dropdown-menu slot="dropdown">
                           <el-dropdown-item  command="filecore">从文件中心添加</el-dropdown-item>
@@ -697,7 +697,8 @@
       htmlToText(html){
         // return html.replace(/<(style|script|iframe)[^>]*?>[\s\S]+?<\/\1\s*>/gi,'').replace(/<[^>]+?>/g,'').replace(/\s+/g,' ').replace(/ /g,' ').replace(/>/g,' ')
         // var htmlTagReg = /<(\/)?[^>].*?>/g;
-        var htmlTagReg = /<(?!\/?br\/?.+?>|\/?img.+?>)[^<>]*>/g;
+        // var htmlTagReg = /<(?!\/?br\/?.+?>|\/?img.+?>)[^<>]*>/g;
+        var htmlTagReg = /<(?!\/?br\/?.+?>)[^<>]*>/g;
         var p = /<p(([\s\S])*?)<\/p>/g;
 
         html = html.replace(/<p>([\s\S]*?)<\/p>/ig, '$1<br/>')
@@ -715,17 +716,22 @@
 
       },
       no_html(){
-        let text = this.htmlToText(this.content)
-        this.content = text;
+        // let text = this.htmlToText(this.content)
+        // this.content = text;
         // $('#compose'+this.rid+' .ke-outline').addClass('ke-disabled')
         // $('#compose'+this.rid+' .ke-outline').css({'opacity':0.5})
 
         // $('#compose'+this.rid+' .ke-outline[data-name="preview"]').removeClass('ke-disabled')
         // $('#compose'+this.rid+' .ke-outline[data-name="fullscreen"]').css({'opacity':1})
 
-        $('#compose'+this.rid+' .ke-toolbar').hide()
 
-        this.ruleForm2.is_html = !this.ruleForm2.is_html;
+        // $('#compose'+this.rid+' .ke-toolbar').hide()
+        this.content = this.$refs[this.editor_id].editor.text();
+        this.$refs[this.editor_id].editor.text(this.content);
+        $('#compose'+this.rid+' .ke-container.ke-container-default').hide()
+        $('#editor_id'+this.rid).show()
+
+        this.ruleForm2.is_html = false;
       },
       changeIsHtml(){
         if(this.ruleForm2.is_html){
@@ -749,7 +755,10 @@
             // $('#compose'+this.rid+' .ke-outline').removeClass('ke-disabled')
             // $('#compose'+this.rid+' .ke-outline').css({'opacity':1})
           }
-          $('#compose'+this.rid+' .ke-toolbar').show()
+          // $('#compose'+this.rid+' .ke-toolbar').show()
+          this.$refs[this.editor_id].editor.html(this.content);
+          $('#compose'+this.rid+' .ke-container.ke-container-default').show()
+          $('#editor_id'+this.rid).hide()
 
           this.ruleForm2.is_html = !this.ruleForm2.is_html;
 
@@ -856,6 +865,7 @@
         if(th>0){
           $('#compose'+this.rid+' .ke-edit').css({'height': th+'px','minHeight':'200px'})
           $('#compose'+this.rid+' .ke-edit-iframe').css({'height': th+'px','minHeight':'200px'})
+          $('#editor_id'+this.rid).css({'height': this.editor_height-20+'px','minHeight':'260px'})
         }
       },
       deleteList(a,id,k){
@@ -1158,7 +1168,8 @@
           this.ruleForm2.plain_text = '';
         }else{
           this.ruleForm2.html_text = '';
-          this.ruleForm2.plain_text = this.htmlToText(this.content);
+          this.ruleForm2.plain_text = this.content;
+          console.log(this.content)
         }
 
         for(let i=0;i<this.fileList.length;i++){
@@ -1402,6 +1413,7 @@
       onContentChange (val) {
         this.setEditorHeight();
         this.content = this.$refs[this.editor_id].$data.outContent;
+        console.log(this.content)
       },
 
       preview(){
@@ -1631,6 +1643,11 @@
       this.maillist_copyer = this.parent_maillist_copyer;
       this.fileList = this.parent_fileList;
       this.ruleForm2 = this.parent_ruleForm2;
+       $('#editor_id'+this.rid).css({'width': '100%','border':'none','boxSizing':'border-box','padding':'10px 10px 0'})
+      if(!this.ruleForm2.is_html){
+        this.$refs[this.editor_id].editor.text(this.content)
+        this.no_html();
+      }
       this.getParams();
       this.getPabGroups();
       sessionStorage['openGroup'] = 'oab';

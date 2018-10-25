@@ -140,8 +140,8 @@
                                 <td>
 
                                     <div class="j-contacts ">
-                                        <span class="u-email j-u-email">
-                                            <span class="name">{{to}}</span>
+                                        <span class="u-email j-u-email" v-for="(t,k) in to" :key="k" style="margin-right:2px;">
+                                            <span class="name" >{{t}}</span>
                                             <span class="address"></span>
                                         </span>
                                     </div>
@@ -537,7 +537,7 @@
           }
           if(item.id==10||item.id==11){
             console.log(window.location.origin)
-            let href = window.location.origin+'/#/messageInfo/'+this.readId+'?folder='+this.readFolderId+'&view='+view;
+            let href = window.location.origin+'/#/messageInfo/'+this.readId+'?folder='+encodeURIComponent(this.readFolderId)+'&view='+view;
             window.open(href)
             return;
           }
@@ -568,9 +568,15 @@
             let data = res.data
             pp.maillist = []
             pp.maillist_copyer = [];
-            pp.content = data.html_text || data.plain_text;
             pp.fileList = data.attachments;
             pp.ruleForm2.subject = data.subject;
+            pp.ruleForm2.is_html = data.is_html;
+            if(data.is_html){
+              pp.content = data.html_text ;
+            }else{
+              // pp.content = data.plain_text.replace(/(\r\n)|(\n)/g,'<br>');
+              pp.content = data.plain_text;
+            }
             if(data.uid)pp.ruleForm2.uid = data.uid;
             if(data.folder)pp.ruleForm2.folder = data.folder;
             if(data.refw_type)pp.ruleForm2.refw_type = data.refw_type
@@ -643,7 +649,7 @@
             let blob = new Blob([response.data], { type: response.headers["content-type"] })
             let objUrl = URL.createObjectURL(blob)
             let filenameHeader = response.headers['content-disposition']
-            let filename = filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1);
+            let filename = decodeURIComponent(filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1));
             if (window.navigator.msSaveOrOpenBlob) {
               // if browser is IE
               navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
@@ -729,13 +735,18 @@
             let data = res.data
             pp.maillist = []
             pp.maillist_copyer = [];
-            pp.content = data.html_text || data.plain_text;
             pp.fileList = data.attachments;
             pp.ruleForm2.subject = data.subject;
             if(data.uid)pp.ruleForm2.uid = data.uid;
             if(data.folder)pp.ruleForm2.folder = data.folder;
             if(data.refw_type)pp.ruleForm2.refw_type = data.refw_type
-            pp.ruleForm2.is_html = true;
+            pp.ruleForm2.is_html = data.is_html;
+            if(data.is_html){
+              pp.content = data.html_text ;
+            }else{
+              // pp.content = data.plain_text.replace(/(\r\n)|(\n)/g,'<br>');
+              pp.content = data.plain_text;
+            }
               for(let i=0;i<data.to.length;i++){
                 pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
               }
@@ -871,7 +882,6 @@
           }else{
             this.is_sender = false;
           }
-
           this.is_password = data.data.attrs.is_password;
           this.password = data.data.attrs.password;
           this.subject = data.data.subject;
@@ -882,9 +892,10 @@
             let t = o[1]+' <'+o[0]+'>'
             this.to.push(t);
           }
-          this.flagged = (data.data.flags.join('').indexOf('Flagged')>=0);
           this.flag_color = '';
-          if(this.flagged){
+          if(data.data.flags){
+            this.flagged = (data.data.flags.join('').indexOf('Flagged')>=0);
+            if(this.flagged){
               if(data.data.flags.join('').indexOf('umail-yellow')>=0){
                 this.flag_color = 'flag-yellow';
               }else if(data.data.flags.join('').indexOf('umail-green')>=0){
@@ -903,6 +914,10 @@
                 this.flag_color = 'flag-gray';
               }
             }
+          }
+
+
+
 
           const oIframe = document.getElementById('show-iframe'+rid);
           console.log(oIframe)
@@ -911,7 +926,13 @@
 
           oIframe.style.height = 'auto';
           oIframe.style.width = '100%';
-          oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = data.data.html_text||data.data.plain_text;
+          if(data.data.is_html){
+            oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = data.data.html_text||data.data.plain_text;
+          }else{
+            let bhtml = data.data.html_text||data.data.plain_text;
+            oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = '<pre>'+bhtml+'</pre>';
+          }
+
 
           this.attachments = data.data.attachments;
           for(let i=0;i<this.attachments.length;i++){
@@ -938,6 +959,8 @@
           this.loading = false;
         },(err)=>{
           this.notFond=true;
+          this.$parent.$parent.$parent.getFloderfn();
+          this.$parent.$parent.$parent.$refs.innerbox[0].getMessageList();
         });
       },
 

@@ -496,7 +496,6 @@
               net_attachments:[]
             }
             // pp.ruleForm2 = res.data;
-            pp.content = data.html_text || data.plain_text;
             pp.maillist = []
             pp.maillist_copyer = [];
             pp.fileList = data.attachments;
@@ -507,6 +506,12 @@
             pp.ruleForm2.is_schedule = data.attrs.is_schedule;
             // pp.ruleForm2.password = data.attrs.password;
             pp.ruleForm2.schedule_day = data.attrs.schedule_day;
+            pp.ruleForm2.is_html = data.is_html;
+            if(data.is_html){
+              pp.content = data.html_text ;
+            }else{
+              pp.content = data.plain_text;
+            }
             // pp.ruleForm2.flags = data.flags;
             for(let i=0;i<data.to.length;i++){
               pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
@@ -690,17 +695,23 @@
               attachments:[],
               net_attachments:[]
             }
+
             let data = res.data
             // pp.ruleForm2 = res.data;
             pp.maillist = []
             pp.maillist_copyer = [];
-            pp.content = data.html_text || data.plain_text;
+
             pp.fileList = data.attachments;
             pp.ruleForm2.subject = data.subject;
             if(data.uid)pp.ruleForm2.uid = data.uid;
             if(data.folder)pp.ruleForm2.folder = data.folder;
             if(data.refw_type)pp.ruleForm2.refw_type = data.refw_type
-            pp.ruleForm2.is_html = true;
+            pp.ruleForm2.is_html = data.is_html;
+            if(data.is_html){
+              pp.content = data.html_text ;
+            }else{
+              pp.content = data.plain_text;
+            }
             // if(item.id == 0 || item.id ==1 || item.id==5){
               for(let i=0;i<data.to.length;i++){
                 pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
@@ -736,7 +747,7 @@
             let objUrl = URL.createObjectURL(blob);
             this.blobUrl = objUrl;
             let filenameHeader = response.headers['content-disposition']
-            let filename = filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1);
+            let filename = decodeURIComponent(filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1));
             if (window.navigator.msSaveOrOpenBlob) {
               // if browser is IE
               navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
