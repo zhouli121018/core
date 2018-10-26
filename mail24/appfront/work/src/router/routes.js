@@ -108,6 +108,7 @@ export const rou = [
           {path:'user',component:_import('setting/page/user')},
           {path:'password',component:_import('setting/page/password')},
           {path:'param',component:_import('setting/page/param')},
+          {path:'template',component:_import('setting/page/template')},
           {path:'signature',component:_import('setting/page/signature')},
           {path:'autoreply',component:_import('setting/page/autoreply')},
           {path:'autoforward',component:_import('setting/page/autoforward')},

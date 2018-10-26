@@ -27,6 +27,11 @@
               <span slot="title" title="检查或修改发件时的签名">签名</span>
             </el-menu-item>
 
+            <el-menu-item index="/setting/template" style="text-align: left">
+              <img src="./img/op_signature.gif" style="width:20px;">
+              <span slot="title" title="模板信设置">模板信</span>
+            </el-menu-item>
+
             <el-menu-item index="/setting/autoreply" style="text-align: left" v-if="menuShow.setting_autoreply_show">
               <img src="./img/op_autoreply.gif" style="width:20px;">
               <span slot="title" title="检查或重新设置自动回复">自动回复</span>

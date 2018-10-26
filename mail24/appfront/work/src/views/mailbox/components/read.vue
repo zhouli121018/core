@@ -18,9 +18,15 @@
             <el-button-group >
               <el-button size="small" @click="actionView(3)">回复</el-button>
               <el-button size="small"  @click="actionView(4)">回复全部</el-button>
+              <el-button size="small"  @click="actionView(5)">转发</el-button>
             </el-button-group>
 
-            <el-button size="small"  @click="actionView(5)">转发</el-button>
+
+
+            <el-button size="small"  @click="print">打印</el-button>
+
+
+
             <el-dropdown @command="moveHandleCommand" trigger="click">
                 <el-button  size="small" plain>
                 <span>移动到</span>
@@ -75,8 +81,10 @@
                   {{ item.text}}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-
+            <el-button size="small"  @click="closeTab(tagName)">关闭</el-button>
             <el-button size="small" type="danger" plain @click="deleteMail">删除</el-button>
+
+
           </div>
 
           <div class="mail" ref="iframe_height"  v-loading="loading">
@@ -109,7 +117,7 @@
                       <a href="javascript:void(0)" title="发起会议" data-type="mail_event">发起会议</a>
                     </div>
                     <div class="f-tar">
-                        <span>2018-08-09 17:11:37</span>
+                        <span>{{time}}</span>
                     </div>
                 </div>
                 <div class="mail-top-info">
@@ -331,6 +339,7 @@
   export default  {
     name:'Read',
     props:{
+      tagName:'',
       readId:'',
       readFolderId: '',
     },
@@ -372,6 +381,7 @@
         showDetails:false,
         iframeState:false,
         subject:'主题',
+        time:'',
         mfrom:'anshanshan@test.com',
         to:'anshanshan@test.com',
         moveCheckIndex:'',
@@ -406,9 +416,44 @@
               ]},
             {id:4,flags:'\\flagged',text:'取消旗帜',divided:false,action:'remove'},
           ],
+        print_html:''
       }
     },
     methods:{
+      closeTab(tagName){
+        this.$parent.$parent.$parent.removeTab(tagName);
+      },
+      print(){
+        let to = '';
+        for(let i=0;i<this.msg.to.length;i++){
+          to += this.msg.to[i][1] + '&lt;'+this.msg.to[i][0]+'&gt;;'
+        }
+        let print_main = `
+        <div>
+        <p>U-Mail 企业邮箱</p>
+        <div style="border-top:1px solid #7CACDB;border-bottom:1px solid #7CACDB;padding:4px 0;margin-bottom:16px;font-size:12px;">
+            <h3>${this.subject||'无主题'}</h3>
+            <p>发件人：${this.mfrom}</p>
+            <p>时&nbsp;&nbsp;间：${this.time.replace('T',' ')}</p>
+            <p>收件人：${to}</p>
+        </div>
+        <div style="position:relative;font-size:14px;padding:15px 15px 10px 15px;*padding:15px 15px 0 15px;overflow:visible;font-size: 14px;line-height:170%;min-height:100px;_height:100px;">
+            <div class="border: 1px #f1f1f1 solid; margin-left: auto; margin-right: auto; width: 640px; padding: 0px 55px; background-color: #fff;">
+                 ${this.print_html}
+            </div>
+        </div>
+      </div>`;
+        var printHtml = '<div style="background:#fff;margin:0;padding:10px;font-family:Verdana">'+print_main+'</div>';//这个元素的样式需要用内联方式，不然在新开打印对话框中没有样式
+
+
+
+        var wind = window.open('',"新窗口");
+
+
+        wind.document.head.innerHTML = '<title>U-Mail企业邮箱-邮件打印</title>'
+        wind.document.body.innerHTML = printHtml;
+        wind.print();
+      },
       sendNotifyMessage(){
         let param = {
           uid:this.readId,
@@ -420,13 +465,13 @@
             type:'success',
             message:'回执发送成功！'
           })
-          this.getReadMail();
+          this.msg.attrs.is_notify = false;
         }).catch(err=>{
           this.$message({
             type:'error',
             message:'回执发送失败！'
           })
-          this.getReadMail();
+          this.msg.attrs.is_notify = false;
         })
       },
       recallMessage(){
@@ -885,6 +930,7 @@
           this.is_password = data.data.attrs.is_password;
           this.password = data.data.attrs.password;
           this.subject = data.data.subject;
+          this.time = data.data.date;
           if(data.data.mfrom){this.mfrom = data.data.mfrom[1]+' < '+data.data.mfrom[0]+' > ';}
           this.to = [];
           for(let i=0;i<data.data.to.length;i++){
@@ -928,9 +974,11 @@
           oIframe.style.width = '100%';
           if(data.data.is_html){
             oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = data.data.html_text||data.data.plain_text;
+            this.print_html =  data.data.html_text
           }else{
             let bhtml = data.data.html_text||data.data.plain_text;
             oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = '<pre>'+bhtml+'</pre>';
+            this.print_html =  '<pre>'+bhtml+'</pre>'
           }
 
 

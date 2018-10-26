@@ -1,6 +1,6 @@
 <template>
         <div class="mltabview-content">
-            <div v-if="totalAllCount>0" class="mltabview-panel">
+            <div  class="mltabview-panel">
                 <div class="m-mllist">
                     <div class="list-bg"></div>
                     <div class="m-mllist-row">
@@ -145,9 +145,9 @@
                     <div class="mail-totals j-mail-totals" v-if="multipleSelection.length==0">
                         <div class="totals-info">
                         {{curr_folder}}(
-                        <span class="all-mail">共<span class="number">{{totalAllCount}}</span>封</span>
-                        <span class="unread-mail"><span class="number">{{unreadCount}}</span>封</span>
-                        <a href="#" >未读</a>
+                        <!--<span class="all-mail">共<span class="number">{{totalAllCount}}</span>封</span>-->
+                        <span class="unread-mail"><span class="number">{{this.$parent.$parent.$parent.unseencount}}</span>封</span>
+                        <a href="#" @click.prevent="viewHandleCommand('unseen')">未读</a>
                         <a href="#" v-if="unreadCount" @click.prevent="readAll">，全部设为已读</a>
                         )
 
@@ -233,7 +233,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="totalAllCount==0" class="mltabview-panel">
+            <div v-if="false" class="mltabview-panel">
                <h3 style="margin:30px 0 0 20px;font-size:24px;font-weight:normal;"> "{{curr_folder}}" 没有邮件</h3>
             </div>
         </div>
@@ -249,11 +249,12 @@
       floderResult:{
         type:Array,
         default: []
-      }
+      },
     },
 
     data() {
         return {
+          reject_is_delete:false,
           boxId:'INBOX',
           curr_folder:'收件箱',
           moreSearch:false,
@@ -445,7 +446,6 @@
         }
         messageFlag(param).then((suc)=>{
           this.getMessageList();
-          this.getFloderMsgById(this.boxId);
           this.$parent.$parent.$parent.getFloderfn();
         },(err)=>{
 
@@ -462,7 +462,6 @@
         }
         messageFlag(param).then((suc)=>{
           // this.getMessageList();
-          this.getFloderMsgById(this.boxId);
           this.$parent.$parent.$parent.getFloderfn();
         },(err)=>{
 
@@ -607,7 +606,6 @@
         }
         messageFlag(param).then((suc)=>{
           this.getMessageList();
-          this.getFloderMsgById(this.boxId);
           this.$parent.$parent.$parent.getFloderfn();
         },(err)=>{
 
@@ -729,18 +727,36 @@
           })
 
         }else if(item.id==4){ //拒收邮件
-          rejectMessage(param).then(res=>{
-            console.log(res)
-            this.$message(
-              {type:'success',message:'邮件拒收成功！'}
-            )
-          })
-            .catch(err=>{
-            console.log(err)
+
+          this.$confirm('<p>添加黑名单将无法收到对方发来的邮件。</p><p style="margin-bottom:20px;">您真的要拒收吗？</p> <input type="checkbox" id="is_delete"> 拒收同时删除邮件', '系统信息', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            dangerouslyUseHTMLString: true,
+
+          }).then(() => {
+            if($('#is_delete').prop('checked')) {
+              param.is_delete = true
+            }
+            rejectMessage(param).then(res=>{
+              console.log(res)
               this.$message(
-              {type:'error',message:'邮件拒收失败！'}
-            )
-          })
+                {type:'success',message:'邮件拒收成功！'}
+              )
+              this.getMessageList();
+            })
+              .catch(err=>{
+              console.log(err)
+                this.$message(
+                {type:'error',message:'邮件拒收失败！'}
+              )
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消邮件拒收'
+            });
+          });
+
         }else if(item.id==6){//打包下载
           zipMessage(param).then(response=>{
             let blob = new Blob([response.data], { type: response.headers["content-type"] })
@@ -837,6 +853,14 @@
         getMailMessage(params).then((res)=>{
           this.totalCount = res.data.count;
           let items = res.data.results;
+          // this.totalAllCount = res.data.count;
+          this.unreadCount = res.data.unseen_count;
+          for(let i=0;i<this.$parent.$parent.$parent.floderResult.length;i++){
+            if(this.boxId == this.$parent.$parent.$parent.floderResult[i].raw_name){
+              console.log(this.boxId)
+              this.$parent.$parent.$parent.floderResult[i].unseen = res.data.unseen_count;
+            }
+          }
           for(let i=0;i<items.length;i++){
             items[i].flagged = (items[i].flags.join('').indexOf('Flagged')>=0);
             items[i].isread = (items[i].flags.join(' ').indexOf('Seen')>=0);
@@ -916,7 +940,6 @@
       this.curr_folder = sessionStorage['checkNodeLabel'] || '收件箱'
 
       this.getMessageList();
-      this.getFloderMsgById(this.boxId)
     },
     watch: {
         boxId(newValue, oldValue) {
@@ -925,7 +948,6 @@
           this.viewCheckIndex = ''
           this.multipleSelection = [];
             this.getMessageList();
-            this.getFloderMsgById(this.boxId)
         },
       checkedMails(v){
           // console.log(v)

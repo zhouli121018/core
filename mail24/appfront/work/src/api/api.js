@@ -178,6 +178,19 @@ export const settingSignatureGetSingle = (signatureID, params) => { return axios
 // 邮箱意见反馈
 export const settingFeedbackSet = params => { return axios.post(`${host}/setting/users/set-feedback/`, params) }
 
+// 模板信
+export const settingTemplateGet = params => { return axios.get(`${host}/setting/template/`, { params: params })}
+export const settingTemplateCreate = params => { return axios.post(`${host}/setting/template/`, params)}
+export const settingTemplateDelete = signatureID => { return axios.delete(`${host}/setting/template/`+signatureID+'/') }
+export const settingTemplateUpdate = (signatureID, params) => { return axios.patch(`${host}/setting/template/`+signatureID+'/', params) }
+export const settingTemplateGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/template/`+signatureID+'/', { params: params }) }
+
+// 自动转发、自动回复
+export const settingRefwGet = params => { return axios.get(`${host}/setting/refw/`, { params: params })}
+export const settingRefwCreate = params => { return axios.post(`${host}/setting/refw/`, params)}
+export const settingRefwDelete = signatureID => { return axios.delete(`${host}/setting/refw/`+signatureID+'/') }
+export const settingRefwUpdate = (signatureID, params) => { return axios.patch(`${host}/setting/refw/`+signatureID+'/', params) }
+export const settingRefwGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/refw/`+signatureID+'/', { params: params }) }
 
 // 获取白名单
 export const settingWhiteGet = params => { return axios.get(`${host}/setting/whiters/`, { params: params })}

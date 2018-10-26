@@ -35,30 +35,20 @@
                 <!--信纸-->
                 <el-tab-pane label="信纸" name="second">
                   <ul c>
-                    <li><a href="#" @click="">
+                    <li><a href="#" @click="checkBgFn('noBg')">
                       <img src="../img/none_zh.png" alt="">
                       <span class="bg"></span>
                     </a></li>
-                    <li><a href="#" class="active">
-                      <img src="../img/Peace_m.jpg" alt="">
-                      <span class="bg"></span>
-                    </a></li>
-                    <li><a href="#">
-                      <img src="../img/Buckle_m.jpg" alt="">
-                      <span class="bg"></span>
-                    </a></li>
-                    <li><a href="#">
-                      <img src="../img/LeatherCowBoy_m.jpg" alt="">
-                      <span class="bg"></span>
-                    </a></li>
-                    <li><a href="#">
-                      <img src="../img/Lilium_martagan_m.jpg" alt="">
-                      <span class="bg"></span>
-                    </a></li>
-                    <li><a href="#">
-                      <img src="../img/Lotus_m.jpg" alt="">
-                      <span class="bg"></span>
-                    </a></li>
+                    <li v-for="(m,k) in stationeryList" :key="k" @click="checkBgFn(m)">
+                      <a href="#" :class="{'active':checkBg === m.id}">
+                        <img :src="m.src" alt="">
+                      </a>
+                    </li>
+
+                    <!--<li><a href="#">-->
+                      <!--<img src="../img/Lotus_m.jpg" alt="">-->
+                      <!--<span class="bg"></span>-->
+                    <!--</a></li>-->
                   </ul>
                 </el-tab-pane>
                 <el-tab-pane label="模板信" name="third">模板信</el-tab-pane>
@@ -137,7 +127,7 @@
                           :http-request="uploadFile"
                           :show-file-list="false"
                           multiple :on-progress="uploadProgress" :on-success="sucUpload">
-                          <el-button size="small" type="primary" id="addAttachBtn"><i class="el-icon-upload"></i> 添加附件</el-button>
+                          <el-button size="small" type="text" id="addAttachBtn"><i class="el-icon-upload"></i> 添加附件</el-button>
                           <div slot="tip" class="el-upload__tip"></div>
                       </el-upload>
                       <el-dropdown  placement="bottom" @command="selectUpload" style="margin-right:20px;" trigger="click">
@@ -148,15 +138,16 @@
                         </el-dropdown-menu>
                       </el-dropdown>
 
-                      <el-dropdown trigger="click" placement="bottom-start">
-                        <el-button type="primary" size="small">
+                      <el-dropdown trigger="click" placement="bottom-start" @command="checkSignatrue">
+                        <el-button type="text" size="small">
                           签名<i class="el-icon-caret-bottom el-icon--right"></i>
                         </el-button>
                         <el-dropdown-menu slot="dropdown">
-                          <el-dropdown-item>不使用签名档</el-dropdown-item>
-                          <el-dropdown-item divided>aaa</el-dropdown-item>
-                          <el-dropdown-item>dadsaf</el-dropdown-item>
-                          <el-dropdown-item divided>编辑签名档</el-dropdown-item>
+                          <el-dropdown-item command="removeSign">不使用签名档</el-dropdown-item>
+                          <el-dropdown-item v-for="(s,k) in signatureList" :key="k" :divided="k==0" :command="s">
+                            <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: signCheck===s.id }"></i> </b>
+                            {{ s.caption}}</el-dropdown-item>
+                          <el-dropdown-item divided command="editSign">编辑签名档</el-dropdown-item>
                         </el-dropdown-menu>
                       </el-dropdown>
 
@@ -181,7 +172,7 @@
 
                 <!--<div v-html="content"></div>-->
 
-                <editor :id="editor_id" :ref="editor_id" :height="editor_height+'px'" width="100%" :content="content"
+                <editor :id="editor_id" :ref="editor_id" :height="editor_height+'px'" width="100%" :content="content" :filterMode="false"
                     pluginsPath="/static/kindeditor/plugins/" :resizeType="0"
                     :loadStyleMode="false" :items="toolbarItems" :uploadJson="uploadJson"
                     @on-content-change="onContentChange"  :autoHeightMode="false" :afterChange="onContentChange" @afterFocus="editorfocus">
@@ -249,7 +240,7 @@
             </form>
           </div>
         </section>
-        <section class="m-mlcompose" v-if="send_suc">
+        <section class="m-mlcompose" v-if="send_suc" >
           <div class="suc-main u-scroll">
             <div class="suc-title j-suc-title">
                 <div class="h2">
@@ -503,7 +494,7 @@
   import axios from 'axios';
   // import treeTransfer from 'el-tree-transfer'
   import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach,contactOabDepartsGet,
-  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus} from '@/api/api'
+  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus,settingSignatureGet} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     props:{
@@ -556,6 +547,15 @@
         }
       };
       return {
+        checkBg:'',
+        stationeryList:[
+          {id:0,src:require('../img/0.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_04.jpg) repeat-x #cdede2'},
+          {id:1,src:require('../img/1.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_01.jpg) no-repeat #f6ffec'},
+          {id:2,src:require('../img/2.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_12.jpg) repeat-x left bottom #e3ebf4'},
+          {id:3,src:require('../img/3.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_06.jpg) repeat-x #221f18'},
+        ],
+        signCheck:'',
+        signatureList:[],
         is_save_contact:false,
         maillist:[],
         maillist_copyer:[],
@@ -682,6 +682,51 @@
       };
     },
     methods:{
+      checkBgFn(m){
+        let html = this.$refs[this.editor_id].editor.html();
+        if($(html).find('#stationery').length>0){
+          html = $(html).find('#stationery').html();
+        }
+        if(m == 'noBg'){
+          this.checkBg = '';
+          this.$refs[this.editor_id].editor.html(html)
+        }else{
+          this.checkBg = m.id;
+          let newHtml = `<table style="width:99.8%;"><tr><td id="stationery" style="background:${m.background};min-height: 550px;padding: 100px 55px 200px;">${html}</td></tr></table>`
+          this.$refs[this.editor_id].editor.html(newHtml)
+        }
+
+      },
+      checkSignatrue(sign){
+        if(sign == 'removeSign'){
+          $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#sign').html('')
+        }else if(sign == 'editSign'){
+          this.$router.push('/setting/signature')
+        }else{
+          if(sign)this.signCheck = sign.id;
+
+          let hasSign = $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#sign').length>0
+          if(this.ruleForm2.is_html){
+            if(hasSign){
+              console.log('换')
+              $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#sign').html('--<br><br>'+sign.content)
+            }else{
+              console.log('加')
+              this.$refs[this.editor_id].editor.appendHtml('<br><br><br><span id="sign">--<br><br>'+sign.content+'</span><br>')
+            }
+          }else{
+            // 纯文本签名
+
+          }
+
+        }
+
+      },
+      getSignatrue(){
+        settingSignatureGet().then(res=>{
+          this.signatureList = res.data.results;
+        });
+      },
       change_show_result(){
         if(!this.show_result && this.mail_results.length<1){
           this.getMessageStatus();
@@ -889,16 +934,21 @@
           this.ruleForm2.is_save_sent = res.data.results.is_save_sent;
           this.ruleForm2.is_confirm_read = res.data.results.is_confirm_read;
           this.is_save_contact = res.data.results.is_save_contact;
-          if(this.compose_type=='compose'&&res.data.results.is_auto_save_draft){
-            if(this.$store.state.timer){clearInterval(this.$store.state.timer)}
-            this.$store.commit('setTimer',setInterval(()=>{
-              this.sentMail('save_draft')
-            },5*60*1000))
-
-          }
+          this.timer();
         },err=>{
           console.log(err)
         })
+      },
+      timer(){
+        if(this.compose_type=='compose'&&this.is_save_contact){
+          if(this.$store.getters.getTimer){clearInterval(this.$store.getters.getTimer)}
+          let _this = this;
+          this.$store.dispatch('setTimer',
+            setInterval(()=>{
+              _this.sentMail('save_draft')
+            },5*60*1000)
+          )
+        }
       },
       switch_to(a,arr){
         this.active_box=a;
@@ -1183,6 +1233,9 @@
         param.action=type;// save_draft
         console.log(param);
         console.log(this.maillist)
+        if(this.type!='sent'&&!this.content){
+          return;
+        }
         mailSent(param).then(res=>{
           console.log(res)
           this.$parent.$parent.$parent.getFloderfn();
@@ -1411,7 +1464,7 @@
         }
       },
       onContentChange (val) {
-        this.setEditorHeight();
+        // this.setEditorHeight();
         this.content = this.$refs[this.editor_id].$data.outContent;
         console.log(this.content)
       },
@@ -1645,7 +1698,8 @@
       this.ruleForm2 = this.parent_ruleForm2;
        $('#editor_id'+this.rid).css({'width': '100%','border':'none','boxSizing':'border-box','padding':'10px 10px 0'})
       if(!this.ruleForm2.is_html){
-        this.$refs[this.editor_id].editor.text(this.content)
+        // this.$refs[this.editor_id].editor.text(this.content)
+        $('#editor_id'+this.rid).val(this.content);
         this.no_html();
       }
       this.getParams();
@@ -1666,6 +1720,9 @@
     },
     beforeMount() {
 
+    },
+    created(){
+      this.getSignatrue()
     },
     computed:{
       uploadJson:function(){
@@ -1833,20 +1890,21 @@
     margin-bottom:20px;
   }
   .right_menu ul li a{
-    border:1px solid #e3e4e5;
+    border:2px solid #e3e4e5;
     display:inline-block;
     position:relative;
-    width: 78px;
-    height: 48px;
+    width: 80px;
+    height: 80px;
 
   }
   .right_menu ul li a.active{
-    border:1px solid transparent;
+    border:2px solid #449115;
+    box-shadow:0 0  10px #449115;
   }
   .right_menu ul li a.active .bg{
     background: url(../img/selected.gif) no-repeat;
-    width: 80px;
-    height: 52px;
+    width: 78px;
+    height: 78px;
     display: block;
     position: absolute;
     z-index: 9;

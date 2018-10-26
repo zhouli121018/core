@@ -68,9 +68,9 @@
                         <!--<div :style="{height: tab_content_height}">-->
 
                         <!--</div>-->
-                        <Innerbox v-if="item.name=='1'" :boxId="boxId" :curr_folder="curr_folder"  @getRead="getRead" :floderResult="floderResult" ref="innerbox"></Innerbox>
-                        <Read :readId="item.rid" :readFolderId="item.fid" v-if="item.type=='read'"></Read>
-                        <Compose  v-if="item.type!='read'&&item.name!='1'" :iframe_height="iframe_height" :rid="item.name" :parent_ruleForm2="ruleForm2" :parent_content="content" :parent_maillist="maillist" :parent_maillist_copyer="maillist_copyer" :parent_fileList="fileList" :compose_type="item.type"></Compose>
+                        <Innerbox v-if="item.name=='1'" :boxId="boxId" :curr_folder="curr_folder"  @getRead="getRead" :unseencount="unseencount" :floderResult="floderResult" ref="innerbox"></Innerbox>
+                        <Read :readId="item.rid" :readFolderId="item.fid" :tagName="item.name" v-if="item.type=='read'"></Read>
+                        <Compose  v-if="item.type!='read'&&item.name!='1'" :ref="'ref_compose_'+item.name" :iframe_height="iframe_height" :rid="item.name" :parent_ruleForm2="ruleForm2" :parent_content="content" :parent_maillist="maillist" :parent_maillist_copyer="maillist_copyer" :parent_fileList="fileList" :compose_type="item.type"></Compose>
 
                       </el-tab-pane>
                     </el-tabs>
@@ -142,6 +142,7 @@ export default {
         readId:'',
         readFolderId:'',
         curr_folder:'收件箱',
+        unseencount:0,
         tab1:{id:0,url:'home',text:'收件箱'},
         tabList:[],
         titleHash:[],
@@ -169,6 +170,8 @@ export default {
   methods:{
     tabClick(tab,event){
       this.showTabIndex=1;
+      console.log('tabclick')
+      console.log(tab)
     },
     addTab(type,subject,rid,fid,info) {
       if(type=='compose'){
@@ -282,6 +285,7 @@ export default {
     setCurrentKey(boxId) {
       this.$nextTick(() =>{
         this.$refs.treeMenuBar.setCurrentKey(boxId||'INBOX');
+        if(this.$refs.treeMenuBar.getCurrentNode())this.unseencount = this.$refs.treeMenuBar.getCurrentNode().unseen;
         // let data = this.$refs.treeMenuBar.getCurrentNode();
         // this.pab_cname = data.groupname;
       })
@@ -292,6 +296,7 @@ export default {
       this.showTabIndex = 1;
       this.activeTab = 0;
       this.curr_folder = obj.label;
+      this.unseencount = obj.unseen;
       this.tab1.text = obj.label;
       this.boxId = obj.id;
       this.editableTabsValue2 = '1';
@@ -326,7 +331,7 @@ export default {
           this.checkNodes = [];
           this.checkNodes.push(sessionStorage['checkNodes'])
         }
-        this.setCurrentKey(this.$route.params.boxId);
+        if(this.$route.params.boxId)this.setCurrentKey(this.$route.params.boxId);
       },(err)=>{
         console.log(err)
       });
@@ -435,6 +440,7 @@ export default {
       return this.$store.state.userInfo.name;
     },
     folderList(){
+        console.log(this.floderResult)
         let folder = this.floderResult;
         let arr = [];
         for(let i=0;i<folder.length;i++){
@@ -458,6 +464,10 @@ export default {
       this.setCurrentKey(this.$route.params)
     }else{
       this.showTabIndex = 0;
+      this.$nextTick(()=>{
+        this.$refs.treeMenuBar.setCurrentKey('');
+      })
+
     }
 
   },
@@ -472,7 +482,21 @@ export default {
       },
       username(nv,ov){
         this.getFloderfn();
-      }
+      },
+    editableTabsValue2(nv){
+        console.log(nv);
+        let is_edit = false;
+        for(let i=0;i<this.editableTabs2.length;i++){
+          if(this.editableTabs2[i].name == nv && this.editableTabs2[i].type && this.editableTabs2[i].type.indexOf('compose')>=0){
+            let a ='ref_compose_'+nv;
+            if(this.$refs[a])this.$refs[a][0].timer()
+            is_edit = true;
+          }
+        }
+        if(!is_edit && this.$store.getters.getTimer){
+          clearInterval(this.$store.getters.getTimer)
+        }
+    }
 
   },
   filters: {
