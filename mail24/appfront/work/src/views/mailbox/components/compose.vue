@@ -18,6 +18,7 @@
              <el-button  size="small" plain>
                 取消
             </el-button>
+            <el-button type="warning" size="small" @click="open_notify">消息提醒</el-button>
           </div>
           <div class="main" ref="iframe_height" :style="{'min-height':main_min_height+'px'}">
             <div class="mn-aside right_menu" :class="{show_contact:show_contact}">
@@ -445,7 +446,7 @@
           </el-tab-pane>
           <el-tab-pane label="个人网盘" name="second">
             <div style="padding:0 0 8px 4px;">
-              路径：<span v-for="fn in folder_names"><b style="cursor: pointer;color:blue;" @click="getNetfile(fn.id)">{{fn.name}}</b> / </span>
+              路径：<span v-for="(fn,k) in folder_names" :key="k"><b style="cursor: pointer;color:blue;" @click="getNetfile(fn.id)">{{fn.name}}</b> / </span>
             </div>
             <el-pagination class="margin-bottom-5"
               @size-change="attachSizeChange_net"
@@ -682,19 +683,60 @@
       };
     },
     methods:{
+      open_notify(){
+        this.$notify({
+          title: '512167072@qq.com',
+          dangerouslyUseHTMLString: true,
+          message: `<table style="margin:0 12px;"><tr>
+          <td style="vertical-align:top;padding-right:10px;">
+            <i class="el-icon-message" style="font-size:36px;"></i>
+          </td>
+          <td style="vertical-align:top;">
+            <h3>${'邮件主题邮件主题邮件主题' }</h3>
+            <h3><span style="color:#aea">张太言</span><span style="color:#aaa;font-size:12px;"> &lt;anna@test.com&gt;</span></h3>
+            <p>件内容有哦见的时刻艰苦大师傅大势势件内容有哦见的时刻艰苦大师傅大势邮</p>
+          </td>
+          </tr>
+          </table>
+          <table style="width:100%;border-top:2px solid #409EFF;margin-top:10px;">
+            <tr>
+              <td style="padding:2px 12px 0;color:#409EFF;cursor:pointer;">删除邮件</td>
+              <td style="text-align:right;padding:2px 12px 0"> <i class="el-icon-caret-left" style="cursor:pointer;"></i> 1/2 <i class="el-icon-caret-right" style="cursor:pointer;"></i></td>
+            </tr>
+          </table>
+          `,
+          duration: 0,
+          position: 'bottom-right',
+          // iconClass:'el-icon-message',
+          onClick:function(){
+            console.log('click')
+            this.close();
+          },
+          
+         
+        });
+      },
       checkBgFn(m){
-        let html = this.$refs[this.editor_id].editor.html();
-        if($(html).find('#stationery').length>0){
-          html = $(html).find('#stationery').html();
-        }
-        if(m == 'noBg'){
-          this.checkBg = '';
-          this.$refs[this.editor_id].editor.html(html)
+        if(this.ruleForm2.is_html){
+          let html = this.$refs[this.editor_id].editor.html();
+          if($(html).find('#stationery').length>0){
+            html = $(html).find('#stationery').html();
+          }
+          if(m == 'noBg'){
+            this.checkBg = '';
+            this.$refs[this.editor_id].editor.html(html)
+          }else{
+            this.checkBg = m.id;
+            let newHtml = `<table style="width:99.8%;"><tr><td id="stationery" style="background:${m.background};min-height: 550px;padding: 100px 55px 200px;">${html}</td></tr></table>`
+            this.$refs[this.editor_id].editor.html(newHtml)
+          }
         }else{
-          this.checkBg = m.id;
-          let newHtml = `<table style="width:99.8%;"><tr><td id="stationery" style="background:${m.background};min-height: 550px;padding: 100px 55px 200px;">${html}</td></tr></table>`
-          this.$refs[this.editor_id].editor.html(newHtml)
+          this.$message({
+            type:'error',
+            message:'使用信纸请切换到多媒体文本编辑！'
+          })
         }
+        
 
       },
       checkSignatrue(sign){
@@ -771,10 +813,12 @@
 
 
         // $('#compose'+this.rid+' .ke-toolbar').hide()
+        this.signCheck = '';
         this.content = this.$refs[this.editor_id].editor.text();
         this.$refs[this.editor_id].editor.text(this.content);
         $('#compose'+this.rid+' .ke-container.ke-container-default').hide()
         $('#editor_id'+this.rid).show()
+        
 
         this.ruleForm2.is_html = false;
       },
@@ -1791,6 +1835,21 @@
   }
 </script>
 <style>
+.el-notification__closeBtn{
+  top:4px;
+  right:8px;
+}
+.el-notification__group{
+  magin-left:0;
+}
+.el-notification__title{
+  font-size:12px;
+  padding:4px 12px;
+  background:#409EFF;
+}
+.el-notification{
+  padding: 0 0 8px;
+}
   .m-mlcompose{
     overflow: auto;
   }
