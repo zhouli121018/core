@@ -86,8 +86,35 @@
         <div class="lycontent">
           <router-view></router-view>
         </div>
+
       </section>
     </article>
+        <transition name="fade">
+          <div v-if="newMsg" class="test">
+            <div role="alert" class="el-notification right" style="bottom: 16px; z-index: 2000;"><!----><div class="el-notification__group"><h2 class="el-notification__title">{{this.$store.getters.userInfo.name}}</h2>
+              <div class="el-notification__content">
+                <table style="margin:0 12px;cursor:pointer;" @click="readNewMsg">
+                  <tr>
+                  <td style="vertical-align:top;padding-right:10px;">
+                    <i class="el-icon-message" style="font-size:36px;"></i>
+                  </td>
+                  <td style="vertical-align:top;">
+                    <h3 class="hide_row" title="${o.subject}">{{newMsg.subject }}</h3>
+                    <h3 class="hide_row"><span style="color:#5EB509">{{newMsg.mfrom?newMsg.mfrom[1]:''}}</span><span style="color:#aaa;font-size:12px;"> &lt; {{newMsg.mfrom?newMsg.mfrom[0]:''}} &gt;</span></h3>
+                    <p class="hide_row2">{{newMsg.abstract}}</p>
+                  </td>
+                  </tr>
+                </table>
+              <table style="width:100%;border-top:2px solid #409EFF;margin-top:10px;">
+                <tr>
+                  <td style="padding:2px 12px 0;color:#409EFF;cursor:pointer;" @click="deleteNewMsg">删除邮件</td>
+                  <td style="text-align:right;padding:2px 12px 0"> <i class="el-icon-caret-left" style="cursor:pointer;" @click="preNew"></i> {{newIndex+1}}/{{newList.length}} <i @click="nextNew" class="el-icon-caret-right" style="cursor:pointer;"></i></td>
+                </tr>
+              </table>
+              </div>
+              <div class="el-notification__closeBtn el-icon-close"></div></div></div>
+          </div>
+        </transition>
   </section>
 </template>
 
@@ -95,10 +122,13 @@
   import store from '@/store'
   import router from '@/router'
   import cookie from '@/assets/js/cookie';
-  import { settingRelateShared,shareLogin,backLogin } from '@/api/api'
+  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail } from '@/api/api'
   export default {
     data:function(){
       return {
+        newIndex:0,
+        show:false,
+        newList:[],
         isSharedUser:false,
         sharedList:[],
         mainUsername:'',
@@ -113,6 +143,93 @@
       }
     },
     methods:{
+      preNew(){
+        if(this.newIndex<=0){
+          return;
+        }
+        this.newIndex--;
+      },
+      nextNew(){
+        if(this.newIndex>=this.newList.length-1){
+          return;
+        }
+        this.newIndex++;
+      },
+      deleteNewMsg(){
+        let params = {
+          uids:[this.newMsg.uid],
+          folder:this.newMsg.folder
+        }
+        deleteMail(params).then((suc)=>{
+            if(suc.data.msg=='success'){
+              this.newMsg = null;
+              this.$message({
+                type:'success',
+                message: '邮件删除成功!'
+              })
+            }
+          },(err)=>{
+            this.$message({
+                type:'error',
+                message: '删除失败！!'
+              })
+          })
+      },
+      readNewMsg(){
+        console.log(this)
+        let _this = this;
+        this.$router.push('/mailbox/innerbox/'+this.newMsg.folder);
+        setTimeout(function(){
+          _this.$children[1].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
+          _this.newMsg = null;
+        },500)
+
+      },
+      open_notify(){
+        let _this = this;
+        newMessage().then(res=>{
+          if(res.data.length>0){
+            let o = {
+              "uid":110341,
+              "folder":"INBOX",
+              "mfrom":["anna@test.com","章太炎"],
+              "to":[["lw@test.com","李威"]],
+              "subject":"sdaf",
+              "date":"2018-10-29T17:04:45",
+              "abstract":"dsaf"}
+            ;
+            this.newList = res.data;
+            return;
+            this.$notify({
+              title: '512167072@qq.com',
+              dangerouslyUseHTMLString: true,
+              message: `
+              `,
+              duration: 0,
+              position: 'bottom-right',
+              // iconClass:'el-icon-message',
+              onClick:function(){
+                console.log('click')
+                // this.close();
+                _this.$router.push('/mailbox/innerbox/'+o.folder)
+                // console.log(_this.$children[1])
+                let notify = this;
+                setTimeout(
+                  function(){
+                    _this.$children[1].addTab('read',o.subject,o.uid,o.folder)
+                    notify.close();
+                  },500
+                )
+
+              },
+            });
+          }
+
+        }).catch(err=>{
+          console.log(err)
+        })
+
+      },
       jumpTo(path){
         router.push(path)
       },
@@ -221,6 +338,7 @@
         }else if(this.$route.path.indexOf('/setting')==0){
           this.activeTab = 5;
         }
+        this.open_notify();
     },
     watch:{
       $route(nv,ov){
@@ -238,11 +356,64 @@
           this.activeTab = 5;
         }
       }
+    },
+    computed: {
+        newMsg: function(){
+          return this.newList[this.newIndex]
+        }
     }
   }
 </script>
 
 <style>
+  .test{
+    width:330px;
+    position:fixed;
+    bottom:2px;
+    right:10px;
+  }
+  .fade-enter-active, .fade-leave-active {
+  transition: all .8s;
+
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  width:0px;
+}
+  .hide_row{
+    overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+ width: 260px;
+  }
+  .hide_row2{
+    width:260px;
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+    display:-webkit-box;
+
+    -webkit-box-orient:vertical;
+
+    -webkit-line-clamp:2;
+  }
+  .el-notification__closeBtn{
+  top:4px;
+  right:8px;
+}
+.el-notification__group{
+  margin-left:0;
+  width:100%;
+}
+.el-notification__title{
+  font-size:12px;
+  padding:4px 12px;
+  background:#409EFF;
+}
+.el-notification{
+  padding: 0 0 8px;
+}
   .hover_bg_box .el-dropdown-link{
     padding: 4px;
     color: #333;

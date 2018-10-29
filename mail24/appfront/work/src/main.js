@@ -72,3 +72,16 @@ new Vue({
   components: { App  },
   template: '<App/>'
 })
+
+// //IE
+//     if(document.all) {
+//         document.querySelectorAll(".el-dropdown-menu .el-dropdown-menu__item")[1].click();
+//     }
+// // 其它浏览器
+//     else {
+//         var e = document.createEvent("MouseEvents");
+//         e.initEvent("click", true, true);　　//这里的click可以换成你想触发的行为
+//         document.querySelectorAll(".el-dropdown-menu .el-dropdown-menu__item")[1].dispatchEvent(e);　　　//这里的clickME可以换成你想触发行为的DOM结点
+//     }
+
+

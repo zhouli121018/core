@@ -139,7 +139,8 @@ export const pabMessage = params => { return axios.post(`${host}/mail/message/pa
 export const messageRecall = params =>{ return axios.post(`${host}/mail/message/recall/`,params) };
 //发送回执 /api/mail/message/notify/
 export const notifyMessage = params =>{ return axios.post(`${host}/mail/message/notify/`,params) };
-
+//拉取新邮件 /api/mail/message/new/
+export const newMessage = () => { return axios.get(`${host}/mail/message/new/`) };
 
 
 /* ***********************  设置中心 *********************** */
@@ -301,7 +302,7 @@ export const netdiskBatchMove = params => { return axios.post(`${host}/netdisk/n
 // 文件下载
 export const netdiskFileDownload = params => { return axios.get(`${host}/netdisk/netdisks/`+signatureID+'/download/', { params: params,responseType:'blob' }) };
 // zip下载
-export const netdiskZipDownload = params => { return axios.post(`${host}/netdisk/netdisks/zip/`, params, { responseType:'blob' }) };
+export const netdiskZipDownload = params => { return axios.get(`${host}/netdisk/netdisks/zip/`, { params: params, responseType:'blob' }) };
 
 //日历
 //获取日程列表 /api/calendars/calendars/

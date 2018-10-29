@@ -170,9 +170,9 @@
 
       <el-dialog title="上传文件"  :visible.sync="uploadFormVisible"  :close-on-click-modal="false" :append-to-body="true">
         <el-form :model="uploadForm" label-width="130px" :rules="uploadFormRules" ref="uploadForm"
-          v-loading="fileloading"
-          element-loading-text="正在上传文件，请稍候..."
-          element-loading-spinner="el-icon-loading" >
+                 v-loading="fileloading"
+                 element-loading-text="正在上传文件，请稍候..."
+                 element-loading-spinner="el-icon-loading" >
 
           <el-form-item label="上传位置" prop="folder_id">
             <el-select v-model="uploadForm.folder_id" style="width: 100%">
@@ -572,26 +572,44 @@
       },
       zipRowDownload: function(row){
         let that = this;
-        let zip_list = [{'folder_id':row.id,'nettype':row.nettype} ];
+        var files = [];
+        var folders = [];
+        if ( row.nettype == "file" ){
+          files.push(row.id);
+        } else {
+          folders.push(row.id);
+        }
+        // let zip_list = [{'folder_id':row.id,'nettype':row.nettype} ];
         this.$confirm('确认下载当前文件或文件夹？', '提示', {
           type: 'warning'
         }).then(() => {
-          this.zipCommonDownload(that, zip_list);
+          this.zipCommonDownload(that, files, folders);
         });
       },
       zipDownload: function () {
         let that = this;
-        let zip_list = [];
-        this.sels.map(item=>{ zip_list.push({'folder_id':item.id,'nettype':item.nettype}) });
+        var files = [];
+        var folders = [];
+        for (var i=0; i<this.sels.length;i++)
+        {
+          var row = this.sels[i];
+          if (row.nettype == "file"){
+            files.push(row.id);
+          } else {
+            folders.push(row.id);
+          }
+        }
+        // let zip_list = [];
+        // this.sels.map(item=>{ zip_list.push({'folder_id':item.id,'nettype':item.nettype}) });
         this.$confirm('确认下载选中文件以及文件夹？', '提示', {
           type: 'warning'
         }).then(() => {
-          this.zipCommonDownload(that, zip_list);
+          this.zipCommonDownload(that, files, folders);
         });
       },
-      zipCommonDownload: function(that, zip_list){
+      zipCommonDownload: function(that, files, folders){
         this.listLoading = true;
-        let para = {zip_list: zip_list, folder_id: this.current_folder_id};
+        let para = {files: files, folders: folders, folder_id: this.current_folder_id};
         netdiskZipDownload(para).then((response)=> {
           this.listLoading = false;
           let blob = new Blob([response.data], { type: response.headers["content-type"] })

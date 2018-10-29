@@ -36,23 +36,7 @@ export const rou = [
       {
         path: 'mailbox/compose',
         component: _import('mailbox/mailbox'),
-      }
-    ]
-  },
-  // {
-  //   path: '/calendar',
-  //   component: Layout1,
-  //   redirect: '/calendar/index',
-  //   children: [{
-  //     path: 'index',
-  //     component: _import('calendar/index'),
-  //     name: 'calendar',
-  //     meta: { title: 'U-Mail calendar'}
-  //   }]
-  // },
-  {
-    path:'/',component:Layout1,
-    children: [
+      },
       {
         path: 'file',
         component: _import('file/index'),
@@ -70,12 +54,7 @@ export const rou = [
           {path:'index',component: _import('calendar/page/calendar')},
           {path:'set',component: _import('calendar/page/set')},
         ]
-      }
-      ]
-  },
-  {
-    path:'/',component:Layout1,
-    children: [
+      },
       {
         path: 'contact',
         component: _import('contact/index'),
@@ -86,20 +65,12 @@ export const rou = [
           {path:'cab',component:_import('contact/cab')},
           {path:'soab',component:_import('contact/soab')},
         ]
-      }]
-  },
-  {
-    path:'/',component:Layout1,
-    children: [
+      },
       {
         path: 'appcenter',
         component: _import('appcenter/index'),
 
-      }]
-  },
-  {
-    path:'/',component:Layout1,
-    children: [
+      },
       {
         path: 'setting',
         component: _import('setting/index'),
@@ -123,7 +94,42 @@ export const rou = [
           {path:'transfer',component:_import('setting/page/transfer')},
           {path:'accountcancel',component:_import('setting/page/accountcancel')},
         ]
-      }]
+      }
+
+
+    ]
+  },
+  // {
+  //   path: '/calendar',
+  //   component: Layout1,
+  //   redirect: '/calendar/index',
+  //   children: [{
+  //     path: 'index',
+  //     component: _import('calendar/index'),
+  //     name: 'calendar',
+  //     meta: { title: 'U-Mail calendar'}
+  //   }]
+  // },
+  {
+    path:'/',component:Layout1,
+    children: [
+
+      ]
+  },
+  {
+    path:'/',component:Layout1,
+    children: [
+      ]
+  },
+  {
+    path:'/',component:Layout1,
+    children: [
+      ]
+  },
+  {
+    path:'/',component:Layout1,
+    children: [
+      ]
   },
   // {
   //   path: '*',

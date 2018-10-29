@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div ref="tab_parent">
         <section class="m-mail">
             <!--<MailAside @getData="getData" @getCompose="getCompose" ref="menubar"></MailAside>-->
             <aside class="mlsidebar">

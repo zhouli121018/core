@@ -18,7 +18,7 @@
              <el-button  size="small" plain>
                 取消
             </el-button>
-            <el-button type="warning" size="small" @click="open_notify">消息提醒</el-button>
+            <!--<el-button type="warning" size="small" @click="open_notify">消息提醒</el-button>-->
           </div>
           <div class="main" ref="iframe_height" :style="{'min-height':main_min_height+'px'}">
             <div class="mn-aside right_menu" :class="{show_contact:show_contact}">
@@ -683,39 +683,7 @@
       };
     },
     methods:{
-      open_notify(){
-        this.$notify({
-          title: '512167072@qq.com',
-          dangerouslyUseHTMLString: true,
-          message: `<table style="margin:0 12px;"><tr>
-          <td style="vertical-align:top;padding-right:10px;">
-            <i class="el-icon-message" style="font-size:36px;"></i>
-          </td>
-          <td style="vertical-align:top;">
-            <h3>${'邮件主题邮件主题邮件主题' }</h3>
-            <h3><span style="color:#aea">张太言</span><span style="color:#aaa;font-size:12px;"> &lt;anna@test.com&gt;</span></h3>
-            <p>件内容有哦见的时刻艰苦大师傅大势势件内容有哦见的时刻艰苦大师傅大势邮</p>
-          </td>
-          </tr>
-          </table>
-          <table style="width:100%;border-top:2px solid #409EFF;margin-top:10px;">
-            <tr>
-              <td style="padding:2px 12px 0;color:#409EFF;cursor:pointer;">删除邮件</td>
-              <td style="text-align:right;padding:2px 12px 0"> <i class="el-icon-caret-left" style="cursor:pointer;"></i> 1/2 <i class="el-icon-caret-right" style="cursor:pointer;"></i></td>
-            </tr>
-          </table>
-          `,
-          duration: 0,
-          position: 'bottom-right',
-          // iconClass:'el-icon-message',
-          onClick:function(){
-            console.log('click')
-            this.close();
-          },
-          
-         
-        });
-      },
+
       checkBgFn(m){
         if(this.ruleForm2.is_html){
           let html = this.$refs[this.editor_id].editor.html();
@@ -1835,21 +1803,7 @@
   }
 </script>
 <style>
-.el-notification__closeBtn{
-  top:4px;
-  right:8px;
-}
-.el-notification__group{
-  magin-left:0;
-}
-.el-notification__title{
-  font-size:12px;
-  padding:4px 12px;
-  background:#409EFF;
-}
-.el-notification{
-  padding: 0 0 8px;
-}
+
   .m-mlcompose{
     overflow: auto;
   }
