@@ -30,7 +30,8 @@ const store = new Vuex.Store({
     uploadJson:'/api/setting/upload-img/',
     isCompose:false,
     sharedStatus,
-    timer:''
+    timer:'',
+    newMsgTimer:''
   },
   getters:{
     userInfo(state) {
@@ -39,6 +40,9 @@ const store = new Vuex.Store({
     getTimer(state){
       return state.timer
     },
+    getNewMsgTimer(state){
+      return state.newMsgTimer
+    }
   },
   mutations:{
     SET_INFO (state) {
@@ -63,6 +67,9 @@ const store = new Vuex.Store({
     },
     setTimer(state,param){
       state.timer = param;
+    },
+    setNewMsgTimer(state,param){
+      state.newMsgTimer = param;
     }
   },
   actions: {
@@ -74,6 +81,9 @@ const store = new Vuex.Store({
     },
     setTimer(store,param){
       store.commit('setTimer',param)
+    },
+    setNewMsgTimer(store,param){
+      store.commit('setNewMsgTimer',param);
     }
 
   }

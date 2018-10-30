@@ -942,9 +942,9 @@
       this.getMessageList();
     },
     mounted(){
-      console.log('trigger1111111111')
-      $('.toolbar>div:eq(0)>button').trigger('click');
-      $(".el-dropdown-menu .el-dropdown-menu__item")[1].click();
+      // console.log('trigger1111111111')
+      // $('.toolbar>div:eq(0)>button').trigger('click');
+      // $(".el-dropdown-menu .el-dropdown-menu__item")[1].click();
     },
     watch: {
         boxId(newValue, oldValue) {

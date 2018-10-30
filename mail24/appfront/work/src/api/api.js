@@ -141,6 +141,10 @@ export const messageRecall = params =>{ return axios.post(`${host}/mail/message/
 export const notifyMessage = params =>{ return axios.post(`${host}/mail/message/notify/`,params) };
 //拉取新邮件 /api/mail/message/new/
 export const newMessage = () => { return axios.get(`${host}/mail/message/new/`) };
+//获取用户模板信列表 /api/setting/template/
+export const getTemplateList = (params) => { return axios.get(`${host}/setting/template/`,{params:params}) };
+//获取单个模板信 /api/setting/template/{id}/
+export const getTemplateById = (id) => { return axios.get(`${host}/setting/template/${id}`) };
 
 
 /* ***********************  设置中心 *********************** */

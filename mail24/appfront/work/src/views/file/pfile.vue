@@ -89,7 +89,7 @@
                   <a :href="blobUrl" download="" style="display:none;" ref="download"></a>
                   <div class="actions_a">
                     <span @click="zipRowDownload(scope.row)">下载</span>
-                    <span>发信</span>
+                    <span v-if="scope.row.nettype=='file'">发信</span>
                     <!--<span>共享</span>-->
                     <span @click="resetRowNameShow(scope.row)">重命名</span>
                     <span @click="deleteRowFolders(scope.row)">删除</span>

@@ -141,7 +141,7 @@
                       </el-col>
                       <el-col :span="12">
                         <el-cascader :clearable="true" placeholder="请选择部门"
-                                 change-on-select style="width:100%;" :show-all-levels="false" expand-trigger="click" :options="deptOptions"  @change="deptChange(c,k)" :ref="'dept_choice_'+k">
+                                     change-on-select style="width:100%;" :show-all-levels="false" expand-trigger="click" :options="deptOptions"  @change="deptChange(c,k)" :ref="'dept_choice_'+k">
                         </el-cascader>
                       </el-col>
                     </el-row>
@@ -599,9 +599,9 @@
       confirmation (arr){
         let _this = this;
         if(!arr.sequence){
-              _this.$message({message:'请输入过滤条件优先级！',type:'error'});
-              return false;
-            }
+          _this.$message({message:'请输入过滤条件优先级！',type:'error'});
+          return false;
+        }
         for(let i=0;i<arr.conditions.length;i++){
           let o = arr.conditions[i];
 
@@ -631,7 +631,7 @@
         for(let i=0;i<arr.actions.length;i++){
           let a = arr.actions[i];
           if(a.action!='sequester'&&a.action!='delete'&&!a.json_value.value){
-             _this.$message({message:'请选择或输入动作内容！',type:'error'});
+            _this.$message({message:'请选择或输入动作内容！',type:'error'});
             return false;
           }
           if(!a.sequence){
@@ -663,6 +663,12 @@
                   this.getTables();
                 }, (data)=>{
                   console.log(data);
+                  if ( "limited_error_message" in data ){
+                    this.$message.error(data.limited_error_message);
+                    this.$refs['createForm'].resetFields();
+                    this.createFormVisible = false;
+                  }
+                  this.createFormLoading = false;
                 })
                 .catch(function (error) {
                   console.log(error);

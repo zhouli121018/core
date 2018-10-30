@@ -107,7 +107,7 @@
                 </table>
               <table style="width:100%;border-top:2px solid #409EFF;margin-top:10px;">
                 <tr>
-                  <td style="padding:2px 12px 0;color:#409EFF;cursor:pointer;" @click="deleteNewMsg">删除邮件</td>
+                  <td style="padding:2px 12px 0;color:#409EFF;cursor:pointer;" @click=""></td>
                   <td style="text-align:right;padding:2px 12px 0"> <i class="el-icon-caret-left" style="cursor:pointer;" @click="preNew"></i> {{newIndex+1}}/{{newList.length}} <i @click="nextNew" class="el-icon-caret-right" style="cursor:pointer;"></i></td>
                 </tr>
               </table>
@@ -188,47 +188,49 @@
       open_notify(){
         let _this = this;
         newMessage().then(res=>{
-          if(res.data.length>0){
-            let o = {
-              "uid":110341,
-              "folder":"INBOX",
-              "mfrom":["anna@test.com","章太炎"],
-              "to":[["lw@test.com","李威"]],
-              "subject":"sdaf",
-              "date":"2018-10-29T17:04:45",
-              "abstract":"dsaf"}
-            ;
-            this.newList = res.data;
-            return;
-            this.$notify({
-              title: '512167072@qq.com',
-              dangerouslyUseHTMLString: true,
-              message: `
-              `,
-              duration: 0,
-              position: 'bottom-right',
-              // iconClass:'el-icon-message',
-              onClick:function(){
-                console.log('click')
-                // this.close();
-                _this.$router.push('/mailbox/innerbox/'+o.folder)
-                // console.log(_this.$children[1])
-                let notify = this;
-                setTimeout(
-                  function(){
-                    _this.$children[1].addTab('read',o.subject,o.uid,o.folder)
-                    notify.close();
-                  },500
-                )
+            if(res.data.length>0){
+              this.newIndex = 0;
+              _this.newList = res.data;
+              if(_this.$children[1].getFloderfn){
+                _this.$children[1].getFloderfn();
+                if(_this.$children[1].$refs['innerbox'] && _this.$children[1].$refs['innerbox'][0]){
+                  _this.$children[1].$refs['innerbox'][0].getMessageList();
+                };
+              }
+            }
 
-              },
-            });
-          }
+          }).catch(err=>{
+            console.log('获取新邮件失败！',err)
+          })
+        if(this.$store.getters.getNewMsgTimer){clearInterval(this.$store.getters.getNewMsgTimer)}
+        this.$store.dispatch('setNewMsgTimer',setInterval(function(){
+          newMessage().then(res=>{
 
-        }).catch(err=>{
-          console.log(err)
-        })
+            console.log(_this.$children[1])
+            console.log(_this.$children[1].$refs['innerbox'][0])
+            if(res.data.length>0){
+              _this.newList = res.data;
+              if(_this.$children[1].getFloderfn){
+                _this.$children[1].getFloderfn();
+                if(_this.$children[1].$refs['innerbox'] && _this.$children[1].$refs['innerbox'][0]){
+                  _this.$children[1].$refs['innerbox'][0].getMessageList();
+                };
+              }
+              let o = {
+                "uid":110341,
+                "folder":"INBOX",
+                "mfrom":["anna@test.com","章太炎"],
+                "to":[["lw@test.com","李威"]],
+                "subject":"sdaf",
+                "date":"2018-10-29T17:04:45",
+                "abstract":"dsaf"}
+              ;
+            }
 
+          }).catch(err=>{
+            console.log('获取新邮件失败！',err)
+          })
+        },1000*60))
       },
       jumpTo(path){
         router.push(path)

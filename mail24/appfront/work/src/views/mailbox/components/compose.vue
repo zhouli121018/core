@@ -35,7 +35,7 @@
 
                 <!--信纸-->
                 <el-tab-pane label="信纸" name="second">
-                  <ul c>
+                  <ul >
                     <li><a href="#" @click="checkBgFn('noBg')">
                       <img src="../img/none_zh.png" alt="">
                       <span class="bg"></span>
@@ -52,7 +52,22 @@
                     <!--</a></li>-->
                   </ul>
                 </el-tab-pane>
-                <el-tab-pane label="模板信" name="third">模板信</el-tab-pane>
+                <el-tab-pane label="模板信" name="third">
+                  <div class="template_box" style="padding-top:4px;">
+                    <ul class="template_ul">
+                      <li class="f-csp" style="text-align: center" :class="{selected:selectId===''}" @click="deleteTemplate">
+                        <img src="../img/none_zh.png" alt="">
+                        <i class="el-icon-success choose"></i>
+                      </li>
+                      <li class="f-csp" :class="{selected:selectId===t.id}" v-for="(t,k) in templateList" :key="k" @click="selectTemplate(t)">
+                        <span class="wrapper">{{t.caption}} <i class="el-icon-success choose"></i></span>
+                      </li>
+                      <li @click="getTemplateListfn" style="border:none;text-align:center;" v-if="showLoadMore"><el-button size="mini" plain type="success">加载更多模板</el-button></li>
+                      <li @click="setTemplate" title="设置模板信" class="f-csp" style="text-align: center;font-size:32px;font-weight:bold;color:#868686"><span class="el-icon-plus"></span></li>
+
+                    </ul>
+                  </div>
+                </el-tab-pane>
               </el-tabs>
             </div>
             <form class="u-form mn-form box_height"  :class="{right0:show_contact}">
@@ -71,7 +86,7 @@
                   <el-form-item label="收件人:" >
                     <label slot="label">
                       <template>
-                        <span @click="show_contact_fn" class="show_contact_style">{{ruleForm2.is_partsend?"群发单显":"收件人"}}:</span>
+                        <span @click="show_contact_fn('to')" class="show_contact_style">{{ruleForm2.is_partsend?"群发单显":"收件人"}}:</span>
                       </template>
                     </label>
                     <div class="padding_15">
@@ -91,7 +106,7 @@
                   <el-form-item label="抄   送:" prop="cc" v-if="ruleForm2.is_cc" v-show="!ruleForm2.is_partsend">
                     <label slot="label">
                       <template>
-                        <span @click="show_contact_fn" class="show_contact_style">抄送人:</span>
+                        <span @click="show_contact_fn('cc')" class="show_contact_style">抄送人:</span>
                       </template>
                     </label>
                     <div class="padding_15">
@@ -174,7 +189,7 @@
                 <!--<div v-html="content"></div>-->
 
                 <editor :id="editor_id" :ref="editor_id" :height="editor_height+'px'" width="100%" :content="content" :filterMode="false"
-                    pluginsPath="/static/kindeditor/plugins/" :resizeType="0"
+                    pluginsPath="/static/kindeditor/plugins/" :resizeType="0" indentChar=""
                     :loadStyleMode="false" :items="toolbarItems" :uploadJson="uploadJson"
                     @on-content-change="onContentChange"  :autoHeightMode="false" :afterChange="onContentChange" @afterFocus="editorfocus">
 
@@ -317,7 +332,7 @@
       </div>
 
 
-      <el-dialog title="通讯录" :visible.sync="transform_dialog" :append-to-body="true" width="1032px">
+      <el-dialog title="通讯录" :visible.sync="transform_dialog" :append-to-body="true" width="1032px" :close-on-click-modal="false" @close="">
         <!--<tree-transfer :title="tree_title" :from_data='fromData' :to_data='toData' :defaultProps="{label:'label'}" @addBtn='add' @removeBtn='remove' :mode='mode' height='540px' filter openAll>-->
     <!--</tree-transfer>-->
         <el-row :gutter="10" style="margin-bottom:10px;">
@@ -395,7 +410,7 @@
             收件人：(<b>{{toList.length}}</b>)
             <div class="address_box" :class="{active:active_box=='to'}" @click="switch_to('to',toList)">
               <el-row v-for="(t,k) in toList" :key="k" class="hover_show_box">
-                <el-col :span="22">{{t.name}}</el-col>
+                <el-col :span="22" style="overflow: hidden;white-space: nowrap" :title="t.username||t.email">{{t.name||t.fullname}} &lt;{{t.username||t.email}} &gt;</el-col>
                 <el-col :span="2" style="text-align: right">
                   <i class="el-icon-error delete_hover" @click="deleteList('to',t.id,k)"></i>
                 </el-col>
@@ -404,7 +419,7 @@
             抄送人：(<b>{{ccList.length}}</b>)
             <div class="address_box" :class="{active:active_box=='cc'}" @click="switch_to('cc',ccList)">
               <el-row v-for="(t,k) in ccList" :key="k" class="hover_show_box">
-                <el-col :span="22">{{t.name}}</el-col>
+                <el-col :span="22" style="overflow: hidden;white-space: nowrap" :title="t.username||t.email">{{t.name||t.fullname}} &lt;{{t.username||t.email}} &gt;</el-col>
                 <el-col :span="2" style="text-align: right">
                   <i class="el-icon-error delete_hover" @click="deleteList('cc',t.id,k)"></i>
                 </el-col>
@@ -414,8 +429,8 @@
 
         </el-row>
         <div slot="footer" class="dialog-footer" >
-          <el-button @click="transform_dialog = false">取 消</el-button>
-          <el-button type="primary" @click="transform_dialog = false">确 定</el-button>
+          <el-button @click="cancelAddress">取 消</el-button>
+          <el-button type="primary" @click="sureAddress">确 定</el-button>
         </div>
       </el-dialog>
 
@@ -495,7 +510,7 @@
   import axios from 'axios';
   // import treeTransfer from 'el-tree-transfer'
   import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach,contactOabDepartsGet,
-  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus,settingSignatureGet} from '@/api/api'
+  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus,settingSignatureGet,getTemplateList,getTemplateById} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     props:{
@@ -548,12 +563,33 @@
         }
       };
       return {
+        showLoadMore:true,
+        selectId:'',
+        tpage:1,
+        templateList:[
+
+        ],
         checkBg:'',
         stationeryList:[
           {id:0,src:require('../img/0.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_04.jpg) repeat-x #cdede2'},
           {id:1,src:require('../img/1.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_01.jpg) no-repeat #f6ffec'},
           {id:2,src:require('../img/2.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_12.jpg) repeat-x left bottom #e3ebf4'},
+
+          {id:5,src:require('../img/5.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_07.jpg) repeat-x #e4ebf5'},
+          {id:6,src:require('../img/6.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/b_02.jpg)'},
+          {id:7,src:require('../img/7.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/b_01.jpg)'},
+          {id:8,src:require('../img/8.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_02.jpg) no-repeat #fffaf6'},
+          {id:9,src:require('../img/9.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_03.jpg) no-repeat #fbf7f4'},
+          {id:10,src:require('../img/10.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_05.jpg) no-repeat #a7dcd2'},
+          {id:11,src:require('../img/11.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_08.jpg) no-repeat #f3f3eb'},
+          {id:12,src:require('../img/12.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_09.jpg) repeat-x #0e9dbb'},
+          {id:13,src:require('../img/13.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_10.jpg) repeat-x #bfdfec'},
+          {id:14,src:require('../img/14.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_11.jpg) no-repeat #fff2d8'},
           {id:3,src:require('../img/3.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_06.jpg) repeat-x #221f18'},
+
+
+
+
         ],
         signCheck:'',
         signatureList:[],
@@ -683,6 +719,132 @@
       };
     },
     methods:{
+      setTemplate(){
+        this.$router.push('/setting/template/')
+      },
+      deleteTemplate(){
+        this.selectId = '';
+        this.content = '';
+        this.$refs[this.editor_id].editor.html(this.content);
+      },
+      getTemplateListfn(){
+        let param = {
+          page:this.tpage,
+          page_size:5
+        }
+        getTemplateList(param).then(res=>{
+          console.log(res.data.results)
+          this.templateList = this.templateList.concat(res.data.results);
+          if(res.data.results.length==5){
+            this.tpage ++;
+          }else{
+            this.tpage = 1;
+
+          }
+        }).catch(err=>{
+          console.log('模板列表获取异常！',err)
+          if(err.detail == '无效页面。'){
+            this.$message({
+              type:'info',
+              message:'已加载全部模板信！'
+            })
+            this.showLoadMore = false;
+          }
+        })
+      },
+
+      selectTemplate(t){
+        if(this.content){
+          this.$confirm('切换模板后, 已输入内容将清空,继续切换或者存草稿？', '系统信息', {
+          distinguishCancelAndClose: true,
+          confirmButtonText: '存草稿再切换',
+          cancelButtonText: '直接切换'
+        })
+          .then(() => {
+            console.log('存草稿再切换')
+            this.sentMail('save_draft')
+            this.selectId = t.id;
+            getTemplateById(t.id).then(res=>{
+              console.log(res.data.content)
+              this.content = res.data.content;
+              if(this.ruleForm2.is_html){
+                this.$refs[this.editor_id].editor.html(this.content);
+              }else{
+                // $('#editor_id'+this.rid).html(this.content);
+                this.$refs[this.editor_id].editor.html(this.content);
+                this.no_html();
+              }
+
+            }).catch(err=>{
+              console.log('获取单个模板信错误！',err)
+            })
+          })
+          .catch(action => {
+          if(action === 'cancel'){
+            console.log('直接切换')
+            this.selectId = t.id;
+            getTemplateById(t.id).then(res=>{
+              console.log(res.data.content)
+              this.content = res.data.content;
+              if(this.ruleForm2.is_html){
+                this.$refs[this.editor_id].editor.html(this.content);
+              }else{
+                // $('#editor_id'+this.rid).html(this.content);
+                this.$refs[this.editor_id].editor.html(this.content);
+                this.no_html();
+              }
+
+            }).catch(err=>{
+              console.log('获取单个模板信错误！',err)
+            })
+          }else{
+            console.log('kong')
+          }
+        });
+        }else{
+          this.selectId = t.id;
+            getTemplateById(t.id).then(res=>{
+              console.log(res.data.content)
+              this.content = res.data.content;
+              if(this.ruleForm2.is_html){
+                this.$refs[this.editor_id].editor.html(this.content);
+              }else{
+                // $('#editor_id'+this.rid).html(this.content);
+                this.$refs[this.editor_id].editor.html(this.content);
+                this.no_html();
+              }
+            }).catch(err=>{
+              console.log('获取单个模板信错误！',err)
+            })
+        }
+
+
+
+      },
+      cancelAddress(){
+        this.transform_dialog = false
+      },
+      sureAddress(){
+        let arr = [].concat(this.toList)
+        arr.forEach((mail)=>{
+          if(mail.username){
+            mail.email = mail.username;
+            mail.fullname = mail.name;
+            mail.status = true;
+          }
+        })
+        let arrcc = [].concat(this.ccList)
+        arrcc.forEach((mail)=>{
+          if(mail.username){
+            mail.email = mail.username;
+            mail.fullname = mail.name;
+            mail.status = true;
+          }
+        })
+        this.maillist = arr;
+        this.maillist_copyer = arrcc;
+        this.transform_dialog = false
+      },
 
       checkBgFn(m){
         if(this.ruleForm2.is_html){
@@ -714,18 +876,26 @@
           this.$router.push('/setting/signature')
         }else{
           if(sign)this.signCheck = sign.id;
+          let html = this.$refs[this.editor_id].editor.html();
 
-          let hasSign = $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#sign').length>0
+          let hasSign = $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#sign').length>0;
+          let hasBg = $(html).find('#stationery').length>0;
           if(this.ruleForm2.is_html){
             if(hasSign){
               console.log('换')
               $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#sign').html('--<br><br>'+sign.content)
-            }else{
+            }else if(hasBg && !hasSign){
               console.log('加')
-              this.$refs[this.editor_id].editor.appendHtml('<br><br><br><span id="sign">--<br><br>'+sign.content+'</span><br>')
+              let ht = $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#stationery').html();
+              $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#stationery').html(ht+'<br><br><span id="sign">--<br><br>'+sign.content+'</span><br>')
+            }else{
+              this.$refs[this.editor_id].editor.appendHtml('<br><br><span id="sign">'+'<br><br>'+sign.content+'</span><br>')
             }
           }else{
             // 纯文本签名
+            // let text = this.$refs[this.editor_id].editor.text()
+            // $('#editor_id'+this.rid).val(text+'\n--\n'+this.htmlToText(sign.content))
+            // this.$refs[this.editor_id].editor.text(text+'\n--\n'+this.htmlToText(sign.content))
 
           }
 
@@ -755,19 +925,22 @@
         // var htmlTagReg = /<(?!\/?br\/?.+?>|\/?img.+?>)[^<>]*>/g;
         var htmlTagReg = /<(?!\/?br\/?.+?>)[^<>]*>/g;
         var p = /<p(([\s\S])*?)<\/p>/g;
+        var dd=html.replace(/<\/?.+?>/g,"");
 
-        html = html.replace(/<p>([\s\S]*?)<\/p>/ig, '$1<br/>')
-        html = html.replace(/<div>([\s\S]*?)<\/div>/ig, '$1<br/>')
-        html = html.replace(/<h1>([\s\S]*?)<\/h1>/ig, '$1<br/>')
-        html = html.replace(/<h2>([\s\S]*?)<\/h2>/ig, '$1<br/>')
-        html = html.replace(/<h3>([\s\S]*?)<\/h3>/ig, '$1<br/>')
-        html = html.replace(/<h4>([\s\S]*?)<\/h4>/ig, '$1<br/>')
-        html = html.replace(/<h5>([\s\S]*?)<\/h5>/ig, '$1<br/>')
-        html = html.replace(/<h6>([\s\S]*?)<\/h6>/ig, '$1<br/>')
-        html = html.replace(/<ul>([\s\S]*?)<\/ul>/ig, '$1<br/>')
-        html = html.replace(/<li>([\s\S]*?)<\/li>/ig, '$1<br/>')
 
-        return html.replace(htmlTagReg,'');
+        // html = html.replace(/<p>([\s\S]*?)<\/p>/ig, '$1<br/>')
+        // html = html.replace(/<div>([\s\S]*?)<\/div>/ig, '$1<br/>')
+        // html = html.replace(/<h1>([\s\S]*?)<\/h1>/ig, '$1<br/>')
+        // html = html.replace(/<h2>([\s\S]*?)<\/h2>/ig, '$1<br/>')
+        // html = html.replace(/<h3>([\s\S]*?)<\/h3>/ig, '$1<br/>')
+        // html = html.replace(/<h4>([\s\S]*?)<\/h4>/ig, '$1<br/>')
+        // html = html.replace(/<h5>([\s\S]*?)<\/h5>/ig, '$1<br/>')
+        // html = html.replace(/<h6>([\s\S]*?)<\/h6>/ig, '$1<br/>')
+        // html = html.replace(/<ul>([\s\S]*?)<\/ul>/ig, '$1<br/>')
+        // html = html.replace(/<li>([\s\S]*?)<\/li>/ig, '$1<br/>')
+
+        // return html.replace(htmlTagReg,'');
+        return dd.replace(/ /g,"");
 
       },
       no_html(){
@@ -782,12 +955,10 @@
 
         // $('#compose'+this.rid+' .ke-toolbar').hide()
         this.signCheck = '';
-        this.content = this.$refs[this.editor_id].editor.text();
+        this.content = this.htmlToText(this.$refs[this.editor_id].editor.text());
         this.$refs[this.editor_id].editor.text(this.content);
         $('#compose'+this.rid+' .ke-container.ke-container-default').hide()
         $('#editor_id'+this.rid).show()
-        
-
         this.ruleForm2.is_html = false;
       },
       changeIsHtml(){
@@ -972,17 +1143,17 @@
             let rows = this.contactData;
             if(v.length>0){
               for(let key in rows){
-                if(!this.hashTo[rows[key].id]){
-                  this.hashTo[rows[key].id] = true;
+                if(!this.hashTo[rows[key].username]){
+                  this.hashTo[rows[key].username] = true;
                   this.toList.push(rows[key]);
                 }
               }
             }else{
               for(let i=0;i<rows.length;i++){
-                if(this.hashTo[rows[i].id]){
-                  this.hashTo[rows[i].id] = false;
+                if(this.hashTo[rows[i].username]){
+                  this.hashTo[rows[i].username] = false;
                   for(let j=0;j<this.toList.length;j++){
-                    if(this.toList[j].id == rows[i].id){
+                    if(this.toList[j].username == rows[i].username){
                       this.toList.splice(j,1);
                       break;
                     }
@@ -991,16 +1162,16 @@
               }
             }
           }else{
-            if(this.hashTo[row.id]){
-              this.hashTo[row.id] = false;
+            if(this.hashTo[row.username]){
+              this.hashTo[row.username] = false;
               for(let i=0;i<this.toList.length;i++){
-                if(row.id == this.toList[i].id){
+                if(row.username == this.toList[i].username){
                   this.toList.splice(i,1);
                   break;
                 }
               }
             }else{
-              this.hashTo[row.id] = true;
+              this.hashTo[row.username] = true;
               this.toList.push(row);
             }
           }
@@ -1010,17 +1181,17 @@
             let rows = this.contactData;
             if(v.length>0){
               for(let key in rows){
-                if(!this.hashCc[rows[key].id]){
-                  this.hashCc[rows[key].id] = true;
+                if(!this.hashCc[rows[key].username]){
+                  this.hashCc[rows[key].username] = true;
                   this.ccList.push(rows[key]);
                 }
               }
             }else{
               for(let i=0;i<rows.length;i++){
-                if(this.hashCc[rows[i].id]){
-                  this.hashCc[rows[i].id] = false;
+                if(this.hashCc[rows[i].username]){
+                  this.hashCc[rows[i].username] = false;
                   for(let j=0;j<this.ccList.length;j++){
-                    if(this.ccList[j].id == rows[i].id){
+                    if(this.ccList[j].username == rows[i].username){
                       this.ccList.splice(j,1);
                       break;
                     }
@@ -1029,31 +1200,52 @@
               }
             }
           }else{
-            if(this.hashCc[row.id]){
-              this.hashCc[row.id] = false;
+            if(this.hashCc[row.username]){
+              this.hashCc[row.username] = false;
               for(let i=0;i<this.ccList.length;i++){
-                if(row.id == this.ccList[i].id){
+                if(row.username == this.ccList[i].username){
                   this.ccList.splice(i,1);
                   break;
                 }
               }
             }else{
-              this.hashCc[row.id] = true;
+              this.hashCc[row.username] = true;
               this.ccList.push(row);
             }
           }
         }
       },
       bang(arr){
-        this.$refs.contactTable.clearSelection()
+        if(this.$refs.contactTable)this.$refs.contactTable.clearSelection()
         for(let i=0;i<arr.length;i++){
           for(let k=0;k<this.contactData.length;k++){
-            if(arr[i].id == this.contactData[k].id){
+            if(arr[i].username == this.contactData[k].username){
               this.$refs.contactTable.toggleRowSelection(this.contactData[k],true);
               break;
             }
           }
         }
+      },
+      show_contact_fn(a){
+        this.active_box = a
+        this.transform_dialog = true;
+        this.toList = [].concat(this.maillist)
+        this.ccList = [].concat(this.maillist_copyer);
+        this.hashTo = [];
+        this.toList.forEach((val)=>{
+          val.username = val.email;
+          this.hashTo[val.username] = true;
+        })
+        this.ccList.forEach(val => {
+          val.username = val.email;
+          this.hashCc[val.username] = true;
+        });
+        if(this.active_box == 'to'){
+          this.bang(this.toList);
+        }else{
+          this.bang(this.ccList);
+        }
+        this.get_transform_menu();
       },
       getPabMembers() {
         var param = {
@@ -1115,10 +1307,6 @@
           this.contactData = res.data.results;
 
         });
-      },
-      show_contact_fn(){
-        this.transform_dialog = true;
-        this.get_transform_menu();
       },
       soabChangeDomain(selected){
         this.soab_domain_cid = selected;
@@ -1734,7 +1922,8 @@
 
     },
     created(){
-      this.getSignatrue()
+      this.getSignatrue();
+      this.getTemplateListfn();
     },
     computed:{
       uploadJson:function(){
@@ -1803,6 +1992,34 @@
   }
 </script>
 <style>
+  .f-csp:hover,.f-csp.selected{
+    border-color:#2ea962 !important;
+    box-shadow: 0 0 0 1px #2ea962;
+  }
+  .template_box ul.template_ul>li{
+    position: relative;
+    font-size: 12px;
+    height: 72px;
+    width:100%;
+    box-sizing: border-box;
+    color: #444;
+    padding: 12px;
+    margin-bottom: 14px;
+    border-radius: 2px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  .template_box ul.template_ul>li.selected i.choose{
+    display:inline-block;
+  }
+   .template_box ul.template_ul>li i.choose{
+     display:none;
+     font-size:14px;
+     color:#2ea962;
+     position: absolute;
+     right: 6px;
+    bottom: 6px;
+   }
 
   .m-mlcompose{
     overflow: auto;
