@@ -31,7 +31,8 @@ const store = new Vuex.Store({
     isCompose:false,
     sharedStatus,
     timer:'',
-    newMsgTimer:''
+    newMsgTimer:'',
+    newMsgClearTimer:''
   },
   getters:{
     userInfo(state) {
@@ -42,6 +43,9 @@ const store = new Vuex.Store({
     },
     getNewMsgTimer(state){
       return state.newMsgTimer
+    },
+    getNewMsgClear(state){
+      return state.newMsgClearTimer
     }
   },
   mutations:{
@@ -70,6 +74,9 @@ const store = new Vuex.Store({
     },
     setNewMsgTimer(state,param){
       state.newMsgTimer = param;
+    },
+    setNewMsgClear(state,param){
+      state.newMsgClearTimer = param;
     }
   },
   actions: {
@@ -84,6 +91,9 @@ const store = new Vuex.Store({
     },
     setNewMsgTimer(store,param){
       store.commit('setNewMsgTimer',param);
+    },
+    setNewMsgClearTimer(store,param){
+      store.commit('setNewMsgClear',param);
     }
 
   }

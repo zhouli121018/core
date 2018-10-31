@@ -15,10 +15,18 @@
             </a>
           </li>
           <li>
-            <a class="fl-m-nav-trigger" href="#" :class="{'fl-nav-current':activeT=='afile'}" title="来往附件" @click.prevent.stop="jumpTo('afile')">
+            <a class="fl-m-nav-trigger" href="#" :class="{'fl-nav-current':activeT=='cfile'}" title="企业网盘" @click.prevent.stop="jumpTo('cfile')">
+                <span>
+                  <i class="iconfont icon-companyfile menu_icon_box"></i>
+                  <div>企业网盘</div>
+                </span>
+            </a>
+          </li>
+          <li>
+            <a class="fl-m-nav-trigger" href="#" :class="{'fl-nav-current':activeT=='afile'}" title="附件管理" @click.prevent.stop="jumpTo('afile')">
                 <span>
                   <i class="iconfont icon-iconaccfile menu_icon_box"></i>
-                  <div>来往附件</div>
+                  <div>附件管理</div>
                 </span>
             </a>
           </li>
@@ -50,7 +58,9 @@
     mounted: function() {
       if(this.$route.path=='/file/afile'){
         this.activeT='afile';
-      }else{
+      }else if(this.$route.path=='/file/cfile'){
+        this.activeT='cfile';
+      }else if(this.$route.path=='/file/pfile'){
         this.activeT='pfile';
       }
     },

@@ -145,6 +145,8 @@ export const newMessage = () => { return axios.get(`${host}/mail/message/new/`) 
 export const getTemplateList = (params) => { return axios.get(`${host}/setting/template/`,{params:params}) };
 //获取单个模板信 /api/setting/template/{id}/
 export const getTemplateById = (id) => { return axios.get(`${host}/setting/template/${id}`) };
+//获取部门邮箱 /api/contact/to/?ctype=oab&cid=0
+export const getDeptMail = (params) => { return axios.get(`${host}/contact/to/`,{params:params}) };
 
 
 /* ***********************  设置中心 *********************** */
@@ -307,6 +309,35 @@ export const netdiskBatchMove = params => { return axios.post(`${host}/netdisk/n
 export const netdiskFileDownload = params => { return axios.get(`${host}/netdisk/netdisks/`+signatureID+'/download/', { params: params,responseType:'blob' }) };
 // zip下载
 export const netdiskZipDownload = params => { return axios.get(`${host}/netdisk/netdisks/zip/`, { params: params, responseType:'blob' }) };
+
+
+// 企业网盘
+// 获取文件夹以及文件夹下的文件
+export const companyDiskGet = params => { return axios.get(`${host}/netdisk/company/`, { params: params })}
+// 获取个人网盘容量
+export const companyDiskCapacityGet = params => { return axios.get(`${host}/netdisk/company/capacity/`, { params: params })}
+// 获取所有文件夹的路径
+export const companyDiskPathGet = params => { return axios.get(`${host}/netdisk/company/paths/`, { params: params })}
+// 创建文件夹
+export const companyDiskFolderCreate = params => { return axios.post(`${host}/netdisk/company/folders/`, params)}
+// 文件夹重命名
+export const companyDiskFolderUpdate = (signatureID, params) => { return axios.post(`${host}/netdisk/company/`+signatureID+'/folders/', params) }
+// 文件上传
+export const companyDiskFileUpload = (params) => { return axios.post(`${host}/netdisk/company/files/`, params, {headers:{ 'Content-Type': 'multipart/form-data' }}) }
+// 文件重命名
+export const companyDiskFileUpdate = (signatureID, params) => { return axios.post(`${host}/netdisk/company/`+signatureID+'/files/', params) }
+// 删除文件或文件夹
+export const companyDiskDelete = params => { return axios.post(`${host}/netdisk/company/delete/`, params)}
+// 批量删除文件或文件夹
+export const companyDiskBatchDelete = params => { return axios.post(`${host}/netdisk/company/batchdelete/`, params)}
+// 移动文件或文件夹
+export const companyDiskMove = params => { return axios.post(`${host}/netdisk/company/batchmove/`, params)}
+// 批量移动文件或文件夹
+export const companyDiskBatchMove = params => { return axios.post(`${host}/netdisk/company/batchmove/`, params)}
+// 文件下载
+export const companyDiskFileDownload = params => { return axios.get(`${host}/netdisk/company/`+signatureID+'/download/', { params: params,responseType:'blob' }) };
+// zip下载
+export const companyDiskZipDownload = params => { return axios.get(`${host}/netdisk/company/zip/`, { params: params, responseType:'blob' }) };
 
 //日历
 //获取日程列表 /api/calendars/calendars/

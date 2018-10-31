@@ -99,20 +99,21 @@
                     <i class="el-icon-message" style="font-size:36px;"></i>
                   </td>
                   <td style="vertical-align:top;">
-                    <h3 class="hide_row" title="${o.subject}">{{newMsg.subject }}</h3>
+                    <h3 class="hide_row" :title="newMsg.subject">{{newMsg.subject }}</h3>
                     <h3 class="hide_row"><span style="color:#5EB509">{{newMsg.mfrom?newMsg.mfrom[1]:''}}</span><span style="color:#aaa;font-size:12px;"> &lt; {{newMsg.mfrom?newMsg.mfrom[0]:''}} &gt;</span></h3>
                     <p class="hide_row2">{{newMsg.abstract}}</p>
                   </td>
                   </tr>
                 </table>
-              <table style="width:100%;border-top:2px solid #409EFF;margin-top:10px;">
+                <div style="margin-top:10px;width:100%;height:2px;background:linear-gradient(to right, #409EFF , #fff);"></div>
+              <table style="width:100%;">
                 <tr>
                   <td style="padding:2px 12px 0;color:#409EFF;cursor:pointer;" @click=""></td>
                   <td style="text-align:right;padding:2px 12px 0"> <i class="el-icon-caret-left" style="cursor:pointer;" @click="preNew"></i> {{newIndex+1}}/{{newList.length}} <i @click="nextNew" class="el-icon-caret-right" style="cursor:pointer;"></i></td>
                 </tr>
               </table>
               </div>
-              <div class="el-notification__closeBtn el-icon-close"></div></div></div>
+              <div class="el-notification__closeBtn el-icon-close" @click="newList=[]"></div></div></div>
           </div>
         </transition>
   </section>
@@ -181,9 +182,9 @@
         this.$router.push('/mailbox/innerbox/'+this.newMsg.folder);
         setTimeout(function(){
           _this.$children[1].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
-          _this.newMsg = null;
+          _this.newList.splice(_this.newIndex,1);
+          _this.newIndex = 0;
         },500)
-
       },
       open_notify(){
         let _this = this;
@@ -191,6 +192,10 @@
             if(res.data.length>0){
               this.newIndex = 0;
               _this.newList = res.data;
+              if(_this.$store.getters.getNewMsgClear){clearTimeout(_this.$store.getters.getNewMsgClear)}
+              _this.$store.dispatch('setNewMsgClearTimer',setTimeout(function(){
+                _this.newList = [];
+              },5*60*1000))
               if(_this.$children[1].getFloderfn){
                 _this.$children[1].getFloderfn();
                 if(_this.$children[1].$refs['innerbox'] && _this.$children[1].$refs['innerbox'][0]){
@@ -198,18 +203,18 @@
                 };
               }
             }
-
           }).catch(err=>{
-            console.log('获取新邮件失败！',err)
+            console.log('获取新邮件1失败！',err)
           })
         if(this.$store.getters.getNewMsgTimer){clearInterval(this.$store.getters.getNewMsgTimer)}
         this.$store.dispatch('setNewMsgTimer',setInterval(function(){
           newMessage().then(res=>{
-
-            console.log(_this.$children[1])
-            console.log(_this.$children[1].$refs['innerbox'][0])
             if(res.data.length>0){
               _this.newList = res.data;
+              if(_this.$store.getters.getNewMsgClear){clearTimeout(_this.$store.getters.getNewMsgClear)}
+              _this.$store.dispatch('setNewMsgClearTimer',setTimeout(function(){
+                _this.newList = [];
+              },5*60*1000))
               if(_this.$children[1].getFloderfn){
                 _this.$children[1].getFloderfn();
                 if(_this.$children[1].$refs['innerbox'] && _this.$children[1].$refs['innerbox'][0]){
@@ -228,7 +233,7 @@
             }
 
           }).catch(err=>{
-            console.log('获取新邮件失败！',err)
+            console.log('获取新邮件2失败！',err)
           })
         },1000*60))
       },
@@ -403,6 +408,8 @@
   .el-notification__closeBtn{
   top:4px;
   right:8px;
+    color:#2F72B1;
+    font-weight:bold;
 }
 .el-notification__group{
   margin-left:0;
@@ -412,6 +419,7 @@
   font-size:12px;
   padding:4px 12px;
   background:#409EFF;
+  background: linear-gradient(#409EFF, #fff);
 }
 .el-notification{
   padding: 0 0 8px;

@@ -37,6 +37,8 @@
 
 .icon-iconmyfile:before { content: "\e697"; }
 
+.icon-companyfile:before { content: "\E681"; }
+
 .icon-icontie:before { content: "\e6a9"; }
 
 .icon-iconcontacts1:before { content: "\e876"; }

@@ -43,6 +43,7 @@ export const rou = [
         children:[
           {path:'/',redirect:'pfile'},
           {path:'pfile',component:_import('file/pfile')},
+          {path:'cfile',component:_import('file/cfile')},
           {path:'afile',component:_import('file/afile')},
         ]
       },
@@ -114,22 +115,22 @@ export const rou = [
     path:'/',component:Layout1,
     children: [
 
-      ]
+    ]
   },
   {
     path:'/',component:Layout1,
     children: [
-      ]
+    ]
   },
   {
     path:'/',component:Layout1,
     children: [
-      ]
+    ]
   },
   {
     path:'/',component:Layout1,
     children: [
-      ]
+    ]
   },
   // {
   //   path: '*',

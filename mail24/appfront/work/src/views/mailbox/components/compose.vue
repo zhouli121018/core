@@ -332,7 +332,7 @@
       </div>
 
 
-      <el-dialog title="通讯录" :visible.sync="transform_dialog" :append-to-body="true" width="1032px" :close-on-click-modal="false" @close="">
+      <el-dialog title="通讯录" :visible.sync="transform_dialog" :append-to-body="true" width="80%" :close-on-click-modal="false" @close="">
         <!--<tree-transfer :title="tree_title" :from_data='fromData' :to_data='toData' :defaultProps="{label:'label'}" @addBtn='add' @removeBtn='remove' :mode='mode' height='540px' filter openAll>-->
     <!--</tree-transfer>-->
         <el-row :gutter="10" style="margin-bottom:10px;">
@@ -352,18 +352,6 @@
                   <el-button slot="append" icon="el-icon-search"  @click="search_dept"></el-button>
                 </el-input>
               </el-col>
-              <el-col :span="18" style="text-align:right">
-                <el-pagination
-                  @size-change="handleSizeChange_contact"
-                  @current-change="handleCurrentChange_contact"
-                  :current-page="currentPage"
-                  :page-sizes="[5,10, 20,50,100,200, 300, 400]"
-                  :page-size="pageSize"
-                  small
-                  layout="total,prev, pager, next,sizes"
-                  :total="totalCount">
-                </el-pagination>
-              </el-col>
             </el-row>
           </el-col>
         </el-row>
@@ -371,12 +359,26 @@
           <el-col :span="6" >
 
             <div style="height:420px;overflow: auto;width:100%;border:1px solid #dcdfe6">
+               <!--:default-expanded-keys="default_expanded"-->
+                <!--:default-checked-keys="default_checked"-->
+                <!--show-checkbox-->
               <el-tree
-                node-key="id"
-                :default-expanded-keys="default_expanded"
+                node-key="label"
                 :data="transform_menu"
+                accordion
+                ref="contactTreeRef"
+                :highlight-current="true"
                 :props="defaultPropsCon"
+                :expand-on-click-node="false"
                 @node-click="contact_tree_click">
+                <span class="custom-tree-node" slot-scope="{ node, data }">
+                  <span v-if="data.keyId!='pab'&&data.keyId!='oab'">
+                    <el-checkbox v-model="data.checked"
+                      @change="changeTest($event, data)" title="选择部门">
+                    </el-checkbox>
+                  </span>
+                  <span>{{ node.label }}</span>
+                </span>
               </el-tree>
             </div>
 
@@ -387,6 +389,7 @@
               :data="contactData"
               tooltip-effect="dark"
               style="width: 100%"
+              @row-click="rowClick" @selection-change="select_change"
               @select="selectionChange_contact" @select-all="selectionChange_contact"  ref="contactTable" :header-cell-style="{background:'#f0f1f3'}">
               <el-table-column
                 type="selection"
@@ -403,13 +406,17 @@
                 </template>
               </el-table-column>
             </el-table>
-
-
           </el-col>
           <el-col :span="6" style="height:420px;">
             收件人：(<b>{{toList.length}}</b>)
             <div class="address_box" :class="{active:active_box=='to'}" @click="switch_to('to',toList)">
-              <el-row v-for="(t,k) in toList" :key="k" class="hover_show_box">
+              <el-row v-for="(t,k) in deptCheckedList" :key="k" class="hover_show_box">
+                <el-col :span="22" style="overflow: hidden;white-space: nowrap" :title="t.email">{{t.fullname}}  {{'<'+t.email+'>'}}</el-col>
+                <el-col :span="2" style="text-align: right">
+                  <i class="el-icon-error delete_hover" @click=""></i>
+                </el-col>
+              </el-row>
+              <el-row v-for="(t,k) in toList" :key="t.username" class="hover_show_box">
                 <el-col :span="22" style="overflow: hidden;white-space: nowrap" :title="t.username||t.email">{{t.name||t.fullname}} &lt;{{t.username||t.email}} &gt;</el-col>
                 <el-col :span="2" style="text-align: right">
                   <i class="el-icon-error delete_hover" @click="deleteList('to',t.id,k)"></i>
@@ -427,6 +434,20 @@
             </div>
           </el-col>
 
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="24" :offset="6">
+                <el-pagination
+                  @size-change="handleSizeChange_contact"
+                  @current-change="handleCurrentChange_contact"
+                  :current-page="currentPage"
+                  :page-sizes="[5,10, 20,50,100,200, 300, 400]"
+                  :page-size="pageSize"
+                  small
+                  layout="total,prev, pager, next,sizes"
+                  :total="totalCount">
+                </el-pagination>
+              </el-col>
         </el-row>
         <div slot="footer" class="dialog-footer" >
           <el-button @click="cancelAddress">取 消</el-button>
@@ -510,7 +531,7 @@
   import axios from 'axios';
   // import treeTransfer from 'el-tree-transfer'
   import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach,contactOabDepartsGet,
-  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus,settingSignatureGet,getTemplateList,getTemplateById} from '@/api/api'
+  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus,settingSignatureGet,getTemplateList,getTemplateById,getDeptMail} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     props:{
@@ -563,6 +584,9 @@
         }
       };
       return {
+        hashDeptCheck:[],
+        deptCheckedList:[],
+        contactSelection:[],
         showLoadMore:true,
         selectId:'',
         tpage:1,
@@ -653,6 +677,7 @@
         contact_search:'',
         pid:'',
         default_expanded:['pab'],
+        default_checked:['pab'],
         soab_domain_cid:'',
         soab_domain_options:[],
         contactData:[],
@@ -719,13 +744,61 @@
       };
     },
     methods:{
+      changeTest(check,data){
+        console.log('check')
+        console.log(check)
+        if(check){
+          if(!data.email){
+            let param = {
+              ctype:'oab',
+              cid:data.id
+            }
+            getDeptMail(param).then(res=>{
+              console.log(res)
+              if(!res.data[0]){
+                this.$message({
+                  type:'error',
+                  message:'此部门邮箱没找到'
+                })
+              }else{
+                data.email = res.data[0];
+                data.fullname = res.data[1];
+                data.is_dept = true;
+                data.status = true;
+                if(!this.hashDeptCheck[data.id]){
+                  this.hashDeptCheck[data.id] = true;
+                  this.deptCheckedList.push(data)
+                }
+              }
+            }).catch(err=>{
+              console.log('获取部门邮箱错误',err)
+            })
+          }else{
+            if(!this.hashDeptCheck[data.id]){
+              this.hashDeptCheck[data.id] = true;
+              this.deptCheckedList.push(data)
+            }
+          }
+
+        }else{
+          this.hashDeptCheck[data.id] = false;
+          for(let i=0;i<this.deptCheckedList.length;i++){
+            if(data.id == this.deptCheckedList[i].id){
+              this.deptCheckedList.splice(i,1);
+              break;
+            }
+          }
+        }
+      },
       setTemplate(){
         this.$router.push('/setting/template/')
       },
       deleteTemplate(){
-        this.selectId = '';
-        this.content = '';
-        this.$refs[this.editor_id].editor.html(this.content);
+        if(this.selectId){
+          this.selectId = '';
+          this.content = '';
+          this.$refs[this.editor_id].editor.html(this.content);
+        }
       },
       getTemplateListfn(){
         let param = {
@@ -825,7 +898,7 @@
         this.transform_dialog = false
       },
       sureAddress(){
-        let arr = [].concat(this.toList)
+        let arr = [].concat(this.toList).concat(this.deptCheckedList)
         arr.forEach((mail)=>{
           if(mail.username){
             mail.email = mail.username;
@@ -1136,8 +1209,15 @@
       switch_to(a,arr){
         this.active_box=a;
         this.bang(arr);
+        for(let i=0;i<this.deptCheckedList.length;i++){
+
+        }
+      },
+      select_change(selection){
+        this.contactSelection = selection;
       },
       selectionChange_contact(v,row){
+        console.log(v)
         if(this.active_box=='to'){
           if(!row){
             let rows = this.contactData;
@@ -1229,7 +1309,29 @@
       show_contact_fn(a){
         this.active_box = a
         this.transform_dialog = true;
-        this.toList = [].concat(this.maillist)
+        let darr = [];
+        let arr = [];
+        for(let i=0;i<this.maillist.length;i++){
+          if(this.maillist[i].is_dept){
+            darr.push(this.maillist[i]);
+            this.hashDeptCheck[this.maillist[i].id] = true;
+          }else{
+            arr.push(this.maillist[i])
+          }
+        }
+        this.toList = [].concat(arr)
+        this.deptCheckedList = darr;
+
+        // let darrc = [];
+        // let arrc = [];
+        // for(let i=0;i<this.maillist_copyer.length;i++){
+        //   if(this.maillist_copyer[i].is_dept){
+        //     darrc.push(this.maillist_copyer[i]);
+        //     this.hashDeptCheck_copy[this.maillist_copyer[i].id] = true;
+        //   }else{
+        //     arrc.push(this.maillist_copyer[i])
+        //   }
+        // }
         this.ccList = [].concat(this.maillist_copyer);
         this.hashTo = [];
         this.toList.forEach((val)=>{
@@ -1245,7 +1347,6 @@
         }else{
           this.bang(this.ccList);
         }
-        this.get_transform_menu();
       },
       getPabMembers() {
         var param = {
@@ -1255,13 +1356,32 @@
           "group_id": this.pid,
           "is_group": '',
         };
-        contactPabMapsGet(param).then((res) => {
-          this.totalCount = res.data.count;
-          this.contactData = res.data.results;
-          setTimeout(() => {
-            this.bang(this.allSeclect)
-          }, 50)
-        });
+        if (this.pid >0){
+          contactPabMapsGet(param).then((res) => {
+            this.totalCount = res.data.count;
+            this.contactData = res.data.results;
+            this.contactData.forEach(val=>{
+              val.username = val.email
+              val.name = val.fullname
+            })
+            setTimeout(() => {
+              this.bang(this.allSeclect)
+            }, 50)
+          });
+        } else {
+          contactPabMembersGet(param).then((res) => {
+            this.totalCount = res.data.count;
+            this.contactData = res.data.results;
+            this.contactData.forEach(val=>{
+              val.username = val.email
+              val.name = val.fullname
+            })
+            setTimeout(() => {
+              this.bang(this.allSeclect)
+            }, 50)
+          });
+        }
+
       },
       getOabMembers() {
         let keys = new Array();
@@ -1322,12 +1442,20 @@
         });
       },
       contact_tree_click(data){
+        console.log(data);
         if(data.id=='oab'||data.id=='pab'||data.id=='cab'||data.id=='soab'){
           sessionStorage['openGroup'] = data.id;
           return;
         }
         this.pid = data.id;
+        this.$refs.contactTreeRef.setCurrentNode(data);
         this.currentPage = 1;
+        if(data.keyId == 'pab'){
+          this.getPabMembers();
+        }else{
+          this.getOabMembers();
+        }
+        return;
         if(sessionStorage['openGroup']=='pab'){
           this.getPabMembers();
         }else if(sessionStorage['openGroup']=='oab'){
@@ -1348,6 +1476,7 @@
       },
       rowClick(row){
         this.$refs.contactTable.toggleRowSelection(row)
+        this.selectionChange_contact(this.contactSelection,row);
       },
       rowClick_afile(row,e,col){
         this.$refs.afileTable.toggleRowSelection(row)
@@ -1468,14 +1597,28 @@
         let _this = this;
         axios.all([contactPabGroupsGet(),contactOabDepartsGet()]).then(axios.spread(function (acct, perms) {
           // 请求现在都执行完成
-
+          acct.data.results.forEach(val=>{
+            val.label = val.groupname
+            val.keyId = 'pab'
+          })
+          function digui(arr){
+            for(let i=0;i<arr.length;i++){
+              arr[i].checked = false;
+              if(arr[i].children && arr[i].children.length>0){
+                digui(arr[i].children)
+              }
+            }
+          }
+          digui(perms.data.results)
           arr[0] = {
             id:'pab',
             label:'个人通讯录',
-            children:acct.data.pab_contact_groups
+            keyId:'pab',
+            children:acct.data.results
           }
           arr[1] = {
             id:'oab',
+            keyId:'oab',
             label:'组织通讯录',
             children:perms.data.results
           }
@@ -1844,9 +1987,9 @@
           }
           this.restaurants = arr;
         },(err)=>{
+
           console.log(err);
         })
-        return;
 
         contactPabGroupsGet().then(res=>{
           this.contact_loading = true;
@@ -1924,6 +2067,7 @@
     created(){
       this.getSignatrue();
       this.getTemplateListfn();
+      this.get_transform_menu();
     },
     computed:{
       uploadJson:function(){
