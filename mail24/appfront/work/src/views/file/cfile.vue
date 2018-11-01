@@ -6,15 +6,15 @@
         <el-form :inline="true" :model="filters">
           <el-form-item style="margin-bottom: 0px!important;">
             <el-button size="small" type="primary" icon="el-icon-d-arrow-left" v-if="current_name.parent_id" @click="changeParentFolder()">返回上层</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-upload" @click="uploadFormShow">上传</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-edit" @click="createFolderFormShow">新建文件夹</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-download" :disabled="this.sels.length===0"  @click="zipDownload">下载</el-button>
-            <el-button plain size="small" type="danger" icon="el-icon-delete" :disabled="this.sels.length===0" @click="deleteFolders">删除</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-remove" :disabled="this.sels.length===0" @click="moveFolderFormShow">批量移动</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-upload" @click="uploadFormShow" v-if="this.permisson_type == '1' || this.permisson_type == '2' || this.permisson_type == '4'">上传</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-edit" @click="createFolderFormShow" v-if="this.is_supercompany || this.permisson_type == '1'">新建文件夹</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-download" :disabled="this.sels.length===0"  @click="zipDownload" v-if="this.permisson_type == '1' || this.permisson_type == '3' || this.permisson_type == '4'">下载</el-button>
+            <el-button plain size="small" type="danger" icon="el-icon-delete" :disabled="this.sels.length===0" @click="deleteFolders" v-if="this.is_supercompany || this.permisson_type == '1'">删除</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-remove" :disabled="this.sels.length===0" @click="moveFolderFormShow" v-if="this.is_supercompany || this.permisson_type == '1'">批量移动</el-button>
             <el-button plain size="small" type="primary" icon="el-icon-message" :disabled="this.sels.length===0">邮件发送</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-setting" :disabled="this.sels.length===0">添加权限</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-view">权限管理</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-plus">赋予网盘管理员</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-setting" :disabled="this.sels.length===0" v-if="this.is_supercompany || this.permisson_type == '1'">添加权限</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-view" v-if="this.is_supercompany || this.permisson_type == '1'">权限管理</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-plus" v-if="this.is_supercompany && this.current_folder_id==-1">赋予网盘管理员</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -33,13 +33,13 @@
       </el-row>
 
       <el-row>
-        <el-col :span="8" style="padding-left:6px;">&nbsp;
+        <el-col :span="14" style="padding-left:6px;">&nbsp;
           <span>
             <span>路径：</span>
             <span v-for="(item,k) in folder_names" :title="item.name" :class="{clickable:k!=folder_names.length-1}" @click="changeFolderTables(item)">{{item.name}} <i v-if="k!=folder_names.length-1" style="color:#333;"> / </i></span>
           </span>
         </el-col>
-        <el-col :span="16" style="text-align:right">
+        <el-col :span="10" style="text-align:right">
           <el-pagination :current-page="page" :page-sizes="[10, 20, 50]" :page-size="page_size" :total="total"
                          @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange" layout="total, sizes, prev, pager, next">
           </el-pagination>
@@ -60,11 +60,12 @@
                   <div v-if="scope.row.nettype=='file'">{{scope.row.name}}</div>
                   <a :href="blobUrl" download="" style="display:none;" ref="download"></a>
                   <div class="actions_a">
-                    <span @click="zipRowDownload(scope.row)">下载</span>
+                    <span @click="zipRowDownload(scope.row)" v-if="scope.row.is_own || permisson_type=='1' || permisson_type=='3' || permisson_type=='4'">下载</span>
                     <span v-if="scope.row.nettype=='file'">发信</span>
                     <!--<span>共享</span>-->
-                    <span @click="resetRowNameShow(scope.row)">重命名</span>
-                    <span @click="deleteRowFolders(scope.row)">删除</span>
+                    <span @click="resetRowNameShow(scope.row)" v-if="scope.row.is_own || is_supercompany || permisson_type=='1'">重命名</span>
+                    <span @click="deleteRowFolders(scope.row)" v-if="scope.row.is_own || is_supercompany || permisson_type=='1'">删除</span>
+                    <span @click="changeFolderTables(scope.row)" class="folder_type" v-if="scope.row.nettype=='folder' && permisson_type=='0'">访问</span>
                   </div>
                 </el-col>
               </el-row>
@@ -189,7 +190,7 @@
         sels:[],
         total: 0,
         page: 1,
-        page_size: 10,
+        page_size: 20,
         listLoading: false,
         listTables: [],
         current_name: {},
@@ -199,6 +200,8 @@
         folder_capacity: {},
         current_folder_id: -1,
         folder_fullpath: [],
+        is_supercompany: false,
+        permisson_type: 0,
         // fileData:[{created:'2018-09-09',name:'我的文档',classObject:{bfFOLDER:true}}],
 
         blobUrl:'',
@@ -285,6 +288,9 @@
           "folder_id": this.current_folder_id,
         };
         companyDiskGet(param).then(res=>{
+          this.is_supercompany = res.data.is_supercompany;
+          this.permisson_type = res.data.permisson_type;
+          console.log(this.permisson_type, typeof this.permisson_type)
           this.current_name = res.data.current_name;
           this.folder_names = res.data.folder_names;
           this.folder_count = res.data.folder_count;
@@ -348,14 +354,24 @@
                   this.createFolderFormLoading = false;
                   this.getTables();
                 }, (data)=>{
+                  console.log(data, typeof data);
                   if ( "limited_error_message" in data ){
                     // this.open(data);
+                    // this.$message({message: data.limited_error_message, type: 'error'});
                     this.$message.error(data.limited_error_message);
                     this.$refs['createFolderForm'].resetFields();
                     this.createFolderFormVisible = false;
+                    this.createFolderFormLoading = false;
+                    this.getTables();
                   }
                   if("non_field_errors" in data) {
                     this.folder_id_error = data.non_field_errors[0];
+                  }
+                  if ("error_message" in data) {
+                    this.$message({ message: data.error_message,  type: 'error' });
+                    this.getTables();
+                    this.createFolderFormLoading = false;
+                    this.createFolderFormVisible = false;
                   }
                   this.createFolderFormLoading = false;
                 })
@@ -388,8 +404,12 @@
                     this.$message({message: '提交成功', type: 'success'});
                     this.getTables();
                   }, (data) => {
-                    if("non_field_errors" in data) {
+                    if ("non_field_errors" in data) {
                       this.folder_name_error = data.non_field_errors[0];
+                    }
+                    if ("error_message" in data) {
+                      this.updateFormVisible = false;
+                      this.$message({ message: data.error_message,  type: 'error' });
                     }
                     this.updateFormLoading = false;
                   })
@@ -407,6 +427,11 @@
                   }, (data) => {
                     if("non_field_errors" in data) {
                       this.folder_name_error = data.non_field_errors[0];
+                    }
+                    if("error_message" in data) {
+                      this.getTables();
+                      this.updateFormVisible = false;
+                      this.$message({ message: data.error_message,  type: 'error' });
                     }
                     this.updateFormLoading = false;
                   })
@@ -454,8 +479,19 @@
                   // console.log(data);
                   if("non_field_errors" in data) {
                     this.folder_id_error = data.non_field_errors[0];
+                    this.moveFolderFormLoading = false;
+                  } else {
+                    this.getTables();
+                    if("error_message" in data) {
+                      this.moveFolderFormLoading = false;
+                      this.moveFolderFormVisible = false;
+                      this.$message({ message: data.error_message,  type: 'error' });
+                    } else {
+                      that.$message({ message: '移动失败，请重试',  type: 'error' });
+                      this.moveFolderFormLoading = false;
+                      this.moveFolderFormVisible = false;
+                    }
                   }
-                  this.moveFolderFormLoading = false;
                 })
                 .catch(function (error) {
                   console.log(error);
@@ -464,8 +500,6 @@
             });
           }
         });
-
-
 
       },
       //点击下载
@@ -501,6 +535,7 @@
           this.getCapacity();
         }).catch(function (error) {
           console.log(error)
+          this.getTables();
           that.$message({ message: '删除失败，请重试',  type: 'error' });
         });
       },
@@ -566,7 +601,7 @@
           that.$message({ message: '导出成功', type: 'success' });
           // this.getPabs();
         }).catch(function (error) {
-          console.log(error)
+          console.log(error);
           that.$message({ message: '导出失败，请重试',  type: 'error' });
         });
       },
@@ -618,7 +653,12 @@
           param.onProgress(param.file)
           this.listLoading = false;
           this.fileloading = false;
-          this.$message({ message: '上传失败，请重试',  type: 'error' });
+          if("error_message" in data) {
+            this.getTables();
+            this.$message({ message: data.error_message,  type: 'error' });
+          } else {
+            this.$message({ message: '上传失败，请重试',  type: 'error' });
+          }
         });
 
         return true;

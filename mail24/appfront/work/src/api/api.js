@@ -306,7 +306,7 @@ export const netdiskMove = params => { return axios.post(`${host}/netdisk/netdis
 // 批量移动文件或文件夹
 export const netdiskBatchMove = params => { return axios.post(`${host}/netdisk/netdisks/batchmove/`, params)}
 // 文件下载
-export const netdiskFileDownload = params => { return axios.get(`${host}/netdisk/netdisks/`+signatureID+'/download/', { params: params,responseType:'blob' }) };
+export const netdiskFileDownload = (signatureID, params) => { return axios.get(`${host}/netdisk/netdisks/`+signatureID+'/download/', { params: params,responseType:'blob' }) };
 // zip下载
 export const netdiskZipDownload = params => { return axios.get(`${host}/netdisk/netdisks/zip/`, { params: params, responseType:'blob' }) };
 
@@ -335,7 +335,7 @@ export const companyDiskMove = params => { return axios.post(`${host}/netdisk/co
 // 批量移动文件或文件夹
 export const companyDiskBatchMove = params => { return axios.post(`${host}/netdisk/company/batchmove/`, params)}
 // 文件下载
-export const companyDiskFileDownload = params => { return axios.get(`${host}/netdisk/company/`+signatureID+'/download/', { params: params,responseType:'blob' }) };
+export const companyDiskFileDownload = (signatureID, params) => { return axios.get(`${host}/netdisk/company/`+signatureID+'/download/', { params: params,responseType:'blob' }) };
 // zip下载
 export const companyDiskZipDownload = params => { return axios.get(`${host}/netdisk/company/zip/`, { params: params, responseType:'blob' }) };
 
@@ -368,3 +368,14 @@ export const deleteEvent = id => { return axios.delete(`${host}/calendars/events
 export const cancelInvitorEvent = id => { return axios.post(`${host}/calendars/events/${id}/cancel-invitor/`) }
 //修改参与者状态 /api/calendars/events/{id}/status/
 export const setStatus = (id,params) => { return axios.post(`${host}/calendars/events/${id}/status/`, {status:params}) };
+
+
+//自助查询
+//登录查询  /api/center/login/
+export const getLoginList = params => { return axios.get(`${host}/center/login/`, { params: params }) }
+//发信查询 /api/center/sendlog/
+export const getSendlog = params => { return axios.get(`${host}/center/sendlog/`, { params: params }) }
+//收信查询 /api/center/maillog/
+export const getMaillog = params => { return axios.get(`${host}/center/maillog/`, { params: params }) }
+//删信查询  /api/center/deletelog/
+export const getDeletellog = params => { return axios.get(`${host}/center/deletelog/`, { params: params }) }

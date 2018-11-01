@@ -15,6 +15,10 @@ export const rou = [
     path:'/',component:Layout1,
     children: [
       {
+        path:'/',
+        redirect:'mailbox'
+      },
+      {
         path: 'mailbox',
         component: _import('mailbox/mailbox'),
         redirect: 'mailbox/welcome',
@@ -95,6 +99,10 @@ export const rou = [
           {path:'transfer',component:_import('setting/page/transfer')},
           {path:'accountcancel',component:_import('setting/page/accountcancel')},
         ]
+      },
+      {
+        path:'search',
+        component:_import('search/index')
       }
 
 

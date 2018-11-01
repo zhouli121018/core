@@ -91,7 +91,7 @@
     </article>
         <transition name="fade">
           <div v-if="newMsg" class="test">
-            <div role="alert" class="el-notification right" style="bottom: 16px; z-index: 2000;"><!----><div class="el-notification__group"><h2 class="el-notification__title">{{this.$store.getters.userInfo.name}}</h2>
+            <div role="alert" class="el-notification right" style="bottom: 16px; z-index: 2000;border: 1px solid #ddd;box-shadow: 0 0 10px #aaa;"><!----><div class="el-notification__group"><h2 class="el-notification__title">{{this.$store.getters.userInfo.name}}</h2>
               <div class="el-notification__content">
                 <table style="margin:0 12px;cursor:pointer;" @click="readNewMsg">
                   <tr>
@@ -140,6 +140,7 @@
           {id:2,title:'文件中心',iconclass:'icon-iconfiler'},
           {id:3,title:'联系人',iconclass:'icon-iconcontacts1'},
           {id:4,title:'应用中心',iconclass:'icon-iconmore'},
+          {id:6,title:'自助查询',iconclass:'icon-iconsreachm'},
         ]
       }
     },
@@ -258,6 +259,8 @@
           this.jumpTo('/appcenter')
         }else if(index == 5){
           this.jumpTo('/setting')
+        }else if(index == 6){
+          this.jumpTo('/search')
         }
       },
       logout(){

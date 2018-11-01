@@ -587,7 +587,7 @@ export default {
     padding-bottom:10px;
     /*min-height:600px;*/
     position: absolute;
-    top: 56px;
+    top: 41px;
     bottom: 0;
     left: 0;
     right: 0;

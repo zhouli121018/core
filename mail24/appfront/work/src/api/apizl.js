@@ -8,7 +8,7 @@ export const login = params => { return axios.post(`${host}/login/`, params) }
 //获取欢迎页面信息
 export const welcome = params => { return axios.get(`${host}/core/welcome/`, { params: params }) }
 //锁屏
-export const lockscreen = params => { return axios.post(`${host}/core/lockscreen/`, { params: params }) }
+export const lockscreen = params => { return axios.post(`${host}/core/lockscreen/`,  params ) }
 // 设置联系人数据
 export const getContactInfo = params => { return axios.get(`${host}/contact/show/`, { params: params }) }
 
@@ -104,6 +104,8 @@ export const postAttach = (params) => {
 export const deleteAttach = params => {return axios.delete(`${host}/mail/attach/${params}/`)};
 //获取附件列表 /api/mail/attach/
 export const getAttach = params => { return axios.get(`${host}/mail/attach/`, { params: params }) };
+// 删除附件 /api/mail/attach/batchdelete/
+export const mailAttachDelete = params => { return axios.post(`${host}/mail/attach/batchdelete/`,params)};
 //发信/存草稿 /api/mail/message/sent/
 export const mailSent = params =>{ return axios.post(`${host}/mail/message/sent/`,params) };
 //下载附件 /api/mail/attach/{id}/
@@ -114,6 +116,7 @@ export const downloadAttach2 = (signatureID, params) => { return axios.get(`${ho
 export const moveAttach2Netdisk = params =>{ return axios.post(`${host}/mail/attach/move-to-disk/`,params) };
 //下载附件 /api/mail/attach/{id}/
 export const downloadZipAttach = params => { return axios.get(`${host}/mail/attach/download/`, { params: params, responseType:'blob' }) };
+
 //写信  获取当前用户参数设置 /api/setting/users/get-param-bool/
 export const getParamBool = params => { return axios.get(`${host}/setting/users/get-param-bool/`) };
 //邮件解密 /api/mail/message/password/
@@ -122,7 +125,28 @@ export const mailDecode = params =>{ return axios.post(`${host}/mail/message/pas
 export const sendRecall = params =>{ return axios.post(`${host}/mail/message/send-recall/`,params) };
 //查看邮件状态 /api/mail/message/status/
 export const getMessageStatus = params => { return axios.get(`${host}/mail/message/status/`, { params: params }) };
-
+//拒收邮件 /api/mail/message/reject/
+export const rejectMessage = params =>{ return axios.post(`${host}/mail/message/reject/`,params) };
+//彻底（直接）删除邮件 /api/mail/message/prune/
+export const pruneMessage = params =>{ return axios.post(`${host}/mail/message/prune/`,params) };
+//打包下载邮件 /api/mail/message/zip/
+export const zipMessage = params => { return axios.get(`${host}/mail/message/zip/`, { params: params,responseType:'blob'  }) };
+//下载某个邮件 /api/mail/message/eml/
+export const emlMessage = params => { return axios.get(`${host}/mail/message/eml/`, { params: params,responseType:'blob'  }) };
+//添加到个人通讯录 /api/mail/message/pab/
+export const pabMessage = params => { return axios.post(`${host}/mail/message/pab/`,  params) };
+//查看邮件的 召回邮件 /api/mail/message/recall/
+export const messageRecall = params =>{ return axios.post(`${host}/mail/message/recall/`,params) };
+//发送回执 /api/mail/message/notify/
+export const notifyMessage = params =>{ return axios.post(`${host}/mail/message/notify/`,params) };
+//拉取新邮件 /api/mail/message/new/
+export const newMessage = () => { return axios.get(`${host}/mail/message/new/`) };
+//获取用户模板信列表 /api/setting/template/
+export const getTemplateList = (params) => { return axios.get(`${host}/setting/template/`,{params:params}) };
+//获取单个模板信 /api/setting/template/{id}/
+export const getTemplateById = (id) => { return axios.get(`${host}/setting/template/${id}`) };
+//获取部门邮箱 /api/contact/to/?ctype=oab&cid=0
+export const getDeptMail = (params) => { return axios.get(`${host}/contact/to/`,{params:params}) };
 
 
 /* ***********************  设置中心 *********************** */
@@ -161,6 +185,19 @@ export const settingSignatureGetSingle = (signatureID, params) => { return axios
 // 邮箱意见反馈
 export const settingFeedbackSet = params => { return axios.post(`${host}/setting/users/set-feedback/`, params) }
 
+// 模板信
+export const settingTemplateGet = params => { return axios.get(`${host}/setting/template/`, { params: params })}
+export const settingTemplateCreate = params => { return axios.post(`${host}/setting/template/`, params)}
+export const settingTemplateDelete = signatureID => { return axios.delete(`${host}/setting/template/`+signatureID+'/') }
+export const settingTemplateUpdate = (signatureID, params) => { return axios.patch(`${host}/setting/template/`+signatureID+'/', params) }
+export const settingTemplateGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/template/`+signatureID+'/', { params: params }) }
+
+// 自动转发、自动回复
+export const settingRefwGet = params => { return axios.get(`${host}/setting/refw/`, { params: params })}
+export const settingRefwCreate = params => { return axios.post(`${host}/setting/refw/`, params)}
+export const settingRefwDelete = signatureID => { return axios.delete(`${host}/setting/refw/`+signatureID+'/') }
+export const settingRefwUpdate = (signatureID, params) => { return axios.patch(`${host}/setting/refw/`+signatureID+'/', params) }
+export const settingRefwGetSingle = (signatureID, params) => { return axios.get(`${host}/setting/refw/`+signatureID+'/', { params: params }) }
 
 // 获取白名单
 export const settingWhiteGet = params => { return axios.get(`${host}/setting/whiters/`, { params: params })}
@@ -235,7 +272,7 @@ export const backLogin = () => { return axios.post(`${host}/back-login/`)};
 ///api/core/shareusers/import/
 export const settingRelateImport = ( params) => {
   return axios.post(`${host}/core/shareusers/import/`, params, {headers:{ 'Content-Type': 'multipart/form-data' }}) }
-  //导出关联共享邮箱 /api/core/shareusers/tutorial/
+//导出关联共享邮箱 /api/core/shareusers/tutorial/
 export const settingRelateTutorial = () => { return axios.get(`${host}/core/shareusers/tutorial/`, { responseType:'blob'})  }
 
 // 内容过滤
@@ -271,7 +308,36 @@ export const netdiskBatchMove = params => { return axios.post(`${host}/netdisk/n
 // 文件下载
 export const netdiskFileDownload = params => { return axios.get(`${host}/netdisk/netdisks/`+signatureID+'/download/', { params: params,responseType:'blob' }) };
 // zip下载
-export const netdiskZipDownload = params => { return axios.post(`${host}/netdisk/netdisks/zip/`, params, { responseType:'blob' }) };
+export const netdiskZipDownload = params => { return axios.get(`${host}/netdisk/netdisks/zip/`, { params: params, responseType:'blob' }) };
+
+
+// 企业网盘
+// 获取文件夹以及文件夹下的文件
+export const companyDiskGet = params => { return axios.get(`${host}/netdisk/company/`, { params: params })}
+// 获取个人网盘容量
+export const companyDiskCapacityGet = params => { return axios.get(`${host}/netdisk/company/capacity/`, { params: params })}
+// 获取所有文件夹的路径
+export const companyDiskPathGet = params => { return axios.get(`${host}/netdisk/company/paths/`, { params: params })}
+// 创建文件夹
+export const companyDiskFolderCreate = params => { return axios.post(`${host}/netdisk/company/folders/`, params)}
+// 文件夹重命名
+export const companyDiskFolderUpdate = (signatureID, params) => { return axios.post(`${host}/netdisk/company/`+signatureID+'/folders/', params) }
+// 文件上传
+export const companyDiskFileUpload = (params) => { return axios.post(`${host}/netdisk/company/files/`, params, {headers:{ 'Content-Type': 'multipart/form-data' }}) }
+// 文件重命名
+export const companyDiskFileUpdate = (signatureID, params) => { return axios.post(`${host}/netdisk/company/`+signatureID+'/files/', params) }
+// 删除文件或文件夹
+export const companyDiskDelete = params => { return axios.post(`${host}/netdisk/company/delete/`, params)}
+// 批量删除文件或文件夹
+export const companyDiskBatchDelete = params => { return axios.post(`${host}/netdisk/company/batchdelete/`, params)}
+// 移动文件或文件夹
+export const companyDiskMove = params => { return axios.post(`${host}/netdisk/company/batchmove/`, params)}
+// 批量移动文件或文件夹
+export const companyDiskBatchMove = params => { return axios.post(`${host}/netdisk/company/batchmove/`, params)}
+// 文件下载
+export const companyDiskFileDownload = params => { return axios.get(`${host}/netdisk/company/`+signatureID+'/download/', { params: params,responseType:'blob' }) };
+// zip下载
+export const companyDiskZipDownload = params => { return axios.get(`${host}/netdisk/company/zip/`, { params: params, responseType:'blob' }) };
 
 //日历
 //获取日程列表 /api/calendars/calendars/
@@ -302,3 +368,15 @@ export const deleteEvent = id => { return axios.delete(`${host}/calendars/events
 export const cancelInvitorEvent = id => { return axios.post(`${host}/calendars/events/${id}/cancel-invitor/`) }
 //修改参与者状态 /api/calendars/events/{id}/status/
 export const setStatus = (id,params) => { return axios.post(`${host}/calendars/events/${id}/status/`, {status:params}) };
+
+//自助查询
+//登录查询  /api/center/login/
+export const getLoginList = params => { return axios.get(`${host}/center/login/`, { params: params }) }
+//发信查询 /api/center/sendlog/
+export const getSendlog = params => { return axios.get(`${host}/center/sendlog/`, { params: params }) }
+//收信查询 /api/center/maillog/
+export const getMaillog = params => { return axios.get(`${host}/center/maillog/`, { params: params }) }
+//删信查询  /api/center/deletelog/
+export const getDeletellog = params => { return axios.get(`${host}/center/deletelog/`, { params: params }) }
+
+
