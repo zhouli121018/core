@@ -43,6 +43,7 @@
                     <span @click="zipRowDownload(scope.row)">下载</span>
                     <span>发信</span>
                     <span @click="moveFormShow2(scope.row)">保存到个人网盘</span>
+                    <span @click="renewalRowFile(scope.row)">续期</span>
                     <span @click="deleteRowFiles(scope.row)">删除</span>
                   </div>
                 </el-col>
@@ -63,9 +64,12 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="mfrom" label="发件人" width="180"></el-table-column>
+          <el-table-column label="有效时间" width="120">
+            <template slot-scope="scope">
+              <span style="margin-left: 10px">{{scope.row.left_timestamp| validateLeft}}</span>
+            </template>
+          </el-table-column>
 
-          <el-table-column prop="subject" label="主题" width="250"></el-table-column>
         </el-table>
       </el-row>
 
@@ -91,7 +95,7 @@
 </template>
 
 <script>
-  import {downloadAttach2, getAttach, moveAttach2Netdisk, downloadZipAttach, netdiskPathGet, mailAttachDelete } from '@/api/api'
+  import {downloadAttach2, getAttach, moveAttach2Netdisk, downloadZipAttach, netdiskPathGet, mailAttachDelete, RenewalAttach } from '@/api/api'
 
   export default {
     data() {
@@ -119,6 +123,50 @@
         },
         moveForm:{ folder_id: -1, save_list: [] },
 
+      }
+    },
+
+    filters: {
+      validateLeft: function (timestamp) {
+        let shijiancha = timestamp*1000;
+        var days    = shijiancha / 1000 / 60 / 60 / 24;
+        var daysRound   = Math.floor(days);
+        var hours    = shijiancha/ 1000 / 60 / 60 - (24 * daysRound);
+        var hoursRound   = Math.floor(hours);
+        var minutes   = shijiancha / 1000 /60 - (24 * 60 * daysRound) - (60 * hoursRound);
+        var minutesRound  = Math.floor(minutes);
+        var seconds   = shijiancha/ 1000 - (24 * 60 * 60 * daysRound) - (60 * 60 * hoursRound) - (60 * minutesRound);
+        let str = '';
+        if(daysRound){
+          str += daysRound+'天 '
+        }
+        if(hoursRound){
+          str += hoursRound+'时 '
+        }
+        if(minutesRound){
+          str += minutesRound+'分 '
+        }
+        if(!daysRound && !hoursRound){
+          return '即将过期'
+        }
+        return str;
+        return timestamp;
+        var day = timestamp/86400;
+        return day;
+
+        var date = new Date(inputTime);
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        m = m < 10 ? ('0' + m) : m;
+        var d = date.getDate();
+        d = d < 10 ? ('0' + d) : d;
+        var h = date.getHours();
+        h = h < 10 ? ('0' + h) : h;
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+        minute = minute < 10 ? ('0' + minute) : minute;
+        second = second < 10 ? ('0' + second) : second;
+        return y + '-' + m + '-' + d + ' ' + '　' + h + ':' + minute + ':' + second;
       }
     },
 
@@ -194,6 +242,20 @@
             console.log(error)
             that.$message({ message: '删除失败，请重试',  type: 'error' });
           });
+        });
+      },
+
+      renewalRowFile(row){
+        let that = this;
+        this.listLoading = true;
+        RenewalAttach(row.id).then((response)=> {
+          this.listLoading = false;
+          that.$message({ message: '文件续期成功', type: 'success' });
+          this.getTables();
+        }).catch(function (error) {
+          console.log(error)
+          that.$message({ message: '文件续期失败，请重试',  type: 'error' });
+          this.getTables();
         });
       },
 

@@ -55,7 +55,7 @@
       </el-row>
 
       <el-row>
-        <el-col :span="8" style="padding-left:6px;">&nbsp;
+        <el-col :span="12" style="padding-left:6px;">&nbsp;
           <span v-if="is_filters_search">
             <span>搜索个人文档</span>
             <span style="font-size:12px;color:#bbb;"> 容量：</span>
@@ -67,7 +67,7 @@
             <span v-for="(item,k) in folder_names" :title="item.name" :class="{clickable:k!=folder_names.length-1}" @click="changeFolderTables(item)">{{item.name}} <i v-if="k!=folder_names.length-1" style="color:#333;"> / </i></span>
           </span>
         </el-col>
-        <el-col :span="16" style="text-align:right">
+        <el-col :span="12" style="text-align:right">
           <el-pagination :current-page="page" :page-sizes="[10, 20, 50]" :page-size="page_size" :total="total"
                          @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange" layout="total, sizes, prev, pager, next">
           </el-pagination>
@@ -269,7 +269,7 @@
             { required: true, message: '请选择移至文件夹位置', trigger: 'blur' },
           ]
         },
-        moveFolderForm:{ to_folder_id: "", move_list: [] },
+        moveFolderForm:{ to_folder_id: "" },
 
         uploadFormVisible: false,//编辑界面是否显示
         uploadFormLoading: false,
@@ -506,9 +506,19 @@
             this.$confirm('确认移动选中的文件以及文件夹吗？', '提示', {}).then(() => {
               this.moveFolderFormLoading = true;
               let para = Object.assign({}, this.moveFolderForm);
-              let move_list = [];
-              this.sels.map(item=>{ move_list.push({'folder_id':item.id,'nettype':item.nettype}) });
-              para.move_list = move_list;
+              var file_ids = [];
+              var folder_ids = [];
+              for (var i=0; i<this.sels.length;i++) {
+                var row = this.sels[i];
+                if (row.nettype == "file"){
+                  file_ids.push(row.id);
+                } else {
+                  folder_ids.push(row.id);
+                }
+              }
+              para.folder_id = this.current_folder_id;
+              para.file_ids = file_ids;
+              para.folder_ids = folder_ids;
               netdiskBatchMove(para)
                 .then((res) => {
                   this.$refs['moveFolderForm'].resetFields();
@@ -540,26 +550,41 @@
       },
       deleteFolders(){
         let that = this;
-        let zip_list = [];
-        this.sels.map(item=>{ zip_list.push({'folder_id':item.id,'nettype':item.nettype}) });
+        var file_ids = [];
+        var folder_ids = [];
+        for (var i=0; i<this.sels.length;i++)
+        {
+          var row = this.sels[i];
+          if (row.nettype == "file"){
+            file_ids.push(row.id);
+          } else {
+            folder_ids.push(row.id);
+          }
+        }
         this.$confirm('确认删除选中的文件以及文件夹？', '提示', {
           type: 'warning'
         }).then(() => {
-          this.deleteCommonFolders(that, zip_list);
+          this.deleteCommonFolders(that, this.current_folder_id, file_ids, folder_ids);
         });
       },
       deleteRowFolders: function(row){
         let that = this;
-        let zip_list = [{'folder_id':row.id,'nettype':row.nettype}];
+        var file_ids = [];
+        var folder_ids = [];
+        if (row.nettype == "file"){
+          file_ids.push(row.id);
+        } else {
+          folder_ids.push(row.id);
+        }
         this.$confirm('确认删除当前文件或文件夹？', '提示', {
           type: 'warning'
         }).then(() => {
-          this.deleteCommonFolders(that, zip_list);
+          this.deleteCommonFolders(that, this.current_folder_id, file_ids, folder_ids);
         });
       },
-      deleteCommonFolders: function(that, zip_list){
+      deleteCommonFolders: function(that, folder_id, file_ids, folder_ids) {
         this.listLoading = true;
-        let para = {delete_list: zip_list};
+        let para = {folder_id: folder_id, file_ids: file_ids, folder_ids: folder_ids};
         netdiskBatchDelete(para).then((response)=> {
           this.listLoading = false;
           that.$message({ message: '删除成功', type: 'success' });
@@ -568,6 +593,9 @@
         }).catch(function (error) {
           console.log(error)
           that.$message({ message: '删除失败，请重试',  type: 'error' });
+          this.listLoading = false;
+          this.getTables();
+
         });
       },
       zipRowDownload: function(row){

@@ -24,6 +24,7 @@ import './assets/iconfont/iconfont.css'
 import VueKindEditor from 'vue-kindeditor'
 import 'kindeditor/kindeditor-all-min.js'
 import 'kindeditor/themes/default/default.css'
+import Contact from './components/Contact'
 
 
 Vue.use(VueKindEditor)
@@ -31,6 +32,7 @@ Vue.use(Vuex)
 Vue.config.productionTip = false
 
 Vue.component('Menubar', Menubar)
+Vue.component('Contact', Contact)
 Vue.filter('mailsize', function (bytes) {
   if (isNaN(bytes)) {
         return '';

@@ -116,6 +116,8 @@ export const downloadAttach2 = (signatureID, params) => { return axios.get(`${ho
 export const moveAttach2Netdisk = params =>{ return axios.post(`${host}/mail/attach/move-to-disk/`,params) };
 //下载附件 /api/mail/attach/{id}/
 export const downloadZipAttach = params => { return axios.get(`${host}/mail/attach/download/`, { params: params, responseType:'blob' }) };
+//文件续期
+export const RenewalAttach = (signatureID, params) => { return axios.post(`${host}/mail/attach/`+signatureID+'/renewal/',params) };
 
 //写信  获取当前用户参数设置 /api/setting/users/get-param-bool/
 export const getParamBool = params => { return axios.get(`${host}/setting/users/get-param-bool/`) };
@@ -338,6 +340,22 @@ export const companyDiskBatchMove = params => { return axios.post(`${host}/netdi
 export const companyDiskFileDownload = (signatureID, params) => { return axios.get(`${host}/netdisk/company/`+signatureID+'/download/', { params: params,responseType:'blob' }) };
 // zip下载
 export const companyDiskZipDownload = params => { return axios.get(`${host}/netdisk/company/zip/`, { params: params, responseType:'blob' }) };
+//企业网盘添加权限 /api/netdisk/perm/
+export const permNetdisk = params => { return axios.post(`${host}/netdisk/perm/`, params)}
+//赋予网盘管理员 /api/netdisk/perm/add-super/
+export const superNetdisk = params => { return axios.post(`${host}/netdisk/perm/add-super/`, params)}
+//获取文件夹树结构 /api/netdisk/company/tree/
+export const companyTree = () => { return axios.get(`${host}/netdisk/company/tree/`)}
+//文件夹的权限成员列表  /api/netdisk/perm/
+export const permList = (params) => { return axios.get(`${host}/netdisk/perm/`,{params:params} )}
+//批量删除权限 /api/netdisk/perm/batch-delete/
+export const batchDelete = params => { return axios.post(`${host}/netdisk/perm/batch-delete/`, params)}
+//更新权限 /api/netdisk/perm/{id}/
+export const updatePerm = (id,params) => { return axios.put(`${host}/netdisk/perm/${id}/`, params) };
+//删除权限 /api/netdisk/perm/{id}/
+export const deletePerm= id => { return axios.delete(`${host}/netdisk/perm/${id}/`) }
+
+
 
 //日历
 //获取日程列表 /api/calendars/calendars/

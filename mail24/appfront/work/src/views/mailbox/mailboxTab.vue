@@ -530,6 +530,10 @@ export default {
         next();
         return;
       }
+      if(to.path.indexOf('/mailbox/innerbox/')>=0){
+        next();
+        return;
+      }
       this.$confirm('您正在写信中，是否离开写信页面？', '系统信息', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

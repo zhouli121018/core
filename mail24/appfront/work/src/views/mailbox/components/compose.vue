@@ -411,7 +411,7 @@
               <el-row v-for="(t,k) in toList" :key="k" class="hover_show_box">
                 <el-col :span="22" style="overflow: hidden;white-space: nowrap" :title="t.username||t.email">{{t.name||t.fullname}} &lt;{{t.username||t.email}} &gt;</el-col>
                 <el-col :span="2" style="text-align: right">
-                  <i class="el-icon-error delete_hover" @click="deleteList('to',t.id,k)"></i>
+                  <i class="el-icon-error delete_hover" @click="deleteList('to',t.username,k)"></i>
                 </el-col>
               </el-row>
             </div>
@@ -420,7 +420,7 @@
               <el-row v-for="(t,k) in ccList" :key="k" class="hover_show_box">
                 <el-col :span="22" style="overflow: hidden;white-space: nowrap" :title="t.username||t.email">{{t.name||t.fullname}} &lt;{{t.username||t.email}} &gt;</el-col>
                 <el-col :span="2" style="text-align: right">
-                  <i class="el-icon-error delete_hover" @click="deleteList('cc',t.id,k)"></i>
+                  <i class="el-icon-error delete_hover" @click="deleteList('cc',t.username,k)"></i>
                 </el-col>
               </el-row>
             </div>
@@ -428,15 +428,6 @@
 
         </el-row>
         <el-row :gutter="10" style="margin-bottom:10px;">
-          <el-col :span="6">
-            <div v-if="false">
-              <input type="hidden" v-model="soab_domain_cid"/>
-              域名：
-              <el-select v-model="soab_domain_cid" placeholder="请选择" @change="soabChangeDomain" size="mini">
-                <el-option v-for="item in soab_domain_options" :key="item.id" :label="item.label" :value="item.id"></el-option>
-              </el-select>
-            </div>
-          </el-col>
           <el-col :span="18" :offset="6">
             <el-pagination
               @size-change="handleSizeChange_contact"

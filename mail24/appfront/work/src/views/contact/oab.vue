@@ -50,7 +50,7 @@
           <el-row class="toolbar">
             <el-col :span="12">
               <el-button type="primary" @click="Oab_send_to_select" :disabled="this.sels.length===0" size="mini"> 发信给选择的人员</el-button>
-              <el-button type="success" @click="Oab_send_to_department" :disabled="this.sels.length===0" size="mini">发邮件给本机构人员</el-button>
+              <el-button type="success" @click="Oab_send_to_department" size="mini">发邮件给本机构人员</el-button>
               <el-button type="info" @click="Oab_to_pab" :disabled="this.sels.length===0" size="mini"> 添加至个人通讯录</el-button>
             </el-col>
             <el-col :span="12">

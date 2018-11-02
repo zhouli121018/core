@@ -139,7 +139,7 @@
           {id:1,title:'我的日程',iconclass:'icon-iconschedule'},
           {id:2,title:'文件中心',iconclass:'icon-iconfiler'},
           {id:3,title:'联系人',iconclass:'icon-iconcontacts1'},
-          {id:4,title:'应用中心',iconclass:'icon-iconmore'},
+          // {id:4,title:'应用中心',iconclass:'icon-iconmore'},
           {id:6,title:'自助查询',iconclass:'icon-iconsreachm'},
         ]
       }
@@ -196,7 +196,7 @@
               if(_this.$store.getters.getNewMsgClear){clearTimeout(_this.$store.getters.getNewMsgClear)}
               _this.$store.dispatch('setNewMsgClearTimer',setTimeout(function(){
                 _this.newList = [];
-              },5*60*1000))
+              },15*60*1000))
               if(_this.$children[1].getFloderfn){
                 _this.$children[1].getFloderfn();
                 if(_this.$children[1].$refs['innerbox'] && _this.$children[1].$refs['innerbox'][0]){
@@ -215,7 +215,7 @@
               if(_this.$store.getters.getNewMsgClear){clearTimeout(_this.$store.getters.getNewMsgClear)}
               _this.$store.dispatch('setNewMsgClearTimer',setTimeout(function(){
                 _this.newList = [];
-              },5*60*1000))
+              },15*60*1000))
               if(_this.$children[1].getFloderfn){
                 _this.$children[1].getFloderfn();
                 if(_this.$children[1].$refs['innerbox'] && _this.$children[1].$refs['innerbox'][0]){
@@ -236,7 +236,7 @@
           }).catch(err=>{
             console.log('获取新邮件2失败！',err)
           })
-        },1000*60))
+        },1000*60*2))
       },
       jumpTo(path){
         router.push(path)
