@@ -75,8 +75,8 @@
           <el-row class="toolbar">
             <el-col :span="12" >
               <el-button type="success" @click="Oab_select_to_add" :disabled="this.sels.length===0" size="mini" v-if="pab_iscan_distribute">添加至组</el-button>
-              <el-button type="primary" @click="Oab_send_to_select" :disabled="this.sels.length===0" size="mini"> 选中发信</el-button>
-              <el-button type="success" @click="Oab_send_to_group" size="mini"> 发邮件给组 </el-button>
+              <el-button type="primary" @click="$parent.sendMail_net('more',sels)" :disabled="this.sels.length===0" size="mini"> 选中发信</el-button>
+              <el-button type="success" @click="Oab_send_to_group" size="mini" > 发邮件给组 </el-button>
               <el-button type="danger" @click="Oab_delete_select" :disabled="this.sels.length===0" size="mini"> 批量删除</el-button>
             </el-col>
             <el-col :span="12" >
@@ -402,7 +402,8 @@
     contactPabMembersExport,
     contactPabMembersGet,
     contactPabMembersUpdate,
-    contactPabMembersImport
+    contactPabMembersImport,
+    getDeptMail
   } from '@/api/api'
 
   export default {
@@ -787,7 +788,15 @@
         });
       },
       // 发邮件给联系组
-      Oab_send_to_group: function(){},
+      Oab_send_to_group: function(){
+        this.$confirm('发邮件给组?', '提示', {
+          type: 'warning'
+        }).then(() => {
+            this.$parent.sendMail_net({id:1,email:'pab@test.com',fullname:'pab'})
+          }
+        ).catch(() => {
+        });
+      },
       // 导入联系人 编辑
       Oab_import_to_group: function(){
         this.fileList = [];

@@ -17,7 +17,7 @@
           <li>
             <a class="fl-m-nav-trigger" href="#" :class="{'fl-nav-current':activeT=='cfile'}" title="企业网盘" @click.prevent.stop="jumpTo('cfile')">
                 <span>
-                  <i class="iconfont icon-companyfile menu_icon_box"></i>
+                  <i class="iconfont icon-iconcompanyfile menu_icon_box"></i>
                   <div>企业网盘</div>
                 </span>
             </a>
@@ -34,7 +34,7 @@
       </aside>
 
       <article class="fl-g-content">
-        <router-view></router-view>
+        <router-view @sendMail_net="sendMail_net"></router-view>
       </article>
 
     </section>
@@ -68,6 +68,57 @@
       jumpTo(path){
         this.activeT = path;
         this.$router.push('/file/'+path);
+      },
+      sendMail_net(row,sels){
+        console.log(row,sels)
+        let _this = this;
+        if(row == 'more'){
+          let check = true;
+          let arr = [];
+          sels.forEach(val => {
+            if(val.nettype == 'folder'){
+              this.$message({
+                type:'error',
+                message:'邮件发送不能包含文件夹！请重新选择！'
+              })
+              check = false
+              return;
+            }
+            let obj = {};
+            obj.id = val.id;
+            if(val.name){
+              obj.name = val.name;
+              obj.file_size = val.file_size;
+            }else{
+              obj.filename = val.filename;
+              obj.size = val.size;
+            }
+
+            arr.push(obj);
+          })
+          if(!check)return;
+          this.$store.dispatch('setPfileNet',arr)
+          this.$router.push('/mailbox/innerbox/INBOX')
+          setTimeout(function(){
+            _this.$root.$children[0].$children[0].$children[1].addTab('compose_net_atta','写信')
+          },500)
+
+        }else{
+          let obj = {
+            id:row.id,
+            name:row.name,
+            file_size:row.file_size
+          }
+          let arr = [];
+          arr.push(obj)
+          this.$store.dispatch('setPfileNet',arr)
+          this.$router.push('/mailbox/innerbox/INBOX')
+          setTimeout(function(){
+            _this.$root.$children[0].$children[0].$children[1].addTab('compose_net_atta','写信')
+          },500)
+        }
+
+
       },
 
     },

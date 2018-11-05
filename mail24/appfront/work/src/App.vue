@@ -52,7 +52,7 @@
   .vibility_show{
     visibility: visible;
   }
-  .el-tree-node__content{
+  #app .el-tree-node__content{
     height:36px;
   }
   .toolbar {

@@ -61,6 +61,51 @@
           this.jumpTo('/contact/soab');
         }
       },
+      sendMail_net(row,sels){
+        console.log(row,sels)
+        let _this = this;
+        if(row == 'more'){
+          let arr = [];
+          sels.forEach(val => {
+            let obj = {};
+            obj.id = val.id || val.contact_id;
+            if(val.email){
+              obj.email = val.email
+              obj.fullname = val.fullname
+              obj.name = val.fullname
+            }else{
+              obj.email = val.username|| val.pref_email;
+              obj.fullname = val.name || val.fullname
+              obj.name = val.name|| val.fullname
+            }
+
+            obj.status = true
+            arr.push(obj);
+          })
+          this.$store.dispatch('setTo',arr)
+          this.$router.push('/mailbox/innerbox/INBOX')
+          setTimeout(function(){
+            _this.$root.$children[0].$children[0].$children[1].addTab('compose_to_list','写信')
+          },500)
+        }else{
+          let obj = {
+            id:row.id,
+            email:row.email,
+            fullname:row.fullname,
+            name:row.fullname,
+            status:true
+          }
+          let arr = [];
+          arr.push(obj)
+          this.$store.dispatch('setTo',arr)
+          this.$router.push('/mailbox/innerbox/INBOX')
+          setTimeout(function(){
+            _this.$root.$children[0].$children[0].$children[1].addTab('compose_to_list','写信')
+          },500)
+        }
+
+
+      },
     },
 
     mounted() {

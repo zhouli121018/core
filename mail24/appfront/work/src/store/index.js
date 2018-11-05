@@ -32,7 +32,9 @@ const store = new Vuex.Store({
     sharedStatus,
     timer:'',
     newMsgTimer:'',
-    newMsgClearTimer:''
+    newMsgClearTimer:'',
+    pfile_net_atta:[],
+    toList:[]
   },
   getters:{
     userInfo(state) {
@@ -46,6 +48,12 @@ const store = new Vuex.Store({
     },
     getNewMsgClear(state){
       return state.newMsgClearTimer
+    },
+    getPfileNetAtta(state){
+      return state.pfile_net_atta
+    },
+    getToList(state){
+      return state.toList
     }
   },
   mutations:{
@@ -77,6 +85,12 @@ const store = new Vuex.Store({
     },
     setNewMsgClear(state,param){
       state.newMsgClearTimer = param;
+    },
+    setPfileNetAtta(state,param){
+      state.pfile_net_atta = param;
+    },
+    setToList(state,param){
+      state.toList = param;
     }
   },
   actions: {
@@ -94,6 +108,12 @@ const store = new Vuex.Store({
     },
     setNewMsgClearTimer(store,param){
       store.commit('setNewMsgClear',param);
+    },
+    setPfileNet(store,param){
+      store.commit('setPfileNetAtta',param)
+    },
+    setTo(store,param){
+      store.commit('setToList',param)
     }
 
   }

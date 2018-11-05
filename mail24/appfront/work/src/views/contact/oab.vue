@@ -49,7 +49,7 @@
 
           <el-row class="toolbar">
             <el-col :span="12">
-              <el-button type="primary" @click="Oab_send_to_select" :disabled="this.sels.length===0" size="mini"> 发信给选择的人员</el-button>
+              <el-button type="primary" :disabled="this.sels.length===0" size="mini" @click="$parent.sendMail_net('more',sels)"> 发信给选择的人员</el-button>
               <el-button type="success" @click="Oab_send_to_department" size="mini">发邮件给本机构人员</el-button>
               <el-button type="info" @click="Oab_to_pab" :disabled="this.sels.length===0" size="mini"> 添加至个人通讯录</el-button>
             </el-col>
@@ -374,22 +374,11 @@
       },
       Oab_send_to_department: function () {
         // var ids = this.sels.map(item => item.id).toString();
-        var ids = this.sels.map(item => item.id);
-        this.$confirm('执行该操作后，“丽兹行集团”的全体成员均将作为该邮件的收件人，是否确认如此操作？', '提示', {
+        // var ids = this.sels.map(item => item.id);
+        this.$confirm('发邮件给本机构人员？', '提示', {
           type: 'warning'
         }).then(() => {
-            this.listLoading = true;
-            //NProgress.start();
-            let para = {ids: ids};
-            // batchRemoveUser(para).then((res) => {
-            //   this.listLoading = false;
-            //   //NProgress.done();
-            //   this.$message({
-            //     message: '删除成功',
-            //     type: 'success'
-            //   });
-            //   this.getOabMembers();
-            // });
+            this.$parent.sendMail_net({id:this.oab_cid,email:'dept_'+this.oab_cid+'@test.com',fullname:this.department_name})
           }
         ).catch(() => {
         });

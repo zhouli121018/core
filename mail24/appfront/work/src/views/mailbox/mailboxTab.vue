@@ -174,7 +174,7 @@ export default {
       console.log(tab)
     },
     addTab(type,subject,rid,fid,info) {
-      if(type=='compose'){
+      if(type=='compose'||type == 'compose_to_list'){
         this.ruleForm2['refw_type']=undefined;
         this.ruleForm2 = {
           is_html:true,
@@ -202,6 +202,37 @@ export default {
         this.maillist = [];
         this.maillist_copyer = [];
         this.fileList = [];
+      }else if(type='setPfileNet'){
+        this.ruleForm2['refw_type']=undefined;
+        this.ruleForm2 = {
+          is_html:true,
+          is_cc:true,
+          is_partsend:false,
+          to: [],
+          cc: [],
+          subject: '',
+          secret:'非密',
+          is_save_sent:true,
+          is_confirm_read:true,
+          is_schedule:false,
+          schedule_day:'',
+          is_password:false,
+          password:'',
+          is_burn:false,
+          burn_limit:1,
+          burn_day:'',
+          html_text:'',
+          plain_text:'',
+          attachments:[],
+          net_attachments:[]
+        };
+        this.content = '';
+        this.maillist = [];
+        this.maillist_copyer = [];
+        this.fileList = this.$store.getters.getPfileNetAtta;
+      }
+      if(type == 'compose_to_list'){
+        this.maillist = this.$store.getters.getToList;
       }
       if(rid && this.hashTab[type+rid+fid+'']){
         this.editableTabsValue2 = this.hashTab[type+rid+fid+''];

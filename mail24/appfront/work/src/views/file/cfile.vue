@@ -11,7 +11,7 @@
             <el-button plain size="small" type="primary" icon="el-icon-download" :disabled="this.sels.length===0"  @click="zipDownload" v-if="this.permisson_type == '1' || this.permisson_type == '3' || this.permisson_type == '4'">下载</el-button>
             <el-button plain size="small" type="danger" icon="el-icon-delete" :disabled="this.sels.length===0" @click="deleteFolders" v-if="this.is_supercompany || this.permisson_type == '1'">删除</el-button>
             <el-button plain size="small" type="primary" icon="el-icon-remove" :disabled="this.sels.length===0" @click="moveFolderFormShow" v-if="this.is_supercompany || this.permisson_type == '1'">批量移动</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-message" :disabled="this.sels.length===0">邮件发送</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-message" :disabled="this.sels.length===0" @click="sendMail_net('more',sels)">邮件发送</el-button>
             <el-button plain size="small" type="primary" icon="el-icon-setting" :disabled="this.sels.length===0" v-if="this.is_supercompany || this.permisson_type == '1'" @click="showAddDialog">添加权限</el-button>
             <el-button @click="showPermDialog" plain size="small" type="primary" icon="el-icon-view" v-if="this.is_supercompany || this.permisson_type == '1'">权限管理</el-button>
             <el-button @click="showAllDialog" plain size="small" type="primary" icon="el-icon-plus" v-if="this.is_supercompany && this.current_folder_id==-1">赋予网盘管理员</el-button>
@@ -61,7 +61,7 @@
                   <a :href="blobUrl" download="" style="display:none;" ref="download"></a>
                   <div class="actions_a">
                     <span @click="zipRowDownload(scope.row)" v-if="scope.row.is_own || permisson_type=='1' || permisson_type=='3' || permisson_type=='4'">下载</span>
-                    <span v-if="scope.row.nettype=='file'">发信</span>
+                    <span v-if="scope.row.nettype=='file'" @click="sendMail_net(scope.row)">发信</span>
                     <!--<span>共享</span>-->
                     <span @click="resetRowNameShow(scope.row)" v-if="scope.row.is_own || is_supercompany || permisson_type=='1'">重命名</span>
                     <span @click="deleteRowFolders(scope.row)" v-if="scope.row.is_own || is_supercompany || permisson_type=='1'">删除</span>
@@ -434,6 +434,9 @@
       this.getCapacity();
     },
     methods: {
+      sendMail_net(row,sels){
+        this.$emit('sendMail_net',row,sels)
+      },
       perm_size_change(val){
         this.page_size_perm = val;
         this.page_perm = 1;

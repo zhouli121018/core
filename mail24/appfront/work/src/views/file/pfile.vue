@@ -12,7 +12,7 @@
             <el-button plain size="small" type="primary" icon="el-icon-download" :disabled="this.sels.length===0"  @click="zipDownload">下载</el-button>
             <el-button plain size="small" type="danger" icon="el-icon-delete" :disabled="this.sels.length===0" @click="deleteFolders">删除</el-button>
             <el-button plain size="small" type="primary" icon="el-icon-remove" :disabled="this.sels.length===0" @click="moveFolderFormShow">批量移动</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-message" :disabled="this.sels.length===0">邮件发送</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-message" :disabled="this.sels.length===0" @click="sendMail_net('more',sels)">邮件发送</el-button>
 
             <!--<el-dropdown  trigger="click" placement="bottom-start"  @command="handleCommand">-->
             <!--<el-button type="primary" size="small" plain>-->
@@ -89,7 +89,7 @@
                   <a :href="blobUrl" download="" style="display:none;" ref="download"></a>
                   <div class="actions_a">
                     <span @click="zipRowDownload(scope.row)">下载</span>
-                    <span v-if="scope.row.nettype=='file'">发信</span>
+                    <span v-if="scope.row.nettype=='file'" @click="sendMail_net(scope.row)">发信</span>
                     <!--<span>共享</span>-->
                     <span @click="resetRowNameShow(scope.row)">重命名</span>
                     <span @click="deleteRowFolders(scope.row)">删除</span>
@@ -290,6 +290,9 @@
     },
 
     methods: {
+      sendMail_net(row,sels){
+        this.$emit('sendMail_net',row,sels)
+      },
       uploadSuccess(){
         console.log(arguments)
         console.log('succ')
