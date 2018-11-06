@@ -81,7 +81,7 @@
 </template>
 
 <script>
-  import { contactSoabDomainsGet, contactSoabGroupsGet, contactSoabMembersGet, contactPabMembersSoabAdd } from '@/api/api'
+  import { contactSoabDomainsGet, contactSoabGroupsGet, contactSoabMembersGet, contactPabMembersSoabAdd ,getDeptMail} from '@/api/api'
   export default {
     data() {
       return {
@@ -242,9 +242,16 @@
         this.$confirm('发邮件给本机构人员？', '提示', {
           type: 'warning'
         }).then(() => {
-            this.$parent.sendMail_net({id:1,email:'soab@test.com',fullname:'soab'})
-          }
-        ).catch(() => {
+          let domain = '';
+          this.soab_domain_options.forEach(val => {
+            if(val.id == this.soab_domain_cid){
+              domain = val.label;
+            }
+          })
+          let arr = ['dept_'+this.soab_cid+'@'+domain,this.department_name]
+          if(this.soab_cid == 0){ arr = ['everyone@'+domain,'everyone']}
+          this.$parent.sendMail_net([arr])
+        }).catch(() => {
         });
       },
       Oab_to_pab: function () {

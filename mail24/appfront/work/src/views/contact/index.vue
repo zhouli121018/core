@@ -88,15 +88,15 @@
             _this.$root.$children[0].$children[0].$children[1].addTab('compose_to_list','写信')
           },500)
         }else{
-          let obj = {
-            id:row.id,
-            email:row.email,
-            fullname:row.fullname,
-            name:row.fullname,
-            status:true
-          }
           let arr = [];
-          arr.push(obj)
+          row.forEach(val => {
+            let obj = {};
+            obj.email = val[0];
+            obj.fullname = val[1];
+            obj.name = val[1]
+            obj.status = true;
+            arr.push(obj)
+          })
           this.$store.dispatch('setTo',arr)
           this.$router.push('/mailbox/innerbox/INBOX')
           setTimeout(function(){

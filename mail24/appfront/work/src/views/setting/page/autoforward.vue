@@ -38,7 +38,7 @@
       <el-col :span="24" class="toolbar"></el-col>
 
 
-      <el-dialog title="新增规则"  :visible.sync="createFormVisible" :close-on-click-modal="false" :append-to-body="true" width="70%" top="10vh">
+      <el-dialog title="新增规则"  :visible.sync="createFormVisible" :append-to-body="true" width="70%" top="10vh">
         <el-form :model="createForm" label-width="100px" :rules="createFormRules" ref="createForm" size="small">
 
           <el-form-item label="状态" prop="disabled">
@@ -263,7 +263,7 @@
       }
     },
 
-    mounted: function () {
+    created: function () {
       this.getTables();
       this.getDeptOptions();
     },
@@ -315,10 +315,13 @@
         var param = {
           "page": this.page,
           "page_size": this.page_size,
+          "extype":"fw"
         };
         settingRefwGet(param).then(res=>{
           this.total = res.data.count;
           this.listTables = res.data.results;
+          this.listLoading = false;
+        }).catch(err=>{
           this.listLoading = false;
         });
       },

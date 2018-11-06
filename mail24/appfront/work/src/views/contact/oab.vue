@@ -378,7 +378,12 @@
         this.$confirm('发邮件给本机构人员？', '提示', {
           type: 'warning'
         }).then(() => {
-            this.$parent.sendMail_net({id:this.oab_cid,email:'dept_'+this.oab_cid+'@test.com',fullname:this.department_name})
+          let str = this.$store.getters.userInfo.name;
+          let index = str.lastIndexOf('@');
+          let domain = str.slice(index)
+          let arr = ['dept_'+this.oab_cid+domain,this.department_name]
+          if(this.oab_cid == 0){ arr = ['everyone'+domain,'everyone']}
+          this.$parent.sendMail_net([arr])
           }
         ).catch(() => {
         });

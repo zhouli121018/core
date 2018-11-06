@@ -71,7 +71,7 @@
 
           <el-form-item label="签名内容" prop="content">
             <!--<el-input type="textarea" id="editor_id" v-model.trim="createForm.content"></el-input>-->
-            <editor id="editor_id" ref="editor_id" height="400px" maxWidth="100%" width="100%" :content="createForm.content"
+            <editor v-if="createFormVisible" id="editor_id" ref="editor_id" height="400px" maxWidth="100%" width="100%" :content="createForm.content"
                     pluginsPath="/static/kindeditor/plugins/" :loadStyleMode="false" :uploadJson="uploadJson"  :items="toolbarItems" @on-content-change="createContentChange"></editor>
           </el-form-item>
         </el-form>
@@ -90,7 +90,7 @@
           </el-form-item>
 
           <el-form-item label="签名内容" prop="content">
-            <editor id="editor_id2" ref="editor_id2" height="400px" maxWidth="100%" width="100%" :content="updateForm.content"
+            <editor v-if="updateFormVisible" id="editor_id2" ref="editor_id2" height="400px" maxWidth="100%" width="100%" :content="updateForm.content"
                     pluginsPath="/static/kindeditor/plugins/" :uploadJson="uploadJson"  :loadStyleMode="false" :items="toolbarItems" @on-content-change="editContentChange"></editor>
           </el-form-item>
         </el-form>

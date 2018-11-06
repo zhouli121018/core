@@ -39,7 +39,7 @@
           </el-form-item>
 
           <el-form-item label="内容" prop="content">
-            <editor id="editor_id3" ref="editor_id3" height="400px" maxWidth="100%" width="100%" :content="createForm.content"
+            <editor v-if="createFormVisible" id="editor_id3" ref="editor_id3" height="400px" maxWidth="100%" width="100%" :content="createForm.content"
                     pluginsPath="/static/kindeditor/plugins/" :loadStyleMode="false" :uploadJson="uploadJson"  :items="toolbarItems" @on-content-change="createContentChange"></editor>
           </el-form-item>
         </el-form>
@@ -58,7 +58,7 @@
           </el-form-item>
 
           <el-form-item label="签名内容" prop="content">
-            <editor id="editor_id4" ref="editor_id4" height="400px" maxWidth="100%" width="100%" :content="updateForm.content"
+            <editor v-if="updateFormVisible" id="editor_id4" ref="editor_id4" height="400px" maxWidth="100%" width="100%" :content="updateForm.content"
                     pluginsPath="/static/kindeditor/plugins/" :uploadJson="uploadJson"  :loadStyleMode="false" :items="toolbarItems" @on-content-change="editContentChange"></editor>
           </el-form-item>
         </el-form>

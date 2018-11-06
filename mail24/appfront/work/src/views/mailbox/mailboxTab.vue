@@ -174,6 +174,7 @@ export default {
       console.log(tab)
     },
     addTab(type,subject,rid,fid,info) {
+      console.log(type,subject,rid,fid,info)
       if(type=='compose'||type == 'compose_to_list'){
         this.ruleForm2['refw_type']=undefined;
         this.ruleForm2 = {
@@ -202,7 +203,7 @@ export default {
         this.maillist = [];
         this.maillist_copyer = [];
         this.fileList = [];
-      }else if(type='setPfileNet'){
+      }else if(type =='compose_net_atta'){
         this.ruleForm2['refw_type']=undefined;
         this.ruleForm2 = {
           is_html:true,

@@ -271,33 +271,34 @@ export default {
         page_size:20,
         total:200,
         tableData: [
-        {
-          "id": 499369,
-          "created": "2018-11-01T14:27:30",
-          "client_ip": "192.168.1.200",
-          "area": "",
-          "type": "web",
-          "is_login": true,
-          "remark": "登录成功"
-        },
-        {
-          "id": 499364,
-          "created": "2018-11-01T14:25:08",
-          "client_ip": "192.168.1.24",
-          "area": "",
-          "type": "imap",
-          "is_login": true,
-          "remark": "登录成功"
-        },
-        {
-          "id": 499343,
-          "created": "2018-11-01T14:24:52",
-          "client_ip": "192.168.1.200",
-          "area": "",
-          "type": "web",
-          "is_login": true,
-          "remark": "登录成功"
-        }]
+        // {
+        //   "id": 499369,
+        //   "created": "2018-11-01T14:27:30",
+        //   "client_ip": "192.168.1.200",
+        //   "area": "",
+        //   "type": "web",
+        //   "is_login": true,
+        //   "remark": "登录成功"
+        // },
+        // {
+        //   "id": 499364,
+        //   "created": "2018-11-01T14:25:08",
+        //   "client_ip": "192.168.1.24",
+        //   "area": "",
+        //   "type": "imap",
+        //   "is_login": true,
+        //   "remark": "登录成功"
+        // },
+        // {
+        //   "id": 499343,
+        //   "created": "2018-11-01T14:24:52",
+        //   "client_ip": "192.168.1.200",
+        //   "area": "",
+        //   "type": "web",
+        //   "is_login": true,
+        //   "remark": "登录成功"
+        // }
+        ]
       },
       sendData:{
         loading:false,

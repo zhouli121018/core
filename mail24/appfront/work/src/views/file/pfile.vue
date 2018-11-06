@@ -385,10 +385,12 @@
         });
       },
       changeFolderTables: function(row){
+        this.listLoading = true;
         this.current_folder_id = row.id;
         this.getTables();
       },
       changeParentFolder: function(){
+        this.listLoading = true;
         this.current_folder_id =this.current_name.parent_id;
         this.getTables();
       },

@@ -17,12 +17,12 @@
               <span slot="title" title="重新设定邮箱密码">密码</span>
             </el-menu-item>
 
-            <el-menu-item index="/setting/param" style="text-align: left" v-if="menuShow.setting_param_show">
+            <el-menu-item index="/setting/param" style="text-align: left">
               <img src="./img/op_prefs.gif" style="width:20px;">
               <span slot="title" title="设置收发邮件时的一些显示参数">参数设置</span>
             </el-menu-item>
 
-            <el-menu-item index="/setting/signature" style="text-align: left" v-if="menuShow.setting_signature_show">
+            <el-menu-item index="/setting/signature" style="text-align: left">
               <img src="./img/op_signature.gif" style="width:20px;">
               <span slot="title" title="检查或修改发件时的签名">签名</span>
             </el-menu-item>
@@ -32,12 +32,12 @@
               <span slot="title" title="模板信设置">模板信</span>
             </el-menu-item>
 
-            <el-menu-item index="/setting/autoreply" style="text-align: left" v-if="menuShow.setting_autoreply_show">
+            <el-menu-item index="/setting/autoreply" style="text-align: left" v-if="menuShow.setting_filter_show">
               <img src="./img/op_autoreply.gif" style="width:20px;">
               <span slot="title" title="检查或重新设置自动回复">自动回复</span>
             </el-menu-item>
 
-            <el-menu-item index="/setting/autoforward" style="text-align: left" v-if="menuShow.setting_autoforward_show">
+            <el-menu-item index="/setting/autoforward" style="text-align: left" v-if="menuShow.setting_filter_show">
               <img src="./img/op_autoforward.gif" style="width:20px;">
               <span slot="title" title="检查或重新设置自动转发">自动转发</span>
             </el-menu-item>
@@ -115,8 +115,8 @@
       return {
         menuShow: {
           setting_password_show: false,
-          setting_param_show: false,
-          setting_signature_show: false,
+          setting_param_show: true,
+          setting_signature_show: true,
           setting_autoreply_show: false,
           setting_autoforward_show: false,
           setting_bwlist_show: false,

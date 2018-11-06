@@ -79,7 +79,7 @@
 </template>
 
 <script>
-  import { contactCabGroupsGet, contactCabMembersGet, contactPabMembersCabAdd } from '@/api/api'
+  import { contactCabGroupsGet, contactCabMembersGet, contactPabMembersCabAdd ,getDeptMail} from '@/api/api'
   export default {
     data() {
       return {
@@ -217,9 +217,23 @@
         this.$confirm('发邮件给本机构人员？', '提示', {
           type: 'warning'
         }).then(() => {
-            this.$parent.sendMail_net({id:1,email:'cab@test.com',fullname:'cab'})
+          let param = {
+            "ctype":'cab',
+            "cid":this.cab_cid
           }
-        ).catch(() => {
+          getDeptMail(param).then(res=>{
+            if(res.data && res.data.length==0){
+              this.$message({
+                type:'error',
+                message:'未找到邮箱！'
+              })
+              return;
+            }
+            this.$parent.sendMail_net(res.data)
+          }).catch(err=>{
+            console.log('获取组邮箱错误！',err)
+          })
+        }).catch(() => {
         });
       },
       Oab_to_pab: function () {

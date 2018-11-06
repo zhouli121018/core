@@ -218,7 +218,7 @@
           <el-col style="text-align: right" :offset="6" :span="18">
             <el-button size="small" @click="deletePerms" type="danger" plain>删除权限</el-button>
             <span style="margin-left:18px;">搜索：</span>
-            <el-select v-model="search_perm" placeholder="请选择操作权限" size="small" @change="editPerm($event,scope.row)">
+            <el-select v-model="search_perm" placeholder="请选择操作权限" size="small">
               <el-option label="所有权限" value=""></el-option>
               <el-option label="管理权限" :value="1"></el-option>
               <el-option label="上传权限" :value="2"></el-option>
@@ -240,8 +240,8 @@
                 node-key="id"
                 :data="perm_tree_menu"
                 accordion
-                ref="contactTreeRef"
-                :highlight-current="true"
+                ref="treem"
+                highlight-current
                 :props="defaultProps"
                 @node-click="perm_tree_click">
                 <span  slot-scope="{ node, data }" :title="node.label">
@@ -265,7 +265,7 @@
                 type="selection"
                 width="35">
               </el-table-column>
-              <el-table-column  label="部门成员">
+              <el-table-column  label="部门 / 成员">
                 <template slot-scope="scope">
                   {{scope.row.object_name}}
                 </template>
@@ -296,13 +296,13 @@
         <el-row>
           <el-col>
             <el-pagination style="text-align: right;"
-              @size-change="perm_size_change"
-              @current-change="perm_page_change"
-              :current-page="page_perm"
-              :page-sizes="[10, 20,50,100]"
-              :page-size="page_size_perm"
-              layout="total,prev, pager, next,sizes"
-              :total="total_perm">
+                           @size-change="perm_size_change"
+                           @current-change="perm_page_change"
+                           :current-page="page_perm"
+                           :page-sizes="[10, 20,50,100]"
+                           :page-size="page_size_perm"
+                           layout="total,prev, pager, next,sizes"
+                           :total="total_perm">
             </el-pagination>
           </el-col>
         </el-row>
@@ -319,7 +319,7 @@
   import { companyDiskGet, companyDiskCapacityGet, companyDiskPathGet,
     companyDiskFolderCreate, companyDiskFolderUpdate, companyDiskFileUpload, companyDiskFileUpdate,
     companyDiskDelete, companyDiskBatchDelete, companyDiskMove, companyDiskBatchMove, companyDiskFileDownload, companyDiskZipDownload,
-  permNetdisk,superNetdisk,companyTree,permList,batchDelete,updatePerm,deletePerm} from '@/api/api'
+    permNetdisk,superNetdisk,companyTree,permList,batchDelete,updatePerm,deletePerm} from '@/api/api'
 
   export default {
     data() {
@@ -561,7 +561,6 @@
         })
       },
       perm_tree_click(data){
-        console.log('perm_tree')
         this.perm_id = data.id;
         this.page_perm = 1;
         this.getPermList();
@@ -573,6 +572,12 @@
         }
         if(this.init){
           this.getPermList();
+          this.$nextTick(() =>{
+            let _this = this;
+            setTimeout(function(){
+              _this.$refs.treem.setCurrentKey('-1')
+            },100)
+          })
           this.init = false
         }
       },
@@ -619,7 +624,9 @@
         })
         let selectedArr = [];
         this.sels.forEach(val => {
-          selectedArr.push(val.id);
+          if(val.nettype == 'folder'){
+            selectedArr.push(val.id);
+          }
         })
         let param = {
           email_ids:email_arr,
@@ -658,6 +665,19 @@
       },
 
       showAddDialog(){
+        let selectedArr = [];
+        this.sels.forEach(val => {
+          if(val.nettype == 'folder'){
+            selectedArr.push(val.id);
+          }
+        })
+        if(selectedArr.length == 0){
+          this.$message({
+            type:'error',
+            message:'请选择文件夹！'
+          });
+          return;
+        }
         this.addFormVisible = true;
 
       },
@@ -724,10 +744,12 @@
         });
       },
       changeFolderTables: function(row){
+        this.listLoading = true;
         this.current_folder_id = row.id;
         this.getTables();
       },
       changeParentFolder: function(){
+        this.listLoading = true;
         this.current_folder_id =this.current_name.parent_id;
         this.getTables();
       },
@@ -1032,6 +1054,7 @@
             link.setAttribute("download", filename);
             document.body.appendChild(link);
             link.click();
+            link.remove();
           }
           that.$message({ message: '导出成功', type: 'success' });
           // this.getPabs();
@@ -1111,7 +1134,7 @@
     border-top:1px solid #d9d9d9;
   }
   .el-dialog__header{
-        height: 21px;
+    height: 21px;
     line-height: 21px;
     padding: 9px 18px;
     font-size: 14px;

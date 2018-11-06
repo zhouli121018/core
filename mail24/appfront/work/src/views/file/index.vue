@@ -105,9 +105,14 @@
 
         }else{
           let obj = {
-            id:row.id,
-            name:row.name,
-            file_size:row.file_size
+            id:row.id
+          }
+          if(row.name){
+            obj.name = row.name
+            obj.file_size = row.file_size
+          }else{
+            obj.filename = row.filename
+            obj.size = row.size
           }
           let arr = [];
           arr.push(obj)
