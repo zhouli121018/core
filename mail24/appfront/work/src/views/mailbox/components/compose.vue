@@ -1530,6 +1530,7 @@
         if(type == 'sent'){
           this.sendLoading = true;
         }
+        this.content = '';
         mailSent(param).then(res=>{
           console.log(res)
           this.sendLoading = false;

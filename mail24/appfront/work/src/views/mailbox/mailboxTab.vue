@@ -559,10 +559,12 @@ export default {
       console.log(to)
       console.log(from)
       if(to.path=='/login'){
+        if(this.$store.getters.getTimer){clearInterval(this.$store.getters.getTimer)}
         next();
         return;
       }
       if(to.path.indexOf('/mailbox/innerbox/')>=0){
+        if(this.$store.getters.getTimer){clearInterval(this.$store.getters.getTimer)}
         next();
         return;
       }
@@ -572,11 +574,13 @@ export default {
         dangerouslyUseHTMLString: true,
         type: 'warning'
       }).then(() => {
+        if(this.$store.getters.getTimer){clearInterval(this.$store.getters.getTimer)}
         next()
       }).catch(() => {
         next(false)
       });
     }else{
+      if(this.$store.getters.getTimer){clearInterval(this.$store.getters.getTimer)}
       next();
     }
   }
