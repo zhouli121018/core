@@ -191,6 +191,7 @@
         console.log(res.data);
         this.userinfo = res.data.userinfo;
         this.weatherinfo = res.data.weatherinfo;
+        this.$store.dispatch('setLoginUrlAction',res.data.login_url)
       })
     },
     computed: {

@@ -20,14 +20,39 @@
       <el-table :data="listTables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
         <el-table-column type="selection" width="60"></el-table-column>
         <el-table-column type="index" label="No." width="80"></el-table-column>
-        <el-table-column prop="name" label="条件"></el-table-column>
-        <el-table-column label="状态">
+        <el-table-column prop="logic" label="条件关系" width="100">
+          <template slot-scope="scope">
+            {{scope.row.logic == 'all'?'满足所有':'满足任一'}}
+          </template>
+        </el-table-column>
+        <el-table-column prop="conditions" label="条件">
+          <template slot-scope="scope">
+            <div v-for="(c,k) in scope.row.conditions" :key="k">
+              <span>{{k+1}}、</span><span>【{{c.suboption=="all_mail"?'所有邮件':c.suboption=="has_attach"?'有附件':c.suboption=="attachments"?'附件名':c.suboption=="sender"?'发信人':c.suboption=="cc"?'抄送人':c.suboption=="recipient"?'收信人':c.suboption=="sender_dept"?'发信人部门':c.suboption=="cc_dept"?'抄送人部门':c.suboption=="rcpt_dept"?'收信人部门':c.suboption=="subject"?'主题':c.suboption=="body"?'邮件内容':c.suboption=="mail_size"?'邮件大小(MB)':c.suboption=="mail_size2"?'邮件大小(Byte)':c.suboption=="exec_date"?'执行时间':'邮件正文大小(Byte)'}}】</span> <span>{{c.action=='contains'?'包含':c.action=='not_contains'?'不包含':c.action=='=='?'等于':c.action=='>='?'大于等于':c.action=='<='?'小于等于':c.action=='in'?'属于':c.action=='week'?'':c.action=='date'?'':'不属于'}}</span>
+              <span v-if="c.action=='date'">{{c.value.start}} &nbsp; 到 &nbsp;{{c.value.end}}</span>
+              <span v-if="c.action=='week'">{{c.value.day_start=='1'?'星期一':c.value.day_start=='2'?'星期二':c.value.day_start=='3'?'星期三':c.value.day_start=='4'?'星期四':c.value.day_start=='5'?'星期五':c.value.day_start=='6'?'星期六':'星期日'}} &nbsp; 到 &nbsp;{{c.value.day_end=='1'?'星期一':c.value.day_end=='2'?'星期二':c.value.day_end=='3'?'星期三':c.value.day_end=='4'?'星期四':c.value.day_end=='5'?'星期五':c.value.day_end=='6'?'星期六':'星期日'}} ;&nbsp;{{c.value.start}} &nbsp; -- &nbsp;{{c.value.end}}</span>
+              <span v-if="c.action!='date'&&c.action!='week'&&(c.value2||c.value)">“{{c.value2||c.value}}”</span>;
+              <span v-for="(cc,k) in c.children" :key="k">
+                <el-button type="success" size="mini" circle plain>{{c.logic=='all'?'并':'或'}}</el-button><span>【{{cc.suboption=="all_mail"?'所有邮件':cc.suboption=="has_attach"?'有附件':cc.suboption=="attachments"?'附件名':cc.suboption=="sender"?'发信人':cc.suboption=="cc"?'抄送人':cc.suboption=="recipient"?'收信人':cc.suboption=="sender_dept"?'发信人部门':cc.suboption=="cc_dept"?'抄送人部门':cc.suboption=="rcpt_dept"?'收信人部门':cc.suboption=="subject"?'主题':cc.suboption=="body"?'邮件内容':cc.suboption=="mail_size"?'邮件大小(MB)':cc.suboption=="mail_size2"?'邮件大小(Byte)':cc.suboption=="exec_date"?'执行时间':'邮件正文大小(Byte)'}}】</span> <span>{{cc.action=='contains'?'包含':cc.action=='not_contains'?'不包含':cc.action=='=='?'等于':cc.action=='>='?'大于等于':cc.action=='<='?'小于等于':cc.action=='in'?'属于':cc.action=='week'?'':cc.action=='date'?'':'不属于'}}</span>
+                <span v-if="cc.action=='date'">{{cc.value.start}} &nbsp; 到 &nbsp;{{cc.value.end}}</span>
+              <span v-if="cc.action=='week'">{{cc.value.day_start=='1'?'星期一':cc.value.day_start=='2'?'星期二':cc.value.day_start=='3'?'星期三':cc.value.day_start=='4'?'星期四':cc.value.day_start=='5'?'星期五':cc.value.day_start=='6'?'星期六':'星期日'}} &nbsp; 到 &nbsp;{{cc.value.day_end=='1'?'星期一':cc.value.day_end=='2'?'星期二':cc.value.day_end=='3'?'星期三':cc.value.day_end=='4'?'星期四':cc.value.day_end=='5'?'星期五':cc.value.day_end=='6'?'星期六':'星期日'}} ;&nbsp;{{cc.value.start}} &nbsp; -- &nbsp;{{cc.value.end}}</span>
+              <span v-if="cc.action!='date'&&cc.action!='week'&&(cc.value2||cc.value)">“{{cc.value2||cc.value}}”</span>;
+              </span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="forward" label="转发到" width="280">
+          <template slot-scope="scope">
+            {{scope.row.action.forward}}
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" width="60">
           <template slot-scope="scope">
             <i class="el-alert--success el-alert__icon el-icon-success" v-if="scope.row.disabled==-1"></i>
             <i class="el-alert--error el-alert__icon el-icon-error" v-if="scope.row.disabled==1"></i>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="160">
           <template slot-scope="scope">
             <el-button type="info" size="mini" @click="updateFormShow(scope.$index, scope.row)">修改</el-button>
             <el-button type="danger" size="mini" @click="deleteRow(scope.$index, scope.row)">删除</el-button>
@@ -38,19 +63,14 @@
       <el-col :span="24" class="toolbar"></el-col>
 
 
-      <el-dialog title="新增规则"  :visible.sync="createFormVisible" :append-to-body="true" width="70%" top="10vh">
-        <el-form :model="createForm" label-width="100px" :rules="createFormRules" ref="createForm" size="small">
+      <el-dialog title="新增自动转发"  :visible.sync="createFormVisible" :append-to-body="true" width="75%" top="10vh" >
+        <el-form :model="createForm" label-width="100px" ref="createForm" size="small">
 
           <el-form-item label="状态" prop="disabled">
             <el-radio-group v-model="createForm.disabled">
               <el-radio :label="-1">启用</el-radio>
               <el-radio :label="1">禁用</el-radio>
             </el-radio-group>
-          </el-form-item>
-
-          <el-form-item label="回复内容" prop="content">
-            <editor id="editor_id5" ref="editor_id5" height="400px" maxWidth="100%" width="100%" :content="createForm.content"
-                    pluginsPath="/static/kindeditor/plugins/" :loadStyleMode="false" :uploadJson="uploadJson"  :items="toolbarItems" @on-content-change="createContentChange"></editor>
           </el-form-item>
 
           <el-form-item label="父条件关系" prop="logic">
@@ -71,7 +91,7 @@
             <el-collapse v-model="activeNames_create">
               <el-collapse-item v-for="(c,k) in createForm.conditions" :key="c.id" :name="'create_'+k">
                 <template slot="title">条件</template>
-                <el-row style="margin-bottom: 4px;">
+                <el-row style="margin-bottom: 4px;" :gutter="10">
                   <el-col :span="24">
                     <el-form-item label="子条件关系" prop="logic">
                       <el-row>
@@ -88,63 +108,7 @@
                     </el-form-item>
                   </el-col>
                   <el-col :span="5">
-                    <el-select v-model="c.suboption"  placeholder="请选择" @change="changeOption(c)">
-                      <el-option label="所有邮件" value="all_mail"></el-option>
-                      <el-option label="有附件" value="has_attach"></el-option>
-                      <el-option label="附件名" value="attachments"></el-option>
-                      <el-option label="发件人" value="sender"></el-option>
-                      <el-option label="抄送人" value="cc"></el-option>
-                      <el-option label="收件人" value="recipient"></el-option>
-                      <el-option label="发信人部门" value="sender_dept"></el-option>
-                      <el-option label="抄送人部门" value="cc_dept"></el-option>
-                      <el-option label="收信人部门" value="rcpt_dept"></el-option>
-                      <el-option label="主题" value="subject"></el-option>
-                      <el-option label="邮件内容" value="body"></el-option>
-                      <el-option label="邮件大小(MB)" value="mail_size"></el-option>
-                      <el-option label="邮件大小(Byte)" value="mail_size2"></el-option>
-                      <el-option label="邮件正文大小(Byte)" value="content_size"></el-option>
-                    </el-select>
-                  </el-col>
-                  <el-col :span="5">
-                    <el-select v-model="c.action" v-if="c.suboption=='attachments'||c.suboption=='sender'||c.suboption=='cc'||c.suboption=='recipient'||c.suboption=='subject'||c.suboption=='body'||c.suboption=='header_received'" placeholder="请选择">
-                      <el-option label="包含" value="contains"></el-option>
-                      <el-option label="不包含" value="not_contains"></el-option>
-                      <el-option label="等于" value="=="></el-option>
-                    </el-select>
-                    <el-select v-model.number="c.action" v-if="c.suboption=='mail_size'||c.suboption=='mail_size2'||c.suboption=='content_size'" placeholder="请选择">
-                      <el-option label="大于等于" value=">="></el-option>
-                      <el-option label="小于等于" value="<="></el-option>
-                    </el-select>
-                    <el-select v-model.number="c.action" v-if="c.suboption=='sender_dept'||c.suboption=='cc_dept'||c.suboption=='rcpt_dept'" placeholder="请选择">
-                      <el-option label="属于" value="in"></el-option>
-                      <el-option label="不属于" value="not_in"></el-option>
-                    </el-select>
-                  </el-col>
-                  <el-col :span="10">
-                    <el-input v-if="c.suboption=='attachments' || c.suboption=='sender' || c.suboption == 'cc'|| c.suboption == 'recipient'|| c.suboption=='subject'|| c.suboption=='body'" placeholder="请输入内容" v-model="c.value"></el-input>
-                    <el-input v-if="c.suboption=='mail_size' || c.suboption=='mail_size2' || c.suboption == 'content_size'" placeholder="" v-model.number="c.value"  type="number"></el-input>
-
-                    <el-row  v-if="c.suboption == 'sender_dept' || c.suboption == 'cc_dept'||c.suboption == 'rcpt_dept'">
-                      <el-col :span="12">
-                        <el-input v-model="c.value2" placeholder="点击右侧选择部门" title="点击右侧选择部门" readonly></el-input>
-                        <el-input type="hidden" v-model="c.value"></el-input>
-                      </el-col>
-                      <el-col :span="12">
-                        <el-cascader :clearable="true" placeholder="请选择部门"
-                                     change-on-select style="width:100%;" :show-all-levels="false" expand-trigger="click" :options="deptOptions"  @change="deptChange(c,k)" :ref="'dept_choice_'+k">
-                        </el-cascader>
-                      </el-col>
-                    </el-row>
-
-
-                  </el-col>
-                  <el-col :span="4">
-                    <el-button  icon="el-icon-plus" type="primary" @click="addSubCondition_create(c.id,k)"></el-button>
-                  </el-col>
-                </el-row>
-                <el-row v-for="(cc,kk) in c.children" :key="kk" style="margin-bottom: 4px;">
-                  <el-col :span="5">
-                    <el-select v-model="cc.suboption"  placeholder="请选择" @change="changeOption(cc)">
+                    <el-select v-model="c.suboption"  placeholder="请选择" @change="changeOption($event,c)" style="width:100%">
                       <el-option label="所有邮件" value="all_mail"></el-option>
                       <el-option label="有附件" value="has_attach"></el-option>
                       <el-option label="附件名" value="attachments"></el-option>
@@ -159,35 +123,225 @@
                       <el-option label="邮件大小(MB)" value="mail_size"></el-option>
                       <el-option label="邮件大小(Byte)" value="mail_size2"></el-option>
                       <el-option label="邮件正文大小(Byte)" value="content_size"></el-option>
+                      <el-option label="执行时间" value="exec_date"></el-option>
                     </el-select>
                   </el-col>
                   <el-col :span="5">
-                    <el-select v-model="cc.action" v-if="cc.suboption=='attachments'||cc.suboption=='sender'||cc.suboption=='cc'||cc.suboption=='recipient'||cc.suboption=='subject'||cc.suboption=='body'||cc.suboption=='header_received'" placeholder="请选择">
+                    <el-select v-model="c.action" v-if="c.suboption=='attachments'||c.suboption=='sender'||c.suboption=='cc'||c.suboption=='recipient'||c.suboption=='subject'||c.suboption=='body'||c.suboption=='header_received'" placeholder="请选择" style="width:100%">
                       <el-option label="包含" value="contains"></el-option>
                       <el-option label="不包含" value="not_contains"></el-option>
                       <el-option label="等于" value="=="></el-option>
                     </el-select>
-                    <el-select v-model.number="cc.action" v-if="cc.suboption=='mail_size'||cc.suboption=='mail_size2'||cc.suboption=='content_size'" placeholder="请选择">
+                    <el-select v-model.number="c.action" v-if="c.suboption=='mail_size'||c.suboption=='mail_size2'||c.suboption=='content_size'" placeholder="请选择" style="width:100%">
                       <el-option label="大于等于" value=">="></el-option>
                       <el-option label="小于等于" value="<="></el-option>
                     </el-select>
-                    <el-select v-model.number="cc.action" v-if="cc.suboption=='sender_dept'||cc.suboption=='cc_dept'||cc.suboption=='rcpt_dept'" placeholder="请选择">
+                    <el-select v-model.number="c.action" v-if="c.suboption=='sender_dept'||c.suboption=='cc_dept'||c.suboption=='rcpt_dept'" placeholder="请选择" style="width:100%">
                       <el-option label="属于" value="in"></el-option>
                       <el-option label="不属于" value="not_in"></el-option>
                     </el-select>
+                    <el-select v-model="c.action" v-if="c.suboption=='exec_date'" placeholder="请选择" style="width:100%">
+                      <el-option label="星期" value="week"></el-option>
+                      <el-option label="天" value="date"></el-option>
+                    </el-select>
                   </el-col>
                   <el-col :span="10">
-                    <el-input v-if="cc.suboption=='attachments' || cc.suboption=='sender' || cc.suboption == 'cc'|| cc.suboption == 'recipient'|| cc.suboption=='subject'|| cc.suboption=='body'" placeholder="请输入内容" v-model="cc.value"></el-input>
-                    <el-input v-if="cc.suboption=='mail_size' || cc.suboption=='mail_size2' || cc.suboption == 'content_size'" placeholder="" v-model.number="cc.value" type="number"></el-input>
+                    <el-input v-if="c.suboption=='attachments' || c.suboption=='sender' || c.suboption == 'cc'|| c.suboption == 'recipient'|| c.suboption=='subject'|| c.suboption=='body'" placeholder="请输入内容" v-model="c.value" style="width:100%"></el-input>
+                    <el-input v-if="c.suboption=='mail_size' || c.suboption=='mail_size2' || c.suboption == 'content_size'" placeholder="" v-model.number="c.value"  type="number" style="width:100%"></el-input>
 
-                    <el-row v-if="cc.suboption == 'sender_dept' || cc.suboption == 'cc_dept'||cc.suboption == 'rcpt_dept'">
+                    <el-row  v-if="c.suboption == 'sender_dept' || c.suboption == 'cc_dept'||c.suboption == 'rcpt_dept'">
+                      <el-col :span="24" style="position:relative">
+                        <el-input v-model="c.value2" placeholder="点击选择部门" title="点击选择部门" @click.native="showDeptChoice(c,k)" readonly style="width:100%"></el-input>
+                        <el-input type="hidden" v-model="c.value" style="display:none"></el-input>
+                        <el-cascader :clearable="true" placeholder="请选择部门"
+                                     change-on-select style="position:absolute;width:100%;top:0;z-index:-10;" :show-all-levels="false" expand-trigger="click" :options="deptOptions"  @change="deptChange(c,k)" :ref="'dept_choice_'+k" :id="'dept_choice_'+k">
+                        </el-cascader>
+                      </el-col>
+                    </el-row>
+                    <el-row v-if="c.suboption == 'exec_date'&&c.action=='week'" :gutter="5">
+                      <el-col :span="6">
+                        <el-select v-model="c.value.day_start" placeholder="请选择开始星期" style="width:100%;">
+                          <el-option label="星期一" :value="1"></el-option>
+                          <el-option label="星期二" :value="2"></el-option>
+                          <el-option label="星期三" :value="3"></el-option>
+                          <el-option label="星期四" :value="4"></el-option>
+                          <el-option label="星期五" :value="5"></el-option>
+                          <el-option label="星期六" :value="6"></el-option>
+                          <el-option label="星期日" :value="7"></el-option>
+                        </el-select>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-select v-model="c.value.day_end" placeholder="请选择结束星期" style="width:100%;">
+                          <el-option label="星期一" :value="1"></el-option>
+                          <el-option label="星期二" :value="2"></el-option>
+                          <el-option label="星期三" :value="3"></el-option>
+                          <el-option label="星期四" :value="4"></el-option>
+                          <el-option label="星期五" :value="5"></el-option>
+                          <el-option label="星期六" :value="6"></el-option>
+                          <el-option label="星期日" :value="7"></el-option>
+                        </el-select>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-time-picker
+                          placeholder="起始时间"
+                          v-model="c.value.start"
+                          format="HH:mm:ss" value-format="HH:mm:ss"
+                          :picker-options="{
+                            selectableRange: '00:00:00 - 23:59:59'
+                          }">
+                        </el-time-picker>
+
+                      </el-col>
+                      <el-col :span="6">
+                        <el-time-picker
+                          placeholder="结束时间"
+                          v-model="c.value.end"
+                          format="HH:mm:ss" value-format="HH:mm:ss"
+                          :picker-options="{
+                            selectableRange: '00:00:00 - 23:59:59',
+                            minTime: c.value.start
+                          }">
+                        </el-time-picker>
+                      </el-col>
+                    </el-row>
+                    <el-row v-if="c.suboption == 'exec_date'&&c.action=='date'" :gutter="5">
                       <el-col :span="12">
-                        <el-input v-model="cc.value2" placeholder="点击右侧选择部门" title="点击右侧选择部门" readonly></el-input>
-                        <el-input type="hidden" v-model="cc.value"></el-input>
+                        <el-date-picker
+                          v-model="c.value.start"
+                          format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss"
+                          type="datetime"
+                          placeholder="选择开始日期时间" style="width:100%;">
+                        </el-date-picker>
                       </el-col>
                       <el-col :span="12">
-                        <el-cascader :clearable="true" placeholder="请选择部门" change-on-select style="width:100%" :show-all-levels="false" expand-trigger="click" :options="deptOptions"  @change="deptChange(cc,k+'_'+kk)" :ref="'dept_choice_'+k+'_'+kk">
+                        <el-date-picker
+                          v-model="c.value.end"
+                          format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss"
+                          type="datetime"
+                          placeholder="选择结束日期时间" style="width:100%;">
+                        </el-date-picker>
+                      </el-col>
+                    </el-row>
+
+
+                  </el-col>
+                  <el-col :span="4">
+                    <el-button  icon="el-icon-plus" type="primary" @click="addSubCondition_create(c.id,k)"></el-button>
+                  </el-col>
+                </el-row>
+                <el-row v-for="(cc,kk) in c.children" :key="kk" :gutter="10" style="margin-bottom: 4px;">
+                  <el-col :span="5">
+                    <el-select v-model="cc.suboption"  placeholder="请选择" @change="changeOption($event,cc)" style="width:100%">
+                      <el-option label="所有邮件" value="all_mail"></el-option>
+                      <el-option label="有附件" value="has_attach"></el-option>
+                      <el-option label="附件名" value="attachments"></el-option>
+                      <el-option label="发信人" value="sender"></el-option>
+                      <el-option label="抄送人" value="cc"></el-option>
+                      <el-option label="收信人" value="recipient"></el-option>
+                      <el-option label="发信人部门" value="sender_dept"></el-option>
+                      <el-option label="抄送人部门" value="cc_dept"></el-option>
+                      <el-option label="收信人部门" value="rcpt_dept"></el-option>
+                      <el-option label="主题" value="subject"></el-option>
+                      <el-option label="邮件内容" value="body"></el-option>
+                      <el-option label="邮件大小(MB)" value="mail_size"></el-option>
+                      <el-option label="邮件大小(Byte)" value="mail_size2"></el-option>
+                      <el-option label="邮件正文大小(Byte)" value="content_size"></el-option>
+                      <el-option label="执行时间" value="exec_date"></el-option>
+                    </el-select>
+                  </el-col>
+                  <el-col :span="5">
+                    <el-select v-model="cc.action" v-if="cc.suboption=='attachments'||cc.suboption=='sender'||cc.suboption=='cc'||cc.suboption=='recipient'||cc.suboption=='subject'||cc.suboption=='body'||cc.suboption=='header_received'" placeholder="请选择" style="width:100%">
+                      <el-option label="包含" value="contains"></el-option>
+                      <el-option label="不包含" value="not_contains"></el-option>
+                      <el-option label="等于" value="=="></el-option>
+                    </el-select>
+                    <el-select v-model.number="cc.action" v-if="cc.suboption=='mail_size'||cc.suboption=='mail_size2'||cc.suboption=='content_size'" placeholder="请选择" style="width:100%">
+                      <el-option label="大于等于" value=">="></el-option>
+                      <el-option label="小于等于" value="<="></el-option>
+                    </el-select>
+                    <el-select v-model.number="cc.action" v-if="cc.suboption=='sender_dept'||cc.suboption=='cc_dept'||cc.suboption=='rcpt_dept'" placeholder="请选择" style="width:100%">
+                      <el-option label="属于" value="in"></el-option>
+                      <el-option label="不属于" value="not_in"></el-option>
+                    </el-select>
+                    <el-select v-model="cc.action" v-if="cc.suboption=='exec_date'" placeholder="请选择" style="width:100%">
+                      <el-option label="星期" value="week"></el-option>
+                      <el-option label="天" value="date"></el-option>
+                    </el-select>
+                  </el-col>
+                  <el-col :span="10">
+                    <el-input v-if="cc.suboption=='attachments' || cc.suboption=='sender' || cc.suboption == 'cc'|| cc.suboption == 'recipient'|| cc.suboption=='subject'|| cc.suboption=='body'" placeholder="请输入内容" v-model="cc.value" style="width:100%"></el-input>
+                    <el-input v-if="cc.suboption=='mail_size' || cc.suboption=='mail_size2' || cc.suboption == 'content_size'" placeholder="" v-model.number="cc.value" type="number" style="width:100%"></el-input>
+
+                    <el-row v-if="cc.suboption == 'sender_dept' || cc.suboption == 'cc_dept'||cc.suboption == 'rcpt_dept'">
+                      <el-col style="position:relative">
+                        <el-input v-model="cc.value2" placeholder="点击选择部门" title="点击选择部门" readonly style="width:100%" @click.native="showDeptChoice(cc,k+'_'+kk)"></el-input>
+                        <el-input type="hidden" v-model="cc.value" style="display:none;"></el-input>
+                        <el-cascader :clearable="true" placeholder="请选择部门" change-on-select style="position:absolute;width:100%;top:0;z-index:-10;" :show-all-levels="false" expand-trigger="click" :options="deptOptions"  @change="deptChange(cc,k+'_'+kk)" :ref="'dept_choice_'+k+'_'+kk" :id="'dept_choice_'+k+'_'+kk">
                         </el-cascader>
+                      </el-col>
+                    </el-row>
+                    <el-row v-if="cc.suboption == 'exec_date'&&cc.action=='week'" :gutter="5">
+                      <el-col :span="6">
+                        <el-select v-model="cc.value.day_start" placeholder="请选择开始星期" style="width:100%;">
+                          <el-option label="星期一" :value="1"></el-option>
+                          <el-option label="星期二" :value="2"></el-option>
+                          <el-option label="星期三" :value="3"></el-option>
+                          <el-option label="星期四" :value="4"></el-option>
+                          <el-option label="星期五" :value="5"></el-option>
+                          <el-option label="星期六" :value="6"></el-option>
+                          <el-option label="星期日" :value="7"></el-option>
+                        </el-select>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-select v-model="cc.value.day_end" placeholder="请选择结束星期" style="width:100%;">
+                          <el-option label="星期一" :value="1"></el-option>
+                          <el-option label="星期二" :value="2"></el-option>
+                          <el-option label="星期三" :value="3"></el-option>
+                          <el-option label="星期四" :value="4"></el-option>
+                          <el-option label="星期五" :value="5"></el-option>
+                          <el-option label="星期六" :value="6"></el-option>
+                          <el-option label="星期日" :value="7"></el-option>
+                        </el-select>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-time-picker
+                          placeholder="起始时间"
+                          v-model="cc.value.start"
+                          format="HH:mm:ss" value-format="HH:mm:ss"
+                          :picker-options="{
+                            selectableRange: '00:00:00 - 23:59:59'
+                          }">
+                        </el-time-picker>
+
+                      </el-col>
+                      <el-col :span="6">
+                        <el-time-picker
+                          placeholder="结束时间"
+                          v-model="cc.value.end"
+                          format="HH:mm:ss" value-format="HH:mm:ss"
+                          :picker-options="{
+                            selectableRange: '00:00:00 - 23:59:59',
+                            minTime: cc.value.start
+                          }">
+                        </el-time-picker>
+                      </el-col>
+                    </el-row>
+                    <el-row v-if="cc.suboption == 'exec_date'&&cc.action=='date'" :gutter="5">
+                      <el-col :span="12">
+                        <el-date-picker
+                          v-model="cc.value.start"
+                          type="datetime"
+                          format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss"
+                          placeholder="选择开始日期时间" style="width:100%;">
+                        </el-date-picker>
+                      </el-col>
+                      <el-col :span="12">
+                        <el-date-picker
+                          v-model="cc.value.end"
+                          format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss"
+                          type="datetime"
+                          placeholder="选择结束日期时间" style="width:100%;">
+                        </el-date-picker>
                       </el-col>
                     </el-row>
 
@@ -201,13 +355,331 @@
             </el-collapse>
           </el-form-item>
 
+          <el-form-item label="转发到" prop="">
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 1, maxRows: 10}"
+              placeholder="请输入转发邮箱..."
+              v-model="createForm.forward">
+            </el-input>
+          </el-form-item>
+          <el-form-item label="转发选项" prop="">
+            <el-checkbox v-model="createForm.is_forward">同时将信件保存在本邮箱内</el-checkbox>
+          </el-form-item>
+
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="createFormVisible = false">取消</el-button>
           <el-button type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">提交</el-button>
         </div>
       </el-dialog>
+      <el-dialog title="修改自动转发"  :visible.sync="updateFormVisible" :append-to-body="true" width="75%" top="10vh">
+        <el-form :model="updateForm" label-width="100px" ref="updateForm" size="small">
 
+          <el-form-item label="状态" prop="disabled">
+            <el-radio-group v-model="updateForm.disabled">
+              <el-radio :label="-1">启用</el-radio>
+              <el-radio :label="1">禁用</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <el-form-item label="父条件关系" prop="logic">
+            <el-row>
+              <el-col :span="18">
+                <el-radio-group v-model="updateForm.logic">
+                  <el-radio label="all" >满足所有</el-radio>
+                  <el-radio label="one">满足一条即可</el-radio>
+                </el-radio-group>
+              </el-col>
+              <el-col :span="6" style="text-align:right">
+                <el-button type="success" @click="addCondition">新增父条件</el-button>
+              </el-col>
+            </el-row>
+          </el-form-item>
+
+          <el-form-item label="">
+            <el-collapse v-model="activeNames">
+              <el-collapse-item v-for="(c,k) in updateForm.conditions" :key="c.id" :name="k">
+                <template slot="title">条件</template>
+                <el-row style="margin-bottom: 4px;" :gutter="10">
+                  <el-col :span="24">
+                    <el-form-item label="子条件关系" prop="logic">
+                      <el-row>
+                        <el-col :span="18">
+                          <el-radio-group v-model="c.logic">
+                            <el-radio label="all" >满足所有</el-radio>
+                            <el-radio label="one">满足一条即可</el-radio>
+                          </el-radio-group>
+                        </el-col>
+                        <el-col :span="6" style="text-align:right" v-if="k!=0">
+                          <el-button icon="el-icon-delete" type="danger" @click="deleteCondition(k)"></el-button>
+                        </el-col>
+                      </el-row>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="5">
+                    <el-select v-model="c.suboption"  placeholder="请选择" @change="changeOption($event,c)" style="width:100%">
+                      <el-option label="所有邮件" value="all_mail"></el-option>
+                      <el-option label="有附件" value="has_attach"></el-option>
+                      <el-option label="附件名" value="attachments"></el-option>
+                      <el-option label="发信人" value="sender"></el-option>
+                      <el-option label="抄送人" value="cc"></el-option>
+                      <el-option label="收信人" value="recipient"></el-option>
+                      <el-option label="发信人部门" value="sender_dept"></el-option>
+                      <el-option label="抄送人部门" value="cc_dept"></el-option>
+                      <el-option label="收信人部门" value="rcpt_dept"></el-option>
+                      <el-option label="主题" value="subject"></el-option>
+                      <el-option label="邮件内容" value="body"></el-option>
+                      <el-option label="邮件大小(MB)" value="mail_size"></el-option>
+                      <el-option label="邮件大小(Byte)" value="mail_size2"></el-option>
+                      <el-option label="邮件正文大小(Byte)" value="content_size"></el-option>
+                      <el-option label="执行时间" value="exec_date"></el-option>
+                    </el-select>
+                  </el-col>
+                  <el-col :span="5">
+                    <el-select v-model="c.action" v-if="c.suboption=='attachments'||c.suboption=='sender'||c.suboption=='cc'||c.suboption=='recipient'||c.suboption=='subject'||c.suboption=='body'||c.suboption=='header_received'" placeholder="请选择" style="width:100%">
+                      <el-option label="包含" value="contains"></el-option>
+                      <el-option label="不包含" value="not_contains"></el-option>
+                      <el-option label="等于" value="=="></el-option>
+                    </el-select>
+                    <el-select v-model.number="c.action" v-if="c.suboption=='mail_size'||c.suboption=='mail_size2'||c.suboption=='content_size'" placeholder="请选择" style="width:100%">
+                      <el-option label="大于等于" value=">="></el-option>
+                      <el-option label="小于等于" value="<="></el-option>
+                    </el-select>
+                    <el-select v-model.number="c.action" v-if="c.suboption=='sender_dept'||c.suboption=='cc_dept'||c.suboption=='rcpt_dept'" placeholder="请选择" style="width:100%">
+                      <el-option label="属于" value="in"></el-option>
+                      <el-option label="不属于" value="not_in"></el-option>
+                    </el-select>
+                    <el-select v-model="c.action" v-if="c.suboption=='exec_date'" placeholder="请选择" style="width:100%">
+                      <el-option label="星期" value="week"></el-option>
+                      <el-option label="天" value="date"></el-option>
+                    </el-select>
+                  </el-col>
+                  <el-col :span="10">
+                    <el-input v-if="c.suboption=='attachments' || c.suboption=='sender' || c.suboption == 'cc'|| c.suboption == 'recipient'|| c.suboption=='subject'|| c.suboption=='body'" placeholder="请输入内容" v-model="c.value" style="width:100%"></el-input>
+                    <el-input v-if="c.suboption=='mail_size' || c.suboption=='mail_size2' || c.suboption == 'content_size'" placeholder="" v-model.number="c.value" type="number" style="width:100%"></el-input>
+
+                    <el-row v-if="c.suboption == 'sender_dept' || c.suboption == 'cc_dept'||c.suboption == 'rcpt_dept'">
+                      <el-col style="position:relative">
+                        <el-input v-model="c.value2" placeholder="点击选择部门" title="点击选择部门" readonly style="width:100%" @click.native="showDeptChoice_update(c,k)"></el-input>
+                        <el-input type="hidden" v-model="c.value" style="display:none"></el-input>
+                        <el-cascader :clearable="true" placeholder="请选择部门" change-on-select style="position:absolute;width:100%;top:0;z-index:-10;" :show-all-levels="false" expand-trigger="click" :options="deptOptions"  @change="deptChange(c,k)" :ref="'dept_choice_'+k" :id="'dept_update_'+k">
+                        </el-cascader>
+                      </el-col>
+                    </el-row>
+                    <el-row v-if="c.suboption == 'exec_date'&&c.action=='week'" :gutter="5">
+                      <el-col :span="6">
+                        <el-select v-model="c.value.day_start" placeholder="请选择开始星期" style="width:100%;">
+                          <el-option label="星期一" :value="1"></el-option>
+                          <el-option label="星期二" :value="2"></el-option>
+                          <el-option label="星期三" :value="3"></el-option>
+                          <el-option label="星期四" :value="4"></el-option>
+                          <el-option label="星期五" :value="5"></el-option>
+                          <el-option label="星期六" :value="6"></el-option>
+                          <el-option label="星期日" :value="7"></el-option>
+                        </el-select>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-select v-model="c.value.day_end" placeholder="请选择结束星期" style="width:100%;">
+                          <el-option label="星期一" :value="1"></el-option>
+                          <el-option label="星期二" :value="2"></el-option>
+                          <el-option label="星期三" :value="3"></el-option>
+                          <el-option label="星期四" :value="4"></el-option>
+                          <el-option label="星期五" :value="5"></el-option>
+                          <el-option label="星期六" :value="6"></el-option>
+                          <el-option label="星期日" :value="7"></el-option>
+                        </el-select>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-time-picker
+                          placeholder="起始时间"
+                          v-model="c.value.start"
+                          format="HH:mm:ss" value-format="HH:mm:ss"
+                          :picker-options="{
+                            selectableRange: '00:00:00 - 23:59:59'
+                          }" style="width:100%;">
+                        </el-time-picker>
+
+                      </el-col>
+                      <el-col :span="6">
+                        <el-time-picker
+                          placeholder="结束时间"
+                          v-model="c.value.end"
+                          format="HH:mm:ss" value-format="HH:mm:ss"
+                          :picker-options="{
+                            selectableRange: '00:00:00 - 23:59:59',
+                            minTime: c.value.start
+                          }" style="width:100%;">
+                        </el-time-picker>
+                      </el-col>
+                    </el-row>
+                    <el-row v-if="c.suboption == 'exec_date'&&c.action=='date'" :gutter="5">
+                      <el-col :span="12">
+                        <el-date-picker
+                          v-model="c.value.start"
+                          format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss"
+                          type="datetime"
+                          placeholder="选择开始日期时间" style="width:100%;">
+                        </el-date-picker>
+                      </el-col>
+                      <el-col :span="12">
+                        <el-date-picker
+                          v-model="c.value.end"
+                          format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss"
+                          type="datetime"
+                          placeholder="选择结束日期时间" style="width:100%;">
+                        </el-date-picker>
+                      </el-col>
+                    </el-row>
+
+                  </el-col>
+                  <el-col :span="4">
+                    <el-button  icon="el-icon-plus" type="primary" @click="addSubCondition(c.id,k)"></el-button>
+                  </el-col>
+                </el-row>
+                <el-row v-for="(cc,kk) in c.children" :key="kk" style="margin-bottom: 4px;" :gutter="10">
+                  <el-col :span="5">
+                    <el-select v-model="cc.suboption"  placeholder="请选择" @change="changeOption($event,cc)" style="width:100%;">
+                      <el-option label="所有邮件" value="all_mail"></el-option>
+                      <el-option label="有附件" value="has_attach"></el-option>
+                      <el-option label="附件名" value="attachments"></el-option>
+                      <el-option label="发信人" value="sender"></el-option>
+                      <el-option label="抄送人" value="cc"></el-option>
+                      <el-option label="收信人" value="recipient"></el-option>
+                      <el-option label="发信人部门" value="sender_dept"></el-option>
+                      <el-option label="抄送人部门" value="cc_dept"></el-option>
+                      <el-option label="收信人部门" value="rcpt_dept"></el-option>
+                      <el-option label="主题" value="subject"></el-option>
+                      <el-option label="邮件内容" value="body"></el-option>
+                      <el-option label="邮件大小(MB)" value="mail_size"></el-option>
+                      <el-option label="邮件大小(Byte)" value="mail_size2"></el-option>
+                      <el-option label="邮件正文大小(Byte)" value="content_size"></el-option>
+                      <el-option label="执行时间" value="exec_date"></el-option>
+                    </el-select>
+                  </el-col>
+                  <el-col :span="5">
+                    <el-select v-model="cc.action" v-if="cc.suboption=='attachments'||cc.suboption=='sender'||cc.suboption=='cc'||cc.suboption=='recipient'||cc.suboption=='subject'||cc.suboption=='body'||cc.suboption=='header_received'" placeholder="请选择" style="width:100%;">
+                      <el-option label="包含" value="contains"></el-option>
+                      <el-option label="不包含" value="not_contains"></el-option>
+                      <el-option label="等于" value="=="></el-option>
+                    </el-select>
+                    <el-select v-model.number="cc.action" v-if="cc.suboption=='mail_size'||cc.suboption=='mail_size2'||cc.suboption=='content_size'" placeholder="请选择" style="width:100%;">
+                      <el-option label="大于等于" value=">="></el-option>
+                      <el-option label="小于等于" value="<="></el-option>
+                    </el-select>
+                    <el-select v-model.number="cc.action" v-if="cc.suboption=='sender_dept'||cc.suboption=='cc_dept'||cc.suboption=='rcpt_dept'" placeholder="请选择" style="width:100%;">
+                      <el-option label="属于" value="in"></el-option>
+                      <el-option label="不属于" value="not_in"></el-option>
+                    </el-select>
+                    <el-select v-model="cc.action" v-if="cc.suboption=='exec_date'" placeholder="请选择" style="width:100%">
+                      <el-option label="星期" value="week"></el-option>
+                      <el-option label="天" value="date"></el-option>
+                    </el-select>
+                  </el-col>
+                  <el-col :span="10">
+                    <el-input v-if="cc.suboption=='attachments' || cc.suboption=='sender' || cc.suboption == 'cc'|| cc.suboption == 'recipient'|| cc.suboption=='subject'|| cc.suboption=='body'" placeholder="请输入内容" v-model="cc.value" style="width:100%;"></el-input>
+                    <el-input v-if="cc.suboption=='mail_size' || cc.suboption=='mail_size2' || cc.suboption == 'content_size'" placeholder="" v-model.number="cc.value" type="number" style="width:100%;"></el-input>
+                    <el-row v-if="cc.suboption == 'sender_dept' || cc.suboption == 'cc_dept'||cc.suboption == 'rcpt_dept'">
+                      <el-col style="position:relative">
+                        <el-input v-model="cc.value2" placeholder="点击选择部门" title="点击选择部门" readonly style="width:100%;" @click.native="showDeptChoice_update(cc,k+'_'+kk)"></el-input>
+                        <el-input type="hidden" v-model="cc.value" style="display:none;"></el-input>
+                        <el-cascader :clearable="true" placeholder="请选择部门" change-on-select style="position:absolute;width:100%;top:0;z-index:-10;" :show-all-levels="false" expand-trigger="click" :options="deptOptions"  @change="deptChange(cc,k+'_'+kk)" :ref="'dept_choice_'+k+'_'+kk" :id="'dept_update_'+k+'_'+kk">
+                        </el-cascader>
+                      </el-col>
+                    </el-row>
+                    <el-row v-if="cc.suboption == 'exec_date'&&cc.action=='week'" :gutter="5">
+                      <el-col :span="6">
+                        <el-select v-model="cc.value.day_start" placeholder="请选择开始星期" style="width:100%;">
+                          <el-option label="星期一" :value="1"></el-option>
+                          <el-option label="星期二" :value="2"></el-option>
+                          <el-option label="星期三" :value="3"></el-option>
+                          <el-option label="星期四" :value="4"></el-option>
+                          <el-option label="星期五" :value="5"></el-option>
+                          <el-option label="星期六" :value="6"></el-option>
+                          <el-option label="星期日" :value="7"></el-option>
+                        </el-select>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-select v-model="cc.value.day_end" placeholder="请选择结束星期" style="width:100%;">
+                          <el-option label="星期一" :value="1"></el-option>
+                          <el-option label="星期二" :value="2"></el-option>
+                          <el-option label="星期三" :value="3"></el-option>
+                          <el-option label="星期四" :value="4"></el-option>
+                          <el-option label="星期五" :value="5"></el-option>
+                          <el-option label="星期六" :value="6"></el-option>
+                          <el-option label="星期日" :value="7"></el-option>
+                        </el-select>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-time-picker
+                          placeholder="起始时间"
+                          v-model="cc.value.start"
+                          format="HH:mm:ss" value-format="HH:mm:ss"
+                          :picker-options="{
+                            selectableRange: '00:00:00 - 23:59:59'
+                          }" style="width:100%;">
+                        </el-time-picker>
+
+                      </el-col>
+                      <el-col :span="6">
+                        <el-time-picker
+                          placeholder="结束时间"
+                          v-model="cc.value.end"
+                          format="HH:mm:ss" value-format="HH:mm:ss"
+                          :picker-options="{
+                            selectableRange: '00:00:00 - 23:59:59',
+                            minTime: cc.value.start
+                          }" style="width:100%;">
+                        </el-time-picker>
+                      </el-col>
+                    </el-row>
+                    <el-row v-if="cc.suboption == 'exec_date'&&cc.action=='date'" :gutter="5">
+                      <el-col :span="12">
+                        <el-date-picker
+                          v-model="cc.value.start"
+                          type="datetime"
+                          format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss"
+                          placeholder="选择开始日期时间" style="width:100%;">
+                        </el-date-picker>
+                      </el-col>
+                      <el-col :span="12">
+                        <el-date-picker
+                          v-model="cc.value.end"
+                          format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss"
+                          type="datetime"
+                          placeholder="选择结束日期时间" style="width:100%;">
+                        </el-date-picker>
+                      </el-col>
+                    </el-row>
+
+                  </el-col>
+                  <el-col :span="4">
+                    <el-button  icon="el-icon-delete" type="warning" @click="deleteSubCondition(k,kk)"></el-button>
+                  </el-col>
+                </el-row>
+              </el-collapse-item>
+            </el-collapse>
+          </el-form-item>
+
+          <el-form-item label="转发到" prop="">
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 1, maxRows: 10}"
+              placeholder="请输入转发邮箱..."
+              v-model="updateForm.forward">
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="转发选项" prop="">
+            <el-checkbox v-model="updateForm.is_forward">同时将信件保存在本邮箱内</el-checkbox>
+          </el-form-item>
+
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click.native="updateFormVisible = false">取消</el-button>
+          <el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">提交</el-button>
+        </div>
+      </el-dialog>
 
 
     </section>
@@ -240,26 +712,28 @@
         createFormVisible: false,
         createFormLoading: false,
         createForm: {
-          name: '',
-          content: '',
-          sequence:999,
-          type:1,
-          type_display:'接收',
+          forward: '',
+          is_forward:true,
           disabled:-1,
+          extype:'fw',
+          logic:'all',
+          conditions:[
+            {id:0,action:'contains',logic:'all',option:'extra',parent_id:0,rule:1,suboption:'subject',value:'',children:[]}
+            ]
+        },
+
+        updateFormVisible:false,
+        updateFormLoading:false,
+        updateForm:{
+          forward: '',
+          is_forward:true,
+          disabled:-1,
+          extype:'fw',
           logic:'all',
           conditions:[
             {id:0,action:'contains',logic:'all',option:'extra',parent_id:0,rule:1,suboption:'subject',value:'',children:[]}
           ],
-          actions:[
-            {id:0,action:'forward',sequence:999,json_value:{value:''}}
-          ]
         },
-        createFormRules: {
-          content: [{ required: true, message: '请填写回复内容', trigger: 'blur' }],
-        },
-
-
-
       }
     },
 
@@ -269,6 +743,12 @@
     },
 
     methods: {
+      showDeptChoice(c,k){
+        $('#dept_choice_'+k).click();
+      },
+      showDeptChoice_update(c,k){
+        $('#dept_update_'+k).click();
+      },
       createContentChange (val) {
         this.createForm.content = val;
       },
@@ -292,9 +772,19 @@
       change_action(a){
         a.json_value.value='';
       },
-      changeOption(data){
-        data.action = '';
-        data.value = '';
+      changeOption(val,data){
+        if(val == 'exec_date'){
+          data.value = {
+            start:'',
+            end:'',
+            day_start:'',
+            day_end:''
+          }
+          data.action = '';
+        }else{
+          data.action = '';
+          data.value = '';
+        }
       },
       f_TableSelsChange: function (sels) {
         this.sels = sels;
@@ -319,6 +809,31 @@
         };
         settingRefwGet(param).then(res=>{
           this.total = res.data.count;
+          for(let a=0;a<res.data.results.length;a++){
+            let obj = res.data.results[a].conditions;
+            let arr = {};
+            for(let i=0;i<obj.length;i++){
+              if(obj[i].parent_id == 0){
+                arr[obj[i].id] = obj[i];
+                arr[obj[i].id]['children']=[];
+                obj.splice(i,1);
+                i--;
+              }
+            }
+            for(let k=0;k<obj.length;k++){
+              let ll = obj[k];
+              for(var key in arr){
+                if(ll.parent_id == key){
+                  arr[key]['children'].push(ll);
+                  obj.splice(k,1);
+                  k--;
+                }
+              }
+            }
+            for(var key in arr){
+              obj.push(arr[key]);
+            }
+          }
           this.listTables = res.data.results;
           this.listLoading = false;
         }).catch(err=>{
@@ -328,10 +843,6 @@
       //提交表单时验证输入内容
       confirmation (arr){
         let _this = this;
-        if(!arr.sequence){
-          _this.$message({message:'请输入过滤条件优先级！',type:'error'});
-          return false;
-        }
         for(let i=0;i<arr.conditions.length;i++){
           let o = arr.conditions[i];
 
@@ -358,16 +869,9 @@
             }
           }
         }
-        for(let i=0;i<arr.actions.length;i++){
-          let a = arr.actions[i];
-          if(a.action!='sequester'&&a.action!='delete'&&!a.json_value.value){
-            _this.$message({message:'请选择或输入动作内容！',type:'error'});
-            return false;
-          }
-          if(!a.sequence){
-            _this.$message({message:'请输入动作优先级！',type:'error'});
-            return false;
-          }
+        if(!arr.forward){
+          this.$message({message:'转发给谁不能为空！',type:'error'});
+          return false;
         }
         return true;
       },
@@ -384,7 +888,7 @@
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
               this.createFormLoading = true;
               let para = Object.assign({}, this.createForm);
-              settingFilterCreate(para)
+              settingRefwCreate(para)
                 .then((res) => {
                   this.$refs['createForm'].resetFields();
                   this.createFormLoading = false;
@@ -392,9 +896,11 @@
                   this.$message({message: '提交成功', type: 'success'});
                   this.getTables();
                 }, (data)=>{
+                  this.createFormLoading = false;
                   console.log(data);
                 })
                 .catch(function (error) {
+                  this.createFormLoading = false;
                   console.log(error);
                 });
             });
@@ -487,7 +993,7 @@
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
               this.updateFormLoading = true;
               let para = Object.assign({}, this.updateForm);
-              settingFilterUpdate(para.id, para)
+              settingRefwUpdate(para.id, para)
                 .then((res) => {
                   this.$refs['updateForm'].resetFields();
                   this.updateFormLoading = false;
@@ -533,6 +1039,8 @@
           }
 
           this.updateForm = Object.assign({}, res.data);
+          this.updateForm.forward = this.updateForm.action.forward;
+          this.updateForm.is_forward = this.updateForm.action.is_forward;
           this.updateFormVisible = true;
           this.updateFormLoading = false;
           this.getActiveNames();
@@ -556,10 +1064,10 @@
       },
       deleteRow: function (index, row) {
         let that = this;
-        this.$confirm('确认删除该内容过滤规则吗?', '提示', {
+        this.$confirm('确认删除该自动转发吗?', '提示', {
           type: 'warning'
         }).then(() => {
-          settingFilterDelete(row.id)
+          settingRefwDelete(row.id)
             .then((response)=> {
               that.$message({ message: '删除成功', type: 'success' });
               this.getTables();

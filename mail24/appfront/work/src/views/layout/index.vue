@@ -45,7 +45,7 @@
             <li id="cloud">
               <a target="_blank" href="https://cloud.icoremail.net/icmcenter/expCenter/showEvaXT5?userid=1qfUTJjqUn7UT7jmUntU7UjgUexUfJjmUntUa7jWUerUr7UAU1fUrJULUnrUTJjl" style="color:red;font-weight: bold;" data-target="title" data-i18n="main.CommentAward">评价赢大奖</a>
             </li>
-            <li><a target="_blank" href="#">后台管理</a></li>
+            <li><a target="_blank" href="#" @click.prevent="goToAdmin">后台管理</a></li>
             <li><a href="#" class="skin-primary-hover-color f-dn lunkr-bandage f-pr">移动端</a></li>
             <li><a href="#" class="skin-primary-hover-color f-dn f-pr" >即时沟通</a></li>
             <li><a href="#" class="skin-primary-hover-color f-dn j-migrate-mbox" >马上搬家</a></li>
@@ -88,6 +88,9 @@
         </div>
 
       </section>
+      <form v-show="false" id="id_ssl_form" :action="this.$store.getters.getLoginUrl" method="post" target="_blank">
+        <input v-model="token" name="token"  type="hidden">
+      </form>
     </article>
         <transition name="fade">
           <div v-if="newMsg" class="test">
@@ -120,6 +123,7 @@
 </template>
 
 <script>
+  import axios from 'axios';
   import store from '@/store'
   import router from '@/router'
   import cookie from '@/assets/js/cookie';
@@ -127,6 +131,8 @@
   export default {
     data:function(){
       return {
+        token:this.$store.getters.userInfo.token,
+        login_url:this.$store.getters.getLoginUrl,
         newIndex:0,
         show:false,
         newList:[],
@@ -145,6 +151,20 @@
       }
     },
     methods:{
+      goToAdmin(){
+        $("#id_ssl_form").submit();
+        return;
+
+        let param = {
+          token:this.$store.getters.userInfo.token
+        }
+
+        axios.post(this.$store.getters.getLoginUrl,param).then(res=>{
+          console.log(res)
+        }).catch(err=>{
+          console.log('gotoadmin出错!',err)
+        })
+      },
       preNew(){
         if(this.newIndex<=0){
           return;
@@ -236,7 +256,7 @@
           }).catch(err=>{
             console.log('获取新邮件2失败！',err)
           })
-        },1000*60*2))
+        },1000*60*1))
       },
       jumpTo(path){
         router.push(path)

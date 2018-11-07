@@ -12,7 +12,7 @@
             <el-button plain size="small" type="danger" icon="el-icon-delete" :disabled="this.sels.length===0" @click="deleteFolders" v-if="this.is_supercompany || this.permisson_type == '1'">删除</el-button>
             <el-button plain size="small" type="primary" icon="el-icon-remove" :disabled="this.sels.length===0" @click="moveFolderFormShow" v-if="this.is_supercompany || this.permisson_type == '1'">批量移动</el-button>
             <el-button plain size="small" type="primary" icon="el-icon-message" :disabled="this.sels.length===0" @click="sendMail_net('more',sels)">邮件发送</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-setting" :disabled="this.sels.length===0" v-if="this.is_supercompany || this.permisson_type == '1'" @click="showAddDialog">添加权限</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-setting" :disabled="this.sels.length===0" v-if="this.is_supercompany || this.permisson_type == '1'" @click="showAddDialog('more')">添加权限</el-button>
             <el-button @click="showPermDialog" plain size="small" type="primary" icon="el-icon-view" v-if="this.is_supercompany || this.permisson_type == '1'">权限管理</el-button>
             <el-button @click="showAllDialog" plain size="small" type="primary" icon="el-icon-plus" v-if="this.is_supercompany && this.current_folder_id==-1">赋予网盘管理员</el-button>
           </el-form-item>
@@ -64,6 +64,7 @@
                     <span v-if="scope.row.nettype=='file'" @click="sendMail_net(scope.row)">发信</span>
                     <!--<span>共享</span>-->
                     <span @click="resetRowNameShow(scope.row)" v-if="scope.row.is_own || is_supercompany || permisson_type=='1'">重命名</span>
+                    <span @click="showAddDialog(scope.row)" v-if="scope.row.nettype=='folder' &&  permisson_type=='1'">添加权限</span>
                     <span @click="deleteRowFolders(scope.row)" v-if="scope.row.is_own || is_supercompany || permisson_type=='1'">删除</span>
                     <span @click="changeFolderTables(scope.row)" class="folder_type" v-if="scope.row.nettype=='folder' && permisson_type=='0'">访问</span>
                   </div>
@@ -178,7 +179,7 @@
 
       <el-dialog title="添加权限"  :visible.sync="addFormVisible"  :append-to-body="true" width="80%">
         <Contact @getData="getData"></Contact>
-        <div>
+        <div style="text-align:right;">
           操作权限：
           <el-select v-model="perm" placeholder="请选择操作权限" size="small">
             <el-option label="管理权限" value="1"></el-option>
@@ -324,6 +325,7 @@
   export default {
     data() {
       return {
+        addone:[],
         search_perm:'',
         init:true,
         perm_sels:[],
@@ -623,11 +625,15 @@
           }
         })
         let selectedArr = [];
-        this.sels.forEach(val => {
-          if(val.nettype == 'folder'){
-            selectedArr.push(val.id);
-          }
-        })
+        if(this.addone.length>0){
+          selectedArr.push(this.addone[0].id);
+        }else{
+          this.sels.forEach(val => {
+            if(val.nettype == 'folder'){
+              selectedArr.push(val.id);
+            }
+          })
+        }
         let param = {
           email_ids:email_arr,
           depart_ids:depart_arr,
@@ -664,22 +670,27 @@
         console.log(param)
       },
 
-      showAddDialog(){
-        let selectedArr = [];
-        this.sels.forEach(val => {
-          if(val.nettype == 'folder'){
-            selectedArr.push(val.id);
+      showAddDialog(row){
+        this.addone = [];
+        if(row!='more'){
+          this.addFormVisible = true;
+          this.addone.push(row);
+        }else{
+          let selectedArr = [];
+          this.sels.forEach(val => {
+            if(val.nettype == 'folder'){
+              selectedArr.push(val.id);
+            }
+          })
+          if(selectedArr.length == 0){
+            this.$message({
+              type:'error',
+              message:'请选择文件夹！'
+            });
+            return;
           }
-        })
-        if(selectedArr.length == 0){
-          this.$message({
-            type:'error',
-            message:'请选择文件夹！'
-          });
-          return;
+          this.addFormVisible = true;
         }
-        this.addFormVisible = true;
-
       },
       uploadSuccess(){
         console.log(arguments)

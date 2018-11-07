@@ -9,7 +9,7 @@
                 </div>
             </div>
 
-            <el-button size="small" type="primary" @click="sentMail('sent')">{{ruleForm2.is_schedule?"定时发送":"发送"}}</el-button>
+            <el-button size="small" type="primary" @click="sentMail('sent')" :loading="sendLoading">{{ruleForm2.is_schedule?"定时发送":"发送"}}</el-button>
             <el-button-group >
               <el-button size="small" @click="preview">预览</el-button>
               <el-button size="small" @click="sentMail('save_draft')">存草稿</el-button>
@@ -575,6 +575,7 @@
         }
       };
       return {
+        sendLoading:false,
         oabchildren:[],
         contactSelection:[],
         showLoadMore:true,
@@ -752,7 +753,7 @@
         getTemplateList(param).then(res=>{
           console.log(res.data.results)
           this.templateList = this.templateList.concat(res.data.results);
-          if(res.data.results.length==5){
+          if(res.data.results.length<=5){
             this.tpage ++;
           }else if(res.data.results.length==0){
             this.showLoadMore = false;
@@ -1526,8 +1527,12 @@
         if(this.type!='sent'&&!this.content){
           return;
         }
+        if(type == 'sent'){
+          this.sendLoading = true;
+        }
         mailSent(param).then(res=>{
           console.log(res)
+          this.sendLoading = false;
           this.$parent.$parent.$parent.getFloderfn();
           let info = type=='sent'?"发送成功！":"保存草稿成功！";
           this.$message({
@@ -1546,7 +1551,14 @@
             this.send_suc = true;
           }
         },err=>{
+          this.sendLoading = false;
           console.log(err)
+          this.$message({
+             message:"操作失败！"+err.non_field_errors[0],
+             type:'error'
+          })
+        }).catch(err=>{
+          this.sendLoading = false;
           this.$message({
              message:"操作失败！"+err.non_field_errors[0],
              type:'error'

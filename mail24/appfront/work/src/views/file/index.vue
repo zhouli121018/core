@@ -138,7 +138,7 @@
     overflow-y:auto;
     overflow-x:hidden;
   }
-  .menu_icon_box{
+  .menu_icon_box.iconfont{
     /*width:48px;height:45px;background:#ddd;*/
     /*display:inline-block;*/
     font-size:30px;

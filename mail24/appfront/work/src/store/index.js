@@ -34,7 +34,8 @@ const store = new Vuex.Store({
     newMsgTimer:'',
     newMsgClearTimer:'',
     pfile_net_atta:[],
-    toList:[]
+    toList:[],
+    login_url:''
   },
   getters:{
     userInfo(state) {
@@ -54,6 +55,9 @@ const store = new Vuex.Store({
     },
     getToList(state){
       return state.toList
+    },
+    getLoginUrl(state){
+      return state.login_url
     }
   },
   mutations:{
@@ -91,6 +95,9 @@ const store = new Vuex.Store({
     },
     setToList(state,param){
       state.toList = param;
+    },
+    setLoginUrl(state,param){
+      state.login_url = param;
     }
   },
   actions: {
@@ -114,6 +121,9 @@ const store = new Vuex.Store({
     },
     setTo(store,param){
       store.commit('setToList',param)
+    },
+    setLoginUrlAction(store,param){
+      store.commit('setLoginUrl',param)
     }
 
   }

@@ -71,7 +71,12 @@
           style="width: 100%">
           <el-table-column type="expand" class="expand">
             <template slot-scope="props">
-              <p v-for="(r,k) in props.row.recipients" :key="k" style="margin-left:42%;padding:4px 0;"> {{ r[0] +' <'+r[1]+'>'}}</p>
+              <p v-for="(r,k) in props.row.details" v-if="props.row.details.length>1" :key="k" style="margin-left:42%;padding:4px 0;"> <span v-if="r.name">{{r.name +' '}} &lt;</span> <span> {{r.recipient}}</span> <span v-if="r.name">&gt;</span>
+                <!--<span style="color:#45AB19;margin-left:20px;"> {{r.status_show +','+ r.recall_status_show}}</span>-->
+                <span style="color:#45AB19;margin:20px;"> {{r.inform||''}}</span>
+                <el-button type="text" size="mini" v-if="r.recall_status == 'stay'" @click="recall(props.row,'single',r.recipient)">召回邮件</el-button>
+              </p>
+
             </template>
           </el-table-column>
           <el-table-column
@@ -95,15 +100,18 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="recipients"
+            prop=""
             label="收件人">
             <template slot-scope="scope">
-              <div v-if="scope.row.recipients.length>1">
-                <el-button type="text" size="mini" icon="el-icon-arrow-up" @click="changeExpand(scope.row)"> 所有收件人{{'（'+scope.row.recipients.length+'）'}}</el-button>
+              <div v-if="scope.row.details.length>1">
+                <el-button type="text" size="mini" icon="el-icon-arrow-up" @click="changeExpand(scope.row)"> 所有收件人{{'（'+scope.row.details.length+'）'}}</el-button>
                 <!--<p v-for="(r,k) in scope.row.recipients" :key="k"> {{ r[0] +' <'+r[1]+'>'}}</p>-->
               </div>
-              <div v-if="scope.row.recipients.length==1">
-                {{scope.row.recipients[0][0]+' <'+scope.row.recipients[0][1]+'>'}}
+              <div v-if="scope.row.details.length==1">
+                <span v-if="scope.row.details[0].name">{{scope.row.details[0].name+' '}} &lt;</span>
+                <span>{{scope.row.details[0].recipient}}</span>
+                <span v-if="scope.row.details[0].name">&gt;</span>
+
               </div>
             </template>
           </el-table-column>
@@ -111,9 +119,10 @@
           <el-table-column
             prop="details"
             label="状 态">
-            <template slot-scope="scope" v-if="scope.row.details.length>0">
-              <div>
-                <span style="color:#45AB19;"> {{scope.row.details[0].status_show+','+scope.row.details[0].recall_status_show}} </span>
+            <template slot-scope="scope" >
+              <div v-if="scope.row.details.length==1">
+                <!--<span style="color:#45AB19;"> {{scope.row.details[0].status_show+','+scope.row.details[0].recall_status_show}} </span>-->
+                <span style="color:#45AB19;"> {{scope.row.details[0].inform||''}} </span>
               </div>
             </template>
           </el-table-column>
@@ -123,7 +132,8 @@
             label="操 作">
             <template slot-scope="scope">
               <div>
-                <el-button type="text" size="mini">召回邮件</el-button>
+                <el-button type="text" size="mini" v-if="scope.row.details.length == 1 && scope.row.details[0].recall_status == 'stay'" @click="recall(scope.row)">召回邮件</el-button>
+                <el-button type="text" size="mini" v-if="scope.row.details.length > 1" @click="recall(scope.row)">召回全部邮件</el-button>
               </div>
 
             </template>
@@ -255,15 +265,24 @@
         </el-table>
       </el-tab-pane>
     </el-tabs>
+    <el-dialog title="邮件召回" :visible.sync="recallTableVisible" :append-to-body="true" size="mini">
+      <el-table :data="recallData">
+        <el-table-column property="email" label="收件人"></el-table-column>
+        <el-table-column property="recall_status_info" label="召回状态" width="200"></el-table-column>
+        <el-table-column property="inform" label="邮件详情"></el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 
-import {getLoginList,getSendlog,getMaillog,getDeletellog} from '@/api/api'
+import {getLoginList,getSendlog,getMaillog,getDeletellog,sendRecall} from '@/api/api'
 export default {
   data() {
     return {
+      recallTableVisible:false,
+      recallData:[],
       activeName: 'login',
       loginData:{
         loading:false,
@@ -402,6 +421,49 @@ export default {
     };
   },
   methods: {
+    recall(row,type,r){
+        this.$confirm('<p>确定召回此邮件吗？</p>', '召回邮件', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            dangerouslyUseHTMLString: true,
+            type: 'warning'
+          }).then(() => {
+            let message_id = row.message_id;
+            let str = '';
+            if(type && type =='single'){
+              str = r;
+            }else{
+              row.details.forEach(val=>{
+                str += val.recipient+','
+              })
+              str = str.slice(0,str.length-1)
+            }
+            let param = {
+              message_id: message_id,
+              recipient: str
+            }
+            sendRecall(param).then(res => {
+              this.recallData = res.data.results;
+              this.recallTableVisible = true;
+              this.getSend();
+            }, err => {
+              this.$message({
+                message: '邮件召回失败！',
+                type: 'error'
+              })
+            }).catch(err=>{
+              this.$message({
+                message: '邮件召回失败！',
+                type: 'error'
+              })
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消召回'
+            });
+          });
+      },
     changeType(status){
       this.deleteData.page = 1;
       this.deleteData.status = status;
