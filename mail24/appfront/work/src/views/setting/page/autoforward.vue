@@ -854,6 +854,34 @@
             _this.$message({message:'请填写条件内容！',type:'error'});
             return false;
           }
+          if(o.action=='week'){
+            if(!o.value.start||!o.value.end||!o.value.day_start||!o.value.day_end){
+              _this.$message({message:'请选择条件内容！',type:'error'});  
+              return false;
+            }
+            if(o.value.day_start>o.value.day_end){
+              _this.$message({message:'开始星期不能大于结束星期！',type:'error'});  
+              return false;
+            }
+            let bagin_ = o.value.start.split(':');
+            let end_ = o.value.end.split(':');
+            if(bagin_[0]>end_[0]||bagin_[0]==end_[0]&&bagin_[1]>end_[1]||bagin_[0]==end_[0]&&      bagin_[1]==end_[1]&&bagin_[2]>=end_[2]){
+              _this.$message({message:'开始时间不能大于等于结束时间！',type:'error'});  
+              return false;
+            }
+          }
+          if(o.action=='date'){
+            if(!o.value.start||!o.value.end){
+              _this.$message({message:'请选择条件内容！',type:'error'});  
+              return false;
+            }
+            var st=o.value.start;
+            var et= o.value.end;
+            if(st>=et) {
+               _this.$message({message:'开始时间不能大于等于结束时间！',type:'error'});  
+              return false;
+            }
+          }
           if(o.children&&o.children.length>0){
             for(let k = 0;k<o.children.length;k++){
               let subO = o.children[k];
@@ -865,6 +893,34 @@
               if(subO.suboption!='all_mail'&&subO.suboption!='has_attach'&&!subO.value){
                 _this.$message({message:'请填写子条件内容！',type:'error'});
                 return false;
+              }
+              if(subO.action=='week'){
+                if(!subO.value.start||!subO.value.end||!subO.value.day_start||!subO.value.day_end){
+                  _this.$message({message:'请选择条件内容！',type:'error'});  
+                  return false;
+                }
+                if(subO.value.day_start>subO.value.day_end){
+                  _this.$message({message:'开始星期不能大于结束星期！',type:'error'});  
+                  return false;
+                }
+                let bagin_ = subO.value.start.split(':');
+                let end_ = subO.value.end.split(':');
+                if(bagin_[0]>end_[0]||bagin_[0]==end_[0]&&bagin_[1]>end_[1]||bagin_[0]==end_[0]&&      bagin_[1]==end_[1]&&bagin_[2]>=end_[2]){
+                  _this.$message({message:'开始时间不能大于等于结束时间！',type:'error'});  
+                  return false;
+                }
+              }
+              if(subO.action=='date'){
+                if(!subO.value.start||!subO.value.end){
+                  _this.$message({message:'请选择条件内容！',type:'error'});  
+                  return false;
+                }
+                var st=subO.value.start;
+                var et= subO.value.end;
+                if(st>=et) {
+                  _this.$message({message:'开始时间不能大于等于结束时间！',type:'error'});  
+                  return false;
+                }
               }
             }
           }
