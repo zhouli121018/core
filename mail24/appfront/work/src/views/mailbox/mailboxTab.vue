@@ -178,6 +178,7 @@ export default {
       if(type=='compose'||type == 'compose_to_list'){
         this.ruleForm2['refw_type']=undefined;
         this.ruleForm2 = {
+          is_priority:false,
           is_html:true,
           is_cc:true,
           is_partsend:false,
@@ -206,6 +207,7 @@ export default {
       }else if(type =='compose_net_atta'){
         this.ruleForm2['refw_type']=undefined;
         this.ruleForm2 = {
+          is_priority:false,
           is_html:true,
           is_cc:true,
           is_partsend:false,
@@ -417,6 +419,10 @@ export default {
       }).then(() => {
         deleteFolder(data.id).then((suc)=>{
           this.getFloderfn();
+          if(this.$route.path!='/mailbox/welcome' && this.checkNodes[0] == data.id){
+            this.$router.push('/mailbox/innerbox/INBOX')
+            sessionStorage['checkNodeLabel'] = '收件箱'
+          }
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -508,7 +514,7 @@ export default {
         console.log(v.path)
         if(v.path == '/mailbox/welcome'){
           this.showTabIndex = 0;
-        }else if(v.path == '/mailbox/innerbox'){
+        }else if(v.path.indexOf('/mailbox/innerbox')>=0){
           this.showTabIndex = 1;
         }
       },

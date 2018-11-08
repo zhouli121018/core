@@ -309,8 +309,13 @@
         </el-row>
 
       </el-dialog>
+      <el-dialog title="系统提示" :visible.sync="show_error" :append-to-body="true"  style="padding:0 50px;">
+        <el-table :data="error_list"  border>
+          <el-table-column property="object_name" label="部门/成员"></el-table-column>
+          <el-table-column property="error_message" label="详情" width="200"></el-table-column>
+        </el-table>
+      </el-dialog>
     </section>
-
   </div>
 </template>
 
@@ -325,6 +330,8 @@
   export default {
     data() {
       return {
+        show_error:false,
+        error_list:[],
         addone:[],
         search_perm:'',
         init:true,
@@ -437,7 +444,7 @@
     },
     methods: {
       sendMail_net(row,sels){
-        this.$emit('sendMail_net',row,sels)
+        this.$emit('sendMail_net',row,sels,'company')
       },
       perm_size_change(val){
         this.page_size_perm = val;
@@ -478,10 +485,8 @@
             })
             this.getPermList();
           }).catch(err=>{
-            this.$message({
-              type:'error',
-              message:'删除权限失败！'
-            })
+            this.error_list = err
+            this.show_error = true;
           })
         }).catch(() => {
 
@@ -512,10 +517,8 @@
             })
             this.getPermList();
           }).catch(err=>{
-            this.$message({
-              type:'error',
-              message:'删除权限失败！'
-            })
+            this.error_list = err
+            this.show_error = true;
           })
         }).catch(() => {
 
@@ -558,6 +561,10 @@
               "label": "企业网盘"
             }
           ]
+          this.$nextTick(()=>{
+            this.$refs.treem.setCurrentKey(this.current_folder_id)
+          })
+
         }).catch(err=>{
           console.log('获取文件夹树错误！',err)
         })
@@ -569,19 +576,9 @@
       },
       showPermDialog(){
         this.permFormVisible = true;
-        if(this.perm_tree_menu.length==0){
-          this.getCompanyTree();
-        }
-        if(this.init){
-          this.getPermList();
-          this.$nextTick(() =>{
-            let _this = this;
-            setTimeout(function(){
-              _this.$refs.treem.setCurrentKey('-1')
-            },100)
-          })
-          this.init = false
-        }
+        this.perm_id = this.current_folder_id;
+        this.getCompanyTree();
+        this.getPermList();
       },
       addSuper(){
         this.allFormLoading = true;

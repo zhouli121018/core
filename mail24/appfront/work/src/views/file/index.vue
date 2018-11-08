@@ -69,7 +69,7 @@
         this.activeT = path;
         this.$router.push('/file/'+path);
       },
-      sendMail_net(row,sels){
+      sendMail_net(row,sels,type){
         console.log(row,sels)
         let _this = this;
         if(row == 'more'){
@@ -93,7 +93,9 @@
               obj.filename = val.filename;
               obj.size = val.size;
             }
-
+            if(type=='company'){
+              obj.is_company = true
+            }
             arr.push(obj);
           })
           if(!check)return;
@@ -113,6 +115,9 @@
           }else{
             obj.filename = row.filename
             obj.size = row.size
+          }
+          if(type=='company'){
+            obj.is_company = true
           }
           let arr = [];
           arr.push(obj)

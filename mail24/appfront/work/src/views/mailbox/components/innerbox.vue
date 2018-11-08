@@ -4,7 +4,9 @@
                 <div class="m-mllist">
                     <div class="list-bg"></div>
                     <div class="m-mllist-row">
-                        <div class="toolbar" style="background:#fff;">
+                        <div class="toolbar" style="background:#fff;" element-loading-text="请稍等..."
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.6)" >
                             <span class=" f-fr j-setting">
                             <el-button  icon="el-icon-setting" circle></el-button></span>
 
@@ -175,7 +177,7 @@
                         <div>
                           <el-table ref="innerTable" :data="collapseItems[0].lists" style="width: 100%;" class="vertical_align_top maillist"
                               highlight-current-row  @cell-mouse-enter="hoverfn" @cell-mouse-leave="noHover" @row-click="rowClick" @cell-click="cellClick"
-                                    @selection-change="handleSelectionChange"  v-loading="loading" :header-cell-style="{background:'#f0f1f3'}"
+                                    @selection-change="handleSelectionChange"  :header-cell-style="{background:'#f0f1f3'}"
                             >
                             <el-table-column
                               type="selection"
@@ -254,6 +256,7 @@
 
     data() {
         return {
+          fullscreenLoading:false,
           reject_is_delete:false,
           boxId:'INBOX',
           curr_folder:'收件箱',
@@ -371,7 +374,11 @@
         this.sort = '';
         this.orderCheckIndex = '';
         this.search = '';
-        console.log(1111111111)
+        this.searchForm = {
+            from: '',
+            subject: '',
+            body: ''
+          }
         console.log(this.$parent.$parent.$parent)
         this.$parent.$parent.$parent.getFloderfn()
         this.getMessageList();
@@ -473,6 +480,7 @@
           readMail(row.uid,{"folder":this.boxId}).then(res=>{
             let data = res.data
             pp.ruleForm2 = {
+              is_priority:false,
               is_html:true,
               is_cc:true,
               is_partsend:false,
@@ -573,14 +581,14 @@
         this.getMessageList();
       },
       moveHandleCommand:function(index){
+        this.fullscreenLoading = true;
         var params={
           uids:this.checkedMails,
           src_folder:this.boxId,
           dst_folder:index
         }
         moveMails(params).then((suc)=>{
-          console.log(suc.data)
-          console.log(suc.data.msg)
+          this.fullscreenLoading = false;
           if(suc.data.msg=='success'){
             this.$message({
               type:'success',
@@ -590,11 +598,14 @@
             this.$parent.$parent.$parent.getFloderfn();
           }
         },(err)=>{
+          this.fullscreenLoading = false;
           console.log(err);
+        }).catch(err=>{
+          this.fullscreenLoading = false;
         })
       },
       signHandleCommand:function(item){
-        console.log(item);
+        this.fullscreenLoading = true;
         if(!item){
           return;
         }
@@ -605,10 +616,13 @@
           flags:[item.flags]
         }
         messageFlag(param).then((suc)=>{
+          this.fullscreenLoading = false;
           this.getMessageList();
           this.$parent.$parent.$parent.getFloderfn();
         },(err)=>{
-
+          this.fullscreenLoading = false;
+        }).catch(err=>{
+          this.fullscreenLoading = false;
         })
       },
       deleteMailById(){
@@ -621,7 +635,9 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          this.fullscreenLoading = true;
           deleteMail(params).then((suc)=>{
+            this.fullscreenLoading = false;
             if(suc.data.msg=='success'){
               this.$message({
                 type:'success',
@@ -631,12 +647,14 @@
               this.$parent.$parent.$parent.getFloderfn()
             }
           },(err)=>{
+            this.fullscreenLoading = false
             this.$message({
                 type:'error',
                 message: '删除失败！!'
               })
           })
         }).catch(() => {
+          this.fullscreenLoading = false;
           this.$message({
             type: 'info',
             message: '已取消删除'
@@ -649,14 +667,13 @@
           this.$alert('您只能选择一封邮件进行 '+item.text+' !','提示');
           return;
         }
-        console.log(this.checkedMails)
-        console.log(this.multipleSelection)
         let pp = this.$parent.$parent.$parent;
         let param = {
           uids:this.checkedMails,
           folder:pp.activeMenubar.id
         }
         if(item.id==0 || item.id==1 || item.id==2 || item.id==3 || item.id==5){
+          this.fullscreenLoading = true;
           let fid = pp.activeMenubar.id;
           let view = 3; //回复
           if(item.id == 0){
@@ -671,7 +688,9 @@
             view = 7;
           }
           readMail(this.multipleSelection[0].uid,{"folder":fid,"view":view}).then(res=>{
+            this.fullscreenLoading = false;
             pp.ruleForm2 = {
+              is_priority:false,
               is_html:true,
               is_cc:true,
               is_partsend:false,
@@ -723,6 +742,7 @@
             pp.addTab('compose'+view+' ',data.subject,data.uid,fid)
 
           }).catch(err=>{
+            this.fullscreenLoading = false;
             console.log(err)
           })
 
@@ -734,10 +754,12 @@
             dangerouslyUseHTMLString: true,
 
           }).then(() => {
+            this.fullscreenLoading = true;
             if($('#is_delete').prop('checked')) {
               param.is_delete = true
             }
             rejectMessage(param).then(res=>{
+              this.fullscreenLoading = false;
               console.log(res)
               this.$message(
                 {type:'success',message:'邮件拒收成功！'}
@@ -745,7 +767,7 @@
               this.getMessageList();
             })
               .catch(err=>{
-              console.log(err)
+                this.fullscreenLoading = false;
                 this.$message(
                 {type:'error',message:'邮件拒收失败！'}
               )
@@ -758,7 +780,9 @@
           });
 
         }else if(item.id==6){//打包下载
+          this.fullscreenLoading = true;
           zipMessage(param).then(response=>{
+            this.fullscreenLoading = false;
             let blob = new Blob([response.data], { type: response.headers["content-type"] })
             let objUrl = URL.createObjectURL(blob);
             this.blobUrl = objUrl;
@@ -780,7 +804,7 @@
               {type:'success',message:'打包下载邮件成功！'}
             )
           }).catch(err=>{
-            console.log(err)
+            this.fullscreenLoading = false;
             this.$message(
               {type:'error',message:'打包下载邮件失败！'}
             )
@@ -792,14 +816,16 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
+            this.fullscreenLoading = true;
             pruneMessage(param).then(res=>{
-              console.log(res)
+              this.fullscreenLoading = false;
               this.$message(
                 {type:'success',message:'彻底删除邮件成功！'}
               )
               pp.getFloderfn();
               this.getMessageList();
             }).catch(err=>{
+              this.fullscreenLoading = false;
               console.log('彻底删除失败！',err);
             })
           }).catch(() => {
@@ -815,15 +841,10 @@
         console.log(value);
       },
       noSelect(){
-          for(var i=0;i<this.collapseItems.length;i++){
-              for(var k=0;k<this.collapseItems[i].lists.length;k++){
-                  this.collapseItems[i].lists[k].checked = false;
-              }
-          }
+
       },
       getMessageList(){
         this.loading = true;
-
         let params = {
           folder:this.boxId,
           limit:this.pageSize,
@@ -952,7 +973,12 @@
           this.search = '';
           this.viewCheckIndex = ''
           this.multipleSelection = [];
-            this.getMessageList();
+          this.searchForm = {
+            from: '',
+            subject: '',
+            body: ''
+          };
+          this.getMessageList();
         },
       checkedMails(v){
           // console.log(v)

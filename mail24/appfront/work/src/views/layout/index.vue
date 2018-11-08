@@ -45,16 +45,17 @@
             <li id="cloud">
               <a target="_blank" href="https://cloud.icoremail.net/icmcenter/expCenter/showEvaXT5?userid=1qfUTJjqUn7UT7jmUntU7UjgUexUfJjmUntUa7jWUerUr7UAU1fUrJULUnrUTJjl" style="color:red;font-weight: bold;" data-target="title" data-i18n="main.CommentAward">评价赢大奖</a>
             </li>
-            <li><a target="_blank" href="#" @click.prevent="goToAdmin">后台管理</a></li>
+            <li><a target="_blank" href="#" @click.prevent="goToAdmin" v-if="admin_is_active&&!isSharedUser">后台管理</a></li>
             <li><a href="#" class="skin-primary-hover-color f-dn lunkr-bandage f-pr">移动端</a></li>
             <li><a href="#" class="skin-primary-hover-color f-dn f-pr" >即时沟通</a></li>
             <li><a href="#" class="skin-primary-hover-color f-dn j-migrate-mbox" >马上搬家</a></li>
             <li><a href="#" class="skin-primary-hover-color" @click.prevent.stop="lockscreen">锁屏</a></li>
             <li class="hover_bg_box">
-              <el-dropdown trigger="click" placement="bottom-start" @command="switchShared">
-                <span class="el-dropdown-link" title="切换邮箱账号">
+              <b v-if="sharedList.length==0&&!isSharedUser">{{this.$store.getters.userInfo.name}}</b>
+              <el-dropdown trigger="click" placement="bottom-start" @command="switchShared" v-if="sharedList.length>0||isSharedUser">
+                <b class="el-dropdown-link" title="切换邮箱账号">
                   {{this.$store.state.userInfo.name}}<i class="el-icon-arrow-down el-icon--right"></i>
-                </span>
+                </b>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item disabled>关联共享邮箱</el-dropdown-item>
                   <el-dropdown-item v-if="isSharedUser" command="back">返回我的邮箱{{ '<' + mainUsername + '>'}}</el-dropdown-item>
@@ -131,8 +132,6 @@
   export default {
     data:function(){
       return {
-        token:this.$store.getters.userInfo.token,
-        login_url:this.$store.getters.getLoginUrl,
         newIndex:0,
         show:false,
         newList:[],
@@ -201,11 +200,22 @@
         console.log(this)
         let _this = this;
         this.$router.push('/mailbox/innerbox/'+this.newMsg.folder);
-        setTimeout(function(){
-          _this.$children[1].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
+        this.$nextTick(() =>{
+          console.log(_this)
+          if(_this.$children[0].addTab){
+            _this.$children[0].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
+          }else if(_this.$children[1].addTab){
+            _this.$children[1].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
+          }
           _this.newList.splice(_this.newIndex,1);
           _this.newIndex = 0;
-        },500)
+        })
+        // setTimeout(function(){
+        //   // _this.$children[1].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
+        //   _this.$root.$children[0].$children[0].$children[0].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
+        //   _this.newList.splice(_this.newIndex,1);
+        //   _this.newIndex = 0;
+        // },500)
       },
       open_notify(){
         let _this = this;
@@ -256,7 +266,7 @@
           }).catch(err=>{
             console.log('获取新邮件2失败！',err)
           })
-        },1000*60*1))
+        },1000*60*5))
       },
       jumpTo(path){
         router.push(path)
@@ -313,12 +323,13 @@
           }else{
             this.sharedList = suc.data.results;
           }
-
         },(err)=>{
           console.log(err)
         })
       },
       switchShared(v){
+        console.log('admin_is_active:'+this.admin_is_active)
+        console.log('isSharedUser:'+this.isSharedUser)
         console.log(v)
         let _this = this;
         if(v == 'back'){
@@ -326,7 +337,7 @@
             cookie.setCookie('name',this.mainUsername,1);
             cookie.setCookie('token',suc.data.token,1);
             _this.$store.dispatch('setInfo');
-            this.isSharedUser = false;
+            // this.isSharedUser = false;
             this.$router.push('/mailbox/welcome')
             console.log(this)
             _this.getShared();
@@ -390,7 +401,10 @@
     computed: {
         newMsg: function(){
           return this.newList[this.newIndex]
-        }
+        },
+        token:function(){ return this.$store.getters.userInfo.token},
+        login_url:function(){ return this.$store.getters.getLoginUrl},
+        admin_is_active:function(){ return this.$store.getters.getAdminIsActive}
     }
   }
 </script>

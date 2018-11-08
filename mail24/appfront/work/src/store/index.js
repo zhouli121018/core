@@ -35,7 +35,8 @@ const store = new Vuex.Store({
     newMsgClearTimer:'',
     pfile_net_atta:[],
     toList:[],
-    login_url:''
+    login_url:'',
+    admin_is_active:false
   },
   getters:{
     userInfo(state) {
@@ -58,6 +59,9 @@ const store = new Vuex.Store({
     },
     getLoginUrl(state){
       return state.login_url
+    },
+    getAdminIsActive(state){
+      return state.admin_is_active
     }
   },
   mutations:{
@@ -98,6 +102,9 @@ const store = new Vuex.Store({
     },
     setLoginUrl(state,param){
       state.login_url = param;
+    },
+    setIsActive(state,param){
+      state.admin_is_active = param;
     }
   },
   actions: {
@@ -124,6 +131,9 @@ const store = new Vuex.Store({
     },
     setLoginUrlAction(store,param){
       store.commit('setLoginUrl',param)
+    },
+    setAdminIsActive(store,param){
+      store.commit('setIsActive',param)
     }
 
   }

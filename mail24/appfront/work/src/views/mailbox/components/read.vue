@@ -3,16 +3,20 @@
     <div class="mltabview-content">
       <div class="mltabview-panel">
         <section class="m-read" v-show="!notFond">
-          <div class="toolbar" style="background:#fff;">
+          <div class="toolbar" style="background:#fff;"
+               element-loading-text="请稍等..."
+               element-loading-spinner="el-icon-loading"
+               element-loading-background="rgba(0, 0, 0, 0.6)"
+               >
 
-            <div id="pagination" class="f-fr">
-                <div class="">
-                    <el-button-group>
-                    <el-button  size="small" icon="el-icon-arrow-left" plain round></el-button>
-                    <el-button  size="small" plain round><i class="el-icon-arrow-right el-icon--right"></i></el-button>
-                    </el-button-group>
-                </div>
-            </div>
+            <!--<div id="pagination" class="f-fr">-->
+                <!--<div class="">-->
+                    <!--<el-button-group>-->
+                    <!--<el-button  size="small" icon="el-icon-arrow-left" plain round></el-button>-->
+                    <!--<el-button  size="small" plain round><i class="el-icon-arrow-right el-icon&#45;&#45;right"></i></el-button>-->
+                    <!--</el-button-group>-->
+                <!--</div>-->
+            <!--</div>-->
 
             <el-button size="small" @click="recallMessage" v-if="msg.attrs" v-show="msg.attrs.is_canrecall" :disabled="msg.attrs.is_recall">{{msg.attrs.is_recall?'已召回':'召回邮件'}}</el-button>
             <el-button-group >
@@ -87,7 +91,7 @@
 
           </div>
 
-          <div class="mail" ref="iframe_height"  v-loading="loading">
+          <div class="mail" ref="iframe_height" >
             <div class="j-read-alert f-pr"></div>
             <div class="mail-top j-mail-top f-pr">
                 <div class="top-bar">
@@ -150,6 +154,18 @@
                                     <div class="j-contacts ">
                                         <span class="u-email j-u-email" v-for="(t,k) in to" :key="k" style="margin-right:2px;">
                                             <span class="name" >{{t}}</span>
+                                            <span class="address"></span>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr v-if="msg.cc" >
+                                <td class="info-item">抄 送:</td>
+                                <td>
+
+                                    <div class="j-contacts ">
+                                        <span class="u-email j-u-email" v-for="(t,k) in msg.cc" :key="k" style="margin-right:2px;">
+                                            <span class="name"v-if="t" >{{t[1]+' <'+t[0]+ '>'}}</span>
                                             <span class="address"></span>
                                         </span>
                                     </div>
@@ -268,10 +284,10 @@
                             <i class="el-icon-download"></i>
                             <p>下载</p>
                           </el-col>
-                          <el-col class="text-center cursorP" :span="8" title="预览">
-                            <i class="el-icon-view"></i>
-                            <p>预览</p>
-                          </el-col>
+                          <!--<el-col class="text-center cursorP" :span="8" title="预览">-->
+                            <!--<i class="el-icon-view"></i>-->
+                            <!--<p>预览</p>-->
+                          <!--</el-col>-->
                           <el-col class="text-center cursorP" :span="8" title="保存到个人网盘">
                             <i class="el-icon-star-off" ></i>
                             <p>保存</p>
@@ -345,6 +361,7 @@
     },
     data(){
       return {
+        actionLoading:false,
         is_sender:false,
         show_result:false,
         mail_results:[],
@@ -425,8 +442,17 @@
       },
       print(){
         let to = '';
+        let cc = '';
         for(let i=0;i<this.msg.to.length;i++){
           to += this.msg.to[i][1] + '&lt;'+this.msg.to[i][0]+'&gt;;'
+        }
+        if(this.msg.cc&&this.msg.cc.length>0){
+          cc += '<p>抄 送：'
+          for(let j=0;j<this.msg.cc.length;j++){
+            let t = this.msg.cc[j];
+            cc += `${t[1]+'&lt;'+t[0]+ '&gt; '}`
+          }
+          cc += '</p>'
         }
         let print_main = `
         <div>
@@ -436,6 +462,7 @@
             <p>发件人：${this.mfrom}</p>
             <p>时&nbsp;&nbsp;间：${this.time.replace('T',' ')}</p>
             <p>收件人：${to}</p>
+            ${cc}
         </div>
         <div style="position:relative;font-size:14px;padding:15px 15px 10px 15px;*padding:15px 15px 0 15px;overflow:visible;font-size: 14px;line-height:170%;min-height:100px;_height:100px;">
             <div class="border: 1px #f1f1f1 solid; margin-left: auto; margin-right: auto; width: 640px; padding: 0px 55px; background-color: #fff;">
@@ -589,6 +616,7 @@
 
           readMail(this.readId,{"folder":fid,"view":view}).then(res=>{
             pp.ruleForm2 = {
+              is_priority:false,
               is_html:true,
               is_cc:true,
               is_partsend:false,
@@ -752,10 +780,13 @@
 
       },
       actionView(view){
+        this.actionLoading = true;
         let pp = this.$parent.$parent.$parent;
         let fid = this.readFolderId;
         readMail(this.readId,{"folder":fid,"view":view}).then(res=>{
+            this.actionLoading = false;
             pp.ruleForm2 = {
+              is_priority:false,
               is_html:true,
               is_cc:true,
               is_partsend:false,
@@ -803,6 +834,7 @@
             pp.addTab('compose'+view+' ',data.subject,data.uid,fid)
 
           }).catch(err=>{
+            this.actionLoading = false;
           console.log(err)
         })
       },

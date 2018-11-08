@@ -1,6 +1,6 @@
 <template>
     <div class="mltabview-content" :id="'compose'+rid">
-      <div class="mltabview-panel">
+      <div class="mltabview-panel compose_style">
         <section class="m-mlcompose m_box_height" v-if="!send_suc">
           <div class="toolbar" style="background:#fff;">
             <div id="pagination" class="f-fr">
@@ -9,7 +9,9 @@
                 </div>
             </div>
 
-            <el-button size="small" type="primary" @click="sentMail('sent')" :loading="sendLoading">{{ruleForm2.is_schedule?"定时发送":"发送"}}</el-button>
+            <el-button size="small" type="primary" @click="sentMail('sent')" element-loading-text="请稍等..."
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.6)" >{{ruleForm2.is_schedule?"定时发送":"发送"}}</el-button>
             <el-button-group >
               <el-button size="small" @click="preview">预览</el-button>
               <el-button size="small" @click="sentMail('save_draft')">存草稿</el-button>
@@ -29,7 +31,7 @@
                   </el-input>
 
                   <el-tree class="filter-tree" :data="contactList" :props="defaultProps" :filter-node-method="filterNode"
-                   @node-click="selectContact"  accordion :indent="2" ref="tree2" v-loading="contact_loading">
+                   @node-click="selectContact"  accordion :indent="2" ref="tree2" >
                   </el-tree>
                 </el-tab-pane>
 
@@ -130,8 +132,8 @@
                       <span class="plan_style" v-if="f.size">{{f.size | mailsize }}</span>
                       <span class="plan_style" v-if="!f.size">{{f.file_size }}</span>
                       <span class="attach_actions">
-                        <el-button size="mini" type="primary" plain @click="delete_attach(f.id,k)">删除</el-button>
-                        <el-button size="mini" type="primary" plain>下载</el-button>
+                        <el-button size="mini" type="text" plain @click="delete_attach(f.id,k)">删除</el-button>
+                        <el-button size="mini" type="text" plain>下载</el-button>
                       </span>
                     </div>
                   </el-form-item>
@@ -200,7 +202,7 @@
               <div class=" footer_height" style="padding-left: 10px;">
                 <div class="bt-hd-wrap">
                   <el-checkbox v-model="ruleForm2.is_save_sent">保存到"已发送"</el-checkbox>
-                  <el-checkbox >设为"紧急"</el-checkbox>
+                  <el-checkbox v-model="ruleForm2.is_priority">设为"紧急"</el-checkbox>
                   <el-checkbox v-model="ruleForm2.is_confirm_read">已读回执</el-checkbox>
                   <el-checkbox v-model="ruleForm2.is_password" :disabled="ruleForm2.is_schedule||ruleForm2.is_burn" @change="changeBottom">邮件加密</el-checkbox>
                   <el-checkbox v-model="ruleForm2.is_schedule" :disabled="ruleForm2.is_password||ruleForm2.is_burn" @change="changeBottom('sch')">定时发送</el-checkbox>
@@ -613,6 +615,7 @@
         maillist_copyer:[],
         fileList:[],
         ruleForm2:{
+          is_priority:false,
           is_html:true,
           is_cc:true,
           is_partsend:false,
@@ -1478,6 +1481,7 @@
         this.ruleForm2.cc = [];
         this.ruleForm2.attachments = [];
         this.ruleForm2.net_attachments = [];
+        this.ruleForm2.company_attachments = [];
 
         if(this.ruleForm2.is_partsend){
           this.format(this.partSendList,this.ruleForm2.to)
@@ -1517,7 +1521,11 @@
           if(this.fileList[i].filename){
             this.ruleForm2.attachments.push(this.fileList[i].id)
           }else{
-            this.ruleForm2.net_attachments.push(this.fileList[i].id)
+            if(this.fileList[i].is_company){
+              this.ruleForm2.company_attachments.push(this.fileList[i].id)
+            }else{
+              this.ruleForm2.net_attachments.push(this.fileList[i].id)
+            }
           }
         }
         let param = this.ruleForm2;
@@ -1530,9 +1538,8 @@
         if(type == 'sent'){
           this.sendLoading = true;
         }
-        this.content = '';
         mailSent(param).then(res=>{
-          console.log(res)
+          if(this.$store.getters.getTimer){clearInterval(this.$store.getters.getTimer)}
           this.sendLoading = false;
           this.$parent.$parent.$parent.getFloderfn();
           let info = type=='sent'?"发送成功！":"保存草稿成功！";
@@ -2102,11 +2109,11 @@
   }
 </script>
 <style>
-  .f-csp:hover,.f-csp.selected{
+  #app .compose_style .f-csp:hover,#app .compose_style .f-csp.selected{
     border-color:#2ea962 !important;
     box-shadow: 0 0 0 1px #2ea962;
   }
-  .template_box ul.template_ul>li{
+  #app .compose_style .template_box ul.template_ul>li{
     position: relative;
     font-size: 12px;
     height: 72px;
@@ -2119,10 +2126,10 @@
     border: 1px solid #ddd;
     text-align: left;
   }
-  .template_box ul.template_ul>li.selected i.choose{
+  #app .compose_style .template_box ul.template_ul>li.selected i.choose{
     display:inline-block;
   }
-   .template_box ul.template_ul>li i.choose{
+   #app .compose_style .template_box ul.template_ul>li i.choose{
      display:none;
      font-size:14px;
      color:#2ea962;
@@ -2131,105 +2138,105 @@
     bottom: 6px;
    }
 
-  .m-mlcompose{
+  #app .compose_style .m-mlcompose{
     overflow: auto;
   }
-  .label_style{
+  #app .compose_style .label_style{
     display:inline-block;
     width:100px;
     text-align:right;
   }
-  .delete_hover{
+  #app .compose_style .delete_hover{
     color:red;
     display:none;
   }
-  .hover_show_box:hover .delete_hover{
+  #app .compose_style .hover_show_box:hover .delete_hover{
     display:inline-block;
   }
-  .address_box{
+  #app .compose_style .address_box{
     border:1px solid #dcdfe6;height:180px;margin-bottom:20px;overflow-y: auto;padding:4px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
   }
-  .address_box:hover,.address_box.active{
+  #app .compose_style .address_box:hover,#app .compose_style .address_box.active{
     border-color:#409EFF
   }
-  .address_box.active{
+  #app .compose_style .address_box.active{
     border-color:#409EFF;
     box-shadow: 0 0 5px #409eff;
   }
-  .show_contact_style{
+  #app .compose_style .show_contact_style{
     color:#409EFF;
     text-decoration: underline;
   }
-  .show_contact_style:hover{
+  #app .compose_style .show_contact_style:hover{
     background:#409EFF;
     color:#fff;
     padding:4px 0;
     border-radius: 3px;
   }
-  .tree {
+  #app .compose_style .tree {
   overflow-y: auto;
   overflow-x: auto;
   /* width: 80px; */
   height: 500px;
   background-color: #ffffff;
 }
-.el-tree {
+#app .compose_style .el-tree {
   min-width: 100%;
   font-size: 14px;
   display: inline-block !important;
 }
-  .bico {
+  #app .compose_style .bico {
     display: inline-block;
     width: 32px;
     height: 32px;
     background-image: url(../../../assets/img/icons.png);
   }
-  .margin-bottom-5{
+  #app .compose_style .margin-bottom-5{
     margin-bottom:5px;
   }
-  .show_contact{
+  #app .compose_style .show_contact{
     opacity: 0;
     filter: alpha(opacity=0);
   }
-  .m-mlcompose .mn-form.right0{
+  #app .compose_style .m-mlcompose .mn-form.right0{
     right:0;
 
   }
-  .m-mlcompose .upload-demo{
+  #app .compose_style .m-mlcompose .upload-demo{
     display:inline-block;
   }
-  .attach_actions{
+  #app .compose_style .attach_actions{
     display:none;
   }
-  .attach_hover .attach_actions{
+  #app .compose_style .attach_hover .attach_actions{
     display:inline-block;
   }
-  .attach_box .el-button--mini{
+  #app .compose_style .attach_box .el-button--mini{
     border:none;
     color:#409EFF;
     padding: 7px 10px;
   }
-  .right_menu .el-tabs__nav-scroll{
+  #app .compose_style .right_menu .el-tabs__nav-scroll{
     padding-left:10px;
   }
-  .right_menu .el-tabs__content{
+  #app .compose_style .right_menu .el-tabs__content{
     padding:0 10px;
   }
-  .mn-aside.right_menu{
+  #app .compose_style .mn-aside.right_menu{
     padding:0;
     width:240px;
     box-sizing:border-box;
   }
-  .right_menu ul li{
+ #app .compose_style  .right_menu ul li{
     width:50%;
     float:left;
     text-align:center;
     margin-bottom:20px;
   }
-  .right_menu ul li a{
+  #app .compose_style .right_menu ul li a{
     border:2px solid #e3e4e5;
     display:inline-block;
     position:relative;
@@ -2237,11 +2244,11 @@
     height: 80px;
 
   }
-  .right_menu ul li a.active{
+  #app .compose_style .right_menu ul li a.active{
     border:2px solid #449115;
     box-shadow:0 0  10px #449115;
   }
-  .right_menu ul li a.active .bg{
+  #app .compose_style .right_menu ul li a.active .bg{
     background: url(../img/selected.gif) no-repeat;
     width: 78px;
     height: 78px;
@@ -2251,34 +2258,34 @@
     top: 0;
     left: 0;
   }
-  .compose_title input{
+  #app .compose_style .compose_title input{
     border:none;
     /*border-bottom:1px solid #dcdfe6;*/
     border-radius:0;
   }
-  .compose_title .el-form-item{
+  #app .compose_style .compose_title .el-form-item{
     border-bottom:1px solid #dcdfe6;
     margin-bottom:6px;
   }
-  .compose_title .el-select{
+  #app .compose_style .compose_title .el-select{
     width:100%;
   }
-  .compose_title .el-input--mini{
+  #app .compose_style .compose_title .el-input--mini{
     font-size:15px;
   }
-  .compose_footer>div{
+  #app .compose_style .compose_footer>div{
     padding:0 14px;
   }
-  .m-mlcompose .mn-form .form-edr.compose_editor{
+  #app .compose_style .m-mlcompose .mn-form .form-edr.compose_editor{
     /*position:absolute;*/
     /*top:224px;*/
     /*bottom:72px;*/
     /*height:auto;*/
   }
-  .compose_editor [data-name="preview"]{
+ #app .compose_style  .compose_editor [data-name="preview"]{
     display:none;
   }
-  .mailbox_s{
+  #app .compose_style .mailbox_s{
     float:left;white-space:nowrap;
     cursor:pointer;
     border:1px solid #a3d9d2;
@@ -2287,18 +2294,18 @@
     padding:0 4px;
     border-radius:12px;
   }
-  .mailbox_s.error{
+  #app .compose_style .mailbox_s.error{
     background-color: #f2dede;
     border-color: #ebccd1;
     color: #a94442;
   }
-  .mailbox_s>b{
+  #app .compose_style .mailbox_s>b{
     margin-right:4px;
   }
-  .compose_title .no_padding .el-input__inner{
+  #app .compose_style .compose_title .no_padding .el-input__inner{
     padding:0;
   }
-  .padding_15{
+  #app .compose_style .padding_15{
     padding-left:15px;
   }
 </style>

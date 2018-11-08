@@ -26,7 +26,7 @@
       </div>
       <div class="aside">
         <div class="loginArea normalForm" curtype="normalForm">
-          <div id="login_box">
+          <div id="login_box" style="min-width:200px;">
 
 
             <!-- <el-radio-group v-model="labelPosition" size="small">

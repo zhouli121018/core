@@ -12,7 +12,7 @@
           :total="loginData.total">
         </el-pagination>
         <el-table
-          v-loading="loginData.loading"
+
           :data="loginData.tableData"
           stripe
           :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}"
@@ -63,7 +63,7 @@
           :total="sendData.total">
         </el-pagination>
         <el-table ref="sendTable" id="sendTable"
-          v-loading="sendData.loading"
+
           :data="sendData.tableData"
           stripe
           :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}"
@@ -160,7 +160,7 @@
           :total="mailData.total">
         </el-pagination>
         <el-table
-          v-loading="mailData.loading"
+
           :data="mailData.tableData"
           stripe
           :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}"
@@ -222,7 +222,7 @@
           :total="deleteData.total">
         </el-pagination>
         <el-table
-          v-loading="deleteData.loading"
+
           :data="deleteData.tableData"
           stripe
           :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}"

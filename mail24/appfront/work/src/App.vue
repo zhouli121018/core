@@ -31,7 +31,9 @@
     line-height: 1.42857143;
     color: #333;
     background-color: #fff;
-    overflow: hidden;
+    /*overflow: hidden;*/
+    min-width: 980px;
+    overflow: auto;
   }
   ul,li,p,h1,h2,h3,h4{
     padding:0;

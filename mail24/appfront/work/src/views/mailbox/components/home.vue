@@ -186,19 +186,30 @@
         }
       }
     },
+    methods:{
+      welcomefn(){
+        welcome().then(res=>{
+          console.log(res.data);
+          this.userinfo = res.data.userinfo;
+          this.weatherinfo = res.data.weatherinfo;
+          this.$store.dispatch('setLoginUrlAction',res.data.login_url)
+          this.$store.dispatch('setAdminIsActive',res.data.is_active)
+        })
+      },
+    },
     mounted: function(){
-      welcome().then(res=>{
-        console.log(res.data);
-        this.userinfo = res.data.userinfo;
-        this.weatherinfo = res.data.weatherinfo;
-        this.$store.dispatch('setLoginUrlAction',res.data.login_url)
-      })
+      this.welcomefn()
     },
     computed: {
       username() { // 获取store中的数据
         return this.$store.state.userInfo.name;
       }
     },
+    watch: {
+      username(nv,ov){
+        this.welcomefn();
+      },
+    }
   }
 </script>
 

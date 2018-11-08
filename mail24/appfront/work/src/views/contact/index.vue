@@ -219,15 +219,6 @@
   }
   .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
     z-index: 2;
-    /*color: #fff !important;*/
-    /*background-color: #428bca !important;*/
-    /*border-color: #428bca !important;*/
-
-    /*background-color: #e6e6e6!important;*/
-    /*border-color: #e6e6e6 !important;*/
-
-    /*background-color: rgb(160, 207, 255) !important;*/
-    /*border-color: rgb(160, 207, 255) !important;*/
 
     color: #67c23a;
     background: #f0f9eb;
@@ -236,17 +227,9 @@
   .el-tree-node:focus>.el-tree-node__content, .el-tree-node__content:hover{
     z-index: 2;
 
-    /*background-color: rgb(160, 207, 255) !important;*/
-    /*border-color: rgb(160, 207, 255) !important;*/
 
     background-color: #e6e6e6 !important;
     border-color: #e6e6e6 !important;
 
-    /*background-color: #f0f7ff !important;*/
-    /*border-color: #f0f7ff !important;*/
-
-    /*color: #fff !important;*/
-    /*background-color: #428bca !important;*/
-    /*border-color: #428bca !important;*/
   }
 </style>
