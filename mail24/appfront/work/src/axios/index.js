@@ -45,7 +45,11 @@ const tryHideFullScreenLoading = function () {
 // http request 拦截器
 axios.interceptors.request.use(
   config => {
-    if(config.url.indexOf('login')==-1&&!cookie.getCookie('token')){
+    console.log(config.url)
+    if( config.url.indexOf('/setting/secret-reset')>-1){
+      return config;
+    }
+    if(config.url.indexOf('login')==-1 &&!cookie.getCookie('token')){
       store.dispatch('setInfo');
       router.push('/')
       return;
@@ -56,8 +60,9 @@ axios.interceptors.request.use(
       config.url += "?timestamp="+new Date().getTime();
     }
     showFullScreenLoading()
-    if (store.state.userInfo.token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
-      config.headers.Authorization = `JWT ${store.state.userInfo.token}`;
+    if (cookie.getCookie('token')) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
+      config.headers.Authorization = `JWT ${cookie.getCookie('token')}`;
+      store.dispatch('setInfo');
     }
     return config;
   },

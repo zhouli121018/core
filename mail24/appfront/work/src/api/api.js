@@ -149,6 +149,16 @@ export const getTemplateList = (params) => { return axios.get(`${host}/setting/t
 export const getTemplateById = (id) => { return axios.get(`${host}/setting/template/${id}`) };
 //获取部门邮箱 /api/contact/to/?ctype=oab&cid=0
 export const getDeptMail = (params) => { return axios.get(`${host}/contact/to/`,{params:params}) };
+//查看邮件页面直接回复 /api/mail/message/reply/
+export const replayMessage = params =>{ return axios.post(`${host}/mail/message/reply/`,params) };
+
+//密码重置密码第一步 /api/setting/secret-reset/1/
+export const resetSecret1 = params =>{ return axios.post(`${host}/setting/secret-reset/1/`,params) };
+//密保重置密码第二步 /api/setting/secret-reset/2/
+export const resetSecret2 = params =>{ return axios.post(`${host}/setting/secret-reset/2/`,params) };
+//密保重置密码第三步 /api/setting/secret-reset/3/
+export const resetSecret3 = params =>{ return axios.post(`${host}/setting/secret-reset/3/`,params) };
+
 
 
 /* ***********************  设置中心 *********************** */

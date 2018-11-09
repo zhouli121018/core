@@ -314,21 +314,21 @@
 
           </div>
           <footer class="quick-reply j-quick-reply ">
-            <div class="quick-reply-default quick-reply-item j-reply-default" v-show="!replying" @click="replying=true">快捷回复给所有人
+            <div class="quick-reply-default quick-reply-item j-reply-default" v-if="before_replying" @click="ready_reply">快捷回复给所有人
             </div>
 
             <form class="quick-reply-form quick-reply-item j-reply-form tran" v-show="replying">
-              <textarea name="replyContent" class="reply-textarea" rows="6"></textarea>
-              <span class="u-btn u-btn-primary" >发送</span>
-              <span class="u-btn u-btn-default" @click="replying=false">取消</span>
-              <span class="f-fr"><a href="javascript:void(0)" data-type="compose">切换到完整写信模式</a></span>
+              <textarea name="replyContent" class="reply-textarea" rows="6" v-model="content"></textarea>
+              <span class="u-btn u-btn-primary" @click="reply">发送</span>
+              <span class="u-btn u-btn-default" @click="cancel_reply">取消</span>
+              <span class="f-fr"><a href="javascript:void(0)" @click="actionView(4)">切换到完整写信模式</a></span>
             </form>
 
 
-            <div class="quick-reply-item f-dn j-reply-sending">
+            <div class="quick-reply-item  j-reply-sending" v-if="center_replying">
                 <span class="reply-state reply-sending">邮件发送中...</span>
             </div>
-            <div class="quick-reply-item f-dn j-reply-result">
+            <div class="quick-reply-item  j-reply-result" v-if="after_replying">
                 <span class="reply-state reply-success j-reply-success">信件发送成功</span>
                 <span class="reply-state reply-fail j-reply-fail">信件发送失败</span>
                 <a href="javascript:void(0)" data-type="open-quick-reply">再回一封邮件</a>
@@ -351,7 +351,7 @@
 
 <script>
 
-  import {readMail,downloadAttach,mailDecode,moveMails,messageFlag,rejectMessage,zipMessage,pruneMessage,emlMessage,pabMessage,deleteMail,getMessageStatus,messageRecall,notifyRecall,notifyMessage} from '@/api/api';
+  import {readMail,downloadAttach,mailDecode,moveMails,messageFlag,rejectMessage,zipMessage,pruneMessage,emlMessage,pabMessage,deleteMail,getMessageStatus,messageRecall,notifyRecall,notifyMessage,replayMessage} from '@/api/api';
   export default  {
     name:'Read',
     props:{
@@ -361,6 +361,11 @@
     },
     data(){
       return {
+        after_replying:false,
+        center_replying:false,
+        before_replying:true,
+        replying:false,
+        content:'',
         actionLoading:false,
         is_sender:false,
         show_result:false,
@@ -394,7 +399,6 @@
         activeNames: ['1'],
         notFond:false,
         msg:'',
-        replying:false,
         showDetails:false,
         iframeState:false,
         subject:'主题',
@@ -437,6 +441,48 @@
       }
     },
     methods:{
+      ready_reply(){
+        this.before_replying = false;
+        this.center_replying = false;
+        this.replying=true;
+      },
+      cancel_reply(){
+        this.replying=false;
+        this.center_replying=false;
+        this.before_replying = true;
+      },
+      reply(){
+        if(!this.content){
+          this.$message({
+            type:'error',
+            message:'请填写邮件内容！'
+          })
+          return;
+        }
+        let param = {
+          folder:this.readFolderId,
+          uid:this.readId,
+          html_text:this.content
+        }
+        this.replying=false;
+        this.center_replying=true;
+        replayMessage(param).then(res=>{
+          this.$message({
+            type:'success',
+            message:'信件发送成功！！'
+          })
+          this.center_replying = false;
+          this.before_replying = true;
+        }).catch(err=>{
+          this.$message({
+            type:'error',
+            message:'信件发送失败！'
+          })
+          this.center_replying = false;
+          this.before_replying = true;
+          console.log('直接回复错误！',err)
+        })
+      },
       closeTab(tagName){
         this.$parent.$parent.$parent.removeTab(tagName);
       },

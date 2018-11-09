@@ -17,7 +17,7 @@
                   <ul class="u-list u-list-horizontal j-link-trigger">
                     <li>
                       <span class="headings">我的邮箱:</span>
-                      <a href="#" class="link" ><span class="mark">{{userinfo.unread}}</span> 封未读邮件</a>
+                      <a href="#" class="link" @click.prevent="viewMails"><span class="mark">{{userinfo.unread}}</span> 封未读邮件</a>
                     </li>
                   </ul>
                   <ul class="u-list u-list-horizontal">
@@ -35,7 +35,7 @@
                   <ul class="u-list u-list-horizontal">
                     <li>最近登录: {{userinfo.last_login}}</li>
                     <li>{{userinfo.login_ip}} ({{userinfo.login_isp}})</li>
-                    <li><a href="#">详情</a></li>
+                    <li><a href="#" @click.prevent="search_details">详情</a></li>
                   </ul>
 
                 </div>
@@ -92,28 +92,30 @@
                   <li>
                     <div class="u-img icon-feature icon-check"></div>
                     <div class="u-img-text">
-                      <a href="javascript:void(0);" class="u-img-title" data-trigger="logs">自助查询</a>
+                      <a href="javascript:void(0);" class="u-img-title" @click="search_details">自助查询</a>
                       <div class="u-img-desc">邮箱使用记录查询，支持邮件召回、异地登录提醒</div>
                     </div>
                   </li>
                   <li>
                     <div class="u-img icon-feature icon-file"></div>
                     <div class="u-img-text">
-                      <a href="javascript:void(0);" class="u-img-title" data-trigger="file.transitcenter">文件中转站</a>
+                      <a href="javascript:void(0);" class="u-img-title" @click="view_file">文件中转站</a>
                       <div class="u-img-desc">支持主流浏览器续传文件（支持Chrome，Safari）</div>
                     </div>
                   </li>
                   <li>
                     <div class="u-img icon-feature icon-schedule"></div>
                     <div class="u-img-text">
-                      <a href="javascript:void(0);" class="u-img-title" data-trigger="calendar">会议与日程</a>
+                      <a href="javascript:void(0);" class="u-img-title" @click="view_calendar">会议与日程</a>
                       <div class="u-img-desc">全新改版，高级版支持会议邀请和日程共享</div>
                     </div>
                   </li>
                   <li>
                     <div class="u-img icon-feature icon-client"></div>
                     <div class="u-img-text">
-                      <a href="http://software.icoremail.net/coremail-plugin/download.html" target="_blank" class="u-img-title">客户端插件</a>
+                      <!--<a href="http://software.icoremail.net/coremail-plugin/download.html" target="_blank" class="u-img-title">客户端插件</a>-->
+                      <a href="#" @click.prevent="view_contact" class="u-img-title">通讯录</a>
+                      <!--<div class="u-img-desc">可在Outlook，Foxmail中实现通讯录查询同步等功能</div>-->
                       <div class="u-img-desc">可在Outlook，Foxmail中实现通讯录查询同步等功能</div>
                     </div>
                   </li>
@@ -187,6 +189,21 @@
       }
     },
     methods:{
+      view_contact(){
+        this.$router.push('/contact/pab')
+      },
+      view_calendar(){
+        this.$router.push('/calendar/index')
+      },
+      view_file(){
+        this.$router.push('/file/pfile')
+      },
+      viewMails(){
+        this.$router.push('/mailbox/innerbox/INBOX')
+      },
+      search_details(){
+        this.$router.push('/search')
+      },
       welcomefn(){
         welcome().then(res=>{
           console.log(res.data);
@@ -202,7 +219,7 @@
     },
     computed: {
       username() { // 获取store中的数据
-        return this.$store.state.userInfo.name;
+        return this.$store.getters.userInfo.name;
       }
     },
     watch: {

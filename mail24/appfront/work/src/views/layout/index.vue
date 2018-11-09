@@ -8,7 +8,8 @@
     <aside class="lysidebar j-layout-nav">
       <div class="icon j-switch-mainpage"  title="主页" @click="goHome"><i class="iconfont icon-iconhome"></i></div>
       <div class="avatar">
-        <a href="javascript:void(0);" class="u-img u-img-round">
+
+        <a href="#" class="u-img u-img-round" v-popover:popover @click.prevent="triggerPop">
           <img class="j-avatar" alt="avatar" src="@/assets/img/man.png">
         </a>
       </div>
@@ -24,9 +25,9 @@
           <span></span>
         </div>
       </div>
-      <div class="icon icon-help j-to-helpcenter " data-i18n="common/nav_help" i18n-target="title" title="帮助中心">
-        <i class="iconfont icon-iconhelp1"></i>
-      </div>
+      <!--<div class="icon icon-help j-to-helpcenter " data-i18n="common/nav_help" i18n-target="title" title="帮助中心">-->
+        <!--<i class="iconfont icon-iconhelp1"></i>-->
+      <!--</div>-->
       <div class="icon icon-bottom" :class="{active:activeTab==5}" data-trigger="setting" role="toggle" data-i18n="common/nav_setting" i18n-target="title" title="设置" @click="changeTab(5)">
         <i class="iconfont icon-iconsetupcenter"></i>
       </div>
@@ -41,10 +42,10 @@
             </a>
           </div>
           <ul class="u-list u-list-horizontal">
-            <li id="qqLi"><a href="#">QQ咨询</a></li>
-            <li id="cloud">
-              <a target="_blank" href="https://cloud.icoremail.net/icmcenter/expCenter/showEvaXT5?userid=1qfUTJjqUn7UT7jmUntU7UjgUexUfJjmUntUa7jWUerUr7UAU1fUrJULUnrUTJjl" style="color:red;font-weight: bold;" data-target="title" data-i18n="main.CommentAward">评价赢大奖</a>
-            </li>
+            <!--<li id="qqLi"><a href="#">QQ咨询</a></li>-->
+            <!--<li id="cloud">-->
+              <!--<a target="_blank" href="https://cloud.icoremail.net/icmcenter/expCenter/showEvaXT5?userid=1qfUTJjqUn7UT7jmUntU7UjgUexUfJjmUntUa7jWUerUr7UAU1fUrJULUnrUTJjl" style="color:red;font-weight: bold;" data-target="title" data-i18n="main.CommentAward">评价赢大奖</a>-->
+            <!--</li>-->
             <li><a target="_blank" href="#" @click.prevent="goToAdmin" v-if="admin_is_active&&!isSharedUser">后台管理</a></li>
             <li><a href="#" class="skin-primary-hover-color f-dn lunkr-bandage f-pr">移动端</a></li>
             <li><a href="#" class="skin-primary-hover-color f-dn f-pr" >即时沟通</a></li>
@@ -54,7 +55,7 @@
               <b v-if="sharedList.length==0&&!isSharedUser">{{this.$store.getters.userInfo.name}}</b>
               <el-dropdown trigger="click" placement="bottom-start" @command="switchShared" v-if="sharedList.length>0||isSharedUser">
                 <b class="el-dropdown-link" title="切换邮箱账号">
-                  {{this.$store.state.userInfo.name}}<i class="el-icon-arrow-down el-icon--right"></i>
+                  {{userName}}<i class="el-icon-arrow-down el-icon--right"></i>
                 </b>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item disabled>关联共享邮箱</el-dropdown-item>
@@ -128,7 +129,7 @@
   import store from '@/store'
   import router from '@/router'
   import cookie from '@/assets/js/cookie';
-  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail } from '@/api/api'
+  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome } from '@/api/api'
   export default {
     data:function(){
       return {
@@ -150,6 +151,10 @@
       }
     },
     methods:{
+      triggerPop(){
+        console.log(1)
+        $('#trigger_btn').click();
+      },
       goToAdmin(){
         $("#id_ssl_form").submit();
         return;
@@ -335,6 +340,7 @@
         if(v == 'back'){
           backLogin().then(suc=>{
             cookie.setCookie('name',this.mainUsername,1);
+            // cookie.setCookie('name',v.username,1);
             cookie.setCookie('token',suc.data.token,1);
             _this.$store.dispatch('setInfo');
             // this.isSharedUser = false;
@@ -364,7 +370,7 @@
       },
 
     },
-    mounted(){
+    created(){
       this.getShared();
       if(this.$route.path.indexOf('/mailbox')==0){
           this.activeTab = 0;
@@ -380,6 +386,12 @@
           this.activeTab = 5;
         }
         this.open_notify();
+      welcome().then(res=>{
+        console.log(res.data);
+        this.userinfo = res.data.userinfo;
+        this.$store.dispatch('setLoginUrlAction',res.data.login_url)
+        this.$store.dispatch('setAdminIsActive',res.data.is_active)
+      })
     },
     watch:{
       $route(nv,ov){
@@ -404,7 +416,10 @@
         },
         token:function(){ return this.$store.getters.userInfo.token},
         login_url:function(){ return this.$store.getters.getLoginUrl},
-        admin_is_active:function(){ return this.$store.getters.getAdminIsActive}
+        admin_is_active:function(){ return this.$store.getters.getAdminIsActive},
+        userName(){
+          return this.$store.getters.userInfo.name
+        }
     }
   }
 </script>

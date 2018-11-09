@@ -841,7 +841,7 @@
         console.log(value);
       },
       noSelect(){
-
+        this.$refs.innerTable.clearSelection();
       },
       getMessageList(){
         this.loading = true;
@@ -979,6 +979,45 @@
             body: ''
           };
           this.getMessageList();
+          if(newValue == 'Drafts'){
+            this.viewItems = [
+              {id:'',text:'全部邮件',divided:false},
+              {id:'unseen',text:'未读邮件',divided:false},
+              {id:'seen',text:'已读邮件',divided:false},
+              {id:'flagged',text:'已标记邮件',divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
+              {id:'other',text:'其他标记',divided:false,children:[
+                  {id:'KEYWORD umail-green',text:'绿旗',classN:'flag-green'},
+                  {id:'KEYWORD umail-orange',text:'橙旗',classN:'flag-orange'},
+                  {id:'KEYWORD umail-blue',text:'蓝旗',classN:'flag-blue'},
+                  {id:'KEYWORD umail-pink',text:'粉旗',classN:'flag-pink'},
+                  {id:'KEYWORD umail-cyan',text:'青旗',classN:'flag-cyan'},
+                  {id:'KEYWORD umail-yellow',text:'黄旗',classN:'flag-yellow'},
+                  {id:'KEYWORD umail-purple',text:'紫旗',classN:'flag-purple'},
+                  {id:'KEYWORD umail-gray',text:'灰旗',classN:'flag-gray'}
+                ]},
+              {id:'unflagged',text:'未标记邮件',divided:false,classN:'iconfont icon-iconflat'}
+            ]
+          }else{
+            this.viewItems = [
+              {id:'',text:'全部邮件',divided:false},
+              {id:'unseen',text:'未读邮件',divided:false},
+              {id:'seen',text:'已读邮件',divided:false},
+              {id:'flagged',text:'已标记邮件',divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
+              {id:'other',text:'其他标记',divided:false,children:[
+                  {id:'KEYWORD umail-green',text:'绿旗',classN:'flag-green'},
+                  {id:'KEYWORD umail-orange',text:'橙旗',classN:'flag-orange'},
+                  {id:'KEYWORD umail-blue',text:'蓝旗',classN:'flag-blue'},
+                  {id:'KEYWORD umail-pink',text:'粉旗',classN:'flag-pink'},
+                  {id:'KEYWORD umail-cyan',text:'青旗',classN:'flag-cyan'},
+                  {id:'KEYWORD umail-yellow',text:'黄旗',classN:'flag-yellow'},
+                  {id:'KEYWORD umail-purple',text:'紫旗',classN:'flag-purple'},
+                  {id:'KEYWORD umail-gray',text:'灰旗',classN:'flag-gray'}
+                ]},
+              {id:'unflagged',text:'未标记邮件',divided:false,classN:'iconfont icon-iconflat'},
+              {id:'ANSWERED',text:'已回复',divided:true,classN:'iconfont icon-iconback greencolor'},
+              {id:'KEYWORD umail-forword',text:'已转发',divided:false,classN:'iconfont icon-Forward greencolor'},
+            ]
+          }
         },
       checkedMails(v){
           // console.log(v)

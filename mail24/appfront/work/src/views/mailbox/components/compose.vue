@@ -17,8 +17,8 @@
               <el-button size="small" @click="sentMail('save_draft')">存草稿</el-button>
             </el-button-group>
 
-             <el-button  size="small" plain>
-                取消
+             <el-button  size="small" plain @click="closeTab">
+                关闭
             </el-button>
             <!--<el-button type="warning" size="small" @click="open_notify">消息提醒</el-button>-->
           </div>
@@ -27,16 +27,42 @@
               <el-tabs v-model="activeName">
                 <!--个人通讯录-->
                 <el-tab-pane label="个人通讯录" name="first">
-                  <el-input  placeholder="搜索" prefix-icon="el-icon-search" v-model="filterText">
+                  <el-input  placeholder="搜索" prefix-icon="el-icon-search" v-model="filterText" size="small" style="margin:6px 0;">
                   </el-input>
 
                   <el-tree class="filter-tree" :data="contactList" :props="defaultProps" :filter-node-method="filterNode"
                    @node-click="selectContact"  accordion :indent="2" ref="tree2" >
                   </el-tree>
+
+                  <!--<el-input v-model="member_search" placeholder="请输入关键字搜索" class="input-with-select" size="small" style="margin:6px 0;">-->
+
+                    <!--<el-button slot="append" icon="el-icon-search" @click="search_member"></el-button>-->
+                  <!--</el-input>-->
+
+                  <!--<el-select v-model="selected_group_id" placeholder="请选择"  @change="change_group" style="margin:10px 0;">-->
+                    <!--<el-option  v-for="item in contact_groups" :key="item.id" :label="item.groupname" :value="item.id">-->
+                      <!--<span style="float: left">{{ item.groupname }}</span>-->
+                      <!--<span style="float: right; color: #8492a6; font-size: 13px">({{ item.count }})</span>-->
+                    <!--</el-option>-->
+                  <!--</el-select>-->
+                  <!--<div style="padding-bottom:20px;border-bottom:1px dashed #aaa;margin-bottom:10px;">-->
+                    <!--<div v-for="(m,k) in memberList" :key="k" class="group_member" :title="m.username">-->
+                      <!--<span>{{m.name}}</span><span>&nbsp;&lt;{{m.username}}&gt;</span>-->
+                    <!--</div>-->
+                  <!--</div>-->
+                  <!--<el-pagination-->
+                    <!--style="text-align:center;"-->
+                    <!--@current-change="contact_page_change"-->
+                    <!--background-->
+                    <!--layout="prev,next"-->
+                    <!--prev-text=" 上一页 "-->
+                    <!--next-text=" 下一页 "-->
+                    <!--:total="100">-->
+                  <!--</el-pagination>-->
                 </el-tab-pane>
 
                 <!--信纸-->
-                <el-tab-pane label="信纸" name="second">
+                <el-tab-pane label="信纸" name="second" class="page">
                   <ul >
                     <li><a href="#" @click="checkBgFn('noBg')">
                       <img src="../img/none_zh.png" alt="">
@@ -133,7 +159,7 @@
                       <span class="plan_style" v-if="!f.size">{{f.file_size }}</span>
                       <span class="attach_actions">
                         <el-button size="mini" type="text" plain @click="delete_attach(f.id,k)">删除</el-button>
-                        <el-button size="mini" type="text" plain>下载</el-button>
+                        <!--<el-button size="mini" type="text" plain>下载</el-button>-->
                       </span>
                     </div>
                   </el-form-item>
@@ -577,6 +603,26 @@
         }
       };
       return {
+        member_search:'',
+        member_page:1,
+        member_group_id:0,
+        selected_group_id:0,
+        contact_groups:[
+          {id:1,groupname:'组名1',count:10,is_sysname:false},
+          {id:2,groupname:'组名2',count:12,is_sysname:false},
+          {id:3,groupname:'组名3',count:15,is_sysname:false}
+        ],
+        memberList:[
+          {username:'512167072@qq.com512167072',name:'周莉'},
+          {username:'512167072@qq.com',name:'周莉'},
+          {username:'512167072@qq.com',name:'周莉'},
+          {username:'512167072@qq.com',name:'周莉'},
+          {username:'512167072@qq.com',name:'周莉'},
+          {username:'512167072@qq.com',name:'周莉'},
+          {username:'512167072@qq.com',name:'周莉'},
+          {username:'512167072@qq.com',name:'周莉'},
+          {username:'512167072@qq.com',name:'周莉'},
+        ],
         sendLoading:false,
         oabchildren:[],
         contactSelection:[],
@@ -738,6 +784,53 @@
       };
     },
     methods:{
+      closeTab(){
+        let tagName = this.$parent.$parent.$parent.editableTabsValue2;
+        this.$parent.$parent.$parent.removeTab(tagName);
+      },
+      search_member(){
+        this.member_page = 1;
+        this.getMemberList();
+      },
+      contact_page_change(val){
+        console.log(val)
+        this.member_page = val;
+        this.getMemberList();
+      },
+      change_group(val){
+        this.member_group_id = val;
+        this.member_page = 1;
+        this.getMemberList();
+      },
+      getMemberList(){
+        if(this.member_group_id==0){
+          let param = {
+            "page":this.member_page,
+            "page_size":10,
+            "group_id":this.member_group_id,
+            "is_group":0,
+            "search":this.member_search
+          }
+          contactPabMembersGet(param).then(res=>{
+            console.log(res);
+          }).catch(err=>{
+            console.log('获取所有联系人错误',err);
+          })
+        }else{
+          let param = {
+            "page": this.member_page,
+            "page_size":10,
+            "group_id": this.member_group_id,
+            "is_group": 1,
+            "search":this.member_search
+          };
+          contactPabMapsGet(param).then(res=>{
+            console.log(res)
+          }).catch(err=>{
+            console.log('获取组成员错误',err);
+          })
+        }
+      },
       setTemplate(){
         this.$router.push('/setting/template/')
       },
@@ -1964,6 +2057,10 @@
           console.log(err);
         })
 
+        // contactPabGroupsGet().then(res=> {
+        //   this.contact_groups = res.data.results
+        // })
+        // return
         contactPabGroupsGet().then(res=>{
           this.contact_loading = true;
           let resultArr = [];
@@ -2041,6 +2138,7 @@
       this.getSignatrue();
       this.getTemplateListfn();
       this.get_transform_menu();
+      // this.getMemberList(); new通讯录
     },
     computed:{
       uploadJson:function(){
@@ -2109,6 +2207,18 @@
   }
 </script>
 <style>
+  .group_member{
+    height:36px;
+    line-height:36px;
+    padding-left:16px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .group_member:hover{
+    background-color: #f0f1f3;
+    cursor: pointer;
+  }
   #app .compose_style .f-csp:hover,#app .compose_style .f-csp.selected{
     border-color:#2ea962 !important;
     box-shadow: 0 0 0 1px #2ea962;
@@ -2150,23 +2260,23 @@
     color:red;
     display:none;
   }
-  #app .compose_style .hover_show_box:hover .delete_hover{
+  .hover_show_box:hover .delete_hover{
     display:inline-block;
   }
-  #app .compose_style .address_box{
+   .address_box{
     border:1px solid #dcdfe6;height:180px;margin-bottom:20px;overflow-y: auto;padding:4px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
   }
-  #app .compose_style .address_box:hover,#app .compose_style .address_box.active{
+  .address_box:hover,#app .compose_style .address_box.active{
     border-color:#409EFF
   }
-  #app .compose_style .address_box.active{
+  .address_box.active{
     border-color:#409EFF;
     box-shadow: 0 0 5px #409eff;
   }
-  #app .compose_style .show_contact_style{
+   .show_contact_style{
     color:#409EFF;
     text-decoration: underline;
   }
@@ -2230,7 +2340,7 @@
     width:240px;
     box-sizing:border-box;
   }
- #app .compose_style  .right_menu ul li{
+ #app .compose_style  .right_menu .page ul li{
     width:50%;
     float:left;
     text-align:center;
