@@ -9,8 +9,8 @@
             <el-button plain size="small" type="primary" icon="el-icon-upload" @click="uploadFormShow">上传</el-button>
             <el-button plain size="small" type="primary" icon="el-icon-edit" @click="createFolderFormShow">新建文件夹</el-button>
             <!--<el-upload action="" :http-request="uploadFile" :show-file-list="false" style="display:inline-block;"><el-button size="small" type="primary" plain icon="el-icon-upload"> 上传</el-button></el-upload>-->
-            <el-button plain size="small" type="primary" icon="el-icon-download" :disabled="this.sels.length===0"  @click="zipDownload">下载</el-button>
-            <el-button plain size="small" type="danger" icon="el-icon-delete" :disabled="this.sels.length===0" @click="deleteFolders">删除</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-download" :disabled="this.sels.length===0"  @click="zipDownload">批量下载</el-button>
+            <el-button plain size="small" type="danger" icon="el-icon-delete" :disabled="this.sels.length===0" @click="deleteFolders">批量删除</el-button>
             <el-button plain size="small" type="primary" icon="el-icon-remove" :disabled="this.sels.length===0" @click="moveFolderFormShow">批量移动</el-button>
             <el-button plain size="small" type="primary" icon="el-icon-message" :disabled="this.sels.length===0" @click="sendMail_net('more',sels)">邮件发送</el-button>
 

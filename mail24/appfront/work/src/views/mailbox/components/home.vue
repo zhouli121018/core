@@ -10,14 +10,17 @@
               <div class="abstract">
                 <div class="avatar">
                   <a href="javascript:void(0);" class="u-img u-img-round">
-                    <img alt="avatar" class="j-avatar" src="@/assets/img/man.png">
+
+                    <img alt="avatar" class="j-avatar" v-if="gender =='male'"  src="@/assets/img/man.png">
+                    <img alt="avatar" class="j-avatar" v-if="gender !='male'" src="@/assets/img/woman.png">
                   </a>
                 </div>
                 <div class="info">
                   <ul class="u-list u-list-horizontal j-link-trigger">
                     <li>
                       <span class="headings">我的邮箱:</span>
-                      <a href="#" class="link" @click.prevent="viewMails"><span class="mark">{{userinfo.unread}}</span> 封未读邮件</a>
+                      <a href="#" class="link" @click.prevent="viewMails" v-if="inboxUnread"><span class="mark">{{inboxUnread}}</span> 封未读邮件</a>
+                      <span v-if="!inboxUnread">没有未读邮件</span>
                     </li>
                   </ul>
                   <ul class="u-list u-list-horizontal">
@@ -28,7 +31,7 @@
                       </div>
                       <span class="text-success">{{userinfo.capacity_used}} M / {{userinfo.capacity_total}} M</span>
                     </li>
-                    <li>
+                    <li style="display:none;">
                       <a href="javascript:void(0);" class="link" data-trigger="setting.folder.folder">管理</a>
                     </li>
                   </ul>
@@ -99,7 +102,7 @@
                   <li>
                     <div class="u-img icon-feature icon-file"></div>
                     <div class="u-img-text">
-                      <a href="javascript:void(0);" class="u-img-title" @click="view_file">文件中转站</a>
+                      <a href="javascript:void(0);" class="u-img-title" @click="view_file">文件中心</a>
                       <div class="u-img-desc">支持主流浏览器续传文件（支持Chrome，Safari）</div>
                     </div>
                   </li>
@@ -199,7 +202,18 @@
         this.$router.push('/file/pfile')
       },
       viewMails(){
-        this.$router.push('/mailbox/innerbox/INBOX')
+
+        this.$router.push('/mailbox/innerbox/INBOX/')
+        this.$nextTick(()=>{
+          this.$parent.editableTabsValue2 = '1';
+          console.log(this.$parent.$refs.innerbox)
+          let _this = this;
+          setTimeout(function(){
+            _this.$parent.$refs.innerbox[0].viewHandleCommand('unseen') ;
+          },300)
+        })
+
+
       },
       search_details(){
         this.$router.push('/search')
@@ -218,8 +232,18 @@
       this.welcomefn()
     },
     computed: {
+      gender(){
+        return this.$store.getters.getSettingUser.gender;
+      },
       username() { // 获取store中的数据
         return this.$store.getters.userInfo.name;
+      },
+      inboxUnread(){
+        for(let i=0;i<this.$parent.folderList.length;i++){
+          if(this.$parent.folderList[i]['id']=='INBOX'){
+            return this.$parent.folderList[i].unseen;
+          }
+        }
       }
     },
     watch: {

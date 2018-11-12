@@ -101,9 +101,10 @@
           if(!check)return;
           this.$store.dispatch('setPfileNet',arr)
           this.$router.push('/mailbox/innerbox/INBOX')
-          setTimeout(function(){
-            _this.$root.$children[0].$children[0].$children[1].addTab('compose_net_atta','写信')
-          },500)
+          this.$nextTick(()=>{
+            console.log(_this.$root)
+            _this.$root.$children[0].$children[0].$children[2].addTab('compose_net_atta','写信')
+          })
 
         }else{
           let obj = {
@@ -123,9 +124,10 @@
           arr.push(obj)
           this.$store.dispatch('setPfileNet',arr)
           this.$router.push('/mailbox/innerbox/INBOX')
-          setTimeout(function(){
-            _this.$root.$children[0].$children[0].$children[1].addTab('compose_net_atta','写信')
-          },500)
+          this.$nextTick(()=>{
+            console.log(_this.$root)
+            _this.$root.$children[0].$children[0].$children[2].addTab('compose_net_atta','写信')
+          })
         }
 
 

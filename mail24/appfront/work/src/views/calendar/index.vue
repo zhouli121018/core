@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="calendar_id">
 
     <section class="m-mail">
 
@@ -199,7 +199,7 @@
     padding-top:20px;
     font-size: 12px;
     color: #555;
-    word-break: normal;
+    word-break: break-all;
 }
 .fl-m-nav a.fl-nav-current {
     border-color: #e3e4e5;
@@ -220,12 +220,14 @@
     opacity: .6;
     filter: alpha(opacity=60);
 }
-  .fl-g-sidebar {
+  #calendar_id .fl-g-sidebar {
     position: relative;
     width: 100px;
     height: 100%;
     border-right: 1px solid #e3e4e5;
     text-align: center;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
   .fl-g-sidebar>ul{
     background:rgba(255,255,255,.6)

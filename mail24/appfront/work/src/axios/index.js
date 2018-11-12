@@ -45,7 +45,6 @@ const tryHideFullScreenLoading = function () {
 // http request 拦截器
 axios.interceptors.request.use(
   config => {
-    console.log(config.url)
     if( config.url.indexOf('/setting/secret-reset')>-1){
       return config;
     }

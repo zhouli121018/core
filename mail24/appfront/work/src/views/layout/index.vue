@@ -8,10 +8,39 @@
     <aside class="lysidebar j-layout-nav">
       <div class="icon j-switch-mainpage"  title="主页" @click="goHome"><i class="iconfont icon-iconhome"></i></div>
       <div class="avatar">
+        <el-popover
+          placement="right"
+          width="300"
+          :offset="40"
+          trigger="hover">
+          <table>
+            <tr>
+              <td style="width:72px;vertical-align:top">
+                <img style="width:100%;border-radius:50%;" alt="avatar" v-if="editform.gender == 'male'" src="@/assets/img/man.png">
+                <img style="width:100%;border-radius:50%;" alt="avatar" v-if="editform.gender != 'male'" src="@/assets/img/woman.png">
+              </td>
+              <td style="padding-left:10px;font-size:12px;color:#777;line-height:22px;">
+                <div style="color:#555;font-size:14px;">{{editform.realname}}</div>
+                <div>{{editform.email}}</div>
+                <div>{{editform.department}}</div>
+                <el-button-group style="margin-top:12px;">
+                  <el-button  size="mini" @click="goSetting">个人设置</el-button>
+                  <el-button  size="mini" @click="logout">退出登录</el-button>
+                </el-button-group>
+              </td>
+            </tr>
+            <!--<i class="iconfont icon-man1"></i>-->
 
-        <a href="#" class="u-img u-img-round" v-popover:popover @click.prevent="triggerPop">
-          <img class="j-avatar" alt="avatar" src="@/assets/img/man.png">
+
+          </table>
+          <el-button slot="reference" type="text" circle style="padding:0;">
+            <a href="#" class="u-img u-img-round"  @click.prevent="visible2=!visible2">
+          <img class="j-avatar" alt="avatar"  v-if="editform.gender == 'male'" src="@/assets/img/man.png">
+          <img class="j-avatar" alt="avatar"  v-if="editform.gender != 'male'" src="@/assets/img/woman.png">
         </a>
+          </el-button>
+        </el-popover>
+
       </div>
       <div class="divider"></div>
       <div class="j-wrapper">
@@ -64,7 +93,7 @@
                 </el-dropdown-menu>
               </el-dropdown>
             </li>
-            <li><a href="#" class="skin-primary-hover-color" @click="logout">退出</a></li>
+            <li><a href="#" class="skin-primary-hover-color" @click.prevent="logout">退出</a></li>
             <li class="header-divider">
               <a href="javascript:void(0);" class="skin-primary-hover-color history-notification-trigger j-history-notification-trigger unread">
                 <i class="iconfont icon-iconms"></i>
@@ -129,10 +158,12 @@
   import store from '@/store'
   import router from '@/router'
   import cookie from '@/assets/js/cookie';
-  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome } from '@/api/api'
+  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome,settingUsersGet } from '@/api/api'
   export default {
     data:function(){
       return {
+        editform:{},
+        visible2:true,
         newIndex:0,
         show:false,
         newList:[],
@@ -151,9 +182,14 @@
       }
     },
     methods:{
-      triggerPop(){
-        console.log(1)
-        $('#trigger_btn').click();
+      getUser(){
+        settingUsersGet().then(res=>{
+          this.editform = res.data.results;
+          this.$store.dispatch('setSettingUser',res.data.results);
+        });
+      },
+      goSetting(){
+        this.$router.push('/setting/user')
       },
       goToAdmin(){
         $("#id_ssl_form").submit();
@@ -202,15 +238,15 @@
           })
       },
       readNewMsg(){
-        console.log(this)
         let _this = this;
         this.$router.push('/mailbox/innerbox/'+this.newMsg.folder);
         this.$nextTick(() =>{
-          console.log(_this)
           if(_this.$children[0].addTab){
             _this.$children[0].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
           }else if(_this.$children[1].addTab){
             _this.$children[1].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
+          }else if(_this.$children[2].addTab){
+            _this.$children[2].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
           }
           _this.newList.splice(_this.newIndex,1);
           _this.newIndex = 0;
@@ -299,11 +335,20 @@
         }
       },
       logout(){
-        cookie.delCookie('token');
-        cookie.delCookie('name');
-        this.$store.dispatch('setInfo');
-        store.commit('setIsCompose',false);
-        router.push('/login')
+        this.$confirm('退出登录?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          cookie.delCookie('token');
+          cookie.delCookie('name');
+          this.$store.dispatch('setInfo');
+          store.commit('setIsCompose',false);
+          router.push('/login')
+        }).catch(() => {
+
+        });
+
       },
       lockscreen() {
         this.$confirm('<h3>您的邮箱将进入锁定状态</h3><p>邮箱将仍然保持在线</p><p>在输入正确的“邮箱密码”前任何人都无法动您的邮箱</p><p>可以更安全的保护您的隐私</p>', '锁屏提示', {
@@ -321,7 +366,6 @@
       },
       getShared(){
         settingRelateShared().then(suc=>{
-          console.log(suc.data)
           this.isSharedUser = suc.data.is_shareduser;
           if(suc.data.is_shareduser){
             this.mainUsername = suc.data.results.username;
@@ -333,9 +377,6 @@
         })
       },
       switchShared(v){
-        console.log('admin_is_active:'+this.admin_is_active)
-        console.log('isSharedUser:'+this.isSharedUser)
-        console.log(v)
         let _this = this;
         if(v == 'back'){
           backLogin().then(suc=>{
@@ -345,10 +386,8 @@
             _this.$store.dispatch('setInfo');
             // this.isSharedUser = false;
             this.$router.push('/mailbox/welcome')
-            console.log(this)
             _this.getShared();
           },err=>{
-            console.log('s')
             console.log(err)
           })
         }else{
@@ -371,6 +410,7 @@
 
     },
     created(){
+      this.getUser();
       this.getShared();
       if(this.$route.path.indexOf('/mailbox')==0){
           this.activeTab = 0;
@@ -387,7 +427,6 @@
         }
         this.open_notify();
       welcome().then(res=>{
-        console.log(res.data);
         this.userinfo = res.data.userinfo;
         this.$store.dispatch('setLoginUrlAction',res.data.login_url)
         this.$store.dispatch('setAdminIsActive',res.data.is_active)

@@ -158,7 +158,8 @@ export const resetSecret1 = params =>{ return axios.post(`${host}/setting/secret
 export const resetSecret2 = params =>{ return axios.post(`${host}/setting/secret-reset/2/`,params) };
 //密保重置密码第三步 /api/setting/secret-reset/3/
 export const resetSecret3 = params =>{ return axios.post(`${host}/setting/secret-reset/3/`,params) };
-
+//将附件保存到个人网盘 /api/mail/message/save-attach/
+export const saveNetAttach = params =>{ return axios.post(`${host}/mail/message/save-attach/`,params) };
 
 
 /* ***********************  设置中心 *********************** */

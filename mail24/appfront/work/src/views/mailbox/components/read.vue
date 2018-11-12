@@ -284,11 +284,11 @@
                             <i class="el-icon-download"></i>
                             <p>下载</p>
                           </el-col>
-                          <!--<el-col class="text-center cursorP" :span="8" title="预览">-->
+                          <!--<el-col class="text-center cursorP" :span="8" title="预览" @click.native="preview(a)">-->
                             <!--<i class="el-icon-view"></i>-->
                             <!--<p>预览</p>-->
                           <!--</el-col>-->
-                          <el-col class="text-center cursorP" :span="8" title="保存到个人网盘">
+                          <el-col class="text-center cursorP" :span="8" title="保存到个人网盘" @click.native="save_attach(a)">
                             <i class="el-icon-star-off" ></i>
                             <p>保存</p>
                           </el-col>
@@ -313,12 +313,18 @@
             </div>
 
           </div>
-          <footer class="quick-reply j-quick-reply ">
+          <footer class="quick-reply j-quick-reply " style="padding-top:0">
             <div class="quick-reply-default quick-reply-item j-reply-default" v-if="before_replying" @click="ready_reply">快捷回复给所有人
             </div>
 
             <form class="quick-reply-form quick-reply-item j-reply-form tran" v-show="replying">
-              <textarea name="replyContent" class="reply-textarea" rows="6" v-model="content"></textarea>
+              <!--<textarea name="replyContent" class="reply-textarea" rows="6" v-model="content"></textarea>-->
+              <editor v-if="replying" :id="'editor_id_fast_'+readId+readFolderId" :ref="'editor_id_fast_'+readId+readFolderId" height="200px" width="100%" :content="content" :filterMode="false"
+                  pluginsPath="/static/kindeditor/plugins/" :resizeType="0" indentChar=""
+                  :loadStyleMode="false" :items="toolbarItems" :uploadJson="uploadJson"
+                  @on-content-change="onContentChange"  :autoHeightMode="false" :afterChange="onContentChange">
+
+              </editor>
               <span class="u-btn u-btn-primary" @click="reply">发送</span>
               <span class="u-btn u-btn-default" @click="cancel_reply">取消</span>
               <span class="f-fr"><a href="javascript:void(0)" @click="actionView(4)">切换到完整写信模式</a></span>
@@ -351,7 +357,7 @@
 
 <script>
 
-  import {readMail,downloadAttach,mailDecode,moveMails,messageFlag,rejectMessage,zipMessage,pruneMessage,emlMessage,pabMessage,deleteMail,getMessageStatus,messageRecall,notifyRecall,notifyMessage,replayMessage} from '@/api/api';
+  import {readMail,downloadAttach,mailDecode,moveMails,messageFlag,rejectMessage,zipMessage,pruneMessage,emlMessage,pabMessage,deleteMail,getMessageStatus,messageRecall,notifyRecall,notifyMessage,replayMessage,saveNetAttach} from '@/api/api';
   export default  {
     name:'Read',
     props:{
@@ -361,6 +367,13 @@
     },
     data(){
       return {
+        toolbarItems:
+        ['source', '|','formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+        'italic', 'underline',  'lineheight', '|',  'justifyleft', 'justifycenter', 'justifyright',
+        'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', '|','subscript',
+        'superscript', 'link', 'unlink','image',  'table','hr','|', 'undo', 'redo', 'preview',
+           'fullscreen',
+         ],
         after_replying:false,
         center_replying:false,
         before_replying:true,
@@ -423,8 +436,8 @@
 
           ],
         signItems:[
-            {id:1,flags:'\\Seen',text:'未读邮件',divided:false,action:'remove'},
-            {id:2,flags:'\\flagged',text:'红旗',divided:true,action:'add',classN:'iconfont icon-iconflatcolor redcolor'},
+            // {id:1,flags:'\\Seen',text:'未读邮件',divided:false,action:'remove'},
+            {id:2,flags:'\\flagged',text:'红旗',divided:false,action:'add',classN:'iconfont icon-iconflatcolor redcolor'},
             {id:3,text:'其他旗帜',divided:false,children:[
                 {flags:'umail-green',action:'add',text:'绿旗',classN:{'flag-green':true}},
                 {flags:'umail-orange',action:'add',text:'橙旗',classN:{'flag-orange':true}},
@@ -441,6 +454,28 @@
       }
     },
     methods:{
+      save_attach(item){
+        let param = {
+          folder:this.readFolderId,
+          uid:this.readId,
+          sid:item.sid,
+          password:this.msg.attrs.is_password && this.msg.attrs.password,
+        }
+        saveNetAttach(param).then(res=>{
+          this.$message({
+            type:'success',
+            message:'保存成功！'
+          })
+        }).catch(err=>{
+          this.$message({
+            type:'error',
+            message:'保存失败！'+err
+          })
+        })
+      },
+      onContentChange (val) {
+        this.content = val;
+      },
       ready_reply(){
         this.before_replying = false;
         this.center_replying = false;
@@ -930,6 +965,31 @@
         })
 
       },
+      preview(a){
+        let param = {
+          uid:this.readId,
+          folder:this.readFolderId,
+          sid:a.sid,
+          download:true
+        };
+        if(this.password){
+          param.password = 1;
+        }
+        downloadAttach(param).then(response=>{
+          let blob = new Blob([response.data], { type: response.headers["content-type"] })
+          var a =new FileReader();
+
+          a.onload=function(e) {
+            var img = document.createElement("img");
+            img.src = e.target.result;
+            // document.body.appendChild(img);
+          }
+          a.readAsDataURL(blob);
+          this.$message({ message: '预览成功！', type: 'success' });
+        }).catch(err=>{
+          console.log('预览失败！',err)
+        })
+      },
       handleCommand:function(index){
         this.checkIndex = index;
         if(index===0){
@@ -981,8 +1041,28 @@
               type:'success',
               message: '邮件标记成功!'
             })
-          this.$parent.$parent.$parent.getFloderfn();
-          this.getReadMail();
+          if(item.action == 'add'){
+            this.flagged = true;
+              if(item.flags == 'umail-yellow'){
+                this.flag_color = 'flag-yellow';
+              }else if(item.flags == 'umail-green'){
+                this.flag_color = 'flag-green';
+              }else if(item.flags == 'umail-orange'){
+                this.flag_color = 'flag-orange';
+              }else if(item.flags == 'umail-blue'){
+                this.flag_color = 'flag-blue';
+              }else if(item.flags == 'umail-pink'){
+                this.flag_color = 'flag-pink';
+              }else if(item.flags == 'umail-cyan'){
+                this.flag_color = 'flag-cyan';
+              }else if(item.flags == 'umail-purple'){
+                this.flag_color = 'flag-purple';
+              }else if(item.flags == 'umail-gray'){
+                this.flag_color = 'flag-gray';
+              }
+          }else{
+            this.flagged = false;
+          }
         },(err)=>{
 
         }).catch(err=>{
@@ -1115,7 +1195,10 @@
           }
         }
         return arr;
-      }
+      },
+      uploadJson:function(){
+        return this.$store.state.uploadJson;
+      },
     },
     mounted(){
     }

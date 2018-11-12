@@ -32,6 +32,9 @@
 
                   <el-tree class="filter-tree" :data="contactList" :props="defaultProps" :filter-node-method="filterNode"
                    @node-click="selectContact"  accordion :indent="2" ref="tree2" >
+                    <span class="custom-tree-node" slot-scope="{ node, data }">
+                      <span :title="node.label">{{ node.label }}</span>
+                    </span>
                   </el-tree>
 
                   <!--<el-input v-model="member_search" placeholder="请输入关键字搜索" class="input-with-select" size="small" style="margin:6px 0;">-->
@@ -294,7 +297,7 @@
                 <el-button type="text" @click="change_show_result" v-if="sendResult.type=='send'">{{show_result?'[隐藏发送状态]':'[显示发送状态]'}}</el-button>
                 <el-button type="text" @click="getMessageStatus" v-if="sendResult.type=='send' && show_result">[刷新]</el-button>
                 <el-button type="text" @click="recall" v-if="sendResult.type=='send'">[召回邮件]</el-button>
-                <el-button type="text" v-if="sendResult.type=='schedule'">[查看已发邮件]</el-button>
+                <el-button type="text" @click="goEdit" v-if="sendResult.type=='schedule'">[继续编辑邮件]</el-button>
             </div>
             <div class="suc-content">
               <div style="margin-bottom:10px;">
@@ -550,7 +553,7 @@
   import axios from 'axios';
   // import treeTransfer from 'el-tree-transfer'
   import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach,contactOabDepartsGet,
-  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus,settingSignatureGet,getTemplateList,getTemplateById,getDeptMail} from '@/api/api'
+  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus,settingSignatureGet,getTemplateList,getTemplateById,getDeptMail,readMail} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     props:{
@@ -784,6 +787,69 @@
       };
     },
     methods:{
+      goEdit(){
+        this.closeTab();
+        let row = this.sendResult;
+        let pp = this.$parent.$parent.$parent;
+          readMail(row.uid,{"folder":row.folder}).then(res=>{
+            let data = res.data
+            pp.ruleForm2 = {
+              is_priority:false,
+              is_html:true,
+              is_cc:true,
+              is_partsend:false,
+              to: [],
+              cc: [],
+              subject: '',
+              secret:'非密',
+              is_save_sent:true,
+              is_confirm_read:true,
+              is_schedule:false,
+              schedule_day:'',
+              is_password:false,
+              password:'',
+              is_burn:false,
+              burn_limit:1,
+              burn_day:'',
+              html_text:'',
+              plain_text:'',
+              attachments:[],
+              net_attachments:[]
+            }
+            // pp.ruleForm2 = res.data;
+            pp.maillist = []
+            pp.maillist_copyer = [];
+            pp.fileList = data.attachments;
+            pp.ruleForm2.subject = data.subject;
+            pp.ruleForm2.draft_id = data.attrs.draft_id;
+            pp.ruleForm2.is_burn = data.attrs.is_burn;
+            pp.ruleForm2.is_password = data.attrs.is_password;
+            pp.ruleForm2.is_schedule = data.attrs.is_schedule;
+            // pp.ruleForm2.password = data.attrs.password;
+            pp.ruleForm2.schedule_day = data.attrs.schedule_day;
+            pp.ruleForm2.is_html = data.is_html;
+            if(data.is_html){
+              pp.content = data.html_text ;
+            }else{
+              pp.content = data.plain_text;
+            }
+            // pp.ruleForm2.flags = data.flags;
+            for(let i=0;i<data.to.length;i++){
+              pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
+
+            }
+            if(data.cc){
+              for(let i=0;i<data.cc.length;i++){
+                pp.maillist_copyer.push({fullname:data.cc[i][1]||'',email:data.cc[i][0],status:true})
+              }
+            }
+
+            pp.addTab('composedrafts',data.subject,row.uid,this.boxId)
+
+          }).catch(err=>{
+            console.log(err)
+          })
+      },
       closeTab(){
         let tagName = this.$parent.$parent.$parent.editableTabsValue2;
         this.$parent.$parent.$parent.removeTab(tagName);

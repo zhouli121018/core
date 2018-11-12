@@ -459,6 +459,10 @@
         })
       },
       readMail(row){
+        if(!row.isread){
+          this.$parent.$parent.$parent.unseencount --;
+          this.$parent.$parent.$parent.$refs.treeMenuBar.getCurrentNode().unseen--;
+        }
           row.isread = true;
           console.log(row)
         let param = {
@@ -467,17 +471,17 @@
           action:'add',
           flags:['\\Seen']
         }
-        messageFlag(param).then((suc)=>{
-          // this.getMessageList();
-          this.$parent.$parent.$parent.getFloderfn();
-        },(err)=>{
-
-        })
-
+        // messageFlag(param).then((suc)=>{
+        //   // this.getMessageList();
+        //   this.$parent.$parent.$parent.getFloderfn();
+        // },(err)=>{
+        //
+        // })
         console.log(this.$parent.$parent.$parent);
         if(this.boxId=='Drafts'){
           let pp = this.$parent.$parent.$parent;
           readMail(row.uid,{"folder":this.boxId}).then(res=>{
+            // this.$parent.$parent.$parent.getFloderfn();
             let data = res.data
             pp.ruleForm2 = {
               is_priority:false,
@@ -537,10 +541,8 @@
           })
         }else{
           this.$parent.$parent.$parent.addTab('read',row.subject,row.uid,this.boxId)
+          // this.$parent.$parent.$parent.getFloderfn();
         }
-
-
-
       },
       handleSelectionChange(val) {
         this.multipleSelection = val;

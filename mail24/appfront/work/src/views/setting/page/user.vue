@@ -153,7 +153,7 @@
 
       }
     },
-    mounted: function(){
+    created: function(){
       this.getUserInfo();
     },
     methods: {

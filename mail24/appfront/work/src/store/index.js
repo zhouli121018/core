@@ -36,7 +36,10 @@ const store = new Vuex.Store({
     pfile_net_atta:[],
     toList:[],
     login_url:'',
-    admin_is_active:false
+    admin_is_active:false,
+    settingUser:{
+      gender:'male'
+    }
   },
   getters:{
     userInfo(state) {
@@ -62,6 +65,9 @@ const store = new Vuex.Store({
     },
     getAdminIsActive(state){
       return state.admin_is_active
+    },
+    getSettingUser(state){
+      return state.settingUser
     }
   },
   mutations:{
@@ -71,7 +77,6 @@ const store = new Vuex.Store({
         token:cookie.getCookie('token'),
         locked:cookie.getCookie('locked')
       }
-      console.log(state.userInfo);
     },
     SET_MEMBER (state) {
       state.rememberUserInfo = !state.rememberUserInfo
@@ -105,6 +110,9 @@ const store = new Vuex.Store({
     },
     setIsActive(state,param){
       state.admin_is_active = param;
+    },
+    setSettingUser(state,param){
+      state.settingUser = param;
     }
   },
   actions: {
@@ -134,6 +142,9 @@ const store = new Vuex.Store({
     },
     setAdminIsActive(store,param){
       store.commit('setIsActive',param)
+    },
+    setSettingUser(store,param){
+      store.commit('setSettingUser',param);
     }
 
   }

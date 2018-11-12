@@ -99,7 +99,8 @@
             <el-table-column label="操作" width="250">
               <template slot-scope="scope">
                 <el-button size="mini" @click="handlePabMemberEdit(scope.$index, scope.row)">修改</el-button>
-                <el-button type="danger" size="mini" @click="handlePabMemberDel(scope.$index, scope.row)">删除</el-button>
+                <el-button type="danger" size="mini" @click="handlePabMemberDel(scope.$index, scope.row, false)" v-if=" filters_options_show ">删除</el-button>
+                <el-button type="danger" size="mini" @click="handlePabMemberDel(scope.$index, scope.row, true)" v-if=" !filters_options_show ">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -401,8 +402,8 @@
     contactPabMembersDistribute,
     contactPabMembersExport,
     contactPabMembersGet,
-    contactPabMembersUpdate,
     contactPabMembersImport,
+    contactPabMembersUpdate,
     getDeptMail
   } from '@/api/api'
 
@@ -416,6 +417,7 @@
         }
       };
       return {
+        fullscreenLoading:false,
         filters: {
           search: '',
           search2: '',
@@ -767,6 +769,8 @@
       },
       // 删除联系人
       Oab_delete_select: function(){
+
+        /*
         let that = this;
         // var ids = this.sels.map(item => item.contact_id).toString();
         var ids = this.sels.map(item => item.contact_id);
@@ -786,6 +790,76 @@
             console.log(error);
           });
         });
+        */
+
+        var ids = this.sels.map(item => item.contact_id);
+        if ( Number(this.pab_cid) == 0 ){
+          let para = {ids: ids};
+          this.$confirm('<p>确定从所有联系人组中彻底删除所选联系人？</p><p style="margin-bottom:20px;font-size: 12px;">该操作将把联系人从所有联系人组中删除。</p>', '系统提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            dangerouslyUseHTMLString: true,
+          }).then(() => {
+            this.fullscreenLoading = true;
+            contactPabMembersBatchDelete(para).then(res=>{
+              this.fullscreenLoading = false;
+              console.log(res)
+              this.$message(
+                {type:'success',message:'删除成功！'}
+              )
+              this.getPabs();
+            }).catch(err=>{
+              this.fullscreenLoading = false;
+              this.getPabs();
+              this.$message(
+                {type:'error',message:'删除失败，请重试！'}
+              );
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            });
+          });
+        } else {
+          let para = {
+            ids: ids,
+            group_id: this.pab_cid,
+            ref_delete: true,
+          };
+          this.$confirm('<p>确定将选中的联系人移出？</p><div><input type="checkbox" id="is_delete" style="margin-top: 20px;"> 并从通讯录中彻底删除</div>', '系统提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            dangerouslyUseHTMLString: true,
+          }).then(() => {
+            this.fullscreenLoading = true;
+            if($('#is_delete').prop('checked')) {
+              para.is_delete = true;
+            } else {
+              para.is_delete = false;
+            }
+            contactPabMembersBatchDelete(para).then(res=>{
+              this.fullscreenLoading = false;
+              console.log(res)
+              this.$message(
+                {type:'success',message:'删除成功！'}
+              )
+              this.getPabs();
+            }).catch(err=>{
+              this.fullscreenLoading = false;
+              this.getPabs();
+              this.$message(
+                {type:'error',message:'删除失败，请重试！'}
+              );
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            });
+          });
+        }
+
       },
       // 发邮件给联系组
       Oab_send_to_group: function(){
@@ -1055,7 +1129,8 @@
        ************************
        ************************/
       // 删除联系人
-      handlePabMemberDel: function(index, row) {
+      handlePabMemberDel: function(index, row, ref_delete) {
+        /*
         let that = this;
         this.$confirm('确认删除该联系人吗?', '提示', {
           type: 'warning'
@@ -1067,6 +1142,76 @@
             that.$message({ message: '删除失败',  type: 'error' });
           });
         });
+        */
+
+        var ids = [row.contact_id];
+        if ( Number(this.pab_cid) == 0 ){
+          let para = {ids: ids};
+          this.$confirm('<p>确定从所有联系人组中彻底删除所选联系人？</p><p style="margin-bottom:20px;font-size: 12px;">该操作将把联系人从所有联系人组中删除。</p>', '系统提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            dangerouslyUseHTMLString: true,
+          }).then(() => {
+            this.fullscreenLoading = true;
+            contactPabMembersBatchDelete(para).then(res=>{
+              this.fullscreenLoading = false;
+              console.log(res)
+              this.$message(
+                {type:'success',message:'删除成功！'}
+              )
+              this.getPabs();
+            }).catch(err=>{
+              this.fullscreenLoading = false;
+              this.getPabs();
+              this.$message(
+                {type:'error',message:'删除失败，请重试！'}
+              );
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            });
+          });
+        } else {
+          let para = {
+            ids: ids,
+            group_id: this.pab_cid,
+            ref_delete: true,
+          };
+          this.$confirm('<p>确定将选中的联系人移出？</p><div><input type="checkbox" id="is_delete" style="margin-top: 20px;"> 并从通讯录中彻底删除</div>', '系统提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            dangerouslyUseHTMLString: true,
+          }).then(() => {
+            this.fullscreenLoading = true;
+            if($('#is_delete').prop('checked')) {
+              para.is_delete = true;
+            } else {
+              para.is_delete = false;
+            }
+            contactPabMembersBatchDelete(para).then(res=>{
+              this.fullscreenLoading = false;
+              console.log(res)
+              this.$message(
+                {type:'success',message:'删除成功！'}
+              )
+              this.getPabs();
+            }).catch(err=>{
+              this.fullscreenLoading = false;
+              this.getPabs();
+              this.$message(
+                {type:'error',message:'删除失败，请重试！'}
+              );
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            });
+          });
+        }
+
       },
       // 显示修改联系人
       handlePabMemberEdit: function (index, row) {

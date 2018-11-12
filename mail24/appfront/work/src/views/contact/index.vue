@@ -85,7 +85,7 @@
           this.$store.dispatch('setTo',arr)
           this.$router.push('/mailbox/innerbox/INBOX')
           setTimeout(function(){
-            _this.$root.$children[0].$children[0].$children[1].addTab('compose_to_list','写信')
+            _this.$root.$children[0].$children[0].$children[2].addTab('compose_to_list','写信')
           },500)
         }else{
           let arr = [];
@@ -100,7 +100,7 @@
           this.$store.dispatch('setTo',arr)
           this.$router.push('/mailbox/innerbox/INBOX')
           setTimeout(function(){
-            _this.$root.$children[0].$children[0].$children[1].addTab('compose_to_list','写信')
+            _this.$root.$children[0].$children[0].$children[2].addTab('compose_to_list','写信')
           },500)
         }
 

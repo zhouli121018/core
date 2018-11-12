@@ -8,8 +8,8 @@
             <el-button size="small" type="primary" icon="el-icon-d-arrow-left" v-if="current_name.parent_id" @click="changeParentFolder()">返回上层</el-button>
             <el-button plain size="small" type="primary" icon="el-icon-upload" @click="uploadFormShow" v-if="this.permisson_type == '1' || this.permisson_type == '2' || this.permisson_type == '4'">上传</el-button>
             <el-button plain size="small" type="primary" icon="el-icon-edit" @click="createFolderFormShow" v-if="this.is_supercompany || this.permisson_type == '1'">新建文件夹</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-download" :disabled="this.sels.length===0"  @click="zipDownload" v-if="this.permisson_type == '1' || this.permisson_type == '3' || this.permisson_type == '4'">下载</el-button>
-            <el-button plain size="small" type="danger" icon="el-icon-delete" :disabled="this.sels.length===0" @click="deleteFolders" v-if="this.is_supercompany || this.permisson_type == '1'">删除</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-download" :disabled="this.sels.length===0"  @click="zipDownload" v-if="this.permisson_type == '1' || this.permisson_type == '3' || this.permisson_type == '4'">批量下载</el-button>
+            <el-button plain size="small" type="danger" icon="el-icon-delete" :disabled="this.sels.length===0" @click="deleteFolders" v-if="this.is_supercompany || this.permisson_type == '1'">批量删除</el-button>
             <el-button plain size="small" type="primary" icon="el-icon-remove" :disabled="this.sels.length===0" @click="moveFolderFormShow" v-if="this.is_supercompany || this.permisson_type == '1'">批量移动</el-button>
             <el-button plain size="small" type="primary" icon="el-icon-message" :disabled="this.sels.length===0" @click="sendMail_net('more',sels)">邮件发送</el-button>
             <el-button plain size="small" type="primary" icon="el-icon-setting" :disabled="this.sels.length===0" v-if="this.is_supercompany || this.permisson_type == '1'" @click="showAddDialog('more')">添加权限</el-button>

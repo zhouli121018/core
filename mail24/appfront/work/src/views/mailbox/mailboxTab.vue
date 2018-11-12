@@ -170,11 +170,8 @@ export default {
   methods:{
     tabClick(tab,event){
       this.showTabIndex=1;
-      console.log('tabclick')
-      console.log(tab)
     },
     addTab(type,subject,rid,fid,info) {
-      console.log(type,subject,rid,fid,info)
       if(type=='compose'||type == 'compose_to_list'){
         this.ruleForm2['refw_type']=undefined;
         this.ruleForm2 = {
@@ -256,7 +253,6 @@ export default {
 
     },
     removeTab(targetName) {
-      console.log(targetName)
       let tabs = this.editableTabs2;
       let activeName = this.editableTabsValue2;
       if (activeName === targetName) {
@@ -325,7 +321,6 @@ export default {
       })
     },
     getData(obj){
-      console.log(obj)
       this.activeMenubar = obj;
       this.showTabIndex = 1;
       this.activeTab = 0;
@@ -347,7 +342,6 @@ export default {
       this.activeTab = 'compose';
     },
     getRead(obj){
-      console.log(obj);
       if(this.titleHash[obj.id]){
 
       }else{
@@ -401,7 +395,6 @@ export default {
 
           this.dialogFormVisible = false;
         } else {
-          console.log('error submit!!');
           return false;
         }
       });
@@ -460,7 +453,6 @@ export default {
     reloadMails(){
       this.getFloderfn();
       if(this.$refs.innerbox[0]){
-        console.log(this.$refs.innerbox[0])
         this.$refs.innerbox[0].getMessageList()
       }
 
@@ -470,7 +462,6 @@ export default {
   mounted(){
     this.getFloderfn();
     const fheight = this.$refs.editor_h.getBoundingClientRect().height-50-50-220-80;
-    console.log(fheight)
     this.iframe_height = fheight+'px';
   },
   computed: {
@@ -478,7 +469,6 @@ export default {
       return this.$store.state.userInfo.name;
     },
     folderList(){
-        console.log(this.floderResult)
         let folder = this.floderResult;
         let arr = [];
         for(let i=0;i<folder.length;i++){
@@ -491,11 +481,9 @@ export default {
           arr.push(obj);
         }
         return arr;
-      }
+      },
   },
   created(){
-    console.log(this.$route)
-    console.log(this.$route.path == '/mailbox/innerbox')
     if(this.$route.name == 'innerbox'){
       this.showTabIndex = 1;
       // this.getData({id:'INBOX',label:'收件箱'})
@@ -511,18 +499,18 @@ export default {
   },
   watch:{
       $route(v,o){
-        console.log(v.path)
         if(v.path == '/mailbox/welcome'){
           this.showTabIndex = 0;
         }else if(v.path.indexOf('/mailbox/innerbox')>=0){
           this.showTabIndex = 1;
+          this.setCurrentKey(v.params.boxId)
         }
       },
       username(nv,ov){
         this.getFloderfn();
       },
     editableTabsValue2(nv){
-        console.log(nv);
+
         let is_edit = false;
         for(let i=0;i<this.editableTabs2.length;i++){
           if(this.editableTabs2[i].name == nv && this.editableTabs2[i].type && this.editableTabs2[i].type.indexOf('compose')>=0){
@@ -562,8 +550,6 @@ export default {
       }
     }
     if(hasCompose){
-      console.log(to)
-      console.log(from)
       if(to.path=='/login'){
         if(this.$store.getters.getTimer){clearInterval(this.$store.getters.getTimer)}
         next();
