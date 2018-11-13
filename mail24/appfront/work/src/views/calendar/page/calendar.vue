@@ -1035,6 +1035,10 @@
               this.newEventDialog = false;
               this.$message({message:'创建事件成功！',type:'success'});
               this.getEventList();
+              // this.newForm.invitors = [];
+              this.$refs.newForm.resetFields();
+              this.$refs.contactTable.clearSelection();
+              this.showChoice = false;
             },err=>{
               this.$message({message:err.non_field_errors||'创建事件失败！',type:'error'});
               console.log(err)

@@ -64,8 +64,8 @@
       sendMail_net(row,sels){
         console.log(row,sels)
         let _this = this;
+        let arr = [];
         if(row == 'more'){
-          let arr = [];
           sels.forEach(val => {
             let obj = {};
             obj.id = val.id || val.contact_id;
@@ -82,13 +82,8 @@
             obj.status = true
             arr.push(obj);
           })
-          this.$store.dispatch('setTo',arr)
-          this.$router.push('/mailbox/innerbox/INBOX')
-          setTimeout(function(){
-            _this.$root.$children[0].$children[0].$children[2].addTab('compose_to_list','写信')
-          },500)
+
         }else{
-          let arr = [];
           row.forEach(val => {
             let obj = {};
             obj.email = val[0];
@@ -97,12 +92,19 @@
             obj.status = true;
             arr.push(obj)
           })
-          this.$store.dispatch('setTo',arr)
-          this.$router.push('/mailbox/innerbox/INBOX')
-          setTimeout(function(){
-            _this.$root.$children[0].$children[0].$children[2].addTab('compose_to_list','写信')
-          },500)
+
         }
+        this.$store.dispatch('setTo',arr)
+        this.$router.push('/mailbox/innerbox/INBOX')
+        this.$nextTick(()=>{
+          console.log(this.$root)
+          if(_this.$root.$children[0].$children[0].$children[1].addTab){
+            _this.$root.$children[0].$children[0].$children[1].addTab('compose_to_list','写信')
+          }else if(_this.$root.$children[0].$children[0].$children[2].addTab){
+            _this.$root.$children[0].$children[0].$children[2].addTab('compose_to_list','写信')
+          }
+
+        })
 
 
       },

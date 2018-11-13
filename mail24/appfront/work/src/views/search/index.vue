@@ -1,5 +1,5 @@
 <template>
-  <div style="padding-top:4px;box-sizing: border-box" id="search">
+  <div style="padding-top:1px;box-sizing: border-box" id="search">
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="登录查询" name="login">
         <el-pagination style="text-align: right;"
@@ -71,11 +71,18 @@
           style="width: 100%">
           <el-table-column type="expand" class="expand">
             <template slot-scope="props">
-              <p v-for="(r,k) in props.row.details" v-if="props.row.details.length>1" :key="k" style="margin-left:42%;padding:4px 0;"> <span v-if="r.name">{{r.name +' '}} &lt;</span> <span> {{r.recipient}}</span> <span v-if="r.name">&gt;</span>
+              <el-row v-for="(r,k) in props.row.details" v-if="props.row.details.length>1" :key="k" style="padding:4px 0;">
+                <el-col :style="{marginLeft:expand_table.marginLeft+'px',width:expand_table.col1+'px'}" :title="r.recipient" style="box-sizing:border-box;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;padding-left:10px;">
+                  <span v-if="r.name">{{r.name +' '}} &lt;</span> <span> {{r.recipient}}</span> <span v-if="r.name">&gt;</span>
                 <!--<span style="color:#45AB19;margin-left:20px;"> {{r.status_show +','+ r.recall_status_show}}</span>-->
-                <span style="color:#45AB19;margin:20px;"> {{r.inform||''}}</span>
-                <el-button type="text" size="mini" v-if="r.recall_status == 'stay'" @click="recall(props.row,'single',r.recipient)">召回邮件</el-button>
-              </p>
+                </el-col>
+                <el-col :style="{width:expand_table.col2+'px'}" style="overflow: hidden; white-space: nowrap;text-overflow: ellipsis;box-sizing:border-box;padding-left:10px;">
+                  <span style="color:#45AB19;margin:20px;"> {{r.inform||''}}</span>
+                </el-col>
+                <el-col :style="{width:expand_table.col3+'px'}" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;box-sizing:border-box;padding-left:10px;">
+                  <el-button type="text" size="mini" v-if="r.recall_status == 'stay'" @click="recall(props.row,'single',r.recipient)">召回邮件</el-button>
+                </el-col>
+              </el-row>
 
             </template>
           </el-table-column>
@@ -128,12 +135,11 @@
           </el-table-column>
 
           <el-table-column
-
             label="操 作">
             <template slot-scope="scope">
               <div>
                 <el-button type="text" size="mini" v-if="scope.row.details.length == 1 && scope.row.details[0].recall_status == 'stay'" @click="recall(scope.row)">召回邮件</el-button>
-                <el-button type="text" size="mini" v-if="scope.row.details.length > 1" @click="recall(scope.row)">召回全部邮件</el-button>
+                <el-button type="text" size="mini" v-if="show_recall_all(scope.row)" @click="recall(scope.row)">召回全部邮件</el-button>
               </div>
 
             </template>
@@ -281,6 +287,12 @@ import {getLoginList,getSendlog,getMaillog,getDeletellog,sendRecall} from '@/api
 export default {
   data() {
     return {
+      expand_table:{
+        marginLeft:0,
+        col1:100,
+        col2:100,
+        col3:100,
+      },
       recallTableVisible:false,
       recallData:[],
       activeName: 'login',
@@ -421,6 +433,26 @@ export default {
     };
   },
   methods: {
+    show_recall_all(row){
+      let result =  row.details.length > 1;
+      for(let i=0;i<row.details.length;i++){
+        if(row.details[i].recall_status!='stay'){
+          result = false;
+          break;
+        }
+      }
+      return result;
+    },
+    resetWidth(){
+      this.$nextTick(()=>{
+      this.expand_table.marginLeft = parseFloat($('#sendTable colgroup>col:eq(0)').attr('width'))+
+                                      parseFloat($('#sendTable colgroup>col:eq(1)').attr('width'))+
+                                      parseFloat($('#sendTable colgroup>col:eq(2)').attr('width'));
+        this.expand_table.col1 = parseFloat($('#sendTable colgroup>col:eq(3)').attr('width'))
+        this.expand_table.col2 = parseFloat($('#sendTable colgroup>col:eq(4)').attr('width'))
+        this.expand_table.col3 = parseFloat($('#sendTable colgroup>col:eq(5)').attr('width'))-18;
+      })
+    },
     recall(row,type,r){
         this.$confirm('<p>确定召回此邮件吗？</p>', '召回邮件', {
             confirmButtonText: '确定',
@@ -481,12 +513,14 @@ export default {
       console.log(tab, event);
       console.log(tab.$data.index)
       let index = tab.$data.index;
-      if(index==1&&this.sendData.tableData.length==0){
+      if(index==1){
         this.getSend();
-      }else if(index == 2 && this.mailData.tableData.length == 0){
+      }else if(index == 2){
         this.getMail();
-      }else if(index == 3 && this.deleteData.tableData.length == 0){
+      }else if(index == 3){
         this.getDelete();
+      }else if(index == 0){
+        this.getLogin();
       }
     },
     sizeChange(val,type) {
@@ -544,6 +578,9 @@ export default {
         this.sendData.total = res.data.count;
         this.sendData.tableData = res.data.results;
         this.sendData.loading = false;
+        this.$nextTick(()=>{
+          this.resetWidth()
+        })
       }).catch(err=>{
         console.log('获取发信日志错误！',err)
         this.sendData.loading = false;
@@ -570,8 +607,8 @@ export default {
     getDelete(){
       this.deleteData.loading = true;
       let param ={
-        page:this.sendData.page,
-        page_size:this.sendData.page_size
+        page:this.deleteData.page,
+        page_size:this.deleteData.page_size
       };
       if(this.deleteData.status){
         param.type = this.deleteData.status;
@@ -588,12 +625,27 @@ export default {
   },
   created(){
     this.getLogin();
-  }
+
+  },
 };
 </script>
 <style>
+  #search .el-tabs--top .el-tabs__item.is-top:nth-child(2) {
+     padding-left: 20px;
+}
+  #search .el-tabs--top .el-tabs__item.is-top:last-child {
+    padding-right: 20px;
+}
+  #search .el-tabs__item{
+    height:100%;
+    line-height: 59px;
+  }
+  #search .el-tabs__nav.is-top{
+    height:59px;
+  }
   #search .el-tabs__nav-scroll{
-    height:42px;
+    height:61px;
+    line-height:59px;
   }
 #search .el-tabs{
   height:100%;
@@ -605,7 +657,7 @@ export default {
   padding-bottom: 10px;
   /* min-height: 600px; */
   position: absolute;
-  top: 56px;
+  top: 75px;
   bottom: 0;
   left: 10px;
   right: 0;
@@ -615,11 +667,12 @@ export default {
   background:#555C64;
 }
 #search .el-tabs__nav.is-top{
-  padding-left:12px;
+  /*padding-left:12px;*/
   box-sizing: border-box;
 }
 #search .el-tabs__header .el-tabs__item{
   color:#fff;
+  height:100%;
 }
 #search .el-tabs__header .el-tabs__item:hover{
   background:rgb(74,76,80);
@@ -630,7 +683,7 @@ export default {
 #search .el-tabs__header .el-tabs__active-bar {
     bottom: 0;
     background-color: rgb(255, 208, 75);
-    margin-left:12px;
+    /*margin-left:12px;*/
 }
   #search .el-table__body-wrapper .el-table__expand-column i{
     /*visibility:hidden;*/

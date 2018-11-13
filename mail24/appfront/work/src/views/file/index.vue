@@ -103,7 +103,12 @@
           this.$router.push('/mailbox/innerbox/INBOX')
           this.$nextTick(()=>{
             console.log(_this.$root)
-            _this.$root.$children[0].$children[0].$children[2].addTab('compose_net_atta','写信')
+            if(_this.$root.$children[0].$children[0].$children[1].addTab){
+              _this.$root.$children[0].$children[0].$children[1].addTab('compose_net_atta','写信')
+            }else if(_this.$root.$children[0].$children[0].$children[2].addTab){
+              _this.$root.$children[0].$children[0].$children[2].addTab('compose_net_atta','写信')
+            }
+
           })
 
         }else{
@@ -126,7 +131,11 @@
           this.$router.push('/mailbox/innerbox/INBOX')
           this.$nextTick(()=>{
             console.log(_this.$root)
-            _this.$root.$children[0].$children[0].$children[2].addTab('compose_net_atta','写信')
+            if(_this.$root.$children[0].$children[0].$children[1].addTab){
+              _this.$root.$children[0].$children[0].$children[1].addTab('compose_net_atta','写信')
+            }else if(_this.$root.$children[0].$children[0].$children[2].addTab){
+              _this.$root.$children[0].$children[0].$children[2].addTab('compose_net_atta','写信')
+            }
           })
         }
 

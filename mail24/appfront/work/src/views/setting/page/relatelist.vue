@@ -19,6 +19,7 @@
                          :page-sizes="[10, 20, 50, 100]"
                          :current-page="page"
                          :page-size="page_size"
+                         v-if="total>0"
                          :total="total" style="float: right">
           </el-pagination>
         </el-col>

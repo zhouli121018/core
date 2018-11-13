@@ -50,7 +50,7 @@
               <el-option v-for="item in listTables" :key="item.id" :label="item.caption" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="恢复/转发">
+          <el-form-item label="回复/转发">
             <el-select v-model="defaultSigForm.refw_default" clearable  style="width: 100%" placeholder="默认不使用签名">
               <el-option v-for="item in listTables" :key="item.id" :label="item.caption" :value="item.id"></el-option>
             </el-select>

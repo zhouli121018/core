@@ -248,7 +248,10 @@
               this.form3.new_carbled = res.data.new_carbled;
               this.form3Visible = true;
             }).catch(err=>{
-              console.log('第二步出错！',err)
+              this.$message({
+                type:'error',
+                message:err.non_field_errors[0]
+              })
             })
           }else{
             return false;
@@ -296,7 +299,10 @@
             this.form.label_q3 = this.getLabel(res.data.security_question3,res.data.security_custom3);
             this.formVisible = true;
           }).catch(err=>{
-            console.log('第一步错误！',err)
+            this.$message({
+              type:'error',
+              message:err.non_field_errors[0]
+            })
           })
         }).catch(() => {
           this.$message({
@@ -386,10 +392,8 @@
       var lett = this;
 
       document.onkeydown = function (e) {
-        var key = window.event.keyCode;
+        var key = e.keyCode;
         if (key == 13) {
-          console.log(lett.reset1_show , lett.formVisible , lett.form3Visible )
-          console.log(lett.reset1_show || lett.formVisible || lett.form3Visible )
           if( lett.reset1_show || lett.formVisible || lett.form3Visible ){
 
           }else{

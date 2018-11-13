@@ -153,7 +153,7 @@
                     <el-input v-model.number="ruleForm2.secret" readonly></el-input>
                   </el-form-item>
 
-                  <el-form-item v-show="fileList.length>0" label="附  件:" prop="attach">
+                  <el-form-item v-show="fileList.length>0" label="附  件:" prop="attach" class="attach_list_style">
                     <div  v-for="(f,k) in fileList" :key="f.id" class="attach_box" @mouseenter="attach_hoverfn(f.id)" @mouseleave="remove_attach_hover" :class="{attach_hover:attachIndex == f.id}">
                       <i class="el-icon-document"></i>
                       <span >[非密] {{f.filename||f.name}}</span>
@@ -1960,7 +1960,7 @@
         }
       },
       deleteMailboxForKey(k,v,p){
-        if(p){
+        if(p=='1'){
           let c = 0;
           for(let i=0;i<this.maillist.length;i++){
             if(this.maillist[i].email == v.email){
@@ -2083,15 +2083,16 @@
         return data.label.indexOf(value) !== -1;
       },
       selectContact(data){
+        console.log(data)
         if(!data.children){
           if(this.insertMailbox==1){
-            if(!this.hashMail[data.label]){
-              this.hashMail[data.label]=true;
+            if(!this.hashMail[data.email]){
+              this.hashMail[data.email]=true;
               this.maillist.push({value:data.label,status:true,email:data.email,fullname:data.fullname});
             }
           }else if(this.insertMailbox == 2){
-            if(!this.hashMail_copyer[data.label]){
-              this.hashMail_copyer[data.label]=true;
+            if(!this.hashMail_copyer[data.email]){
+              this.hashMail_copyer[data.email]=true;
               this.maillist_copyer.push({value:data.label,status:true,email:data.email,fullname:data.fullname});
             }
           }
@@ -2175,6 +2176,15 @@
       this.maillist_copyer = this.parent_maillist_copyer;
       this.fileList = this.parent_fileList;
       this.ruleForm2 = this.parent_ruleForm2;
+      this.hashMail = [];
+      this.hashMail_copyer = [];
+      for(let i=0;i<this.maillist.length;i++){
+        this.hashMail[this.maillist[i].email] = true;
+      }
+      for(let i=0;i<this.maillist_copyer.length;i++){
+        this.hashMail_copyer[this.maillist_copyer[i].email] = true;
+      }
+
        $('#editor_id'+this.rid).css({'width': '100%','border':'none','boxSizing':'border-box','padding':'10px 10px 0'})
       if(!this.ruleForm2.is_html){
         // this.$refs[this.editor_id].editor.text(this.content)
@@ -2273,6 +2283,10 @@
   }
 </script>
 <style>
+  #app .attach_list_style .el-form-item__content{
+    max-height: 142px;
+    overflow: auto;
+  }
   .group_member{
     height:36px;
     line-height:36px;
