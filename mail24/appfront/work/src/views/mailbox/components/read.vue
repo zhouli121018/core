@@ -114,11 +114,11 @@
                         </el-dropdown-menu>
                       </el-dropdown>
 
-                      <a class="iconfont icon-iconemailcontacts" href="javascript:void(0)" title="查看邮件往来" data-type="dealings"></a>
+                      <a class="iconfont icon-iconemailcontacts" href="javascript:void(0)" title="查看邮件往来" @click="mail_contact"></a>
 
-                      <a class="iconfont icon-iconnewtab" href="./detach.jsp?sid=BAcpKTaaYBZiTuHsrlaaUOhLUZiBhfEu#mail.read?mid=1:1tbiAQAJEFXEqdgAXgADsl&amp;fid=1&amp;mboxa=&amp;start=2" target="_blank" title="在新窗口打开"></a>
+                      <a class="iconfont icon-iconnewtab" href="./detach.jsp?sid=BAcpKTaaYBZiTuHsrlaaUOhLUZiBhfEu#mail.read?mid=1:1tbiAQAJEFXEqdgAXgADsl&amp;fid=1&amp;mboxa=&amp;start=2" target="_blank" title="在新窗口打开" v-if="false"></a>
 
-                      <a href="javascript:void(0)" title="发起会议" data-type="mail_event">发起会议</a>
+                      <a href="javascript:void(0)" title="发起会议" @click.prevent="mail_event">发起会议</a>
                     </div>
                     <div class="f-tar">
                         <span>{{time}}</span>
@@ -195,6 +195,46 @@
                   发件人希望得到您的回执，是否发送？  
                 <el-button type="text"  style="padding:0" @click="sendNotifyMessage">发送</el-button>
                 <el-button type="text"  style="padding:0" @click="msg.attrs.is_notify=false">取消</el-button>
+              </div>
+            </div>
+            <div class="mail-cipher-encrypted j-mailCipherEncrypted" v-if="msg.attrs && msg.attrs.is_burn">
+              <div class="decryption-success" style="color:#e6a23c">
+                  <span class="el-icon-warning"></span>
+                  这是一封阅后即焚的邮件！
+              </div>
+            </div>
+            <div class="mail-cipher-encrypted j-mailCipherEncrypted" v-if="msg.attrs && msg.attrs.is_calendar">
+              <div class="decryption-success" style="color:#e6a23c">
+                  <span class="el-icon-warning"></span>
+                  这是一封日程共享提醒邮件!
+              </div>
+            </div>
+            <div class="mail-cipher-encrypted j-mailCipherEncrypted" v-if="msg.attrs && msg.attrs.is_calendar_event && !msg.attrs.is_calendar_event_deleted ">
+              <div class="decryption-success" style="color:#e6a23c">
+                  <span class="el-icon-warning"></span>
+                  这是一封日程事件提醒邮件!
+              </div>
+              <div v-if="msg.attrs.calendar_event_id">
+                <div class="decryption-success" style="font-size:14px;margin-top:10px;" v-if="msg.attrs.calendar_eventer_status!='start'">
+                  <span class="el-icon-star-on"></span>
+                  您已 <b>{{msg.attrs.calendar_eventer_status=='pass'?'接受':msg.attrs.calendar_eventer_status=='reject'?'拒绝':'待办'}}</b> 该邀请！
+                  <el-button type="text" style="margin-left:20px;" v-if="msg.attrs.calendar_eventer_status && msg.attrs.calendar_eventer_status!='start'" @click="show_change_btn = !show_change_btn">{{show_change_btn?'隐藏':'修改'}}</el-button>
+                </div>
+                <div style="margin-top:10px;padding-left:18px;" v-show="show_change_btn">
+                  <span style="font-size:14px;color:#777;"><i class="el-icon-info"></i> <b>是否接受该邀请？</b></span>
+                  <span>
+                    <el-button type="success" @click="changeStatus('pass')" v-if="msg.attrs.calendar_eventer_status!='pass'"> 接 受 </el-button>
+                    <el-button type="info" @click="changeStatus('wait')" v-if="msg.attrs.calendar_eventer_status!='wait'"> 待 办 </el-button>
+                    <el-button type="danger" @click="changeStatus('reject')" v-if="msg.attrs.calendar_eventer_status!='reject'"> 拒 绝 </el-button>
+                  </span>
+                </div>
+              </div>
+
+            </div>
+            <div class="mail-cipher-encrypted j-mailCipherEncrypted" v-if="msg.attrs && msg.attrs.is_calendar_event_deleted">
+              <div class="decryption-success" style="color:#e6a23c">
+                  <span class="el-icon-warning"></span>
+                  此事件已从您的日程中删除！
               </div>
             </div>
             <div class="mail-sent-state j-sent-state" v-if="is_sender">
@@ -284,10 +324,10 @@
                             <i class="el-icon-download"></i>
                             <p>下载</p>
                           </el-col>
-                          <!--<el-col class="text-center cursorP" :span="8" title="预览" @click.native="preview(a)">-->
-                            <!--<i class="el-icon-view"></i>-->
-                            <!--<p>预览</p>-->
-                          <!--</el-col>-->
+                          <el-col v-if="/.(gif|jpg|jpeg|png|gif|jpg|png)$/.test(a.name)" class="text-center cursorP" :span="8" title="预览" @click.native="preview(a)">
+                            <i class="el-icon-view"></i>
+                            <p>预览</p>
+                          </el-col>
                           <el-col class="text-center cursorP" :span="8" title="保存到个人网盘" @click.native="save_attach(a)">
                             <i class="el-icon-star-off" ></i>
                             <p>保存</p>
@@ -350,6 +390,12 @@
           <h3 style="margin:30px 0 0 20px;font-size:24px;font-weight:normal;">  邮件没找到！是否已移动到其他文件夹？</h3>
         </div>
       </div>
+      <el-dialog title="预览" :visible.sync="show_pic" :append-to-body="true" width="80%">
+        <div style="text-align:center;overflow: auto;">
+          <img :src="prev_src" alt="">
+        </div>
+
+      </el-dialog>
     </div>
 
   <!--</article>-->
@@ -357,7 +403,7 @@
 
 <script>
 
-  import {readMail,downloadAttach,mailDecode,moveMails,messageFlag,rejectMessage,zipMessage,pruneMessage,emlMessage,pabMessage,deleteMail,getMessageStatus,messageRecall,notifyRecall,notifyMessage,replayMessage,saveNetAttach} from '@/api/api';
+  import {readMail,downloadAttach,mailDecode,moveMails,messageFlag,rejectMessage,zipMessage,pruneMessage,emlMessage,pabMessage,deleteMail,getMessageStatus,messageRecall,notifyRecall,notifyMessage,replayMessage,saveNetAttach,setStatus} from '@/api/api';
   export default  {
     name:'Read',
     props:{
@@ -367,6 +413,9 @@
     },
     data(){
       return {
+        show_change_btn:true,
+        prev_src:'',
+        show_pic:false,
         toolbarItems:
         ['source', '|','formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
         'italic', 'underline',  'lineheight', '|',  'justifyleft', 'justifycenter', 'justifyright',
@@ -454,6 +503,45 @@
       }
     },
     methods:{
+      changeStatus(a){
+        setStatus(this.msg.attrs.calendar_event_id,a).then(res=>{
+          this.msg.attrs.calendar_eventer_status = a;
+          this.show_change_btn = false;
+          this.$message({message:'操作成功！',type:'success'});
+        },err=>{
+          this.$message({message:err.non_field_errors[0]?err.non_field_errors[0]:'操作失败！',type:'error'});
+        })
+      },
+      mail_event(){
+        this.$router.push('/calendar/index')
+        this.$nextTick(()=>{
+          console.log('calendar')
+          console.log(this)
+          let div = this.$root.$children[0].$children[0].$children[2].$children[0];
+          div.newForm.title = this.msg.subject;
+          div.newForm.invitors = [this.msg.mfrom[0]];
+          div.newEventDialog = true;
+        })
+      },
+      mail_contact(){
+        // $('#treeMenuBar .el-tree-node:eq(0)').click();
+        this.$router.push('/mailbox/innerbox/INBOX')
+        this.$nextTick(()=>{
+          this.$parent.$parent.$parent.$refs.innerbox[0].moreSearch = true;
+          this.$parent.$parent.$parent.$refs.innerbox[0].search = '';
+          this.$parent.$parent.$parent.$refs.innerbox[0].sort = '';
+          this.$parent.$parent.$parent.$refs.innerbox[0].currentPage = 1;
+          this.$parent.$parent.$parent.$refs.innerbox[0].searchForm = {
+            from:this.msg.mfrom[0],
+            subject:'',
+            body:''
+          };
+          this.$parent.$parent.$parent.$refs.innerbox[0].getMessageList();
+          this.$parent.$parent.$parent.editableTabsValue2 = '1'
+        })
+
+
+      },
       save_attach(item){
         let param = {
           folder:this.readFolderId,
@@ -978,14 +1066,15 @@
         downloadAttach(param).then(response=>{
           let blob = new Blob([response.data], { type: response.headers["content-type"] })
           var a =new FileReader();
+          let _this = this;
 
           a.onload=function(e) {
-            var img = document.createElement("img");
-            img.src = e.target.result;
+            // var img = document.createElement("img");
+            _this.prev_src = e.target.result;
+            _this.show_pic = true;
             // document.body.appendChild(img);
           }
           a.readAsDataURL(blob);
-          this.$message({ message: '预览成功！', type: 'success' });
         }).catch(err=>{
           console.log('预览失败！',err)
         })
@@ -1078,6 +1167,9 @@
         readMail(this.readId,{"folder":this.readFolderId}).then((data)=>{
           this.notFond = false;
           this.msg = data.data
+          if(this.msg.attrs.calendar_eventer_status && this.msg.attrs.calendar_eventer_status!='start'){
+            this.show_change_btn = false;
+          }
 
           if(this.msg.attrs.is_canrecall){
             this.is_sender = true;

@@ -2283,6 +2283,9 @@
   }
 </script>
 <style>
+  #app .right_menu .el-tabs__item{
+    padding:0 14px;
+  }
   #app .attach_list_style .el-form-item__content{
     max-height: 142px;
     overflow: auto;

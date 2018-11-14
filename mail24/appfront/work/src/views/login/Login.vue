@@ -285,6 +285,7 @@
         this.reset1_show = true;
         this.$prompt('请输入邮箱', '重置密码', {
           confirmButtonText: '确定',
+          // dangerouslyUseHTMLString: true,
           cancelButtonText: '取消',
           inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
           inputErrorMessage: '邮箱格式不正确！'

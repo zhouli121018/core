@@ -15,7 +15,7 @@
                       node-key="id"
                       :default-checked-keys="checkNodes"
                       :highlight-current="true"
-                      @node-click="handleNodeClick" ref="treeMenuBar">
+                      @node-click="handleNodeClick" ref="treeMenuBar" id="treeMenuBar">
                       <span class="custom-tree-node" slot-scope="{ node, data }" :title="node.label">
 
 
@@ -315,7 +315,10 @@ export default {
     setCurrentKey(boxId) {
       this.$nextTick(() =>{
         this.$refs.treeMenuBar.setCurrentKey(boxId||'INBOX');
-        if(this.$refs.treeMenuBar.getCurrentNode())this.unseencount = this.$refs.treeMenuBar.getCurrentNode().unseen;
+        if(this.$refs.treeMenuBar.getCurrentNode()){
+          this.unseencount = this.$refs.treeMenuBar.getCurrentNode().unseen;
+          this.editableTabs2[0].title = this.$refs.treeMenuBar.getCurrentNode().label;
+        }
         // let data = this.$refs.treeMenuBar.getCurrentNode();
         // this.pab_cname = data.groupname;
       })

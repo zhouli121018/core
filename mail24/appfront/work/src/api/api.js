@@ -109,7 +109,7 @@ export const mailAttachDelete = params => { return axios.post(`${host}/mail/atta
 //发信/存草稿 /api/mail/message/sent/
 export const mailSent = params =>{ return axios.post(`${host}/mail/message/sent/`,params) };
 //下载附件 /api/mail/attach/{id}/
-export const downloadAttach = params => { return axios.get(`${host}/mail/attach/0`, { params: params,responseType:'blob' }) };
+export const downloadAttach = params => { return axios.get(`${host}/mail/attach/0/`, { params: params,responseType:'blob' }) };
 //下载来往附件 /api/mail/attach/{id}/
 export const downloadAttach2 = (signatureID, params) => { return axios.get(`${host}/mail/attach/`+signatureID+'/', { params: params,responseType:'blob' }) };
 // 保存附件到个人网盘

@@ -8,9 +8,9 @@
             <el-button size="small" type="primary" icon="el-icon-d-arrow-left" v-if="current_name.parent_id" @click="changeParentFolder()">返回上层</el-button>
             <el-button plain size="small" type="primary" icon="el-icon-upload" @click="uploadFormShow" v-if="this.permisson_type == '1' || this.permisson_type == '2' || this.permisson_type == '4'">上传</el-button>
             <el-button plain size="small" type="primary" icon="el-icon-edit" @click="createFolderFormShow" v-if="this.is_supercompany || this.permisson_type == '1'">新建文件夹</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-download" :disabled="this.sels.length===0"  @click="zipDownload" v-if="this.permisson_type == '1' || this.permisson_type == '3' || this.permisson_type == '4'">批量下载</el-button>
-            <el-button plain size="small" type="danger" icon="el-icon-delete" :disabled="this.sels.length===0" @click="deleteFolders" v-if="this.is_supercompany || this.permisson_type == '1'">批量删除</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-remove" :disabled="this.sels.length===0" @click="moveFolderFormShow" v-if="this.is_supercompany || this.permisson_type == '1'">批量移动</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-download" :disabled="this.sels.length===0"  @click="zipDownload" v-if="this.permisson_type == '1' || this.permisson_type == '3' || this.permisson_type == '4'">下载</el-button>
+            <el-button plain size="small" type="danger" icon="el-icon-delete" :disabled="this.sels.length===0" @click="deleteFolders" v-if="this.is_supercompany || this.permisson_type == '1'">删除</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-remove" :disabled="this.sels.length===0" @click="moveFolderFormShow" v-if="this.is_supercompany || this.permisson_type == '1'">移动</el-button>
             <el-button plain size="small" type="primary" icon="el-icon-message" :disabled="this.sels.length===0" @click="sendMail_net('more',sels)">邮件发送</el-button>
             <el-button plain size="small" type="primary" icon="el-icon-setting" :disabled="this.sels.length===0" v-if="this.is_supercompany || this.permisson_type == '1'" @click="showAddDialog('more')">添加权限</el-button>
             <el-button @click="showPermDialog" plain size="small" type="primary" icon="el-icon-view" v-if="this.is_supercompany || this.permisson_type == '1'">权限管理</el-button>
@@ -65,7 +65,7 @@
                     <!--<span>共享</span>-->
                     <span @click="resetRowNameShow(scope.row)" v-if="scope.row.is_own || is_supercompany || permisson_type=='1'">重命名</span>
                     <span @click="showAddDialog(scope.row)" v-if="scope.row.nettype=='folder' &&  permisson_type=='1'">添加权限</span>
-                    <span @click="deleteRowFolders(scope.row)" v-if="scope.row.is_own || is_supercompany || permisson_type=='1'">删除</span>
+                    <span @click="deleteRowFolders(scope.row)" v-if="is_supercompany || permisson_type=='1'">删除</span>
                     <span @click="changeFolderTables(scope.row)" class="folder_type" v-if="scope.row.nettype=='folder' && permisson_type=='0'">访问</span>
                   </div>
                 </el-col>
@@ -984,24 +984,24 @@
         });
       },
       deleteCommonFolders: function(that, folder_id, file_ids, folder_ids){
-        this.listLoading = true;
+        that.listLoading = true;
         let para = {folder_id: folder_id, file_ids: file_ids, folder_ids: folder_ids};
         companyDiskBatchDelete(para).then((response)=> {
-          this.listLoading = false;
+          that.listLoading = false;
           that.$message({ message: '删除成功', type: 'success' });
-          this.getTables();
-          this.getCapacity();
-        }).catch(function (error) {
-          console.log(error)
+          that.getTables();
+          that.getCapacity();
+        }).catch(function (data) {
+          console.log(data)
           if ("non_field_errors" in data) {
-            this.folder_name_error = data.non_field_errors[0];
+            that.folder_name_error = data.non_field_errors[0];
           } else if ("error_message" in data) {
-            this.$message({ message: data.error_message,  type: 'error' });
+            that.$message({ message: data.error_message,  type: 'error' });
           } else {
             that.$message({ message: '删除失败，请重试',  type: 'error' });
           }
-          this.listLoading = false;
-          this.getTables();
+          that.listLoading = false;
+          that.getTables();
         });
       },
       zipRowDownload: function(row){
@@ -1042,13 +1042,13 @@
         });
       },
       zipCommonDownload: function(that, files, folders){
-        this.listLoading = true;
+        that.listLoading = true;
         let para = {files: files, folders: folders, folder_id: this.current_folder_id};
         companyDiskZipDownload(para).then((response)=> {
-          this.listLoading = false;
+          that.listLoading = false;
           let blob = new Blob([response.data], { type: response.headers["content-type"] })
           let objUrl = URL.createObjectURL(blob);
-          this.blobUrl = objUrl;
+          that.blobUrl = objUrl;
           // let filenameHeader = response.headers['content-disposition']
           // let filename = filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1);
           let filename = this.current_name.name+'.zip';

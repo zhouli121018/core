@@ -74,7 +74,7 @@
     margin-left: 7px;
   }
   /*修改editor toolbar 背景颜色*/
-  .ke-toolbar{
+  #app .ke-toolbar{
     background:#fff;
     font-size:16px;
   }

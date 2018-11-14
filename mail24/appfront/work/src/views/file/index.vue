@@ -191,7 +191,7 @@
     padding-top:20px;
     font-size: 12px;
     color: #555;
-    word-break: normal;
+    word-break: break-all;
   }
   .fl-m-nav a.fl-nav-current {
     border-color: #e3e4e5;

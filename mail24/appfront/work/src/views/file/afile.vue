@@ -6,10 +6,10 @@
         <el-row>
           <el-col :span="12" style="text-align:left">
             <el-form-item style="margin-bottom: 0px!important;">
-              <el-button plain size="small" type="primary" icon="el-icon-download" :disabled="this.sels.length===0"  @click="zipDownload">批量下载</el-button>
+              <el-button plain size="small" type="primary" icon="el-icon-download" :disabled="this.sels.length===0"  @click="zipDownload">下载</el-button>
               <el-button plain size="small" type="primary" icon="el-icon-message" :disabled="this.sels.length===0" @click="$parent.sendMail_net('more',sels)">邮件发送</el-button>
               <el-button plain size="small" type="primary" :disabled="this.sels.length===0" @click="moveFormShow">保存到个人网盘</el-button>
-              <el-button plain size="small" type="danger" icon="el-icon-delete" :disabled="this.sels.length===0" @click="deleteFiles">批量删除</el-button>
+              <el-button plain size="small" type="danger" icon="el-icon-delete" :disabled="this.sels.length===0" @click="deleteFiles">删除</el-button>
             </el-form-item>
 
             <el-form-item style="margin-bottom: 0px!important;">

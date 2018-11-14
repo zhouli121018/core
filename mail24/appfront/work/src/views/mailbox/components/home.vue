@@ -125,8 +125,8 @@
                   <li>
                     <div class="u-img icon-feature icon-lock"></div>
                     <div class="u-img-text">
-                      <a href="javascript:void(0);" class="u-img-title" data-trigger="setting.security.auth2lock">安全锁</a>
-                      <div class="u-img-desc">为重要文件夹提供更多保护</div>
+                      <a href="javascript:void(0);" class="u-img-title" @click="view_setting">设置中心</a>
+                      <div class="u-img-desc">个人资料、模板信、签名等设置</div>
                     </div>
                   </li>
                 </ul>
@@ -192,6 +192,9 @@
       }
     },
     methods:{
+      view_setting(){
+        this.$router.push('/setting/user')
+      },
       view_contact(){
         this.$router.push('/contact/pab')
       },

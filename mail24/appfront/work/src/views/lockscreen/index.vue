@@ -31,9 +31,9 @@
       </div>
 
     </div>
-    <div class="c-footer">
+    <div class="c-footer" v-if="false">
       <ul class="u-list u-list-horizontal">
-        <li><a href="#" target="_blank">帮助</a></li>
+        <li><a href="#" target="_blank" >帮助</a></li>
       </ul>
     </div>
   </div>
