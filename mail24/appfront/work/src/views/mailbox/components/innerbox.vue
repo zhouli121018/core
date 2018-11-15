@@ -649,10 +649,14 @@
               this.$parent.$parent.$parent.getFloderfn()
             }
           },(err)=>{
+            let str = '';
+            if(err.detail){
+              str = err.detail
+            }
             this.fullscreenLoading = false
             this.$message({
                 type:'error',
-                message: '删除失败！!'
+                message: '删除失败！'+str
               })
           })
         }).catch(() => {
@@ -769,9 +773,13 @@
               this.getMessageList();
             })
               .catch(err=>{
+                let str = '';
+                if(err.detail){
+                  str = err.detail
+                }
                 this.fullscreenLoading = false;
                 this.$message(
-                {type:'error',message:'邮件拒收失败！'}
+                {type:'error',message:'邮件拒收失败！'+str}
               )
             })
           }).catch(() => {
@@ -806,9 +814,13 @@
               {type:'success',message:'打包下载邮件成功！'}
             )
           }).catch(err=>{
+            let str = '';
+            if(err.detail){
+              str = err.detail
+            }
             this.fullscreenLoading = false;
             this.$message(
-              {type:'error',message:'打包下载邮件失败！'}
+              {type:'error',message:'打包下载邮件失败！'+str}
             )
           })
 

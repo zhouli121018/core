@@ -39,7 +39,23 @@ const store = new Vuex.Store({
     admin_is_active:false,
     settingUser:{
       gender:'male'
-    }
+    },
+    change_password:false,
+    mail_event:{
+      event_jump:false,
+      title:'',
+      invitors:[]
+    },
+    file_jump:false,
+    contact_jump:false,
+    new_msg:{
+      count:0,
+      new_jump:false,
+      uid:'',
+      folder:'',
+      subject:''
+    },
+    isSharedUser:false,
   },
   getters:{
     userInfo(state) {
@@ -68,6 +84,27 @@ const store = new Vuex.Store({
     },
     getSettingUser(state){
       return state.settingUser
+    },
+    get_change_password(state){
+      return state.change_password
+    },
+    getMailEvent(state){
+      return state.mail_event
+    },
+    getFileJump(state){
+      return state.file_jump
+    },
+    getContactJump(state){
+      return state.contact_jump
+    },
+    getNewMsg(state){
+     return state.new_msg
+    },
+    getIsShared(state){
+      return state.isSharedUser
+    },
+    getSharedStatus(state){
+      return state.sharedStatus
     }
   },
   mutations:{
@@ -113,7 +150,25 @@ const store = new Vuex.Store({
     },
     setSettingUser(state,param){
       state.settingUser = param;
-    }
+    },
+    setChangePassword(state,param){
+      state.change_password = param;
+    },
+    setMailEvent(state,param){
+      state.mail_event = param;
+    },
+    setFileJump(state,param){
+      state.file_jump = param
+    },
+    setContactJump(state,param){
+      state.contact_jump = param;
+    },
+    setNewMsg(state,param){
+      state.new_msg = param;
+    },
+    setIsSharedUser(state,param){
+      state.isSharedUser = param;
+    },
   },
   actions: {
     setInfo(store){
@@ -145,6 +200,27 @@ const store = new Vuex.Store({
     },
     setSettingUser(store,param){
       store.commit('setSettingUser',param);
+    },
+    setChangePwd(store,param){
+      store.commit('setChangePassword',param);
+    },
+    setMailE(sotre,param){
+      store.commit('setMailEvent',param);
+    },
+    setFileJ(store,param){
+      store.commit('setFileJump',param)
+    },
+    setContactJ(store,param){
+      store.commit('setContactJump',param);
+    },
+    setNewM(store,param){
+      store.commit('setNewMsg',param);
+    },
+    setIsSharedU(store,param){
+      store.commit('setIsSharedUser',param)
+    },
+    setSharedS(store,param){
+      store.commit('setSharedStatus',param);
     }
 
   }

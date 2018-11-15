@@ -95,18 +95,9 @@
 
         }
         this.$store.dispatch('setTo',arr)
+        this.$store.dispatch('setContactJ',true)
+
         this.$router.push('/mailbox/innerbox/INBOX')
-        this.$nextTick(()=>{
-          console.log(this.$root)
-          if(_this.$root.$children[0].$children[0].$children[1].addTab){
-            _this.$root.$children[0].$children[0].$children[1].addTab('compose_to_list','写信')
-          }else if(_this.$root.$children[0].$children[0].$children[2].addTab){
-            _this.$root.$children[0].$children[0].$children[2].addTab('compose_to_list','写信')
-          }
-
-        })
-
-
       },
     },
 

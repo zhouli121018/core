@@ -200,7 +200,9 @@
       },
       createFormShow: function(){
         let form =this.createForm;
-        form.content = this.htmlDecodeByRegExp(this.default_content);
+        if (this.default_content != null){
+          form.content = this.htmlDecodeByRegExp(this.default_content);
+        }
         this.createForm = Object.assign({}, form);
         this.createFormLoading = false;
         this.createFormVisible = true;

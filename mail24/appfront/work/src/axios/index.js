@@ -90,7 +90,7 @@ axios.interceptors.response.use(
         router.push('/')
         break;
       case 403:
-        Message.error({message:'您没有该操作权限~~~'})
+        Message.error({message:'对于您登陆的共享邮箱，没有权限做此操作。'})
         console.log('您没有该操作权限');
         // alert('您没有该操作权限');
         break;
@@ -98,7 +98,7 @@ axios.interceptors.response.use(
         Message.error({message:'服务器错误~~~'})
         console.log('服务器错误');
       // alert('服务器错误');
-    }
+      }
     }
     tryHideFullScreenLoading()
     return Promise.reject(error.response.data)   // 返回接口返回的错误信息

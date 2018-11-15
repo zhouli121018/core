@@ -1,156 +1,183 @@
 <template>
-  <section class="m-layout">
-    <div class="u-lmask j-layout-loading" style="display: none;">
-      <div class="u-lmask-floater"></div>
-      <div class="u-lmask-content"><div class="u-lmask-loading"></div></div>
-    </div>
-
-    <aside class="lysidebar j-layout-nav">
-      <div class="icon j-switch-mainpage"  title="主页" @click="goHome"><i class="iconfont icon-iconhome"></i></div>
-      <div class="avatar">
-        <el-popover
-          placement="right"
-          width="300"
-          :offset="40"
-          trigger="hover">
-          <table>
-            <tr>
-              <td style="width:72px;vertical-align:top">
-                <img style="width:100%;border-radius:50%;" alt="avatar" v-if="editform.gender == 'male'" src="@/assets/img/man.png">
-                <img style="width:100%;border-radius:50%;" alt="avatar" v-if="editform.gender != 'male'" src="@/assets/img/woman.png">
-              </td>
-              <td style="padding-left:10px;font-size:12px;color:#777;line-height:22px;">
-                <div style="color:#555;font-size:14px;">{{editform.realname}}</div>
-                <div>{{editform.email}}</div>
-                <div>{{editform.department}}</div>
-                <el-button-group style="margin-top:12px;">
-                  <el-button  size="mini" @click="goSetting">个人设置</el-button>
-                  <el-button  size="mini" @click="logout">退出登录</el-button>
-                </el-button-group>
-              </td>
-            </tr>
-            <!--<i class="iconfont icon-man1"></i>-->
-
-
-          </table>
-          <el-button slot="reference" type="text" circle style="padding:0;">
-            <a href="#" class="u-img u-img-round"  @click.prevent="visible2=!visible2">
-          <img class="j-avatar" alt="avatar"  v-if="editform.gender == 'male'" src="@/assets/img/man.png">
-          <img class="j-avatar" alt="avatar"  v-if="editform.gender != 'male'" src="@/assets/img/woman.png">
-        </a>
-          </el-button>
-        </el-popover>
-
+    <section class="m-layout">
+      <div class="u-lmask j-layout-loading" style="display: none;">
+        <div class="u-lmask-floater"></div>
+        <div class="u-lmask-content"><div class="u-lmask-loading"></div></div>
       </div>
-      <div class="divider"></div>
-      <div class="j-wrapper">
 
-        <div class="icon" :class="{active:activeTab==t.id}" v-for="t in tabs" :key="t.id" :title="t.title" @click="changeTab(t.id)">
-          <i class="iconfont" :class="t.iconclass"></i>
+      <aside class="lysidebar j-layout-nav"  v-if="!change_password">
+        <div class="icon j-switch-mainpage"  title="主页" @click="goHome"><i class="iconfont icon-iconhome"></i></div>
+        <div class="avatar">
+          <el-popover
+            placement="right"
+            width="300"
+            :offset="40"
+            trigger="hover">
+            <table>
+              <tr>
+                <td style="width:72px;vertical-align:top">
+                  <img style="width:100%;border-radius:50%;" alt="avatar" v-if="editform.gender == 'male'" src="@/assets/img/man.png">
+                  <img style="width:100%;border-radius:50%;" alt="avatar" v-if="editform.gender != 'male'" src="@/assets/img/woman.png">
+                </td>
+                <td style="padding-left:10px;font-size:12px;color:#777;line-height:22px;">
+                  <div style="color:#555;font-size:14px;">{{editform.realname}}</div>
+                  <div>{{editform.email}}</div>
+                  <div>{{editform.department}}</div>
+                  <el-button-group style="margin-top:12px;">
+                    <el-button  size="mini" @click="goSetting">个人设置</el-button>
+                    <el-button  size="mini" @click="logout">退出登录</el-button>
+                  </el-button-group>
+                </td>
+              </tr>
+              <!--<i class="iconfont icon-man1"></i>-->
+
+
+            </table>
+            <el-button slot="reference" type="text" circle style="padding:0;">
+              <a href="#" class="u-img u-img-round"  @click.prevent="visible2=!visible2">
+            <img class="j-avatar" alt="avatar"  v-if="editform.gender == 'male'" src="@/assets/img/man.png">
+            <img class="j-avatar" alt="avatar"  v-if="editform.gender != 'male'" src="@/assets/img/woman.png">
+          </a>
+            </el-button>
+          </el-popover>
+
         </div>
+        <div class="divider"></div>
+        <div class="j-wrapper">
 
-        <div role="toLunkr" class="icon j-lunkr lunkr" title="论客">
-          <i class="iconfont iconlunkrlogo"></i>
-          <span></span>
-        </div>
-      </div>
-      <!--<div class="icon icon-help j-to-helpcenter " data-i18n="common/nav_help" i18n-target="title" title="帮助中心">-->
-        <!--<i class="iconfont icon-iconhelp1"></i>-->
-      <!--</div>-->
-      <div class="icon icon-bottom" :class="{active:activeTab==5}" data-trigger="setting" role="toggle" data-i18n="common/nav_setting" i18n-target="title" title="设置" @click="changeTab(5)">
-        <i class="iconfont icon-iconsetupcenter"></i>
-      </div>
-    </aside>
-
-    <article class="lymain">
-      <section>
-        <header class="lyheader">
-          <div class="logo">
-            <a href="javascript:void(0);" class="u-img j-lylogo" data-trigger="mail.welcome">
-              <img src="@/assets/img/logo.png" alt="logo" style="width: 152px; height: 42px;">
-            </a>
+          <div class="icon" :class="{active:activeTab==t.id}" v-for="t in tabs" :key="t.id" :title="t.title" @click="changeTab(t.id)">
+            <i class="iconfont" :class="t.iconclass"></i>
           </div>
-          <ul class="u-list u-list-horizontal">
-            <!--<li id="qqLi"><a href="#">QQ咨询</a></li>-->
-            <!--<li id="cloud">-->
-              <!--<a target="_blank" href="https://cloud.icoremail.net/icmcenter/expCenter/showEvaXT5?userid=1qfUTJjqUn7UT7jmUntU7UjgUexUfJjmUntUa7jWUerUr7UAU1fUrJULUnrUTJjl" style="color:red;font-weight: bold;" data-target="title" data-i18n="main.CommentAward">评价赢大奖</a>-->
-            <!--</li>-->
-            <li><a target="_blank" href="#" @click.prevent="goToAdmin" v-if="admin_is_active&&!isSharedUser">后台管理</a></li>
-            <li><a href="#" class="skin-primary-hover-color f-dn lunkr-bandage f-pr">移动端</a></li>
-            <li><a href="#" class="skin-primary-hover-color f-dn f-pr" >即时沟通</a></li>
-            <li><a href="#" class="skin-primary-hover-color f-dn j-migrate-mbox" >马上搬家</a></li>
-            <li><a href="#" class="skin-primary-hover-color" @click.prevent.stop="lockscreen">锁屏</a></li>
-            <li class="hover_bg_box">
-              <b v-if="sharedList.length==0&&!isSharedUser">{{this.$store.getters.userInfo.name}}</b>
-              <el-dropdown trigger="click" placement="bottom-start" @command="switchShared" v-if="sharedList.length>0||isSharedUser">
-                <b class="el-dropdown-link" title="切换邮箱账号">
-                  {{userName}}<i class="el-icon-arrow-down el-icon--right"></i>
-                </b>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item disabled>关联共享邮箱</el-dropdown-item>
-                  <el-dropdown-item v-if="isSharedUser" command="back">返回我的邮箱{{ '<' + mainUsername + '>'}}</el-dropdown-item>
-                  <el-dropdown-item v-if="!isSharedUser" v-for="v in sharedList" :key="v.id" :command="v">{{v.realname + '<' + v.username + '>'}}</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </li>
-            <li><a href="#" class="skin-primary-hover-color" @click.prevent="logout">退出</a></li>
-            <li class="header-divider">
-              <a href="javascript:void(0);" class="skin-primary-hover-color history-notification-trigger j-history-notification-trigger unread">
-                <i class="iconfont icon-iconms"></i>
-              </a>
-            </li>
-            <li>
-              <div class="u-input-control">
-                <input type="text" class="u-input" id="lyfullsearch" maxlength="50" disabledhotkey="true"  placeholder="邮件全文搜索" autocomplete="off">
-                <span class="j-search u-search iconfont icon-iconsreachm"></span>
-              </div>
-            </li>
-          </ul>
-        </header>
-        <div class="lybg">
-          <div class="bg1"></div>
-          <div class="bg2"></div>
-          <div class="bg3"></div>
-          <div class="bg4"></div>
-          <div class="bg5"></div>
-        </div>
-        <div class="lycontent">
-          <router-view></router-view>
-        </div>
 
-      </section>
-      <form v-show="false" id="id_ssl_form" :action="this.$store.getters.getLoginUrl" method="post" target="_blank">
-        <input v-model="token" name="token"  type="hidden">
-      </form>
-    </article>
-        <transition name="fade">
-          <div v-if="newMsg" class="test">
-            <div role="alert" class="el-notification right" style="bottom: 16px; z-index: 2000;border: 1px solid #ddd;box-shadow: 0 0 10px #aaa;"><!----><div class="el-notification__group"><h2 class="el-notification__title">{{this.$store.getters.userInfo.name}}</h2>
-              <div class="el-notification__content">
-                <table style="margin:0 12px;cursor:pointer;" @click="readNewMsg">
+          <div role="toLunkr" class="icon j-lunkr lunkr" title="论客">
+            <i class="iconfont iconlunkrlogo"></i>
+            <span></span>
+          </div>
+        </div>
+        <!--<div class="icon icon-help j-to-helpcenter " data-i18n="common/nav_help" i18n-target="title" title="帮助中心">-->
+          <!--<i class="iconfont icon-iconhelp1"></i>-->
+        <!--</div>-->
+        <div class="icon icon-bottom" :class="{active:activeTab==5}" data-trigger="setting" role="toggle" data-i18n="common/nav_setting" i18n-target="title" title="设置" @click="changeTab(5)">
+          <i class="iconfont icon-iconsetupcenter"></i>
+        </div>
+      </aside>
+
+      <article class="lymain" v-if="!change_password">
+        <section>
+          <header class="lyheader">
+            <div class="logo">
+              <a href="javascript:void(0);" class="u-img j-lylogo" data-trigger="mail.welcome">
+                <img src="@/assets/img/logo.png" alt="logo" style="width: 152px; height: 42px;">
+              </a>
+            </div>
+            <ul class="u-list u-list-horizontal">
+              <!--<li id="qqLi"><a href="#">QQ咨询</a></li>-->
+              <!--<li id="cloud">-->
+                <!--<a target="_blank" href="https://cloud.icoremail.net/icmcenter/expCenter/showEvaXT5?userid=1qfUTJjqUn7UT7jmUntU7UjgUexUfJjmUntUa7jWUerUr7UAU1fUrJULUnrUTJjl" style="color:red;font-weight: bold;" data-target="title" data-i18n="main.CommentAward">评价赢大奖</a>-->
+              <!--</li>-->
+              <li><a target="_blank" href="#" @click.prevent="goToAdmin" v-if="admin_is_active&&!isSharedUser">后台管理</a></li>
+              <li><a href="#" class="skin-primary-hover-color f-dn lunkr-bandage f-pr">移动端</a></li>
+              <li><a href="#" class="skin-primary-hover-color f-dn f-pr" >即时沟通</a></li>
+              <li><a href="#" class="skin-primary-hover-color f-dn j-migrate-mbox" >马上搬家</a></li>
+              <li><a href="#" class="skin-primary-hover-color" @click.prevent.stop="lockscreen">锁屏</a></li>
+              <li class="hover_bg_box">
+                <b v-if="sharedList.length==0&&!isSharedUser">{{this.$store.getters.userInfo.name}}</b>
+                <el-dropdown trigger="click" placement="bottom-start" @command="switchShared" v-if="sharedList.length>0||isSharedUser">
+                  <b class="el-dropdown-link" title="切换邮箱账号">
+                    {{userName}}<i class="el-icon-arrow-down el-icon--right"></i>
+                  </b>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item disabled>关联共享邮箱</el-dropdown-item>
+                    <el-dropdown-item v-if="isSharedUser" command="back">返回我的邮箱{{ '<' + mainUsername + '>'}}</el-dropdown-item>
+                    <el-dropdown-item v-if="!isSharedUser" v-for="v in sharedList" :key="v.id" :command="v">{{v.realname + '<' + v.username + '>'}}</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </li>
+              <li><a href="#" class="skin-primary-hover-color" @click.prevent="logout">退出</a></li>
+              <li class="header-divider">
+                <a href="javascript:void(0);" class="skin-primary-hover-color history-notification-trigger j-history-notification-trigger unread">
+                  <i class="iconfont icon-iconms"></i>
+                </a>
+              </li>
+              <li>
+                <div class="u-input-control">
+                  <input type="text" class="u-input" id="lyfullsearch" maxlength="50" disabledhotkey="true"  placeholder="邮件全文搜索" autocomplete="off">
+                  <span class="j-search u-search iconfont icon-iconsreachm"></span>
+                </div>
+              </li>
+            </ul>
+          </header>
+          <div class="lybg">
+            <div class="bg1"></div>
+            <div class="bg2"></div>
+            <div class="bg3"></div>
+            <div class="bg4"></div>
+            <div class="bg5"></div>
+          </div>
+          <div class="lycontent">
+            <router-view></router-view>
+          </div>
+
+        </section>
+        <form v-show="false" id="id_ssl_form" :action="this.$store.getters.getLoginUrl" method="post" target="_blank">
+          <input v-model="token" name="token"  type="hidden">
+        </form>
+      </article>
+      <transition name="fade" v-if="!change_password">
+            <div v-if="newMsg" class="test">
+              <div role="alert" class="el-notification right" style="bottom: 16px; z-index: 2000;border: 1px solid #ddd;box-shadow: 0 0 10px #aaa;"><!----><div class="el-notification__group"><h2 class="el-notification__title">{{this.$store.getters.userInfo.name}}</h2>
+                <div class="el-notification__content">
+                  <table style="margin:0 12px;cursor:pointer;" @click="readNewMsg">
+                    <tr>
+                    <td style="vertical-align:top;padding-right:10px;">
+                      <i class="el-icon-message" style="font-size:36px;"></i>
+                    </td>
+                    <td style="vertical-align:top;">
+                      <h3 class="hide_row" :title="newMsg.subject">{{newMsg.subject }}</h3>
+                      <h3 class="hide_row"><span style="color:#5EB509">{{newMsg.mfrom?newMsg.mfrom[1]:''}}</span><span style="color:#aaa;font-size:12px;"> &lt; {{newMsg.mfrom?newMsg.mfrom[0]:''}} &gt;</span></h3>
+                      <p class="hide_row2">{{newMsg.abstract}}</p>
+                    </td>
+                    </tr>
+                  </table>
+                  <div style="margin-top:10px;width:100%;height:2px;background:linear-gradient(to right, #409EFF , #fff);"></div>
+                <table style="width:100%;">
                   <tr>
-                  <td style="vertical-align:top;padding-right:10px;">
-                    <i class="el-icon-message" style="font-size:36px;"></i>
-                  </td>
-                  <td style="vertical-align:top;">
-                    <h3 class="hide_row" :title="newMsg.subject">{{newMsg.subject }}</h3>
-                    <h3 class="hide_row"><span style="color:#5EB509">{{newMsg.mfrom?newMsg.mfrom[1]:''}}</span><span style="color:#aaa;font-size:12px;"> &lt; {{newMsg.mfrom?newMsg.mfrom[0]:''}} &gt;</span></h3>
-                    <p class="hide_row2">{{newMsg.abstract}}</p>
-                  </td>
+                    <td style="padding:2px 12px 0;color:#409EFF;cursor:pointer;" @click=""></td>
+                    <td style="text-align:right;padding:2px 12px 0"> <i class="el-icon-caret-left" style="cursor:pointer;" @click="preNew"></i> {{newIndex+1}}/{{newList.length}} <i @click="nextNew" class="el-icon-caret-right" style="cursor:pointer;"></i></td>
                   </tr>
                 </table>
-                <div style="margin-top:10px;width:100%;height:2px;background:linear-gradient(to right, #409EFF , #fff);"></div>
-              <table style="width:100%;">
-                <tr>
-                  <td style="padding:2px 12px 0;color:#409EFF;cursor:pointer;" @click=""></td>
-                  <td style="text-align:right;padding:2px 12px 0"> <i class="el-icon-caret-left" style="cursor:pointer;" @click="preNew"></i> {{newIndex+1}}/{{newList.length}} <i @click="nextNew" class="el-icon-caret-right" style="cursor:pointer;"></i></td>
-                </tr>
-              </table>
-              </div>
-              <div class="el-notification__closeBtn el-icon-close" @click="newList=[]"></div></div></div>
+                </div>
+                <div class="el-notification__closeBtn el-icon-close" @click="newList=[]"></div></div></div>
+            </div>
+          </transition>
+
+      <el-dialog title="请修改密码" :visible.sync="change_password" width="450px" :close-on-click-modal="false" :show-close="false" :close-on-press-escape="false">
+          <el-form :model="passwordForm" size="small" :rules="passwordFormRules" ref="passwordForm">
+
+            <el-form-item label="原始密码" prop="password" :error="password_error">
+              <el-input v-model="passwordForm.password" type="password" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="新密码" prop="new_password" :error="new_password_error">
+              <el-input v-model="passwordForm.new_password" type="password" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="确认新密码" prop="confirm_password" :error="confirm_password_error">
+              <el-input v-model="passwordForm.confirm_password" type="password" auto-complete="off"></el-input>
+            </el-form-item>
+            <p style="color:#aaa;font-size:12px;padding-top:10px;">
+              <strong style="color: red">注：</strong> 密码长度为8到20位，需要大写和小写字母数字组合或者特殊字符字母数字组合； 不能连续重复、递增、递减的数或字母，可包含特殊字符；<br>例：如密码为8位，则Abcd2357、1111test、1234test、4321test均不符合要求。
+            </p>
+
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="passeordFormSubmit">确 定</el-button>
+            <el-button type='' @click="backToLogin" >返 回</el-button>
           </div>
-        </transition>
-  </section>
+        </el-dialog>
+
+    </section>
+
+
+
 </template>
 
 <script>
@@ -158,10 +185,53 @@
   import store from '@/store'
   import router from '@/router'
   import cookie from '@/assets/js/cookie';
-  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome,settingUsersGet } from '@/api/api'
+  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome,settingUsersGet,settingUsersSetpassword } from '@/api/api'
   export default {
     data:function(){
+      var validatePass = (rule, value, callback) => {
+          let reg =  /^(.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*)|(.*(?=.{6,})(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*? ]).*)$/;
+         // let reg =  /^[\d]{6}$/;
+        if (value === '') {
+          callback(new Error('请输入密码'));
+        }
+        // else if (reg.test(value) ) {
+        //   callback(new Error('请输入正确的格式'));
+        // }
+        else{
+          callback();
+        }
+      };
+      var validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (value !== this.passwordForm.new_password) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      };
       return {
+        passwordVisible:true,
+        password_error:'',
+        new_password_error:'',
+        confirm_password_error:'',
+        passwordForm:{
+          password:'',
+          new_password:'',
+          confirm_password:'',
+        },
+        passwordFormRules: {
+          password: [
+            { required: true, message: '请填写原始密码', trigger: 'blur' },
+            { min: 1, message: '长度必须大于 1 个字符', trigger: 'blur' }
+          ],
+          new_password: [
+            { validator:validatePass, trigger: 'blur' },
+          ],
+          confirm_password: [
+            { validator:validatePass2,  trigger: 'blur' },
+          ]
+        },
         editform:{},
         visible2:true,
         newIndex:0,
@@ -182,6 +252,45 @@
       }
     },
     methods:{
+      backToLogin(){
+        console.log(123)
+        cookie.delCookie('token');
+        cookie.delCookie('name');
+        this.$store.dispatch('setInfo');
+        this.$router.push('/login')
+      },
+      passeordFormSubmit: function () {
+        this.password_error = '';
+        this.new_password_error = '';
+        this.confirm_password_error = '';
+        this.$refs.passwordForm.validate((valid) => {
+          if (valid) {
+            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+              let para = Object.assign({}, this.passwordForm);
+              settingUsersSetpassword(para).then((res) => {
+                // console.log(res.data)
+                cookie.setCookie('token',res.data.token, 7);
+                this.$refs['passwordForm'].resetFields();
+                this.$message({message: '密码修改成功', type: 'success'});
+                this.$store.dispatch('setChangePwd',false);
+              }, (data)=>{
+                console.log(data)
+                if("password" in data) {
+                  this.password_error = data.password[0];
+                }
+                if("new_password" in data) {
+                  this.new_password_error = data.new_password[0];
+                }
+                if("confirm_password" in data) {
+                  this.confirm_password_error = data.confirm_password[0];
+                }
+              }).catch(function (error) {
+                console.log(error);
+              });
+            });
+          }
+        });
+      },
       getUser(){
         settingUsersGet().then(res=>{
           this.editform = res.data.results;
@@ -239,18 +348,25 @@
       },
       readNewMsg(){
         let _this = this;
-        this.$router.push('/mailbox/innerbox/'+this.newMsg.folder);
-        this.$nextTick(() =>{
-          if(_this.$children[0].addTab){
-            _this.$children[0].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
-          }else if(_this.$children[1].addTab){
-            _this.$children[1].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
-          }else if(_this.$children[2].addTab){
-            _this.$children[2].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
-          }
-          _this.newList.splice(_this.newIndex,1);
-          _this.newIndex = 0;
-        })
+        console.log(this)
+
+          this.$router.push('/mailbox/innerbox/'+this.newMsg.folder);
+          this.$nextTick(() =>{
+            if(_this.$children[0].addTab){
+              _this.$children[0].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
+            }else if(_this.$children[1].addTab){
+              _this.$children[1].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
+            }else if(_this.$children[2].addTab){
+              _this.$children[2].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
+            }else if(_this.$children[3].addTab){
+              _this.$children[3].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
+            }
+
+          })
+        _this.newList.splice(_this.newIndex,1);
+        _this.newIndex = 0;
+
+
         // setTimeout(function(){
         //   // _this.$children[1].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
         //   _this.$root.$children[0].$children[0].$children[0].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
@@ -366,6 +482,18 @@
       },
       getShared(){
         settingRelateShared().then(suc=>{
+          let param = {
+            shareuser_all:suc.data.shareuser_all,
+            shareuser_get:suc.data.shareuser_get,
+            shareuser_password:suc.data.shareuser_password,
+            shareuser_post:suc.data.shareuser_post,
+            shareuser_send:suc.data.shareuser_send
+          }
+          this.$store.dispatch('setIsSharedU',suc.data.is_shareduser)
+          this.$store.dispatch('setSharedS',param)
+          this.$store.dispatch('setLoginUrlAction',suc.data.login_url)
+          this.$store.dispatch('setAdminIsActive',suc.data.is_active)
+          this.$store.dispatch('setChangePwd',suc.data.change_password)
           this.isSharedUser = suc.data.is_shareduser;
           if(suc.data.is_shareduser){
             this.mainUsername = suc.data.results.username;
@@ -388,6 +516,7 @@
             this.$router.push('/mailbox/welcome')
             _this.getShared();
           },err=>{
+            this.$router.push('/mailbox/welcome')
             console.log(err)
           })
         }else{
@@ -400,6 +529,7 @@
             this.$router.push('/mailbox/welcome')
           },(err)=>{
             let str = err.non_field_errors[0] || '切换共享邮箱出错！';
+            this.$router.push('/mailbox/welcome')
             _this.$alert(str, '提示：', {
               confirmButtonText: '确定'}
             )
@@ -424,13 +554,29 @@
           this.activeTab = 4;
         }else if(this.$route.path.indexOf('/setting')==0){
           this.activeTab = 5;
+        }else if(this.$route.path.indexOf('/search')==0){
+          this.activeTab = 6;
         }
         this.open_notify();
       welcome().then(res=>{
         this.userinfo = res.data.userinfo;
-        this.$store.dispatch('setLoginUrlAction',res.data.login_url)
-        this.$store.dispatch('setAdminIsActive',res.data.is_active)
+
       })
+      if(this.$route.path.indexOf('/mailbox')==0){
+          this.activeTab = 0;
+        }else if(this.$route.path.indexOf('/calendar')==0){
+          this.activeTab = 1;
+        }else if(this.$route.path.indexOf('/file')==0){
+          this.activeTab = 2;
+        }else if(this.$route.path.indexOf('/contact')==0){
+          this.activeTab = 3;
+        }else if(this.$route.path.indexOf('/appcenter')==0){
+          this.activeTab = 4;
+        }else if(this.$route.path.indexOf('/setting')==0){
+          this.activeTab = 5;
+        }else if(this.$route.path.indexOf('/search')==0){
+          this.activeTab = 6;
+        }
     },
     watch:{
       $route(nv,ov){
@@ -446,6 +592,13 @@
           this.activeTab = 4;
         }else if(this.$route.path.indexOf('/setting')==0){
           this.activeTab = 5;
+        }else if(this.$route.path.indexOf('/search')==0){
+          this.activeTab = 6;
+        }
+      },
+      change_password(newv,oldv){
+        if(newv){
+          this.$router.push('/mailbox/welcome')
         }
       }
     },
@@ -458,7 +611,10 @@
         admin_is_active:function(){ return this.$store.getters.getAdminIsActive},
         userName(){
           return this.$store.getters.userInfo.name
-        }
+        },
+        change_password:function(){
+          return this.$store.getters.get_change_password
+        },
     }
   }
 </script>

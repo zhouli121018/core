@@ -513,15 +513,13 @@
         })
       },
       mail_event(){
+        let param = {
+          event_jump:true,
+          title:this.msg.subject,
+          invitors:[this.msg.mfrom[0]]
+        }
+        this.$store.dispatch('setMailE',param)
         this.$router.push('/calendar/index')
-        this.$nextTick(()=>{
-          console.log('calendar')
-          console.log(this)
-          let div = this.$root.$children[0].$children[0].$children[2].$children[0];
-          div.newForm.title = this.msg.subject;
-          div.newForm.invitors = [this.msg.mfrom[0]];
-          div.newEventDialog = true;
-        })
       },
       mail_contact(){
         // $('#treeMenuBar .el-tree-node:eq(0)').click();

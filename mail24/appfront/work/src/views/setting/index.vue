@@ -12,7 +12,7 @@
               <span slot="title" title="检查或修改个人资料、语言等设置">个人资料</span>
             </el-menu-item>
 
-            <el-menu-item index="/setting/password" style="text-align: left" v-if="menuShow.setting_password_show">
+            <el-menu-item index="/setting/password" style="text-align: left" v-if="setting_password_show">
               <img src="./img/op_password.gif" style="width:20px;">
               <span slot="title" title="重新设定邮箱密码">密码</span>
             </el-menu-item>
@@ -77,7 +77,7 @@
               <span slot="title" title="邮件过滤规则">邮件过滤</span>
             </el-menu-item>
 
-            <el-menu-item index="/setting/relatelist" style="text-align: left" v-if="menuShow.setting_relatelist_show">
+            <el-menu-item index="/setting/relatelist" style="text-align: left" v-if="setting_relatelist_show">
               <img src="./img/op_sharemailbox.gif" style="width:20px;">
               <span slot="title" title="把邮箱关联共享给其他用户">关联共享邮箱</span>
             </el-menu-item>
@@ -113,8 +113,7 @@
   export default {
     data() {
       return {
-        menuShow: {
-          setting_password_show: false,
+        menuShow:{
           setting_param_show: true,
           setting_signature_show: true,
           setting_autoreply_show: false,
@@ -127,7 +126,6 @@
           setting_filter_show: false,
           setting_transfer_show: false,
           setting_accountcancel_show: false,
-          setting_relatelist_show: false,
         }
       };
     },
@@ -150,7 +148,13 @@
     computed: {
       default_active_menu: function () {
         return this.$route.path;
-      }
+      },
+      setting_password_show(){
+        return  !this.$store.getters.getIsShared
+      },
+      setting_relatelist_show(){
+        return  !this.$store.getters.getIsShared
+      },
     },
 
   }

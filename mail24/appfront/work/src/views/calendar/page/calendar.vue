@@ -768,7 +768,18 @@
     components: {
     },
     created: function() {
-
+      let mail_event = this.$store.getters.getMailEvent;
+      if(mail_event.event_jump){
+        this.newForm.title = mail_event.title
+        this.newForm.invitors = mail_event.invitors
+        this.newEventDialog = true;
+        let param = {
+          event_jump:false,
+          title:'',
+          invitors:[]
+        }
+        this.$store.dispatch('setMailE',param)
+      }
     },
     mounted: function() {
 

@@ -100,17 +100,8 @@
           })
           if(!check)return;
           this.$store.dispatch('setPfileNet',arr)
+          this.$store.dispatch('setFileJ',true)
           this.$router.push('/mailbox/innerbox/INBOX')
-          this.$nextTick(()=>{
-            console.log(_this.$root)
-            if(_this.$root.$children[0].$children[0].$children[1].addTab){
-              _this.$root.$children[0].$children[0].$children[1].addTab('compose_net_atta','写信')
-            }else if(_this.$root.$children[0].$children[0].$children[2].addTab){
-              _this.$root.$children[0].$children[0].$children[2].addTab('compose_net_atta','写信')
-            }
-
-          })
-
         }else{
           let obj = {
             id:row.id
@@ -128,15 +119,8 @@
           let arr = [];
           arr.push(obj)
           this.$store.dispatch('setPfileNet',arr)
+          this.$store.dispatch('setFileJ',true)
           this.$router.push('/mailbox/innerbox/INBOX')
-          this.$nextTick(()=>{
-            console.log(_this.$root)
-            if(_this.$root.$children[0].$children[0].$children[1].addTab){
-              _this.$root.$children[0].$children[0].$children[1].addTab('compose_net_atta','写信')
-            }else if(_this.$root.$children[0].$children[0].$children[2].addTab){
-              _this.$root.$children[0].$children[0].$children[2].addTab('compose_net_atta','写信')
-            }
-          })
         }
 
 

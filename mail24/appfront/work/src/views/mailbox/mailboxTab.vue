@@ -172,6 +172,17 @@ export default {
       this.showTabIndex=1;
     },
     addTab(type,subject,rid,fid,info) {
+      console.log(this.sharedStatus)
+      if(this.sharedStatus.shareuser_all || this.sharedStatus.shareuser_post ||this.sharedStatus.shareuser_send||type=='read'){
+
+      }else{
+        this.$message({
+          type:'error',
+          message:'对于您登陆的共享邮箱，没有权限做此操作。'
+        })
+        return
+      }
+      this.showTabIndex = 1;
       if(type=='compose'||type == 'compose_to_list'){
         this.ruleForm2['refw_type']=undefined;
         this.ruleForm2 = {
@@ -425,9 +436,13 @@ export default {
           });
         },(err)=>{
           console.log(err)
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
           this.$message({
             type: 'error',
-            message: '删除失败!'
+            message: '删除失败! '+str
           });
         })
       }).catch(() => {
@@ -450,7 +465,6 @@ export default {
     goToCompose(){
       // this.$emit('getCompose', {activeTab:3});
       // this.$router.push('/mailbox/compose')
-      this.showTabIndex = 1;
       this.addTab('compose','写信')
     },
     reloadMails(){
@@ -485,12 +499,29 @@ export default {
         }
         return arr;
       },
+    newCount(){
+      return this.$store.getters.getNewMsg.count;
+    },
+    sharedStatus(){
+      return this.$store.getters.getSharedStatus;
+    }
   },
   created(){
     if(this.$route.name == 'innerbox'){
       this.showTabIndex = 1;
       // this.getData({id:'INBOX',label:'收件箱'})
       this.setCurrentKey(this.$route.params)
+      if(this.$store.getters.getFileJump){
+        this.addTab('compose_net_atta','写信');
+        this.$store.dispatch('setFileJ',false)
+      }
+      if(this.$store.getters.getContactJump){
+        this.addTab('compose_to_list','写信')
+        this.$store.dispatch('setContactJ',false)
+      }
+      // if(this.$store.getters.getNewMsg.new_jump){
+      //   this.addTab('read',this.$store.getters.getNewMsg.subject,this.$store.getters.getNewMsg.uid,this.$store.getters.getNewMsg.folder)
+      // }
     }else{
       this.showTabIndex = 0;
       this.$nextTick(()=>{
@@ -499,6 +530,8 @@ export default {
 
     }
 
+    let perm = this.$store.getters.getSharedStatus;
+    console.log(perm)
   },
   watch:{
       $route(v,o){
@@ -525,6 +558,9 @@ export default {
         if(!is_edit && this.$store.getters.getTimer){
           clearInterval(this.$store.getters.getTimer)
         }
+    },
+    newCount(newv){
+        alert(newv)
     }
 
   },

@@ -1,5 +1,5 @@
 <template>
-  <div id="calendar_id">
+  <div id="calendar_id" ref="calendar">
 
     <section class="m-mail">
 

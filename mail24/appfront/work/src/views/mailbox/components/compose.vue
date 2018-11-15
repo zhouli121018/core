@@ -1719,15 +1719,28 @@
           }
         },err=>{
           this.sendLoading = false;
-          console.log(err)
+          let str = '';
+          if(err.non_field_errors){
+            str = err.non_field_errors[0]
+          }
+          if(err.error_message){
+            str = err.error_message;
+          }
           this.$message({
-             message:"操作失败！"+err.non_field_errors[0],
+             message:"操作失败！"+str,
              type:'error'
           })
         }).catch(err=>{
           this.sendLoading = false;
+          let str = '';
+          if(err.non_field_errors){
+            str = err.non_field_errors[0]
+          }
+          if(err.error_message){
+            str = err.error_message;
+          }
           this.$message({
-             message:"操作失败！"+err.non_field_errors[0],
+             message:"操作失败！"+str,
              type:'error'
           })
         })
