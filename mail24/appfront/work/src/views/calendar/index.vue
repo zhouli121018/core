@@ -100,7 +100,6 @@
           this.share_calendars = [];
           for(let i=0;i<res.data.share_results.length;i++){
             let o = res.data.share_results[i];
-            console.log(o.is_show)
             if(o.is_show){
               this.share_calendars.push(o)
             }

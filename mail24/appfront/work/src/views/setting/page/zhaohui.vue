@@ -15,7 +15,7 @@
         </el-col>
       </el-row>
 
-      <el-table :data="listTables" highlight-current-row v-loading="listLoading" width="100%" style="width: 100%;max-width:100%;" size="mini" border>
+      <el-table :data="listTables" highlight-current-row width="100%" style="width: 100%;max-width:100%;" size="mini" border>
         <el-table-column type="index" label="No." width="80"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
         <el-table-column prop="datetime" label="时间" width="200"></el-table-column>
@@ -49,7 +49,6 @@
       f_TableSizeChange(val) {
         this.page_size = val;
         this.getTables();
-        // console.log(`当前页: ${val}`);
       },
       // 翻页改变
       f_TableCurrentChange(val) {

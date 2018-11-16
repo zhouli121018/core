@@ -86,7 +86,6 @@
         function digui(arr){
           for(var i=0;i<arr.length;i++){
             result.push(arr[i]);
-            console.log(arr[i].children&&arr[i].children.length>0)
             if(arr[i].children&&arr[i].children.length>0){
               digui(arr[i].children);
             }
@@ -144,7 +143,6 @@
 
             this.dialogFormVisible = false;
           } else {
-            console.log('error submit!!');
             return false;
           }
         });
@@ -195,7 +193,6 @@
         this.$parent.addTab('compose','写信')
       },
       reloadMails(){
-        console.log(this.$parent.$refs.innerbox)
         this.$parent.$refs.innerbox.getMessageList()
       },
 

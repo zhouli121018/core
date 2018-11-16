@@ -478,14 +478,13 @@ export default {
               this.recallData = res.data.results;
               this.recallTableVisible = true;
               this.getSend();
-            }, err => {
-              this.$message({
-                message: '邮件召回失败！',
-                type: 'error'
-              })
             }).catch(err=>{
+              let str = '';
+              if(err.detail){
+                str = err.detail
+              }
               this.$message({
-                message: '邮件召回失败！',
+                message: '邮件召回失败！'+str,
                 type: 'error'
               })
             })
@@ -510,8 +509,6 @@ export default {
       this.$refs.sendTable.toggleRowExpansion(row)
     },
     handleClick(tab, event) {
-      console.log(tab, event);
-      console.log(tab.$data.index)
       let index = tab.$data.index;
       if(index==1){
         this.getSend();

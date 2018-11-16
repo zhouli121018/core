@@ -58,7 +58,7 @@
           </el-row>
 
           <!--列表-->
-          <el-table :data="listTables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
+          <el-table :data="listTables" highlight-current-row width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
             <!--<el-table :data="listTables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
             <el-table-column type="selection" width="50"></el-table-column>
             <el-table-column type="index" label="No." width="60"></el-table-column>
@@ -207,7 +207,6 @@
       f_TableSizeChange(val) {
         this.page_size = val;
         this.getSoabMembers();
-        // console.log(`当前页: ${val}`);
       },
       f_TableCurrentChange(val) {
         this.page = val;
@@ -218,7 +217,6 @@
       },
       Oab_send_to_select: function () {
         var ids = this.sels.map(item => item.id).toString();
-        // console.log(ids);
         this.$confirm('确认删除选中记录吗？', '提示', {
           type: 'warning'
         }).then(() => {

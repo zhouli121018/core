@@ -53,10 +53,8 @@ export default {
     methods:{
         lockscreenfn(){
             var that =this;
-            console.log(this.lockpassword)
             lockscreen({"password":this.lockpassword})
             .then((response)=>{
-              console.log(response.data)
               if(response.data.token){
                 var token = response.data.token;
                 //本地存储用户信息

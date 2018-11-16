@@ -509,7 +509,14 @@
           this.show_change_btn = false;
           this.$message({message:'操作成功！',type:'success'});
         },err=>{
-          this.$message({message:err.non_field_errors[0]?err.non_field_errors[0]:'操作失败！',type:'error'});
+          let str = '';
+            if(err.detail){
+              str = err.detail
+            }
+            if(err.non_field_errors){
+              str = err.non_field_errors[0]
+            }
+          this.$message({message:'操作失败！'+str,type:'error'});
         })
       },
       mail_event(){
@@ -553,9 +560,13 @@
             message:'保存成功！'
           })
         }).catch(err=>{
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
           this.$message({
             type:'error',
-            message:'保存失败！'+err
+            message:'保存失败！'+str
           })
         })
       },
@@ -595,13 +606,16 @@
           this.center_replying = false;
           this.before_replying = true;
         }).catch(err=>{
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
           this.$message({
             type:'error',
-            message:'信件发送失败！'
+            message:'信件发送失败！'+str
           })
           this.center_replying = false;
           this.before_replying = true;
-          console.log('直接回复错误！',err)
         })
       },
       closeTab(tagName){
@@ -654,16 +668,19 @@
           folder:this.readFolderId
         }
         notifyMessage(param).then(res=>{
-          console.log(res)
           this.$message({
             type:'success',
             message:'回执发送成功！'
           })
           this.msg.attrs.is_notify = false;
         }).catch(err=>{
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
           this.$message({
             type:'error',
-            message:'回执发送失败！'
+            message:'回执发送失败！'+str
           })
           this.msg.attrs.is_notify = false;
         })
@@ -681,9 +698,16 @@
           })
           this.getReadMail();
         }).catch(err=>{
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
+          if(err.error){
+            str = err.error
+          }
           this.$message({
             type:'error',
-            message:'操作失败！'+err.error
+            message:'操作失败！'+str
           })
           this.getReadMail();
         })
@@ -717,7 +741,6 @@
           recipient: recp.join(',')
         }
         getMessageStatus(param).then(res=>{
-          console.log(res)
           this.mail_results = res.data.results;
           let a=0,b=0,c=0,d=0;
           for(let i=0;i<this.mail_results.length;i++){
@@ -775,7 +798,6 @@
             view = 1;
           }
           if(item.id==10||item.id==11){
-            console.log(window.location.origin)
             let href = window.location.origin+'/#/messageInfo/'+this.readId+'?folder='+encodeURIComponent(this.readFolderId)+'&view='+view;
             window.open(href)
             return;
@@ -837,15 +859,18 @@
 
         }else if(item.id==4){ //拒收邮件
           rejectMessage(param).then(res=>{
-            console.log(res)
             this.$message(
               {type:'success',message:'邮件拒收成功！'}
             )
           })
             .catch(err=>{
+              let str = '';
+            if(err.detail){
+              str = err.detail
+            }
             console.log(err)
               this.$message(
-              {type:'error',message:'邮件拒收失败！'}
+              {type:'error',message:'邮件拒收失败！'+str}
             )
           })
         }else if(item.id == 7){//彻底删除
@@ -855,7 +880,6 @@
             type: 'warning'
           }).then(() => {
             pruneMessage(param).then(res=>{
-              console.log(res)
               this.$message(
                 {type:'success',message:'彻底删除邮件成功！'}
               )
@@ -863,7 +887,14 @@
               pp.getFloderfn();
               this.$parent.$parent.$children[1].$children[0].getMessageList()
             }).catch(err=>{
-              console.log('彻底删除失败！',err);
+              let str = '';
+              if(err.detail){
+                str = err.detail
+              }
+              this.$message({
+                type:'error',
+                message:'彻底删除失败！'+str
+              })
             })
           }).catch(() => {
             this.$message({
@@ -874,15 +905,17 @@
 
         }else if(item.id==8){//添加到通讯录
           pabMessage(pa).then(res=>{
-            console.log(res)
             this.$message(
               {type:'success',message:'添加到通讯录成功！'}
             )
           }).catch(err=>{
+            let str = '';
+            if(err.detail){
+              str = err.detail
+            }
             this.$message(
-              {type:'error',message:'添加到通讯录失败！'}
+              {type:'error',message:'添加到通讯录失败！'+str}
             )
-            console.log('添加到通讯录失败',err)
           })
         }else if(item.id==9){
           emlMessage(pa).then(response=>{
@@ -907,8 +940,12 @@
             )
           }).catch(err=>{
             console.log(err)
+            let str = '';
+            if(err.detail){
+              str = err.detail
+            }
             this.$message(
-              {type:'error',message:'邮件下载失败！'}
+              {type:'error',message:'邮件下载失败！'+str}
             )
           })
         }
@@ -933,9 +970,13 @@
               this.$parent.$parent.$children[1].$children[0].getMessageList()
             }
           },(err)=>{
+            let str = '';
+            if(err.detail){
+              str = err.detail
+            }
             this.$message({
                 type:'error',
-                message: '删除失败！!'
+                message: '删除失败！'+str
               })
           })
         }).catch(() => {
@@ -1047,7 +1088,11 @@
           this.$message({ message: '下载成功！', type: 'success' });
         },err=>{
           console.log(err);
-          this.$message({ message: '下载失败！', type: 'error' });
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
+          this.$message({ message: '下载失败！'+str, type: 'error' });
         })
 
       },
@@ -1092,8 +1137,6 @@
           dst_folder:index
         }
         moveMails(params).then((suc)=>{
-          console.log(suc.data)
-          console.log(suc.data.msg)
           this.$message({
               type:'success',
               message: '邮件移动成功!'
@@ -1106,14 +1149,17 @@
               message: '邮件移动失败!'
             })
         }).catch(err=>{
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
           this.$message({
               type:'error',
-              message: '邮件移动失败!'
+              message: '邮件移动失败! '+str
             })
         })
       },
       signHandleCommand:function(item){
-        console.log(item);
         if(!item){
           return;
         }
@@ -1153,9 +1199,13 @@
         },(err)=>{
 
         }).catch(err=>{
+          let str = '';
+            if(err.detail){
+              str = err.detail
+            }
           this.$message({
               type:'error',
-              message: '邮件标记失败!'
+              message: '邮件标记失败! '+str
             })
         })
       },
@@ -1214,7 +1264,6 @@
 
 
           const oIframe = document.getElementById('show-iframe'+rid);
-          console.log(oIframe)
           //-30padding
           // const deviceWidth = this.$refs.companyStyle.getBoundingClientRect().width-30;
 
@@ -1244,8 +1293,6 @@
             const deviceHeight = oIframe.contentWindow.document.body.offsetHeight ;
             const deviceWidth = oIframe.contentWindow.document.body.scrollWidth ;
             oIframe.style.width = deviceWidth + 'px';
-            console.log('width1: '+deviceWidth)
-            console.log('height1: '+deviceHeight)
             oIframe.style.height = deviceHeight + 46+'px';
           },100)
 
@@ -1262,7 +1309,6 @@
 
     },
     created:function(){
-      console.log('mounted')
       this.getReadMail();
 
     },

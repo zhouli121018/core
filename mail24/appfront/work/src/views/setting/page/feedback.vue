@@ -45,7 +45,7 @@
         </el-row>
 
         <el-form-item>
-          <el-button type="primary" @click.native="createFormSubmit()" :loading="createFormLoading" >提交</el-button>
+          <el-button type="primary" @click.native="createFormSubmit()">提交</el-button>
         </el-form-item>
       </el-form>
 

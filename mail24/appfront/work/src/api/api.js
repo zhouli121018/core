@@ -397,6 +397,8 @@ export const deleteEvent = id => { return axios.delete(`${host}/calendars/events
 export const cancelInvitorEvent = id => { return axios.post(`${host}/calendars/events/${id}/cancel-invitor/`) }
 //修改参与者状态 /api/calendars/events/{id}/status/
 export const setStatus = (id,params) => { return axios.post(`${host}/calendars/events/${id}/status/`, {status:params}) };
+//根据邮箱获取用户ID，并验证是不是系统内邮箱 /api/calendars/calendars/target_id/
+export const getTargetId = params => { return axios.get(`${host}/calendars/calendars/target_id/`, { params: params }) }
 
 
 //自助查询
@@ -408,3 +410,7 @@ export const getSendlog = params => { return axios.get(`${host}/center/sendlog/`
 export const getMaillog = params => { return axios.get(`${host}/center/maillog/`, { params: params }) }
 //删信查询  /api/center/deletelog/
 export const getDeletellog = params => { return axios.get(`${host}/center/deletelog/`, { params: params }) }
+
+
+//邮件列表  /api/contact/lab/
+export const getContactLab = params => { return axios.get(`${host}/contact/lab/`, { params: params }) }

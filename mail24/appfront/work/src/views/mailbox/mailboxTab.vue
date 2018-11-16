@@ -172,7 +172,6 @@ export default {
       this.showTabIndex=1;
     },
     addTab(type,subject,rid,fid,info) {
-      console.log(this.sharedStatus)
       if(this.sharedStatus.shareuser_all || this.sharedStatus.shareuser_post ||this.sharedStatus.shareuser_send||type=='read'){
 
       }else{
@@ -400,9 +399,13 @@ export default {
               message: '添加成功!'
             });
           },(err)=>{
+            let str = '';
+            if(err.detail){
+              str = err.detail
+            }
             this.$message({
               type: 'error',
-              message: '添加失败！'
+              message: '添加失败！'+str
             });
             console.log(err);
           })
@@ -531,7 +534,6 @@ export default {
     }
 
     let perm = this.$store.getters.getSharedStatus;
-    console.log(perm)
   },
   watch:{
       $route(v,o){

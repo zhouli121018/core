@@ -17,7 +17,7 @@
         </el-col>
       </el-row>
 
-      <el-table :data="listTables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
+      <el-table :data="listTables" highlight-current-row width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
         <el-table-column type="selection" width="60"></el-table-column>
         <el-table-column type="index" label="No." width="80"></el-table-column>
         <el-table-column prop="name" label="规则名称"></el-table-column>
@@ -250,7 +250,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="createFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">提交</el-button>
+          <el-button type="primary" @click.native="createFormSubmit()">提交</el-button>
         </div>
       </el-dialog>
 
@@ -458,7 +458,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="updateFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">提交</el-button>
+          <el-button type="primary" @click.native="updateFormSubmit()">提交</el-button>
         </div>
       </el-dialog>
 
@@ -548,7 +548,6 @@
         $('#dept_choice_'+k).click();
       },
       deptChange(c,k){
-        console.log(this.$refs['dept_choice_'+k][0])
         let deptArr = this.$refs['dept_choice_'+k][0].currentValue;
         let labelArr = this.$refs['dept_choice_'+k][0].currentLabels;
         c.value = deptArr[deptArr.length-1];
@@ -568,7 +567,6 @@
       f_TableSizeChange(val) {
         this.page_size = val;
         this.getTables();
-        // console.log(`当前页: ${val}`);
       },
       // 翻页改变
       f_TableCurrentChange(val) {
@@ -608,7 +606,6 @@
           if(o.children&&o.children.length>0){
             for(let k = 0;k<o.children.length;k++){
               let subO = o.children[k];
-              console.log(k.action)
               if(subO.suboption!='all_mail'&&subO.suboption!='has_attach'&&!subO.action){
                 _this.$message({message:'请选择条件动作！',type:'error'});
                 return false;
@@ -635,7 +632,6 @@
       },
 
       createFormSubmit(){
-        console.log(this.createForm);
         let _this = this;
 
         this.$refs.createForm.validate((valid) => {
@@ -745,8 +741,6 @@
         this.createFormVisible = true;
       },
       updateFormSubmit(){
-        // console.log(this.selss);
-        // console.log(this.updateForm);
         this.$refs.updateForm.validate((valid) => {
           if (valid) {
             if(!this.confirmation(this.updateForm)){
@@ -775,7 +769,6 @@
 
       updateFormShow:function (index, row){
         settingFilterGetSingle(row.id).then(res=>{
-          console.log(res);
           let obj = res.data.conditions;
           let arr = {};
           for(let i=0;i<obj.length;i++){
@@ -813,7 +806,6 @@
           activeN.push(i)
         }
         this.activeNames = activeN;
-        console.log(this.activeNames)
       },
       getActiveNames_create(){
         let activeN = [];

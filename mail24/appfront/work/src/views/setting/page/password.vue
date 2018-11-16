@@ -16,7 +16,7 @@
           <el-col :span="16"><el-form-item label="确认密码" prop="confirm_password" :error="confirm_password_error"><el-input type="password" v-model.trim="passeordForm.confirm_password" auto-complete="off"></el-input></el-form-item></el-col>
         </el-row>
         <el-row><el-col :span="16"><pre style="margin-left: 100px"><strong style="color: red">注：</strong> 密码长度为8到20位，需要大写和小写字母数字组合或者特殊字符字母数字组合； 不能连续重复、递增、递减的数或字母，可包含特殊字符；<br>例：如密码为8位，则Abcd2357、1111test、1234test、4321test均不符合要求。</pre></el-col></el-row>
-        <el-row><el-col :span="24"><el-form-item><el-button type="primary" @click.native="passeordFormSubmit()" :loading="passeordFormLoading">修改</el-button></el-form-item></el-col></el-row>
+        <el-row><el-col :span="24"><el-form-item><el-button type="primary" @click.native="passeordFormSubmit()" >修改</el-button></el-form-item></el-col></el-row>
       </el-form>
 
       <el-form :model="securityForm" label-width="100px" :rules="securityFormRules" ref="securityForm" size="mini" style="margin-left:13px;margin-right:13px;margin-top: 13px">
@@ -61,7 +61,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item>
-              <el-button type="primary" @click.native="securityFormSubmit()" :loading="securityFormLoading">修改</el-button>
+              <el-button type="primary" @click.native="securityFormSubmit()">修改</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -180,7 +180,6 @@
               this.passeordFormLoading = true;
               let para = Object.assign({}, this.passeordForm);
               settingUsersSetpassword(para).then((res) => {
-                // console.log(res.data)
                 cookie.setCookie('token',res.data.token, 7);
                 this.$refs['passeordForm'].resetFields();
                 this.passeordFormLoading = false;
@@ -221,13 +220,11 @@
               this.securityFormLoading = true;
               let para = Object.assign({}, this.securityForm);
               settingUsersSetSecurity(para).then((res) => {
-                // console.log(res.data)
                 // this.$refs['securityForm'].resetFields();
                 this.securityFormLoading = false;
                 this.$message({message: '密保修改成功', type: 'success'});
                 // this.getSecurity();
               }, (data)=>{
-                // console.log(data);
                 this.securityFormLoading = false;
                 if("security_question1" in data) { this.security_question1_error = data.security_question1[0]; }
                 if("security_custom1" in data) { this.security_custom1_error = data.security_custom1[0]; }

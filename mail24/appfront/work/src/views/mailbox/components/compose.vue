@@ -342,6 +342,11 @@
                       {{scope.row.recall_status_info}}
                     </template>
                   </el-table-column>
+                  <el-table-column label="描述">
+                    <template slot-scope="scope">
+                      <span style="color: #f56c6c;">{{scope.row.error_message}}</span>
+                    </template>
+                  </el-table-column>
                 </el-table>
 
               </div>
@@ -400,7 +405,7 @@
                 @node-click="contact_tree_click">
                 <span  slot-scope="{ node, data }" :title="node.label">
 
-                  <i v-if="data.children && data.children.length==0" class="iconfont icon-icongroup"></i>
+                  <!--<i v-if="data.children && data.children.length==0" class="iconfont icon-icongroup"></i>-->
                   <span>{{ node.label }}</span>
 
 
@@ -553,7 +558,7 @@
   import axios from 'axios';
   // import treeTransfer from 'el-tree-transfer'
   import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach,contactOabDepartsGet,
-  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus,settingSignatureGet,getTemplateList,getTemplateById,getDeptMail,readMail} from '@/api/api'
+  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus,settingSignatureGet,getTemplateList,getTemplateById,getDeptMail,readMail,getContactInfo,getContactLab} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     props:{
@@ -606,6 +611,9 @@
         }
       };
       return {
+        webmail_cab_show: false,
+        webmail_soab_show: false,
+        error_list:[],
         member_search:'',
         member_page:1,
         member_group_id:0,
@@ -695,7 +703,7 @@
         isRecall:false,
         message_id:'',
         recipient:'',
-        show_result:false,
+        show_result:true,
         send_suc:false,
         editor_height:300,
         active_box:'to',
@@ -787,6 +795,7 @@
       };
     },
     methods:{
+
       goEdit(){
         this.closeTab();
         let row = this.sendResult;
@@ -859,7 +868,6 @@
         this.getMemberList();
       },
       contact_page_change(val){
-        console.log(val)
         this.member_page = val;
         this.getMemberList();
       },
@@ -878,7 +886,6 @@
             "search":this.member_search
           }
           contactPabMembersGet(param).then(res=>{
-            console.log(res);
           }).catch(err=>{
             console.log('获取所有联系人错误',err);
           })
@@ -891,7 +898,6 @@
             "search":this.member_search
           };
           contactPabMapsGet(param).then(res=>{
-            console.log(res)
           }).catch(err=>{
             console.log('获取组成员错误',err);
           })
@@ -913,7 +919,6 @@
           page_size:5
         }
         getTemplateList(param).then(res=>{
-          console.log(res.data.results)
           this.templateList = this.templateList.concat(res.data.results);
           if(res.data.results.length<=5){
             this.tpage ++;
@@ -942,11 +947,9 @@
           cancelButtonText: '直接切换'
         })
           .then(() => {
-            console.log('存草稿再切换')
             this.sentMail('save_draft')
             this.selectId = t.id;
             getTemplateById(t.id).then(res=>{
-              console.log(res.data.content)
               this.content = res.data.content;
               if(this.ruleForm2.is_html){
                 this.$refs[this.editor_id].editor.html(this.content);
@@ -962,10 +965,8 @@
           })
           .catch(action => {
           if(action === 'cancel'){
-            console.log('直接切换')
             this.selectId = t.id;
             getTemplateById(t.id).then(res=>{
-              console.log(res.data.content)
               this.content = res.data.content;
               if(this.ruleForm2.is_html){
                 this.$refs[this.editor_id].editor.html(this.content);
@@ -979,13 +980,11 @@
               console.log('获取单个模板信错误！',err)
             })
           }else{
-            console.log('kong')
           }
         });
         }else{
           this.selectId = t.id;
             getTemplateById(t.id).then(res=>{
-              console.log(res.data.content)
               this.content = res.data.content;
               if(this.ruleForm2.is_html){
                 this.$refs[this.editor_id].editor.html(this.content);
@@ -1051,8 +1050,6 @@
 
       },
       checkSignatrue(sign){
-        console.log('sign')
-        console.log(sign)
         if(sign == 'removeSign'){
           $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#sign').html('')
         }else if(sign == 'editSign'){
@@ -1065,10 +1062,8 @@
             let hasBg = $(html).find('#stationery').length>0;
 
             if(hasSign){
-              console.log('换')
               $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#sign').html('--<br><br>'+sign.content)
             }else if(hasBg && !hasSign){
-              console.log('加')
               let ht = $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#stationery').html();
               $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#stationery').html(ht+'<p><br><br></p><div id="sign">--<br><br>'+sign.content+'</div><br>')
             }else{
@@ -1076,7 +1071,6 @@
             }
           }else{
             // 纯文本签名
-            console.log('cnunjdsfao')
             let html = this.$refs[this.editor_id].editor.html();
             this.$refs[this.editor_id].editor.html('<p>'+html+'</p>')
             this.$refs[this.editor_id].editor.appendHtml('<p><br><br></p><div id="sign">'+'--<br><br>'+sign.content+'</div>')
@@ -1238,8 +1232,12 @@
 
             }, err => {
               console.log(err)
+              let str = '';
+              if(err.detail){
+                str = err.detail
+              }
               this.$message({
-                message: '邮件召回失败！',
+                message: '邮件召回失败！'+str,
                 type: 'error'
               })
             })
@@ -1257,8 +1255,14 @@
           recipient: this.recipient
         }
         getMessageStatus(param).then(res=>{
-          console.log(res)
           this.mail_results = res.data.results;
+          this.mail_results.forEach(val1=>{
+            this.error_list.forEach(val2=>{
+              if(val1.email == val2.email){
+                val1.error_message = val2.error_message;
+              }
+            })
+          })
         },err=>{
           console.log(err);
         })
@@ -1303,7 +1307,6 @@
       },
       getParams(){
         getParamBool().then(res=>{
-          console.log(res)
           this.ruleForm2.is_save_sent = res.data.results.is_save_sent;
           this.ruleForm2.is_confirm_read = res.data.results.is_confirm_read;
           this.is_save_contact = res.data.results.is_save_contact;
@@ -1331,7 +1334,6 @@
         this.contactSelection = selection;
       },
       selectionChange_contact(v,row){
-        console.log(v)
         if(this.active_box=='to'){
           if(!row){
             let rows = this.contactData;
@@ -1421,6 +1423,7 @@
         }
       },
       show_contact_fn(a){
+        this.get_transform_menu();
         this.active_box = a
         this.transform_dialog = true;
         this.toList = [].concat(this.maillist)
@@ -1537,9 +1540,34 @@
           }
         });
       },
-      contact_tree_click(data){
+      contact_tree_click(data,node,vc){
         let _this = this;
-        console.log(data);
+        console.log(data)
+        console.log(node)
+        console.log(vc)
+        if(data.id=='lab'){
+          let param = {
+            page:1,
+            page_size:10
+          }
+          getContactLab(param).then(res=>{
+            this.totalCount = res.data.count;
+            this.contactData = res.data.results;
+            this.contactData.forEach(val=>{
+              val.username = val.address
+              val.name = val.listname
+              if(val.listtype && val.listtype == 'dept'){
+                val.is_dept = true;
+              }
+            })
+            setTimeout(() => {
+              this.bang(this.allSeclect)
+            }, 50)
+          }).catch(err=>{
+            console.log('获取邮件列表异常！'+err)
+          })
+          return;
+        }
         if(data.id=='oab'||data.id=='pab'||data.id=='cab'||data.id=='soab'){
           sessionStorage['openGroup'] = data.id;
           return;
@@ -1612,7 +1640,6 @@
         this.$refs.nfileTable.toggleRowSelection(row)
       },
       switch_file(tab,event){
-        console.log(tab)
         if(tab.$data.index==1){
           this.getNetfile(-1);
         }
@@ -1629,7 +1656,6 @@
           "folder_id": n,
         };
         netdiskGet(param).then(res=>{
-          console.log(res)
           this.attachTotal_net = res.data.count;
           this.nfileList = res.data.results;
           this.folder_names = res.data.folder_names;
@@ -1673,7 +1699,6 @@
         }else{
           this.ruleForm2.html_text = '';
           this.ruleForm2.plain_text = this.content;
-          console.log(this.content)
         }
 
         for(let i=0;i<this.fileList.length;i++){
@@ -1689,8 +1714,6 @@
         }
         let param = this.ruleForm2;
         param.action=type;// save_draft
-        console.log(param);
-        console.log(this.maillist)
         if(this.type!='sent'&&!this.content){
           return;
         }
@@ -1700,7 +1723,6 @@
         mailSent(param).then(res=>{
           if(this.$store.getters.getTimer){clearInterval(this.$store.getters.getTimer)}
           this.sendLoading = false;
-          this.$parent.$parent.$parent.getFloderfn();
           let info = type=='sent'?"发送成功！":"保存草稿成功！";
           this.$message({
              message:info,
@@ -1710,12 +1732,19 @@
           this.recipient = res.data.recipient;
           this.sendResult = res.data;
           this.$parent.$parent.$parent.getFloderfn()
-          this.$parent.$parent.$children[1].$children[0].getMessageList()
+          // this.$parent.$parent.$children[1].$children[0].getMessageList()
           if(res.data.draft_id){
             this.ruleForm2.draft_id = res.data.draft_id
           }
           if(res.data.success && res.data.success){
             this.send_suc = true;
+            if(res.data.error_lists){
+              this.error_list = res.data.error_lists
+            }else{
+              this.error_list = [];
+            }
+
+            this.getMessageStatus();
           }
         },err=>{
           this.sendLoading = false;
@@ -1725,6 +1754,9 @@
           }
           if(err.error_message){
             str = err.error_message;
+          }
+          if(err.detail){
+            str = err.detail
           }
           this.$message({
              message:"操作失败！"+str,
@@ -1738,6 +1770,9 @@
           }
           if(err.error_message){
             str = err.error_message;
+          }
+          if(err.detail){
+            str = err.detail
           }
           this.$message({
              message:"操作失败！"+str,
@@ -1766,12 +1801,18 @@
             label:'组织通讯录',
             children:perms.data.results
           }
+          arr[2] = {
+            id:'lab',
+            keyId:'lab',
+            label:'邮件列表',
+            children:[]
+          }
           _this.transform_menu = arr;
 
         }))
       },
       handleChange(value, direction, movedKeys) {
-        console.log(value, direction, movedKeys);
+
       },
       attachSizeChange(val){
         this.attachPageSize = val;
@@ -1839,7 +1880,6 @@
       },
       fileSelectionChange(val) {
         this.fileSelection = val;
-        console.log(this.fileSelection)
       },
       selectUpload(command){
         if(command == 'filecore'){
@@ -1855,7 +1895,6 @@
           offset:(this.attachCurrentPage-1)*this.attachPageSize
         };
         getAttach(param).then((suc)=>{
-          console.log(suc.data)
           this.attachTotal = suc.data.count;
           this.coreFileList = suc.data.results;
         },(err)=>{
@@ -1877,42 +1916,32 @@
         var formData=new FormData();
         formData.append('filepath', file)
         postAttach(formData).then((res)=>{
-          console.log(res.data)
           var obj = res.data;
           this.hashFile[res.data.id]=true;
           this.fileList.push(res.data)
-          console.log(this.fileList)
          this.$message({
              message:"上传成功",
              type:'success'
          })
         },(err)=>{
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
           this.$message({
-               message:"上传失败",
+               message:"上传失败! "+str,
                type:'error'
           })
         })
         return true;
       },
       uploadProgress(event, file, fileList){
-        console.log("ev")
-        console.log(event)
-        console.log("fi")
-        console.log(file)
-        console.log('jl')
-        console.log(fileList)
+
       },
       sucUpload(response, file, fileList){
-        console.log('res')
-        console.log(response)
-        console.log('file')
-        console.log(file)
         this.fileList.push(file);
-        console.log('filelist')
-        console.log(fileList)
       },
       imgChange(param){
-        console.log(this.$store.state.userInfo.token)
         var file= param.file;
         // this.imageFileName.push(file.name);
             const isJPG = file.type === 'image/jpeg';
@@ -1935,7 +1964,6 @@
             }
 
         var _this = this;
-        console.log(param)
         // var o = document.getElementById('img_upload');
 
         var reader=new FileReader();
@@ -1944,7 +1972,6 @@
         var str=e.target.result;
         //将上传成功后的图片显示在特定位置
         this.imgSrc = str;
-        console.log(_this.$refs[this.editor_id])
           _this.$refs[this.editor_id].editor.insertHtml(`<img src=${str} />`)
 
 
@@ -1955,7 +1982,6 @@
         this.content = this.$refs[this.editor_id].$data.outContent;
         // this.$refs[this.editor_id].editor.html(this.content);
         // $('#editor_id'+this.rid).val()
-        // console.log('contentchange')
       },
 
       preview(){
@@ -2096,7 +2122,6 @@
         return data.label.indexOf(value) !== -1;
       },
       selectContact(data){
-        console.log(data)
         if(!data.children){
           if(this.insertMailbox==1){
             if(!this.hashMail[data.email]){
@@ -2207,7 +2232,6 @@
       this.getParams();
       this.getPabGroups();
       sessionStorage['openGroup'] = 'oab';
-      console.log(this.editor_height)
       this.setEditorHeight();
       this.set_main_min_height();
       // this.$refs[this.editor_id].editor.insertHtml(' ');
@@ -2226,8 +2250,13 @@
     created(){
       this.getSignatrue();
       this.getTemplateListfn();
-      this.get_transform_menu();
+      // this.get_transform_menu();
       // this.getMemberList(); new通讯录
+      getContactInfo().then((res) => {
+        sessionStorage['soab_domain_cid'] = res.data.soab_domain_cid;
+        this.webmail_cab_show = res.data.webmail_cab_show;
+        this.webmail_soab_show = res.data.webmail_soab_show;
+      });
     },
     computed:{
       uploadJson:function(){

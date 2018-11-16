@@ -82,20 +82,21 @@
               <el-col :span="3" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="delete_invite(k,v)" type="warning" plain></el-button></el-col>
             </el-row>
           </div>
-          <el-select
-            v-model.trim="addemail"
-            filterable
-            remote
-            placeholder="请输入邮箱"
-            :remote-method="remoteMethod"
-            @change="select_item" ref="selectItem">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+          <!--<el-select-->
+            <!--v-model.trim="addemail"-->
+            <!--filterable-->
+            <!--remote-->
+            <!--placeholder="请输入邮箱"-->
+            <!--:remote-method="remoteMethod"-->
+            <!--@change="select_item" ref="selectItem">-->
+            <!--<el-option-->
+              <!--v-for="item in options"-->
+              <!--:key="item.value"-->
+              <!--:label="item.label"-->
+              <!--:value="item.value">-->
+            <!--</el-option>-->
+          <!--</el-select>-->
+          <el-input placeholder="输入邀请人" style="width:auto;" v-model.trim="addemail"></el-input>
           <el-button @click="addEmail">添加</el-button>
           <el-button @click="showChoice = !showChoice">{{showChoice?"隐藏通讯录":"打开通讯录"}}</el-button>
         </el-form-item>
@@ -254,7 +255,7 @@
   </div>
 </template>
 <script>
-  import {contactOabDepartsGet,contactOabMembersGet,getCalendarsList,createCalendar,deleteCalendar,getCalendarById,updateCalendar,showCalendar,deleteInvitorCalendar} from '@/api/api'
+  import {contactOabDepartsGet,contactOabMembersGet,getCalendarsList,createCalendar,deleteCalendar,getCalendarById,updateCalendar,showCalendar,deleteInvitorCalendar,getTargetId} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     data() {
@@ -366,7 +367,23 @@
                 message: '删除成功!'
              });
            },err=>{
-             console.log(err);
+             let str = '';
+              if(err.detail){
+                str = err.detail
+              }
+              this.$message({
+                type:'error',
+                message:'删除失败！'+str
+              })
+           }).catch(err=>{
+             let str = '';
+              if(err.detail){
+                str = err.detail
+              }
+              this.$message({
+                type:'error',
+                message:'删除失败！'+str
+              })
            })
 
          }).catch(() => {
@@ -392,7 +409,23 @@
                 message: '删除成功!'
              });
            },err=>{
-             console.log(err);
+             let str = '';
+             if(err.detail){
+               str = err.detail
+             }
+             this.$message({
+               type:'error',
+               message:'删除失败！'+str
+             })
+           }).catch(err=>{
+             let str = '';
+             if(err.detail){
+               str = err.detail
+             }
+             this.$message({
+               type:'error',
+               message:'删除失败！'+str
+             })
            })
 
          }).catch(() => {
@@ -439,9 +472,16 @@
               _this.getCalendars();
               _this.$parent.getCalendars();
             },err=>{
+              let str = '';
+              if(err.detail){
+                str = err.detail
+              }
+              if(err.limited_error_message){
+                str = err.limited_error_message
+              }
               this.$message({
                 type: 'error',
-                message: err.limited_error_message
+                message: '创建失败！'+str
               });
               console.log(err);
             })
@@ -465,11 +505,23 @@
               _this.getCalendars();
               _this.$parent.getCalendars();
             },err=>{
+              let str = '';
+              if(err.detail){
+                str = err.detail
+              }
               this.$message({
                 type: 'error',
-                message: '创建失败！'
+                message: '创建失败！'+str
               });
-              console.log(err);
+            }).catch(err=>{
+              let str = '';
+              if(err.detail){
+                str = err.detail
+              }
+              this.$message({
+                type: 'error',
+                message: '创建失败！'+str
+              });
             })
           } else {
             return false;
@@ -587,12 +639,33 @@
       },
       addEmail(){
         if(this.addemail){
-          if(!this.hashMailbox[this.addemail]){
-            let v = this.$refs.selectItem.$data.selectedLabel;
-            this.addForm.shares.push({target_id:this.addemail,label:v,permmisson:1});
-            this.hashMailbox[this.addemail] = true;
-            this.addemail = '';
+          if(emailReg.test(this.addemail)){
+              getTargetId({email:this.addemail}).then(res=>{
+                if(res.data.target_id){
+                  if(!this.hashMailbox[res.data.target_id]){
+                    this.addForm.shares.push({target_id:res.data.target_id,label:this.addemail,permmisson:1});
+                    this.hashMailbox[res.data.target_id] = true;
+                    this.addemail = '';
+                  }
+                }else{
+                  this.$message({
+                    type:'error',
+                    message:'不能添加不是系统的邮箱! 请重新输入！'
+                  })
+                }
+
+              }).catch(err=>{
+                console.log('获取target_id有误! ',err)
+              })
+          }else{
+            this.$message({message:'邮箱格式不正确！',type:'error'})
           }
+          // if(!this.hashMailbox[this.addemail]){
+          //   let v = this.$refs.selectItem.$data.selectedLabel;
+          //   this.addForm.shares.push({target_id:this.addemail,label:v,permmisson:1});
+          //   this.hashMailbox[this.addemail] = true;
+          //   this.addemail = '';
+          // }
 
         }
       },

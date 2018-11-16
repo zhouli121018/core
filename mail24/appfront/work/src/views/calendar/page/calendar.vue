@@ -662,10 +662,8 @@
             }
           },
           eventAfterAllRender: function (view) {
-            // console.log(view)
           },
           viewRender(view, element) {
-            console.log(view)
             if(view.name == 'listMonth'){
               _self.eventMode = 'event'
               // if(_self.calendar_id)_self.getEventList();
@@ -801,13 +799,11 @@
         this.eventClick(row)
       },
       pickBeginDate(d){
-        console.log(arguments)
         if(new Date(this.getDate(d)).getTime()>new Date(this.getDate(this.newForm.end_day)).getTime()){
           this.newForm.end_day = this.newForm.start_day
         }
       },
       pickBeginDate_view(d){
-        console.log(arguments)
         if(new Date(this.getDate(d)).getTime()>new Date(this.getDate(this.viewForm.end_day)).getTime()){
           this.viewForm.end_day = this.viewForm.start_day
         }
@@ -994,12 +990,15 @@
       delete_invitors_view(k,id){
         if(id){
           cancelInvitorEvent(id).then(res=>{
-            console.log(res)
             this.$message({message:'取消邀请成功！',type:'success'});
             this.hashMailbox_view[this.viewForm.invitors[k]] = false;
             this.viewForm.invitors.splice(k,1)
           },err=>{
-            this.$message({message:'取消邀请失败！',type:'error'});
+            let str = '';
+              if(err.detail){
+                str = err.detail
+              }
+            this.$message({message:'取消邀请失败！'+str,type:'error'});
           })
         }else{
           this.hashMailbox_view[this.viewForm.invitors[k]] = false;
@@ -1012,7 +1011,14 @@
         setStatus(this.event_id,this.invitor_status).then(res=>{
           this.$message({message:'操作成功！',type:'success'});
         },err=>{
-          this.$message({message:err.non_field_errors[0]?err.non_field_errors[0]:'操作失败！',type:'error'});
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
+          if(err.non_field_errors && err.non_field_errors[0]){
+            str = err.non_field_errors[0]
+          }
+          this.$message({message:'操作失败！'+str,type:'error'});
         })
       },
       submitForm(formName) {
@@ -1031,7 +1037,6 @@
               _this.$message({message:'请选择重复截止日期！',type:'error'});
               return;
             }
-            console.log(this.newForm);
             let obj = {};
             for(let key in this.newForm){
               if(key=='cycle_day' && !this.newForm[key]){
@@ -1040,8 +1045,6 @@
               obj[key] = this.newForm[key];
               obj['calender_id']=this.calendar_id;
             }
-            console.log(this.calender_id)
-            console.log(obj)
             createEvent(obj).then(res=>{
               this.newEventDialog = false;
               this.$message({message:'创建事件成功！',type:'success'});
@@ -1051,7 +1054,14 @@
               this.$refs.contactTable.clearSelection();
               this.showChoice = false;
             },err=>{
-              this.$message({message:err.non_field_errors||'创建事件失败！',type:'error'});
+              let str = '';
+              if(err.detail){
+                str = err.detail
+              }
+              if(err.non_field_errors){
+                str = err.non_field_errors
+              }
+              this.$message({message:'创建事件失败！'+str,type:'error'});
               console.log(err)
             })
 
@@ -1076,7 +1086,6 @@
               _this.$message({message:'请选择重复截止日期！',type:'error'});
               return;
             }
-            console.log(this.viewForm);
             let obj = {};
             for(let key in this.viewForm){
               if(key=='cycle_day' && !this.viewForm[key]){
@@ -1094,13 +1103,16 @@
               }
             }
             obj.invitors = invitors;
-            console.log(obj)
             updateEvent(this.viewForm.id,obj).then(res=>{
               this.viewEventDialog = false;
               this.$message({message:'修改成功！',type:'success'});
               this.getEventList();
             },err=>{
-              this.$message({message:'修改失败！',type:'error'});
+              let str = '';
+              if(err.detail){
+                str = err.detail
+              }
+              this.$message({message:'修改失败！'+str,type:'error'});
               console.log(err)
             })
 
@@ -1120,7 +1132,11 @@
             this.viewEventDialog = false;
             this.getEventList();
           },err=>{
-            this.$message({message:'删除事件失败！',type:'error'});
+            let str = '';
+              if(err.detail){
+                str = err.detail
+              }
+            this.$message({message:'删除事件失败！'+str,type:'error'});
             console.log(err);
           })
         }).catch(() => {
@@ -1135,8 +1151,6 @@
       dayClick (t,jsEvent,view){
         // e.target.style.boxShadow="0 0 5px #60CAFF"
         // this.$refs.calendar.fireMethod('changeView', 'agendaDay')
-        console.log(arguments)
-        console.log(view.name=='month')
         if(view.name=='month'&&this.fcEvents.length>0){
           this.fcEvents[this.fcEvents.length-1].start = t;
           if(this.newEvent){
@@ -1165,7 +1179,6 @@
           this.newForm.end_day = this.newForm.start_day
         }else{
           getEventById(data.id).then(res=>{
-            console.log(res)
             this.viewForm = res.data.results;
             this.permisson = res.data.permisson;
             if(res.data.permisson.invite==true){

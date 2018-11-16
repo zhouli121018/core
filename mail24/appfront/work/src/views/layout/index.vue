@@ -253,7 +253,6 @@
     },
     methods:{
       backToLogin(){
-        console.log(123)
         cookie.delCookie('token');
         cookie.delCookie('name');
         this.$store.dispatch('setInfo');
@@ -268,13 +267,11 @@
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
               let para = Object.assign({}, this.passwordForm);
               settingUsersSetpassword(para).then((res) => {
-                // console.log(res.data)
                 cookie.setCookie('token',res.data.token, 7);
                 this.$refs['passwordForm'].resetFields();
                 this.$message({message: '密码修改成功', type: 'success'});
                 this.$store.dispatch('setChangePwd',false);
               }, (data)=>{
-                console.log(data)
                 if("password" in data) {
                   this.password_error = data.password[0];
                 }
@@ -309,9 +306,7 @@
         }
 
         axios.post(this.$store.getters.getLoginUrl,param).then(res=>{
-          console.log(res)
         }).catch(err=>{
-          console.log('gotoadmin出错!',err)
         })
       },
       preNew(){
@@ -348,7 +343,7 @@
       },
       readNewMsg(){
         let _this = this;
-        console.log(this)
+
 
           this.$router.push('/mailbox/innerbox/'+this.newMsg.folder);
           this.$nextTick(() =>{

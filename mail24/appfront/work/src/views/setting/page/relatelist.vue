@@ -25,7 +25,7 @@
         </el-col>
       </el-row>
 
-      <el-table :data="listTables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
+      <el-table :data="listTables" highlight-current-row  width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
         <el-table-column type="selection" width="60"></el-table-column>
         <el-table-column prop="realname" label="用户名"></el-table-column>
         <el-table-column prop="username" label="关联邮箱"></el-table-column>
@@ -43,7 +43,7 @@
       <!--新增 签名-->
       <el-dialog title="添加关联共享邮箱"  :visible.sync="createFormVisible"  :close-on-click-modal="false" :append-to-body="true" class="add_share_mail" width="60%">
         <el-form :model="createForm" label-width="100px" :rules="createFormRules" ref="createForm" size="small"
-          v-loading="fileloading"
+
           element-loading-text="正在导入文件..."
           element-loading-spinner="el-icon-loading"
         >
@@ -156,7 +156,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="createFormVisible = false">取消</el-button>
-          <el-button v-if="addType == '0'" type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">提交</el-button>
+          <el-button v-if="addType == '0'" type="primary" @click.native="createFormSubmit()">提交</el-button>
           <el-button v-if="addType == '2'" type="primary" @click.native="submitFile">提交</el-button>
         </div>
       </el-dialog>
@@ -316,7 +316,6 @@
       },
       rowClick(row,e,col){
         this.$refs.contactTable.toggleRowSelection(row)
-        console.log(row);
       },
       handleSizeChange(val) {
         this.pageSize = val;
@@ -336,7 +335,6 @@
           "dept_id": this.oab_cid,
         };
         contactOabMembersGet(param).then((res) => {
-          console.log(res.data);
           this.totalCount = res.data.count;
           this.contactData = res.data.results;
         });
@@ -348,7 +346,6 @@
             this.hashMailbox[v[i].username] = true;
           }
         }
-        console.log(v)
       },
       uploadFile(param){
         this.fileloading = true;
@@ -388,7 +385,6 @@
       f_TableSizeChange(val) {
         this.page_size = val;
         this.getTables();
-        // console.log(`当前页: ${val}`);
       },
       // 翻页改变
       f_TableCurrentChange(val) {

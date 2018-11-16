@@ -181,7 +181,7 @@
                             >
                             <el-table-column
                               type="selection"
-                              width="36"
+                              width="46"
 
                             >全选/取消
                             </el-table-column>
@@ -379,7 +379,6 @@
             subject: '',
             body: ''
           }
-        console.log(this.$parent.$parent.$parent)
         this.$parent.$parent.$parent.getFloderfn()
         this.getMessageList();
       },
@@ -430,7 +429,6 @@
         if(row.color){
           row.color=null
         }
-        console.log(row)
         let ac = row.flagged?'add':'remove';
         let param = {
           uids:[row.uid],
@@ -464,7 +462,6 @@
           this.$parent.$parent.$parent.$refs.treeMenuBar.getCurrentNode().unseen--;
         }
           row.isread = true;
-          console.log(row)
         let param = {
           uids:[row.uid],
           folder:this.boxId,
@@ -477,7 +474,6 @@
         // },(err)=>{
         //
         // })
-        console.log(this.$parent.$parent.$parent);
         if(this.boxId=='Drafts'){
           let pp = this.$parent.$parent.$parent;
           readMail(row.uid,{"folder":this.boxId}).then(res=>{
@@ -546,7 +542,6 @@
       },
       handleSelectionChange(val) {
         this.multipleSelection = val;
-        console.log(this.multipleSelection)
       },
       formatter(row, column) {
         return row.date.replace('T','  ');
@@ -568,13 +563,11 @@
         }
       },
       orderHandleCommand:function(item){
-        console.log(item)
         this.orderCheckIndex = item.id;
         this.sort = item.sort;
         this.getMessageList();
       },
       viewHandleCommand:function(index){
-        console.log(index);
         if(index == 'other'){
           return;
         }
@@ -604,6 +597,14 @@
           console.log(err);
         }).catch(err=>{
           this.fullscreenLoading = false;
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
+          this.$message({
+            type:"error",
+            message:'邮件移动失败！ '+str
+          })
         })
       },
       signHandleCommand:function(item){
@@ -766,7 +767,6 @@
             }
             rejectMessage(param).then(res=>{
               this.fullscreenLoading = false;
-              console.log(res)
               this.$message(
                 {type:'success',message:'邮件拒收成功！'}
               )
@@ -840,7 +840,14 @@
               this.getMessageList();
             }).catch(err=>{
               this.fullscreenLoading = false;
-              console.log('彻底删除失败！',err);
+              let str = '';
+              if(err.detail){
+                str = err.detail
+              }
+              this.$message({
+                type:'error',
+                message:'彻底删除邮件失败！'+str
+              })
             })
           }).catch(() => {
             this.$message({
@@ -852,7 +859,6 @@
         }
       },
       handleChange(value) {
-        console.log(value);
       },
       noSelect(){
         this.$refs.innerTable.clearSelection();
@@ -892,7 +898,6 @@
           this.unreadCount = res.data.unseen_count;
           for(let i=0;i<this.$parent.$parent.$parent.floderResult.length;i++){
             if(this.boxId == this.$parent.$parent.$parent.floderResult[i].raw_name){
-              console.log(this.boxId)
               this.$parent.$parent.$parent.floderResult[i].unseen = res.data.unseen_count;
             }
           }
@@ -977,7 +982,6 @@
       this.getMessageList();
     },
     mounted(){
-      // console.log('trigger1111111111')
       // $('.toolbar>div:eq(0)>button').trigger('click');
       // $(".el-dropdown-menu .el-dropdown-menu__item")[1].click();
     },
@@ -1034,7 +1038,6 @@
           }
         },
       checkedMails(v){
-          // console.log(v)
       },
       $route(v,o){
         this.boxId = this.$route.params.boxId;

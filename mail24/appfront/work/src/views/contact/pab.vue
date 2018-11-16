@@ -87,7 +87,7 @@
           </el-row>
 
           <!--列表-->
-          <el-table :data="listTables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
+          <el-table :data="listTables" highlight-current-row width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
             <!--<el-table :data="listTables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
             <el-table-column type="selection" width="60"></el-table-column>
             <el-table-column type="index" label="No." width="80"></el-table-column>
@@ -123,7 +123,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="editPabFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="editPabSubmit()" :loading="editPabLoading">提交</el-button>
+        <el-button type="primary" @click.native="editPabSubmit()">提交</el-button>
       </div>
     </el-dialog>
 
@@ -136,7 +136,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="addPabFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="addPabSubmit()" :loading="addPabLoading">提交</el-button>
+        <el-button type="primary" @click.native="addPabSubmit()">提交</el-button>
       </div>
     </el-dialog>
 
@@ -236,7 +236,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="editPabMerberFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="editPabMerberSubmit()" :loading="editPabMerberLoading">提交</el-button>
+        <el-button type="primary" @click.native="editPabMerberSubmit()">提交</el-button>
       </div>
     </el-dialog>
 
@@ -334,7 +334,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="addPabMerberFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="addPabMerberSubmit()" :loading="addPabMerberLoading">提交</el-button>
+        <el-button type="primary" @click.native="addPabMerberSubmit()">提交</el-button>
       </div>
     </el-dialog>
 
@@ -354,7 +354,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="distributePabFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="distributePabSubmit()" :loading="distributePabLoading">提交</el-button>
+        <el-button type="primary" @click.native="distributePabSubmit()" >提交</el-button>
       </div>
     </el-dialog>
 
@@ -381,7 +381,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="importPabFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="importPabSubmit()" :loading="importPabLoading">提交</el-button>
+        <el-button type="primary" @click.native="importPabSubmit()">提交</el-button>
       </div>
     </el-dialog>
 
@@ -599,7 +599,6 @@
       } else {
         this.filters_options_show = false;
       }
-      // console.log("子组件调用了'created'");
     },
     mounted: function(){
       this.$parent.activeIndex = "pab";
@@ -674,6 +673,8 @@
             this.pab_iscan_distribute = res.data.pab_iscan_distribute;
             this.listLoading = false;
             //NProgress.done();
+          }).catch(err=>{
+            this.listLoading = false;
           });
         } else {
           contactPabMembersGet(param).then((res) => {
@@ -682,6 +683,8 @@
             this.pab_iscan_distribute = res.data.pab_iscan_distribute;
             this.listLoading = false;
             //NProgress.done();
+          }).catch(err=>{
+            this.listLoading = false;
           });
         }
       },
@@ -706,7 +709,6 @@
       f_TableSizeChange(val) {
         this.page_size = val;
         this.getPabMembers();
-        // console.log(`当前页: ${val}`);
       },
       // 翻页改变
       f_TableCurrentChange(val) {
@@ -738,6 +740,7 @@
               }, (data)=>{
                 this.distributePabLoading = false;
               }).catch(function (error) {
+                this.distributePabLoading = false;
                 console.log(error);
               });
             });
@@ -787,7 +790,6 @@
             this.getPabs();
           }).catch(function (error) {
             // this.listLoading = false;
-            console.log(error);
           });
         });
         */
@@ -803,7 +805,6 @@
             this.fullscreenLoading = true;
             contactPabMembersBatchDelete(para).then(res=>{
               this.fullscreenLoading = false;
-              console.log(res)
               this.$message(
                 {type:'success',message:'删除成功！'}
               )
@@ -811,8 +812,12 @@
             }).catch(err=>{
               this.fullscreenLoading = false;
               this.getPabs();
+              let str = '';
+              if(err.detail){
+                str = err.detail;
+              }
               this.$message(
-                {type:'error',message:'删除失败，请重试！'}
+                {type:'error',message:'删除失败！'+str}
               );
             })
           }).catch(() => {
@@ -840,7 +845,6 @@
             }
             contactPabMembersBatchDelete(para).then(res=>{
               this.fullscreenLoading = false;
-              console.log(res)
               this.$message(
                 {type:'success',message:'删除成功！'}
               )
@@ -848,8 +852,12 @@
             }).catch(err=>{
               this.fullscreenLoading = false;
               this.getPabs();
+              let str = '';
+              if(err.detail){
+                str = err.detail;
+              }
               this.$message(
-                {type:'error',message:'删除失败，请重试！'}
+                {type:'error',message:'删除失败！'+str}
               );
             })
           }).catch(() => {
@@ -880,7 +888,6 @@
             }
             this.$parent.sendMail_net(res.data)
           }).catch(err=>{
-            console.log('获取组邮箱错误！',err)
           })
 
         }).catch(() => {
@@ -917,10 +924,13 @@
                 if("error" in data) {
                   this.fileUpload_error = data.error;
                 }
-              }).catch(function (error) {
+              }).catch(function (err) {
                 that.importPabLoading = false;
-                that.$message({ message: '导入失败，请重试',  type: 'error' });
-                console.log(error);
+                let str = '';
+                if(err.detail){
+                  str = err.detail;
+                }
+                that.$message({ message: '导入失败！'+str,  type: 'error' });
               });
 
             });
@@ -970,7 +980,6 @@
         }
 
         var size = fileSize / (1024*1024);
-        console.log(fileSize,size)
         if(size>(1024*1024*10)){
           // this.$alert('文件大小不能超过10M！', '提示：', {
           //   confirmButtonText: '确定',});
@@ -1016,9 +1025,12 @@
             }
             that.$message({ message: '导出成功', type: 'success' });
             // this.getPabs();
-          }).catch(function (error) {
-            console.log(error)
-            that.$message({ message: '导出失败，请重试',  type: 'error' });
+          }).catch(function (err) {
+            let str = '';
+            if(err.detail){
+              str = err.detail;
+            }
+            that.$message({ message: '导出失败! '+str,  type: 'error' });
           });
         });
       },
@@ -1047,9 +1059,13 @@
               this.getPabMembers();
             }
             that.$message({ message: '删除成功', type: 'success' });
-          }).catch(function (error) {
+          }).catch(function (err) {
             this.pab_cid = ppab_cid;
-            that.$message({ message: '删除失败',  type: 'error' });
+            let str = '';
+            if(err.detail){
+              str = err.detail;
+            }
+            that.$message({ message: '删除失败! '+str,  type: 'error' });
           });
         });
       },
@@ -1155,7 +1171,6 @@
             this.fullscreenLoading = true;
             contactPabMembersBatchDelete(para).then(res=>{
               this.fullscreenLoading = false;
-              console.log(res)
               this.$message(
                 {type:'success',message:'删除成功！'}
               )
@@ -1163,8 +1178,12 @@
             }).catch(err=>{
               this.fullscreenLoading = false;
               this.getPabs();
+              let str = '';
+              if(err.detail){
+                str = err.detail;
+              }
               this.$message(
-                {type:'error',message:'删除失败，请重试！'}
+                {type:'error',message:'删除失败！'+str}
               );
             })
           }).catch(() => {
@@ -1192,7 +1211,6 @@
             }
             contactPabMembersBatchDelete(para).then(res=>{
               this.fullscreenLoading = false;
-              console.log(res)
               this.$message(
                 {type:'success',message:'删除成功！'}
               )
@@ -1200,8 +1218,12 @@
             }).catch(err=>{
               this.fullscreenLoading = false;
               this.getPabs();
+              let str = '';
+              if(err.detail){
+                str = err.detail;
+              }
               this.$message(
-                {type:'error',message:'删除失败，请重试！'}
+                {type:'error',message:'删除失败！'+str}
               );
             })
           }).catch(() => {
@@ -1236,7 +1258,6 @@
                 this.pab_email_error = '';
                 this.getPabs();
               }, (data)=>{
-                console.log(data);
                 this.editPabMerberLoading = false;
                 if("non_field_errors" in data) {
                   this.pab_email_error = data.non_field_errors[0];

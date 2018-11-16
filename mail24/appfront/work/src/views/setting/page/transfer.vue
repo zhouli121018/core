@@ -16,7 +16,7 @@
         </el-col>
       </el-row>
 
-      <el-table :data="listTables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
+      <el-table :data="listTables" highlight-current-row width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
         <el-table-column type="selection" width="60"></el-table-column>
         <el-table-column type="index" label="No." width="80"></el-table-column>
         <el-table-column prop="server" label="SMTP服务器"></el-table-column>
@@ -86,7 +86,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="createFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">提交</el-button>
+          <el-button type="primary" @click.native="createFormSubmit()">提交</el-button>
         </div>
       </el-dialog>
 
@@ -128,7 +128,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="updateFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">提交</el-button>
+          <el-button type="primary" @click.native="updateFormSubmit()">提交</el-button>
         </div>
       </el-dialog>
 
@@ -183,7 +183,6 @@
       f_TableSizeChange(val) {
         this.page_size = val;
         this.getTables();
-        // console.log(`当前页: ${val}`);
       },
       // 翻页改变
       f_TableCurrentChange(val) {

@@ -70,7 +70,15 @@
         this.$router.push('/file/'+path);
       },
       sendMail_net(row,sels,type){
-        console.log(row,sels)
+        if(this.$store.getters.getSharedStatus.shareuser_all || this.$store.getters.getSharedStatus.shareuser_post ||this.$store.getters.getSharedStatus.shareuser_send){
+
+        }else{
+          this.$message({
+            type:'error',
+            message:'对于您登陆的共享邮箱，没有权限做此操作。'
+          })
+          return
+        }
         let _this = this;
         if(row == 'more'){
           let check = true;

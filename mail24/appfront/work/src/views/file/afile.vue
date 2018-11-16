@@ -85,7 +85,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="moveFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="moveFormSubmit()" :loading="moveFormLoading">提交</el-button>
+          <el-button type="primary" @click.native="moveFormSubmit()" >提交</el-button>
         </div>
       </el-dialog>
 
@@ -182,7 +182,6 @@
       f_TableSizeChange(val) {
         this.page_size = val;
         this.getTables();
-        // console.log(`当前页: ${val}`);
       },
       // 翻页改变
       f_TableCurrentChange(val) {
@@ -221,9 +220,12 @@
             this.listLoading = false;
             that.$message({ message: '删除成功', type: 'success' });
             this.getTables();
-          }).catch(function (error) {
-            console.log(error)
-            that.$message({ message: '删除失败，请重试',  type: 'error' });
+          }).catch(function (err) {
+            let str = '';
+            if(err.detail){
+              str = err.detail
+            }
+            that.$message({ message: '删除失败！'+str,  type: 'error' });
           });
         });
       },
@@ -238,9 +240,12 @@
             this.listLoading = false;
             that.$message({ message: '删除成功', type: 'success' });
             this.getTables();
-          }).catch(function (error) {
-            console.log(error)
-            that.$message({ message: '删除失败，请重试',  type: 'error' });
+          }).catch(function (err) {
+            let str = '';
+              if(err.detail){
+                str = err.detail
+              }
+            that.$message({ message: '删除失败! '+str,  type: 'error' });
           });
         });
       },
@@ -252,9 +257,12 @@
           this.listLoading = false;
           that.$message({ message: '文件续期成功', type: 'success' });
           this.getTables();
-        }).catch(function (error) {
-          console.log(error)
-          that.$message({ message: '文件续期失败，请重试',  type: 'error' });
+        }).catch(function (err) {
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
+          that.$message({ message: '文件续期失败! '+str,  type: 'error' });
           this.getTables();
         });
       },
@@ -290,9 +298,12 @@
             }
             that.$message({ message: '导出成功', type: 'success' });
             // this.getPabs();
-          }).catch(function (error) {
-            console.log(error)
-            that.$message({ message: '导出失败，请重试',  type: 'error' });
+          }).catch(function (err) {
+            let str = '';
+            if(err.detail){
+              str = err.detail
+            }
+            that.$message({ message: '导出失败! '+str,  type: 'error' });
           });
         });
       },
@@ -324,9 +335,12 @@
             }
             that.$message({ message: '导出成功', type: 'success' });
             // this.getPabs();
-          }).catch(function (error) {
-            console.log(error)
-            that.$message({ message: '导出失败，请重试',  type: 'error' });
+          }).catch(function (err) {
+            let str = '';
+            if(err.detail){
+              str = err.detail
+            }
+            that.$message({ message: '导出失败! '+str,  type: 'error' });
           });
         });
       },
@@ -368,7 +382,6 @@
                   this.$message({message: '提交成功', type: 'success'});
                   this.getTables();
                 }, (data) => {
-                  console.log(data);
                   if("non_field_errors" in data) {
                     this.folder_id_error = data.non_field_errors[0];
                   }

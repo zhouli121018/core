@@ -241,7 +241,6 @@
               security_answer3:this.form.q3,
             }
             resetSecret2(param).then(res=>{
-              console.log(res)
               this.formVisible = false;
               this.$refs.reset2Form.resetFields();
               this.form3.carbled = res.data.carbled;
@@ -292,7 +291,6 @@
         }).then(({ value }) => {
           this.reset1_show = false;
           resetSecret1({username:value}).then(res=>{
-            console.log(res)
             this.form.carbled = res.data.carbled;
             this.form.code_label = res.data.code;
             this.form.label_q1 = this.getLabel(res.data.security_question1,res.data.security_custom1);
@@ -310,7 +308,6 @@
             type: 'info',
             message: '取消输入'
           });
-          console.log('catch')
           this.reset1_show = false;
         });
       },
@@ -365,15 +362,13 @@
       },
       test: function () {
         var apiUrl = 'http://192.168.1.24:9090/ajax_get_captcha';
-        // this.$http.get('/api/ajax_get_captcha').then((data)=>console.log('success:'+data), (data)=>console.log(data));
         this.$http.post('/api/login/', {
           "username": "system@test.com",
           "password": "1QAZ2wsx"
-        }).then((data) => console.log('success:' + data), (data) => console.log(data));
+        }).then((data) => {}, (data) => console.log(data));
       }
     },
     mounted: function () {
-      console.log(this.$store.state)
       // this.test();
       this.formLabelAlign.username = cookie.getCookie('rememberName');
       this.formLabelAlign.password = cookie.getCookie('rememberPwd');

@@ -16,7 +16,8 @@ let loading
 const startLoading = function () {
   loading = Loading.service({
       lock: true,
-      text: '加载中……',
+      text: 'Loading……',
+      spinner: 'el-icon-loading',
       background: 'rgba(255, 255, 255, 0.5)'
     })
 }

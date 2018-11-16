@@ -55,7 +55,7 @@
           </el-row>
 
           <!--列表-->
-          <el-table :data="listTables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
+          <el-table :data="listTables" highlight-current-row width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
             <el-table-column type="selection" width="50"></el-table-column>
             <el-table-column type="index" label="No." width="60"></el-table-column>
             <el-table-column prop="fullname" label="姓名" width="200"></el-table-column>
@@ -106,7 +106,6 @@
     },
     created: function() {
       this.cab_cid = window.sessionStorage['cab_cid'];
-      // console.log("子组件调用了'created'");
     },
     mounted: function(){
       this.$parent.activeIndex = "cab";
@@ -132,7 +131,6 @@
       f_TableSizeChange(val) {
         this.page_size = val;
         this.getCabMembers();
-        // console.log(`当前页: ${val}`);
       },
       f_TableCurrentChange(val) {
         this.page = val;
@@ -192,7 +190,6 @@
       Oab_send_to_select: function () {
         // var ids = this.sels.map(item => item.id).toString();
         var ids = this.sels.map(item => item.id);
-        // console.log(ids);
         this.$confirm('确认删除选中记录吗？', '提示', {
           type: 'warning'
         }).then(() => {

@@ -26,7 +26,6 @@
       };
     },
     created: function() {
-      // console.log("父组件调用了'created'");
       let pab_cid = window.sessionStorage['pab_cid'];
       if (pab_cid === undefined) {
         window.sessionStorage['pab_cid'] = 0;
@@ -62,7 +61,15 @@
         }
       },
       sendMail_net(row,sels){
-        console.log(row,sels)
+        if(this.$store.getters.getSharedStatus.shareuser_all || this.$store.getters.getSharedStatus.shareuser_post ||this.$store.getters.getSharedStatus.shareuser_send){
+
+        }else{
+          this.$message({
+            type:'error',
+            message:'对于您登陆的共享邮箱，没有权限做此操作。'
+          })
+          return
+        }
         let _this = this;
         let arr = [];
         if(row == 'more'){
@@ -102,7 +109,6 @@
     },
 
     mounted() {
-      // console.log("父组件调用了'mounted'");
       if (this.$route.path.indexOf('/pab') >= 0) {
         this.activeIndex = "pab";
       } else if (this.$route.path.indexOf('/oab') >= 0) {

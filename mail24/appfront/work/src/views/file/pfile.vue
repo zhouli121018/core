@@ -131,7 +131,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="createFolderFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="createFolderFormSubmit()" :loading="createFolderFormLoading">提交</el-button>
+          <el-button type="primary" @click.native="createFolderFormSubmit()">提交</el-button>
         </div>
       </el-dialog>
 
@@ -146,7 +146,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="updateFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">提交</el-button>
+          <el-button type="primary" @click.native="updateFormSubmit()">提交</el-button>
         </div>
       </el-dialog>
 
@@ -163,14 +163,14 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="moveFolderFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="moveFolderFormSubmit()" :loading="moveFolderFormLoading">提交</el-button>
+          <el-button type="primary" @click.native="moveFolderFormSubmit()">提交</el-button>
         </div>
       </el-dialog>
 
 
       <el-dialog title="上传文件"  :visible.sync="uploadFormVisible"  :close-on-click-modal="false" :append-to-body="true">
         <el-form :model="uploadForm" label-width="130px" :rules="uploadFormRules" ref="uploadForm"
-                 v-loading="fileloading"
+
                  element-loading-text="正在上传文件，请稍候..."
                  element-loading-spinner="el-icon-loading" >
 
@@ -294,11 +294,8 @@
         this.$emit('sendMail_net',row,sels)
       },
       uploadSuccess(){
-        console.log(arguments)
-        console.log('succ')
       },
       handleCommand(a){
-        console.log(a)
       },
       f_TableSelsChange: function (sels) {
         this.sels = sels;
@@ -307,7 +304,6 @@
       f_TableSizeChange(val) {
         this.page_size = val;
         this.getTables();
-        // console.log(`当前页: ${val}`);
       },
       // 翻页改变
       f_TableCurrentChange(val) {
@@ -425,6 +421,11 @@
                     this.$refs['createFolderForm'].resetFields();
                     this.createFolderFormVisible = false;
                   }
+                  if ( "detail" in data ){
+                    this.$message.error(data.detail);
+                    this.$refs['createFolderForm'].resetFields();
+                    this.createFolderFormVisible = false;
+                  }
                   if("non_field_errors" in data) {
                     this.folder_id_error = data.non_field_errors[0];
                   }
@@ -532,7 +533,6 @@
                   this.$message({message: '移动成功', type: 'success'});
                   this.getTables();
                 }, (data) => {
-                  // console.log(data);
                   if("non_field_errors" in data) {
                     this.folder_id_error = data.non_field_errors[0];
                   }
@@ -595,9 +595,12 @@
           that.$message({ message: '删除成功', type: 'success' });
           this.getTables();
           this.getCapacity();
-        }).catch(function (error) {
-          console.log(error)
-          that.$message({ message: '删除失败，请重试',  type: 'error' });
+        }).catch(function (err) {
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
+          that.$message({ message: '删除失败! '+str,  type: 'error' });
           this.listLoading = false;
           this.getTables();
 
@@ -664,9 +667,12 @@
           }
           that.$message({ message: '导出成功', type: 'success' });
           // this.getPabs();
-        }).catch(function (error) {
-          console.log(error)
-          that.$message({ message: '导出失败，请重试',  type: 'error' });
+        }).catch(function (err) {
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
+          that.$message({ message: '导出失败！'+str,  type: 'error' });
         });
       },
 
@@ -703,7 +709,6 @@
         }, (data)=>{
           param.file.percent = 0;
           param.onProgress(param.file);
-          console.log(data);
           this.listLoading = false;
           _this.fileloading = false;
           if("non_field_errors" in data) {
@@ -711,13 +716,16 @@
           } else {
             this.$message({ message: data,  type: 'error' });
           }
-        }).catch(function (error) {
-          console.log(error);
+        }).catch(function (err) {
           param.file.percent = 0;
           param.onProgress(param.file)
           this.listLoading = false;
           this.fileloading = false;
-          this.$message({ message: '上传失败，请重试',  type: 'error' });
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
+          this.$message({ message: '上传失败! '+str,  type: 'error' });
         });
 
         return true;

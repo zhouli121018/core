@@ -112,7 +112,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="createFolderFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="createFolderFormSubmit()" :loading="createFolderFormLoading">提交</el-button>
+          <el-button type="primary" @click.native="createFolderFormSubmit()" >提交</el-button>
         </div>
       </el-dialog>
 
@@ -127,7 +127,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="updateFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">提交</el-button>
+          <el-button type="primary" @click.native="updateFormSubmit()">提交</el-button>
         </div>
       </el-dialog>
 
@@ -144,14 +144,14 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="moveFolderFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="moveFolderFormSubmit()" :loading="moveFolderFormLoading">提交</el-button>
+          <el-button type="primary" @click.native="moveFolderFormSubmit()">提交</el-button>
         </div>
       </el-dialog>
 
 
       <el-dialog title="上传文件"  :visible.sync="uploadFormVisible"  :close-on-click-modal="false" :append-to-body="true">
         <el-form :model="uploadForm" label-width="130px" :rules="uploadFormRules" ref="uploadForm"
-                 v-loading="fileloading"
+
                  element-loading-text="正在上传文件，请稍候..."
                  element-loading-spinner="el-icon-loading" >
 
@@ -191,7 +191,7 @@
 
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="addFormVisible = false" size="small">取消</el-button>
-          <el-button type="primary" @click.native="addPerm" :loading="addFormLoading" size="small">添加权限</el-button>
+          <el-button type="primary" @click.native="addPerm" size="small">添加权限</el-button>
         </div>
       </el-dialog>
 
@@ -209,7 +209,7 @@
 
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="allFormVisible = false" size="small">取消</el-button>
-          <el-button type="primary" @click.native="addSuper" :loading="allFormLoading" size="small">赋予网盘管理员</el-button>
+          <el-button type="primary" @click.native="addSuper" size="small">赋予网盘管理员</el-button>
         </div>
       </el-dialog>
 
@@ -257,7 +257,6 @@
             <el-table
               height="420"
               size="mini"
-              v-loading="permFormLoading"
               :data="permTableData"
               tooltip-effect="dark"
               @selection-change="perm_select"
@@ -465,9 +464,13 @@
             message:'修改权限成功！'
           })
         }).catch(err=>{
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
           this.$message({
             type:'error',
-            message:'修改权限失败！'
+            message:'修改权限失败！'+str
           })
         })
       },
@@ -488,8 +491,15 @@
             this.error_list = err
             this.show_error = true;
           })
-        }).catch(() => {
-
+        }).catch((err) => {
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
+          this.$message({
+            type:'error',
+            message:'删除权限失败！'+str
+          })
         });
 
       },
@@ -544,16 +554,19 @@
           this.total_perm = res.data.count;
           this.permTableData = res.data.results;
         }).catch(err=>{
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
           this.$message({
             type:'error',
-            message:'获取权限成员列表失败'
+            message:'获取权限成员列表失败! '+str
           })
           this.permFormLoading = false;
         })
       },
       getCompanyTree(){
         companyTree().then(res=>{
-          console.log(res)
           this.perm_tree_menu = [
             {
               "children":  res.data.results,
@@ -603,9 +616,16 @@
             message:'赋予管理员权限成功！'
           })
         }).catch(err=>{
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
+          if(err.error_message){
+            str = err.error_message
+          }
           this.$message({
             type:'error',
-            message:'赋予管理员权限失败！'+err.error_message
+            message:'赋予管理员权限失败！'+str
           })
           this.allFormLoading = false;
         })
@@ -638,7 +658,6 @@
           folder_ids:selectedArr,
           perm:this.perm
         };
-        console.log(param);
         permNetdisk(param).then(res=>{
           this.addFormVisible = false;
           this.addFormLoading = false;
@@ -647,9 +666,13 @@
             message:'添加权限成功！'
           })
         }).catch(err=>{
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
           this.$message({
             type:'error',
-            message:'企业网盘添加权限失败！'
+            message:'企业网盘添加权限失败！'+str
           })
           this.addFormLoading = false;
         })
@@ -663,8 +686,6 @@
       },
       getData(param){
         this.addList = param;
-        console.log('获取到子组件数组：')
-        console.log(param)
       },
 
       showAddDialog(row){
@@ -690,11 +711,6 @@
         }
       },
       uploadSuccess(){
-        console.log(arguments)
-        console.log('succ')
-      },
-      handleCommand(a){
-        console.log(a)
       },
       f_TableSelsChange: function (sels) {
         this.sels = sels;
@@ -703,7 +719,6 @@
       f_TableSizeChange(val) {
         this.page_size = val;
         this.getTables();
-        // console.log(`当前页: ${val}`);
       },
       // 翻页改变
       f_TableCurrentChange(val) {
@@ -720,7 +735,6 @@
         companyDiskGet(param).then(res=>{
           this.is_supercompany = res.data.is_supercompany;
           this.permisson_type = res.data.permisson_type;
-          console.log(this.permisson_type, typeof this.permisson_type)
           this.current_name = res.data.current_name;
           this.folder_names = res.data.folder_names;
           this.folder_count = res.data.folder_count;
@@ -786,7 +800,6 @@
                   this.createFolderFormLoading = false;
                   this.getTables();
                 }, (data)=>{
-                  console.log(data, typeof data);
                   if ( "limited_error_message" in data ){
                     // this.open(data);
                     // this.$message({message: data.limited_error_message, type: 'error'});
@@ -804,6 +817,9 @@
                     this.getTables();
                     this.createFolderFormLoading = false;
                     this.createFolderFormVisible = false;
+                  }
+                  if ("detail" in data) {
+                    this.$message({ message: data.detail,  type: 'error' });
                   }
                   this.createFolderFormLoading = false;
                 })
@@ -843,6 +859,11 @@
                       this.updateFormVisible = false;
                       this.$message({ message: data.error_message,  type: 'error' });
                     }
+                    if ("detail" in data) {
+                      this.updateFormVisible = false;
+                      this.$message({ message: data.detail,  type: 'error' });
+                    }
+
                     this.updateFormLoading = false;
                   })
                   .catch(function (error) {
@@ -865,6 +886,12 @@
                       this.updateFormVisible = false;
                       this.$message({ message: data.error_message,  type: 'error' });
                     }
+                    if("detail" in data) {
+                      this.getTables();
+                      this.updateFormVisible = false;
+                      this.$message({ message: data.detail,  type: 'error' });
+                    }
+
                     this.updateFormLoading = false;
                   })
                   .catch(function (error) {
@@ -918,7 +945,6 @@
                   this.$message({message: '移动成功', type: 'success'});
                   this.getTables();
                 }, (data) => {
-                  // console.log(data);
                   if("non_field_errors" in data) {
                     this.folder_id_error = data.non_field_errors[0];
                     this.moveFolderFormLoading = false;
@@ -928,6 +954,11 @@
                       this.moveFolderFormLoading = false;
                       this.moveFolderFormVisible = false;
                       this.$message({ message: data.error_message,  type: 'error' });
+                    }else if('detail' in data){
+                      this.moveFolderFormLoading = false;
+                      this.moveFolderFormVisible = false;
+                      this.$message({ message: data.detail,  type: 'error' });
+
                     } else {
                       that.$message({ message: '移动失败，请重试',  type: 'error' });
                       this.moveFolderFormLoading = false;
@@ -992,11 +1023,12 @@
           that.getTables();
           that.getCapacity();
         }).catch(function (data) {
-          console.log(data)
           if ("non_field_errors" in data) {
             that.folder_name_error = data.non_field_errors[0];
           } else if ("error_message" in data) {
             that.$message({ message: data.error_message,  type: 'error' });
+          } else if ("detail" in data) {
+            that.$message({ message: data.detail,  type: 'error' });
           } else {
             that.$message({ message: '删除失败，请重试',  type: 'error' });
           }
@@ -1066,9 +1098,12 @@
           }
           that.$message({ message: '导出成功', type: 'success' });
           // this.getPabs();
-        }).catch(function (error) {
-          console.log(error);
-          that.$message({ message: '导出失败，请重试',  type: 'error' });
+        }).catch(function (err) {
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
+          that.$message({ message: '导出失败！'+str,  type: 'error' });
         });
       },
 
@@ -1105,7 +1140,6 @@
         }, (data)=>{
           param.file.percent = 0;
           param.onProgress(param.file);
-          console.log(data);
           this.listLoading = false;
           _this.fileloading = false;
           if("non_field_errors" in data) {
@@ -1122,6 +1156,8 @@
           if("error_message" in data) {
             this.getTables();
             this.$message({ message: data.error_message,  type: 'error' });
+          }else if("detail" in data) {
+            this.$message({ message: data.detail,  type: 'error' });
           } else {
             this.$message({ message: '上传失败，请重试',  type: 'error' });
           }

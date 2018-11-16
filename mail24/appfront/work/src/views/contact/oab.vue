@@ -61,7 +61,7 @@
           </el-row>
 
           <!--列表-->
-          <el-table :data="listTables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
+          <el-table :data="listTables" highlight-current-row width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
             <el-table-column type="selection" width="50"></el-table-column>
             <el-table-column type="index" label="No." width="60"></el-table-column>
             <el-table-column prop="name" label="姓名" width="200"></el-table-column>
@@ -119,7 +119,6 @@
       };
     },
     created: function() {
-      // console.log("子组件调用了'created'");
       this.oab_cid = window.sessionStorage['oab_cid'];
     },
     computed: {
@@ -132,7 +131,6 @@
       }
     },
     mounted: function(){
-      // console.log("子组件调用了'mounted'");
       this.$parent.activeIndex = "oab";
       // this.webmail_oabdump_show = window.sessionStorage['webmail_oabdump_show'];
       this.getOabGroups();
@@ -156,7 +154,6 @@
       f_TableSizeChange(val) {
         this.page_size = val;
         this.getOabMembers();
-        // console.log(`当前页: ${val}`);
       },
       f_TableCurrentChange(val) {
         this.page = val;
@@ -247,9 +244,13 @@
             }
             that.$message({ message: '导出成功', type: 'success' });
             // this.getPabs();
-          }).catch(function (error) {
+          }).catch(function (err) {
             that.listLoading = false;
-            that.$message({ message: '导出失败，请重试',  type: 'error' });
+            let str = '';
+            if(err.detail){
+              str = err.detail;
+            }
+            that.$message({ message: '导出失败! '+str,  type: 'error' });
           });
         });
       },
@@ -281,9 +282,13 @@
             }
             that.$message({ message: '导出成功', type: 'success' });
             // this.getPabs();
-          }).catch(function (error) {
+          }).catch(function (err) {
             that.listLoading = false;
-            that.$message({ message: '导出失败，请重试',  type: 'error' });
+            let str = '';
+            if(err.detail){
+              str = err.detail;
+            }
+            that.$message({ message: '导出失败! '+str,  type: 'error' });
           });
         });
       },
@@ -315,9 +320,13 @@
             }
             that.$message({ message: '导出成功', type: 'success' });
             // this.getPabs();
-          }).catch(function (error) {
+          }).catch(function (err) {
             that.listLoading = false;
-            that.$message({ message: '导出失败，请重试',  type: 'error' });
+            let str = '';
+            if(err.detail){
+              str = err.detail;
+            }
+            that.$message({ message: '导出失败! '+str,  type: 'error' });
           });
         });
       },
@@ -344,15 +353,18 @@
           }
           that.$message({ message: '导出成功', type: 'success' });
           // this.getPabs();
-        }).catch(function (error) {
-          that.$message({ message: '导出失败，请重试',  type: 'error' });
+        }).catch(function (err) {
+          let str = '';
+            if(err.detail){
+              str = err.detail;
+            }
+          that.$message({ message: '导出失败! '+str,  type: 'error' });
         });
       },
 
       Oab_send_to_select: function () {
         // var ids = this.sels.map(item => item.id).toString();
         var ids = this.sels.map(item => item.id);
-        // console.log(ids);
         this.$confirm('确认删除选中记录吗？', '提示', {
           type: 'warning'
         }).then(() => {
@@ -403,7 +415,6 @@
             that.$message({ message: '已成功添加联系人到个人通讯录', type: 'success' });
           });
         }).catch((error) => {
-          console.log(error);
           // that.$message({ message: '操作失败，请重试',  type: 'error' });
         });
       }

@@ -209,7 +209,6 @@
         this.$router.push('/mailbox/innerbox/INBOX/')
         this.$nextTick(()=>{
           this.$parent.editableTabsValue2 = '1';
-          console.log(this.$parent.$refs.innerbox)
           let _this = this;
           setTimeout(function(){
             _this.$parent.$refs.innerbox[0].viewHandleCommand('unseen') ;
@@ -223,7 +222,6 @@
       },
       welcomefn(){
         welcome().then(res=>{
-          console.log(res.data);
           this.userinfo = res.data.userinfo;
           this.weatherinfo = res.data.weatherinfo;
         })
