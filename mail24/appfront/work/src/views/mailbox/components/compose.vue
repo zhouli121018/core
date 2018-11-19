@@ -168,6 +168,16 @@
                   </el-form-item>
                   <el-row>
                     <el-col :span="18">
+
+                      <uploader :options="options" class="uploader-example" @upload-start="startUpload" @file-complete="fileComplete" @complete="complete" ref="uploader" @files-added="filesAdded">
+                        <uploader-unsupport></uploader-unsupport>
+                        <uploader-drop>
+                          <p>Drop files here to upload or</p>
+                          <uploader-btn>select files</uploader-btn>
+                        </uploader-drop>
+                        <uploader-list></uploader-list>
+                      </uploader>
+
                       <el-upload
                           class="upload-demo"
                           action=""
@@ -373,7 +383,7 @@
     <!--</tree-transfer>-->
         <el-row :gutter="10" style="margin-bottom:10px;">
           <el-col :span="6">
-            <div v-if="false">
+            <div >
               <input type="hidden" v-model="soab_domain_cid"/>
               域名：
               <el-select v-model="soab_domain_cid" placeholder="请选择" @change="soabChangeDomain" size="mini">
@@ -396,8 +406,9 @@
                 <!--:expand-on-click-node="false"-->
               <el-tree
 
-                node-key="label"
+                node-key="id"
                 :data="transform_menu"
+                @node-expand="nodeExpand"
                 accordion
                 ref="contactTreeRef"
                 :highlight-current="true"
@@ -611,6 +622,11 @@
         }
       };
       return {
+        options: {
+          // https://github.com/simple-uploader/Uploader/tree/develop/samples/Node.js
+          target: '/api/netdisk/upload/chunk/',
+          testChunks: false
+        },
         webmail_cab_show: false,
         webmail_soab_show: false,
         error_list:[],
@@ -795,7 +811,41 @@
       };
     },
     methods:{
-
+      filesAdded(){
+        console.log('add')
+        console.log(arguments)
+        console.log(11111111111111123456)
+      },
+      complete() {
+        console.log('complete', arguments)
+      },
+      // 一个根文件（文件夹）成功上传完成。
+      fileComplete() {
+        console.log('file complete', arguments)
+        const file = arguments[0].file;
+        console.log('file')
+        console.log(file)
+        axios.post('/api/netdisk/upload/chunk/', {
+          upload_md5: md5(file.name),
+          upload_chunk: file.name,
+          upload_file: file
+        }).then(function (response) {
+          console.log(response);
+        }).catch(function (error) {
+          console.log(error);
+        });
+      },
+      startUpload(){
+        console.log('this.$refs.uploader.uploader')
+        console.log(this.$refs.uploader.uploader)
+        this.$refs.uploader.uploader.opts.fileParameterName='upload_file'
+      },
+      nodeExpand(data,node,vc){
+        console.log('expand')
+        if(data.id == 'oab'||data.id=='pab'||data.id=='cab'||data.id=='soab'){
+          sessionStorage['openGroup'] = data.id;
+        }
+      },
       goEdit(){
         this.closeTab();
         let row = this.sendResult;
@@ -1540,15 +1590,10 @@
           }
         });
       },
-      contact_tree_click(data,node,vc){
-        let _this = this;
-        console.log(data)
-        console.log(node)
-        console.log(vc)
-        if(data.id=='lab'){
-          let param = {
-            page:1,
-            page_size:10
+      getLabs(){
+        let param = {
+            page:this.currentPage,
+            page_size:this.pageSize
           }
           getContactLab(param).then(res=>{
             this.totalCount = res.data.count;
@@ -1566,6 +1611,14 @@
           }).catch(err=>{
             console.log('获取邮件列表异常！'+err)
           })
+      },
+      contact_tree_click(data,node,vc){
+        let _this = this;
+        if(data.id=='lab'){
+          sessionStorage['openGroup'] = data.id;
+          this.currentPage = 1;
+          this.get_transform_menu();
+          this.getLabs();
           return;
         }
         if(data.id=='oab'||data.id=='pab'||data.id=='cab'||data.id=='soab'){
@@ -1575,11 +1628,9 @@
         this.pid = data.id;
         this.$refs.contactTreeRef.setCurrentNode(data);
         this.currentPage = 1;
-        if(data.keyId == 'pab'){
-          sessionStorage['openGroup'] = 'pab';
+        if(sessionStorage['openGroup'] == 'pab'){
           this.getPabMembers();
-        }else{
-          sessionStorage['openGroup'] = 'oab';
+        }else if(sessionStorage['openGroup']=='oab'){
           let str = this.$store.getters.userInfo.name;
           let index = str.lastIndexOf('@');
           let domain = str.slice(index+1)
@@ -1606,6 +1657,12 @@
             this.getOabMembers();
           }
 
+        }else if(sessionStorage['openGroup']=='cab'){
+          console.log('cab')
+          this.getCabMembers();
+        }else if(sessionStorage['openGroup']=='soab'){
+          console.log('soab')
+          this.getSoabMembers();
         }
         return;
         if(sessionStorage['openGroup']=='pab'){
@@ -1783,9 +1840,18 @@
       get_transform_menu(){
         let arr = [];
         let _this = this;
-        axios.all([contactPabGroupsGet(),contactOabDepartsGet()]).then(axios.spread(function (acct, perms) {
+        let abcd = [];
+        abcd.push(contactPabGroupsGet())
+        abcd.push(contactOabDepartsGet())
+        if(this.webmail_cab_show){
+          abcd.push(contactCabGroupsGet())
+        }
+        if(this.webmail_soab_show){
+          abcd.push(contactSoabGroupsGet(this.soab_domain_cid))
+        }
+        axios.all(abcd).then(axios.spread(function () {
           // 请求现在都执行完成
-          acct.data.results.forEach(val=>{
+          arguments[0].data.results.forEach(val=>{
             val.label = val.groupname
             val.keyId = 'pab'
           })
@@ -1793,21 +1859,43 @@
             id:'pab',
             label:'个人通讯录',
             keyId:'pab',
-            children:acct.data.results
+            children:arguments[0].data.results
           }
           arr[1] = {
             id:'oab',
             keyId:'oab',
             label:'组织通讯录',
-            children:perms.data.results
+            children:arguments[1].data.results
           }
-          arr[2] = {
+          if(_this.webmail_cab_show){
+            arr[2] = {
+              id:'cab',
+              keyId:'cab',
+              label:'公共通讯录',
+              children:arguments[2].data.results
+            }
+          }
+          if(_this.webmail_soab_show){
+            arr[3] = {
+              id:'soab',
+              keyId:'soab',
+              label:'其他通讯录',
+              children:arguments[3].data.results
+            }
+          }
+          arr.push({
             id:'lab',
             keyId:'lab',
             label:'邮件列表',
             children:[]
-          }
+          })
           _this.transform_menu = arr;
+          _this.$nextTick(()=>{
+            // _this.$refs.contactTreeRef.setCurrentKey('lab');
+            _this.$refs.contactTreeRef.setCurrentNode(arr[arr.length-1]);
+            _this.currentPage = 1;
+            _this.getLabs();
+          })
 
         }))
       },
@@ -1841,6 +1929,8 @@
           this.getCabMembers();
         }else if(sessionStorage['openGroup']=='soab'){
           this.getSoabMembers();
+        }else if(sessionStorage['openGroup']=='lab'){
+          this.getLabs();
         }
       },
       handleCurrentChange_contact(val){
@@ -1853,6 +1943,8 @@
           this.getCabMembers();
         }else if(sessionStorage['openGroup']=='soab'){
           this.getSoabMembers();
+        }else if(sessionStorage['openGroup']=='lab'){
+          this.getLabs();
         }
       },
       search_dept(){
@@ -2209,6 +2301,9 @@
 
     },
     mounted() {
+       this.$nextTick(() => {
+        window.uploader = this.$refs.uploader.uploader
+      })
       this.content = this.parent_content;
       this.maillist = this.parent_maillist;
       this.maillist_copyer = this.parent_maillist_copyer;
@@ -2254,8 +2349,12 @@
       // this.getMemberList(); new通讯录
       getContactInfo().then((res) => {
         sessionStorage['soab_domain_cid'] = res.data.soab_domain_cid;
+        this.soab_domain_cid = res.data.soab_domain_cid
         this.webmail_cab_show = res.data.webmail_cab_show;
         this.webmail_soab_show = res.data.webmail_soab_show;
+        if(this.webmail_soab_show){
+          this.getSoabDomains();
+        }
       });
     },
     computed:{

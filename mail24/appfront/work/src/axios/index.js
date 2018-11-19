@@ -91,7 +91,13 @@ axios.interceptors.response.use(
         router.push('/')
         break;
       case 403:
-        Message.error({message:'对于您登陆的共享邮箱，没有权限做此操作。'})
+        let detail = '';
+        detail = res.data.detail
+        if(detail){
+          Message.error({message:detail})
+        }else{
+          Message.error({message:'系统异常！'})
+        }
         console.log('您没有该操作权限');
         // alert('您没有该操作权限');
         break;
