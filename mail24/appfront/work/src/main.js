@@ -27,12 +27,15 @@ import 'kindeditor/themes/default/default.css'
 import Contact from './components/Contact'
 import Upload from './components/Upload'
 import uploader from 'vue-simple-uploader'
+import SparkMD5 from 'spark-md5'
 
 Vue.use(uploader)
 Vue.use(VueKindEditor)
 Vue.use(Vuex)
 
 Vue.config.productionTip = false
+
+
 
 Vue.component('Menubar', Menubar)
 Vue.component('Contact', Contact)

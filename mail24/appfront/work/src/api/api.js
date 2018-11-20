@@ -414,3 +414,12 @@ export const getDeletellog = params => { return axios.get(`${host}/center/delete
 
 //邮件列表  /api/contact/lab/
 export const getContactLab = params => { return axios.get(`${host}/contact/lab/`, { params: params }) }
+
+//分片上传查询 /api/netdisk/upload/check/
+export const uploadCheck = params => { return axios.post(`${host}/netdisk/upload/check/`, params) };
+//分片上传 /api/netdisk/upload/chunk/
+export const uploadChunk = params => { return axios.post(`${host}/netdisk/upload/chunk/`, params,{headers:{ 'Content-Type': 'multipart/form-data' }}) };
+//上传成功 /api/netdisk/upload/success/
+export const uploadSuccess = params => { return axios.post(`${host}/netdisk/upload/success/`, params) };
+
+

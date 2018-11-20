@@ -169,14 +169,8 @@
                   <el-row>
                     <el-col :span="18">
 
-                      <uploader :options="options" class="uploader-example" @upload-start="startUpload" @file-complete="fileComplete" @complete="complete" ref="uploader" @files-added="filesAdded">
-                        <uploader-unsupport></uploader-unsupport>
-                        <uploader-drop>
-                          <p>Drop files here to upload or</p>
-                          <uploader-btn>select files</uploader-btn>
-                        </uploader-drop>
-                        <uploader-list></uploader-list>
-                      </uploader>
+                      <!--<el-input type="file" id="file"></el-input>-->
+                      <el-button size="small" type="text" @click="showBigDialog"><i class="el-icon-upload"></i> 添加附件</el-button>
 
                       <el-upload
                           class="upload-demo"
@@ -562,14 +556,40 @@
           <el-table-column property="recall_status_info" label="召回状态" width="200"></el-table-column>
         </el-table>
       </el-dialog>
+
+      <el-dialog title="附件上传" :visible.sync="bigUploadVisible" :append-to-body="true" class="bigUpload" @close="bigClose">
+        <div>
+          <!--multiple-->
+          <!--:auto-upload="false"-->
+          <el-upload
+            class="upload-demo"
+            ref="bigUpload"
+            action=""
+            :http-request="bigUpload"
+            :file-list="bigList"
+            :on-remove="handleRemove"
+            :auto-upload="false"
+            multiple
+            >
+            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+            <!--<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>-->
+          </el-upload>
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="bigUploadVisible = false" >取 消</el-button>
+          <el-button @click="submitUpload" type="primary">上 传</el-button>
+        </div>
+      </el-dialog>
+
     </div>
 
 </template>
 <script>
   import axios from 'axios';
+  import SparkMD5 from 'spark-md5'
   // import treeTransfer from 'el-tree-transfer'
   import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach,contactOabDepartsGet,
-  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus,settingSignatureGet,getTemplateList,getTemplateById,getDeptMail,readMail,getContactInfo,getContactLab} from '@/api/api'
+  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus,settingSignatureGet,getTemplateList,getTemplateById,getDeptMail,readMail,getContactInfo,getContactLab,uploadCheck,uploadChunk,uploadSuccess} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     props:{
@@ -622,6 +642,13 @@
         }
       };
       return {
+        bigList:[],
+        bigUploadVisible:false,
+        uploadFileData:{
+          chunk:0,
+          isLastChunk:false, //是否最后一片文件
+          fileName:'filename'  //文件名称
+        },
         options: {
           // https://github.com/simple-uploader/Uploader/tree/develop/samples/Node.js
           target: '/api/netdisk/upload/chunk/',
@@ -811,9 +838,271 @@
       };
     },
     methods:{
+      bigClose(){
+         this.bigList = [];
+      },
+      showBigDialog(){
+
+        this.bigUploadVisible = true;
+      },
+      handleRemove(file){
+        this.$message({
+          type:'info',
+          message:'取消上传'
+        })
+      },
+      submitUpload(){
+         this.$refs.bigUpload.submit();
+      },
+      bigUploadSuccess(file,fileMd5){
+        console.log(file)
+        let param ={
+          'fileMd5':fileMd5,
+          'upload_type':'mail',
+          'file_name':file.name,
+          'file_type':file.type||'application/octet-stream',
+          'file_size':file.size,
+          'folder_id':-1,
+        }
+        uploadSuccess(param).then(res=>{
+          this.$message({
+            type:'success',
+            message:'上传成功！'
+          })
+        }).catch(err=>{
+          console.log('merge错误！',err)
+        })
+      },
+      chunksFile(file,fileMd5,fileparam,arr){
+          let _this = this;
+
+          let chunkLength=0;//文件分片后的长度
+
+           this.uploadFileData.fileName=file.name;
+
+          //获取分片后的长度
+           if(file.size>1024*1024*2){
+                  //每片长度2MB.
+                 chunkLength=Math.ceil(file.size/(1024*1024*2));
+
+            }else{
+                chunkLength=1
+           }
+            console.log('chunkLength:'+chunkLength)
+           //判断是不是最后一片，通知后台
+           this.uploadFileData.chunk===chunkLength?this.uploadFileData.isLastChunk=true:false;
+               //用formData通过ajax2上传文件内容
+
+
+               //通过ajax上传分片文件内容
+
+
+          let abcd = [];
+          let hash = [];
+          if(arr){
+            for(let i=0;i<arr.length;i++){
+              hash[arr[i]] = true;
+            }
+          }
+          console.log(hash)
+          for(let i=0;i<chunkLength;i++){
+            console.log(!hash[i+1])
+            if(!hash[i]){
+              let fm = new FormData();
+                 fm.append('fileMd5',fileMd5);//spark-md5计算出来的md5值
+                 fm.append('chunkNumber',i+1);
+                 fm.append('chunkFile',file.slice(i*1024 * 1024 * 2, (i+1)*1024 * 1024 * 2) );
+
+                abcd.push(uploadChunk(fm))
+            }
+          }
+          console.log(abcd.length)
+          let timer = setInterval(()=>{
+            if(fileparam.file.percent >= 100){
+              clearInterval(timer)
+            }
+            uploadCheck({fileMd5:fileMd5}).then(res=>{
+              console.log('res.data.chunks')
+              if(res.data.state == 2){
+                fileparam.file.percent = 100
+                fileparam.onProgress(fileparam.file);
+                clearInterval(timer)
+              }else{
+                console.log(res.data.chunks.length)
+                fileparam.file.percent = (res.data.chunks.length/chunkLength)*100
+                fileparam.onProgress(fileparam.file);
+              }
+            })
+          },800)
+          if(abcd.length>0){
+            if(abcd.length>3){
+              let splits = []
+              for(let i=0;i<abcd.length;i+=3){
+                splits[i] = abcd.slice(i,i+3)
+              }
+              for(let i= 0;i<splits.length;i++){
+
+              }
+              let i = splits.length-1;
+              let count = 0;
+              function digui(count,i){
+                axios.all(splits[count]).then(axios.spread(function () {
+                  // 请求现在都执行完成
+                  if(count<i){
+                    count++;
+                    digui(count,i)
+                    fileparam.file.percent += (3/chunkLength)*100
+                    if(fileparam.file.percent >100 ){fileparam.file.percent = 100}
+                    fileparam.onProgress(fileparam.file);
+                  }else{
+                    _this.bigUploadSuccess(file,fileMd5);
+                    fileparam.file.percent = 100
+                    fileparam.onProgress(fileparam.file);
+                  }
+                })).catch(err=>{
+                  console.log('err:',err)
+                })
+              }
+              digui(count,i)
+
+            }else{
+              axios.all(abcd).then(axios.spread(function () {
+                // 请求现在都执行完成
+                _this.bigUploadSuccess(file,fileMd5);
+                fileparam.file.percent = 100
+                fileparam.onProgress(fileparam.file);
+              }))
+            }
+
+
+          }
+      },
+      progressTimer(fileparam){
+        let timer = setInterval(()=>{
+          if(fileparam.file.percent >= 100){
+            clearInterval(timer)
+          }
+          fileparam.onProgress(fileparam.file);
+          fileparam.file.percent += 2
+        },100)
+      },
+      bigUpload(fileparam){
+        // let file =  document.getElementById("file").files[0];
+        let file =  fileparam.file;
+        fileparam.file.percent = 0;
+        fileparam.onProgress(fileparam.file);
+
+        if(file){
+          let _this = this;
+          let spark_md5;
+          this.calcMD56(file,(a)=>{
+            // _this.bigUploadSuccess(file,a);
+            // return;
+            spark_md5 = a
+            console.log(spark_md5)
+            let param = {
+              fileMd5:a
+            }
+            uploadCheck(param).then(res=>{
+              let data = res.data;
+              if(data.state==0){//判断之前是否上传成功此文件 0未上传
+                  _this.chunksFile(file,a,fileparam);//上传文件
+              }else if(data.state==1){
+                  // _this.uploadFileData.chunk=parseInt(data.maxChuck)+1;//将查询到的结果赋值给表单中的分片
+                  _this.chunksFile(file,a,fileparam,res.data.chunks);
+              }else if(data.state==2){
+                  _this.$message({
+                  type:"success",
+                  message:"上传完成！"
+                  });
+                  fileparam.file.percent = 100
+                  fileparam.onProgress(fileparam.file);
+              }
+            }).catch(err=>{
+              console.log('网络异常，请稍后再试！',err)
+            })
+          });
+        }else{
+          this.$message({
+            type:'error',
+            message:'请选择文件！'
+          })
+        }
+
+      },
+      calcMD56(file,callback){
+          // this.upstate="MD5计算中...";
+          // this.percent=0;
+          let chunkSize=2097152,
+          chunks=Math.ceil(file.size/chunkSize),
+          currentChunk=0,
+          spark=new SparkMD5.ArrayBuffer(),
+          fileReader=new FileReader();
+          fileReader.onload=(e)=>{
+              //对于读取的文件计算hash码。
+              spark.append(e.target.result);
+              currentChunk++;
+              // this.percent=((currentChunk/chunks)*100).toFixed(2)-0;
+              if(currentChunk<chunks){
+                  loadNext();
+              }else{
+                let str = spark.end();
+                callback(str)
+                return str;
+              }
+          }
+          //分次读取大文件的内容，
+              function loadNext(){
+              let start=currentChunk*chunkSize,
+                  end=((start+chunkSize)>=file.size)?file.size:start+chunkSize;
+                  fileReader.readAsArrayBuffer(file.slice(start,end));
+          }
+          loadNext();
+      },
+      calcMD5 (){
+        var fileReader = new FileReader(),
+              // box=document.getElementById('box'),
+              blobSlice = File.prototype.mozSlice || File.prototype.webkitSlice || File.prototype.slice,
+              file = document.getElementById("file").files[0],
+              chunkSize = 2097152,
+              // read in chunks of 2MB
+              chunks = Math.ceil(file.size / chunkSize),
+              currentChunk = 0,
+              spark = new SparkMD5();
+
+          fileReader.onload = function(e) {
+              console.log("read chunk nr", currentChunk + 1, "of", chunks);
+              spark.appendBinary(e.target.result); // append binary string
+              currentChunk++;
+
+              if (currentChunk < chunks) {
+                  loadNext();
+              }
+              else {
+                  console.log("finished loading");
+                  let str = spark.end();
+                  console.log(str)
+                  console.log(str)
+                  console.log(str)
+                  return str;
+                  // box.innerHTML='MD5 hash:'+spark.end();
+                  console.info("computed hash", spark.end()); // compute hash
+              }
+          };
+
+          function loadNext() {
+              var start = currentChunk * chunkSize,
+                  end = start + chunkSize >= file.size ? file.size : start + chunkSize;
+
+              fileReader.readAsBinaryString(blobSlice.call(file, start, end));
+          };
+
+          loadNext();
+      },
+
       filesAdded(){
         console.log('add')
-        console.log(arguments)
+        console.log(this.$refs.uploader.uploader)
         console.log(11111111111111123456)
       },
       complete() {
@@ -2302,7 +2591,7 @@
     },
     mounted() {
        this.$nextTick(() => {
-        window.uploader = this.$refs.uploader.uploader
+        // window.uploader = this.$refs.uploader.uploader
       })
       this.content = this.parent_content;
       this.maillist = this.parent_maillist;
@@ -2424,6 +2713,16 @@
   }
 </script>
 <style>
+  .bigUpload .el-upload-list{
+    border: 1px solid #cbcbcb;
+    margin-top: 10px;
+    min-height: 300px;
+    padding:0 4px 10px;
+  }
+  .bigUpload .el-upload-list__item{
+    /*border-bottom: 1px solid #cdcdcd;*/
+        margin-top: 20px;
+  }
   #app .right_menu .el-tabs__item{
     padding:0 14px;
   }

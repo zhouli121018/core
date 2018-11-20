@@ -55,8 +55,6 @@
 
             </aside>
             <article class="mlmain mltabview tab_box" :class="{position_top0:!tabList.length}" ref="editor_h">
-              <el-button id="filePicker">11</el-button>
-
                     <el-tabs v-model="editableTabsValue2" type="card" closable @tab-remove="removeTab" class="tab_style_tt" @tab-click="tabClick" :class="{hide_tab_top:editableTabs2.length<=1}" v-if="showTabIndex==1" ref="tabref">
                       <el-tab-pane
                         v-for="(item, index) in editableTabs2"

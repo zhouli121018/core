@@ -59,7 +59,10 @@ axios.interceptors.request.use(
     }else{
       config.url += "?timestamp="+new Date().getTime();
     }
-    showFullScreenLoading()
+    if(config.url.indexOf('/netdisk/upload/')<0){
+      showFullScreenLoading()
+    }
+
     if (cookie.getCookie('token')) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
       config.headers.Authorization = `JWT ${cookie.getCookie('token')}`;
       store.dispatch('setInfo');

@@ -3,6 +3,7 @@
  </div>
 </template>
 <script>
+  // import SparkMD5 from 'spark-md5'
  export default {
   name: 'vue-upload',
   props: {
@@ -36,8 +37,35 @@
     default(file) {
      const currentTime = new Date().getTime();
      // const key = `${currentTime}.${file.name}`;
-     const key = md5(file.name)
-     return key;
+      function calcMD5(file){
+    // this.upstate="MD5计算中...";
+    // this.percent=0;
+    let chunkSize=2097152,
+    chunks=Math.ceil(file.size/chunkSize),
+    currentChunk=0,
+    spark=new SparkMD5.ArrayBuffer(),
+    fileReader=new FileReader();
+    fileReader.onload=(e)=>{
+        //对于读取的文件计算hash码。
+        spark.append(e.target.result);
+        currentChunk++;
+        // this.percent=((currentChunk/chunks)*100).toFixed(2)-0;
+        if(currentChunk<chunks){
+            loadNext();
+        }else{
+            return spark.end();
+        }
+    }
+    //分次读取大文件的内容，
+        function loadNext(){
+        let start=currentChunk*chunkSize,
+            end=((start+chunkSize)>=file.size)?file.size:start+chunkSize;
+            fileReader.readAsArrayBuffer(file.slice(start,end));
+    }
+    loadNext();
+}
+     const key1 = 12
+     return key1;
     },
    },
    multiple: {
@@ -62,7 +90,7 @@
    initWebUpload() {
     this.uploader = WebUploader.create({
      auto: true, // 选完文件后，是否自动上传
-     swf: '/static/lib/webuploader/Uploader.swf', // swf文件路径
+     swf: '/static/webuploader/Uploader.swf', // swf文件路径
      server: this.url, // 文件接收服务端
      pick: {
       id: this.uploadButton,  // 选择文件的按钮
@@ -86,8 +114,39 @@
      // 在这里可以准备好formData的数据
       let formData = new FormData();
       formData.append('file', file);
+
+      function calcMD5(file){
+    // this.upstate="MD5计算中...";
+    // this.percent=0;
+    let chunkSize=2097152,
+    chunks=Math.ceil(file.size/chunkSize),
+    currentChunk=0,
+    spark=new SparkMD5.ArrayBuffer(),
+    fileReader=new FileReader();
+    fileReader.onload=(e)=>{
+        //对于读取的文件计算hash码。
+        spark.append(e.target.result);
+        currentChunk++;
+        // this.percent=((currentChunk/chunks)*100).toFixed(2)-0;
+        if(currentChunk<chunks){
+            loadNext();
+        }else{
+            return spark.end();
+        }
+    }
+    //分次读取大文件的内容，
+        function loadNext(){
+        let start=currentChunk*chunkSize,
+            end=((start+chunkSize)>=file.size)?file.size:start+chunkSize;
+            fileReader.readAsArrayBuffer(file.slice(start,end));
+    }
+    loadNext();
+}
+      // console.log(calcMD56(file))
+      console.log('filefile')
+      return;
+      // formData.append('sparkmd5',calcMD5(file))
       this.uploader.options.formData = formData
-     this.uploader.options.formData.key = this.keyGenerator(file);
      console.log('this.uploader.options.formData')
      console.log(this.uploader.options.formData)
     });
