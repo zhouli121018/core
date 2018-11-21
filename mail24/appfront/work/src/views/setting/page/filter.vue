@@ -49,12 +49,6 @@
           <el-form-item label="优先级" prop="sequence">
             <el-input v-model.number="createForm.sequence" auto-complete="off" type="number"></el-input>
           </el-form-item>
-          <el-form-item label="规则用于" prop="type">
-            <el-radio-group v-model="createForm.type">
-              <el-radio :label="1" >接收</el-radio>
-              <el-radio :label="-1">发送</el-radio>
-            </el-radio-group>
-          </el-form-item>
 
           <el-form-item label="状态" prop="disabled">
             <el-radio-group v-model="createForm.disabled">
@@ -263,12 +257,6 @@
           </el-form-item>
           <el-form-item label="优先级" prop="sequence">
             <el-input v-model.number="updateForm.sequence" auto-complete="off" type="number"></el-input>
-          </el-form-item>
-          <el-form-item label="规则用于" prop="type">
-            <el-radio-group v-model="updateForm.type">
-              <el-radio :label="1" >接收</el-radio>
-              <el-radio :label="-1">发送</el-radio>
-            </el-radio-group>
           </el-form-item>
 
           <el-form-item label="状态" prop="disabled">
@@ -491,8 +479,6 @@
           name: '',
           content: '',
           sequence:999,
-          type:1,
-          type_display:'接收',
           disabled:-1,
           logic:'all',
           conditions:[
@@ -513,8 +499,6 @@
           name: '',
           content: '',
           sequence:999,
-          type:1,
-          type_display:'接收',
           disabled:-1,
           logic:'all',
           conditions:[

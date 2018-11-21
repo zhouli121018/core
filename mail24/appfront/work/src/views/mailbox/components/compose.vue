@@ -124,7 +124,7 @@
                         <div class="mailbox_s" v-if="!ruleForm2.is_partsend" :class="{error:!v.status}" v-for="(v,k) in maillist" :key="k" :title="v.email"><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v)"></i></div>
                         <div class="mailbox_s" v-if="ruleForm2.is_partsend" :class="{error:!v.status}" v-for="(v,k) in partSendList" :key="k" :title="v.email"><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v,1)"></i></div>
                         <el-autocomplete  class="no_padding"  v-model.trim="state1" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox"
-                        @blur="addMailbox" @focus="insertMailbox=1" placeholder="" @select="handleSelect" :trigger-on-focus="false">
+                        @blur="addMailbox" @focus="insertMailbox=1" placeholder="" @select="handleSelect" :trigger-on-focus="false" style="float:left">
 
                           <!--<template slot-scope="{ item }" :trigger-on-focus="false">-->
                             <!--<div class="name" style="width:300px;">{{ item.value }}</div>-->
@@ -143,7 +143,7 @@
                     <div class="padding_15">
                       <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_copyer" :key="k" :title="v.email"><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey_copyer(k,v)"></i></div>
                       <el-autocomplete  class="no_padding" v-model.trim="state_copyer" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox_copyer"
-                        @blur="addMailbox_copyer" @focus="insertMailbox=2" placeholder=""  @select="handleSelect_copyer" :trigger-on-focus="false"></el-autocomplete>
+                        @blur="addMailbox_copyer" @focus="insertMailbox=2" placeholder=""  @select="handleSelect_copyer" :trigger-on-focus="false" style="float:left"></el-autocomplete>
                     </div>
                   </el-form-item>
                   <el-form-item label="主  题:" prop="subject">
@@ -172,7 +172,7 @@
                       <!--<el-input type="file" id="file"></el-input>-->
                       <el-button size="small" type="text" @click="showBigDialog"><i class="el-icon-upload"></i> 添加附件</el-button>
 
-                      <el-upload
+                      <el-upload v-if="false"
                           class="upload-demo"
                           action=""
                           :http-request="uploadFile"
@@ -557,27 +557,42 @@
         </el-table>
       </el-dialog>
 
-      <el-dialog title="附件上传" :visible.sync="bigUploadVisible" :append-to-body="true" class="bigUpload" @close="bigClose">
-        <div>
+      <el-dialog title="附件上传" :visible.sync="bigUploadVisible" :append-to-body="true" class="bigUpload" @close="bigClose" :close-on-click-modal="false">
+        <div style="min-height:300px;">
+          <!--:autoStart="false"-->
+          <uploader :options="options" class="uploader-example" :autoStart="false" :fileStatusText="fileStatusText"
+                    @file-complete="fileComplete" :fileList="files"
+                    @start-upload="startUpload" @files-submitted="filesSubmitted" @addFile="addFile"
+            @file-added="filesAdded" @fileProgress="fileProgress" ref="uploader" @change="changeFile">
+            <uploader-unsupport></uploader-unsupport>
+            <uploader-drop>
+              <!--<p>Drop files here to upload or</p>-->
+              <uploader-btn>上传文件</uploader-btn>
+            </uploader-drop>
+            <uploader-list></uploader-list>
+          </uploader>
           <!--multiple-->
           <!--:auto-upload="false"-->
-          <el-upload
+          <el-upload v-if="false"
             class="upload-demo"
             ref="bigUpload"
             action=""
             :http-request="bigUpload"
             :file-list="bigList"
             :on-remove="handleRemove"
-            :auto-upload="false"
-            multiple
+            :on-change="bigListSucess"
+            :before-upload="beforeUpload"
             >
-            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+            <el-button slot="trigger" size="small" type="primary" :loading="bigLoading" :disabled="bigLoading">上传文件</el-button>
             <!--<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>-->
+            <div slot="tip" class="el-upload__tip" style="color:#f56c6c">{{tip}}</div>
           </el-upload>
+
         </div>
         <div slot="footer" class="dialog-footer">
           <el-button @click="bigUploadVisible = false" >取 消</el-button>
-          <el-button @click="submitUpload" type="primary">上 传</el-button>
+          <!--<el-button @click="submitUpload" type="primary">上 传</el-button>-->
+          <el-button @click="addBigAttach" type="primary" :loading="bigLoading">确 定</el-button>
         </div>
       </el-dialog>
 
@@ -586,6 +601,7 @@
 </template>
 <script>
   import axios from 'axios';
+  import cookie from '@/assets/js/cookie';
   import SparkMD5 from 'spark-md5'
   // import treeTransfer from 'el-tree-transfer'
   import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach,contactOabDepartsGet,
@@ -641,7 +657,13 @@
           callback();
         }
       };
+      let _this = this;
       return {
+        files:[],
+        cfile:'',
+        fileList_big:[],
+        bigLoading:false,
+        tip:'',
         bigList:[],
         bigUploadVisible:false,
         uploadFileData:{
@@ -649,10 +671,45 @@
           isLastChunk:false, //是否最后一片文件
           fileName:'filename'  //文件名称
         },
+        fileStatusText:{
+           success: '成功',
+            error: '失败',
+            uploading: '上传中...',
+            paused: '暂停',
+            waiting: '等待'
+        },
         options: {
           // https://github.com/simple-uploader/Uploader/tree/develop/samples/Node.js
           target: '/api/netdisk/upload/chunk/',
-          testChunks: false
+          testChunks: false,
+          headers:{
+            Authorization :`JWT ${cookie.getCookie('token')}`
+          },
+          query: {
+            'fileMd5' : ''
+          },
+          testMethod:'POST',
+          allowDuplicateUploads:true,
+          fileParameterName:'chunkFile',
+          singleFile:false,
+          chunkSize:1024*1024*2,
+          simultaneousUploads:3,
+          generateUniqueIdentifier(file){
+            console.log(file)
+            _this.cfile = file;
+            _this.calcMD56(file,(a)=>{
+              _this.options.query['fileMd5'] = a
+            })
+            return 'dsaf'
+          },
+          parseTimeRemaining: function (timeRemaining, parsedTimeRemaining) {
+            return parsedTimeRemaining
+              .replace(/\syears?/, '年')
+              .replace(/\days?/, '天')
+              .replace(/\shours?/, '小时')
+              .replace(/\sminutes?/, '分钟')
+              .replace(/\sseconds?/, '秒')
+          },
         },
         webmail_cab_show: false,
         webmail_soab_show: false,
@@ -838,18 +895,60 @@
       };
     },
     methods:{
+      addFile(file){
+        console.log('addfile')
+        console.log(file)
+      },
+      changeFile(){
+        console.log(arguments)
+      },
+      beforeUpload(file){
+        console.log('before')
+        console.log(file)
+        console.log(this.bigList)
+        let result = true;
+        for(let i=0;i<this.bigList.length-1;i++){
+          if(file.name == this.bigList[i].name){
+            result = false;
+          }
+        }
+        console.log(result)
+        if(!result){
+          return result;
+        }
+      },
+      bigListSucess( file, fileList){
+        this.bigList = fileList;
+
+      },
+      addBigAttach(){
+        console.log(this.fileList_big)
+        this.fileList_big.forEach(val=>{
+          this.hashFile[val.id] = true;
+        })
+        this.fileList = this.fileList.concat(this.fileList_big)
+        this.bigUploadVisible = false
+      },
       bigClose(){
-         this.bigList = [];
+        this.fileList_big = [];
+        this.bigList = [];
+        this.files = [];
       },
       showBigDialog(){
 
         this.bigUploadVisible = true;
       },
       handleRemove(file){
-        this.$message({
-          type:'info',
-          message:'取消上传'
-        })
+        // this.$message({
+        //   type:'info',
+        //   message:'已删除'
+        // })
+        for(let i=0;i<this.fileList_big.length;i++){
+          if(file.name == this.fileList_big[i].name){
+            this.fileList_big.splice(i,1);
+            break;
+          }
+        }
       },
       submitUpload(){
          this.$refs.bigUpload.submit();
@@ -869,8 +968,21 @@
             type:'success',
             message:'上传成功！'
           })
+          // this.hashFile[res.data.id]=true;
+          this.fileList_big.push(res.data)
+          this.bigLoading = false;
+          this.tip = ''
         }).catch(err=>{
+          this.tip = '服务器错误！'
+          if(err.non_field_errors){
+            this.tip = err.non_field_errors[0]
+          }
+          this.$message({
+            type:"error",
+            message:"上传失败！"+this.tip
+          });
           console.log('merge错误！',err)
+          this.bigLoading = false;
         })
       },
       chunksFile(file,fileMd5,fileparam,arr){
@@ -901,13 +1013,14 @@
           let hash = [];
           if(arr){
             for(let i=0;i<arr.length;i++){
-              hash[arr[i]] = true;
+              hash[(arr[i]-1)+'_n'] = true;
             }
           }
+          console.log(arr)
           console.log(hash)
           for(let i=0;i<chunkLength;i++){
-            console.log(!hash[i+1])
-            if(!hash[i]){
+            console.log(!hash[i+'_n'])
+            if(!hash[i+'_n']){
               let fm = new FormData();
                  fm.append('fileMd5',fileMd5);//spark-md5计算出来的md5值
                  fm.append('chunkNumber',i+1);
@@ -933,15 +1046,16 @@
                 fileparam.onProgress(fileparam.file);
               }
             })
-          },800)
+          },600)
           if(abcd.length>0){
             if(abcd.length>3){
               let splits = []
               for(let i=0;i<abcd.length;i+=3){
-                splits[i] = abcd.slice(i,i+3)
-              }
-              for(let i= 0;i<splits.length;i++){
-
+                let n = i*3+3;
+                if(n > abcd.length-3){
+                  n = abcd.length;
+                }
+                splits[i] = abcd.slice(i*3,n)
               }
               let i = splits.length-1;
               let count = 0;
@@ -963,7 +1077,7 @@
                   console.log('err:',err)
                 })
               }
-              digui(count,i)
+              // digui(count,i)
 
             }else{
               axios.all(abcd).then(axios.spread(function () {
@@ -971,10 +1085,12 @@
                 _this.bigUploadSuccess(file,fileMd5);
                 fileparam.file.percent = 100
                 fileparam.onProgress(fileparam.file);
-              }))
+              })).catch(err=>{
+                  console.log('err1:',err)
+                })
             }
-
-
+          }else{
+             _this.bigUploadSuccess(file,fileMd5);
           }
       },
       progressTimer(fileparam){
@@ -988,14 +1104,19 @@
       },
       bigUpload(fileparam){
         // let file =  document.getElementById("file").files[0];
+        console.time('timestart');
         let file =  fileparam.file;
         fileparam.file.percent = 0;
         fileparam.onProgress(fileparam.file);
-
         if(file){
+          console.log('file')
+          console.log(typeof file)
+          this.bigLoading = true;
           let _this = this;
           let spark_md5;
           this.calcMD56(file,(a)=>{
+
+        console.timeEnd('timestart');
             // _this.bigUploadSuccess(file,a);
             // return;
             spark_md5 = a
@@ -1011,15 +1132,14 @@
                   // _this.uploadFileData.chunk=parseInt(data.maxChuck)+1;//将查询到的结果赋值给表单中的分片
                   _this.chunksFile(file,a,fileparam,res.data.chunks);
               }else if(data.state==2){
-                  _this.$message({
-                  type:"success",
-                  message:"上传完成！"
-                  });
+                  _this.bigUploadSuccess(file,a);
                   fileparam.file.percent = 100
                   fileparam.onProgress(fileparam.file);
+                  this.bigLoading = false;
               }
             }).catch(err=>{
               console.log('网络异常，请稍后再试！',err)
+              this.bigLoading = false;
             })
           });
         }else{
@@ -1049,6 +1169,33 @@
                 let str = spark.end();
                 callback(str)
                 return str;
+              }
+          }
+          //分次读取大文件的内容，
+              function loadNext(){
+              let start=currentChunk*chunkSize,
+                  end=((start+chunkSize)>=file.size)?file.size:start+chunkSize;
+                  fileReader.readAsArrayBuffer(file.slice(start,end));
+          }
+          loadNext();
+      },
+      calcMD567(file){
+          // this.upstate="MD5计算中...";
+          // this.percent=0;
+          let chunkSize=2097152,
+          chunks=Math.ceil(file.size/chunkSize),
+          currentChunk=0,
+          spark=new SparkMD5.ArrayBuffer(),
+          fileReader=new FileReader();
+          fileReader.onload=(e)=>{
+              //对于读取的文件计算hash码。
+              spark.append(e.target.result);
+              currentChunk++;
+              // this.percent=((currentChunk/chunks)*100).toFixed(2)-0;
+              if(currentChunk<chunks){
+                  loadNext();
+              }else{
+                return spark.end();
               }
           }
           //分次读取大文件的内容，
@@ -1100,34 +1247,35 @@
           loadNext();
       },
 
-      filesAdded(){
+      filesAdded(file){
         console.log('add')
-        console.log(this.$refs.uploader.uploader)
-        console.log(11111111111111123456)
+        console.log(typeof file)
+        console.log(this.$refs.upload)
+        this.calcMD56(this.cfile,(a)=>{
+          this.options.query['fileMd5'] = a
+          file.resume();
+        })
       },
-      complete() {
-        console.log('complete', arguments)
+      fileProgress(rootFile, file, chunk){
+        console.log('chunk')
+        console.log(file)
+        console.log(chunk)
+      },
+      filesSubmitted() {
+        console.log('filesSubmitted')
+        console.log(arguments)
       },
       // 一个根文件（文件夹）成功上传完成。
       fileComplete() {
         console.log('file complete', arguments)
         const file = arguments[0].file;
-        console.log('file')
-        console.log(file)
-        axios.post('/api/netdisk/upload/chunk/', {
-          upload_md5: md5(file.name),
-          upload_chunk: file.name,
-          upload_file: file
-        }).then(function (response) {
-          console.log(response);
-        }).catch(function (error) {
-          console.log(error);
-        });
+        this.bigUploadSuccess(file,this.options.query.fileMd5)
       },
       startUpload(){
-        console.log('this.$refs.uploader.uploader')
+        console.log('this.$refs.uploader.uploaderstartr')
         console.log(this.$refs.uploader.uploader)
-        this.$refs.uploader.uploader.opts.fileParameterName='upload_file'
+        console.log(arguments)
+        // this.$refs.uploader.uploader.opts.fileParameterName='upload_file'
       },
       nodeExpand(data,node,vc){
         console.log('expand')
@@ -2706,6 +2854,14 @@
       "ruleForm2.is_partsend"(nv){
         let _this = this;
         setTimeout(_this.set_main_min_height,50);
+      },
+      maillist(){
+        let _this = this;
+        setTimeout(_this.set_main_min_height,100);
+      },
+      maillist_copyer(){
+        let _this = this;
+        setTimeout(_this.set_main_min_height,100);
       }
     },
     // components:{ treeTransfer } // 注册
@@ -2713,6 +2869,9 @@
   }
 </script>
 <style>
+  .bigUpload .el-progress-bar__outer{
+    height: 10px !important;
+  }
   .bigUpload .el-upload-list{
     border: 1px solid #cbcbcb;
     margin-top: 10px;

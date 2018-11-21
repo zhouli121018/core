@@ -124,12 +124,12 @@
                         <span>{{time}}</span>
                     </div>
                 </div>
-                <div class="mail-top-info">
+                <div class="mail-top-info" style="min-height: 42px;">
                     <h3 class="mail-subject j-mail-subject " :class="[{redcolor:flagged},flag_color]" style="font-size:18px;">
                         <!--<span class="icon"><i class="j-sourceIcon iconfont state-icon icon-SYSTEM" title="系统认证可信任来源"></i></span>-->
                          {{subject?subject:'无主题'}}
                     </h3>
-                    <div class="short-info f-ellipsis j-short-info" v-show="!showDetails">
+                    <div class="short-info f-ellipsis j-short-info" v-show="!showDetails" v-if="mfrom || to.length>0">
                         <a class="j-u-email" href="javascript:void(0);" >{{mfrom}}</a>
                         <span>发送给</span>
                         <a class="j-u-email" href="javascript:void(0)" v-for="(t,k) in to" :key="k">{{t}}; </a>
@@ -137,7 +137,7 @@
                     </div>
                     <div class="full-info j-full-info" v-show="showDetails">
                         <table class="u-table u-table-row">
-                            <tbody><tr>
+                            <tbody><tr v-if="mfrom">
                                 <td class="info-item">发件人 :</td>
                                 <td>
                                      <span class="u-email j-u-email">
@@ -147,7 +147,7 @@
 
                                 </td>
                             </tr>
-                            <tr>
+                            <tr v-if="to.length>0">
                                 <td class="info-item">收件人 :</td>
                                 <td>
 
@@ -159,7 +159,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr v-if="msg.cc" >
+                            <tr v-if="msg.cc">
                                 <td class="info-item">抄 送:</td>
                                 <td>
 
@@ -353,7 +353,7 @@
             </div>
 
           </div>
-          <footer class="quick-reply j-quick-reply " style="padding-top:0">
+          <footer class="quick-reply j-quick-reply " style="padding-top:0" v-if="mfrom || to.length>0">
             <div class="quick-reply-default quick-reply-item j-reply-default" v-if="before_replying" @click="ready_reply">快捷回复给所有人
             </div>
 
@@ -465,8 +465,8 @@
         iframeState:false,
         subject:'主题',
         time:'',
-        mfrom:'anshanshan@test.com',
-        to:'anshanshan@test.com',
+        mfrom:'',
+        to:'',
         moveCheckIndex:'',
         moreCheckIndex:'',
         moreItems:[
@@ -622,10 +622,18 @@
         this.$parent.$parent.$parent.removeTab(tagName);
       },
       print(){
+        let mfrom = '';
         let to = '';
         let cc = '';
-        for(let i=0;i<this.msg.to.length;i++){
-          to += this.msg.to[i][1] + '&lt;'+this.msg.to[i][0]+'&gt;;'
+        if(this.mfrom){
+          mfrom += '<p>发件人：'+this.mfrom+'</p>'
+        }
+        if(this.msg.to && this.msg.to.length>0){
+          to += '<p>收件人：'
+          for(let i=0;i<this.msg.to.length;i++){
+            to += this.msg.to[i][1] + '&lt;'+this.msg.to[i][0]+'&gt;;'
+          }
+          to += '</p>'
         }
         if(this.msg.cc&&this.msg.cc.length>0){
           cc += '<p>抄 送：'
@@ -640,9 +648,9 @@
         <p>U-Mail 企业邮箱</p>
         <div style="border-top:1px solid #7CACDB;border-bottom:1px solid #7CACDB;padding:4px 0;margin-bottom:16px;font-size:12px;">
             <h3>${this.subject||'无主题'}</h3>
-            <p>发件人：${this.mfrom}</p>
+            ${mfrom}
             <p>时&nbsp;&nbsp;间：${this.time.replace('T',' ')}</p>
-            <p>收件人：${to}</p>
+            ${to}
             ${cc}
         </div>
         <div style="position:relative;font-size:14px;padding:15px 15px 10px 15px;*padding:15px 15px 0 15px;overflow:visible;font-size: 14px;line-height:170%;min-height:100px;_height:100px;">
@@ -1231,10 +1239,12 @@
           this.time = data.data.date;
           if(data.data.mfrom){this.mfrom = data.data.mfrom[1]+' < '+data.data.mfrom[0]+' > ';}
           this.to = [];
-          for(let i=0;i<data.data.to.length;i++){
-            let o = data.data.to[i];
-            let t = o[1]+' <'+o[0]+'>'
-            this.to.push(t);
+          if(data.data.to && data.data.to.length>0){
+            for(let i=0;i<data.data.to.length;i++){
+              let o = data.data.to[i];
+              let t = o[1]+' <'+o[0]+'>'
+              this.to.push(t);
+            }
           }
           this.flag_color = '';
           if(data.data.flags){
@@ -1274,6 +1284,7 @@
             this.print_html =  data.data.html_text
           }else{
             let bhtml = data.data.html_text||data.data.plain_text;
+            console.log('bhtml:'+bhtml)
             oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = '<pre>'+bhtml+'</pre>';
             this.print_html =  '<pre>'+bhtml+'</pre>'
           }
