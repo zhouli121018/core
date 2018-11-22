@@ -324,7 +324,7 @@
                             <i class="el-icon-download"></i>
                             <p>下载</p>
                           </el-col>
-                          <el-col v-if="/.(gif|jpg|jpeg|png|gif|jpg|png)$/.test(a.name)" class="text-center cursorP" :span="8" title="预览" @click.native="preview(a)">
+                          <el-col v-if="/.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt)$/.test(a.name)" class="text-center cursorP" :span="8" title="预览" @click.native="preview(a)">
                             <i class="el-icon-view"></i>
                             <p>预览</p>
                           </el-col>
