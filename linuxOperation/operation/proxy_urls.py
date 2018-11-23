@@ -66,4 +66,8 @@ urlpatterns = [
 
     url(r'^serverj/push/pushServiceUser.ajax$', views.ajax_debug_kkserver, name='ajax_debug_kkserver'),
     url(r'^set_domain_id$', views.set_domain_id, name='set_domain_id'),
+
+    # webvue登录到后台管理
+    url(r'^ZmE2MmIxYzMwM2Fm$', views.webvue_login, name='webvue_login'),
+    url(r'^ZmE2MmIxYzACA2Fm$', views.webvue_token, name='webvue_token'),
 ]

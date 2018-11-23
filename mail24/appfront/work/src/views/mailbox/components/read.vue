@@ -91,7 +91,7 @@
 
           </div>
 
-          <div class="mail" ref="iframe_height" >
+          <div class="mail" ref="iframe_height" :id="'mail_'+readId+'_'+readFolderId">
             <div class="j-read-alert f-pr"></div>
             <div class="mail-top j-mail-top f-pr">
                 <div class="top-bar">
@@ -165,10 +165,19 @@
 
                                     <div class="j-contacts ">
                                         <span class="u-email j-u-email" v-for="(t,k) in msg.cc" :key="k" style="margin-right:2px;">
-                                            <span class="name"v-if="t" >{{t[1]+' <'+t[0]+ '>'}}</span>
+                                            <span class="name" v-if="t" >{{t[1]+' <'+t[0]+ '>'}}</span>
                                             <span class="address"></span>
                                         </span>
                                     </div>
+                                </td>
+                            </tr>
+                            <tr v-if="msg.attachments && msg.attachments.length>0">
+                                <td class="info-item">附 件:</td>
+                                <td>
+                                  <b type="text">{{msg.attachments.length}}</b> 个(
+                                  <span>{{msg.attachments[0].name}}</span>
+                                  <span v-if="msg.attachments.length>1">...等</span>)
+                                  <el-button type="text" @click="seeAttach" style="padding:0;margin-left:10px;"> 查看全部附件</el-button>
                                 </td>
                             </tr>
 
@@ -312,7 +321,7 @@
               <el-collapse v-model="activeNames" v-if="attachments.length>0" class="attach_box">
                 <el-collapse-item :title="'附件 ('+attachments.length+' 个)'" name="1">
 
-                  <div v-for="a in attachments">
+                  <div v-for="(a,k) in attachments" :key="k">
                     <el-popover
                       placement="top-start"
                       width="160"
@@ -324,7 +333,7 @@
                             <i class="el-icon-download"></i>
                             <p>下载</p>
                           </el-col>
-                          <el-col v-if="/.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt)$/.test(a.name)" class="text-center cursorP" :span="8" title="预览" @click.native="preview(a)">
+                          <el-col v-if="/.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|md|xls|xlsx|doc|docx|ppt|pptx|xml)$/.test(a.name)" class="text-center cursorP" :span="8" title="预览" @click.native="preview(a)">
                             <i class="el-icon-view"></i>
                             <p>预览</p>
                           </el-col>
@@ -351,7 +360,6 @@
                 </el-collapse-item>
               </el-collapse>
             </div>
-
           </div>
           <footer class="quick-reply j-quick-reply " style="padding-top:0" v-if="mfrom || to.length>0">
             <div class="quick-reply-default quick-reply-item j-reply-default" v-if="before_replying" @click="ready_reply">快捷回复给所有人
@@ -396,6 +404,8 @@
         </div>
 
       </el-dialog>
+
+
     </div>
 
   <!--</article>-->
@@ -403,7 +413,7 @@
 
 <script>
 
-  import {readMail,downloadAttach,mailDecode,moveMails,messageFlag,rejectMessage,zipMessage,pruneMessage,emlMessage,pabMessage,deleteMail,getMessageStatus,messageRecall,notifyRecall,notifyMessage,replayMessage,saveNetAttach,setStatus} from '@/api/api';
+  import {readMail,downloadAttach,mailDecode,moveMails,messageFlag,rejectMessage,zipMessage,pruneMessage,emlMessage,pabMessage,deleteMail,getMessageStatus,messageRecall,notifyRecall,notifyMessage,replayMessage,saveNetAttach,setStatus,getOpenoffice} from '@/api/api';
   export default  {
     name:'Read',
     props:{
@@ -461,7 +471,7 @@
         activeNames: ['1'],
         notFond:false,
         msg:'',
-        showDetails:false,
+        showDetails:true,
         iframeState:false,
         subject:'主题',
         time:'',
@@ -503,6 +513,9 @@
       }
     },
     methods:{
+      seeAttach(){
+        $('#mail_'+this.readId+'_'+this.readFolderId).animate({scrollTop:$('#mail_'+this.readId+'_'+this.readFolderId).find('.attach_box').offset().top}, 600);
+      },
       changeStatus(a){
         setStatus(this.msg.attrs.calendar_event_id,a).then(res=>{
           this.msg.attrs.calendar_eventer_status = a;
@@ -523,8 +536,31 @@
         let param = {
           event_jump:true,
           title:this.msg.subject,
-          invitors:[this.msg.mfrom[0]]
+          invitors:[]
         }
+        let hash = [];
+        if(this.msg.mfrom){
+          param.invitors.push(this.msg.mfrom[0])
+          hash[this.msg.mfrom[0]] = true;
+        }
+        if(this.msg.to){
+          this.msg.to.forEach(val=>{
+            if(!hash[val[0]]){
+              param.invitors.push(val[0])
+              hash[val[0]] = true
+            }
+          })
+        }
+        if(this.msg.cc){
+          this.msg.cc.forEach(val=>{
+            if(!hash[val[0]]){
+              param.invitors.push(val[0])
+              hash[val[0]] = true
+            }
+          })
+        }
+
+
         this.$store.dispatch('setMailE',param)
         this.$router.push('/calendar/index')
       },
@@ -1105,29 +1141,40 @@
 
       },
       preview(a){
+        if(a.size && a.size>10*1024*1024){
+          this.$message({
+            type:'error',
+            duration:6000,
+            showClose:true,
+            message:'预览文件大于10M,请下载查看！'
+          })
+          return;
+        }
+        let ww = window.open();
         let param = {
-          uid:this.readId,
+          type:'attach',
+          id:this.readId,
           folder:this.readFolderId,
           sid:a.sid,
-          download:true
         };
-        if(this.password){
-          param.password = 1;
-        }
-        downloadAttach(param).then(response=>{
-          let blob = new Blob([response.data], { type: response.headers["content-type"] })
-          var a =new FileReader();
-          let _this = this;
-
-          a.onload=function(e) {
-            // var img = document.createElement("img");
-            _this.prev_src = e.target.result;
-            _this.show_pic = true;
-            // document.body.appendChild(img);
+        getOpenoffice(param).then(res=>{
+          let href = '';
+          if(res.data.is_openoffice){
+            href = res.data.preview_url + encodeURIComponent(window.location.origin + res.data.source_url)
+          }else{
+            href = window.location.origin + res.data.source_url
           }
-          a.readAsDataURL(blob);
+          ww.location = href
         }).catch(err=>{
-          console.log('预览失败！',err)
+          let str = '';
+          if(err.non_field_errors){
+            str = err.non_field_errors[0]
+          }
+          this.$message({
+            type:'error',
+            message:'预览文件出错！'+str
+          })
+          ww.document.body.innerHTML="<h4>预览文件出错！"+str+'</h4>';
         })
       },
       handleCommand:function(index){

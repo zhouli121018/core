@@ -196,24 +196,19 @@ def getCertParm(obj):
 def parseSignature(signature):
     if not signature:
         return "", "", "", "", ""
-    try:
-        # 返回一个X509.Request类型代表证书请求文件
-        req=X509.load_request_string(signature)
 
-        #首先验证一下，是不是真的是使用它本身的私钥签名的。
-        #如果是，返回非0值。如果不是，说明这是一个非法的证书请求文件。
-        is_verify = req.verify(req.get_pubkey())
-        is_verify = is_verify and True or False
-        S = req.get_subject()
-        return is_verify, dict(zip(
-            ("sig_domain", "sig_depart", "sig_organization", "sig_province", "sig_locale", "sig_contry"),
-            getCertParm(S) )
-        )
-    except:
-        return False , dict(zip(
-            ("sig_domain", "sig_depart", "sig_organization", "sig_province", "sig_locale", "sig_contry" ),
-            ( "", "", "", "", "", "" ) )
-        )
+    # 返回一个X509.Request类型代表证书请求文件
+    req=X509.load_request_string(signature)
+
+    #首先验证一下，是不是真的是使用它本身的私钥签名的。
+    #如果是，返回非0值。如果不是，说明这是一个非法的证书请求文件。
+    is_verify = req.verify(req.get_pubkey())
+    is_verify = is_verify and True or False
+    S = req.get_subject()
+    return is_verify, dict(zip(
+        ("sig_domain", "sig_depart", "sig_organization", "sig_province", "sig_locale", "sig_contry"),
+        getCertParm(S) )
+    )
 
 def genCertificate(privkey, signature, certificate):
     #首先读取证书请求文件。

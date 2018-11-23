@@ -24,13 +24,14 @@ from django.shortcuts import resolve_url
 from django.utils.decorators import available_attrs
 from django.utils.six.moves.urllib.parse import urlparse
 
+LICENCE_DEFAULT_FILE = '/usr/local/u-mail/data/www/webmail/licence.dat'
 
 class Licence(object):
     """
     Webmail证书
     """
 
-    def __init__(self, licence_data='', licence_file='/usr/local/u-mail/data/www/webmail/licence.dat'):
+    def __init__(self, licence_data='', licence_file=LICENCE_DEFAULT_FILE):
         """
         :param licence_data: 证书内容
         :param licence_file: 证书文件
@@ -64,7 +65,7 @@ class Licence(object):
         else:
             licence_info = self._parse_info_1_0(raw_info)
 
-        if 'limit_count' in licence_info and licence_info['limit_count'].isdigit():
+        if 'limit_count' in licence_info and str(licence_info['limit_count']).isdigit():
             licence_info['limit_count'] = int(licence_info['limit_count'])
 
         #检测技术支持服务是否结束
@@ -176,7 +177,7 @@ class Licence(object):
 def licence_validate():
     if os.name == "nt":
         return True
-    licence_file = '/usr/local/u-mail/data/www/webmail/licence.dat'
+    licence_file = LICENCE_DEFAULT_FILE
     if not os.path.exists(licence_file):
         return False
     try:
@@ -198,9 +199,17 @@ def licence_validate():
             from app.core.models import DomainAttr
             value = DomainAttr.getAttrObjValue(domain_id=1,type='system',item='created')
             if not value:
-                print "domain_attr has no created flag!!!"
-                return False
-            start = time.mktime(time.strptime(value,'%Y-%m-%d %H:%M:%S'))
+                value = time.strftime('%Y-%m-%d %H:%M:%S')
+                #需要记录域名创建日期
+                DomainAttr.objects.create(
+                    domain_id = 1,
+                    type = u'system',
+                    item = u'created',
+                    value = value
+                    )
+                start = time.mktime(value)
+            else:
+                start = time.mktime(time.strptime(value,'%Y-%m-%d %H:%M:%S'))
             end = int(start) + 30*24*3600
             end = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(end))
             info["expires_time"] = datetime.datetime.strptime(end,'%Y-%m-%d %H:%M:%S')
@@ -214,6 +223,14 @@ def licence_validate():
         print "invalid licence expires_time:  ",info
         return False
     return True
+
+def licence_validsms():
+    if not licence_validate():
+        return False
+    licence_file = LICENCE_DEFAULT_FILE
+    lic = Licence(licence_file=licence_file)
+    info = lic.get_licence_info()
+    return 'sms' in info.get('extra_module',{}).values()
 
 def licence_passes_test(login_url=None, redirect_field_name=REDIRECT_FIELD_NAME):
     """
@@ -257,7 +274,8 @@ def licence_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, log
 
 
 if __name__ == "__main__":
-    filepath = "/usr/local/u-mail/data/www/webmail/licence.dat"
+    filepath = LICENCE_DEFAULT_FILE
+    #filepath = "/home/ubrabbit/licence.com.dat"
     if len(sys.argv)>=2:
         filepath=sys.argv[1]
     print "licence path : ",filepath
@@ -273,4 +291,5 @@ if __name__ == "__main__":
             info["expires_time"] = datetime.datetime.strptime(end,'%Y-%m-%d %H:%M:%S')
             print "试用期结束时间  ：   ",info["expires_time"]
     print info
-
+    print 'sms' in info.get('extra_module',{}).values()
+    print "licence_validate == ",licence_validate()

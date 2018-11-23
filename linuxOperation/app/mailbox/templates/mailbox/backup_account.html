@@ -51,11 +51,15 @@
                     {% trans "批量删除帐号" %}
                 </a>
             </li>
-            <li class="active">
-                <a href="{% url 'mailbox_backup_account' %}">
-                    {% trans "导入导出帐号" %}
-                </a>
-            </li>
+            <!--
+            {% if request.user.is_superuser %}
+                <li>
+                    <a href="{% url 'mailbox_backup_account' %}">
+                        {% trans "导入导出帐号" %}
+                    </a>
+                </li>
+            {% endif %}
+            -->
 
         </ul>
         <div class="tab-content">

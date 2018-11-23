@@ -30,10 +30,6 @@ class MailboxForm(forms.ModelForm):
     enable_share = forms.BooleanField(label=u'是否打开邮箱共享：', required=False, initial=False) limit_imap = forms.BooleanField(label=u'IMAP功能：', required=False, initial=True) disabled = forms.BooleanField(label=u'邮箱帐号状态：', required=False, initial=True)
     change_pwd = forms.BooleanField(label=u'登录强制修改密码：', required=False, initial=False)
     """
-    # pwd_days_time = forms.CharField(label=u'密码有效期：', required=False, widget=forms.TextInput(
-    #     attrs={"class": "datetime", "value": time.strftime('%Y-%m-%d %H:%M:%S')}))
-    pwd_days_time = IntDateTimeField(label=u'密码有效期：', required=False, widget=forms.TextInput(
-        attrs={"class": "datetime", 'readonly': 'readonly', 'addon': u'datetime'}))
 
     def __init__(self, domain, *args, **kwargs):
         super(MailboxForm, self).__init__(*args, **kwargs)
@@ -46,6 +42,7 @@ class MailboxForm(forms.ModelForm):
         self.fields['domain'].required = False
         self.fields['domain_str'].required = False
         self.fields['username'].required = False
+        self.fields['recvsms'].required = False
         self.fields['name'].widget.attrs.update({'addon': self.domain_str})
         self.fields['quota_mailbox'].widget.attrs.update({'addon': u'MB'})
         self.fields['quota_netdisk'].widget.attrs.update({'addon': u'MB'})
@@ -55,7 +52,7 @@ class MailboxForm(forms.ModelForm):
         netdisk_size = DomainAttr.getAttrObjValue(self.domain.id, 'system', 'cf_def_netdisk_size')
         limit_send = DomainAttr.getAttrObjValue(self.domain.id, 'system', 'limit_send')
         limit_recv = DomainAttr.getAttrObjValue(self.domain.id, 'system', 'limit_recv')
-        self.server_pass = DomainAttr.getAttrObjValue(self.domain.id, 'webmail', 'sw_pass_severe')
+        self.server_pass = DomainAttr.getAttrObjValue(self.domain.id, 'webmail', 'sw_pass_severe_new')
 
         if mailbox_size:
             self.fields['quota_mailbox'].initial = mailbox_size
@@ -66,7 +63,12 @@ class MailboxForm(forms.ModelForm):
         if limit_recv:
             self.fields['limit_recv'].initial = limit_recv
 
+        self.raw_password = ""
+        self.fields['use_group'].required = False
+        self.fields['limit_send'].required = False
+        self.fields['limit_recv'].required = False
         if self.instance.pk:
+            self.raw_password = kwargs["instance"].password
             self.fields['password1'].required = False
             self.fields['password2'].required = False
             s = self.instance.size
@@ -97,7 +99,6 @@ class MailboxForm(forms.ModelForm):
 
     def clean_password1(self):
         password1 = self.cleaned_data.get('password1')
-        #print password1
         if password1 and self.server_pass == '1':
             if self.instance.pk:
                 ret, reason = CheckMailboxPassword(domain_id=self.instance.domain_id, mailbox_id=self.instance.id, password=password1)
@@ -132,6 +133,9 @@ class MailboxForm(forms.ModelForm):
         password = self.cleaned_data.get('password1')
         if password:
             mem.password = md5_crypt.encrypt(password)
+            mem.pwd_days_time = int(time.time())
+        else:
+            mem.password = self.raw_password
         if commit:
             mem.save()
             if password:
@@ -154,8 +158,8 @@ class MailboxForm(forms.ModelForm):
     class Meta:
         model = Mailbox
         fields = ['domain', 'domain_str', 'name', 'username', 'password', 'quota_mailbox', 'quota_netdisk', 'limit_send',
-                  'limit_pop', 'limit_recv', 'limit_imap', 'limit_login', 'ip_limit', 'pwd_days', 'disabled', 'savepath',
-                  'change_pwd', 'pwd_days_time', 'enable_share', 'is_active', 'is_superuser', 'limit_send_freq']
+                  'limit_recv', 'use_group', 'limit_login', 'recvsms', 'ip_limit', 'pwd_days', 'disabled', 'savepath',
+                  'change_pwd', 'enable_share', 'is_active', 'is_superuser', ]
 
 
 class MailboxUserForm(forms.ModelForm):

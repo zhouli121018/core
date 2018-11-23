@@ -137,33 +137,51 @@
                     </div>
                 </td>
             </tr>
-            <tr>
-                <td class="text-right">短信模块设置：</td>
-                <td class="row">
-                    <div class="col-sm-4 no-padding-left">
-                        <div class="input-group">
-                            <span class="input-group-addon">短信服务商：</span>
-                            <select name="type" class="form-control">
-                                {% for k,v in form.get_sms_list %}
-                                    <option value="{{ k }}" {% if k == form.sms_type %} selected {% endif %} > {{ v }} </option>
-                                {% endfor %}
-                            </select>
+            {% if request.user.licence_validsms %}
+                <tr>
+                    <td class="text-right">短信模块设置：</td>
+                    <td class="row">
+                        <div class="col-sm-4 no-padding-left">
+                            <div class="input-group">
+                                <span class="input-group-addon">短信服务商：</span>
+                                <select name="sms_type" class="form-control">
+                                    {% for k,v in form.get_sms_list %}
+                                        <option value="{{ k }}" {% if k == form.sms_type %} selected {% endif %} > {{ v }} </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="input-group">
-                            <span class="input-group-addon">用户ID：</span>
-                            <input type="text" name="sms_account" value="{{ form.sms_account }}" class="form-control">
+                        <div class="col-sm-2">
+                            <div class="input-group">
+                                <span class="input-group-addon">用户ID：</span>
+                                <input type="text" name="sms_account" value="{{ form.sms_account }}" class="form-control">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="input-group">
-                            <span class="input-group-addon">帐号密码：</span>
-                            <input type="password" name="sms_password" value="{{ form.sms_password }}" class="form-control">
+                        <div class="col-sm-2">
+                            <div class="input-group">
+                                <span class="input-group-addon">帐号密码：</span>
+                                <input type="password" name="sms_password" value="{{ form.sms_password }}" class="form-control">
+                            </div>
                         </div>
-                    </div>
-                </td>
-            </tr>
+                        {% if form.sms_type == 'zhutong' %}
+                            <div class="col-sm-2">
+                                <div class="input-group">
+                                    <span class="input-group-addon">签名：</span>
+                                    <input type="text" name="sms_sign" value="{{ form.sms_sign }}" class="form-control">
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="col-sm-2">
+                            <div class="input-group">
+                                {% if not form.sms_cost is None %}
+                                    <span class="input-group-addon">剩余短信：</span>
+                                    <input type="text" name="sms_cost" value="{{ form.sms_cost }}" class="form-control" readonly="">
+                                {% endif %}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endif %}
             <tr>
                 <td class="text-right">SMTP发送重试时间：</td>
                 <td class="row">

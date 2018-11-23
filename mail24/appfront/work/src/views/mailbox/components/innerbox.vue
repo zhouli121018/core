@@ -677,7 +677,7 @@
         let pp = this.$parent.$parent.$parent;
         let param = {
           uids:this.checkedMails,
-          folder:pp.activeMenubar.id
+          folder:pp.activeMenubar.id || this.$route.params.boxId
         }
         if(item.id==0 || item.id==1 || item.id==2 || item.id==3 || item.id==5){
           this.fullscreenLoading = true;

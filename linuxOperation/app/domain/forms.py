@@ -15,7 +15,7 @@ from lib import validators
 from lib.formats import dict_compatibility
 from lib.tools import clear_redis_cache, download_excel, GenerateRsaKeys, generate_rsa, get_unicode, get_string,\
                         get_system_user_id, get_system_group_id, recursion_make_dir, get_random_string, \
-                        phpLoads, phpDumps
+                        phpLoads, phpDumps, get_client_request
 from lib.validators import check_domain, check_email_ordomain
 
 from django_redis import get_redis_connection
@@ -259,6 +259,12 @@ class DomainSysRecvLimitForm(DomainForm):
 
     def initPostParams(self):
         self.initPostParamsDefaultDisable()
+        #这里逻辑有点绕，因为 参数的意思是 limit ，所以当禁用时，按钮是unchecked的
+        data = self.post if self.post else self.get
+        if data:
+            self.limit_pop = BaseFied(value=data.get("limit_pop", "1"), error=None)
+            self.limit_imap = BaseFied(value=data.get("limit_imap", "1"), error=None)
+            self.limit_smtp = BaseFied(value=data.get("limit_smtp", "1"), error=None)
 
     def check(self):
         if not self.limit_send.value in self.SEND_LIMIT_RANGE:
@@ -300,7 +306,7 @@ class DomainSysRecvWhiteListForm(DotDict):
 
     @property
     def getSendLimitWhiteList(self):
-        lists = CoreWhitelist.objects.filter(type="send", domain_id=self.domain_id.value, mailbox_id=0).all()
+        lists = CoreWhitelist.objects.filter(type=u"fix_send", domain_id=self.domain_id.value, mailbox_id=0).all()
         num = 1
         for d in lists:
             yield num, d.id, d.email, str(d.disabled)
@@ -308,7 +314,7 @@ class DomainSysRecvWhiteListForm(DotDict):
 
     @property
     def getRecvLimitWhiteList(self):
-        lists = CoreWhitelist.objects.filter(type="recv", domain_id=self.domain_id.value, mailbox_id=0).all()
+        lists = CoreWhitelist.objects.filter(type=u"fix_recv", domain_id=self.domain_id.value, mailbox_id=0).all()
         num = 1
         for d in lists:
             yield num, d.id, d.email, str(d.disabled)
@@ -372,7 +378,7 @@ class DomainSysRecvWhiteListForm(DotDict):
     def saveNewEmail(self, mailbox):
         if mailbox in self.mailboxDict:
             return
-        obj = CoreWhitelist.objects.create(type=self.type, domain_id=self.domain_id.value, mailbox_id=0, email=mailbox)
+        obj = CoreWhitelist.objects.create(type=u"fix_{}".format(self.type), domain_id=self.domain_id.value, mailbox_id=0, email=mailbox)
         obj.save()
 
     def saveOldEmail(self):
@@ -387,6 +393,8 @@ class DomainSysRecvWhiteListForm(DotDict):
             if data.get("delete", u"-1") == u"1":
                 obj.delete()
             else:
+                obj.operator=u"sys"
+                obj.type=u"fix_{}".format(self.type)
                 obj.disabled = data.get("disabled", "-1")
                 obj.save()
 
@@ -470,6 +478,7 @@ class DomainSysPasswordForm(DomainForm):
     PARAM_RULE_LIMIT = dict(constants.DOMAIN_SYS_PASSWORD_RULE_LIMIT)
 
     PARAM_FORBID_RULE = dict(constants.DOMAIN_SYS_PASSWORD_FORBID_RULE)
+    PARAM_FORBID_RULE_DEFAULT = dict(constants.DOMAIN_SYS_PASSWORD_FORBID_RULE_DEFAULT)
 
     def initialize(self):
         self.initBasicParams()
@@ -496,6 +505,8 @@ class DomainSysPasswordForm(DomainForm):
         saveData = {}
         for name, param in self.PRAAM_RULE_VALUE.items():
             saveData[param] = getattr(self, name)
+        #2.2.59后，强制要求验证密码长度
+        saveData["passwd_size"] = "1"
         self.cf_pwd_rule = BaseFied(value=json.dumps(saveData), error=None)
 
         try:
@@ -504,12 +515,31 @@ class DomainSysPasswordForm(DomainForm):
             oldData = {}
         saveData = {}
         for name, param in self.PARAM_FORBID_RULE.items():
+            default = self.PARAM_FORBID_RULE_DEFAULT[param]
             if newData:
-                setattr(self, name, newData.get(param, u"-1"))
+                setattr(self, name, newData.get(param, '-1'))
             else:
-                setattr(self, name, oldData.get(param, u"-1"))
+                setattr(self, name, oldData.get(param, default))
             saveData[param] = getattr(self, name)
         self.cf_pwd_forbid = BaseFied(value=json.dumps(saveData), error=None)
+
+    def save(self):
+        self.paramSave()
+        #兼容PHP那边旧版本的强密码规则开关
+        #关闭PHP的开关
+        DomainAttr.saveAttrObjValue(
+                            domain_id=self.domain_id.value,
+                            type=u"webmail",
+                            item="sw_pass_severe",
+                            value="-1"
+                            )
+        #使用超管这边的开关
+        DomainAttr.saveAttrObjValue(
+                            domain_id=self.domain_id.value,
+                            type=u"webmail",
+                            item="sw_pass_severe_new",
+                            value="1"
+                            )
 
 #第三方对接
 class DomainSysInterfaceForm(DomainForm):
@@ -542,6 +572,14 @@ class DomainSysOthersForm(DomainForm):
 
     def initPostParams(self):
         self.initPostParamsDefaultDisable()
+
+    def save(self):
+        super(DomainSysOthersForm, self).save()
+        #旧版本的短信开关是保存在域名上的
+        Domain.objects.filter(id=self.domain_id.value).update(
+                    recvsms=self.sw_recvsms.value,
+                    sendsms=self.sw_sendsms.value,
+                    )
 
 class DomainSysOthersCleanForm(DomainForm):
 
@@ -613,26 +651,42 @@ class DomainSysOthersAttachForm(DomainForm):
             oldData = json.loads(self.cf_online_attach.value)
         except:
             oldData = {}
-        self.client_size = oldData.get("size", "20")
+        #这里的设置，在数据库没数据时要初始化数据库，不然app那边会读取错误
+        autoSave = False
+
+        #这个是2.2.58以后不再使用的值，在该版本以前是 所有类型邮件的 “转存大小”
+        #在2.2.58后因为转存的邮件区分出了类型，所以这个值改为默认值
+        self.client_size_default = oldData.get("size", "50")
         self.client_url = oldData.get("url", "")
-        self.client_attach_type = oldData.get("type", "1")
         self.client_public = oldData.get("public", "-1")
+        self.client_size_list = oldData.get("size_list", self.client_size_default)
+        self.client_size_in = oldData.get("size_in", self.client_size_default)
+        self.client_size_out = oldData.get("size_out", self.client_size_default)
         #从系统设置中读取下载地址的默认值
         if not self.client_url.strip():
             obj = DomainAttr.objects.filter(domain_id=0,type=u'system',item=u'view_webmail_url').first()
             self.client_url = obj.value if obj else ""
+            #系统设置没有配置时就读取默认值
+            if not self.client_url.strip() and self.request:
+                self.client_url = get_client_request(self.request)
+            autoSave = True
         if newData:
-            self.client_size = newData.get("client_size", "50")
+            self.client_size_list = newData.get("client_size_list", self.client_size_default)
+            self.client_size_in = newData.get("client_size_in", self.client_size_default)
+            self.client_size_out = newData.get("client_size_out", self.client_size_default)
             self.client_url = newData.get("client_url", "")
-            self.client_attach_type = newData.get("client_attach_type", "-1")
             self.client_public = newData.get("client_public", "-1")
         saveData = {
-            u"url"       :       self.client_url,
-            u"size"      :       self.client_size,
-            u"type"      :       self.client_attach_type,
-            u"public"    :       self.client_public,
+            u"url"              :       self.client_url,
+            u"size"             :       self.client_size_default,
+            u"size_list"       :       self.client_size_list,
+            u"size_in"         :       self.client_size_in,
+            u"size_out"        :       self.client_size_out,
+            u"public"          :       self.client_public,
         }
         self.cf_online_attach = BaseFied(value=json.dumps(saveData), error=None)
+        if autoSave:
+            self.paramSave()
 
 class DomainSignDomainForm(DomainForm):
 
@@ -657,7 +711,6 @@ class DomainSignDomainForm(DomainForm):
         if newData:
             self.content_html               = newData.get(u"content_html", u"")
             self.content_text               = newData.get(u"content_text", u"-1")
-
         saveData = {
             u"html"         :   get_unicode(base64.encodestring(get_string(self.content_html))),
             u"text"         :   self.content_text,
@@ -702,6 +755,15 @@ class DomainSignPersonalForm(DomainForm):
         }
         self.cf_personal_sign = BaseFied(value=json.dumps(saveData), error=None)
 
+        try:
+            import HTMLParser
+            html_parser = HTMLParser.HTMLParser()
+            #转码让HTML能正常显示
+            self.personal_sign_templ2 =  html_parser.unescape(self.personal_sign_templ)
+        except Exception,err:
+            print str(err)
+            self.personal_sign_templ2 = self.personal_sign_templ
+
     def applyAll(self):
         import cgi
         caption = u"系统默认签名"
@@ -733,11 +795,13 @@ class DomainSignPersonalForm(DomainForm):
                 )
 
             if is_default == "1":
-                Signature.objects.filter(domain_id=self.domain_id.value, mailbox_id=mailbox_id).update(default='1')
+                Signature.objects.filter(domain_id=self.domain_id.value, mailbox_id=mailbox_id).update(default='-1')
+                Signature.objects.filter(domain_id=self.domain_id.value, mailbox_id=mailbox_id, type="domain").update(default='1')
             else:
                 Signature.objects.filter(domain_id=self.domain_id.value, mailbox_id=mailbox_id, type="domain").update(default='-1')
             if is_fwd_default == "1":
-                Signature.objects.filter(domain_id=self.domain_id.value, mailbox_id=mailbox_id).update(refw_default='1')
+                Signature.objects.filter(domain_id=self.domain_id.value, mailbox_id=mailbox_id).update(refw_default='-1')
+                Signature.objects.filter(domain_id=self.domain_id.value, mailbox_id=mailbox_id, type="domain").update(refw_default='1')
             else:
                 Signature.objects.filter(domain_id=self.domain_id.value, mailbox_id=mailbox_id, type="domain").update(refw_default='-1')
 
@@ -1314,6 +1378,14 @@ class DomainListForm(DomainForm):
             if obj:
                 self.error = u"域名已存在"
                 return False
+            obj = CoreAlias.objects.filter(source=u'@%s'%self.domainName.value).first()
+            if obj:
+                self.error = u"域名已存在于域别名中的虚拟地址中"
+                return False
+        if self.domainName.value in ("comingchina.com","fenbu.comingchina.com") \
+            and unicode(self.request.user).startswith(u"demo_admin@"):
+                self.error = u"演示版本主域名不可修改"
+                return False
         self.save()
         return True
 
@@ -1324,7 +1396,8 @@ class DomainListForm(DomainForm):
 
         if str(self.domain_id.value) != "0":
             domainObj = Domain.objects.filter(id=self.domain_id.value).first()
-            domainObj.domain = u"{}".format(self.domainName.value)
+            #禁止修改域名名称
+            #domainObj.domain = u"{}".format(self.domainName.value)
             domainObj.disabled = u"{}".format(self.domainDisabled.value)
             domainObj.is_wx_host = u"{}".format(self.domainWechatHost.value)
             domainObj.save()
@@ -1335,6 +1408,13 @@ class DomainListForm(DomainForm):
                 is_wx_host = u"{}".format(self.domainWechatHost.value),
                 )
             self.domain_id = BaseFied(value=domainObj.id, error=None)
+            #需要记录域名创建日期
+            DomainAttr.objects.create(
+                domain_id = self.domain_id.value,
+                type = u'system',
+                item = u'created',
+                value = time.strftime('%Y-%m-%d %H:%M:%S')
+                )
         self.paramSave()
 
     @property
@@ -1496,10 +1576,9 @@ class DomainWebBasicForm(DomainForm):
 
     def save(self):
         self.paramSave()
-        obj = CoCompany.objects.filter(domain_id=self.domain_id.value).first()
-        if obj:
-            obj.company = self.company.value
-            obj.save()
+        obj, create  = CoCompany.objects.get_or_create(domain_id=self.domain_id.value)
+        obj.company = self.company.value
+        obj.save()
 
 #webmail页面定制---系统公告
 class DomainWebAnounceForm(DomainForm):

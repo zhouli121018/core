@@ -13,7 +13,7 @@
                 <div class="form-group">
                     <label class="col-sm-offset-1 col-sm-4 control-label">邮件域名称：</label>
                     <div class="col-sm-5">
-                        <input type="text" name="domainName" value="{{ form.domainName.value }}" class="form-control"  placeholder="邮件域名称">
+                        <input type="text" name="domainName" value="{{ form.domainName.value }}" class="form-control"  placeholder="邮件域名称" {% if operate != 'add' %} readonly {% endif %} >
                     </div>
                 </div>
 
@@ -22,15 +22,6 @@
                     <div class="col-sm-5">
                         <div class="input-group">
                             <input type="number" name="cf_limit_mailbox_cnt" value="{{ form.cf_limit_mailbox_cnt.value }}" class="form-control" placeholder="限定邮箱数量" >
-                            <span class="input-group-addon" >个</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-offset-1 col-sm-4 control-label"><span class="red bold">*</span>限定别名数量：</label>
-                    <div class="col-sm-5">
-                        <div class="input-group">
-                            <input type="number" name="cf_limit_alias_cnt" value="{{ form.cf_limit_alias_cnt.value }}" class="form-control" value="0" placeholder="限定别名数量" >
                             <span class="input-group-addon" >个</span>
                         </div>
                     </div>

@@ -24,4 +24,8 @@ urlpatterns = [
     url(r'^add_forward/(?P<id>\d+)/$', views.add_forward, name='mailbox_add_forward'),
     url(r'^edit_forward/(?P<id>\d+)/$', views.edit_forward, name='mailbox_edit_forward'),
     url(r'^ajax_edit_forward$', views.ajax_edit_forward, name='mailbox_ajax_edit_forward'),
+    url(r'^ajax_check_change_pwd$', views.ajax_check_change_pwd, name='mailbox_ajax_check_change_pwd'),
+
+    url(r'^api/password/$', views.api_check_password, name='api_check_password'),
+    url(r'^api/basic/$', views.api_check_basic, name='api_check_basic'),
 ]

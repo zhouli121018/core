@@ -106,6 +106,7 @@ class ReviewRule(models.Model):
     workmode = models.CharField(_(u'审核类型'), max_length=20, choices=constants.REVIEWRULE_WORKMODE, default='outbount')
     cond_logic = models.CharField(_(u'逻辑条件'), max_length=20, choices=constants.REVIEWRULE_LOGIC, default='all')
     pre_action = models.CharField(_(u'审核预设'), max_length=20, null=True, blank=True, choices=constants.REVIEWRULE_PREACTION)
+    # target_dept 目前作为兼容字段存在
     target_dept = models.IntegerField(_(u'发信人部门'), default=0, help_text=u'需要审核的部门ID')
     sequence = models.IntegerField(_(u'权重'), default=999, help_text=u'数值越小优先级越高,数值相等时主键越小优先级越高')
     disabled = models.IntegerField(_(u'状态'), default=-1, choices=constants.REVIEWRULE_DISABLED)
@@ -124,11 +125,11 @@ class ReviewRule(models.Model):
         return obj and obj.title or ''
 
     @property
-    def getConditionListOld(self):
+    def getConditionDesc(self):
         lists = []
-        rule_list = ReviewCondition.objects.filter(rule=self)
+        rule_list = ReviewCondition.objects.filter(rule=self).order_by('id')
         options = dict(constants.REVIEWRULE_OPTION_TYPE)
-        actions = dict(constants.REVIEWRULE_OPTION_CONDITION+constants.REVIEWRULE_OPTION_CONDITION_BELONG)
+        actions = dict(constants.REVIEWRULE_OPTION_CONDITION_ACTION_ALL)
         for obj in rule_list:
             if obj.option in ("sender_dept","cc_dept","rcpt_dept"):
                 try:
@@ -136,7 +137,8 @@ class ReviewRule(models.Model):
                     v = {} if not isinstance(v, dict) else v
                 except:
                     v = {}
-                dept_id = int(v.get("id","-1"))
+                dept_id = v.get("id","-1")
+                dept_id = int(dept_id) if (dept_id and str(dept_id).isdigit()) else -1
                 dept_name = Department.objects.filter(id=dept_id).first()
                 dept_name = dept_name.title if dept_name else u"已删除部门_{}".format(dept_id)
                 dept_sub = u"包含子部门" if v.get("sub","-1") == "1" else u"仅当前部门"
@@ -151,20 +153,26 @@ class ReviewRule(models.Model):
         def getCond(obj_cond, is_sub=0):
             if obj_cond.option in ("sender_dept","cc_dept","rcpt_dept"):
                 try:
-                    v = json.loads(obj_cond.value)
-                    v = {} if not isinstance(v, dict) else v
+                    value = json.loads(obj_cond.value)
+                    value = {} if not isinstance(value, dict) else value
                 except:
-                    v = {}
-                dept_id = int(v.get("id","-1"))
+                    value = {}
+                dept_id = value.get("id","-1")
+                dept_id = int(dept_id) if (dept_id and str(dept_id).isdigit()) else -1
                 dept_name = Department.objects.filter(id=dept_id).first()
                 dept_name = dept_name.title if dept_name else u"已删除部门_{}".format(dept_id)
                 desc = dept_name
             else:
-                desc = obj_cond.value
+                try:
+                    value = json.loads(obj_cond.value)
+                except:
+                    value = obj_cond.value
+                desc = value
             data = {
+                "id"        :   obj_cond.id,
                 "option"    :   obj_cond.option,
                 "action"    :   obj_cond.action,
-                "value"     :   obj_cond.value,
+                "value"     :   value,
                 "value_desc":   desc,
             }
             if not is_sub:
@@ -174,7 +182,7 @@ class ReviewRule(models.Model):
             return data
         #end def
         lists = []
-        cond_list = ReviewCondition.objects.filter(rule=self, parent_id=0)
+        cond_list = ReviewCondition.objects.filter(rule=self, parent_id=0).order_by('id')
         for obj in cond_list:
             info = getCond(obj, is_sub=0)
             for obj_sub in obj.get_sub_conditions():
@@ -199,7 +207,7 @@ class ReviewCondition(models.Model):
         verbose_name = _(u'审核条件')
 
     def get_sub_conditions(self):
-        return ReviewCondition.objects.filter(parent_id=self.id).all()
+        return ReviewCondition.objects.filter(parent_id=self.id).all().order_by("id")
 
 class ReviewMail(models.Model):
     """

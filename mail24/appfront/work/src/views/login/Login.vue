@@ -340,8 +340,12 @@
               that.$store.dispatch('setInfo');
               that.$router.push('/mailbox')
               // this.$store.commit('changeUser', this.formLabelAlign.username,this.formLabelAlign.password)
-            }, (data) => {
-              that.$message({message:'用户名或密码错误！请重新输入！',type:'error'});
+            }).catch(err=>{
+              let str = '';
+              if(err.non_field_errors){
+                str = err.non_field_errors[0]
+              }
+              that.$message({message:'登录异常！'+str,type:'error'});
             });
           } else {
             return false;

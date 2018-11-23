@@ -67,7 +67,6 @@ class MailboxLimitChecker:
 
     # 邮件域限制检测
     def _verify_domain_limit(self, domain_id, mailbox_size, netdisk_size, mailbox_size_using=0, netdisk_size_using=0, count=1):
-        print "_verify_domain_limit 00"
         # 取得邮件域限制信息
         limit_info = self._get_domain_mailbox_limit(domain_id)
 

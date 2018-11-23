@@ -54,6 +54,7 @@
         <!--</el-col>-->
       </el-row>
 
+
       <el-row>
         <el-col :span="12" style="padding-left:6px;">&nbsp;
           <span v-if="is_filters_search">
@@ -64,7 +65,7 @@
           </span>
           <span v-if="!is_filters_search">
             <span>路径：</span>
-            <span v-for="(item,k) in folder_names" :title="item.name" :class="{clickable:k!=folder_names.length-1}" @click="changeFolderTables(item)">{{item.name}} <i v-if="k!=folder_names.length-1" style="color:#333;"> / </i></span>
+            <span v-for="(item,k) in folder_names" :key="k" :title="item.name" :class="{clickable:k!=folder_names.length-1}" @click="changeFolderTables(item)">{{item.name}} <i v-if="k!=folder_names.length-1" style="color:#333;"> / </i></span>
           </span>
         </el-col>
         <el-col :span="12" style="text-align:right">
@@ -92,6 +93,7 @@
                     <span v-if="scope.row.nettype=='file'" @click="sendMail_net(scope.row)">发信</span>
                     <!--<span>共享</span>-->
                     <span @click="resetRowNameShow(scope.row)">重命名</span>
+                    <span v-if="scope.row.nettype=='file' && /.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|md|xls|xlsx|doc|docx|ppt|pptx|xml)$/.test(scope.row.name)" @click="$parent.preview(scope.row,'file')">预览</span>
                     <span @click="deleteRowFolders(scope.row)">删除</span>
                   </div>
                 </el-col>
@@ -101,7 +103,7 @@
 
           <el-table-column label="大小" width="120">
             <template slot-scope="scope">
-              <span style="margin-left: 10px">{{scope.row.file_size}}</span>
+              <span style="margin-left: 10px">{{scope.row.file_size|mailsize}}</span>
             </template>
           </el-table-column>
 
@@ -209,7 +211,7 @@
   import axios from 'axios'
   import { netdiskGet, netdiskCapacityGet, netdiskPathGet,
     netdiskFolderCreate, netdiskFolderUpdate, netdiskFileUpload, netdiskFileUpdate,
-    netdiskDelete, netdiskBatchDelete, netdiskMove, netdiskBatchMove, netdiskFileDownload, netdiskZipDownload } from '@/api/api'
+    netdiskDelete, netdiskBatchDelete, netdiskMove, netdiskBatchMove, netdiskFileDownload, netdiskZipDownload,getOpenoffice } from '@/api/api'
 
   export default {
     data() {
@@ -284,7 +286,7 @@
       }
     },
 
-    mounted: function () {
+    created: function () {
       this.getTables();
       this.getCapacity();
     },
@@ -372,6 +374,9 @@
       },
       getCapacity: function(){
         netdiskCapacityGet().then(res=>{
+          if(res.data.capacity =='0%'){
+            res.data.capacity = 0
+          }
           this.folder_capacity = res.data;
         });
       },

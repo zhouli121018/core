@@ -517,7 +517,6 @@ class CoreMailbox(models.Model):
     ip_limit = models.CharField(max_length=255, blank=True, null=True)
     change_pwd = models.CharField(max_length=2)
     enable_share = models.IntegerField()
-    first_change_pwd = models.IntegerField(blank=True, null=True)
     pwd_days = models.IntegerField()
     pwd_days_time = models.IntegerField()
 

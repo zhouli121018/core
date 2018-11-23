@@ -69,7 +69,7 @@
                     <td class="text-right">POP/POPS邮箱收取功能：</td>
                     <td>
                         <label class="inline" >
-                            <input name="limit_pop" value="1" {% if form_limit.limit_pop.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5 open">
+                            <input name="limit_pop" value="-1" {% if form_limit.limit_pop.value == "-1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5 open">
                             <span class="lbl"></span>
                         </label>
                     </td>
@@ -78,7 +78,7 @@
                     <td class="text-right">SMTP/SMTPS客户端邮件发送功能：</td>
                     <td>
                         <label class="inline" >
-                            <input name="limit_smtp" value="1" {% if form_limit.limit_smtp.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5 open">
+                            <input name="limit_smtp" value="-1" {% if form_limit.limit_smtp.value == "-1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5 open">
                             <span class="lbl"></span>
                         </label>
                     </td>
@@ -87,7 +87,7 @@
                     <td class="text-right">IMAP/IMAPS客户端邮件收发功能：</td>
                     <td>
                         <label class="inline" >
-                            <input name="limit_imap" value="1" {% if form_limit.limit_imap.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5 open">
+                            <input name="limit_imap" value="-1" {% if form_limit.limit_imap.value == "-1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5 open">
                             <span class="lbl"></span>
                         </label>
                     </td>
@@ -146,16 +146,6 @@
                         </div>
                     </td>
                 </tr>
-                <tr>
-                    <td class="text-right" >管理员登录密码错误3次锁定登录IP：</td>
-                    <td>
-                        <label class="inline" >
-                            <input name="admin_login_switch" {% if form_security.admin_login_switch.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5 open">
-                            <span class="lbl"></span>
-                        </label>
-                    </td>
-
-                </tr>
             </table>
             <div class=" ">
             <input type="hidden" value="{{ domain.id }}" name="domain_id" id="domain_id" />
@@ -196,42 +186,6 @@
                             </div>
                         </td>
                     </tr>
-                    <tr class="nable_set">
-                        <td class="text-right">密码有效开始时间：</td>
-                        <td class="row">
-                            <div class="col-sm-4 no-padding">
-                                <div class="input-group max-width-200">
-                                    <input name="cf_pwd_days_time" class="form-control date-picker" value="{{ form_password.cf_pwd_days_time.value }}" type="text" data-date-format="yyyy-mm-dd">
-                                <span class="input-group-addon">
-                                    <i class="fa fa-calendar bigger-110"></i>
-                                </span>
-                                </div>
-                            </div>
-                            <div class="col-sm-8 ">
-                                <p class="help-block red">注：不能大于当前时间</p>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="nable_set">
-                        <td class="text-right">这些用户除外：</td>
-                        <td>
-                            <div class="col-sm-8 no-padding">
-                                <textarea rows="4" class="form-control extra_mailbox"></textarea>
-                            </div>
-                            <div class="col-sm-4">
-                                <input type="button" class="btn btn-primary btn-sm extra_choice_btn" data-toggle="modal" data-target="#dept_mailbox" value="设置例外账号">
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-right">首次登录修改密码：</td>
-                        <td>
-                            <label class="inline" >
-                                <input name="cf_first_change_pwd" value="1" {% if form_password.cf_first_change_pwd.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5">
-                                <span class="lbl"></span>
-                            </label>
-                        </td>
-                    </tr>
                     <tr>
                         <td class="text-right">密码组成字符种类：</td>
                         <td class="row">
@@ -254,16 +208,13 @@
                                 <!-- #section:custom/checkbox -->
                                 <div class="checkbox">
                                     <label>
-                                        <input name="passwd_size" value="1" type="checkbox" {% if form_password.pwdLen == "1" %} checked {% endif %} class="ace">
-                                        <span class="lbl">
-                                                <span class="">密码长度为</span>
-                                                <select name="passwd_size2" class="">
-                                                    {% for v in form_password.PARAM_LEN_LIMIT %}
-                                                        <option value="{{ v }}" {% if v == form_password.pwdLenValue %} selected {% endif %} > {{ v }} </option>
-                                                    {% endfor %}
-                                                </select>
-                                                <span class="">至16位</span>
-                                        </span>
+                                        <span class="">&nbsp;&nbsp;&nbsp;密码长度为</span>
+                                        <select name="passwd_size2" class="">
+                                            {% for v in form_password.PARAM_LEN_LIMIT %}
+                                                <option value="{{ v }}" {% if v == form_password.pwdLenValue %} selected {% endif %} > {{ v }} </option>
+                                            {% endfor %}
+                                        </select>
+                                        <span class="">至16位</span>
                                     </label>
                                 </div>
                                 <div class="checkbox">
@@ -302,19 +253,13 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="text-right" >用户密码强度低于规则：</td>
+                        <td class="text-right" >用户不满足密码强度时：</td>
                         <td class="">
                             <div class="control-group">
                                 <div class="checkbox">
                                     <label>
                                         <input name="forbid_send" value="1" type="checkbox" {% if form_password.pwdLimitForbidSend == "1" %} checked {% endif %} class="ace">
-                                        <span class="lbl"> 禁止发邮件 </span>
-                                    </label>
-                                </div>
-                                <div class="checkbox">
-                                    <label>
-                                        <input name="forbid_recv" value="1" type="checkbox" {% if form_password.pwdLimitForbidRecv == "1" %} checked {% endif %} class="ace">
-                                        <span class="lbl"> 禁止收邮件 </span>
+                                        <span class="lbl"> 禁止外发邮件 </span>
                                     </label>
                                 </div>
                                 <div class="checkbox">
@@ -322,6 +267,28 @@
                                         <input name="force_change" value="1" type="checkbox" {% if form_password.pwdLimitForceChange == "1" %} checked {% endif %} class="ace">
                                         <span class="lbl"> 登录后强制修改密码 </span>
                                     </label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-right" >用户处于弱密码库中时：</td>
+                        <td class="">
+                            <div class="control-group">
+                                <div class="checkbox">
+                                    <label>
+                                        &nbsp;&nbsp;&nbsp;
+                                        <span class="lbl"> 禁止外发邮件 </span>
+                                    </label>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="force_change_in_weak" value="1" type="checkbox" {% if form_password.pwdLimitForceChangeInWeak == "1" %} checked {% endif %} class="ace">
+                                        <span class="lbl"> 登录后强制修改密码 </span>
+                                    </label>
+                                </div>
+                                <div class="col-sm-8 ">
+                                    <p class="help-block green">"弱密码库"位于"安全设置"菜单中，自带20万国内用户常用密码，支持导入自定义密码库。<br>处于"弱密码库"中的密码有极高风险被盗号，因此会被强制禁用外发功能。</p>
                                 </div>
                             </div>
                         </td>
@@ -481,25 +448,26 @@
                         </label>
                     </td>
                 </tr>
-                <tr>
-                    <td class="text-right" >邮件列表发来邮件显示邮件列表名称：</td>
-                    <td >
-                        <label class="inline" >
-                            <input name="sw_display_list" {% if form_others.sw_display_list.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5">
-                            <span class="lbl"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="text-right" >短信通知功能：</td>
-                    <td >
-                        <label class="inline" >
-                            <input name="sw_smscode" {% if form_others.sw_smscode.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5 open">
-                            <span class="lbl"></span>
-                        </label>
-                    </td>
-
-                </tr>
+                {% if request.user.licence_validsms %}
+                    <tr>
+                        <td class="text-right" >短信通知邮件接收：</td>
+                        <td >
+                            <label class="inline" >
+                                <input name="sw_recvsms" {% if form_others.sw_recvsms.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5 open">
+                                <span class="lbl"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-right" >短信通知邮件发送：</td>
+                        <td >
+                            <label class="inline" >
+                                <input name="sw_sendsms" {% if form_others.sw_sendsms.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5 open">
+                                <span class="lbl"></span>
+                            </label>
+                        </td>
+                    </tr>
+                {% endif %}
             </table>
             <div class=" ">
             <input type="hidden" value="{{ domain.id }}" name="domain_id" id="domain_id" />
@@ -758,10 +726,28 @@
                 <form class="form-horizontal form_client_attach">
                     {% csrf_token %}
                     <div class="form-group">
-                        <label class="col-sm-4 control-label">转存附件大小：</label>
+                        <label class="col-sm-4 control-label">邮件列表转存大小：</label>
                         <div class="col-sm-8">
                             <div class="input-group">
-                                <input type="number" name="client_size" value="{{ form_client_attach.client_size }}" class="form-control"  placeholder="转存附件大小">
+                                <input type="number" name="client_size_list" value="{{ form_client_attach.client_size_list }}" class="form-control"  placeholder="转存附件大小">
+                                <span class="input-group-addon">M</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">内网邮件转存大小：</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <input type="number" name="client_size_in" value="{{ form_client_attach.client_size_in }}" class="form-control"  placeholder="转存附件大小">
+                                <span class="input-group-addon">M</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">外网邮件转存大小：</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <input type="number" name="client_size_out" value="{{ form_client_attach.client_size_out }}" class="form-control"  placeholder="转存附件大小">
                                 <span class="input-group-addon">M</span>
                             </div>
                         </div>
@@ -770,23 +756,6 @@
                         <label class="col-sm-4 control-label">附件下载地址：</label>
                         <div class="col-sm-8">
                             <input type="text" name="client_url" value="{{ form_client_attach.client_url }}" class="form-control"  placeholder="附件下载地址">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label">作用邮件类型：</label>
-                        <div class="col-sm-8">
-                            <label>
-                                <input type="radio" name="client_attach_type" value="3" {% if form_client_attach.client_attach_type == '3'  %} checked {% endif %}><span>仅邮件列表</span>
-                            </label>
-                            <label>
-                                <input type="radio" name="client_attach_type" value="2" {% if form_client_attach.client_attach_type == '2'  %} checked {% endif %}><span>内网邮件</span>
-                            </label>
-                            <label>
-                                <input type="radio" name="client_attach_type" value="1" {% if form_client_attach.client_attach_type == '1'  %} checked {% endif %}><span>外发邮件</span>
-                            </label>
-                            <label>
-                                <input type="radio" name="client_attach_type" value="-1" {% if form_client_attach.client_attach_type == '-1'  %} checked {% endif %}><span>所有邮件</span>
-                            </label>
                         </div>
                     </div>
                     <div class="form-group">
@@ -814,10 +783,11 @@
                     <div class=" red " style="width:50px;float:left;">备注：</div>
                     <div class="" style="padding-left:56px;width:100%;">
                         <p>1、开关设置为开启并设置了转存附件的大小后，发送邮件时，若邮件大于设置的值，会自动将邮件里面的附件替换成下载链接，附件转存到用户网盘；</p>
-                        <p>2、转存到网盘的附件会占用用户的网盘空间，用户删除后将无法下载；</p>
-                        <p>3、若用户在自己的网络硬盘操作删除了该转存的附件，也会导致外部下载附件失败；</p>
-                        <p>4、附件下载地址一般不需要自己修改，需要自定义外部访问域名的用户，需要考虑是否修改这里；</p>
-                        <p>5、内网IP登录的用户，若地址栏显示的是诸如 '10.x.x.x' 、 '172.16.x.x至172.31.x.x' 、 '192.168.x.x' 这些地址，则必须换成外部能访问到的域名地址，如'mail.example.com'；</p>
+                        <p>2、“转存大小”设置为0时，表示该类型邮件不需要处理成网络附件；</p>
+                        <p>3、转存到网盘的附件会占用用户的网盘空间，用户删除后将无法下载；</p>
+                        <p>4、若用户在自己的网络硬盘操作删除了该转存的附件，也会导致外部下载附件失败；</p>
+                        <p>5、附件下载地址一般不需要自己修改，需要自定义外部访问域名的用户，需要考虑是否修改这里；</p>
+                        <p>6、内网IP登录的用户，若地址栏显示的是诸如 '10.x.x.x' 、 '172.16.x.x至172.31.x.x' 、 '192.168.x.x' 这些地址，则必须换成外部能访问到的域名地址，如'mail.example.com'；</p>
                         <p>6、“附件存储目录”当选择存储在“发信人网络硬盘”时，发信人可管理删除该附件，存储在“系统公共目录”时，附件永久存储且不会被任何人删除。</p>
                     </div>
                 </div>
@@ -1086,26 +1056,6 @@
 
     var data_copy = [];
     var hash=[];
-    function refreshExtra(){
-        $.ajax({
-            url:"{% url 'domain_sys_pwd_extra' %}",
-            type:"POST",
-            async: false,
-            data:"action=get",
-            success:function(data){
-                //console.log('data_copy')
-                //console.log(data);
-                data_copy = [];
-                for(var i= 0,html='';i<data.mailbox.length;i++){
-                    var o = data.mailbox[i];
-                    html += o['box']+" ("+o['name']+")"+" | ";
-                    data_copy.push(o['box']+" ("+o['name']+")");
-                }
-                $('.extra_mailbox').html(data_copy.join(' | '));
-            }
-        })
-    }
-    refreshExtra();
 
     function initChoice(){
         var remoteDateSource = function(options, callback) {
@@ -1334,146 +1284,6 @@
         }
         return {'dataSource1': dataSource1}
     }
-    //    var sampleData1 = changeData(data_copy);
-    $('#dept_mailbox .sure_btn').click(function(){
-//        $('#tree_copy').empty();
-        var arrStr=[];
-        $('#dept_mailbox .tree_left .tree-item.tree-selected .icon-item.ace-icon.fa.fa-check').next().each(function(i,dom){
-            var str = $(dom).html();
-            var index = str.indexOf('(');
-            arrStr.push(str.slice(0,index-1));
-            if(str&&!hash[str]){
-                data_copy.push(str);
-                hash[str]=1;
-            }
-        })
-        $.ajax({
-            url:"{% url 'domain_sys_pwd_extra' %}",
-            data:{action:'add',boxlist:arrStr.join('|')},
-            type:"POST",
-            success:function(data){
-                refreshExtra();
-                $('#dept_mailbox .selected_count').html(data_copy.length);
-                $(".tree_right").removeData("fu.tree");
-                $(".tree_right").unbind('click.fu.tree');
-                $('.tree_right').ace_tree({
-                    dataSource: changeData(data_copy)['dataSource1'],
-                    multiSelect: true,
-                    loadingHTML: '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>',
-                    'open-icon' : 'ace-icon tree-minus hide',
-                    'close-icon' : 'ace-icon tree-plus hide',
-                    'selectable' : true,
-                    'selected-icon' : 'ace-icon fa fa-check',
-                    'unselected-icon' : 'ace-icon fa fa-times',
-                    'cacheItems': false,
-                    'folderSelect': true,
-                    'folder-open-icon' : 'ace-icon tree-plus',
-                    'folder-close-icon' : 'ace-icon tree-minus'
-                });
-            }
-        })
-//        $('#bootstrap-duallistbox-selected-list_duallistbox').append(arrStr.join(' '));
-
-    })
-    $('#dept_mailbox .cancel_btn').click(function(){
-        var arrStr=[];
-        $('#dept_mailbox .tree_right .tree-item.tree-selected .tree-label').each(function(i,dom){
-            for(var i =0;i<data_copy.length;i++){
-                if($(dom).html()==data_copy[i]){
-                    var index = $(dom).html().indexOf('(')
-                    arrStr.push($(dom).html().slice(0,index-1));
-                    data_copy.splice(i,1);
-                    hash[$(dom).html()]=0;
-                    break;
-                }
-            }
-        })
-        $.ajax({
-            url:"{% url 'domain_sys_pwd_extra' %}",
-            data:{action:'del',boxlist:arrStr.join('|')},
-            type:"POST",
-            success:function(data){
-                $.ajax({
-                    url:"{% url 'domain_sys_pwd_extra' %}",
-                    type:"POST",
-                    data:"action=get",
-                    success:function(data){
-                        //console.log(data);
-                        data_copy = [];
-                        for(var i= 0,html='';i<data.mailbox.length;i++){
-                            var o = data.mailbox[i];
-                            html += o['box']+" ("+o['name']+")"+" | ";
-                            data_copy.push(o['box']+" ("+o['name']+")");
-                        }
-                        $('#dept_mailbox .selected_count').html(data_copy.length);
-                        $(".tree_right").removeData("fu.tree");
-                        $(".tree_right").unbind('click.fu.tree');
-                        $('.tree_right').ace_tree({
-                            dataSource: changeData(data_copy)['dataSource1'],
-                            multiSelect: true,
-                            loadingHTML: '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>',
-                            'open-icon' : 'ace-icon tree-minus hide',
-                            'close-icon' : 'ace-icon tree-plus hide',
-                            'selectable' : true,
-                            'selected-icon' : 'ace-icon fa fa-check',
-                            'unselected-icon' : 'ace-icon fa fa-times',
-                            'cacheItems': false,
-                            'folderSelect': true,
-                            'folder-open-icon' : 'ace-icon tree-plus',
-                            'folder-close-icon' : 'ace-icon tree-minus'
-                        });
-
-                        $('.extra_mailbox').html(data_copy.join(' | '))
-
-                    }
-                })
-            }
-        })
-
-    })
-    $('#dept_mailbox .remove_all').click(function(e){
-        e.preventDefault();
-        if(confirm('确定移除全部邮箱？')){
-            $.ajax({
-                url:"{% url 'domain_sys_pwd_extra' %}",
-                data:{action:'del_all'},
-                type:"POST",
-                success:function(data){
-                    refreshExtra();
-                    $('#dept_mailbox .selected_count').html(data_copy.length);
-                    $(".tree_right").removeData("fu.tree");
-                    $(".tree_right").unbind('click.fu.tree');
-                    $('.tree_right').ace_tree({
-                        dataSource: changeData(data_copy)['dataSource1'],
-                        multiSelect: true,
-                        loadingHTML: '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>',
-                        'open-icon' : 'ace-icon tree-minus hide',
-                        'close-icon' : 'ace-icon tree-plus hide',
-                        'selectable' : true,
-                        'selected-icon' : 'ace-icon fa fa-check',
-                        'unselected-icon' : 'ace-icon fa fa-times',
-                        'cacheItems': false,
-                        'folderSelect': true,
-                        'folder-open-icon' : 'ace-icon tree-plus',
-                        'folder-close-icon' : 'ace-icon tree-minus'
-                    });
-                }
-            })
-        }
-    })
-    $('#dept_mailbox .select_all').click(function(){
-        if($(this).prop('checked')){
-            $('.tree_left .tree-item').addClass('tree-selected');
-            $('.tree_left .tree-branch').addClass('tree-selected');
-            $('.tree_left .icon-item.ace-icon').removeClass('fa-times').addClass('fa-check');
-        }else{
-            $('.tree_left .tree-item').removeClass('tree-selected');
-            $('.tree_left .tree-branch').removeClass('tree-selected');
-            $('.tree_left .icon-item.ace-icon').addClass('fa-times').removeClass('fa-check');
-        }
-    })
-
-//    var initArr = ["Appliances", "Arts & Crafts", "Clothing", "Computers", "Jewelry", "Office & Business", "Sports & Fitness", "Apartments", "Office Space", "Vacation Rentals", "Villas", "Plots", "Cats", "Dogs", "Horses", "Reptiles"];
 
     function search(input,initArr,ele){
         var keyWords = $(input).val();

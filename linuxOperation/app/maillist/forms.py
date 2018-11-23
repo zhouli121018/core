@@ -3,7 +3,7 @@ import time
 from django import forms
 from .models import ExtList, ExtListMember
 from django.utils.translation import ugettext_lazy as _
-from app.core.models import Mailbox, MailboxUser
+from app.core.models import Mailbox, MailboxUser, CoreAlias
 from app.utils.regex import pure_email_regex
 
 class ExtListForm(forms.ModelForm):
@@ -53,6 +53,12 @@ class ExtListForm(forms.ModelForm):
         if ExtList.objects.exclude(id=self.instance.id).filter(
                 address=address, domain_id=self.domain_id).exists():
             self.error_notify = u"邮件列表地址已存在列表中"
+            raise forms.ValidationError(_(self.error_notify))
+        if Mailbox.objects.filter(username=address).exists():
+            self.error_notify = u"邮件列表地址不能是已存在的邮箱帐号"
+            raise forms.ValidationError(_(self.error_notify))
+        if CoreAlias.objects.filter(source=address).exists():
+            self.error_notify = u"邮件列表地址不能是已存在的邮箱别名"
             raise forms.ValidationError(_(self.error_notify))
         return address
 

@@ -468,7 +468,9 @@ function save_forward(mailbox_id){
         console.log(data);
         $.post("{% url 'mailbox_ajax_edit_forward' %}", data, function(data){
             layer.msg(data.msg);
-            $('#id_return').click();
+            if (data.status=='success'){
+                $('#id_return').click();
+            }
         })
     }
 }

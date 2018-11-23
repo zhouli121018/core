@@ -24,6 +24,7 @@ from app.utils.response.excel_response import ExcelResponse, FormatExcelResponse
 
 @login_required
 def maillist_list(request):
+    show_dept = '0'
     if request.method == "POST":
         action = request.POST.get('action', '')
         if action == 'delete':
@@ -35,13 +36,19 @@ def maillist_list(request):
                 ExtListMember.objects.filter(extlist_id=list_id).delete()
                 ExtList.objects.get(id=list_id).delete()
                 messages.add_message(request, messages.SUCCESS, u'删除成功')
-        return HttpResponseRedirect(reverse('maillist_list'))
+            return HttpResponseRedirect(reverse('maillist_list'))
+        elif action == 'show_dept':
+            show_dept = request.POST.get('show_dept', '')
+    show_dept = '0' if not show_dept else show_dept
     domain_id = get_domainid_bysession(request)
     lists = ExtList.objects.filter(domain_id=domain_id, listtype=u"sys")
-    lists_dept = ExtList.objects.filter(domain_id=domain_id, listtype=u"dept")
     list_normal = ExtList.objects.filter(domain_id=domain_id, listtype=u"general")
+
+    lists_dept = []
+    if show_dept == '1':
+        lists_dept = ExtList.objects.filter(domain_id=domain_id, listtype=u"dept")
     lists = chain(lists, list_normal, lists_dept)
-    return render(request, "maillist/maillist_list.html", {'lists': lists,})
+    return render(request, "maillist/maillist_list.html", {'lists': lists,'show_dept':show_dept})
 
 @login_required
 def maillist_add(request):
@@ -74,9 +81,10 @@ def maillist_modify(request, list_id):
 
 @login_required
 def maillist_export(request):
+    domain_id = get_domainid_bysession(request)
     lists = [[u'邮件名称', u'邮件地址', u'说明信息', u'列表类型', u'域名']]
     file_name = u'邮件列表-{}'.format(datetime.datetime.now().strftime('%Y%m%d'))
-    lists2 = ExtList.objects.all()
+    lists2 = ExtList.objects.filter(domain_id=domain_id).all()
     for d in lists2:
         lists.append([d.listname, d.address, d.description, d.get_listtype_display(), d.domain])
     return ExcelResponse(lists, file_name, encoding='utf-8')
@@ -232,7 +240,7 @@ def maillist_maintain(request, list_id):
             fail_list = []
             for addr in everyone_addresses:
                 o = Mailbox.objects.filter(username=addr).first()
-                if  lobj or o.domain_id != lobj.domain_id:
+                if lobj and o.domain_id != lobj.domain_id:
                     fail += 1
                     fail_list.append( "'%s'   :   %s"%(addr, _(u"邮箱不存在于该域名下")) )
                     continue

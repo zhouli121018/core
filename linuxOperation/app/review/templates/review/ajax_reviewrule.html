@@ -10,10 +10,9 @@
         人工
     {% endif %}
 </td>
-<td>{{ d.department }}</td>
 <td>{{ d.get_cond_logic_display }}</td>
 <td>
-    {% for rtype, action, value in d.getConditionListOld %}
+    {% for rtype, action, value in d.getConditionDesc %}
         {% if rtype in d.getNoInputOptionList %}
             <p>{{ rtype }}</p>
         {% else %}

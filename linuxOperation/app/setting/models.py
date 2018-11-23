@@ -56,6 +56,12 @@ class ExtCfilterRuleNew(models.Model):
     logic = models.CharField(_(u"条件关系"), max_length=50, default="all", choices=constants.RULE_LOGIC, null=False, blank=False,
                              help_text=u"all：满足所有条件，one：满足一条即可")
     sequence = models.IntegerField(_(u"规则优先级"), default=999, null=False, blank=False)
+    # 区分自动转发、自动回复 以及其他类型
+    extype = models.CharField(u"扩展类型", choices=( ("re", u'自动回复'), ("fw", u'自动转发'), ("ot", u'其他') ), default="ot", null=False, blank=False, max_length=5,
+                              help_text=u"区分自动转发、自动回复 以及 其他类型（指管理员创建的以及用户自己创建的类型）")
+    #ExtCfilterNewAction 的action新增   ("reply",               u'自动回复'),
+    #reply 的value为{"value": 回复内容}
+    #forward 的value为{"value": 转发地址, "is_forward":  同时将信件保存在本邮箱内（Ture or False）, }
     disabled = models.IntegerField(_(u'状态'), choices=constants.DISABLED_STATUS, default=-1, null=False, blank=False)
 
     class Meta:
@@ -260,6 +266,7 @@ class PostTransfer(models.Model):
     mailbox_id = models.IntegerField(_(u"MailBox"), default=0)
     mailbox = models.CharField(_(u"本地帐号"), max_length=200, null=False, blank=True)
 
+    type = models.CharField(_(u'通道类型'), max_length=20, choices=constants.MAIL_TRANSFER_TYPE, null=False, blank=False, default="in")
     server = models.CharField(_(u"远程服务器"), max_length=200, null=True, blank=True)
     account = models.CharField(_(u"远程帐号"), max_length=200, null=True, blank=True)
     recipient = models.CharField(_(u"收件帐号"), max_length=200, null=True, blank=True)
@@ -272,12 +279,12 @@ class PostTransfer(models.Model):
     class Meta:
         managed = False
         db_table = 'ext_post_transfer'
-        verbose_name = _(u'内网邮件代发')
+        verbose_name = _(u'邮件收发代理')
 
 # core_info
 class CoreInfo(models.Model):
     id = models.IntegerField(primary_key=True)
-    superadmintitle = models.CharField(_(u"超域管理后台"), max_length=250)
+    superadmintitle = models.CharField(_(u"超级管理员后台"), max_length=250)
     systemadmintitle = models.CharField(_(u"系统管理后台"), max_length=250)
     domainadmintitle = models.CharField(_(u"域管理后台"), max_length=250)
     deptadmintitle = models.CharField(_(u"部门管理后台"), max_length=250)

@@ -24,7 +24,7 @@ PASSWD_TYPE = (
     (4, _(u'必须包含四种字符')),
 )
 PASSWD_OHER = (
-    ('passwd_size', _(u'密码长度为 8 至16位')),
+    #('passwd_size', _(u'密码长度为 8 至16位')),  >= 2.2.59 后强制打开
     ('passwd_name', _(u'密码不能包含账号')),
     ('passwd_digital', _(u'连续3位及以上数字不能连号（例如：123、654）')),
     ('passwd_letter', _(u'连续3位及以上字母不能连号（例如：abc、cba）')),
@@ -32,9 +32,11 @@ PASSWD_OHER = (
     ('passwd_name2', _(u'密码不能包含用户姓名大小写全拼')),
 )
 PASSWD_FORBID = (
-    ('forbid_send', _(u'禁止发邮件')),
-    ('forbid_recv', _(u'禁止收邮件')),
+    ('forbid_send', _(u'禁止外发邮件')),
     ('force_change', _(u'登录后强制修改密码')),
+
+    ('forbid_send_in_weak', _(u'禁止外发邮件')),
+    ('force_change_in_weak', _(u'登录后强制修改密码')),
     )
 CHEACK_ATTACH_SIZE = (
     ('low', _(u'小危附件')),
@@ -49,6 +51,7 @@ MATCH_BLACK = (
 
 CHECK_SPAM = (
     ("dspam", "Dspam"),
+    #错别字，数据库为了兼容用的是正确的值 spamassassin
     ("spamassassion", " Spamassassion"),
 )
 SPAM_FOLDER = (
@@ -69,6 +72,13 @@ CHECK_OUTSIDE = (
     ("virus", _(u"开启反病毒")),
 )
 
+CHECK_OAB_SETTING = (
+    (1, _(u"显示所有部门")),
+    (2, _(u"仅显示本部门")),
+    (3, _(u"显示本部门和子部门")),
+    (4, _(u"显示指定部门")),
+)
+
 PASSWD_LEVEL = (
     (1, _(u"秘密")),
     (2, _(u"机密")),
@@ -78,6 +88,12 @@ PASSWD_LEVEL = (
 FREQUENCYSET_PARAM_OPERATOR = (
     (u'block', u'只可发送本地邮件'),
     (u'disable', u'禁用账户'),
+)
+
+AUTO_CLEAN_OPEN = (
+    (-1, _(u"关闭")),
+    (0, _(u"与域名配置相同")),     #因为是通过新增数据库列来操作的，所以当新增列的时候，赋予的值应该跟谁域名配置
+    (1, _(u"开启")),
 )
 
 class CoreGroup(models.Model):
@@ -91,6 +107,7 @@ class CoreGroup(models.Model):
     allow_out_size = models.IntegerField(_(u"允许发送邮件大小"), default=0)
     send_limit = models.IntegerField(_(u'发信功能限制'), choices=SEND_LIMIT, default=-1)
     recv_limit = models.IntegerField(_(u'收信功能限制'), choices=RECV_LIMIT, default=-1)
+    limit_whitelist = models.TextField(_(u"收发限制白名单"), null=True, blank=True)
 
     # 登录方式限制
     is_pop = models.BooleanField(_(u'POP/POPS邮箱收取功能'), default=1)
@@ -100,8 +117,7 @@ class CoreGroup(models.Model):
     # 密码规则
     is_passwd = models.BooleanField(_(u'定期密码修改设置'), default=1)
     passwd_day = models.IntegerField(_(u'密码有效期'), default=0, help_text=_(u"0代表永远有效，大于0代表多少天密码过期后会强制用户修改密码"))
-    passwd_start = models.DateTimeField(_(u"密码有效开始时间"), null=True, blank=True) #, help_text=_(u"不能大于当前时间"))
-    is_passwd_first = models.BooleanField(_(u'首次登录修改密码'), default=1)
+    #is_passwd_first = models.BooleanField(_(u'首次登录修改密码'), default=1)
     passwd_type = models.IntegerField(u'密码组成字符种类', choices=PASSWD_TYPE, default=2, help_text=_(u"密码组成字符包括四种：数字、大写字母、小写字母、特殊字符"))
     passwd_other = models.TextField(_(u"其他密码规则设置"), null=True, blank=True)
     passwd_forbid = models.TextField(_(u"用户密码强度低于规则操作"), null=True, blank=True)
@@ -128,7 +144,7 @@ class CoreGroup(models.Model):
     check_outside = models.TextField(_(u"外域进站邮件"), null=True, blank=True, help_text=u"“反垃圾功能”和“反病毒功能”开启后，这里对应的勾选框才会生效")
 
     # 账号设置
-    is_info = models.BooleanField(_(u'个人资料功能'), default=0, help_text=_(u"关闭此功能后用户无法修改个人资料"))
+    is_info = models.BooleanField(_(u'个人资料功能'), default=0, help_text=_(u"关闭此功能后用户无法查看和修改个人资料"))
     is_passwd_mdf = models.BooleanField(_(u'密码修改功能'), default=1, help_text=_(u"关闭此功能后用户无法修改邮箱密"))
     is_param = models.BooleanField(_(u'参数设置功能'), default=1)
     is_signature = models.BooleanField(_(u'邮件签名功能'), default=1)
@@ -153,6 +169,18 @@ class CoreGroup(models.Model):
     frequency_day_count = models.IntegerField(_(u'每天发信数量'), default=0, help_text=_(u"0代表不限制"))
     frequency_operate = models.CharField(_(u'发信频率超限操作'), default='block', choices=FREQUENCYSET_PARAM_OPERATOR, max_length=10)
 
+    # 邮箱空间清理
+    is_space_clean = models.IntegerField(_(u'邮箱空间定时清理'), default=0, choices=AUTO_CLEAN_OPEN, help_text=_(u"设置用户各类邮件的保留时间，超过设置时间的邮件会被自动删除；设置为“0”时会永久保留用户邮件；系统会在每天凌晨 03:50 分自动进行清理"))
+    space_clean_normal = models.IntegerField(_(u'普通邮件保留天数'), null=True, default=0)
+    space_clean_sent = models.IntegerField(_(u'发件箱邮件保留天数'), null=True, default=0)
+    space_clean_spam = models.IntegerField(_(u'垃圾箱邮件保留天数'), null=True, default=0)
+    space_clean_trash = models.IntegerField(_(u'废件箱邮件保留天数'), null=True, default=0)
+
+    # 企业通讯录设置
+    oab_show_mod = models.IntegerField(_(u"企业通讯录显示限制"), default=1, null=False, blank=True)
+    oab_show_export = models.IntegerField(_(u"企业通讯录导出按钮"), default=0, null=True, blank=True)
+    oab_dept_list = models.TextField(_(u"企业通讯录部门列表"), null=True, blank=True)
+
     class Meta:
         managed = True
         db_table = 'core_group'
@@ -175,7 +203,7 @@ class CoreGroup(models.Model):
 
 class CoreGroupMember(models.Model):
     group = models.ForeignKey(CoreGroup, related_name='group_member', on_delete=models.CASCADE, verbose_name=_(u"组权限管理"))
-    mailbox = models.ForeignKey(Mailbox, on_delete=models.CASCADE, verbose_name=_(u"邮箱管理"))
+    mailbox = models.ForeignKey(Mailbox, unique=True, on_delete=models.CASCADE, verbose_name=_(u"邮箱管理"))
     remark = models.TextField(_(u'备注'), blank=True, null=True)
     created = models.DateTimeField(_(u'添加时间'), auto_now_add=True)
 

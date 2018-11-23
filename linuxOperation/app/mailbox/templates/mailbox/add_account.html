@@ -50,6 +50,15 @@
                     {% trans "批量删除帐号" %}
                 </a>
             </li>
+            <!--
+            {% if request.user.is_superuser %}
+                <li>
+                    <a href="{% url 'mailbox_backup_account' %}">
+                        {% trans "导入导出帐号" %}
+                    </a>
+                </li>
+            {% endif %}
+            -->
 
         </ul>
         <div class="tab-content">
@@ -69,28 +78,18 @@
                                 <!--{{ form.limit_send|bootstrap_horizontal:"col-sm-5"}}-->
                                 <!--{{ form.limit_recv|bootstrap_horizontal:"col-sm-5"}}-->
                                 <!--{{ form.limit_send|bootstrap_horizontal:"col-sm-4"}}-->
-                                <div class="form-group">
-                                    <label class="control-label col-sm-5" for="id_limit_send">发信权限：</label>
-                                    <div class="  col-sm-7 ">
-                                        <select name="limit_send" class=" form-control limit_send_select" id="id_limit_send">
-                                          <option value="-1" {% if form.limit_send.value == '-1' %} selected {% endif %}>不限制邮件发送</option>
-                                          <option value="1" {% if form.limit_send.value == '1' %} selected {% endif %}>禁止发送所有邮件</option>
-                                          <option value="2" {% if form.limit_send.value == '2' %} selected {% endif %}>只发送本地域邮件</option>
-                                          <option value="4" {% if form.limit_send.value == '4' %} selected {% endif %}>可发送本地所有域邮件</option>
-                                        </select>
+                                {% if request.user.licence_validsms %}
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-5" for="id_recvsms">短信接收设置：</label>
+                                        <div class="  col-sm-7 ">
+                                            <select name="recvsms" class=" form-control form_recvsms" id="id_recvsms">
+                                              <option value="1" {% if form.recvsms.value == '1' %} selected {% endif %}>启用</option>
+                                              <option value="-1" {% if form.recvsms.value == '-1' %} selected {% endif %}>禁用</option>
+                                              <option value="0" {% if form.recvsms.value == '0' %} selected {% endif %}>白名单</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-sm-5" for="id_limit_recv">收信权限：</label>
-                                    <div class="  col-sm-7 ">
-                                        <select name="limit_recv" class=" form-control limit_send_select" id="id_limit_recv">
-                                          <option value="-1" {% if form.limit_recv.value == '-1' %} selected {% endif %}>不限制邮件接收</option>
-                                          <option value="1" {% if form.limit_recv.value == '1' %} selected {% endif %}>禁止接收所有邮件</option>
-                                          <option value="2" {% if form.limit_recv.value == '2' %} selected {% endif %}>只接收本地域邮件</option>
-                                          <option value="4" {% if form.limit_recv.value == '4' %} selected {% endif %}>可接收本地所有域邮件</option>
-                                        </select>
-                                    </div>
-                                </div>
+                                {% endif %}
                                 {{ form.limit_login|bootstrap_horizontal:"col-sm-5"}}
                                 <div class="form-group">
                                     <label class="control-label col-sm-5 " for="id_disabled">邮箱状态：</label>
@@ -104,7 +103,6 @@
                                 </div>
                                 {{ form.is_active|bootstrap_horizontal_bool:"col-sm-5"}}
                                 {{ form.is_superuser|bootstrap_horizontal_bool:"col-sm-5"}}
-                                {{ form.limit_send_freq|bootstrap_horizontal_bool:"col-sm-5"}}
                                 <div class="form-group">
                                     <label class="control-label col-sm-5 " for="id_enable_share">是否打开邮箱共享：</label>
                                     <div class="  col-sm-7 ">
@@ -116,27 +114,6 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-5 " for="id_limit_pop">POP功能：</label>
-                                    <div class="  col-sm-7 ">
-                                        <label class="inline">
-                                            <input name="limit_pop" class="ace ace-switch ace-switch-5" id="id_limit_pop" checked="" type="checkbox">
-                                            <span class="lbl"></span>
-                                        </label>
-
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-sm-5 " for="id_limit_imap">IMAP功能：</label>
-                                    <div class="  col-sm-7 ">
-                                        <label class="inline">
-                                            <input name="limit_imap" class="ace ace-switch ace-switch-5" id="id_limit_imap" checked="" type="checkbox">
-                                            <span class="lbl"></span>
-                                        </label>
-
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
                                     <label class="control-label col-sm-5 " for="id_change_pwd">登录强制修改密码：</label>
                                     <div class="  col-sm-7 ">
                                         <label class="inline">
@@ -147,7 +124,6 @@
                                     </div>
                                 </div>
                                 {{ form.pwd_days|bootstrap_horizontal:"col-sm-5"}}
-                                {{ form.pwd_days_time|bootstrap_horizontal:"col-sm-5"}}
                                 {{ form.ip_limit|bootstrap_horizontal:"col-sm-5"}}
                             </div>
                         </div>

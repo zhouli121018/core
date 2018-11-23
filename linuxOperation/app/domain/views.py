@@ -178,84 +178,6 @@ def domainSys(request):
         "form_client_attach"    :   form_client_attach,
     })
 
-#设置例外的密码规则用户
-@licence_required
-def domainSysPasswordExtra(request):
-    """
-    类型： POST
-    {% url 'domain_sys_pwd_extra' %}
-    删除
-        domain/sys/pwd_extra?action=del&boxlist=anna@test.com|lindaiyu@test.com
-    添加
-        domain/sys/pwd_extra?action=add&boxlist=anna@test.com|lindaiyu@test.com
-    查询
-        domain/sys/pwd_extra?action=get
-    删除全部
-        domain/sys/pwd_extra?action=del_all
-    返回值举例:
-        {"reason": "", "result": 1}
-        {"reason": " 'anna22222@test.com' not exists |  'lindaiyu2222@test.com' not exists", "result": 0}
-        if action==get:
-            { mailbox:[{"id":xxx,"box":yyy,"name":zzz}] }
-    """
-    domain = getDomainObj(request)
-    data = { "result" : 0, "reason" : "" }
-    reasonList = []
-    if request.method == "POST":
-        action = request.POST.get('action', '')
-        boxlist = request.POST.get('boxlist', '')
-        boxlist = [box.strip() for box in boxlist.split("|") if box.strip()]
-        extraType = u"password_extra_{}".format(domain.id)
-
-        if action == u"get":
-            lists = MailboxExtra.objects.filter(type=extraType).all()
-            data["mailbox"] = []
-            for d in lists:
-                objUser = MailboxUser.objects.filter(mailbox_id=d.mailbox_id).first()
-                name = u"未知用户" if not objUser else objUser.realname
-                data["mailbox"].append( {
-                                    "id"        :   d.mailbox_id,
-                                    "box"       :   d.mailbox,
-                                    "name"      :   name,
-                                }
-                            )
-            data["result"] = 1
-        elif action == u"del_all":
-            boxlist = MailboxExtra.objects.filter(type=extraType).all()
-            for d in boxlist:
-                objBox = Mailbox.objects.filter(id=d.mailbox_id, domain_id=domain.id).first()
-                if objBox:
-                    d.delete()
-            data["result"] = 1
-        else:
-            for box in boxlist:
-                boxObj = Mailbox.objects.filter(username=box).first()
-                if not boxObj:
-                    reasonList.append(u" '{}' not exists".format(box))
-                    continue
-                objExtra = MailboxExtra.objects.filter(mailbox_id=boxObj.id, type=extraType).first()
-                if action == u"add":
-                    if objExtra:
-                        objExtra.data = u"1"
-                        objExtra.last_update = u"{}".format(time.strftime("%Y-%m-%d %H:%M:%S"))
-                        objExtra.save()
-                    else:
-                        MailboxExtra.objects.create(
-                            mailbox_id = boxObj.id,
-                            mailbox = boxObj.username,
-                            size = 0,
-                            type = extraType,
-                            data = u"1",
-                            last_update = u"{}".format(time.strftime("%Y-%m-%d %H:%M:%S")),
-                            )
-                    data["result"] = 1
-                elif action == u"del":
-                    if objExtra:
-                        objExtra.delete()
-                    data["result"] = 1
-    data["reason"] = " | ".join( reasonList )
-    return HttpResponse(json.dumps(data), content_type="application/json")
-
 @licence_required
 def domainWebmail(request):
     domain = getDomainObj(request)
@@ -482,7 +404,6 @@ def domainSign(request):
 
     form_domain = DomainSignDomainForm(domain_id=domain.id, request=request)
     form_personal = DomainSignPersonalForm(domain_id=domain.id, request=request)
-
     if request.method == "POST":
         action = request.POST.get('action', '')
         if action == "domain_sign":
@@ -493,6 +414,7 @@ def domainSign(request):
             form_personal.checkSave()
         elif action == "personal_sign_apply":
             form_personal = DomainSignPersonalForm(domain_id=domain.id, post=request.POST, request=request)
+            form_personal.checkSave()
             form_personal.applyAll()
     return render(request, "domain/include/static_sign.html", context={
         "page": "sign",
@@ -500,6 +422,27 @@ def domainSign(request):
         "form_domain"   :  form_domain,
         "form_personal" :  form_personal,
     })
+
+@licence_required
+def ajax_domainSignPersonal(request):
+    domain = getDomainObj(request)
+    if not domain:
+        return HttpResponse(json.dumps({'data':"","result":0}),content_type="application/json")
+    form_personal = DomainSignPersonalForm(domain_id=domain.id, request=request)
+    data = form_personal.personal_sign_templ
+    return HttpResponse(json.dumps({'data':data,"result":0}),content_type="application/json")
+
+@licence_required
+def ajax_domainSignDomain(request):
+    domain = getDomainObj(request)
+    if not domain:
+        return HttpResponse(json.dumps({'data':"","result":0}),content_type="application/json")
+    form_domain = DomainSignDomainForm(domain_id=domain.id, request=request)
+    data = {
+        "html"  :   form_domain.content_html,
+        "text"  :   form_domain.content_text,
+    }
+    return HttpResponse(json.dumps({'data':data,"result":0}),content_type="application/json")
 
 @licence_required
 def domainModule(request):
@@ -842,6 +785,10 @@ def domainList(request):
         if action == "delete":
             obj = Domain.objects.filter(pk=id).first()
             if obj:
+                if obj.domain in ("comingchina.com","fenbu.comingchina.com") and unicode(request.user).startswith(u"demo_admin@"):
+                    messages.add_message(request, messages.ERROR, u'不能删除演示版本域名!')
+                    return HttpResponseRedirect(reverse('domain_list'))
+
                 obj.delete()
     domain_list = Domain.objects.all().order_by('id')
     form = DomainListForm(domain_id=domain.id, request=request)

@@ -24,7 +24,7 @@
           </div>
           <div class="main" ref="iframe_height" :style="{'min-height':main_min_height+'px'}">
             <div class="mn-aside right_menu" :class="{show_contact:show_contact}">
-              <el-tabs v-model="activeName">
+              <el-tabs v-model="activeName" @tab-click="loadingContact">
                 <!--个人通讯录-->
                 <el-tab-pane label="个人通讯录" name="first">
                   <el-input  placeholder="搜索" prefix-icon="el-icon-search" v-model="filterText" size="small" style="margin:6px 0;">
@@ -71,8 +71,8 @@
                       <img src="../img/none_zh.png" alt="">
                       <span class="bg"></span>
                     </a></li>
-                    <li v-for="(m,k) in stationeryList" :key="k" @click="checkBgFn(m)">
-                      <a href="#" :class="{'active':checkBg === m.id}">
+                    <li v-for="(m,k) in stationeryList" :key="k" >
+                      <a href="#" :class="{'active':checkBg === m.id}" @click.prevent="checkBgFn(m)">
                         <img :src="m.src" alt="">
                       </a>
                     </li>
@@ -899,7 +899,7 @@
         'superscript', 'link', 'unlink','image',  'table','hr','|', 'undo', 'redo', 'preview',
            'fullscreen',
          ],
-        activeName: 'first',
+        activeName: 'second',
         number_sign:false,
         safe_secret:true,
 
@@ -921,6 +921,14 @@
       };
     },
     methods:{
+      loadingContact(tab){
+        console.log(tab)
+        if(tab.name == 'first'){
+          if(this.contactList.length==0){
+            this.getRightContact();
+          }
+        }
+      },
       getCapacity: function(){
         netdiskCapacityGet().then(res=>{
           this.folder_capacity = res.data;
@@ -1267,7 +1275,7 @@
         }
         netdiskCapacityGet().then(res=>{
           this.folder_capacity = res.data;
-          if(file.size>(res.data.rtotal-res.data.rused)){
+          if(res.data.rtotal!=0 && file.size>(res.data.rtotal-res.data.rused)){
             this.$message({
               type:'error',
               message:'所选文件容量超出网盘剩余容量！'
@@ -2704,7 +2712,10 @@
         //   this.contact_groups = res.data.results
         // })
         // return
+      },
+      getRightContact(){
         contactPabGroupsGet().then(res=>{
+          let _this = this;
           this.contact_loading = true;
           let resultArr = [];
           let total = res.data.results[res.data.results.length-1].count;

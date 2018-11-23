@@ -10,7 +10,7 @@ from django.template.response import TemplateResponse
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.utils.translation import ugettext_lazy as _
 
-from app.core.models import Mailbox
+from app.core.models import Mailbox, Department
 from .models import CoreGroup, CoreGroupMember
 from .forms import CoreGroupForms, CoreGroupMemberForm, CoreGroupMemberImportForm
 from app.utils.domain_session import get_domainid_bysession, get_session_domain
@@ -38,6 +38,7 @@ def groups_add(request):
     domain_id = get_domainid_bysession(request)
     domain = get_session_domain(domain_id)
     form = CoreGroupForms(domain_id, domain)
+    group_id = 0
     if request.method == "POST":
         form = CoreGroupForms(domain_id, domain, request.POST)
         if form.is_valid():
@@ -45,12 +46,14 @@ def groups_add(request):
             messages.add_message(request, messages.SUCCESS, u'添加成功')
             return HttpResponseRedirect(reverse('core_group_list'))
     return render(request, "group/groups_add.html",
-                  { 'form': form })
+                  { 'form': form, "group_id":group_id })
 
 @licence_required
 def groups_modify(request, group_id):
     obj = CoreGroup.objects.get(id=group_id)
     form = CoreGroupForms(obj.domain_id, obj.domain, instance=obj)
+    group_id = obj.id if obj else 0
+    print "groups_modify:   ",request.POST
     if request.method == "POST":
         form = CoreGroupForms(obj.domain_id, obj.domain, request.POST, instance=obj)
         if form.is_valid():
@@ -58,7 +61,7 @@ def groups_modify(request, group_id):
             messages.add_message(request, messages.SUCCESS, u'添加成功')
             return HttpResponseRedirect(reverse('core_group_list'))
     return render(request, "group/groups_add.html",
-                  { 'form': form })
+                  { 'form': form, "group_id":group_id })
 
 @licence_required
 def groups_mem(request, group_id):
@@ -85,13 +88,13 @@ def groups_mem(request, group_id):
                     fail += 1
                     fail_list.append( u"( %s，%s)" % (o.username, _(u"邮箱不存在于该域名下")) )
                     continue
-                form = CoreGroupMemberForm(obj, {'group': obj, 'mailbox': addr,})
+                form = CoreGroupMemberForm(obj, o, {'group': obj, 'mailbox': addr,})
                 if form.is_valid():
                     form.save()
                     success += 1
                 else:
                     fail += 1
-                    fail_list.append( u"( %s，%s)" % (o.username, _(u"重复添加")) )
+                    fail_list.append( u"( %s，%s)" % (o.username, form.error_message) )
             messages.add_message(request, messages.SUCCESS,
                                  _(u'批量添加成功%(success)s个, 失败%(fail)s个') % {"success": success, "fail": fail})
             if fail_list:
@@ -134,13 +137,13 @@ def groups_mem_import(request, group_id):
                         fail += 1
                         fail_list.append( u"( %s，%s)" % (address, _(u"邮箱不存在于该域名下")) )
                         continue
-                    form = CoreGroupMemberForm(gobj, {'group': gobj, 'mailbox': o and o.id or 0,})
+                    form = CoreGroupMemberForm(gobj, o, {'group': gobj, 'mailbox': o and o.id or 0,})
                     if form.is_valid():
                         form.save()
                         success += 1
                     else:
                         fail += 1
-                        fail_list.append( u"( %s，%s)" % (address, _(u"重复添加")) )
+                        fail_list.append( u"( %s，%s)" % (address, form.error_message) )
             elif file_ext == 'csv':
                 import csv
                 lines = list(csv.reader(form.file_obj))
@@ -156,16 +159,15 @@ def groups_mem_import(request, group_id):
                         fail += 1
                         fail_list.append( u"( %s，%s)" % (address, _(u"邮箱不存在于该域名下")) )
                         continue
-                    form = CoreGroupMemberForm(gobj, {'group': gobj, 'mailbox': o and o.id or 0,})
+                    form = CoreGroupMemberForm(gobj, o, {'group': gobj, 'mailbox': o and o.id or 0,})
                     if form.is_valid():
                         form.save()
                         success += 1
                     else:
                         fail += 1
-                        fail_list.append( u"( %s，%s)" % (address, _(u"重复添加")) )
+                        fail_list.append( u"( %s，%s)" % (address, form.error_message) )
             elif file_ext in ('xls', 'xlsx'):
                 import xlrd
-                print()
                 content = form.file_obj.read()
                 workbook = xlrd.open_workbook(filename=None, file_contents=content)
                 table = workbook.sheets()[0]
@@ -184,13 +186,13 @@ def groups_mem_import(request, group_id):
                         fail += 1
                         fail_list.append( u"( %s，%s)" % (address, _(u"邮箱不存在于该域名下")) )
                         continue
-                    form = CoreGroupMemberForm(gobj, {'group': gobj, 'mailbox': o and o.id or 0,})
+                    form = CoreGroupMemberForm(gobj, o, {'group': gobj, 'mailbox': o and o.id or 0,})
                     if form.is_valid():
                         form.save()
                         success += 1
                     else:
                         fail += 1
-                        fail_list.append( u"( %s，%s)" % (address, _(u"重复添加")) )
+                        fail_list.append( u"( %s，%s)" % (address, form.error_message) )
             messages.add_message(request, messages.SUCCESS,
                                  _(u'批量添加成功%(success)s个, 失败%(fail)s个') % {"success": success, "fail": fail})
             if fail_list:
@@ -206,7 +208,7 @@ def groups_mem_ajax(request, group_id):
     order_dir = data.get('order[0][dir]', '')
     search = data.get('search[value]', '')
 
-    colums = ['id', 'id', 'address']
+    colums = ['id', 'id', 'mailbox__username']
     lists = CoreGroupMember.objects.filter(group_id=group_id)
     if search:
         lists = lists.filter(mailbox__username__icontains=search)
@@ -256,3 +258,151 @@ def groups_mem_add(request, group_id):
     obj = CoreGroup.objects.get(id=group_id)
     return render(request, "group/groups_mem_add.html",
                   {'group_id': group_id, 'obj': obj})
+
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
+@licence_required
+def group_oab_dept_permit_add(request):
+    group_id = request.POST.get("group_id", "")
+    obj = CoreGroup.objects.get(id=group_id)
+    if not group_id or not obj:
+        data = {
+            "status"        :   "Failure",
+            "message"      :    u"未指定权限组",
+        }
+        return HttpResponse(json.dumps(data), content_type="application/json")
+    dept_list = request.POST.get("dept_list", "")
+    dept_list = dept_list.strip().split("|")
+    dept_list = [] if not dept_list else [int(dept_id) for dept_id in dept_list if str(dept_id).isdigit()]
+    obj.oab_dept_list = json.dumps(dept_list)
+    obj.save()
+    data = {
+        "status"        :   "OK",
+        "message"      :   "Success",
+    }
+    return HttpResponse(json.dumps(data), content_type="application/json")
+
+@csrf_exempt
+@licence_required
+def group_oab_dept_permit_ajax(request):
+    group_id = request.GET.get("group_id", "")
+    action = request.GET.get("action", "get")
+
+    obj = CoreGroup.objects.get(id=group_id)
+    if not group_id or not obj:
+        data = {
+            "status"        :   "Failure",
+            "message"      :    u"组不存在",
+            "data"         :    [],
+        }
+        return HttpResponse(json.dumps(data), content_type="application/json")
+
+    dept_list = [] if not obj.oab_dept_list else json.loads(obj.oab_dept_list)
+    dept_list = [int(i) for i in dept_list]
+    if action == "del":
+        del_list = request.GET.get("del_list", "")
+        del_list = del_list.strip().split("|")
+        del_list = [int(i) for i in del_list if str(i).isdigit()]
+        dept_list = list(set(dept_list)-set(del_list))
+    #去重，同一个子树只保留子树根节点
+    for dept_id in dept_list[:]:
+        obj_dept = Department.objects.filter(id=dept_id).first()
+        if not obj_dept:
+            dept_list.remove(dept_id)
+            continue
+        parent_list = []
+        while int(obj_dept.parent_id) > 0:
+            obj_dept = Department.objects.filter(id=obj_dept.parent_id).first()
+            if not obj_dept:
+                break
+            parent_list.append( obj_dept.id )
+        for parent_id in parent_list:
+            #父节点也在列表中，那么本节点就不添加进来
+            if parent_id in dept_list:
+                dept_list.remove(dept_id)
+                break
+    obj.oab_dept_list = json.dumps(dept_list)
+    obj.save()
+    dept_info = {}
+    for dept_id in dept_list:
+        obj_dept = Department.objects.filter(id=dept_id).first()
+        if not obj_dept:
+            continue
+        dept_info[dept_id] = obj_dept.title
+    data = {
+        "status"        :   "OK",
+        "message"      :   "Success",
+        "data"         :    dept_info,
+    }
+    return HttpResponse(json.dumps(data), content_type="application/json")
+
+@csrf_exempt
+@licence_required
+def group_limit_whitelist_ajax(request):
+    def getPostMailbox(key):
+        #从 entry_{{ mailbox }}_id 这种格式中把 mailbox 提取出来
+        l = key.split("_")
+        l.pop(0)
+        flag = l.pop(-1)
+        mailbox = "_".join(l)
+        return mailbox
+    def setPostMailboxData(mailbox, key, value):
+        mailboxDict.setdefault(mailbox, {})
+        mailboxDict[mailbox][key] = value
+    #enddef
+    domain_id = get_domainid_bysession(request)
+    mailboxDict = {}
+    newMailboxList = []
+    data = request.POST
+    group_id = data.get("group_id", u"0")
+    obj = CoreGroup.objects.get(id=group_id)
+    if not group_id or not obj:
+        data = {
+            "status"        :   "Failure",
+            "message"      :   "权限组不存在",
+        }
+        return HttpResponse(json.dumps(data), content_type="application/json")
+
+    type = data.get("type", u"send")
+    if not type in ('send','recv'):
+        data = {
+            "status"        :   "Failure",
+            "message"      :   "类型不正确",
+        }
+        return HttpResponse(json.dumps(data), content_type="application/json")
+
+    mailbox_id = data.get("id", 0)
+    newMailbox = data.get("new_mailbox", u"")
+    newMailboxList = data.get("new_mailbox_list", u"")
+    boxList = newMailboxList.split("|")
+    boxList = [box for box in boxList if box.strip()]
+    newMailboxList = boxList
+    if newMailbox.strip():
+        newMailboxList.append(newMailbox.strip())
+    for k,v in data.items():
+        if k.startswith("{}_".format(type)):
+            if k.endswith("_id"):
+                mailbox = getPostMailbox(k)
+                setPostMailboxData(mailbox, "id", v)
+            elif k.endswith("_delete"):
+                mailbox = getPostMailbox(k)
+                setPostMailboxData(mailbox, "delete", v)
+    for mailbox, info in mailboxDict.items():
+        if info.get("delete", "0") == "1":
+            continue
+        newMailboxList.append(mailbox)
+
+    newMailboxList = list(set(newMailboxList))
+    try:
+        saveValue = json.loads(obj.limit_whitelist)
+        saveValue = {} if not isinstance(saveValue, dict) else saveValue
+    except:
+        saveValue = {}
+    saveValue[type] = newMailboxList
+    obj.limit_whitelist = json.dumps(saveValue)
+    obj.save()
+    data = {
+        "status"        :   "OK",
+        "message"      :   "Success",
+    }
+    return HttpResponse(json.dumps(data), content_type="application/json")

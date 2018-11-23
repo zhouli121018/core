@@ -76,6 +76,16 @@
                     {% trans "批量删除帐号" %}
                 </a>
             </li>
+            <!--
+            {% if request.user.is_superuser %}
+                <li>
+                    <a href="{% url 'mailbox_backup_account' %}">
+                        {% trans "导入导出帐号" %}
+                    </a>
+                </li>
+            {% endif %}
+            -->
+
             <!--<li>-->
                 <!--<a href="{% url 'mailbox_backup_account' %}">-->
                     <!--{% trans "导入导出帐号" %}-->
@@ -90,6 +100,37 @@
                     {% csrf_token %}
                     <table class="table  table-bordered  ">
                         <tbody>
+                        <tr>
+                            <td class="text-right">格式说明：</td>
+                            <td colspan="5">
+                                <p>用户名可以是字符、数字、上划线、下划线、点，但用户名的第一个字必须是数字或字母。
+                                    如果输入的用户名是大写字母，系统将自动转为小写！</p>
+                                <p><span class="red">注意：</span>每行的格式为
+                                    <span class="blue">
+                    用户名 密码 邮箱大小 网盘大小 真实名称 所属部门 工号 职位 手机号码 电话号码 QQ 出生日期
+                    </span> 之间用“TAB”符号隔开
+                                    “邮箱大小”和“网盘大小”的单位为“M”</p>
+                                <p>eg:</p>
+                                <textarea   rows="6" class="form-control">tina	password1	500	100	水中花	技术部	12345	高级工程师	13600000000	88776655	123456	1985-01-01
+gary	password2	100	100	张三	财务部	12346	会计员	13700000000	88995566	987456	1990-10-25
+tom	djd834kjd	200	50	李四	后勤部	12347	司机	13811110000	88661122	657823	1980-07-11</textarea>
+                                <div class="hr hr-18 dotted hr-double"></div>
+                                <p>另外:有相同的子部门时，所属部门用 - 隔开如：</p>
+                                <textarea  rows="4" class="form-control">toy	password4	100	100	王五	华南区-财务部	12348	出纳	13122223333	56485264	545847	1984-08-16
+mike	password5	100	100	李明	华北区-财务部	12349	财务主管	13956485264	58746932	568742	1977-05-11</textarea>
+                                <div class="hr hr-18 dotted hr-double"></div>
+                                <p>标准操作步骤：</p>
+                                <ul>
+                                    <li>1、使用EXCEL先进行数据处理，处理成sys_mailbox_eg格式</li>
+                                    <li>2、然后将EXCEL文件内容拷贝到文本文件，见然后将EXCEL文件内容拷贝到文本文件，见。</li>
+                                    <li>3、然后将文本文件内容拷入下面的表格。</li>
+                                    <li>4、点击表格下方的添加进行批量添加用户</li>
+                                    <li>5、eg:显示名称 为空，则默认为选择列表"所属部门"的设置值</li>
+                                    <li>6、eg:邮箱大小或网盘大小为空，则默认为邮箱容量或网盘容量的设置值</li>
+                                    <li>7、eg:所属部门为空，则默认为选择列表"所属部门"的设置值</li>
+                                </ul>
+                            </td>
+                        </tr>
                         <tr >
                             <td class="text-right" style="width:100px;">默认邮箱容量：</td>
                             <td>
@@ -126,7 +167,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </td>
                             <td class="text-right">兼容模式：</td>
                             <td>
@@ -134,37 +174,6 @@
                                     <option value="1">U-Mail Linux 版数据格式</option>
                                     <option value="2">U-Mail Windows 版数据格式</option>
                                 </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-right">格式说明：</td>
-                            <td colspan="5">
-                                <p>用户名可以是字符、数字、上划线、下划线、点，但用户名的第一个字必须是数字或字母。
-                                    如果输入的用户名是大写字母，系统将自动转为小写！</p>
-                                <p><span class="red">注意：</span>每行的格式为
-                                    <span class="blue">
-                    用户名 密码 邮箱大小 网盘大小 真实名称 所属部门 工号 职位 手机号码 电话号码 QQ 出生日期
-                    </span> 之间用“TAB”符号隔开
-                                    “邮箱大小”和“网盘大小”的单位为“M”</p>
-                                <p>eg:</p>
-                                <textarea   rows="6" class="form-control">tina	password1	500	100	水中花	技术部	12345	高级工程师	13600000000	88776655	123456	1985-01-01
-gary	password2	100	100	张三	财务部	12346	会计员	13700000000	88995566	987456	1990-10-25
-tom	djd834kjd	200	50	李四	后勤部	12347	司机	13811110000	88661122	657823	1980-07-11</textarea>
-                                <div class="hr hr-18 dotted hr-double"></div>
-                                <p>另外:有相同的子部门时，所属部门用 - 隔开如：</p>
-                                <textarea  rows="4" class="form-control">toy	password4	100	100	王五	华南区-财务部	12348	出纳	13122223333	56485264	545847	1984-08-16
-mike	password5	100	100	李明	华北区-财务部	12349	财务主管	13956485264	58746932	568742	1977-05-11</textarea>
-                                <div class="hr hr-18 dotted hr-double"></div>
-                                <p>标准操作步骤：</p>
-                                <ul>
-                                    <li>1、使用EXCEL先进行数据处理，处理成sys_mailbox_eg格式</li>
-                                    <li>2、然后将EXCEL文件内容拷贝到文本文件，见然后将EXCEL文件内容拷贝到文本文件，见。</li>
-                                    <li>3、然后将文本文件内容拷入下面的表格。</li>
-                                    <li>4、点击表格下方的添加进行批量添加用户</li>
-                                    <li>5、eg:显示名称 为空，则默认为选择列表"所属部门"的设置值</li>
-                                    <li>6、eg:邮箱大小或网盘大小为空，则默认为邮箱容量或网盘容量的设置值</li>
-                                    <li>7、eg:所属部门为空，则默认为选择列表"所属部门"的设置值</li>
-                                </ul>
                             </td>
                         </tr>
                         <tr>
@@ -216,12 +225,12 @@ function checkForm(form) {
     form.data.value = form.data.value.trim();
 
     if(!checkFormat(form.quota_mailbox.value, 'number')) {
-        alert("{% trans '邮箱容量格式错误，无法提交数据！' %}");
+        alert("{% trans '默认邮箱容量格式错误，无法提交数据！' %}");
         return false;
     }
 
     if(!checkFormat(form.quota_netdisk.value, 'number')) {
-        alert("{% trans '网盘容量格式错误，无法提交数据！' %}");
+        alert("{% trans '默认网盘容量格式错误，无法提交数据！' %}");
         return false;
     }
 
@@ -233,6 +242,10 @@ function checkForm(form) {
 
     //检测导入数据中的邮箱名称、密码是否符合规定
     var lines = form.data.value.split("\n");
+    if (lines.length>100) {
+        alert("{% trans '过长的数据可能会被防火墙截断，单次只能提交最多100行记录' %}");
+        return false;
+    }
     for(var i=0;i<lines.length;i++) {
         var arr  = lines[i].trim().split(';');
         var name = arr[0].trim();
@@ -426,6 +439,6 @@ function demoinitdept(treeid,treeparentid,inputparentid,deptArr){
 // deptArr 为初始化获得的部门数据
 var deptArr = {{ dept_list|safe }};
 demoinitdept("#tree","#tree_box","#input_box",deptArr);
-    
+
 </script>
 {% endblock %}

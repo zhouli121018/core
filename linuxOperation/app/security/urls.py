@@ -42,6 +42,11 @@ urlpatterns = [
 
     # -------发信频率设置
     url(r'^frequency/$', views.security_frequency, name='security_frequency'),
+
+    # -------弱密码设置
+    url(r'^password/weak$', views.password_weaklist, name='password_weaklist'),
+    url(r'^password/weak/ajax$', views.password_weaklist_ajax, name='password_weaklist_ajax'),
+    url(r'^password/weak/import$', views.password_weaklist_import, name='password_weaklist_import'),
 ]
 
 __all__ = ["urlpatterns"]

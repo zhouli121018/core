@@ -40,7 +40,7 @@ Vue.config.productionTip = false
 Vue.component('Menubar', Menubar)
 Vue.component('Contact', Contact)
 Vue.filter('mailsize', function (bytes) {
-  if (isNaN(bytes)) {
+  if (isNaN(bytes) || bytes==null) {
         return '';
     }
     var symbols = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];

@@ -2,21 +2,21 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% trans "内网邮件代发" %}{% endblock %}
+{% block title %}{% trans "邮件收发代理" %}{% endblock %}
 
 {% block breadcrumb %}
-    <li> <a href="#">{% trans "内网邮件代发" %}</a> </li>
-    <li class="active">{% trans "内网邮件代发" %}</li>
+    <li> <a href="#">{% trans "邮件收发代理" %}</a> </li>
+    <li class="active">{% trans "邮件收发代理" %}</li>
 {% endblock %}
 
 {% block page-content %}
 
     <div class="page-header">
         <h1>
-            {% trans "内网邮件代发" %}
+            {% trans "邮件收发代理" %}
             <small>
                 <i class="ace-icon fa fa-angle-double-right"></i>
-                {% trans "内网邮件代发" %}
+                {% trans "邮件收发代理" %}
             </small>
         </h1>
     </div>
@@ -28,12 +28,14 @@
 
                     <li class="active">
                         <a href="#">
-                            <i class="green ace-icon fa fa-home bigger-120"></i>{% trans "内网邮件代发" %}
+                            <i class="green ace-icon fa fa-home bigger-120"></i>{% trans "邮件收发代理" %}
                         </a>
                     </li>
-
                     <li>
                         <a href="{% url 'mail_transfer_sender' %}">{% trans "默认登录帐号" %}</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'mail_transfer_import' %}">{% trans "批量添加帐号" %}</a>
                     </li>
 
                 </ul>
@@ -72,7 +74,7 @@
 
         var ip_table;
         $(function () {
-            var ajax_url = "{% url 'ajax_post_transfer' %}" + window.location.search;
+            var ajax_url = "{% url 'ajax_mail_transfer' %}" + window.location.search;
             ip_table = $('#ajax-table').dataTable({
                 // "columnDefs": [ { "targets": [ 0 ], "visible": false, "searchable": false }],
                 "iDisplayLength": 25,

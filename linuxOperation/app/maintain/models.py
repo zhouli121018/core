@@ -34,8 +34,6 @@ class ExtSquesterMail(models.Model):
     @property
     def get_datetime(self):
         if not self.datetime:
-            if self.datetime:
-                return self.datetime.strftime('%Y-%m-%d %H:%M:%S')
             return "unknown"
         return self.datetime.strftime('%Y-%m-%d %H:%M:%S')
 
@@ -86,6 +84,12 @@ class IMAPMoving(models.Model):
         managed = False
         db_table = 'ext_imapmail'
         verbose_name = _(u'外域邮件数据导入')
+
+    @property
+    def get_time(self):
+        if not self.last_update:
+            return "unknown"
+        return self.last_update.strftime('%Y-%m-%d %H:%M:%S')
 
 # ext_popmail
 class POP3Moving(models.Model):

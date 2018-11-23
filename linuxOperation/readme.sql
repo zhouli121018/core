@@ -65,8 +65,6 @@ CREATE TABLE `core_group` (
   `is_imap` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'IMAP/IMAPS客户端邮件收发功能',
   `is_passwd` tinyint(1) NOT NULL DEFAULT '1' COMMENT '定期密码修改设置',
   `passwd_day` int(11) NOT NULL DEFAULT '0' COMMENT '密码有效期',
-  `passwd_start` datetime DEFAULT NULL COMMENT '密码有效开始时间',
-  `is_passwd_first` tinyint(1) NOT NULL DEFAULT '1' COMMENT '首次登录修改密码',
   `passwd_type` tinyint(1) NOT NULL DEFAULT '2' COMMENT '密码组成字符种类',
   `passwd_other` longtext CHARACTER SET utf8 COMMENT '其他密码规则设置',
   `is_virus` tinyint(1) NOT NULL DEFAULT '1' COMMENT '反病毒功能',

@@ -36,6 +36,14 @@
                                 <li>
                                     <a href="#group_info8">{% trans '发信频率设置' %}</a>
                                 </li>
+                                {% if request.user.is_new_version_webmail %}
+                                    <li>
+                                        <a href="#group_info9">{% trans '企业通讯录设置' %}</a>
+                                    </li>
+                                {% endif %}
+                                <li>
+                                    <a href="#group_info10">{% trans '邮箱空间清理设置' %}</a>
+                                </li>
                                 <li>
                                     <!--web未实现的部分先隐藏-->
                                     <a href="#group_info6" class="display-none">{% trans '账号页面设置' %}</a>
@@ -63,8 +71,32 @@
                                         {{ form.mail_space|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
                                         {{ form.net_space|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
                                         {{ form.allow_out_size|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.send_limit|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.recv_limit|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 " for="id_limit_send">发信权限：</label>
+                                            <div class=" col-sm-9 col-lg-9 ">
+                                                <select name="send_limit" class=" form-control limit_send_select" id="id_limit_send">
+                                                  <option value="-1" {% if form.send_limit.value == -1 %} selected {% endif %}>不限制邮件发送</option>
+                                                  <option value="1" {% if form.send_limit.value == 1 %} selected {% endif %}>禁止发送所有邮件</option>
+                                                  <option value="2" {% if form.send_limit.value == 2 %} selected {% endif %}>只发送本地域邮件</option>
+                                                  <option value="3" {% if form.send_limit.value == 3 %} selected {% endif %}>可发送指定外域邮件</option>
+                                                  <option value="4" {% if form.send_limit.value == 4 %} selected {% endif %}>可发送本地所有域邮件</option>
+                                                </select>
+                                                <button type="button" class="btn btn-xs btn-info"  {% if form.send_limit.value != 3 %} style="display:none;" {% endif %} data-toggle="modal" data-target="#allow_send_email_dress">设置允许名单</button>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 " for="id_limit_recv">收信权限：</label>
+                                            <div class=" col-sm-9 col-lg-9 ">
+                                                <select name="recv_limit" class=" form-control limit_send_select" id="id_limit_recv">
+                                                  <option value="-1" {% if form.recv_limit.value == -1 %} selected {% endif %}>不限制邮件接收</option>
+                                                  <option value="1" {% if form.recv_limit.value == 1 %} selected {% endif %}>禁止接收所有邮件</option>
+                                                  <option value="2" {% if form.recv_limit.value == 2 %} selected {% endif %}>只接收本地域邮件</option>
+                                                  <option value="3" {% if form.recv_limit.value == 3 %} selected {% endif %}>可接收指定外域邮件</option>
+                                                  <option value="4" {% if form.recv_limit.value == 4 %} selected {% endif %}>可接收本地所有域邮件</option>
+                                                </select>
+                                                <button type="button" class="btn btn-xs btn-info"  {% if form.recv_limit.value != 3 %} style="display:none;" {% endif %} data-toggle="modal" data-target="#allow_recv_email_dress">设置允许名单</button>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-sm-2"></div>
                                 </div>
@@ -86,8 +118,6 @@
                                     <div class="col-sm-10">
                                         {{ form.is_passwd|bootstrap_horizontal_bool }}
                                         {{ form.passwd_day|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.passwd_start|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.is_passwd_first|bootstrap_horizontal_bool }}
                                         {{ form.passwd_type|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
 
                                         <div class="form-group">
@@ -96,9 +126,8 @@
                                                 <div class="control-group">
                                                     <div class="checkbox">
                                                         <label>
-                                                            <input name="{{ form.passwd_other_bak.name }}" class="ace" type="checkbox" value="passwd_size" {% if 'passwd_size' in form.passwd_other %}checked{% endif %}>
                                                             <span class="lbl">
-                                                            <span class="">密码长度为</span>
+                                                            <span class="">&nbsp;&nbsp;&nbsp;密码长度为</span>
                                                             <select name="passwd_other_letter" id="id_passwd_other_letter" autocomplete="off">
                                                                 <option value="8" {% if form.passwd_size2 == '8' %}selected{% endif %}>8</option>
                                                                 <option value="9" {% if form.passwd_size2 == '9' %}selected{% endif %}>9</option>
@@ -149,24 +178,38 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="control-label col-sm-3 col-lg-3 " for="{{ form.passwd_forbid_bak.auto_id }}">{{ form.passwd_forbid_bak.label }}</label>
+                                            <label class="control-label col-sm-3 col-lg-3 " for="{{ form.passwd_forbid_bak.auto_id }}">用户不满足密码强度时：</label>
                                             <div class=" col-sm-9 col-lg-9 ">
                                                 <div class="control-group">
                                                     <div class="checkbox">
                                                         <label>
-                                                            <input name="{{ form.passwd_forbid_bak.name }}" class="ace" type="checkbox" value="forbid_send" {% if 'forbid_send' in form.passwd_forbid %}checked{% endif %}>
-                                                            <span class="lbl"> 禁止发邮件 </span>
+                                                            <input name="{{ form.passwd_forbid_bak.name }}" class="ace" type="checkbox" value="forbid_send" {% if form.passwd_forbid.forbid_send == 1 %}checked{% endif %}>
+                                                            <span class="lbl"> 禁止外发邮件 </span>
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label>
-                                                            <input name="{{ form.passwd_forbid_bak.name }}" class="ace" type="checkbox" value="forbid_recv" {% if 'forbid_recv' in form.passwd_forbid %}checked{% endif %}>
-                                                            <span class="lbl"> 禁止收邮件 </span>
+                                                            <input name="{{ form.passwd_forbid_bak.name }}" class="ace" type="checkbox" value="force_change" {% if form.passwd_forbid.force_change == 1 %}checked{% endif %}>
+                                                            <span class="lbl"> 登录后强制修改密码 </span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3 col-lg-3 " for="{{ form.passwd_forbid_bak.auto_id }}">用户处于弱密码库中时：</label>
+                                            <div class=" col-sm-9 col-lg-9 ">
+                                                <div class="control-group">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            &nbsp;&nbsp;
+                                                            <span class="lbl"> 禁止外发邮件 </span>
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label>
-                                                            <input name="{{ form.passwd_forbid_bak.name }}" class="ace" type="checkbox" value="force_change" {% if 'force_change' in form.passwd_forbid %}checked{% endif %}>
+                                                            <input name="{{ form.passwd_forbid_bak.name }}" class="ace" type="checkbox" value="force_change_in_weak" {% if form.passwd_forbid.force_change_in_weak == 1 %}checked{% endif %}>
                                                             <span class="lbl"> 登录后强制修改密码 </span>
                                                         </label>
                                                     </div>
@@ -361,6 +404,74 @@
                                 </div>
                             </div>
 
+                            {% if request.user.is_new_version_webmail %}
+                                <div id="group_info9">
+                                    <div class="row">
+                                        <div class="col-sm-10">
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-3 col-lg-3 "> {% trans "界面显示控制" %} </label>
+                                                <input type="radio" name="oab_show_mod" value="1" {% if form.oab_show_mod.value == 1 %} checked {% endif %} class="radio radio-inline">
+                                                <span class="lbl"> {% trans "所有部门" %} </span>
+                                                <input type="radio" name="oab_show_mod" value="2" {% if form.oab_show_mod.value == 2 %} checked {% endif %} class="radio radio-inline">
+                                                <span class="lbl"> {% trans "仅本部门" %} </span>
+                                                <input type="radio" name="oab_show_mod" value="3" {% if form.oab_show_mod.value == 3 %} checked {% endif %} class="radio radio-inline">
+                                                <span class="lbl"> {% trans "本部门和子部门" %} </span>
+                                                <input type="radio" name="oab_show_mod" value="4" {% if form.oab_show_mod.value == 4 %} checked {% endif %} class="radio radio-inline">
+                                                <span class="lbl"> {% trans "指定部门及其子部门" %} </span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-3 col-lg-3 "> {% trans "通讯录导出按钮" %} </label>
+                                                <input name="{{ form.oab_show_export_bak.name }}" value="1" {% if form.oab_show_export == 1 %} checked {% endif %} type="checkbox"  class="ace">
+                                                <span class="lbl"> 显示 </span>
+                                            </div>
+                                            {% if group_id > 0 %}
+                                                <div class="form-group dept_list {% if form.oab_show_mod.value == 4 %} active {% endif %}">
+                                                    <label class="control-label col-sm-3 col-lg-3 "> {% trans "显示指定部门" %} </label>
+                                                    <div class="col-sm-8 no-padding"  style="max-height:400px;overflow: auto">
+                                                        <table id="deptNames" class="table table-bordered table-hover">
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group dept_list {% if form.oab_show_mod.value == 4 %} active {% endif %}">
+                                                    <div style="position:relative;padding-left:0" class="col-sm-8 col-sm-offset-3">
+                                                        <div id="input_box" class="input-group" style="max-width:300px;">
+                                                            <input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">
+                                                            <input type="hidden" class="id_dept_id" value="" name="target_dept">
+                                                            <span class="input-group-addon clear_dept" style="cursor:pointer;background:#a0a0a0;color:#fff;">清空</span><span class="input-group-addon submit_dept_permit_btn" style="cursor:pointer;background:#1b6aaa;color:#fff;">添加部门</span>
+                                                        </div>
+                                                        <div class="widget-box widget-color-blue2 email_box_tree" id="tree_box" style="position:absolute;top:32px;z-index:10;min-width:60%;max-width:100%;left:0;">
+                                                            <button type="button" class="btn btn-danger btn-sm pull-right close_btn" style="">&times;</button>
+                                                            <div class="widget-body" style="padding-right:20px;">
+                                                                <div style="padding:20px  6px 0;">
+                                                                    <input type="text" class="search_input form-control" placeholder="输入关键字搜索...">
+                                                                </div>
+                                                                <div class="widget-main padding-8" style="height:auto;max-height:360px;">
+                                                                    <ul id="tree"></ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-sm-2"></div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <div id="group_info10">
+                                <div class="row">
+                                    <div class="col-sm-10">
+                                        {{ form.is_space_clean|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
+                                        {{ form.space_clean_normal|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
+                                        {{ form.space_clean_sent|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
+                                        {{ form.space_clean_spam|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
+                                        {{ form.space_clean_trash|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
+                                    </div>
+                                    <div class="col-sm-2"></div>
+                                </div>
+                            </div>
+
                         </div>
 
                         <button type="submit" class="btn btn-primary btn-sm">{% trans "确认" %}</button>
@@ -371,16 +482,205 @@
             </div>
         </div>
     </form>
+
+<div class="modal fade" id="allow_send_email_dress" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">设置发送的外域邮件地址</h4>
+            </div>
+            <div class="modal-body">
+                <div class="table-header">例外地址</div>
+                <div>
+                    <form class="form-horizontal form_send_limit_white" role="form" name="form_send_limit_white" action="" method="POST">
+                        {% csrf_token %}
+                        <table class="table table-bordered table-center">
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>邮件地址</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for num,mailbox in form.getSendLimitWhiteList %}
+                                <tr id="id_send_row_{{ num }}">
+                                    <td> {{ num }} </td>
+                                    <td> {{ mailbox }} </td>
+                                <td>
+                                    <button class="btn btn-xs btn-danger" type="button" onclick="clickLimitSendDelete('send', '{{ num }}')">删除</button>
+                                </td>
+                                <input type="hidden" value="{{ mailbox }}" name="send_{{ mailbox }}_id" id="id_send_id_{{ num }}" />
+                                <input type="hidden" value="-1" name="send_{{ mailbox }}_delete" id="id_send_delete_{{ num }}" />
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <div class="col-sm-10 col-sm-offset-1">
+                                <div class="input-group margin-bottom-8">
+                                    <span class="input-group-addon">邮件地址：</span>
+                                    <input type="text" name="new_mailbox" class="form-control">
+                                </div>
+                                <div class="margin-bottom-8">
+                                    <textarea class="form-control" name="new_mailbox_list" rows="5" placeholder="批量例外邮箱地址，格式 @126.com|@sina.com|@qq.com"></textarea>
+                                </div>
+                                <p class="alert alert-warning"><b class="red">注：</b>当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“@域名”，如“@test.com”。</p>
+                            </div>
+                        </div>
+                        <div class=" ">
+                        <input type="hidden" value="{{ group_id }}" name="group_id" id="id_group_id" />
+                        <input type="hidden" value="send" name="type" id="id_send_limit_type" />
+                        </div>
+                        <div class="center" style="background:#fafafa;">
+                            <button class="btn btn-primary submit_send_permit_btn" type="button">确定</button>
+                            <button class="btn btn-warning" type="reset">重置</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="allow_recv_email_dress" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">设置接收的外域邮件地址</h4>
+            </div>
+            <div class="modal-body">
+                <div class="table-header">例外地址</div>
+                <div>
+                    <form class="form-horizontal form_recv_limit_white" role="form" name="form_recv_limit_white" action="" method="POST">
+                        {% csrf_token %}
+                        <table class="table table-bordered table-center">
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>邮件地址</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for num,mailbox in form.getRecvLimitWhiteList %}
+                                <tr id="id_recv_row_{{ num }}">
+                                    <td> {{ num }} </td>
+                                    <td> {{ mailbox }} </td>
+                                <td>
+                                    <button class="btn btn-xs btn-danger" type="button" onclick="clickLimitSendDelete('recv', '{{ num }}')">删除</button>
+                                </td>
+                                <input type="hidden" value="{{ mailbox }}" name="recv_{{ mailbox }}_id" id="id_recv_id_{{ num }}" />
+                                <input type="hidden" value="-1" name="recv_{{ mailbox }}_delete" id="id_recv_delete_{{ num }}" />
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="row">
+                            <div class="col-sm-10 col-sm-offset-1">
+                                <div class="input-group margin-bottom-8">
+                                    <span class="input-group-addon">邮件地址：</span>
+                                    <input type="text" name="new_mailbox" class="form-control">
+                                </div>
+                                <div class="margin-bottom-8">
+                                    <textarea class="form-control" name="new_mailbox_list" rows="5" placeholder="批量例外邮箱地址，格式 @126.com|@sina.com|@qq.com"></textarea>
+                                </div>
+                                <p class="alert alert-warning"><b class="red">注：</b>当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“@域名”，如“@test.com”。</p>
+                            </div>
+                        </div>
+                        <div class=" ">
+                        <input type="hidden" value="{{ group_id }}" name="group_id" id="id_group_id" />
+                        <input type="hidden" value="recv" name="type" id="id_send_limit_type" />
+                        </div>
+                        <div class="center" style="background:#fafafa;">
+                            <button class="btn btn-primary submit_recv_permit_btn" type="button">确定</button>
+                            <button class="btn btn-warning" type="reset">重置</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 {% block css_block %}
     <link href="{% static "components/datetimepiker/bootstrap-datetimepicker.min.css" %}" rel="stylesheet">
+    <style>
+    .email_box_tree{display:none;}
+    .email_box_tree.active{display:block;}
+    #deptNames{
+        border:1px solid #eaeaea;
+    }
+    #deptNames>div{
+        margin:2px 0;
+    }
+    #deptNames>div:hover .bgblue{
+        background:#2aabd2;
+    }
+    .dept_list{
+        display:none;
+    }
+    .dept_list.active{
+        display:block;
+    }
+    </style>
 {% endblock %}
 {% block my_jsblock %}
+    <script src="{% static 'assets/js/fuelux/fuelux.tree.js' %}" ></script>
     <script src="{% static 'assets/js/jquery-ui.custom.js' %}" ></script>
     <script src="{% static 'assets/js/jquery.ui.touch-punch.js' %}" ></script>
     <script src="{% static 'assets/js/jquery-ui.js' %}" ></script>
     <script src="{% static "components/datetimepiker/bootstrap-datetimepicker.min.js" %}"></script>
     <script src="{% static "components/datetimepiker/bootstrap-datetimepicker.zh-CN.js" %}"></script>
+
+    <script>
+        $('.limit_send_select').change(function(){
+            if($(this).val()=='3'){
+                $(this).next().show();
+            }else{
+                $(this).next().hide();
+            }
+        })
+        $('.submit_send_permit_btn').click(function(){
+            var str = $(".form_send_limit_white").serialize();
+            //console.log("str  ==  "+str);
+            $.ajax({
+                url:"{% url 'group_limit_whitelist_ajax' %}",
+                type:"POST",
+                data:str,
+                success:function(data){
+                    if(data.status=='OK'){
+                        alert("设置成功！");
+                        $('#allow_send_email_dress').modal('hide');
+                        window.location.href="";
+                    }else{
+                        alert("设置失败：  "+data.message);
+                    }
+                }
+            })
+        })
+        $('.submit_recv_permit_btn').click(function(){
+            var str = $(".form_recv_limit_white").serialize();
+            //console.log("str  ==  "+str);
+            $.ajax({
+                url:"{% url 'group_limit_whitelist_ajax' %}",
+                type:"POST",
+                data:str,
+                success:function(data){
+                    $('#allow_recv_email_dress').modal('hide');
+                    window.location.href="";
+                }
+            })
+        })
+        function clickLimitSendDelete(type, num){
+            var entry = "id_" + type + "_row_" + num;
+            var entry_val = "id_" + type + "_delete_" + num;
+            $("#"+entry_val).val("1");
+            $("#"+entry).addClass("display-none");
+        }
+    </script>
 
     <script>
         $(function(){
@@ -405,5 +705,294 @@
             pickerPosition: "top-right",
         });
     </script>
+
+    <script>
+    $('[name="oab_show_mod"]').click(function(){
+        if($(this).val()==4){
+            $('.dept_list').addClass('active')
+        }else{
+            $('.dept_list').removeClass('active')
+        }
+    })
+        function demoinitdept(treeid,treeparentid,inputparentid,deptArr){
+        var treeEle;
+        $(treeid).removeData("fu.tree");
+        $(treeid).unbind('click.fu.tree');
+        function initdepttree(deptArr){
+            var sampleData = initiateDemoData(deptArr);
+            treeEle = $(treeid).ace_tree({
+                dataSource: sampleData['dataSource1'],
+                multiSelect: false,
+                loadingHTML: '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>',
+                'open-icon' : 'ace-icon tree-minus hide',
+                'close-icon' : 'ace-icon tree-plus hide',
+                'selectable' : true,
+                'selected-icon' : 'ace-icon fa fa-check',
+                'unselected-icon' : 'ace-icon fa fa-times',
+                'cacheItems': true,
+                'folderSelect': true,
+                'folder-open-icon' : 'ace-icon tree-plus',
+                'folder-close-icon' : 'ace-icon tree-minus'
+            });
+
+            $(treeid).tree('discloseAll');
+            $(treeid).tree('closeAll');
+
+            //默认选中节点
+            function test(ele){
+                if(ele.parent().parent().hasClass('tree-branch')){
+                    ele.parent().parent().find('>i').click();
+                    test(ele.parent().parent())
+                }
+            }
+
+            $(treeid).find('.tree-branch,.tree-item').each(function(i,dom){
+                //        if($(this).data().id == ccid){
+                //            $(this).addClass('active-header');
+                //            $(this).find('>i').click()
+                //            test($(this));
+                //        }
+            })
+        }
+        initdepttree(deptArr);
+        $(treeparentid+' .search_input').keyup(function(){
+            var keywords = $(this).val();
+            $(treeid).removeData("fu.tree");
+            $(treeid).unbind('click.fu.tree');
+            if(keywords.length>0){
+                var initArr = deptArr;
+                var reg = new RegExp(keywords, 'i');
+                var arr = [];
+                var textname = '';
+                function getp(id){
+                    for(var i=0;i<initArr.length;i++){
+                        var a = initArr[i]['id'];
+                        var pp = initArr[i]['parent'];
+                        var n = initArr[i]['name'];
+                        if(a == id){
+                            textname += " -- " + n;
+                            if(pp>0){
+                                getp(pp);
+                            }
+                        }
+                    }
+                }
+                for(var key in initArr){
+                    if(initArr[key]['name'].match(reg)){
+                        if(initArr[key]['parent']>0){
+                            textname += initArr[key]['name'];
+                            getp(initArr[key]['parent']);
+                            var obj = {child:0,parent:0,name:textname,id:initArr[key]['id']};
+                            textname = '';
+                        }else{
+                            var obj = {child:0,parent:0,name:initArr[key]['name'],id:initArr[key]['id']};
+                        }
+                        arr.push(obj);
+                    }
+                }
+                initdepttree(arr)
+            }else{
+                initdepttree(deptArr);
+            }
+        })
+
+        function initiateDemoData(deptArr){
+            var tree_data = {};
+            for(var i=0;i<deptArr.length;i++){
+                if(deptArr[i].parent<=0){
+                    if(deptArr[i].child&&deptArr[i].child>0){
+                        tree_data[deptArr[i].name] = {text:deptArr[i].name,type:"folder",id:deptArr[i].id};
+                        tree_data[deptArr[i].name]['additionalParameters']={"children":getSubDate(deptArr[i].id)};
+                    }else{
+                        tree_data[deptArr[i].name] = {text:deptArr[i].name,type:"item",id:deptArr[i].id};
+                    }
+                }
+            }
+
+            function getSubDate(pid){
+                var obj = {};
+                for(var i=0;i<deptArr.length;i++){
+                    if(deptArr[i]['parent'] == pid){
+                        if(deptArr[i].child&&deptArr[i].child>0){
+                            obj[deptArr[i].name] = {text:deptArr[i].name,type:"folder",id:deptArr[i].id,child:deptArr[i].child}
+                        }else{
+                            obj[deptArr[i].name] = {text:deptArr[i].name,type:"item",id:deptArr[i].id,child:deptArr[i].child}
+                        }
+
+                    }
+                }
+                return obj;
+            }
+            function getAdditionalParameters(arr){
+                for(var key in arr){
+                    if(arr[key]['type']=="folder"){
+                        arr[key]['additionalParameters']={"children":getSubDate(arr[key]['id'])};
+                        if(arr[key]['additionalParameters']["children"]){
+                            getAdditionalParameters(arr[key]['additionalParameters']["children"])
+                        }
+                    }
+                }
+            }
+            getAdditionalParameters(tree_data);
+            var dataSource1 = function(options, callback){
+                var $data = null
+                if(!("text" in options) && !("type" in options)){
+                    $data = tree_data;//the root tree
+                    callback({ data: $data });
+                    return;
+                }
+                else if("type" in options && options.type == "folder") {
+                    if("additionalParameters" in options && "children" in options.additionalParameters)
+                        $data = options.additionalParameters.children || {};
+                    else $data = {}//no data
+                }
+                if($data != null)//this setTimeout is only for mimicking some random delay
+                    callback({ data: $data });
+            }
+            return {'dataSource1': dataSource1}
+        }
+
+        $(treeid).on('click','.tree-item,.tree-branch-header',function(){
+            $(treeid+' .tree-selected').removeClass('tree-selected');
+            if($(this).hasClass('tree-branch-header')){
+                $(this).parent().addClass('tree-selected');
+            }else{
+                $(this).addClass('tree-selected');
+            }
+            $(treeparentid).removeClass('active');
+            var o = treeEle.tree('selectedItems')[0];
+            $(treeparentid).parent().find('.department_choice').val(o.text);
+            $(treeparentid).parent().find('.id_dept_id').val(o.id);
+        })
+        $(treeparentid+' .close_btn').click(function(){
+             $(treeparentid).removeClass('active');
+        })
+        $('body').click(function(e){
+            var $parents = $(e.target).parents(treeparentid);
+            if(!$(e.target).hasClass('department_choice') && $parents.length<1){
+                $(treeparentid).removeClass('active');
+            }
+        })
+        $(inputparentid + ' .department_choice').click(function(){
+            $(treeparentid).addClass('active');
+        })
+        $(inputparentid + ' .clear_dept').click(function(){
+            $(inputparentid + ' .department_choice').val('');
+            $(inputparentid + ' .id_dept_id').val('');
+        })
+    }
+        // deptArr 为初始化获得的部门数据
+        var deptArr = [
+            {id:1,parent:0,name:"部门1",child:2},
+            {id:2,parent:1,name:"部门2",child:1},
+            {id:3,parent:2,name:"部门3",child:0},
+            {id:4,parent:1,name:"部门4",child:0},
+            {id:5,parent:2,name:"部门5",child:0},
+            {id:6,parent:0,name:"部门6",child:0}
+        ];
+        $.ajax({
+            url:"{% url 'choose_mailbox_list' %}",
+            type:"POST",
+            data:{action:"dept_list"},
+            success:function(data){
+                console.log(data);
+                deptArr = data.dept;
+                demoinitdept("#tree","#tree_box","#input_box",deptArr);
+            }
+        })
+
+        var alreadyDeptList = '';
+        var idArr = [];
+        var hashId = [];
+        var alreadyDeptArr = [];
+        function formatStr(arr){
+            for(var i=0,html='';i<arr.length;i++){
+                var o = arr[i]
+                html += '<tr><td>'+o["name"]+'</td><td class="text-center"><button type="button" class="btn btn-warning btn-xs dept_delete_btn" data_id="'+o["id"]+'">删除</button></td></tr>'
+            }
+            $('#deptNames').html(html);
+        }
+
+        //获取已添加的列表
+         function group_oab_dept_permit_ajax(){
+            alreadyDeptList = '';
+            idArr = [];
+            hashId = [];
+            alreadyDeptArr = [];
+            var str="group_id="+"{{ group_id }}";
+            $.ajax({
+                url:"{% url 'group_oab_dept_permit_ajax' %}",
+                type:"GET",
+                data:str,
+                success:function(data){
+                    if(data.status=='OK'){
+                        for(var key in data.data){
+                            alreadyDeptList += key+'|';
+                            idArr.push(key);
+                            hashId[key] = true;
+                            var obj = [];
+                            obj['name'] = data.data[key];
+                            obj['id'] = key;
+                            alreadyDeptArr.push(obj)
+                        }
+                        formatStr(alreadyDeptArr);
+
+                    }else{
+                        alert("获取组数据失败：  "+data.message);
+                    }
+                }
+            })
+         }
+         group_oab_dept_permit_ajax();
+
+
+        //删除
+        $('body').on('click','.dept_delete_btn',function(){
+            var id = $(this).attr('data_id');
+            action = "del";
+            str="group_id="+"{{ group_id }}&action="+action+"&del_list="+id;
+            $.ajax({
+                url:"{% url 'group_oab_dept_permit_ajax' %}",
+                type:"GET",
+                data:str,
+                success:function(data){
+                    if(data.status=='OK'){
+                        group_oab_dept_permit_ajax();
+                        alert('删除成功！')
+                    }else{
+                        alert("获取组数据失败：  "+data.message);
+                    }
+                }
+            })
+        })
+
+        $('.submit_dept_permit_btn').click(function(){
+            //var str = $(".form_dept_permit_list").serialize();
+            var deptId = $('#input_box .id_dept_id').val();
+            if(hashId[deptId]){
+                alert('此部门已经添加，请重新选择！');
+                return;
+            }
+            str="group_id="+"{{ group_id }}"+"&dept_list="+alreadyDeptList+deptId;
+            console.log("str  ==  "+str);
+            $.ajax({
+                url:"{% url 'group_oab_dept_permit_add' %}",
+                type:"POST",
+                data:str,
+                success:function(data){
+                    if(data.status=='OK'){
+                        group_oab_dept_permit_ajax();
+                        alert("添加成功！");
+                    }else{
+                        alert("添加失败：  "+data.message);
+                    }
+                }
+            })
+        })
+
+
+
+    </script>
+
 {% endblock %}
 

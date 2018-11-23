@@ -43,7 +43,11 @@ ALL_CONDITION_SUBOPTION = (
     ("mail_size2",           u'邮件大小(Byte)'),
     ("content_size",        u'邮件正文大小(Byte)'),
     ("header_received",    u'邮件头Received'),
-    #("header_from",        u'邮件头From'),
+    ("header_from",         u'邮件头From'),
+    #("address_list",       u'用户通讯录'),
+    #("send_whitelist",    u'发信人白名单'),
+    #("recv_whitelist",     u'收信人白名单'),
+    #("send_blacklist",    u'发信人黑名单'),
 )
 
 ALL_CONDITION_ACTION = (
@@ -67,7 +71,7 @@ ALL_CONDITION_OPTION_HEADER = (
     ("rcpt_dept",           u'收信人部门'),
     ("subject",             u'主题'),
     ("header_received",    u'邮件头Received'),
-    #("header_from",        u'邮件头From'),
+    ("header_from",        u'邮件头From'),
     ("attachments",        u'附件名'),
     # ("header",              u'邮件头'),
 )
@@ -181,6 +185,9 @@ ALL_ACTION = (
     ("smtptransfer",        u'邮件外发代理'),
     ("replace_subject",      u'邮件主题替换'),
     ("replace_body",       u'邮件正文替换'),
+    #("add_send_white",       u'添加到发信人白名单'),
+    #("add_recv_white",       u'添加到收信人白名单'),
+    #("add_send_black",       u'添加到发信人黑名单'),
     # break   中断执行规则
     # jump_to 跳过后面N个规则
     # flag    设置旗帜
@@ -229,6 +236,15 @@ MAIL_TRANSFER_DISABLE = (
     ('1', u'禁用'),
     ('-1', u'激活'),
 )
+
+MAIL_TRANSFER_TYPE = (
+    (u'in', u'接收邮件'),
+    (u'out', u'发送邮件'),
+    (u'all', u'所有邮件'),
+)
+MAIL_TRANSFER_TYPE2={}
+for k,v in dict(MAIL_TRANSFER_TYPE).items():
+    MAIL_TRANSFER_TYPE2[v]=k
 
 MAIL_TRANSFER_SSL = (
     ('1', u'启用'),

@@ -16,7 +16,7 @@ from django_redis import get_redis_connection
 from wsgiref.util import FileWrapper
 
 from app.core.models import CoreTrustIP, CoreMonitor, CoreAlias, CoreBlacklist, \
-    CoreWhitelist, DomainAttr, Domain, CoreConfig
+    CoreWhitelist, DomainAttr, Domain, CoreConfig, Mailbox
 from app.setting.models import ExtCfilterRuleNew, PostTransfer, ExtTranslateHeader, ADSync
 from app.setting import sslopts
 from app.utils.domain_session import get_domainid_bysession, get_session_domain
@@ -34,9 +34,9 @@ from django.utils.translation import ugettext as _
 # 设置
 @licence_required
 def systemSet(request):
-    form = SystemSetForm()
+    form = SystemSetForm(request=request)
     if request.method == "POST":
-        form = SystemSetForm(request.POST)
+        form = SystemSetForm(request.POST, request=request)
         if form.is_valid():
             form.save()
             messages.add_message(request, messages.SUCCESS, u'修改设置成功')
@@ -45,6 +45,38 @@ def systemSet(request):
         "form": form,
     })
 
+# 设置DEBUG标记
+def systemSetDebug(request):
+    from django.conf import settings
+    if settings.DEBUG:
+        settings.DEBUG=False
+        messages.add_message(request, messages.SUCCESS, u'成功取消DEBUG标记')
+    else:
+        settings.DEBUG=True
+        messages.add_message(request, messages.SUCCESS, u'成功设置DEBUG标记')
+    return render(request, "setting/sysset.html", context={
+        })
+
+# 设置DEBUG receiver
+def systemSetDebugReceiver(request):
+    from django_redis import get_redis_connection
+    import os
+    folder = request.GET.get("folder","")
+    if folder and not os.path.exists(folder):
+        messages.add_message(request, messages.ERROR, u'设置失败，路径不存在')
+        return render(request, "setting/sysset.html", context={
+            })
+    redis = get_redis_connection()
+    if not folder and redis.exists("debug_receiver"):
+        redis.delete("debug_receiver")
+        messages.add_message(request, messages.SUCCESS, u'成功取消receiver的DEBUG标记')
+        return render(request, "setting/sysset.html", context={
+            })
+    folder = "1" if not folder.strip() else folder.strip()
+    redis.set("debug_receiver", folder)
+    messages.add_message(request, messages.SUCCESS, u'成功设置receiver的DEBUG标记:"%s"'%folder)
+    return render(request, "setting/sysset.html", context={
+        })
 
 #########################################
 # 信任IP
@@ -742,6 +774,7 @@ def ajax_cfilter(request):
 def smtp_verify_account(account):
     import smtplib
 
+    print ">>>>>>>>  smtp_verify_account   ",account
     if not account or "server" not in account or "account" not in account:
         return "FAIL", "缺少数据"
     status = "FAIL"
@@ -767,9 +800,9 @@ def smtp_verify_account(account):
         else:
             trans_server, port = trans_server, 25
         if trans_ssl == "1":
-            smtpObj = smtplib.SMTP_SSL(host=trans_server,port=int(port),timeout=5)
+            smtpObj = smtplib.SMTP_SSL(host=trans_server,port=int(port),timeout=10)
         else:
-            smtpObj = smtplib.SMTP(host=trans_server,port=int(port),timeout=5)
+            smtpObj = smtplib.SMTP(host=trans_server,port=int(port),timeout=10)
 
         status = "OK"
         if trans_auth == "1":
@@ -922,12 +955,12 @@ def postTransferModify(request, trans_id):
     })
 
 @licence_required
-def ajax_postTransfer(request):
+def ajax_mail_transfer(request):
     data = request.GET
     order_column = data.get('order[0][column]', '')
     order_dir = data.get('order[0][dir]', '')
     search = data.get('search[value]', '')
-    colums = ['id', 'mailbox', 'account', 'recipient', 'server', 'ssl', 'auth', 'fail_report', 'disabled']
+    colums = ['id', 'type', 'mailbox', 'account', 'recipient', 'server', 'ssl', 'auth', 'fail_report', 'disabled']
 
     lists = PostTransfer.objects.all()
     if search:
@@ -962,7 +995,7 @@ def ajax_postTransfer(request):
     re_str = '<td.*?>(.*?)</td>'
     number = length * (page-1) + 1
     for d in lists.object_list:
-        t = TemplateResponse(request, 'setting/ajax_post_transfer.html', {'d': d, 'number': number})
+        t = TemplateResponse(request, 'setting/ajax_mail_transfer.html', {'d': d, 'number': number})
         t.render()
         rs["aaData"].append(re.findall(re_str, t.content, re.DOTALL))
         number += 1
@@ -970,8 +1003,71 @@ def ajax_postTransfer(request):
     return HttpResponse(json.dumps(rs), content_type="application/json")
 
 @licence_required
+def mail_transfer_import(request):
+    if request.method == "POST":
+        import_data = request.POST.get('addresses', '')
+        success, fail = 0, 0
+        fail_list = []
+        for line in import_data.split("\n"):
+            line = line.replace("\r", "")
+            if not line:
+                continue
+            if not '\t' in line:
+                fail += 1
+                fail_list.append( u"'%s'    :   %s"%(line,u"不是以'制表符'作为分割符") )
+                continue
+            lines = line.split("\t")
+            length = len(lines)
+            type = lines[0].strip() if length>=1 else u"空列"
+            if not type in constants.MAIL_TRANSFER_TYPE2:
+                fail += 1
+                fail_list.append( u"'%s'     -->       '%s'   :   %s"%(line,type,u"未知的通道类型") )
+                continue
+            type = constants.MAIL_TRANSFER_TYPE2[type]
+            mailbox = lines[1] if length>=1 else ""
+            if not mailbox:
+                continue
+            mailbox_id = 0
+            if not mailbox.startswith(u'@'):
+                o = Mailbox.objects.filter(username=mailbox).first()
+                if not o:
+                    fail += 1
+                    fail_list.append( u"'%s'     -->       '%s'   :   %s"%(line,mailbox,u"本地帐号不存在") )
+                    continue
+                mailbox_id = o.id
+            account = lines[2] if length>=3 else ""
+            server = lines[3] if length >=4 else ""
+            password = lines[4] if length >=5 else ""
+            ssl = lines[5] if length >= 6 else "-1"
+            ssl = '1' if str(ssl)=='1' else '-1'
+            if PostTransfer.objects.filter(type=type, mailbox=mailbox, server=server, account=account).first():
+                fail += 1
+                fail_list.append( u"'%s'     -->       '%s'   :   %s"%(line,mailbox,u"相同数据已经在数据库中存在") )
+                continue
+            form = PostTransferForm(post={
+                'type'  :   type,
+                'mailbox_id': mailbox_id, 'mailbox': mailbox, 'account': account,
+                'server': server, 'password': password, 'ssl': ssl, 'disabled': '-1',
+                'recipient': '',
+            })
+            if form.is_valid():
+                form.save()
+                success += 1
+            else:
+                fail += 1
+                fail_list.append( u"'%s'     -->       '%s'   :   %s"%(line,mailbox,form.error_notify) )
+        messages.add_message(request, messages.SUCCESS,
+                             _(u'批量添加成功%(success)s个, 失败%(fail)s个') % {"success": success, "fail": fail})
+        for line in fail_list:
+            messages.add_message(request, messages.ERROR, _(u'批量添加失败 : %(fail)s') % {"fail": line})
+        return HttpResponseRedirect(reverse('mail_transfer'))
+    return render(request, "setting/mail_transfer_import.html", context={})
+
+@licence_required
 def ajax_imapCheck(request):
     import imaplib
+    import socket
+    socket.setdefaulttimeout(10)
 
     server = request.POST.get("server","")
     port = int(request.POST.get("port",0))
@@ -1348,7 +1444,7 @@ def sslView(request):
                     return HttpResponseRedirect(reverse("ssl_maintain"))
                 except Exception,err:
                     print err
-                    messages.add_message(request, messages.ERROR, u'生成私钥失败,请重新生成')
+                    messages.add_message(request, messages.ERROR, u'生成私钥失败,请重新生成: %s'%unicode(err))
                     return HttpResponseRedirect(reverse("ssl_maintain"))
 
         if status == "clear":
@@ -1367,6 +1463,9 @@ def sslView(request):
             sigvalue = sigobj.value or None
             if not sigvalue:
                 messages.add_message(request, messages.ERROR, u'签名请求 不存在')
+                return HttpResponseRedirect(reverse("ssl_maintain"))
+            elif len(sigvalue)>64:
+                messages.add_message(request, messages.ERROR, u'签名请求不能大于64个字符')
                 return HttpResponseRedirect(reverse("ssl_maintain"))
             else:
                 try:
@@ -1435,6 +1534,10 @@ def sslView(request):
 @licence_required
 def sslEnableView(request):
     if request.method == "POST":
+        if unicode(request.user).startswith(u"demo_admin@"):
+            messages.add_message(request, messages.ERROR, u'演示版本不能开启SSL!')
+            return HttpResponseRedirect(reverse("ssl_maintain"))
+
         # 私钥数据
         keyobj = DomainAttr.getAttrObj(item="ssl_privatekey")
         # 签名请求数据
@@ -1491,7 +1594,7 @@ def sslPrivateView(request):
                     messages.add_message(request, messages.SUCCESS, u'导入私钥成功')
                     return HttpResponseRedirect(reverse("ssl_maintain"))
                 except BaseException as e:
-                    messages.add_message(request, messages.ERROR, u'导入私钥失败（保护密码错误、非密钥文件等）, 请重新导入！')
+                    messages.add_message(request, messages.ERROR, u'导入私钥失败（保护密码错误、非密钥文件等）, 请重新导入！ ： %s'%unicode(e))
                     return HttpResponseRedirect(reverse("ssl_maintain"))
         if status == "export":
             keywd = request.POST.get("sslkey_passwd_export", "").strip()

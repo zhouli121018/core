@@ -1,0 +1,102 @@
+{% extends 'base_site.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "金湾短信接口设置" %}{% endblock %}
+
+{% block css_block %}
+    <link rel="stylesheet" href="{% static 'assets/css/jquery-ui.min.css' %}" />
+<style>
+    .nowrap0{
+        white-space: nowrap;
+    }
+    table td.text-right{
+      font-weight:bold;
+        /*white-space: nowrap;*/
+    }
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+    <li> <a href="{% url 'system_set' %}">{% trans "金湾短信接口设置" %}</a> </li>
+{% endblock %}
+
+{% block page-content %}
+<div id="dynamic-div">
+    <h3 class="header smaller lighter blue"><span class="red">金湾短信接口设置</span>
+
+    </h3>
+
+    <div class="table-header">
+        金湾短信接口设置
+    </div>
+    <div>
+        <form class="form-horizontal table-responsive" role="form" action="" method="POST">
+            {% csrf_token %}
+        <table class="table table-bordered">
+            <tr>
+                <td class="text-right">短信模块设置：</td>
+                <td class="row">
+                    <div class="col-sm-4 no-padding-left">
+                        <div class="input-group">
+                            <span class="input-group-addon">短信服务商：</span>
+                            <select name="sms_type" class="form-control">
+                                {% for k,v in form.get_sms_list %}
+                                    <option value="{{ k }}" {% if k == form.sms_type %} selected {% endif %} > {{ v }} </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <span class="input-group-addon">用户ID：</span>
+                            <input type="text" name="sms_account" value="{{ form.sms_account }}" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <span class="input-group-addon">帐号密码：</span>
+                            <input type="password" name="sms_password" value="{{ form.sms_password }}" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <span class="input-group-addon">签名：</span>
+                            <input type="text" name="sms_sign" value="{{ form.sms_sign }}" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            {% if not form.sms_cost is None %}
+                                <span class="input-group-addon">剩余短信：</span>
+                                <input type="number" name="sms_cost" value="{{ form.sms_cost }}" class="form-control" readonly="">
+                            {% endif %}
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+            <div class="clearfix form-actions">
+                <div class="text-center">
+                    <button class="btn btn-info" type="submit">
+                        <i class="ace-icon fa fa-check bigger-110"></i>
+                        保存
+                    </button>
+                    <button class="btn" type="reset">
+                        <i class="ace-icon fa fa-undo bigger-110"></i>
+                        重置
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $('#switch-email').hide();
+</script>
+{% endblock %}
+
+{% block my_jsblock %}
+
+{% endblock %}

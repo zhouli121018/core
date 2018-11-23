@@ -13,7 +13,7 @@
 <td>{{ d.get_status_display|default_if_none:'' }}</td>
 <td>{{ d.desc_msg|default_if_none:'' }}</td>
 <td>{{ d.get_set_from_display }}</td>
-<td>{{ d.last_update|date:"Y-m-d H:i" }}</td>
+<td>{{ d.get_time|default_if_none:'' }}</td>
 <td>
     {% if d.disabled == 1 %}
         <span class="label label-xlg label-light arrowed-in arrowed-in-right">禁用</span>

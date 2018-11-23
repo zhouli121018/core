@@ -11,10 +11,12 @@ from app.core.models import Domain, Mailbox, CoreMonitor, CoreAlias, DomainAttr,
 from app.setting.models import ExtCfilterRuleNew, ExtCfilterNewCond, ExtCfilterNewAction
 from app.setting.models import PostTransfer, ExtTranslateHeader, ADSync
 from app.setting import constants
+from lib import sms_interface
 from lib import validators
 from lib.formats import dict_compatibility
 from lib.tools import clear_redis_cache
-from lib.tools import create_task_trigger, add_task_to_queue
+from lib.tools import create_task_trigger, add_task_to_queue, get_client_request
+from lib.licence import licence_validsms
 from django_redis import get_redis_connection
 
 from auditlog.api import api_create_admin_log
@@ -31,6 +33,8 @@ class SystemSetForm(DotDict):
         (u'auto_backup', '-1'), # 数据备份
         (u'sys_search_mails', '-1'), # 数据
         (u'sys_auto_backup_mail','-1'), # 自动转移到"旧邮件备份"目录
+        #邮箱共享
+        #(u'relate','-1'),
     )
 
     FieldsDomain = (
@@ -38,7 +42,7 @@ class SystemSetForm(DotDict):
         (u'sw_search_speedup', '-1'),
         (u'cf_search_speedup_cache', u'/usr/local/u-mail/data/app/cache_whoosh'), #搜索缓存存储地址
         (u'sw_mail_log_save_day', '15'), #邮件收发日志保存天数   core_domain_attr.sw_mail_log_save_day
-        (u'superadmintitle', u'U-Mail邮件系统--超域管理后台'), #管理员首页名称 core_info
+        (u'superadmintitle', u'U-Mail邮件系统--超级管理员后台'), #管理员首页名称 core_info
         (u'view_webmail_url', ''), #Webmail地址和端口 core_info 应该放到 域管理设置
         #(u'view_attach_url', ''), #附件预览服务器域名 core_info 应该放到 域管理设置
         (u'cf_def_send_charset', 'utf-8'), #邮件发送编码 core_domain_attr.cf_def_send_charset
@@ -47,14 +51,13 @@ class SystemSetForm(DotDict):
     )
 
     SMSServiceList = (
-        (u'jiutian',    u'九天'),
-        (u'bayou',      u'八友'),
-        (u'huatang',    u'华唐'),
+        (u'jiutian',      u'短信通道一（九天）'),
+        (u'zhutong',      u'短信通道二（助通）'),
     )
 
     EncodingList = (
         (u'utf-8', u'UTF-8(默认)'),
-        (u'gbk', u'GB2312'),
+        (u'gbk', u'GBK'),
     )
 
     @property
@@ -65,7 +68,8 @@ class SystemSetForm(DotDict):
     def get_encoding_list(self):
         return self.EncodingList
 
-    def __init__(self, post=None):
+    def __init__(self, post=None, request=None):
+        self.request = request
         self.post = post
         self.is_post = False
         self.__initialize()
@@ -79,13 +83,16 @@ class SystemSetForm(DotDict):
 
         for k, v in self.Fields:
             if not self.is_post:
-                vr = CoreConfig.analyseFormValue(function=k)
+                vr = CoreConfig.analyseFormValue(function=k, default=v)
                 v = vr if vr else v
             self[k] = BaseFied(value=data.get(k, v), error=None)
 
         for k,v in self.FieldsDomain:
             objConf = DomainAttr.objects.filter(domain_id=0,type="system",item=k).first()
             value = v if not objConf else objConf.value
+            if k == "view_webmail_url":
+                if not value and self.request:
+                    value = get_client_request(self.request)
             self[k] = BaseFied(value=data.get(k, value), error=None)
 
         #短信服务器配置
@@ -99,16 +106,26 @@ class SystemSetForm(DotDict):
         self.sms_type = jsonSms.get(u"type", u"")
         self.sms_account = jsonSms.get(u"account", u"")
         self.sms_password = jsonSms.get(u"password", u"")
+        self.sms_sign = jsonSms.get(u"sign", u"")
         if "sms_type" in data:
             self.sms_type = data["sms_type"]
         if "sms_account" in data:
             self.sms_account = data["sms_account"]
         if "sms_password" in data:
             self.sms_password = data["sms_password"]
+        if "sms_sign" in data:
+            self.sms_sign = data["sms_sign"]
         jsonSms["type"] = self.sms_type
         jsonSms["account"] = self.sms_account
         jsonSms["password"] = self.sms_password
+        jsonSms["sign"] = self.sms_sign
         self.cf_sms_conf = BaseFied(value=json.dumps(jsonSms), error=None)
+        self.sms_cost = None
+        try:
+            if self.sms_account and self.sms_password:
+                self.sms_cost = sms_interface.query_sms_cost(self.sms_type, self.sms_account, self.sms_password)
+        except Exception,err:
+            print err
 
         #SMTP重试设置
         confRetry = DomainAttr.objects.filter(domain_id=0,type="system",item='cf_smtp_retry').first()
@@ -137,9 +154,9 @@ class SystemSetForm(DotDict):
 
     def __check(self):
         obj = getattr(self, "recipientlimit")
-        if obj and int(obj.value) < 0:
+        if obj and int(obj.value) <= 0:
             self.__valid = False
-            obj.set_error(_(u"收件人数量限制不能小于0."))
+            obj.set_error(_(u"收件人数量限制不能小于等于0."))
         obj = getattr(self, "cf_mailbox_delete_delay")
         if not obj.value or int(obj.value)<0:
             self.__valid = False
@@ -224,15 +241,6 @@ class CoreAliasForm(DotDict):
                 source=u"@{}".format(self.source.value) ).exists():
             self.__valid = False
             self.source.set_error(u"虚拟邮件域 已在域别名列表中")
-            return
-
-        # 校验唯一性
-        lists = CoreAlias.objects.filter( target=u"@{}".format(self.target.value) )
-        if self.instance:
-            lists = lists.exclude(id=self.instance.id)
-        if lists.exists():
-            self.__valid = False
-            self.target.set_error(u"真实邮件域 已在域别名列表中")
             return
 
     def save(self):
@@ -984,6 +992,7 @@ class PostTransferForm(DotDict):
 
     PARAM_LIST = dict((
         (u'mailbox_id', u''),
+        (u'type',u'in'),
         (u'account',u''),
         (u'recipient',u''),
         (u'server',u''),
@@ -1001,11 +1010,13 @@ class PostTransferForm(DotDict):
         self.post = post or {}
         self.__initialize()
         self.__valid = True
+        self.error_notify = u""
 
     def __initialize(self):
         self.mailbox_id = BaseFied(value=0, error=None)
         self.mailbox = BaseFied(value="", error=None)
 
+        self.type = BaseFied(value="in", error=None)
         self.account = BaseFied(value="", error=None)
         self.recipient = BaseFied(value="", error=None)
         self.server = BaseFied(value="", error=None)
@@ -1018,10 +1029,8 @@ class PostTransferForm(DotDict):
             self.__setparam()
         elif self.instance:
             self.mailbox_id = BaseFied(value=self.instance.mailbox_id, error=None)
-            obj = Mailbox.objects.filter(id=self.instance.mailbox_id).first()
-            mailbox = obj.username if obj else ""
-            self.mailbox = BaseFied(value=mailbox, error=None)
-
+            self.mailbox = BaseFied(value=self.instance.mailbox, error=None)
+            self.type = BaseFied(value=self.instance.type, error=None)
             self.account = BaseFied(value=self.instance.account, error=None)
             self.recipient = BaseFied(value=self.instance.recipient, error=None)
             self.server = BaseFied(value=self.instance.server, error=None)
@@ -1063,11 +1072,15 @@ class PostTransferForm(DotDict):
         return self.__valid
 
     def __check(self):
-        if not self.instance:
-            if not validators.check_email_ordomain(u"{}".format(self.mailbox.value)):
+        if not validators.check_email_ordomain(u"{}".format(self.mailbox.value)):
+            self.__valid = False
+            self.mailbox.set_error(u"邮箱或域名格式不正确")
+            self.error_notify=u"邮箱或域名格式不正确"
+        if validators.check_email(u"{}".format(self.mailbox.value)):
+            if not self.mailbox_id.value or int(self.mailbox_id.value) <= 0 :
                 self.__valid = False
-                self.mailbox.set_error(u"邮箱格式不正确")
-
+                self.mailbox.set_error(u"本地邮箱不存在")
+                self.error_notify=u"本地邮箱不存在"
         #if self.account.value:
         #    if not validators.check_email_ordomain(u"{}".format(self.account.value)):
         #        self.__valid = False
@@ -1076,10 +1089,6 @@ class PostTransferForm(DotDict):
         #    if not validators.check_email_ordomain(u"{}".format(self.recipient.value)):
         #        self.__valid = False
         #        self.recipient.set_error(u"邮箱格式不正确")
-
-        if not self.mailbox_id.value or int(self.mailbox_id.value) <= 0 :
-            self.__valid = False
-            self.mailbox.set_error(u"无效的本地邮箱帐号")
         return self.__valid
 
     def save(self):
@@ -1089,6 +1098,7 @@ class PostTransferForm(DotDict):
             obj = self.instance
             obj.mailbox_id=u"{}".format(self.mailbox_id.value)
             obj.mailbox=u"{}".format(self.mailbox.value)
+            obj.type=u"{}".format(self.type.value)
             obj.account=u"{}".format(self.account.value)
             obj.recipient=u"{}".format(self.recipient.value)
             obj.server=u"{}".format(self.server.value)
@@ -1103,6 +1113,7 @@ class PostTransferForm(DotDict):
             PostTransfer.objects.create(
                 mailbox_id=u"{}".format(self.mailbox_id.value),
                 mailbox=u"{}".format(self.mailbox.value),
+                type=u"{}".format(self.type.value),
                 account=u"{}".format(self.account.value),
                 recipient=u"{}".format(self.recipient.value),
                 server=u"{}".format(self.server.value),

@@ -42,6 +42,7 @@
   </div>
 </template>
 <script>
+  import {getOpenoffice} from '@/api/api'
   export default {
     data() {
       return {
@@ -68,6 +69,38 @@
       jumpTo(path){
         this.activeT = path;
         this.$router.push('/file/'+path);
+      },
+      preview(a,type){
+        console.log(a)
+        if((a.file_size && a.file_size>10*1024*1024) || (a.size && a.size>10*1024*1024)){
+          this.$message({
+            type:'error',
+            duration:6000,
+            showClose:true,
+            message:'预览文件大于10M,请下载查看！'
+          })
+          return;
+        }
+        let ww = window.open();
+        let param = {
+          type:type,
+          id:a.id,
+        };
+        getOpenoffice(param).then(res=>{
+          let href = '';
+          if(res.data.is_openoffice){
+            href = res.data.preview_url + encodeURIComponent(window.location.origin + res.data.source_url)
+          }else{
+            href = window.location.origin + res.data.source_url
+          }
+          ww.location = href
+        }).catch(err=>{
+          let str = '';
+          if(err.non_field_errors){
+            str = err.non_field_errors[0]
+          }
+          ww.document.body.innerHTML="<h4>预览文件出错！"+str+'</h4>';
+        })
       },
       sendMail_net(row,sels,type){
         if(this.$store.getters.getSharedStatus.shareuser_all || this.$store.getters.getSharedStatus.shareuser_post ||this.$store.getters.getSharedStatus.shareuser_send){

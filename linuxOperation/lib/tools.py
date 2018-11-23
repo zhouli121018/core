@@ -150,6 +150,9 @@ def str2datetime(str):
     return None if str == '0000-00-00 00:00:00' else datetime.datetime.strptime(str, '%Y-%m-%d %H:%M:%S')
 
 def clear_redis_cache():
+    """
+    当更新会在底层有redis缓存的数据时，都需要把所有cache_开头的redis key 给清掉
+    """
     redis = get_redis_connection()
     for keyname in redis.keys("cache_*") :
         redis.delete(keyname)
@@ -177,7 +180,6 @@ def generate_task_id(main_id = None, sub_id = None) :
 
 # 生成任务主ID
 def generate_task_main_id() :
-    #main_id = time.strftime("%Y%m%d%H%M%S") + Common.get_random_string(5)
     main_id = str(time.time())[:10] + get_random_string(5)
     return main_id
 
@@ -242,6 +244,10 @@ def download_excel(ws, filename):
     if os.path.exists(filepath):
         os.remove(filepath)
     ws.save(filepath)
+    try:
+        os.chown(filepath, get_system_user_id("umail"), get_system_group_id("umail") )
+    except:
+        pass
 
     #返回文件给客户
     sio = StringIO.StringIO()
@@ -301,3 +307,45 @@ def phpDumps(data):
     data = phpserialize.dumps(data)
     data = data.decode("utf-8","ignore")
     return data
+
+def get_time_string():
+    try:
+        import pytz
+        from django.utils import timezone
+        tz = pytz.timezone("Asia/Shanghai")
+        return timezone.localtime(timezone=tz).strftime('%Y-%m-%d %H:%M:%S')
+    except Exception,err:
+        return time.strftime('%Y-%m-%d %H:%M:%S')
+
+def safe_function(funcobj, *args, **kw):
+    def wrap(*args, **kw):
+        rtn = None
+        try:
+            rtn = funcobj(*args, **kw)
+        except Exception, err:
+            rtn = -1
+            DebugPrint()
+            print "execute function '{}' failure".format(funcobj.__name__)
+        return rtn
+    return wrap
+
+@safe_function
+def get_client_request(request):
+    if not request:
+        return ""
+
+    http_reference = request.META.get('HTTP_REFERER')
+    if http_reference:
+        idx = http_reference.index("/operation")
+        if idx > 0:
+            return http_reference[:idx]
+
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[-1].strip()
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    ip = ip if ip else request.get_host()
+    proto = 'https' if request.is_secure() else 'http'
+    return "{}://{}".format(proto, ip)
+

@@ -103,22 +103,40 @@
                         <td class="row">
                             <div class="col-sm-4 no-padding">
                                 <label class="inline" >
-
                                     <input name="sw_oab" value="1" {% if form_home.sw_oab.value == "1" %} checked {% endif %}  type="checkbox" class="ace ace-switch ace-switch-5 open">
                                     <span class="lbl"></span>
                                 </label>
                             </div>
                             <div class="col-sm-8 no-padding">
                                 <label class="inline" >
+                                    <small class="muted smaller-90">通讯录显示子部门：</small>
+                                    <input name="sw_dept_showall" value="1" {% if form_home.sw_dept_showall.value == "1" %} checked {% endif %}  type="checkbox" class="ace ace-switch ace-switch-5 open">
+                                    <span class="lbl"></span>
                                     <small class="muted smaller-90">导出按钮开关：</small>
-                                    <input name="sw_oab_dumpbutton" value="1" {% if form_home.sw_oab_dumpbutton.value == "1" %} checked {% endif %}  type="checkbox" class="ace ace-switch ace-switch-5 open">
+                                    <input name="sw_oab_dumpbutton" value="1" {% if form_home.sw_oab_dumpbutton.value == "1" %} checked {% endif %}  type="checkbox" >
                                     <span class="lbl"></span>
                                 </label>
                             </div>
-
                         </td>
-
                     </tr>
+                    {% if request.user.is_new_version_webmail %}
+                        <tr>
+                            <td class="text-right" >企业通讯录显示设置：</td>
+                            <td class="row">
+                                <div>
+                                    <input name="oab_show_mod" value="1" {% if form_home.oab_show_mod.value == "1" %} checked {% endif %} type="radio"  class="ace">
+                                    <span class="lbl"> 显示所有部门 </span>
+                                    <input name="oab_show_mod" value="2" {% if form_home.oab_show_mod.value == "2" %} checked {% endif %} type="radio"  class="ace">
+                                    <span class="lbl"> 仅显示本部门 </span>
+                                    <input name="oab_show_mod" value="3" {% if form_home.oab_show_mod.value == "3" %} checked {% endif %} type="radio"  class="ace">
+                                    <span class="lbl"> 显示本部门和子部门 </span>
+                                    <input name="sw_oab_dumpbutton" value="1" {% if form_home.sw_oab_dumpbutton.value == "1" %} checked {% endif %} type="checkbox"  class="ace">
+                                    <span class="lbl"> 显示导出按钮 </span>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+
                     <tr>
                         <td class="text-right" >公共通讯录功能：</td>
                         <td>
@@ -127,7 +145,6 @@
                                 <span class="lbl"></span>
                             </label>
                         </td>
-
                     </tr>
                     <tr>
                         <td class="text-right">其他域通讯录共享功能：</td>
@@ -149,21 +166,6 @@
                             </div>
                             <div class="col-sm-8 no-padding green">
                                 注：用户在邮件系统中，可以开启企业通讯录域组合
-                            </div>
-                        </td>
-
-                    </tr>
-                    <tr>
-                        <td class="text-right" >父部门中是否显示子部门邮件账号：</td>
-                        <td class="row">
-                            <div class="col-sm-4 no-padding">
-                                <label class="inline" >
-                                    <input name="sw_dept_showall" value="1" {% if form_home.sw_dept_showall.value == "1" %} checked {% endif %}  type="checkbox" class="ace ace-switch ace-switch-5 open">
-                                    <span class="lbl"></span>
-                                </label>
-                            </div>
-                            <div class="col-sm-8 no-padding green">
-                                注：用户在邮件系统中，点击父部门的时候，是否显示所有子部门的邮箱
                             </div>
                         </td>
                     </tr>
@@ -274,6 +276,20 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="text-right">邮件召回成功后提示收件人：</td>
+                    <td class="row">
+                        <div class="col-sm-4 no-padding">
+                            <label class="inline" >
+                                <input name="sw_mail_recall_notify" value="1" {% if form_mail.sw_mail_recall_notify.value == "1" %} checked {% endif %}  type="checkbox" class="ace ace-switch ace-switch-5 open">
+                                <span class="lbl"></span>
+                            </label>
+                        </div>
+                        <div class="col-sm-8 no-padding">
+                            注：选择为不启用后，召回邮件时对方不会收到提醒邮件；
+                        </div>
+                    </td>
+                </tr>
+                <tr>
                     <td class="text-right" >添加Reply-To到邮件头：</td>
                     <td>
                         <label class="inline" >
@@ -308,7 +324,7 @@
                             </label>
                         </div>
                         <div class="col-sm-8 no-padding">
-                            注：关闭此功能后用户无法修改个人资料；
+                            注：关闭此功能后用户无法查看和修改个人资料；
                         </div>
                     </td>
 
@@ -381,6 +397,7 @@
                     </td>
 
                 </tr>
+                <!--
                 <tr>
                     <td class="text-right" >设置自动转发默认值：</td>
                     <td class="row">
@@ -395,6 +412,7 @@
                         </div>
                     </td>
                 </tr>
+                -->
                 <tr>
                     <td class="text-right" >邮箱搬家功能：</td>
                     <td>
@@ -512,6 +530,7 @@
                     </td>
 
                 </tr>
+                <!--
                 <tr>
                     <td class="text-right" >部门邮件列表：</td>
                     <td>
@@ -521,6 +540,7 @@
                         </label>
                     </td>
                 </tr>
+                -->
             </table>
             <div class=" ">
             <input type="hidden" value="{{ domain.id }}" name="domain_id"/>

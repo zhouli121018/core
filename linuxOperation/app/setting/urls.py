@@ -32,8 +32,7 @@ urlpatterns = [
     url(r'^review/rule/$', review_views.reviewrule_list, name='reviewrule_list'),
     url(r'^review/rule/ajax/$', review_views.ajax_reviewrule_list, name='ajax_reviewrule_list'),
     url(r'^review/rule/cond/ajax/$', review_views.ajax_reviewrule_cond_list, name='ajax_reviewrule_cond_list'),
-    url(r'^review/rule/cond/ajax/test/$', review_views.ajax_reviewrule_cond_test, name='ajax_reviewrule_cond_test'),
-    url(r'^review/rule/cond/ajax/test/add$', review_views.ajax_reviewrule_cond_test_add, name='ajax_reviewrule_cond_test_add'),
+    url(r'^review/rule/cond/add/$', review_views.ajax_reviewrule_cond_add, name='ajax_reviewrule_cond_add'),
     url(r'^review/rule/add/$', review_views.reviewrule_add, name='reviewrule_add'),
     url(r'^review/rule/(?P<rule_id>\d+)/$', review_views.reviewrule_modify, name='reviewrule_modify'),
     url(r'^review/config/$', review_views.review_config, name='review_config'),
@@ -64,7 +63,8 @@ urlpatterns = [
     url(r'^mail_transfer/sender/$', views.mailTransferSender, name='mail_transfer_sender'),
     url(r'^mail_transfer/post/add$', views.postTransferAdd, name='post_transfer_add'),
     url(r'^mail_transfer/post/mdf/(?P<trans_id>\d+)/$', views.postTransferModify, name='post_transfer_mdf'),
-    url(r'^mail_transfer/post/ajax$', views.ajax_postTransfer, name='ajax_post_transfer'),
+    url(r'^mail_transfer/post/ajax$', views.ajax_mail_transfer, name='ajax_mail_transfer'),
+    url(r'^mail_transfer/post/import$', views.mail_transfer_import, name='mail_transfer_import'),
     # 验证
     url(r'^mail_transfer/ajax_imapcheck$', views.ajax_imapCheck, name='ajax_imapcheck'),
     url(r'^mail_transfer/ajax_smtpcheck$', views.ajax_smtpCheck, name='ajax_smtpcheck'),
@@ -93,5 +93,6 @@ urlpatterns = [
 
     #杂项设置
     url(r'^sys/$', views.systemSet, name='system_set'),
-
+    url(r'^sys/debug$', views.systemSetDebug, name='system_set_debug'),
+    url(r'^sys/debug/receiver$', views.systemSetDebugReceiver, name='system_set_debug_receiver'),
 ]

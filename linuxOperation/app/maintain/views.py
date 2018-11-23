@@ -26,7 +26,8 @@ from app.maintain.tools import BackupFormat, generateRedisTaskID
 from app.maintain.choices import ISOLATE_STATUS_R
 from app.maintain.models import ExtSquesterMail, AccountTransfer, IMAPMoving
 from app.maintain.forms import BackupSetForm, MailSearchForm, AccountTransferForm, IMAPMovingForm, QueueSearchForm
-from lib.tools import create_task_trigger, add_task_to_queue, clear_redis_cache
+from lib.tools import create_task_trigger, add_task_to_queue, clear_redis_cache, recursion_make_dir,\
+                           get_system_user_id, get_system_group_id
 from lib.licence import licence_required
 from .utils import get_queues, delete_queue
 from auditlog.api import api_create_admin_log
@@ -36,8 +37,12 @@ from lib.parse_email import ParseEmail
 # 数据备份
 @licence_required
 def backup_view(request):
+    redis = get_redis_connection()
     backuppath = CoreConfig.getInitBackupParam()["path"]
     if request.method == 'POST':
+        if not os.path.exists(backuppath):
+            recursion_make_dir(backuppath)
+            os.chown(backuppath, get_system_user_id("umail"), get_system_group_id("umail") )
         auto_status = request.POST.get('auto_status',"")
         if auto_status:
             auto_status = "1" if auto_status=="1" else "-1"
@@ -46,6 +51,10 @@ def backup_view(request):
         else:
             name = request.POST.get('name')
             status = request.POST.get('status')
+            if status in ("backup","restore") and unicode(request.user).startswith(u"demo_admin@"):
+                messages.add_message(request, messages.SUCCESS, u'演示版无法进行此操作！')
+                return redirect('backup_maintain')
+
             redis = get_redis_connection()
             if redis.exists("task_trigger:backup"):
                 messages.add_message(request, messages.ERROR, u'正在执行备份操作，操作失败!')
@@ -75,6 +84,7 @@ def backup_view(request):
                 p.hset("task_data:restore", task_id, d)
                 p.execute()
                 messages.add_message(request, messages.SUCCESS, u'已提交数据恢复任务，请耐心等待数据恢复完成!')
+        redis.set("task_trigger:dispatcher_reload", 1)
         return redirect('backup_maintain')
 
     index = 0

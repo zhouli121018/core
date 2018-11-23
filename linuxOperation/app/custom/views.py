@@ -8,6 +8,7 @@ import os
 import time
 import base64
 
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.core.urlresolvers import reverse
@@ -19,22 +20,20 @@ from django.template.response import TemplateResponse
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.db.transaction import atomic
 from django.db.models import Q
-from django.views.decorators.csrf import csrf_exempt
 from django_redis import get_redis_connection
 
 from app.core.models import DomainAttr, Domain, Mailbox
-from app.custom.forms import CustomKKserverForm, CustomKKserverLoginForm
+from app.custom.forms import CustomKKserverForm, CustomKKserverFormOld, CustomKKserverLoginForm, CustomKKserverSmsForm
 from app.custom.models import ExtMailboxExtra
 
 from lib import validators
 from lib.tools import fail2ban_ip, get_redis_connection, get_random_string, generate_rsa
 from lib.licence import licence_required
 
-
 @csrf_exempt
 @licence_required
 def custom_kkserver_settings(request):
-    instance = DomainAttr.objects.filter(domain_id=0,type='system',item='sw_custom_kkserver_setting').first()
+    instance = DomainAttr.objects.filter(domain_id=0,type='system',item='sw_custom_kkserver_setting2').first()
     form = CustomKKserverForm(instance=instance)
     if request.method == "POST":
         form = CustomKKserverForm(instance=instance, post=request.POST)
@@ -42,6 +41,20 @@ def custom_kkserver_settings(request):
             form.save()
             messages.add_message(request, messages.SUCCESS, u'修改设置成功')
     return render(request, "custom/kkserver_settings.html", context={
+        "form": form,
+    })
+
+@csrf_exempt
+@licence_required
+def custom_kkserver_settings_old(request):
+    instance = DomainAttr.objects.filter(domain_id=0,type='system',item='sw_custom_kkserver_setting').first()
+    form = CustomKKserverFormOld(instance=instance)
+    if request.method == "POST":
+        form = CustomKKserverFormOld(instance=instance, post=request.POST)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request, messages.SUCCESS, u'修改设置成功')
+    return render(request, "custom/kkserver_settings_old.html", context={
         "form": form,
     })
 
@@ -79,6 +92,19 @@ def custom_kkserver_login(request):
     })
 
 @csrf_exempt
+@licence_required
+def custom_kkserver_sms(request):
+    form = CustomKKserverSmsForm()
+    if request.method == "POST":
+        form = CustomKKserverSmsForm(post=request.POST)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request, messages.SUCCESS, u'修改设置成功')
+    return render(request, "custom/kkserver_sms.html", context={
+        "form": form,
+    })
+
+@csrf_exempt
 def custom_kkserver_token(request):
     try:
         data = json.loads(request.body)
@@ -103,7 +129,7 @@ def custom_kkserver_token(request):
         }
         return HttpResponse(json.dumps(rs), content_type="application/json")
 
-    obj = Mailbox.objects.filter(username=mailbox).first()
+    obj = Mailbox.objects.filter(mailbox=mailbox).first()
     if not obj:
         rs = {
             "result"    :   2,

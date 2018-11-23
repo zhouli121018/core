@@ -44,7 +44,7 @@ class ExtList(models.Model):
     permission = models.CharField(_(u'权限类型'), max_length=10, choices=EXT_LIST_PERMISSION, default='public',
                                   help_text=u'设置为公开列表，所有人都可以向此邮件列表发送邮件；'
                                             u'设置为私有列表,只有设置了发送权限的邮箱才可向此邮件列表发送邮件；'
-                                            u'设置地域名公共列表 ,只有同服务器的邮箱才可向此邮件列表发送邮件。'
+                                            u'设置本地域名公共列表 ,只有同服务器的邮箱才可向此邮件列表发送邮件。'
                                             u'设置同域名公共列表 ,只有同域名的邮箱才可向此邮件列表发送邮件。'
                                             )
     disabled = models.CharField(_(u'状态'), max_length=5, choices=EXT_LIST_STATUS, default='-1')

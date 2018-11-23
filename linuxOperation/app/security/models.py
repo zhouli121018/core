@@ -26,7 +26,7 @@ class Fail2Ban(models.Model):
     internal = models.IntegerField(_(u'检测间隔'), default=0)
     block_minute = models.IntegerField(_(u'禁用时间'), default=0)
     disabled = models.SmallIntegerField(_(u'激活状态'), choices=FAIL2BAN_DISABLE, default=-1)
-    update_time = models.DateTimeField(_(u"更新时间"), auto_now=True)
+    update_time = models.DateTimeField(_(u"更新时间"))
 
     class Meta:
         managed = False
@@ -85,6 +85,17 @@ class Fail2BanBlock(models.Model):
             return u"{}".format(time_val)
         except:
             return u"已失效"
+
+class PasswordWeakList(models.Model):
+    password = models.CharField(_(u"弱密码"), max_length=32, unique=True)
+
+    class Meta:
+        managed = False
+        db_table = 'ext_password_weak'
+        verbose_name = _(u'弱密码列表')
+
+    def __unicode__(self):
+        return self.password
 
 from auditlog.registry import auditlog
 auditlog.register(Fail2Ban,include_fields=['name', 'proto', 'block_fail', 'block_unexists', 'internal', 'block_minute', 'disabled'])

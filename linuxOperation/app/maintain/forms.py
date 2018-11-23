@@ -171,8 +171,15 @@ class AccountTransferForm(forms.ModelForm):
         mailbox_to_id = self.cleaned_data.get('mailbox_to_id')
         mailbox_id = self.cleaned_data.get('mailbox_id')
         if mailbox_id == mailbox_to_id:
-            raise forms.ValidationError(_(u"目标账号不能和禁用账号相同。", ))
+            raise forms.ValidationError(_(u"目标账号不能和禁用账号相同。"))
         return mailbox_to_id
+
+    def clean_mailbox_id(self):
+        mailbox_id = self.cleaned_data.get('mailbox_id')
+        obj = Mailbox.objects.filter(id=mailbox_id).first()
+        if obj and int(obj.disabled)!=1:
+            raise forms.ValidationError(_(u"必须先禁用帐号才能迁移"))
+        return mailbox_id
 
     def __handle_field(self, field):
         value = self.cleaned_data.get(field)

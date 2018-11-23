@@ -56,37 +56,25 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="text-right"><label class="control-label no-padding-right" for="id_corp" id="id_corp" > corp参数 </label></td>
+                        <td class="text-right"><label class="control-label no-padding-right" for="id_corp" id="id_corp" > ekp帐号 </label></td>
                         <td class="row">
                             <div class="col-sm-4">
-                                <input type="text" name="corp" id="id_corp"
-                                       value="{{ form.corp.value }}" class=" form-control"/>
-                                {% if form.corp.error %}
-                                <div style="clear: both"><p class="errornote txt-color-red">{{ form.corp.error }}</p></div>
+                                <input type="text" name="username" id="id_username"
+                                       value="{{ form.username.value }}" class=" form-control"/>
+                                {% if form.username.error %}
+                                <div style="clear: both"><p class="errornote txt-color-red">{{ form.username.error }}</p></div>
                                 {% endif %}
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td class="text-right"><label class="control-label no-padding-right" for="id_receiver" id="id_receiver" > receiver参数 </label></td>
+                        <td class="text-right"><label class="control-label no-padding-right" for="id_receiver" id="id_receiver" > ekp密码 </label></td>
                         <td class="row">
                             <div class="col-sm-4">
-                                <input type="text" name="receiver" id="id_receiver"
-                                       value="{{ form.receiver.value }}" class=" form-control"/>
-                                {% if form.receiver.error %}
-                                <div style="clear: both"><p class="errornote txt-color-red">{{ form.receiver.error }}</p></div>
-                                {% endif %}
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-right"><label class="control-label no-padding-right" for="id_openApp" id="id_openApp" > openApp参数 </label></td>
-                        <td class="row">
-                            <div class="col-sm-4">
-                                <input type="text" name="openApp" id="id_openApp"
-                                       value="{{ form.openApp.value }}" class=" form-control"/>
-                                {% if form.openApp.error %}
-                                <div style="clear: both"><p class="errornote txt-color-red">{{ form.openApp.error }}</p></div>
+                                <input type="password" name="password" id="id_password"
+                                       value="{{ form.password.value }}" class=" form-control"/>
+                                {% if form.password.error %}
+                                <div style="clear: both"><p class="errornote txt-color-red">{{ form.password.error }}</p></div>
                                 {% endif %}
                             </div>
                         </td>

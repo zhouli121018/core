@@ -100,9 +100,10 @@ def show_all_dept(parent_id):
     显示部门所有的父部门
     dept--father--father2
     """
-    s = u''
+    l = []
     while parent_id > 0:
         dept = Department.objects.get(id=parent_id)
-        s += u'{} -- '.format(dept.title)
+        l.append( u'{}'.format(dept.title) )
         parent_id = dept.parent_id
-    return s[:-4]
+    l.reverse()
+    return " -- ".join(l[-4:])

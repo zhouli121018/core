@@ -58,7 +58,7 @@ def get_mail_stat_data(domain_id, mailbox_id, t):
         data = LogReport.get_cache(domain_id,mailbox_id,type,key)
         if not data:
             stat = lists.filter( condition )
-            total = len(stat)
+            total = stat.count()
             data = {"total":total}
             LogReport.save_cache(domain_id,mailbox_id,type,key,data)
         total = int(data["total"])

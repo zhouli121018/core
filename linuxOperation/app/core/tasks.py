@@ -124,6 +124,7 @@ def set_tcp_connect_info(redis, stat_cpu, fmt):
         "yaxisminValue": yaxisminValue,
         "yaxismaxValue": yaxismaxValue,
     }))
+    redis.expire(key, EXPIRE_TIME)
 
 def get_tcp_connect_info():
     now = datetime.datetime.now()
@@ -448,32 +449,4 @@ def get_net_yaxismaxValue(yaxismaxValue, unit):
             if d >= yaxismaxValue:
                 return d
             d += u
-
-
-# 天气 定时更新数据
-WEATHER_STAT_KEY = "linux-webvue:core:views:welcome:weather:stat"
-from app.utils.weather.parse import set_weather
-@shared_task(bind=False)
-def cache_weather():
-    redis = get_redis_connection()
-    lst = redis.smembers(WEATHER_STAT_KEY)
-    if not lst:
-        return None
-    # 每月1号 6点 清除key
-    d = datetime.datetime.now()
-    day = d.day
-    hour = d.hour
-    delete = False
-    if day == 1 and hour == 6:
-        redis.delete(WEATHER_STAT_KEY)
-        logger.warning("delete weather stat key")
-        delete = True
-
-    for d in lst:
-        cache_city_weather.delay(json.loads(d), delete)
-
-@shared_task(bind=False)
-def cache_city_weather(j, delete=False):
-    city_pingying, subcity = j['py'], j['subcity']
-    set_weather(city_pingying, subcity, delete)
 

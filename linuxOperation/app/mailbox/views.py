@@ -22,7 +22,8 @@ from app.core.models import Mailbox, Domain, MailboxUser, MailboxUserAttr, Depar
     MailboxSize, ExtReply, ExtCheckruleCondition, ExtCommonCheckrule, ExtForward, MailboxExtra, ProxyRedisLog, CoreWhitelist
 from app.utils.TaskQueue import TaskQueue
 from app.utils.MailboxLimitChecker import LICENCE_EXCLUDE_LIST, MailboxLimitChecker
-from app.utils.MailboxPasswordChecker import CheckMailboxPassword
+from app.utils.MailboxPasswordChecker import CheckMailboxPassword, CheckMailboxPasswordLimit
+from app.utils.MailboxBasicChecker import CheckMailboxBasic
 from app.utils.regex import pure_digits_regex, pure_english_regex, pure_tel_regex, pure_digits_regex2, pure_lower_regex2, pure_upper_regex2
 from app.utils.response.excel_response import ExcelResponse
 from app.group.models import CoreGroupMember, CoreGroup
@@ -65,8 +66,6 @@ def get_mailbox_list(request):
     used = data.get('used', '')
     used_term = data.get('used_term', '')
     size_status = data.get('size_status', '')
-    limit_send = data.get('limit_send', '')
-    limit_recv = data.get('limit_recv', '')
     id = data.get('id', '')
     dept_ids = get_user_department_ids(request, domain_id)
     if dept_ids:
@@ -94,8 +93,7 @@ def get_mailbox_list(request):
         #     .values_list('id', flat=True)
         # lists = lists.filter(Q(name__icontains=keyword) | Q(id__in=_ids))
         lists = lists.filter(Q(mailboxuser__realname__icontains=keyword) | Q(mailboxuser__engname__icontains=keyword)
-                             | Q(mailboxuser__eenumber__icontains=keyword) | Q(
-            mailboxuser__tel_mobile__icontains=keyword)
+                            | Q(mailboxuser__tel_mobile__icontains=keyword)
                              | Q(name__icontains=keyword) | Q(username__icontains=keyword))
     if disabled:
         #删除状态是另一个额外标记 is_delete， 且该标记与 disabled 显示互斥
@@ -130,21 +128,18 @@ def get_mailbox_list(request):
             _names = MailboxSize.objects.filter(per__gte=100).values_list('name', flat=True)
         lists = lists.filter(username__in=_names)
 
-    if limit_send:
-        lists = lists.filter(limit_send=limit_send)
-
-    if limit_recv:
-        lists = lists.filter(limit_recv=limit_recv)
-
     if id:
         lists = lists.filter(id=id)
     colums = ['id', 'id', 'name', 'mailboxuser__realname', 'id', 'quota_mailbox', 'id', 'id',
               'ip_limit', 'disabled', 'is_active', 'mailboxuser__last_login']
-    if order_column and int(order_column) < len(colums):
+
+    if order_column and int(order_column)>0 and int(order_column) < len(colums):
         if order_dir == 'desc':
             lists = lists.order_by('-%s' % colums[int(order_column)])
         else:
             lists = lists.order_by('%s' % colums[int(order_column)])
+    else:
+        lists = lists.order_by('-mailboxuser__showorder')
     return lists
 
 
@@ -262,12 +257,15 @@ def account(request, template_name='mailbox/emailAccounts.html'):
             messages.add_message(request, messages.SUCCESS, _(u'成功设置 %s 个帐号为管理员') % count)
         if status == 'cancel_manager':
             mails = Mailbox.objects.filter(Q(is_active=True)|Q(is_superuser=True), id__in=ids)
-            count = mails.count()
-            mails.update(is_active=False, is_staff=False, is_superuser=False)
-            if count >0:
-                messages.add_message(request, messages.SUCCESS, _(u'成功取消 %s 个管理员帐号') % count)
+            if mails.filter(name__in=LICENCE_EXCLUDE_LIST).count()>0:
+                messages.add_message(request, messages.ERROR, '无法取消特殊帐号的管理权限')
             else:
-                messages.add_message(request, messages.ERROR, _(u'没有管理员帐号被取消'))
+                count = mails.count()
+                mails.update(is_active=False, is_staff=False, is_superuser=False)
+                if count >0:
+                    messages.add_message(request, messages.SUCCESS, _(u'成功取消 %s 个管理员帐号') % count)
+                else:
+                    messages.add_message(request, messages.ERROR, _(u'没有管理员帐号被取消'))
 
         if status != "delete" and is_distribute_open():
             task_queue = TaskQueue()
@@ -312,7 +310,7 @@ def mailbox_reset_pwd(request):
                 data["status"] = "Failure"
                 data["message"] = reason
             else:
-                Mailbox.objects.filter(username=request.user.username).update(password=md5_crypt.encrypt(password1))
+                Mailbox.objects.filter(username=request.user.username).update(change_pwd=-1, password=md5_crypt.encrypt(password1))
                 objAttr, created = MailboxUserAttr.objects.get_or_create(mailbox_id=request.user.id,domain_id=request.user.domain_id,type=u"system",item=u"password")
                 raw_password = u"hHFdxF43et:::"+password1+u":::hHFdxF43et"
                 raw_password = base64.encodestring(raw_password)
@@ -320,6 +318,26 @@ def mailbox_reset_pwd(request):
                 objAttr.save()
     return HttpResponse(json.dumps(data), content_type="application/json")
 
+@licence_required
+def ajax_check_change_pwd(request):
+    user = request.user
+    ret = 1 if str(user.change_pwd)=="1" else 0
+    domain_id = get_domainid_bysession(request)
+    domain = Domain.objects.get(id=domain_id)
+    #demo用户不用修改密码
+    if domain.domain in ("comingchina.com","fenbu.comingchina.com") and unicode(request.user).startswith(u"demo_admin@"):
+        ret = 0
+    data = {
+        "result"    :   ret,
+        "reason"    :   "",
+    }
+    if ret == 1:
+        _, reason = CheckMailboxPassword(domain_id=user.domain_id, mailbox_id=user.id)
+        if not reason:
+            reason = u"被系统强制设置为需要修改密码",
+        else:
+            data["reason"] = reason
+    return HttpResponse(json.dumps(data), content_type="application/json")
 
 @licence_required
 def add_account(request, template_name='mailbox/add_account.html'):
@@ -330,10 +348,6 @@ def add_account(request, template_name='mailbox/add_account.html'):
 
     if request.method == 'POST':
         data = request.POST.copy()
-        limit_pop = data.get('limit_pop', '')
-        data['limit_pop'] = '-1' if limit_pop == 'on' else '1'
-        limit_imap = data.get('limit_imap', '')
-        data['limit_imap'] = '-1' if limit_imap == 'on' else '1'
         disabled = data.get('disabled', '')
         data['disabled'] = '-1' if disabled == 'on' else '1'
         change_pwd = data.get('change_pwd', '')
@@ -381,6 +395,9 @@ def add_account(request, template_name='mailbox/add_account.html'):
                 task_queue.create_trigger('userinit')
                 messages.add_message(request, messages.SUCCESS, _(u'添加成功'))
                 return HttpResponseRedirect(reverse('mailbox_account'))
+        else:
+                messages.add_message(request, messages.ERROR, _(u'添加失败： {}-{}'.format(form.errors, user_form.errors)))
+                return HttpResponseRedirect(reverse('mailbox_account'))
 
     mail_list = ExtList.objects.filter(domain_id=domain_id, dept_id=0).order_by('-id')
     return render(request, template_name=template_name, context={
@@ -402,7 +419,7 @@ def batchadd_account(request, template_name='mailbox/batchadd_account.html'):
     nd_quota_def = DomainAttr.getAttrObjValue(domain.id, 'system', 'cf_def_netdisk_size')
 
     # 当前域是否开通强密码
-    server_pass = DomainAttr.getAttrObjValue(domain.id, 'webmail', 'sw_pass_severe')
+    server_pass = DomainAttr.getAttrObjValue(domain.id, 'webmail', 'sw_pass_severe_new')
 
     # 失败统计
     failures = []
@@ -421,7 +438,7 @@ def batchadd_account(request, template_name='mailbox/batchadd_account.html'):
                 continue
             buffer = line.split('\t')
             # 用户名 密码 邮箱大小 网盘大小 真实名称 所属部门 工号 职位 手机号码 电话号码 QQ 出生日期
-            data = {'limit_pop': '-1', 'limit_send': '-1', 'limit_imap': '-1', 'limit_login': '-1', 'disabled': '-1',
+            data = {'limit_send': '-1', 'limit_login': '-1', 'disabled': '-1',
                     'limit_recv': '-1', 'pwd_days': '365', 'change_pwd': '-1', 'enable_share': '-1', 'showorder': '0',
                     'gender': 'male', 'oabshow': '1'}
             if compatible_id == '2':
@@ -495,7 +512,7 @@ def batchedit_account(request, template_name='mailbox/batchedit_account.html'):
     nd_quota_def = DomainAttr.getAttrObjValue(domain.id, 'system', 'cf_def_netdisk_size')
 
     # 当前域是否开通强密码
-    server_pass = DomainAttr.getAttrObjValue(domain.id, 'webmail', 'sw_pass_severe')
+    server_pass = DomainAttr.getAttrObjValue(domain.id, 'webmail', 'sw_pass_severe_new')
 
     # 失败统计
     failures = []
@@ -680,7 +697,7 @@ def mailbox_limit_whitelist(request):
     def saveNewEmail(mailbox):
         if mailbox in mailboxDict:
             return
-        obj = CoreWhitelist.objects.create(type=type, domain_id=domain_id, mailbox_id=mailbox_id, email=mailbox)
+        obj = CoreWhitelist.objects.create(type="fix_{}".format(type), domain_id=domain_id, mailbox_id=mailbox_id, email=mailbox)
         obj.save()
     def saveOldEmail():
         for mailbox, data in mailboxDict.items():
@@ -756,10 +773,15 @@ def ajax_edit_account(request):
         CoreGroupMember.objects.filter(id=id, mailbox_id=mailbox_id).delete()
         res = {'msg': _(u'删除成功').encode('utf-8')}
     elif action == 'add_group':
-        obj, _b = CoreGroupMember.objects.get_or_create(group_id=group_id, mailbox_id=mailbox_id)
-        msg = _(u'添加成功') if _b else _(u'重复添加')
-        res = {'msg': msg.encode('utf-8'),
-               'result': _b, 'group_id': obj.id, 'group_name': obj.group.name}
+        if CoreGroupMember.objects.filter(mailbox_id=mailbox_id):
+            msg = _(u'邮箱已存在于其他组')
+            res = {'msg': msg.encode('utf-8'),
+                   'result': False, 'group_id': 0, 'group_name': ''}
+        else:
+            obj, _b = CoreGroupMember.objects.get_or_create(group_id=group_id, mailbox_id=mailbox_id)
+            msg = _(u'添加成功') if _b else _(u'重复添加')
+            res = {'msg': msg.encode('utf-8'),
+                   'result': _b, 'group_id': obj.id, 'group_name': obj.group.name}
     elif action == 'del_dept':
         DepartmentMember.objects.filter(id=id, mailbox_id=mailbox_id).delete()
         res = {'msg': _(u'删除成功').encode('utf-8')}
@@ -831,10 +853,6 @@ def ajax_edit_account(request):
         obj = Mailbox.objects.get(id=mailbox_id)
         disabled_origin = obj.disabled
         user = obj.mailboxuser
-        limit_pop = data.get('limit_pop', '')
-        data['limit_pop'] = '-1' if limit_pop == 'on' else '1'
-        limit_imap = data.get('limit_imap', '')
-        data['limit_imap'] = '-1' if limit_imap == 'on' else '1'
         disabled = data.get('disabled', '')
         data['disabled'] = '-1' if disabled == 'on' else '1'
         change_pwd = data.get('change_pwd', '')
@@ -1109,6 +1127,16 @@ def ajax_edit_forward(request):
         logic = data.get('logic', 'all')
         rule_id = data.get('rule_id', '')
         keep_mail = data.get('keep_mail', '1')
+
+        if not body:
+            msg = u"未输入转发地址"
+            return HttpResponse(json.dumps({'msg': msg.encode('utf-8'), 'status':'failure'}), content_type="application/json")
+        body_list = body.split(",")
+        for box in body_list:
+            if not '@' in box:
+                msg = u"地址'{}'不是完整的邮箱地址".format(box)
+                return HttpResponse(json.dumps({'msg': msg.encode('utf-8'), 'status':'failure'}), content_type="application/json")
+
         if action == 'edit':
             msg = _(u'编辑成功')
             obj = ExtForward.objects.get(id=rule_id)
@@ -1196,4 +1224,26 @@ def ajax_edit_forward(request):
         obj.data = value
         obj.save()
         msg = _(u'设置成功')
-    return HttpResponse(json.dumps({'msg': msg.encode('utf-8')}), content_type="application/json")
+    return HttpResponse(json.dumps({'msg': msg.encode('utf-8'), 'status':'success'}), content_type="application/json")
+
+#在2.2.59-60版本开放给PHP进行修改密码检查的API。>2.2.60后类似API可以被app的flask服务替代
+def api_check_password(request):
+    mailbox = request.GET.get("mailbox","")
+    password = request.GET.get("password","")
+    if not mailbox or not password:
+        return HttpResponse(json.dumps({'message':"帐号或密码为空","result":-99}),content_type="application/json")
+    obj = Mailbox.objects.filter(username=mailbox).first()
+    if not obj:
+        return HttpResponse(json.dumps({'message':"帐号不存在","result":-100}),content_type="application/json")
+    ret, force, reason = CheckMailboxPasswordLimit(domain_id=obj.domain_id, mailbox_id=obj.id, password=password)
+    if isinstance(reason,unicode):
+        reason = reason.encode("utf-8", "ignore")
+    return HttpResponse(json.dumps({'message':reason,"result":ret,"change_pwd":force}),content_type="application/json")
+
+def api_check_basic(request):
+    mailbox = request.GET.get("mailbox","")
+    obj = Mailbox.objects.filter(username=mailbox).first()
+    if not obj:
+        return HttpResponse(json.dumps({'message':"帐号不存在","result":-100,"data":{}}),content_type="application/json")
+    setting = CheckMailboxBasic(domain_id=obj.domain_id, mailbox_id=obj.id)
+    return HttpResponse(json.dumps({'message':"","result":0,"data":setting}),content_type="application/json")

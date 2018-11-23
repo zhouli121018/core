@@ -5,7 +5,8 @@ import datetime
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from .models import CoreGroup, CoreGroupMember
-from .models import PASSWD_OHER, PASSWD_FORBID, CHEACK_ATTACH_SIZE, MATCH_BLACK, CHECK_SPAM, CHECK_OBJECT, CHECK_LOCAL, CHECK_OUTSIDE
+from app.core.models import Department
+from .models import PASSWD_OHER, PASSWD_FORBID, CHEACK_ATTACH_SIZE, MATCH_BLACK, CHECK_SPAM, CHECK_OBJECT, CHECK_LOCAL, CHECK_OUTSIDE, CHECK_OAB_SETTING
 from lib.tools import clear_redis_cache
 
 PASSWD_OTHER_LETTER = (
@@ -32,6 +33,7 @@ class CoreGroupForms(forms.ModelForm):
     check_object_bak = forms.MultipleChoiceField(label=_(u'检测对象'), required=False, choices=CHECK_OBJECT)
     check_local_bak = forms.MultipleChoiceField(label=_(u'本域进站邮件'), required=False, help_text=_(u"“反垃圾功能”和“反病毒功能”开启后，这里对应的勾选框才会生效"), choices=CHECK_LOCAL)
     check_outside_bak = forms.MultipleChoiceField(label=_(u'外域进站邮件'), required=False, help_text=_(u"“反垃圾功能”和“反病毒功能”开启后，这里对应的勾选框才会生效"), choices=CHECK_OUTSIDE)
+    oab_show_export_bak = forms.IntegerField(label=_(u'域名'), required=False)
 
     def __init__(self, domain_id, domain, *args, **kwargs):
         super(CoreGroupForms, self).__init__(*args, **kwargs)
@@ -48,9 +50,28 @@ class CoreGroupForms(forms.ModelForm):
             self.check_object = groupobj.check_object and json.loads(groupobj.check_object) or {}
             self.check_local = groupobj.check_local and json.loads(groupobj.check_local) or {}
             self.check_outside = groupobj.check_outside and json.loads(groupobj.check_outside) or {}
+            self.oab_dept_list = groupobj.oab_dept_list and json.loads(groupobj.oab_dept_list) or []
+            self.oab_show_export = int(groupobj.oab_show_export) if (groupobj and groupobj.oab_show_export) else 0
+            self.oab_dept_info = []
+            for dept_id in self.oab_dept_list:
+                obj = Department.objects.filter(id=dept_id).first()
+                if not obj:
+                    continue
+                self.oab_dept_info.append( (dept_id,obj.title) )
+            self.limit_whitelist = groupobj.limit_whitelist and json.loads(groupobj.limit_whitelist) or {}
         else:
-            self.passwd_other = {u'passwd_size': u'passwd_size', u'passwd_digital': u'passwd_digital', u'passwd_name': u'passwd_name'}
-            self.passwd_forbid = {u'forbid_send': u'forbid_send', u'forbid_recv': u'forbid_recv', u'force_change': u'force_change'}
+            self.passwd_other = {
+                    u'passwd_digital': u'passwd_digital',
+                    u'passwd_name': u'passwd_name',
+                    u'passwd_letter': u'passwd_letter',
+                    u'passwd_letter2': u'passwd_letter2',
+                    u'passwd_name2': u'passwd_name2',
+                    }
+            self.passwd_forbid = {
+                        u'forbid_send': u'forbid_send',
+                        u'forbid_send_in_weak': u'forbid_send_in_weak',
+                        u"force_change_in_weak"   :  u'force_change_in_weak',
+                        }
             self.passwd_size2 = self.passwd_other['passwd_size2'] if 'passwd_size2' in self.passwd_other else '8'
             self.check_attach = {u'low': u'low', u'high': u'high'}
             self.match_black = {u'sender': u'sender', u'subject': u'subject', u'content': u'content', u'attach': u'attach'}
@@ -58,8 +79,11 @@ class CoreGroupForms(forms.ModelForm):
             self.check_object = {u'local': u'local', u'outside': u'outside'}
             self.check_local = {u'spam': u'spam', u'virus': u'virus'}
             self.check_outside = {u'spam': u'spam', u'virus': u'virus'}
+            self.oab_dept_list = []
+            self.oab_dept_info = {}
+            self.oab_show_export = 0
+            self.limit_whitelist = {u'send':[],u'recv':[]}
 
-        self.fields['passwd_start'].widget.attrs.update({'readonly': 'readonly'})
         self.fields['spam_subject_flag'].widget.attrs.update({'placeholder': '[ ** * SPAM ** *]'})
         self.fields['send_isolate_name'].widget.attrs.update({'placeholder': 'spamreporter'})
         self.fields['isolate_url'].widget.attrs.update({'placeholder': 'http://mail.test.com'})
@@ -71,7 +95,10 @@ class CoreGroupForms(forms.ModelForm):
 
     class Meta:
         model = CoreGroup
-        exclude = ['passwd_other', 'passwd_forbid', 'check_attach', 'match_black', 'check_spam', 'check_object', 'check_local', 'check_outside']
+        exclude = ['passwd_other', 'passwd_forbid', 'check_attach', 'match_black',
+                    'check_spam', 'check_object', 'check_local', 'check_outside',
+                    'oab_show_export', 'oab_dept_list', 'limit_whitelist',
+                    ]
         error_messages = {
             'name': {
                 'required': _(u"请填写组名称"),
@@ -80,18 +107,6 @@ class CoreGroupForms(forms.ModelForm):
 
     def clean_domain_id(self):
         return self.domain_id
-
-    def clean_passwd_start(self):
-        passwd_start = self.cleaned_data.get('passwd_start')
-        if isinstance(passwd_start, datetime.datetime):
-            t_tuple = passwd_start.timetuple()
-            expire = int(time.mktime(t_tuple))
-            now = time.time()
-            if expire > now:
-                passwd_start = datetime.datetime.now()
-        else:
-            passwd_start = None
-        return passwd_start
 
     def clean_name(self):
         name = self.cleaned_data.get('name')
@@ -110,13 +125,17 @@ class CoreGroupForms(forms.ModelForm):
     def clean(self):
         passwd_other_bak = self.cleaned_data.get('passwd_other_bak')
         passwd_other = dict(zip(passwd_other_bak, passwd_other_bak))
-        if 'passwd_size' in passwd_other_bak:
-            passwd_other_letter = self.cleaned_data.get('passwd_other_letter')
-            passwd_other.update(passwd_size2=passwd_other_letter)
+        passwd_other_letter = self.cleaned_data.get('passwd_other_letter')
+        passwd_other.update(passwd_size2=passwd_other_letter)
         self.passwd_other = passwd_other
 
         passwd_forbid_bak = self.cleaned_data.get('passwd_forbid_bak')
-        passwd_forbid = dict(zip(passwd_forbid_bak, passwd_forbid_bak))
+        passwd_forbid = {}
+        for k in dict(PASSWD_FORBID).keys():
+            if k in passwd_forbid_bak:
+                passwd_forbid[k] = 1
+            else:
+                passwd_forbid[k] = -1
         self.passwd_forbid = passwd_forbid
 
         self.check_attach = self.__get_bak('check_attach_bak')
@@ -125,6 +144,8 @@ class CoreGroupForms(forms.ModelForm):
         self.check_object = self.__get_bak('check_object_bak')
         self.check_local = self.__get_bak('check_local_bak')
         self.check_outside = self.__get_bak('check_outside_bak')
+        self.oab_show_export = self.cleaned_data.get('oab_show_export_bak', 0)
+        self.oab_show_export = 0 if not self.oab_show_export else int(self.oab_show_export)
         return self.cleaned_data
 
     def save(self, commit=True):
@@ -137,18 +158,30 @@ class CoreGroupForms(forms.ModelForm):
         o.check_object = json.dumps(self.check_object)
         o.check_local = json.dumps(self.check_local)
         o.check_outside = json.dumps(self.check_outside)
-
+        o.oab_show_export = self.oab_show_export
         if commit:
             o.save()
         clear_redis_cache()
         return o
 
+    @property
+    def getSendLimitWhiteList(self):
+        for i, box in enumerate(self.limit_whitelist.get('send',[])):
+            yield i+1,box
+
+    @property
+    def getRecvLimitWhiteList(self):
+        for i, box in enumerate(self.limit_whitelist.get('recv',[])):
+            yield i+1,box
+
 class CoreGroupMemberForm(forms.ModelForm):
     group = forms.CharField(label=_(u'组'), required=False, widget=forms.HiddenInput())
 
-    def __init__(self, group_obj, *args, **kwargs):
+    def __init__(self, group_obj, mailbox, *args, **kwargs):
         super(CoreGroupMemberForm, self).__init__(*args, **kwargs)
         self.group=group_obj
+        self.error_message = u""
+        self.memberBox = mailbox
 
     class Meta:
         model = CoreGroupMember
@@ -157,6 +190,25 @@ class CoreGroupMemberForm(forms.ModelForm):
     def clean_group(self):
         return self.group
 
+    def clean_mailbox(self):
+        mailbox_id = self.cleaned_data.get('mailbox')
+        obj = CoreGroupMember.objects.filter(mailbox_id=mailbox_id).first()
+        if obj:
+            o_group = CoreGroup.objects.filter(id=obj.group_id).first()
+            if o_group:
+                self.error_message = _(u"邮箱已存在于其他组'%s'中"%o_group.name)
+                raise forms.ValidationError(self.error_message)
+            else:
+                CoreGroupMember.objects.filter(mailbox_id=mailbox_id).delete()
+        return mailbox_id
+
+    def save(self, commit=True):
+        super(CoreGroupMemberForm, self).save(commit)
+        #曾经添加进组权限的用户，不再在用户界面显示类似 “发信权限”这样的按钮，因为和组权限冲突了
+        if self.memberBox:
+            self.memberBox.use_group = 1
+            self.memberBox.save()
+        clear_redis_cache()
 
 class CoreGroupMemberImportForm(forms.Form):
     txtfile = forms.FileField(label=u'文件导入', required=True)

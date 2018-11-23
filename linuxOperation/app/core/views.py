@@ -65,7 +65,6 @@ def choose_mailbox_list(request):
     action = request.POST.get('action', 'all')
     domain_id = get_domainid_bysession(request)
     domain_id = 0 if not domain_id else int(domain_id)
-
     if not domain_id:
         lists_dpt = Department.objects.all()
         lists_mbox = Mailbox.objects.all()
@@ -127,4 +126,5 @@ def choose_mailbox_list(request):
                                     "dept_id"   :   dept_id,
                                 }
                             )
+
     return HttpResponse(json.dumps(data), content_type="application/json")

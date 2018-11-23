@@ -202,8 +202,8 @@ ACCOUNT_TRANSFER_STATUS = (
 )
 
 ACCOUNT_TRANSFER_DISABLE = (
-    (1, u'马上执行'),
-    (-1, u'停止执行'),
+    (-1, u'马上执行'),
+    (1, u'停止执行'),
 )
 
 

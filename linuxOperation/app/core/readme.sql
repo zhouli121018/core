@@ -40,7 +40,6 @@ CREATE TABLE IF NOT EXISTS `core_group` (
   `is_imap` tinyint(1) NOT NULL,
   `is_passwd` tinyint(1) NOT NULL,
   `passwd_day` int(11) NOT NULL,
-  `passwd_start` datetime DEFAULT NULL,
   `is_passwd_first` tinyint(1) NOT NULL,
   `passwd_type` int(11) NOT NULL,
   `passwd_other` longtext,

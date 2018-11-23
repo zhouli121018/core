@@ -8,7 +8,7 @@ import base64
 
 DOMAIN_BASIC_PARAMS = (
     (u"cf_limit_mailbox_cnt", u"限定邮箱数量"),
-    (u"cf_limit_alias_cnt", u"限定别名数量"),
+    #(u"cf_limit_alias_cnt", u"限定别名数量"),        #这个开关没人用
     (u"cf_limit_mailbox_size", u"限定邮箱空间总容量"),
     (u"cf_limit_netdisk_size", u"限定网络硬盘总容量"),
     (u"cf_limit_email_size", u"发送邮件限制大小"),
@@ -19,7 +19,7 @@ DOMAIN_BASIC_PARAMS = (
 
 DOMAIN_BASIC_PARAMS_VALUE = (
     (u"cf_limit_mailbox_cnt",     "8000"),
-    (u"cf_limit_alias_cnt",       "0"),
+    #(u"cf_limit_alias_cnt",       "0"),              #这个开关没人用
     (u"cf_limit_mailbox_size",   "0"),
     (u"cf_limit_netdisk_size",   "500"),
     (u"cf_limit_email_size",     "0"),
@@ -30,7 +30,7 @@ DOMAIN_BASIC_PARAMS_VALUE = (
 
 DOMAIN_BASIC_PARAMS_TYPE = (
     (u"cf_limit_mailbox_cnt",   "system"),
-    (u"cf_limit_alias_cnt",   "system"),
+    #(u"cf_limit_alias_cnt",   "system"),              #这个开关没人用
     (u"cf_limit_mailbox_size",   "system"),
     (u"cf_limit_netdisk_size",   "system"),
     (u"cf_limit_email_size",   "system"),
@@ -121,19 +121,16 @@ DOMAIN_SYS_RECV_TYPE = (
 DOMAIN_SYS_SECURITY_PARAMS = (
     (u"sw_def_login_limit_mail", u"开启修改密码通知信"),
     (u"cf_def_safe_login", u"安全登录限制"),
-    (u"admin_login_switch", u"管理员登录密码错误3次锁定登录IP"),
 )
 
 DOMAIN_SYS_SECURITY_VALUE = (
     (u"sw_def_login_limit_mail", u"1"),
     (u"cf_def_safe_login", u""),
-    (u"admin_login_switch", u"-1"),
 )
 
 DOMAIN_SYS_SECURITY_TYPE = (
     (u"sw_def_login_limit_mail", u"system"),
     (u"cf_def_safe_login", u"webmail"),
-    (u"admin_login_switch", u"system"),
 )
 
 DOMAIN_SYS_SECURITY_PWD_PARAMS = (
@@ -151,8 +148,7 @@ DOMAIN_SYS_SECURITY_PWD_TYPE = (
 DOMAIN_SYS_PASSWORD_PARAMS = (
     (u"sw_pwdtimeout", u"定期密码修改设置"),
     (u"cf_pwd_days", u"密码有效期间"),
-    (u"cf_pwd_days_time", u"密码有效开始时间"),
-    (u"cf_first_change_pwd", u"首次登录修改密码"),
+    #(u"cf_first_change_pwd", u"首次登录修改密码"),
     (u"cf_pwd_type", u"密码组成字符种类"),
     (u"cf_pwd_rule", u"其他密码规则设置"),
     (u"cf_pwd_forbid", u"用户密码强度低于规则设置"),
@@ -161,8 +157,7 @@ DOMAIN_SYS_PASSWORD_PARAMS = (
 DOMAIN_SYS_PASSWORD_VALUE = (
     (u"sw_pwd_timeout", u"1"),
     (u"cf_pwd_days", u"365"),
-    (u"cf_pwd_days_time", u"0"),
-    (u"cf_first_change_pwd", u"-1"),
+    #(u"cf_first_change_pwd", u"-1"),
     (u"cf_pwd_type", u"-1"),
     (u"cf_pwd_rule", u""),
     (u"cf_pwd_forbid", u""),
@@ -171,8 +166,7 @@ DOMAIN_SYS_PASSWORD_VALUE = (
 DOMAIN_SYS_PASSWORD_TYPE = (
     (u"sw_pwd_timeout", u"system"),
     (u"cf_pwd_days", u"system"),
-    (u"cf_pwd_days_time", u"system"),
-    (u"cf_first_change_pwd", u"system"),
+    #(u"cf_first_change_pwd", u"system"),
     (u"cf_pwd_type", u"system"),
     (u"cf_pwd_rule", u"system"),
     (u"cf_pwd_forbid", u"system"),
@@ -187,7 +181,7 @@ DOMAIN_SYS_PASSWORD_TYPE_LIMIT = (
 
 #其他密码规则设置
 DOMAIN_SYS_PASSWORD_RULE_VALUE = (
-    (u"pwdLen", u"passwd_size"),
+    #(u"pwdLen", u"passwd_size"), >= 2.2.59 后强制开启
     (u"pwdLenValue", u"passwd_size2"),
     (u"pwdNoAcct", u"passwd_name"),
     (u"pwdNumLimit", u"passwd_digital"),
@@ -199,15 +193,25 @@ DOMAIN_SYS_PASSWORD_RULE_VALUE = (
 #密码低于规则强度时操作
 DOMAIN_SYS_PASSWORD_FORBID_RULE = (
     (u"pwdLimitForbidSend", u"forbid_send"),
-    (u"pwdLimitForbidRecv", u"forbid_recv"),
     (u"pwdLimitForceChange", u"force_change"),
+
+    (u"pwdLimitForbidSendInWeak", u"forbid_send_in_weak"),
+    (u"pwdLimitForceChangeInWeak", u"force_change_in_weak"),
+)
+
+DOMAIN_SYS_PASSWORD_FORBID_RULE_DEFAULT = (
+    (u"forbid_send", u"-1"),
+    (u"force_change", u"-1"),
+
+    (u"forbid_send_in_weak", u"1"),
+    (u"force_change_in_weak", u"1"),
 )
 
 DOMAIN_SYS_PASSWORD_LEN_LIMIT = tuple([u"{}".format(v) for v in range(8,17)])
 
 DOMAIN_SYS_PASSWORD_RULE_LIMIT = (
     #是否限制密码长度
-    (u"passwd_size",    u"1"),
+    #(u"passwd_size",    u"1"),
     #密码长度的值
     (u"passwd_size2",    u"8"),
     #密码不能包含账号
@@ -273,18 +277,21 @@ DOMAIN_SYS_OTHERS_PARAMS = (
     (u"sw_online_attach_switch",      u"客户端网络附件开关"),
     (u"sw_auto_inbox",          u"登录默认打开收件箱"),
     (u"sw_filter_duplicate_mail",    u"收件时是否过滤重复邮件"),
-    (u"sw_display_list",       u"邮件列表发来邮件显示邮件列表名称"),
-    (u"sw_smscode",            u"短信通知功能"),
+    #这个开关没有意义，应该作为通用设置存在
+    #(u"sw_display_list",       u"邮件列表发来邮件显示邮件列表名称"),
+    (u"sw_recvsms",               u"短信通知接收邮件"),
+    (u"sw_sendsms",               u"短信通知发送邮件"),
 )
 
 DOMAIN_SYS_OTHERS_VALUE = (
     (u"sw_full_reject",        u"1"),
     (u"sw_auto_clean",         u"1"),
-    (u"sw_online_attach_switch",      u"1"),
+    (u"sw_online_attach_switch",      u"-1"),
     (u"sw_auto_inbox",          u"1"),
     (u"sw_filter_duplicate_mail",    u"1"),
     (u"sw_display_list",       u"1"),
-    (u"sw_smscode",            u"-1"),
+    (u"sw_recvsms",             u"-1"),
+    (u"sw_sendsms",             u"-1"),
 )
 
 DOMAIN_SYS_OTHERS_TYPE = (
@@ -294,7 +301,8 @@ DOMAIN_SYS_OTHERS_TYPE = (
     (u"sw_auto_inbox",          u"webmail"),
     (u"sw_filter_duplicate_mail",    u"webmail"),
     (u"sw_display_list",       u"webmail"),
-    (u"sw_smscode",            u"webmail"),
+    (u"sw_recvsms",               u"webmail"),
+    (u"sw_sendsms",               u"webmail"),
 )
 
 DOMAIN_SYS_OTHERS_SPACE_PARAMS = (
@@ -349,7 +357,7 @@ DOMAIN_SIGN_PERSONAL_TYPE = (
 )
 
 # ------个人签名 的输入参数 --------
-DOMAIN_PERSONAL_DEFAULT_CODE = """<p><span style="font-size:16px;"><strong>{NAME}&nbsp; [<span style="font-size:14px;">{POSITION}</span>]<br /></strong></span></p><p><span style="white-space:normal;font-size:16px;"><strong>{TELEPHONE}</strong></span></p><p><br /><strong></strong></p><p><span style="font-size:14px;"><strong>这里填公司名称<br /></strong></span></p><p>地址：这里填公司地址</p><p>电话：<span style="white-space:normal;">{WORKPHONE}&nbsp;&nbsp; 传真：这里填传真号码&nbsp; 邮箱：{EMAIL}<br /></span></p><br /><p><span style="white-space:normal;"><br /></span></p>"""
+DOMAIN_PERSONAL_DEFAULT_CODE = """<p><span style="font-size:16px;"><strong>{NAME}&nbsp; [<span style="font-size:14px;">{POSITION}</span>]{DEPARTMENT}<br /></strong></span></p><p><span style="white-space:normal;font-size:16px;"><strong>{TELEPHONE}</strong></span></p><p><br /><strong></strong></p><p><span style="font-size:14px;"><strong>这里填公司名称<br /></strong></span></p><p>地址：这里填公司地址</p><p>电话：<span style="white-space:normal;">{WORKPHONE}&nbsp;&nbsp; 传真：这里填传真号码&nbsp; 邮箱：{EMAIL}<br /></span></p><br /><p><span style="white-space:normal;"><br /></span></p>"""
 DOMAIN_PERSONAL_DEFAULT_CODE=base64.encodestring(DOMAIN_PERSONAL_DEFAULT_CODE)
 DOMAIN_PERSONAL_DEFAULT_CODE=u"{}".format(DOMAIN_PERSONAL_DEFAULT_CODE)
 DOMAIN_SIGN_PERSONAL_VALUE_DEFAULT = (
@@ -377,6 +385,8 @@ DOMAIN_MODULE_HOME_PARAMS = (
     (u'sw_netdisk', u'网络硬盘功能'),
     (u'sw_calendar', u'日程功能'),
     (u'sw_notes', u'便签功能'),
+
+    (u'oab_show_mod', u'企业通讯录设置'),    #新版webmail使用
 )
 
 DOMAIN_MODULE_HOME_VALUE = (
@@ -387,13 +397,14 @@ DOMAIN_MODULE_HOME_VALUE = (
 
     (u'sw_email_used_see', u'1'),
     (u'sw_weather', u'1'),
-    (u'sw_oab', u'-1'),
-    (u'sw_cab', u'-1'),
-    (u'sw_oab_share', u'-1'),
-    (u'sw_oab_dumpbutton', u'-1'),
+    (u'sw_oab', u'1'),
+    (u'sw_cab', u'1'),
+    (u'sw_oab_share', u'1'),
+    (u'sw_oab_dumpbutton', u'1'),
+    (u'oab_show_mod', u'1'),
 
-    (u'sw_department_openall', u'-1'),
-    (u'sw_dept_showall', u'-1'),
+    (u'sw_department_openall', u'1'),
+    (u'sw_dept_showall', u'1'),
     (u'sw_netdisk', u'1'),
     (u'sw_calendar', u'1'),
     (u'sw_notes', u'1'),
@@ -410,7 +421,8 @@ DOMAIN_MODULE_HOME_TYPE = (
     (u'sw_oab', u'webmail'),
     (u'sw_cab', u'webmail'),
     (u'sw_oab_share', u'webmail'),
-    (u'sw_oab_dumpbutton', u'webmail'),
+    (u'sw_oab_dumpbutton', u'webmail'),#是否显示通讯录导出按钮
+    (u'oab_show_mod', u'webmail'),      # JSON， 显示所有部门 等按钮设置
 
     (u'sw_department_openall', u'webmail'),
     (u'sw_dept_showall', u'webmail'),
@@ -427,16 +439,18 @@ DOMAIN_MODULE_MAIL_PARAMS = (
 
     (u'sw_auto_receipt', u'自动发送回执功能'),
     (u'sw_mail_in_reply_to', u'添加Reply-To到邮件头'),
+    (u'sw_mail_recall_notify', u'邮件召回成功后提示收件人'),
 )
 
 DOMAIN_MODULE_MAIL_VALUE = (
     (u'sw_drafts', u'1'),
-    (u'sw_mail_encryption', u'1'),
+    (u'sw_mail_encryption', u'-1'),
     (u'sw_show_add_paper', u'-1'),
     (u'sw_mailpaper', u'-1'),
 
     (u'sw_auto_receipt', u'1'),
     (u'sw_mail_in_reply_to', u'1'),
+    (u'sw_mail_recall_notify', u'1')
 )
 
 DOMAIN_MODULE_MAIL_TYPE = (
@@ -447,6 +461,7 @@ DOMAIN_MODULE_MAIL_TYPE = (
 
     (u'sw_auto_receipt', u'webmail'),
     (u'sw_mail_in_reply_to', u'webmail'),
+    (u'sw_mail_recall_notify', u'webmail')
 )
 
 DOMAIN_MODULE_SET_PARAMS = (
@@ -458,7 +473,7 @@ DOMAIN_MODULE_SET_PARAMS = (
     (u'sw_auto_reply', u'自动回复功能'),
     (u'sw_auto_forward', u'自动转发功能'),
     #(u'sys_userbwlist', u'黑白名单功能'),
-    (u'sw_autoforward_visible', u'设置自动转发默认值'),
+    #(u'sw_autoforward_visible', u'设置自动转发默认值'),
     (u'sw_mailboxmove', u'邮箱搬家功能'),
     (u'sw_feedback', u'邮箱意见反馈功能'),
 
@@ -476,7 +491,7 @@ DOMAIN_MODULE_SET_VALUE = (
     (u'sw_auto_reply', u'1'),
     (u'sw_auto_forward', u'1'),
     #(u'userbwlist', u'黑白名单功能'),
-    (u'sw_autoforward_visible', u'1'),
+    #(u'sw_autoforward_visible', u'1'),
     (u'sw_mailboxmove', u'1'),
     (u'sw_feedback', u'1'),
 
@@ -494,7 +509,7 @@ DOMAIN_MODULE_SET_TYPE = (
     (u'sw_auto_reply', u'webmail'),
     (u'sw_auto_forward', u'webmail'),
     #(u'userbwlist', u'-1'),
-    (u'sw_autoforward_visible', u'webmail'),
+    #(u'sw_autoforward_visible', u'webmail'),
     (u'sw_mailboxmove', u'webmail'),
     (u'sw_feedback', u'webmail'),
 
@@ -508,15 +523,16 @@ DOMAIN_MODULE_OTHER_PARAMS = (
     (u'sw_realaddress_alert', u'代发邮件地址提醒'),
     (u'sw_time_mode', u'邮件内容中时间显示'),
     #(u'sw_user_score', u'用户积分功能'),
-    (u'sw_dept_maillist', u'部门邮件列表'),
+    #部门邮件列表 这个开关毫无存在意义
+    #(u'sw_dept_maillist', u'部门邮件列表'),
 )
 
 DOMAIN_MODULE_OTHER_VALUE = (
-    (u'sw_folder_clean', u'1'),
+    (u'sw_folder_clean', u'-1'),
     (u'sw_realaddress_alert', u'1'),
-    (u'sw_time_mode', u'1'),
+    (u'sw_time_mode', u'-1'),
     #(u'sw_user_score', u'1'),
-    (u'sw_dept_maillist', u'-1'),
+    #(u'sw_dept_maillist', u'-1'),
 )
 
 DOMAIN_MODULE_OTHER_TYPE = (
@@ -524,7 +540,7 @@ DOMAIN_MODULE_OTHER_TYPE = (
     (u'sw_realaddress_alert', u'webmail'),
     (u'sw_time_mode', u'webmail'),
     #(u'sw_user_score', u'webmail'),
-    (u'sw_dept_maillist', u'webmail'),
+    #(u'sw_dept_maillist', u'webmail'),
 )
 
 DOMAIN_SECRET_GRADE_1 = u'0'   #秘密
@@ -544,7 +560,6 @@ DOMAIN_PUBLIC_GENDER_CHOICES = (
 
 DOMAIN_LIST_PARAMS = (
     (u"cf_limit_mailbox_cnt", u"限定邮箱数量"),
-    (u"cf_limit_alias_cnt", u"限定别名数量"),
     (u"cf_limit_mailbox_size", u"限定邮箱空间总容量"),
     (u"cf_limit_netdisk_size", u"限定网络硬盘总容量"),
     (u"cf_limit_email_size", u"发送邮件限制大小"),
@@ -557,7 +572,6 @@ DOMAIN_LIST_PARAMS = (
 
 DOMAIN_LIST_PARAMS_VALUE = (
     (u"cf_limit_mailbox_cnt",     u"8000"),
-    (u"cf_limit_alias_cnt",       u"0"),
     (u"cf_limit_mailbox_size",   u"0"),
     (u"cf_limit_netdisk_size",   u"500"),
     (u"cf_limit_email_size",     u"0"),
@@ -570,7 +584,6 @@ DOMAIN_LIST_PARAMS_VALUE = (
 
 DOMAIN_LIST_PARAMS_TYPE = (
     (u"cf_limit_mailbox_cnt",   u"system"),
-    (u"cf_limit_alias_cnt",     u"system"),
     (u"cf_limit_mailbox_size",  u"system"),
     (u"cf_limit_netdisk_size",  u"system"),
     (u"cf_limit_email_size",    u"system"),

@@ -36,7 +36,7 @@
         <el-col :span="12" style="padding-left:6px;">&nbsp;
           <span>
             <span>路径：</span>
-            <span v-for="(item,k) in folder_names" :title="item.name" :class="{clickable:k!=folder_names.length-1}" @click="changeFolderTables(item)">{{item.name}} <i v-if="k!=folder_names.length-1" style="color:#333;"> / </i></span>
+            <span v-for="(item,k) in folder_names" :key="k" :title="item.name" :class="{clickable:k!=folder_names.length-1}" @click="changeFolderTables(item)">{{item.name}} <i v-if="k!=folder_names.length-1" style="color:#333;"> / </i></span>
           </span>
         </el-col>
         <el-col :span="12" style="text-align:right">
@@ -65,6 +65,7 @@
                     <!--<span>共享</span>-->
                     <span @click="resetRowNameShow(scope.row)" v-if="scope.row.is_own || is_supercompany || permisson_type=='1'">重命名</span>
                     <span @click="showAddDialog(scope.row)" v-if="scope.row.nettype=='folder' &&  permisson_type=='1'">添加权限</span>
+                    <span @click="$parent.preview(scope.row,'company')" v-if="scope.row.nettype=='file' && /.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|md|xls|xlsx|doc|docx|ppt|pptx|xml)$/.test(scope.row.name)">预览</span>
                     <span @click="deleteRowFolders(scope.row)" v-if="is_supercompany || permisson_type=='1'">删除</span>
                     <span @click="changeFolderTables(scope.row)" class="folder_type" v-if="scope.row.nettype=='folder' && permisson_type=='0'">访问</span>
                   </div>
@@ -75,7 +76,7 @@
 
           <el-table-column label="大小" width="120">
             <template slot-scope="scope">
-              <span style="margin-left: 10px">{{scope.row.file_size}}</span>
+              <span style="margin-left: 10px">{{scope.row.file_size|mailsize }}</span>
             </template>
           </el-table-column>
 
@@ -251,6 +252,7 @@
                 </span>
               </el-tree>
             </div>
+            
 
           </el-col>
           <el-col :span="18">
@@ -324,7 +326,7 @@
   import { companyDiskGet, companyDiskCapacityGet, companyDiskPathGet,
     companyDiskFolderCreate, companyDiskFolderUpdate, companyDiskFileUpload, companyDiskFileUpdate,
     companyDiskDelete, companyDiskBatchDelete, companyDiskMove, companyDiskBatchMove, companyDiskFileDownload, companyDiskZipDownload,
-    permNetdisk,superNetdisk,companyTree,permList,batchDelete,updatePerm,deletePerm} from '@/api/api'
+    permNetdisk,superNetdisk,companyTree,permList,batchDelete,updatePerm,deletePerm,getOpenoffice} from '@/api/api'
 
   export default {
     data() {
@@ -437,7 +439,7 @@
       }
     },
 
-    mounted: function () {
+    created: function () {
       this.getTables();
       this.getCapacity();
     },

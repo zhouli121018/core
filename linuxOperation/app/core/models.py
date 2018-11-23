@@ -11,7 +11,7 @@ from django.contrib.auth.models import Permission, Group
 from django.contrib.auth.models import UserManager, AbstractUser
 from django.utils.translation import ugettext_lazy as _
 from lib.formats import dict_compatibility
-from lib.licence import licence_validate
+from lib.licence import licence_validate, licence_validsms
 from app.utils.ordered_model import OrderedModel
 from app.core import constants
 from app.utils.fields import ZeroDateField, CharBooleanField, RevCharBooleanField
@@ -22,13 +22,13 @@ class Domain(models.Model):
     """
     id = models.AutoField(primary_key=True, db_column='domain_id')
     domain = models.CharField(u'域名', max_length=50, null=False, blank=False)
-    antivirus = models.CharField(u'反病毒开关', max_length=1, choices=constants.DISABLED_STATUS, default='-1', null=False,
+    antivirus = models.CharField(u'反病毒开关', max_length=1, choices=constants.FUNCTION_STATUS, default='-1', null=False,
                                  blank=False)
-    antispam = models.CharField(u'反垃圾开关', max_length=1, choices=constants.DISABLED_STATUS, default='-1', null=False,
+    antispam = models.CharField(u'反垃圾开关', max_length=1, choices=constants.FUNCTION_STATUS, default='-1', null=False,
                                 blank=False)
-    userbwlist = models.CharField(u'黑白名单开关', max_length=1, choices=constants.DISABLED_STATUS, default='1', null=False,
+    userbwlist = models.CharField(u'黑白名单开关', max_length=1, choices=constants.FUNCTION_STATUS, default='1', null=False,
                                   blank=False)
-    sendlimit = models.CharField(u'发信频率开关', max_length=1, choices=constants.DISABLED_STATUS, default='-1', null=False,
+    sendlimit = models.CharField(u'发信频率开关', max_length=1, choices=constants.FUNCTION_STATUS, default='-1', null=False,
                                  blank=False)
     disabled = models.CharField(u'是否禁用', max_length=1, choices=constants.DISABLED_STATUS, default='-1', null=False,
                                 blank=False)
@@ -99,7 +99,7 @@ class Department(OrderedModel):
     domain = models.ForeignKey(Domain, verbose_name=_(u'域名'), null=False, blank=False)
     parent_id = models.IntegerField(_(u'父ID'), default=-1)
     title = models.CharField(_(u'部门名称'), max_length=100, null=False, blank=False)
-    order = models.PositiveIntegerField(_(u"显示顺序"), editable=False, db_index=True, db_column="showorder")
+    order = models.PositiveIntegerField(_(u"显示顺序"), editable=True, db_index=True, db_column="showorder", default=0)
     modlimit = models.TextField(_(u'部门权限'), blank=True, null=True, default='a:2:{s:7:"netdisk";s:1:"1";s:3:"oab";s:1:"1";}')
 
     class Meta:
@@ -184,27 +184,31 @@ class Mailbox(AbstractUser):
     quota_mailbox = models.IntegerField(u'邮箱容量：', default=100)
     quota_netdisk = models.IntegerField(u'网络硬盘容量：', default=100)
     limit_send = models.CharField(u'发信权限：', max_length=2, choices=constants.MAILBOX_SEND_PERMIT, default='-1',
-                                  null=False, blank=False)
+                                  null=True, blank=True)
     limit_recv = models.CharField(u'收信权限：', max_length=2, choices=constants.MAILBOX_RECV_PERMIT, default='-1',
-                                  null=False, blank=False)
+                                  null=True, blank=True)
+    use_group = models.IntegerField(u'是否应用组权限', default=1)
     # limit_pop = RevCharBooleanField(u'POP功能：', default=True)
     # limit_imap = RevCharBooleanField(u'IMAP功能：', default=True)
     # disabled = RevCharBooleanField(u'邮箱帐号状态：', default=True)
-    limit_pop = models.CharField(u'POP功能', max_length=2, default='-1', choices=constants.MAILBOX_DISABLED)
-    limit_imap = models.CharField(u'IMAP功能', max_length=2, default='-1', choices=constants.MAILBOX_DISABLED)
+    #与组权限冲突
+    #limit_pop = models.CharField(u'POP功能', max_length=2, default='-1', choices=constants.MAILBOX_DISABLED)
+    #与组权限冲突
+    #limit_imap = models.CharField(u'IMAP功能', max_length=2, default='-1', choices=constants.MAILBOX_DISABLED)
     disabled = models.CharField(u'邮箱帐号状态', max_length=2, default='-1', choices=constants.MAILBOX_DISABLED)
     is_delete = models.CharField(u'邮箱删除状态', max_length=2, default='-1', choices=constants.MAILBOX_DISABLED)
     delete_time = models.DateTimeField(_(u'删除开始时间'), blank=True, null=True)
     ip_limit = models.CharField(u'只允许登录IP：', max_length=255, null=True, blank=True)
     savepath = models.CharField(u'邮件保存地址：', max_length=100, blank=True, null=True)
     limit_login = models.CharField(u'登录方式：', max_length=2, default='-1', choices=constants.MAILBOX_LIMIT_LOGIN)
-    recvsms = models.CharField(max_length=2, default='1')
+    recvsms = models.CharField(u'短信接收设置：', max_length=2, choices=constants.MAILBOX_RECV_SMS, default='1')
     sys_mailbox = models.CharField(max_length=2, default='-1')
     change_pwd = models.CharField(u'登录强制修改密码：', max_length=2, choices=constants.MAILBOX_CHANGE_PWD)
     enable_share = models.IntegerField(u'是否打开邮箱共享：', default=-1, choices=constants.MAILBOX_ENABLE)
     # change_pwd = CharBooleanField(u'登录强制修改密码：', default=False)
     # enable_share = CharBooleanField(u'是否打开邮箱共享：', default=False)
-    first_change_pwd = models.IntegerField(u'首次登录强制修改密码：', default=-1, choices=constants.MAILBOX_ENABLE)
+    #first_change_pwd已经去掉
+    #first_change_pwd = models.IntegerField(u'首次登录强制修改密码：', default=-1, choices=constants.MAILBOX_ENABLE)
     pwd_days = models.IntegerField(u'密码有效天数：', default=365, help_text=u'0代表永远有效，大于0代表多少天密码过期后会强制用户修改密码,新增用户默认是365天')
     pwd_days_time = models.IntegerField(u'密码有效开始时间：', default=time.time(), help_text=u'不能大于当前时间')
 
@@ -220,7 +224,6 @@ class Mailbox(AbstractUser):
     # is_active 不选择的话，被当作标记删除用户对待。此处用于区分 PHP前端用户，还是管理员用户
     is_active = models.BooleanField(_(u'管理员：'), default=False)
     is_staff = models.BooleanField(u'是否是员工', default=True)
-    limit_send_freq = models.BooleanField(_(u'发送频率限制：'), default=True)
     is_superuser = models.BooleanField(
         _(u'超级管理员：'),
         default=False,
@@ -292,7 +295,16 @@ class Mailbox(AbstractUser):
         obj = Mailbox.objects.filter(username=self.username, disabled='-1').first()
         if not obj:
             return False
-        return md5_crypt.verify(raw_password, self.password) if not t_password else t_password == self.password
+        succ = md5_crypt.verify(raw_password, self.password) if not t_password else t_password == self.password
+        if not succ:
+            return False
+        #判断是否要强制修改密码
+        from app.utils.MailboxPasswordChecker import CheckMailboxPassword
+        ret, reason = CheckMailboxPassword(domain_id=obj.domain_id, mailbox_id=obj.id, password=raw_password)
+        if ret != 0:
+            obj.change_pwd = '1'
+            obj.save()
+        return True
 
     def set_password(self, raw_password):
         self.password = md5_crypt.hash(raw_password)
@@ -332,7 +344,7 @@ class Mailbox(AbstractUser):
 
     @property
     def open_custom_kkserver(self):
-        obj = Domain.objects.filter( Q(domain="test.com") | Q(domain="jinwan.gov.cn") ).first()
+        obj = Domain.objects.filter( Q(domain="jinwan.gov.cn") ).first()
         if not obj:
             return False
         return True
@@ -358,6 +370,15 @@ class Mailbox(AbstractUser):
     @property
     def licence_validate(self):
         return licence_validate()
+
+    @property
+    def licence_validsms(self):
+        # insert into core_config(function,enabled) values('enable_sms','1');
+        # delete from core_config where function='enable_sms';
+        obj = CoreConfig.objects.filter(function="enable_sms").first()
+        if obj and obj.enabled == '1':
+            return True
+        return licence_validsms()
 
     @property
     def is_sys_admin(self):
@@ -397,6 +418,13 @@ class Mailbox(AbstractUser):
         return True if users else False
 
     @property
+    def is_develop_server(self):
+        obj = Domain.objects.filter( Q(domain="test.com") | Q(domain="domain.com") ).first()
+        if not obj:
+            return False
+        return True
+
+    @property
     def get_delete_time_desc(self):
         if not self.delete_time:
             return u"等待删除"
@@ -406,7 +434,7 @@ class Mailbox(AbstractUser):
 
     @property
     def getSendLimitWhiteList(self):
-        lists = CoreWhitelist.objects.filter(type="send", domain_id=self.domain_id, mailbox_id=self.id).all()
+        lists = CoreWhitelist.objects.filter(type="fix_send", domain_id=self.domain_id, mailbox_id=self.id).all()
         num = 1
         for d in lists:
             yield num, d.id, d.email, str(d.disabled)
@@ -414,11 +442,20 @@ class Mailbox(AbstractUser):
 
     @property
     def getRecvLimitWhiteList(self):
-        lists = CoreWhitelist.objects.filter(type="recv", domain_id=self.domain_id, mailbox_id=self.id).all()
+        lists = CoreWhitelist.objects.filter(type="fix_recv", domain_id=self.domain_id, mailbox_id=self.id).all()
         num = 1
         for d in lists:
             yield num, d.id, d.email, str(d.disabled)
             num += 1
+
+    @property
+    def is_new_version_webmail(self):
+        # insert into core_config(function,enabled) values('new_version_webmail','1');
+        # delete from core_config where function='new_version_webmail';
+        obj = CoreConfig.objects.filter(function="new_version_webmail").first()
+        if obj and obj.enabled == '1':
+            return True
+        return False
 
 class MailboxUser(models.Model):
     """
@@ -845,26 +882,34 @@ class CoreConfig(models.Model):
         return enabled, param
 
     @staticmethod
-    def analyseFormValue(function):
+    def analyseFormValue(function, default=''):
         if function == "recipientlimit":
-            return CoreConfig.getFuctionParam(function)
-        return CoreConfig.getFuctionEnabled(function)
+            return CoreConfig.getFuctionParam(function, default)
+        return CoreConfig.getFuctionEnabled(function, default)
 
     @staticmethod
     def getFuctionObj(function):
         obj, _created = CoreConfig.objects.get_or_create(function=function)
         if _created:
-            obj.enabled == "-1"
+            obj.enabled = "-1"
             obj.save()
         return obj
 
     @staticmethod
-    def getFuctionEnabled(function):
-        return CoreConfig.getFuctionObj(function).enabled
+    def getFuctionEnabled(function, default='-1'):
+        obj = CoreConfig.getFuctionObj(function)
+        if not obj.enabled:
+            obj.enabled = default
+            obj.save()
+        return obj.enabled
 
     @staticmethod
-    def getFuctionParam(function):
-        return CoreConfig.getFuctionObj(function).param
+    def getFuctionParam(function, default=''):
+        obj = CoreConfig.getFuctionObj(function)
+        if not obj.param:
+            obj.param = default
+            obj.save()
+        return obj.param
 
     @staticmethod
     def saveFuction(function, enabled, param, withenabled=True):

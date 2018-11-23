@@ -113,7 +113,7 @@
                     <td class="text-right">启用验证码功能：</td>
                     <td class="row">
                         <div class="col-sm-4 no-padding">
-                            <input type="text" id="spinner1" name="sw_login_captcha_error_num" value="{{ form_basic.sw_login_captcha_error_num.value }}" class="form-control"/>
+                            <input type="number" id="spinner1" name="sw_login_captcha_error_num" value="{{ form_basic.sw_login_captcha_error_num.value }}" class="form-control"/>
                         </div>
                         <div class="col-sm-8 no-padding">
                             <span>注：-1表示永远显示验证码，表示多少次验证错误后显示验证码；</span>
@@ -178,7 +178,7 @@
                                 <div class="col-sm-6">
                                     <input type="file" name="logofile" class="class_import_logo_webmail"  value="" style="float: left">
                                     <p class="help-block">
-                                        注：图片推荐大小为 180 x 45 像素。允许后缀:jpg, png, gif。
+                                        注：图片推荐大小为 350 x 50 像素。允许后缀:jpg, png, gif。
                                     </p>
                                 </div>
                             </td>
@@ -326,7 +326,7 @@
                                 </p>
                                 <input type="file" name="advert_logo_1" class="class_import_advert_logo_1"  value="" style="float: left">
                                 <p class="help-block">
-                                    注：图片推荐大小为 380 x 60 像素。允许后缀:jpg, png, gif。
+                                    注：图片推荐大小为 380 x 60 像素。允许后缀:jpg, png, gif。链接不能为空。
                                 </p>
                                 <p class="red">链接地址</p>
                                 <input type="text" name="advert_link_1" value="{{ form_login_advert.advert_link_1 }}" style="width:200px;">
@@ -358,7 +358,7 @@
                                 </p>
                                 <input type="file" name="advert_logo_2" class="class_import_advert_logo_2"  value="" style="float: left">
                                 <p class="help-block">
-                                    注：图片推荐大小为 380 x 60 像素。允许后缀:jpg, png, gif。
+                                    注：图片推荐大小为 380 x 60 像素。允许后缀:jpg, png, gif。链接不能为空。
                                 </p>
                                 <p class="red">链接地址</p>
                                 <input type="text" name="advert_link_2" value="{{ form_login_advert.advert_link_2 }}" style="width:200px;">
@@ -504,7 +504,7 @@
 //    });
     $('#spinner1').ace_spinner(
             {
-                value:3,min:-1,max:10,step:1, btn_up_class:'btn-info' , btn_down_class:'btn-info'
+                value:3,min:-1,max:1000,step:1, btn_up_class:'btn-info' , btn_down_class:'btn-info'
             })
             .closest('.ace-spinner')
             .on('changed.fu.spinbox', function(){

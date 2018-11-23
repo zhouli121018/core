@@ -1,5 +1,5 @@
 <template>
-  <div style="padding-top:1px;box-sizing: border-box" id="search">
+  <div style="box-sizing: border-box" id="search">
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="登录查询" name="login">
         <el-pagination style="text-align: right;"
@@ -154,6 +154,7 @@
             <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'success'}" @click="changeStatus('success')">收件箱和个人文件夹</el-button>
             <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'spam-flag'}" @click="changeStatus('spam-flag')">垃圾箱</el-button>
             <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'virus'}" @click="changeStatus('virus')">病毒拦截</el-button>
+            <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'spam'}" @click="changeStatus('spam')">垃圾拦截</el-button>
           </el-button-group>
         </div>
         <el-pagination style="text-align: right;"
@@ -203,6 +204,15 @@
             <template slot-scope="scope">
               <div>
                 <span> {{scope.row.folder }} </span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="remark"
+            label="备注">
+            <template slot-scope="scope">
+              <div>
+                <span> {{scope.row.remark }} </span>
               </div>
             </template>
           </el-table-column>
@@ -498,11 +508,13 @@ export default {
     changeType(status){
       this.deleteData.page = 1;
       this.deleteData.status = status;
+      sessionStorage['searchType'] = status;
       this.getDelete();
     },
     changeStatus(status){
       this.mailData.page = 1;
       this.mailData.status = status;
+      sessionStorage['searchStatus'] = status;
       this.getMail();
     },
     changeExpand(row){
@@ -510,6 +522,7 @@ export default {
     },
     handleClick(tab, event) {
       let index = tab.$data.index;
+      sessionStorage['searchIndex'] = index;
       if(index==1){
         this.getSend();
       }else if(index == 2){
@@ -621,12 +634,37 @@ export default {
     }
   },
   created(){
-    this.getLogin();
+    if(sessionStorage['searchIndex']){
+      let index = sessionStorage['searchIndex'];
+      if(index==1){
+        this.activeName = 'send';
+        this.getSend();
+      }else if(index == 2){
+        this.activeName = 'mail';
+        if(sessionStorage['searchStatus']){
+          this.mailData.status = sessionStorage['searchStatus'];
+        }
+        this.getMail();
+      }else if(index == 3){
+        this.activeName = 'delete';
+        if(sessionStorage['searchType']){
+          this.deleteData.status = sessionStorage['searchType']
+        }
+        this.getDelete();
+      }
+    }else{
+      this.activeName = 'login';
+      this.getLogin();
+    }
+
 
   },
 };
 </script>
 <style>
+  #search .el-tabs__nav-wrap::after{
+        background-color: #555C64;
+  }
   #search .el-tabs--top .el-tabs__item.is-top:nth-child(2) {
      padding-left: 20px;
 }
@@ -641,7 +679,7 @@ export default {
     height:59px;
   }
   #search .el-tabs__nav-scroll{
-    height:61px;
+    height:60px;
     line-height:59px;
   }
 #search .el-tabs{
@@ -678,7 +716,7 @@ export default {
   color:rgb(255, 208, 75);
 }
 #search .el-tabs__header .el-tabs__active-bar {
-    bottom: 0;
+    bottom: -1px;
     background-color: rgb(255, 208, 75);
     /*margin-left:12px;*/
 }

@@ -71,7 +71,6 @@
                         <td>签名模板</td>
                         <td>
                             <div class="wysiwyg-editor" id="editor_sign">
-                                {{ form_personal.personal_sign_templ }}
                             </div>
                             <div class="widget-toolbox padding-4  admin_setted center">
                                 <button type="button" class="btn btn-info" onclick="clickSubmitButton('personal_sign','form_personal')">
@@ -100,12 +99,31 @@
 
 <script>
     $('#sub_sign_tabs').tabs();
-    var editor2_content = htmlDecodeByRegExp("{{form_domain.content_html}}");
-    var editor_sign_content = htmlDecodeByRegExp("{{ form_personal.personal_sign_templ }}");
-    $('#editor2').html(editor2_content);
-    $('#editor_sign').html(editor_sign_content);
-    initEditor('#editor2');
-    initEditor('#editor_sign');
+
+    //$('#editor2').html(editor2_content);
+    //$('#editor_sign').html(editor_sign_content);
+    //initEditor('#editor2');
+    //initEditor('#editor_sign');
+    $.ajax({
+        url:" {% url 'ajax_domainSignPersonal' %}",
+        type:'POST',
+        success:function(data){
+            console.log("data.data== "+data.data);
+            $('#editor_sign').html(data.data);
+            initEditor('#editor_sign');
+        }
+    })
+    $.ajax({
+        url:" {% url 'ajax_domainSignDomain' %}",
+        type:'POST',
+        success:function(data){
+            console.log("data.data== "+data.data);
+           if(data.data.html){
+              $('#editor2').html(data.data.html);
+              initEditor('#editor2');
+           }
+        }
+    })
 
     function clickSubmitButton(action, form_name){
         var str = $("."+form_name).serialize();

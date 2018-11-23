@@ -33,12 +33,14 @@ class DepartmentForm(forms.ModelForm):
     fax = forms.CharField(label=_(u'传真'), required=False, max_length=50, strip=True)
     email = forms.CharField(label=_(u'E-Mail'), required=False, max_length=50, strip=True)
     address = forms.CharField(label=_(u'地址'), required=False, max_length=50, strip=True)
+    order = forms.IntegerField(label=_(u'显示顺序'), required=False, initial=0)
+
     class Meta:
         model = Department
         exclude = ['modlimit',]
         fields = [
             'domain', 'parent_id', 'title',
-            'manager', 'contact', 'telphone', 'fax', 'email', 'address',
+            'manager', 'contact', 'telphone', 'fax', 'email', 'address', 'order'
         ]
         error_messages = {
             'title': {
@@ -46,8 +48,9 @@ class DepartmentForm(forms.ModelForm):
             },
         }
 
-    def __init__(self, is_superuser, dept_ids, domain, parent_name, infobj, *args, **kwargs):
+    def __init__(self, request, is_superuser, dept_ids, domain, parent_name, infobj, *args, **kwargs):
         super(DepartmentForm, self).__init__(*args, **kwargs)
+        self.request = request
         self.is_superuser=is_superuser
         self.dept_ids = dept_ids
         self.domain = domain
@@ -59,7 +62,6 @@ class DepartmentForm(forms.ModelForm):
             self.fields['fax'].initial = infobj.fax
             self.fields['email'].initial = infobj.email
             self.fields['address'].initial = infobj.address
-
         if self.instance.pk:
             self.modlimit = phpLoads(self.instance.modlimit)
         else:
@@ -82,6 +84,10 @@ class DepartmentForm(forms.ModelForm):
             raise forms.ValidationError(_(u"输入的E-Mail不合法。", ))
         return email
 
+    def clean_order(self):
+        order = self.cleaned_data.get('order')
+        return 0 if not order else order
+
     def update_dept_permit(self, post):
         if not self.instance.pk:
             return
@@ -97,6 +103,41 @@ class DepartmentForm(forms.ModelForm):
             for obj in self.instance.child_list.values():
                 obj.modlimit = data
                 obj.save()
+
+    #每个添加的部门都要插入一个新的部门列表
+    def create_department_list(self, o_dept):
+        from app.maillist.models import ExtList
+        obj = ExtList.objects.filter(listtype=u'dept', domain_id=o_dept.domain_id, dept_id=o_dept.id).first()
+        if obj:
+            return obj.id
+        #新版本webmail，新增的邮件列表名称以dept_开头
+        if self.request.user.is_new_version_webmail:
+            address = "dept_%s@%s"%(o_dept.id, self.domain)
+        else:
+            #没有就新建个部门列表，老版本部门列表是按索引递增的，所以需要把所有部门列表都查出来
+            all_depts = {}
+            for obj in ExtList.objects.filter(listtype=u'dept', domain_id=o_dept.domain_id).all():
+                all_depts[obj.address] = obj
+            idx = 1
+            address = "d_%s@%s"%(idx,self.domain)
+            while address in all_depts:
+                idx += 1
+                address = "d_%s@%s"%(idx,self.domain)
+
+        obj = ExtList.objects.create(
+            address=address,
+            listtype=u'dept',
+            domain_id=o_dept.domain_id,
+            dept_id=o_dept.id,
+            listname=o_dept.title,
+            description=o_dept.title
+            )
+        return obj.id
+
+    def save(self, commit=True):
+        o = super(DepartmentForm, self).save(commit)
+        self.create_department_list(o)
+        return o
 
 class CoDepartmentInfoForm(forms.ModelForm):
     domain_id = forms.IntegerField(label=_(u'域名'), required=False, widget=forms.HiddenInput())

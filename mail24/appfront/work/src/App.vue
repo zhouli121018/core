@@ -113,5 +113,8 @@
   .text-center{
     text-align:center;
   }
+  #app .el-badge__content{
+    border:none;
+  }
 
 </style>

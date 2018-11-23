@@ -10,9 +10,9 @@ from django_redis import get_redis_connection
 
 from lib.forms import BaseFied, BaseFieldFormatExt, DotDict
 from lib.validators import check_ip
-from lib.tools import clear_redis_cache,get_unicode,get_string
+from lib.tools import clear_redis_cache,get_unicode,get_string,get_client_request
 from app.core.models import Mailbox, DomainAttr, Domain
-from .models import Fail2Ban, Fail2BanTrust, Fail2BanBlock, FAIL2BAN_PROTO
+from .models import Fail2Ban, Fail2BanTrust, Fail2BanBlock, FAIL2BAN_PROTO, PasswordWeakList
 from app.security import constants
 
 class BanRuleForm(forms.ModelForm):
@@ -51,10 +51,32 @@ class BanRuleForm(forms.ModelForm):
         self.proto = ','.join(proto_bak)
         return self.cleaned_data
 
+    def clean_internal(self):
+        internal = self.cleaned_data.get('internal')
+        if not internal or int(internal)<=0:
+            raise forms.ValidationError(_(u"时间间隔必须为大于0的整数，单位为分钟", ))
+        return internal
+
+    def clean_block_minute(self):
+        internal = self.cleaned_data.get('block_minute')
+        if not internal or int(internal)<=0:
+            raise forms.ValidationError(_(u"禁用时间必须为大于0的整数，单位为分钟", ))
+        return internal
+
+    def make_time(self):
+        try:
+            import pytz
+            from django.utils import timezone
+            tz = pytz.timezone("Asia/Shanghai")
+            return timezone.localtime(timezone=tz).strftime('%Y-%m-%d %H:%M:%S')
+        except Exception,err:
+            return time.strftime('%Y-%m-%d %H:%M:%S')
+
     def save(self, commit=True):
         o = super(BanRuleForm, self).save(commit=False)
         o.proto = self.proto
         if commit:
+            o.update_time = self.make_time()
             o.save()
         return o
 
@@ -130,9 +152,10 @@ class SpamSetForm(DotDict):
 
     SPAM_FOLDER_LIST = dict(constants.SPAMSET_DELIVER_FOLDER)
 
-    def __init__(self, instance=None, get=None, post=None, domain_id=0):
+    def __init__(self, instance=None, get=None, post=None, request=None, domain_id=0):
         self.instance = instance
         self.instance_domain = None
+        self.request = request
         self.get = get or {}
         self.post = post or {}
         self.is_post = False
@@ -166,6 +189,8 @@ class SpamSetForm(DotDict):
         for k,v in constants.SPAMSET_PARAM_DEFAULT.items():
             if not k in value:
                 value[k] = v
+        if not value.get("host","").strip() and self.request:
+            value["host"] = get_client_request(self.request)
 
         #删除一个废弃的key
         if "open_spf" in value:
@@ -269,19 +294,24 @@ class SpamSetForm(DotDict):
         return self.__valid
 
     def save(self):
+        value = self.value.value
+        if "open_spf" in value:
+            flag = value.pop("open_spf")
+            value["spf"] = "1" if flag == "1" else "-1"
+
         if self.instance:
             obj = self.instance
             obj.domain_id = self.domain_id
             obj.type = self.instance.type
             obj.item = self.instance.item
-            obj.value = json.dumps(self.value.value)
+            obj.value = json.dumps(value)
             obj.save()
         else:
             obj = DomainAttr.objects.create(
                 domain_id=self.domain_id,
                 type="system",
                 item="cf_antispam",
-                value=json.dumps(self.value.value),
+                value=json.dumps(value),
             )
         #sw_antivirus , sw_antispam 两个参数，webmail以前是修改的core_domain表的列，兼容处理
         if self.instance_domain:
@@ -412,3 +442,82 @@ class SendFrequencyForm(DotDict):
             self.instance_domain.sendlimit = self.sw_sendlimit.value
             self.instance_domain.save()
         clear_redis_cache()
+
+class PasswordWeakForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(PasswordWeakForm, self).__init__(*args, **kwargs)
+        self.error_notify = u''
+
+    class Meta:
+        model = PasswordWeakList
+        fields = ('password',)
+
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        password = password.strip()
+        if not password:
+            self.error_notify = _(u"请填写密码。",)
+            raise forms.ValidationError(self.error_notify)
+        if len(password) >= 32:
+            self.error_notify = _(u"密码过长。",)
+            raise forms.ValidationError(self.error_notify)
+        return password
+
+class PasswordWeakImportForm(forms.Form):
+
+    txtfile = forms.FileField(label=u'选择文件', required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(PasswordWeakImportForm, self).__init__(*args, **kwargs)
+        self.file_name = None
+        self.file_ext = None
+        self.file_obj = None
+
+    def clean_txtfile(self):
+        f = self.files.get('txtfile', None)
+        if not f:
+            raise forms.ValidationError(_(u"请选择文件。", ))
+        file_name = f.name
+        fext = file_name.split('.')[-1]
+        if fext not in ('xls', 'xlsx', 'csv', 'txt'):
+            raise forms.ValidationError(_(u"只支持excel、txt、csv文件导入。", ))
+        self.file_name = file_name
+        self.file_ext = fext
+        self.file_obj = f
+        return f
+
+    def save_password_list(self, pwd_list):
+        from django.db import connection
+        cursor = connection.cursor()
+        def execute(l):
+            if not l:
+                return
+            value = ",".join( ["('{}')".format(v) for v in l] )
+            sql = """
+INSERT INTO ext_password_weak(`password`)
+VALUES {}
+ON DUPLICATE KEY UPDATE password=VALUES(password)
+""".format(value)
+            cursor.execute(sql)
+            return
+        fail_list = []
+        l = []
+        i = 0
+        for p in pwd_list:
+            p = p.strip().replace('\n', '').replace('\r', '').replace('\000', '').replace(' ', '').replace('\t', '')
+            if not p:
+                fail_list.append( _(u"密码为空。",) )
+                continue
+            if len(p) >= 32:
+                fail_list.append( _(u"密码过长。",) )
+                continue
+            l.append(p)
+            i += 1
+            if i < 500:
+                continue
+            i = 0
+            execute(l)
+            l = []
+        execute(l)
+        return fail_list

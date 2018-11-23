@@ -360,7 +360,7 @@ def maillog_user_search(request):
         page = 1
     return flag, lists, condition_single, start_num, page, length, showmax
 
-def maillog_user_single(flag, lists, d, condition):
+def maillog_user_single(flag, lists, d, condition, lists_in_data=None, lists_out_success_data=None, lists_spam_data=None):
     MB=1024*1024.0
     count = len(lists)
     mailbox_id = d["mailbox_id"]
@@ -404,20 +404,17 @@ def maillog_user_single(flag, lists, d, condition):
         spam_count = int(lists["spam_count__sum"])
         spam_flow = round(lists["spam_flow__sum"]/MB,2)
     else:
-        #print ">>>> 1111   "
-        #last_time = count_time(last_time)
-        #入站流量
-        lists_in = lists.filter(q & Q(type='in')).values('mailbox_id').annotate(Count('size'),Sum('size')).first()
-        #print ">>>> 2222   "
-        #last_time = count_time(last_time)
-        #出站成功数量
-        lists_out_success = lists.filter(q & Q(result='1') & Q(type='out')).values('mailbox_id').annotate(Count('size'),Sum('size')).first()
-        #print ">>>> 3333   "
-        #last_time = count_time(last_time)
-        #垃圾数量
-        lists_spam = lists.filter(q & Q(type='in',status='spam-flag')).values('mailbox_id').annotate(Count('size'),Sum('size')).first()
-        #print ">>>> 4444   "
-        #last_time = count_time(last_time)
+        if lists_in_data is None:
+            #入站流量
+            lists_in = lists.filter(q & Q(type='in')).values('mailbox_id').annotate(Count('size'),Sum('size')).first()
+            #出站成功数量
+            lists_out_success = lists.filter(q & Q(result='1') & Q(type='out')).values('mailbox_id').annotate(Count('size'),Sum('size')).first()
+            #垃圾数量
+            lists_spam = lists.filter(q & Q(type='in',status='spam-flag')).values('mailbox_id').annotate(Count('size'),Sum('size')).first()
+        else:
+            lists_in = lists_in_data.get(mailbox_id,{})
+            lists_out_success = lists_out_success_data.get(mailbox_id,{})
+            lists_spam = lists_spam_data.get(mailbox_id,{})
 
         in_flow_base = 0
         if lists_in:
@@ -439,7 +436,6 @@ def maillog_user_single(flag, lists, d, condition):
         if lists_spam:
             spam_count = int(lists_spam["size__count"])
             spam_flow = round(lists_spam["size__sum"]/MB,2)
-
     if in_count > 0:
         ratio = round( spam_count*1.0/in_count, 3 )
         spam_ratio = "%s%%"%(ratio*100)
@@ -483,8 +479,27 @@ def maillog_user_ajax(request):
     re_str = '<td.*?>(.*?)</td>'
     number = length * (page-1) + 1
 
+    #进站数量
+    lists_in = lists.filter(Q(type='in')).values('mailbox_id').annotate(Count('size'),Sum('size'))
+    #出站成功数量
+    lists_out_success = lists.filter(Q(result='1') & Q(type='out')).values('mailbox_id').annotate(Count('size'),Sum('size'))
+    #垃圾数量
+    lists_spam = lists.filter(Q(type='in',status='spam-flag')).values('mailbox_id').annotate(Count('size'),Sum('size'))
+    lists_in_data = {}
+    for d in lists_in:
+        mailbox_id=d["mailbox_id"]
+        lists_in_data[mailbox_id] = d
+    lists_out_success_data = {}
+    for d in lists_out_success:
+        mailbox_id=d["mailbox_id"]
+        lists_out_success_data[mailbox_id] = d
+    lists_spam_data = {}
+    for d in lists_spam:
+        mailbox_id=d["mailbox_id"]
+        lists_spam_data[mailbox_id] = d
+
     for d in page_lists.object_list:
-        data = maillog_user_single(flag, lists, d, condition)
+        data = maillog_user_single(flag, lists, d, condition, lists_in_data, lists_out_success_data, lists_spam_data)
         #print "mailLogActiveStatSingle:  ",d
         #last_time = count_time(last_time)
 
@@ -501,11 +516,31 @@ def maillog_user_export(request):
               u'垃圾过滤数量', u'垃圾过滤流量', u'出站数量', u'出站流量', u'成功数量', u'成功流量', u'失败数量', u'失败流量', u'垃圾率', u'出站成功率']]
     flag, user_lists, condition, start_num, page, length, showmax = maillog_user_search(request)
     current_row = 1
+
+    lists_in = user_lists.filter(Q(type='in')).values('mailbox_id').annotate(Count('size'),Sum('size'))
+    #出站成功数量
+    lists_out_success = user_lists.filter(Q(result='1') & Q(type='out')).values('mailbox_id').annotate(Count('size'),Sum('size'))
+    #垃圾数量
+    lists_spam = user_lists.filter(Q(type='in',status='spam-flag')).values('mailbox_id').annotate(Count('size'),Sum('size'))
+    lists_in_data = {}
+    for d in lists_in:
+        mailbox_id=d["mailbox_id"]
+        lists_in_data[mailbox_id] = d
+    lists_out_success_data = {}
+    for d in lists_out_success:
+        mailbox_id=d["mailbox_id"]
+        lists_out_success_data[mailbox_id] = d
+    lists_spam_data = {}
+    for d in lists_spam:
+        mailbox_id=d["mailbox_id"]
+        lists_spam_data[mailbox_id] = d
+    #last_time = count_time(last_time)
+
     for d in user_lists:
-        data = maillog_user_single(flag, user_lists, d, condition)
+        data = maillog_user_single(flag, user_lists, d, condition, lists_in_data, lists_out_success_data, lists_spam_data)
         lists.append([current_row, data["name"], data["total_used"], data["total_count"], data["total_flow"],
-                      data["in_count"], data["in_flow"], data["out_count"], data["out_flow"],
-                      data["spam_count"], data["spam_flow"], data["success_count"], data["success_flow"],
+                      data["in_count"], data["in_flow"], data["spam_count"], data["spam_flow"],
+                      data["out_count"], data["out_flow"], data["success_count"], data["success_flow"],
                       data["failure_count"], data["failure_flow"], data["spam_ratio"], data["out_ratio"], ])
         current_row += 1
         if showmax and current_row>=showmax:
@@ -698,7 +733,6 @@ def maillog_list_ajax(request):
     if text:
         condition = add_condition(condition, Q(subject__icontains=text) | Q(attachment__icontains=text) \
                                   | Q(send_mail__icontains=text) | Q(recv_mail__icontains=text) )
-
     if start_time or end_time:
         q = None
         if start_time:

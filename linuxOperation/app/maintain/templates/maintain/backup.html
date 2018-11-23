@@ -67,8 +67,8 @@
                         <td>{{ d.size|filesizeformat }}</td>
                         <td>{{ d.times }}</td>
                         <td>
-                            <a title="{% trans "下载程序日志" %}" href="Javascript: setStatus('{{ d.file }}', 'restore')" class="btn btn-minier btn-primary">{% trans "恢复" %}</a>
-                            <a title="{% trans "下载程序日志" %}" href="Javascript: setStatus('{{ d.file }}', 'delete')" class="btn btn-minier btn-danger">{% trans "删除" %}</a>
+                            <a title="{% trans "恢复" %}" href="Javascript: setStatus('{{ d.file }}', 'restore')" class="btn btn-minier btn-primary">{% trans "恢复" %}</a>
+                            <a title="{% trans "删除" %}" href="Javascript: setStatus('{{ d.file }}', 'delete')" class="btn btn-minier btn-danger">{% trans "删除" %}</a>
                         </td>
                     </tr>
                 {% endfor %}

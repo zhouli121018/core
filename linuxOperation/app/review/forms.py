@@ -42,6 +42,7 @@ class ReviewForm(object):
             obj.wait_next_time=self.wait_next_time.value
             obj.save()
         ReviewConfig.open_review_new()
+        clear_redis_cache()
 
     def __check(self):
         if not self.name.value:
@@ -197,14 +198,6 @@ class ReviewRuleForm(object):
                 },
             ]
         }
-    测试数据：
-        $.ajax({
-            url:"{% url 'ajax_reviewrule_cond_test' %}",
-            type:"GET",
-            data:"&review_id="+review_id,
-            })
-        会自动设置一个很复杂的审核规则到review_id对应的审核人。
-        如果不指定review_id则应用到当前所有的审核人。
     """
     reviewrule_workmodes = constants.REVIEWRULE_WORKMODE
     reviewrule_logics = constants.REVIEWRULE_LOGIC
@@ -212,70 +205,20 @@ class ReviewRuleForm(object):
     reviewrule_disableds = constants.REVIEWRULE_DISABLED
     reviewrule_preactions = constants.REVIEWRULE_PREACTION
 
-    reviewrule_option = constants.REVIEWRULE_OPTION_TYPE
-    reviewrule_option_ruletypes = constants.REVIEWRULE_OPTION_TYPE_NO
-    reviewrule_option_attachtypes = constants.REVIEWRULE_OPTION_TYPE_YES
-
-    reviewrule_option_action_contains = dict(constants.REVIEWRULE_OPTION_CONDITION_CONTAIN).keys()
-    reviewrule_option_action_belong = dict(constants.REVIEWRULE_OPTION_CONDITION_BELONG).keys()
-    reviewrule_option_condition_contains = constants.REVIEWRULE_OPTION_CONDITION_CONTAIN
-    reviewrule_option_condition_eqs = constants.REVIEWRULE_OPTION_CONDITION_EQ
-    reviewrule_option_condition_belong = constants.REVIEWRULE_OPTION_CONDITION_BELONG
+    reviewrule_condtion_option = dict(constants.REVIEWRULE_OPTION_CONDITION)
+    reviewrule_condtion_no_input = dict(constants.REVIEWRULE_OPTION_NO_INPUT)
 
     def __init__(self, post=None, instance=None, request={}):
         self.__request = request
         self.__instance = instance
         self.__post = post
         self.__valid = True
+        self.__fail_resaon = []
         self.__init()
 
     def is_valid(self):
         self.__check()
         return self.__valid
-
-    def save(self):
-        if self.__instance is None:
-            obj = ReviewRule.objects.create(
-                review_id=self.review_id.value, name=self.name.value, workmode=self.workmode.value, cond_logic=self.cond_logic.value,
-                pre_action=self.pre_action.value,sequence=self.sequence.value, disabled=self.disabled.value
-            )
-            self.__instance = obj
-        else:
-            obj = self.__instance
-            obj.name=u"{}".format(self.name.value)
-            obj.review_id=u"{}".format(self.review_id.value)
-            obj.workmode=u"{}".format(self.workmode.value)
-            obj.cond_logic=u"{}".format(self.cond_logic.value)
-            obj.pre_action=u"{}".format(self.pre_action.value)
-            obj.target_dept=u"{}".format(self.target_dept.value)
-            obj.sequence=u"{}".format(self.sequence.value)
-            obj.disabled=u"{}".format(self.disabled.value)
-            obj.save()
-        self.__saveCdt(obj.id)
-        ReviewConfig.open_review_new()
-        return
-
-    def __saveCdt(self, rule_id):
-        ReviewCondition.objects.filter(rule_id=rule_id).delete()
-        bulks = []
-        logList = [u'审核规则: {} ID: {}'.format(self.__instance.name,self.__instance.id)]
-        for d in self.option.value:
-            if not d.value: continue
-            bulks.append(
-                ReviewCondition(rule_id=rule_id, parent_id=d.parent_id, option=d.type, action=d.action, value=d.value)
-            )
-            logList.append(u'条件 : {} - {} - {}'.format(d.type,d.action,d.value))
-        ReviewCondition.objects.bulk_create(bulks)
-        api_create_admin_log(self.__request, self.__instance, u'reviewcondition',u"{}".format(u' || '.join(logList)))
-
-    def __check(self):
-        if not self.name.value:
-            self.__form.name = self.__form.name._replace(error=_(u"请填写规则名称！"))
-            self.__valid = False
-
-        if not Review.objects.filter(pk=self.review_id.value).first():
-            self.__form.review_id = self.__form.review_id._replace(error=_(u"请选择审核人！"))
-            self.__valid = False
 
     @staticmethod
     def __check_format_time(value):
@@ -285,132 +228,152 @@ class ReviewRuleForm(object):
         except:
             return False
 
-    def DepartMent(self):
-        return Department.objects.all()
+    def fail_resaon(self):
+        reasons = [str(v) for v in self.__fail_resaon]
+        return " | ".join(reasons)
 
-    def DepartMentHtmlList(self):
-        def getSubHtml(prev, htmlList, dept_id):
-            prev += 1
-            name = dataDept[dept_id]["name"]
-            htmlList.append( (dept_id, name, range(prev)) )
-            sub_list = [int(i) for i in dataDept.keys() if dataDept[i]["parent"]==dept_id]
-            for sub in sub_list:
-                getSubHtml(prev, htmlList, sub)
-        #end def
-        lists_dpt = Department.objects.all()
-        dataDept = {}
-        for obj in lists_dpt:
-            dataDept[obj.id] = {
-                            "id"        :   obj.id,
-                            "name"      :   obj.title,
-                            "parent"    :   int(obj.parent_id),
-                        }
-        htmlList = []
-        parent_list = [int(i) for i in dataDept.keys() if dataDept[i]["parent"] in (0,-1)]
-        for dept_id in parent_list:
-            prev = 0
-            getSubHtml(prev, htmlList, dept_id)
-        return htmlList
+    def __check_condition_valid(self, option, action, value):
+        if option in (u"date",):
+            if not self.__check_format_time(value):
+                return False, u"时期格式错误"
+        if not option in self.reviewrule_condtion_option:
+            return False, u"未注册的条件"
+        action_list = dict(self.reviewrule_condtion_option[option])
+        if not action in action_list and not option in self.reviewrule_condtion_no_input:
+            return False, u"匹配动作范围为: %s 输入为: %s"%(",".join(action_list.values()), action)
+        return True, u""
+
+    def __check(self):
+        data = self.__post
+        if not data:
+            return
+
+        name = data.get("name","")
+        if not name:
+            self.__fail_resaon.append( _(u"请填写规则名称！") )
+            self.__valid = False
+
+        review_id = data.get("review_id",0)
+        if not Review.objects.filter(pk=review_id).first():
+            self.__fail_resaon.append( _(u"请选择审核人！") )
+            self.__valid = False
+
+        condition = data.get("condition",[])
+        for cond in condition:
+            logic = cond["logic"]
+            option = cond["option"]
+            action = cond.get("action","")
+            value = cond.get("value","")
+            succ, resaon = self.__check_condition_valid(option, action, value)
+            if not succ:
+                self.__fail_resaon.append( _(u"%s : %s"%(option, resaon)) )
+                self.__valid = False
+
+            for sub in cond.get("sub",[]):
+                sub_option = sub["option"]
+                sub_action = sub.get("action","")
+                sub_value = sub.get("value","")
+                succ, resaon = self.__check_condition_valid(sub_option, sub_action, sub_value)
+                if not succ:
+                    self.__fail_resaon.append( _(u"%s : %s"%(sub_option, resaon)) )
+                    self.__valid = False
+
+    def save(self):
+        data = self.__post
+        if not data:
+            return
+
+        rule_id = int(data.get("id",0))
+        name = data.get("name","")
+        review_id = data.get("review_id",0)
+        workmode = data.get("workmode","allsend")
+        pre_action = data.get("pre_action","")
+        target_dept = data.get("target_dept",0)
+        sequence = data.get("sequence","")
+        disabled = data.get("disabled",-1)
+        cond_logic = data.get("cond_logic","all")
+        condition = data.get("condition",[])
+
+        instance = self.__instance
+        if not instance:
+            instance = ReviewRule.objects.create(
+                            review_id=review_id, name=name, workmode=workmode, cond_logic=cond_logic,
+                            pre_action=pre_action,sequence=sequence, disabled=disabled
+                        )
+            rule_id = instance.id
+        else:
+            instance.review_id = review_id
+            instance.name = name
+            instance.workmode = workmode
+            instance.cond_logic = cond_logic
+            instance.pre_action = pre_action
+            instance.sequence = sequence
+            instance.disabled = disabled
+            instance.save()
+        self.__instance = instance
+
+        logList = [u'审核规则: {} ID: {}'.format(self.__instance.name,self.__instance.id)]
+        ReviewCondition.objects.filter(rule_id=rule_id).delete()
+        for data in condition:
+            logic = data["logic"]
+            option = data["option"]
+            action = data.get("action","")
+            value = data.get("value","")
+            if option in self.reviewrule_condtion_no_input:
+                value = "1"
+                action = "=="
+
+            if not isinstance(value, unicode):
+                value = json.dumps(value)
+            obj = ReviewCondition.objects.create(
+                rule_id=rule_id, parent_id=0, logic=logic, option=option, action=action, value=value
+                )
+            logList.append(u'条件 : {} - {} - {}'.format(option,action,value))
+            for sub in data.get("sub",[]):
+                sub_option = sub["option"]
+                sub_action = sub.get("action","")
+                sub_value = sub.get("value","")
+                if sub_option in self.reviewrule_condtion_no_input:
+                    sub_value = "1"
+                    sub_action = "=="
+
+                if not isinstance(sub_value, unicode):
+                    sub_value = json.dumps(sub_value)
+                sub_obj = ReviewCondition.objects.create(
+                    rule_id=rule_id, parent_id=obj.id, logic=logic, option=sub_option, action=sub_action, value=sub_value
+                    )
+                logList.append(u'条件 : {} - {} - {}'.format(sub_option,sub_action,sub_value))
+        ReviewConfig.open_review_new()
+        api_create_admin_log(self.__request, self.__instance, u'reviewcondition',u"{}".format(u' || '.join(logList)))
+        clear_redis_cache()
+        return
 
     def __init(self):
         self.__form = BaseFormField()
-        if self.__post is not None:
-            review_id = self.__post.get("review_id", "").strip()
-            review_obj = Review.objects.filter(id=review_id and int(review_id) or 0).first()
-
-            target_dept = self.__post.get('target_dept', "")
-            dept_obj = Department.objects.filter(pk=target_dept and int(target_dept) or -1).first()
-
-            sequence = self.__post.get("sequence", "")
-            sequence = sequence and int(sequence) or 0
-
-            disabled = self.__post.get("disabled", "")
-            disabled = disabled and int(disabled) or -1
-
-            opts=[]
-            index = 1
-            opt_error = None
-            option_ids = self.__post.getlist('option_ids[]', '')
-            value_dept = ""
-            value_dept_name = ""
-            value_dept_sub = ""
-            parent_id = 0
-            for rid in option_ids:
-                error = None
-                ruletype = self.__post.get('ruletype{}'.format(rid), "")
-                if ruletype == "date":
-                    action = self.__post.get('rule_action_eq{}'.format(rid), "")
-                    value = self.__post.get('rule_value_date{}'.format(rid), "")
-                    if not value or not self.__check_format_time(value):
-                        error = _(u"请选择邮件时间！")
-                        opt_error=True
-                elif ruletype == "mail_size" or ruletype == "attach_size":
-                    action = self.__post.get('rule_action_eq{}'.format(rid), "")
-                    value = self.__post.get('rule_value_size{}'.format(rid), "")
-                    value = value and int(value) or 0
-                    if value<=0:
-                        error = _(u"必须大于0！")
-                        opt_error=True
-                elif ruletype == "sender_dept" or ruletype == "cc_dept" or ruletype == "rcpt_dept":
-                    action = self.__post.get('rule_action_belong{}'.format(rid), "")
-                    value = self.__post.get('option_value_dpt{}'.format(rid), "")
-                    action_sub = self.__post.get('option_value_dpt_sub{}'.format(rid), "")
-                    value_dept = int(value)
-                    obj_dept = Department.objects.filter(id=value_dept).first()
-                    value_dept_name = "" if not obj_dept else obj_dept.title
-                    value_dept_sub = action_sub
-                    value = json.dumps({"id":value,"sub":action_sub})
-                elif ruletype in ('has_attach',"all_mail"):
-                    action = "=="
-                    value = "1"
-                else:
-                    action = self.__post.get('rule_action_contain{}'.format(rid), "")
-                    value = self.__post.get('rule_value_common{}'.format(rid), "")
-                    if not value:
-                        error = _(u"请填写审核条件内容！")
-                        opt_error=True
-                opts.append( BaseFieldFormatOption(id=index, parent_id=parent_id, type=ruletype, action=action, value=value,
-                                        value_dept=value_dept, value_dept_name=value_dept_name, value_dept_sub=value_dept_sub,
-                                        error=error) )
-                index += 1
-            if opt_error:
-                self.__valid = False
-
-            self.__form.name = BaseFieldFormat(value=self.__post.get("name", "").strip(), error=None)
-            self.__form.review_id = BaseFieldFormatExt(value=review_obj and int(review_id) or 0, error=None, extra=review_obj and review_obj.name or "")
-            self.__form.workmode = BaseFieldFormat(value=self.__post.get("workmode", "allsend"), error=None)
-            self.__form.cond_logic = BaseFieldFormat(value=self.__post.get("cond_logic", "all"), error=None)
-            self.__form.pre_action = BaseFieldFormat(value=self.__post.get("pre_action", ""), error=None)
-            self.__form.target_dept = BaseFieldFormatExt(value=dept_obj and int(target_dept) or -1, error=None, extra=dept_obj and dept_obj.title or '')
-            self.__form.sequence = BaseFieldFormat(value=sequence, error=None)
-            self.__form.disabled = BaseFieldFormat(value=disabled, error=None)
-            self.__form.option = BaseFieldFormat(value=opts, error=opt_error)
+        if self.__instance is None:
+            self.__form.name = BaseFieldFormat(value="", error=None)
+            self.__form.review_id = BaseFieldFormatExt(value=0, error=None, extra="")
+            self.__form.workmode = BaseFieldFormat(value="allsend", error=None)
+            self.__form.cond_logic = BaseFieldFormat(value="all", error=None)
+            self.__form.pre_action = BaseFieldFormat(value="", error=None)
+            self.__form.target_dept = BaseFieldFormatExt(value=-1, error=None, extra="")
+            self.__form.sequence = BaseFieldFormat(value=0, error=None)
+            self.__form.disabled = BaseFieldFormat(value=-1, error=None)
+            self.__form.option = BaseFieldFormat(value=[ BaseFieldFormatOption(id=0, parent_id=0, type="subject", action="in", value="", value_dept="-1", value_dept_name='', value_dept_sub="-1", error=None) ], error=None)
         else:
-            if self.__instance is None:
-                self.__form.name = BaseFieldFormat(value="", error=None)
-                self.__form.review_id = BaseFieldFormatExt(value=0, error=None, extra="")
-                self.__form.workmode = BaseFieldFormat(value="allsend", error=None)
-                self.__form.cond_logic = BaseFieldFormat(value="all", error=None)
-                self.__form.pre_action = BaseFieldFormat(value="", error=None)
-                self.__form.target_dept = BaseFieldFormatExt(value=-1, error=None, extra="")
-                self.__form.sequence = BaseFieldFormat(value=0, error=None)
-                self.__form.disabled = BaseFieldFormat(value=-1, error=None)
-                self.__form.option = BaseFieldFormat(value=[ BaseFieldFormatOption(id=0, parent_id=0, type="subject", action="in", value="", value_dept="-1", value_dept_name='', value_dept_sub="-1", error=None) ], error=None)
-            else:
-                review_obj = Review.objects.filter(id=self.__instance.review_id and int(self.__instance.review_id) or 0).first()
-                self.__form.name = BaseFieldFormat(value=self.__instance.name, error=None)
-                self.__form.review_id = BaseFieldFormatExt(value=self.__instance.review_id, error=None, extra=review_obj and review_obj.name or "")
-                self.__form.workmode = BaseFieldFormat(value=self.__instance.workmode, error=None)
-                self.__form.cond_logic = BaseFieldFormat(value=self.__instance.cond_logic, error=None)
-                self.__form.pre_action = BaseFieldFormat(value=self.__instance.pre_action, error=None)
-                self.__form.target_dept = BaseFieldFormatExt(value=self.__instance.target_dept, error=None, extra=self.__instance.department)
-                self.__form.sequence = BaseFieldFormat(value=self.__instance.sequence, error=None)
-                self.__form.disabled = BaseFieldFormat(value=self.__instance.disabled, error=None)
-
-                self.__form.option = BaseFieldFormat(value=self.__get_condition(), error=None)
+            review_obj = Review.objects.filter(id=self.__instance.review_id and int(self.__instance.review_id) or 0).first()
+            self.__form.name = BaseFieldFormat(value=self.__instance.name, error=None)
+            self.__form.review_id = BaseFieldFormatExt(value=self.__instance.review_id, error=None, extra=review_obj and review_obj.name or "")
+            self.__form.workmode = BaseFieldFormat(value=self.__instance.workmode, error=None)
+            self.__form.cond_logic = BaseFieldFormat(value=self.__instance.cond_logic, error=None)
+            self.__form.pre_action = BaseFieldFormat(value=self.__instance.pre_action, error=None)
+            self.__form.target_dept = BaseFieldFormatExt(value=self.__instance.target_dept, error=None, extra=self.__instance.department)
+            self.__form.sequence = BaseFieldFormat(value=self.__instance.sequence, error=None)
+            self.__form.disabled = BaseFieldFormat(value=self.__instance.disabled, error=None)
+            self.__form.option = BaseFieldFormat(value=self.__get_condition(), error=None)
 
     def __get_condition(self):
-        lists = ReviewCondition.objects.filter(rule=self.instance)
+        lists = ReviewCondition.objects.filter(rule=self.instance).order_by('id')
         if lists:
             l = []
             for d in lists:
@@ -419,7 +382,8 @@ class ReviewRuleForm(object):
                     value = {} if not isinstance(value, dict) else value
                 except:
                     value = {}
-                value_dept = int(value.get("id","-1"))
+                value_dept = value.get("id","-1")
+                value_dept = int(value_dept) if (value_dept and str(value_dept).isdigit()) else -1
                 obj_dept = Department.objects.filter(id=value_dept).first()
                 value_dept_name = "" if not obj_dept else obj_dept.title
                 value_dept_sub = value.get("sub","-1")
@@ -499,7 +463,7 @@ class ReviewConfigForm(object):
         self.__form = BaseFormField()
         if self.__post is not None:
                 value = self.__post.get("sw_new_review_value", "")
-                value = "0" if value.strip()!='1' else '1'
+                value = "1" if value.strip()=='1' else '0'
 
                 self.__form.domain_id = BaseFieldFormat(value=0, error=None)
                 self.__form.co_type = BaseFieldFormat(value="system", error=None)

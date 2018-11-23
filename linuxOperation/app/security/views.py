@@ -20,8 +20,9 @@ from app.utils.domain_session import get_domainid_bysession, get_session_domain
 # from lib.tools import get_process_pid, restart_process, get_fail2ban_info, fail2ban_ip
 from lib.licence import licence_required
 from lib.tools import clear_redis_cache
-from .forms import BanRuleForm, BanBlockListForm, Fail2BanTrustForm, SpamSetForm, SendFrequencyForm
-from .models import Fail2Ban, Fail2BanTrust, Fail2BanBlock
+from .forms import BanRuleForm, BanBlockListForm, Fail2BanTrustForm, SpamSetForm, \
+                       SendFrequencyForm, PasswordWeakForm, PasswordWeakImportForm
+from .models import Fail2Ban, Fail2BanTrust, Fail2BanBlock, PasswordWeakList
 
 def clear_fail2ban_cache():
     redis = get_redis_connection()
@@ -297,9 +298,9 @@ def security_antispam(request):
         return HttpResponseRedirect(reverse('security_antispam'))
 
     spam_set = DomainAttr.objects.filter(domain_id=obj.id,type="system",item="cf_antispam").first()
-    form = SpamSetForm(instance=spam_set, domain_id=obj.id)
+    form = SpamSetForm(instance=spam_set, request=request, domain_id=obj.id)
     if request.method == "POST":
-        form = SpamSetForm(instance=spam_set, post=request.POST, domain_id=obj.id)
+        form = SpamSetForm(instance=spam_set, post=request.POST, request=request, domain_id=obj.id)
         if form.is_valid():
             form.save()
             messages.add_message(request, messages.SUCCESS, u'修改设置成功')
@@ -335,3 +336,112 @@ def security_frequency(request):
         "form"          :   form,
         "domain"        :    domain,
     })
+
+@licence_required
+def password_weaklist(request):
+    if request.method == "POST":
+        id = request.POST.get('id', "")
+        status = request.POST.get('status', "")
+        if status == "delete":
+            PasswordWeakList.objects.filter(pk=id).delete()
+            clear_redis_cache()
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
+        return HttpResponseRedirect(reverse('password_weaklist'))
+    return render(request, "security/password_weak_list.html",context={})
+
+@licence_required
+def password_weaklist_ajax(request):
+    data = request.GET
+    order_column = data.get('order[0][column]', '')
+    order_dir = data.get('order[0][dir]', '')
+    search = data.get('search[value]', '')
+    colums = ['id', 'password']
+
+    if search:
+        lists = PasswordWeakList.objects.filter( Q(password__contains=search) )
+    else:
+        lists = PasswordWeakList.objects.all()
+    if lists and order_column and int(order_column) < len(colums):
+        if order_dir == 'desc':
+            lists = lists.order_by('-%s' % colums[int(order_column)])
+        else:
+            lists = lists.order_by('%s' % colums[int(order_column)])
+    lists = lists[:10000]
+
+    try:
+        length = int(data.get('length', 1))
+    except ValueError:
+        length = 1
+    try:
+        start_num = int(data.get('start', '0'))
+        page = start_num / length + 1
+    except ValueError:
+        start_num = 0
+        page = 1
+
+    count = len(lists)
+    if start_num >= count:
+        page = 1
+    paginator = Paginator(lists, length)
+    try:
+        lists = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        lists = paginator.page(paginator.num_pages)
+    rs = {"sEcho": 0, "iTotalRecords": count, "iTotalDisplayRecords": count, "aaData": []}
+    re_str = '<td.*?>(.*?)</td>'
+    number = length * (page-1) + 1
+    for d in lists.object_list:
+        t = TemplateResponse(request, 'security/password_weak_ajax.html', {'d': d, 'number': number})
+        t.render()
+        rs["aaData"].append(re.findall(re_str, t.content, re.DOTALL))
+        number += 1
+    return HttpResponse(json.dumps(rs), content_type="application/json")
+
+@licence_required
+def password_weaklist_import(request):
+    form = PasswordWeakImportForm()
+    domain_id = get_domainid_bysession(request)
+    domain = get_session_domain(domain_id)
+    if request.method == "POST":
+        form = PasswordWeakImportForm(data=request.POST, files=request.FILES)
+        if form.is_valid():
+            success, fail = 0, 0
+            fail_list = []
+            password_list = []
+            if form.file_ext == 'txt':
+                for line in form.file_obj.readlines():
+                    password = line.strip().replace('\n', '').replace('\r', '').replace('\000', '').replace(' ', '').replace('\t', '')
+                    if not password:
+                        continue
+                    password_list.append( password )
+            if form.file_ext == 'csv':
+                import csv
+                lines = list(csv.reader(form.file_obj))
+                for elem in lines:
+                    password = line.strip().replace('\n', '').replace('\r', '').replace('\000', '').replace(' ', '').replace('\t', '')
+                    if not password:
+                        continue
+                    password_list.append( password )
+            if form.file_ext in ('xls', 'xlsx'):
+                import xlrd
+                content = form.file_obj.read()
+                workbook = xlrd.open_workbook(filename=None, file_contents=content)
+                table = workbook.sheets()[0]
+                for line in xrange(table.nrows):
+                    #前两行跳过
+                    if line in (0,1):
+                        continue
+                    password = table.row_values(line)
+                    password = password.strip().replace('\n', '').replace('\r', '').replace('\000', '').replace(' ', '').replace('\t', '')
+                    if not password:
+                        continue
+                    password_list.append( password )
+            fail_list = form.save_password_list(password_list)
+            fail = len(fail_list)
+            success = len(password_list) - fail
+            for line in fail_list:
+                messages.add_message(request, messages.ERROR, _(u'批量添加失败 : %(fail)s') % {"fail": line})
+            messages.add_message(request, messages.SUCCESS,
+                                 _(u'批量添加成功%(success)s个, 失败%(fail)s个') % {"success": success, "fail": fail})
+            return HttpResponseRedirect(reverse('password_weaklist'))
+    return render(request, "security/password_weak_import.html", {'form': form,})

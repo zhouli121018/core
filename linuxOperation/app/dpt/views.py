@@ -96,13 +96,13 @@ def department_add(request):
     domain_id = get_domainid_bysession(request)
     domainobj = Domain.objects.filter(id=domain_id).first()
     is_superuser = request.user.is_superuser
-    form = DepartmentForm(is_superuser, None, domainobj, None, None)
+    form = DepartmentForm(request, is_superuser, None, domainobj, None, None)
     dataDept = get_user_child_departments_kv(request, domain_id)
     dept_ids = dataDept.keys()
     dept_list = get_dept_list_sort(dataDept)
     # dept_list = get_user_child_departments(request, obj.domain_id)
     if request.method == "POST":
-        form = DepartmentForm(is_superuser, dept_ids, domainobj, None, None, request.POST)
+        form = DepartmentForm(request, is_superuser, dept_ids, domainobj, None, None, request.POST)
         if form.is_valid():
             obj = form.save()
             infobj = CoDepartmentInfo.objects.create(id=obj.id)
@@ -122,14 +122,14 @@ def department_modify(request, dpt_id):
     obj = Department.objects.get(id=dpt_id)
     is_superuser = request.user.is_superuser
     infobj, _created = CoDepartmentInfo.objects.get_or_create(id=obj.id)
-    form = DepartmentForm(is_superuser, None, obj.domain, obj.parent_name, infobj, instance=obj)
+    form = DepartmentForm(request, is_superuser, None, obj.domain, obj.parent_name, infobj, instance=obj)
     dataDept = get_user_child_departments_kv(request, obj.domain_id, dpt_id)
     dept_ids = dataDept.keys()
     dept_list = get_dept_list_sort(dataDept)
 
     # dept_list = get_user_child_departments(request, obj.domain_id, dpt_id)
     if request.method == "POST":
-        form = DepartmentForm(is_superuser, dept_ids, obj.domain, obj.parent_name, None, request.POST, instance=obj)
+        form = DepartmentForm(request, is_superuser, dept_ids, obj.domain, obj.parent_name, None, request.POST, instance=obj)
         if form.is_valid():
             form.save()
             form2 = CoDepartmentInfoForm(obj.domain_id, request.POST, instance=infobj)
@@ -272,7 +272,7 @@ def domain_share_view(request, domain_id):
         if action == "share":
             OabShare.objects.get_or_create(domain=obj, view_target_id=id)
             messages.add_message(request, messages.SUCCESS, _(u'添加成功'))
-        return HttpResponseRedirect(reverse("domain_share_view", args=domain_id))
+        return HttpResponseRedirect(reverse("domain_share_view", args=(domain_id,)))
     lists = obj.master_domain.all()
     form = DomainSearchForm(domain_id)
     return render(request, "dpt/domain_share_view.html", {

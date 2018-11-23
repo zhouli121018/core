@@ -22,6 +22,11 @@ DISABLED_STATUS = (
     ("1", u'禁用'),
 )
 
+FUNCTION_STATUS = (
+    ("1", u'启用'),
+    ("-1", u'禁用'),
+)
+
 PROXY_SERVER_STATUS = (
     ('', u''),
     ('unconnect', u'未连接'),
@@ -111,6 +116,12 @@ MAILBOX_LIMIT_LOGIN = (
     (u"1", u"禁止网页登录"),
 )
 
+MAILBOX_RECV_SMS = (
+    (u"-1", u"禁用"),
+    (u"1", u"启用"),
+    (u"0", u"白名单"),
+)
+
 MAILBOX_CHANGE_PWD = (
     (u"-1", u"不修改"),
     (u"1", u"修改"),
@@ -170,7 +181,7 @@ DOMAINATTR_DEFULT = (
     ('sw_login_captcha_error_num', '3'),
     ('sw_token_switch', '-1'),
     ('sw_email_used_see','1'),
-    ('sw_pass_severe', '1'),
+    ('sw_pass_severe_new', '1'),   #PHP用了sw_pass_severe，同样是强密码，但规则与超管不同，启用超管必须禁用PHP的，否则会引起混乱
     ('sw_user_reg', '-1'),
     ('sw_reg_ratify', '1'),
     ('sw_change_pass', '1'),
@@ -203,9 +214,9 @@ DOMAINATTR_DEFULT = (
     ('sw_show_add_paper', '1'),
     ('sw_mailpaper', '1'),
     ('sw_unique_login', '-1'),
-    ('sw_autoforward_visible', '1'),
+    #('sw_autoforward_visible', '1'),
     ('sw_dept_showall', '-1'),
-    ('display_everyone', '1'),
+    #('display_everyone', '1'),
     ('sw_department_openall', '-1'),
     ('sw_mail_log_save_day', '15'),
     ('sw_welcome_open_recipient', '-1'),

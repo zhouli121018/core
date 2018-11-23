@@ -13,7 +13,7 @@
     {% endautoescape %}
 </td>
 <td>
-    {% if l.result == '1' %}
+    {% if d.result == '1' %}
         <span class="text-success">{{ d.get_result_display }}</span>
     {% else %}
         <span class="text-danger">{{ d.get_result_display }}</span>

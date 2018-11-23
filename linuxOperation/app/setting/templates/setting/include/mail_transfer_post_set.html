@@ -5,7 +5,7 @@
 {% block title %}{% if form.instance %} {% trans "修改" %}  {% else %} {% trans "添加" %} {% endif %}{% endblock %}
 
 {% block breadcrumb %}
-    <li> <a href="#">{% trans "内网邮件代发" %}</a> </li>
+    <li> <a href="#">{% trans "邮件收发代理" %}</a> </li>
     <li class="active">{% if form.instance %} {% trans "修改" %}  {% else %} {% trans "添加" %} {% endif %}</li>
 {% endblock %}
 
@@ -30,19 +30,45 @@
                 {% csrf_token %}
 
                 <div class="form-group {% if form.mailbox.error %} has-error {% endif %}">
+                    <label class="col-sm-3 control-label no-padding-right" for="id_mailbox"> 通道类型 </label>
+                    <div class="col-sm-9">
+                        <select class="col-xs-10 col-sm-5" id="id_type" name="type" ">
+                            <option value="in" {% if form.type.value == 'in' %} selected {% endif %} > 接收邮件 </option>
+                            <option value="out" {% if form.type.value == 'out' %} selected {% endif %} > 发送邮件 </option>
+                            <option value="all" {% if form.type.value == 'all' %} selected {% endif %} > 所有邮件 </option>
+                        </select>
+                        {% if form.type.error %}
+                            <div style="clear: both">
+                                <p class="errornote txt-color-red">{{ form.type.error }}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group {% if form.mailbox.error %} has-error {% endif %}">
                     <label class="col-sm-3 control-label no-padding-right" for="id_mailbox"> 本地帐号 </label>
                     <div class="col-sm-9">
+                        <input type="text" name="mailbox" id="id_mailbox" value="{{ form.mailbox.value }}" maxlength="200" class="col-xs-10 col-sm-5" />
+                        <!--
                         <select class="select2 col-xs-10 col-sm-5" id="id_mailbox" name="mailbox" >
                             <option value="">请选择邮箱</option>
                             {% for mailbox in form.mailboxLists %}
                             <option value="{{ mailbox.username }}" {% if form.mailbox.value == mailbox.username %} selected {% endif %}>{{ mailbox.username }}</option>
                             {% endfor %}
                         </select>
+                        -->
                         {% if form.mailbox.error %}
                             <div style="clear: both">
                                 <p class="errornote txt-color-red">{{ form.mailbox.error }}</p>
                             </div>
                         {% endif %}
+                        <div style="clear: both">
+                            <span class="middle text-success ">
+                            <li>
+                            若输入'@xxx.com'格式的帐号时，代表整个域名的有效邮箱都会作用该代理设置。
+                            </li>
+                            </span>
+                        </div>
                     </div>
                 </div>
 

@@ -422,4 +422,7 @@ export const uploadChunk = params => { return axios.post(`${host}/netdisk/upload
 //上传成功 /api/netdisk/upload/success/
 export const uploadSuccess = params => { return axios.post(`${host}/netdisk/upload/success/`, params) };
 
+//预览文件 /api/netdisk/openoffice/
+export const getOpenoffice = params => { return axios.get(`${host}/netdisk/openoffice/`, { params: params }) }
+
 

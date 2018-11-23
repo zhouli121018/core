@@ -25,7 +25,7 @@ from django_sysinfo.conf import PROCESSES
 
 from django_redis import get_redis_connection
 from django.db.models import Q
-from app.core.models import Domain, Mailbox as User, UpgradeList
+from app.core.models import Domain, Mailbox, UpgradeList
 
 from forms import QueueSearchForm
 from lib.tools import get_process_pid, reboot
@@ -35,6 +35,14 @@ from lib.licence import Licence
 from lib.licence import licence_required
 from app.utils.domain_session import get_domainid_bysession
 from app.core.tasks import get_tcp_connect_info, get_network_monitor_info
+
+# from django.contrib.auth.signals import user_logged_in
+# from django.contrib.auth.models import update_last_login
+from django.contrib.auth.views import logout
+from rest_framework_jwt.parse import check_payload, check_user, get_token
+from django.contrib.auth.views import auth_login
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.clickjacking import xframe_options_exempt
 
 def licence_notify(request):
     return render(request, "licence_notify.html", context={})
@@ -72,9 +80,9 @@ def licence(request):
 
             #print "info_new :  ",info_new
             #print "info :  ",info
-            if info and info_new.get("domain_name","")!=info["domain_name"]:
-                messages.add_message(request, messages.ERROR, u"授权文件域名 '%s' 与本域名 '%s' 不符，请重新导入"%(info_new.get("domain_name",""), info["domain_name"]))
-                return HttpResponseRedirect(reverse('system_licence'))
+            #if info and info_new.get("domain_name","")!=info["domain_name"]:
+            #    messages.add_message(request, messages.ERROR, u"授权文件域名 '%s' 与本域名 '%s' 不符，请重新导入"%(info_new.get("domain_name",""), info["domain_name"]))
+            #    return HttpResponseRedirect(reverse('system_licence'))
 
             now = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
             if info_new.get("expires_time","") and info_new["expires_time"].strftime('%Y%m%d%H%M%S')<=now:
@@ -172,7 +180,7 @@ def home(request, template_name='home.html'):
             return HttpResponseRedirect(reverse('home'))
 
     umail_repo = "/etc/yum.repos.d/umail.repo"
-    umail_repo_http = "http://www.comingchina.com:8080/repo/umail_beta.repo"
+    umail_repo_http = "http://update.comingchina.com:8080/repo/umail_beta.repo"
     cmd = 'yum --disablerepo=* --enablerepo=umail_beta repolist'
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     res = p.stdout.read()
@@ -214,20 +222,39 @@ def home(request, template_name='home.html'):
 
 def demo_login(request):
     from django.contrib import auth
-
+    from django.contrib.auth.models import Group
     obj_d = Domain.objects.filter(domain="comingchina.com").first()
-    obj_d2 = Domain.objects.filter(domain="test.com").first()
+    obj_d2 = Domain.objects.filter(domain="fenbu.comingchina.com").first()
     if not obj_d and not obj_d2:
         return HttpResponseRedirect(reverse('my_login'))
+    domain_id = obj_d.id if obj_d else obj_d2.id
+    domain = obj_d.domain if obj_d else obj_d2.domain
 
-    demo_user, _created = User.objects.get_or_create(username="demo_admin")
+    #会导致超时
+    #cmd = [
+    #    "/usr/local/u-mail/app/sbin/myloads_demo",
+    #    "/root/recover_demo.sql"
+    #]
+    #child = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=os.setsid)
+    #outs, errs = child.communicate()
+
+    #创建用户
+    demo_user, _created = Mailbox.objects.get_or_create(domain_id=domain_id, username="demo_admin@%s"%domain)
     if _created:
-        demo_user.password = "748bf02d4fe9c98bdf7dc3c7563791e3"
+        demo_user.password = "$1$ArQiyNgG$LAd2So7YjYnmeS9b3oZjQ/"
+        demo_user.domain_id = domain_id
+        demo_user.is_active = True
+        demo_user.is_superuser = False
+        demo_user.disabled = '-1'
         demo_user.save()
+
+    #将用户加进管理员组权限
+    group = Group.objects.filter(name=u'系统管理员').first()
+    if group:
+        demo_user.groups.add(group)
 
     auth.login(request, demo_user)
     return HttpResponseRedirect(reverse('home'))
-
 
 @login_required
 def ajax_process(request):
@@ -497,7 +524,7 @@ def admin_upgrade_record(request):
     obj_list = UpgradeList.objects.all().order_by('-update_time')
     return render(request, "upgrade_record.html", context={
         "obj_list"      :   obj_list,
-        })
+    })
 
 
 def ajax_debug_kkserver(request):
@@ -505,9 +532,6 @@ def ajax_debug_kkserver(request):
 
     import json
     data = json.loads(request.body.decode())
-    print ">>>>>>>>>>>>>>>  request.body  :   ",request.body
-    print "post data is  ",data.get("users",[])
-    print "get data is  ",request.GET
     rs = {
         "result"        :   0,
         "batchNo"       :   "hello",
@@ -539,3 +563,27 @@ def set_domain_id(request):
             request.session['domain_id'] = domain_id
     return response
 
+@csrf_exempt
+@xframe_options_exempt
+def webvue_login(request):
+    """ 前台登录管理后台 """
+    jwt_value = request.POST.get('token', '')
+    try:
+        logout(request)
+        payload = check_payload(jwt_value)
+        user = check_user(payload)
+        # user_logged_in.disconnect(update_last_login)
+        auth_login(request, user)
+        return HttpResponseRedirect(reverse('home'))
+    except BaseException as e:
+        # import traceback
+        # print traceback.format_exc()
+        # print e
+        raise Http404(e)
+
+@login_required
+def webvue_token(request):
+    token = get_token(request.user)
+    return HttpResponse(json.dumps({
+        'token': token, 'username': request.user.username
+    }), content_type="application/json")
