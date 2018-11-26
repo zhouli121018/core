@@ -1150,32 +1150,10 @@
           })
           return;
         }
-        let ww = window.open();
-        let param = {
-          type:'attach',
-          id:this.readId,
-          folder:this.readFolderId,
-          sid:a.sid,
-        };
-        getOpenoffice(param).then(res=>{
-          let href = '';
-          if(res.data.is_openoffice){
-            href = res.data.preview_url + encodeURIComponent(window.location.origin + res.data.source_url)
-          }else{
-            href = window.location.origin + res.data.source_url
-          }
-          ww.location = href
-        }).catch(err=>{
-          let str = '';
-          if(err.non_field_errors){
-            str = err.non_field_errors[0]
-          }
-          this.$message({
-            type:'error',
-            message:'预览文件出错！'+str
-          })
-          ww.document.body.innerHTML="<h4>预览文件出错！"+str+'</h4>';
-        })
+        let href = window.location.origin+'/#/preview/?id='+this.readId+'&fid='+this.readFolderId+'&sid='+a.sid+'&type=attach&size='+a.size+'&suffix='+a.name.slice(a.name.lastIndexOf('.')+1)+'&name='+a.name+'&subject='+this.msg.subject;
+            window.open(href)
+
+
       },
       handleCommand:function(index){
         this.checkIndex = index;

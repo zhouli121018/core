@@ -70,7 +70,7 @@
         this.activeT = path;
         this.$router.push('/file/'+path);
       },
-      preview(a,type){
+      preview(a,type,cfid){
         console.log(a)
         if((a.file_size && a.file_size>10*1024*1024) || (a.size && a.size>10*1024*1024)){
           this.$message({
@@ -81,6 +81,19 @@
           })
           return;
         }
+        let size = a.size||a.file_size;
+        let suffix,name;
+        if(a.name){
+         suffix = a.name.slice(a.name.lastIndexOf('.')+1)
+          name = a.name
+        }else{
+          suffix = a.filename.slice(a.filename.lastIndexOf('.')+1)
+          name = a.filename;
+        }
+
+        let href = window.location.origin+'/#/preview/?id='+a.id+'&type='+type+'&size='+ size+'&suffix='+suffix+'&name='+name+'&cfid='+cfid;
+        window.open(href)
+        return;
         let ww = window.open();
         let param = {
           type:type,
