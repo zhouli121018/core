@@ -480,9 +480,11 @@
             // this.$parent.$parent.$parent.getFloderfn();
             let data = res.data
             pp.ruleForm2 = {
+              reply_to:'',
               is_priority:false,
               is_html:true,
               is_cc:true,
+              is_bcc:false,
               is_partsend:false,
               to: [],
               cc: [],
@@ -697,11 +699,13 @@
           readMail(this.multipleSelection[0].uid,{"folder":fid,"view":view}).then(res=>{
             this.fullscreenLoading = false;
             pp.ruleForm2 = {
+              reply_to:'',
               is_priority:false,
               is_html:true,
               is_cc:true,
+              is_bcc:false,
               is_partsend:false,
-              to: [["512167072@qq.com",'zhouli']],
+              to: [],
               cc: [],
               subject: '',
               secret:'非密',

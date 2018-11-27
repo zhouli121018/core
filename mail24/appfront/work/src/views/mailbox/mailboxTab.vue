@@ -103,10 +103,13 @@ export default {
         maillist_copyer: [],
         fileList: [],
         ruleForm2: {
+          reply_to:'',
+          is_priority:false,
           is_html:true,
           is_cc:true,
+          is_bcc:false,
           is_partsend:false,
-          to: [["512167072@qq.com",'zhouli']],
+          to: [],
           cc: [],
           subject: '',
           secret:'非密',
@@ -184,9 +187,11 @@ export default {
       if(type=='compose'||type == 'compose_to_list'){
         this.ruleForm2['refw_type']=undefined;
         this.ruleForm2 = {
+          reply_to:'',
           is_priority:false,
           is_html:true,
           is_cc:true,
+          is_bcc:false,
           is_partsend:false,
           to: [],
           cc: [],
@@ -213,9 +218,11 @@ export default {
       }else if(type =='compose_net_atta'){
         this.ruleForm2['refw_type']=undefined;
         this.ruleForm2 = {
+          reply_to:'',
           is_priority:false,
           is_html:true,
           is_cc:true,
+          is_bcc:false,
           is_partsend:false,
           to: [],
           cc: [],

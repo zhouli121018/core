@@ -103,13 +103,16 @@
             </div>
             <form class="u-form mn-form box_height"  :class="{right0:show_contact}">
               <div class="form-tt compose_title title_height">
-                <el-form size="mini" inline-message :model="ruleForm2" status-icon ref="ruleForm2" label-width="80px" class="demo-ruleForm" style="font-size:16px;">
+                <el-form size="mini" inline-message :model="ruleForm2" status-icon ref="ruleForm2" label-width="90px" class="demo-ruleForm" style="font-size:16px;">
                   <el-form-item label="发件人:">
                     <el-col :span="12">
                       <el-input type="text" :value="this.$parent.$parent.$parent.username" readonly auto-complete="off"></el-input>
                     </el-col>
                     <el-col :span="12" style="text-align:right;">
-                      <el-button v-show="!ruleForm2.is_partsend" type="text"  @click="changeCc">{{ruleForm2.is_cc?"取消抄送":"抄送"}} &nbsp;&nbsp;|</el-button><el-button type="text" @click="ruleForm2.is_partsend = !ruleForm2.is_partsend">{{ruleForm2.is_partsend?"取消群发单显":"群发单显"}}</el-button>
+                      <el-button v-show="!ruleForm2.is_partsend" type="text"  @click="changeCc">{{ruleForm2.is_cc?"取消抄送":"抄送"}} &nbsp;&nbsp;|</el-button>
+                      <el-button v-show="!ruleForm2.is_partsend" type="text"  @click="changeBcc">{{ruleForm2.is_bcc?"取消密送":"显示密送"}} &nbsp;&nbsp;|</el-button>
+                      <el-button type="text" @click="ruleForm2.is_partsend = !ruleForm2.is_partsend">{{ruleForm2.is_partsend?"取消群发单显":"群发单显"}} |</el-button>
+                      <el-button type="text" @click="show_replay_to = !show_replay_to">{{show_replay_to?"隐藏指定回复人":"显示指定回复人"}}</el-button>
                     </el-col>
 
                   </el-form-item>
@@ -121,8 +124,8 @@
                       </template>
                     </label>
                     <div class="padding_15">
-                        <div class="mailbox_s" v-if="!ruleForm2.is_partsend" :class="{error:!v.status}" v-for="(v,k) in maillist" :key="k" :title="v.email"><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v)"></i></div>
-                        <div class="mailbox_s" v-if="ruleForm2.is_partsend" :class="{error:!v.status}" v-for="(v,k) in partSendList" :key="k" :title="v.email"><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v,1)"></i></div>
+                        <div class="mailbox_s" v-if="!ruleForm2.is_partsend" :class="{error:!v.status}" v-for="(v,k) in maillist" :key="k" :title="v.email" @dblclick="dbEdit(v,'to',k)"><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click.stop="deleteMailboxForKey(k,v)"></i></div>
+                        <div class="mailbox_s" v-if="ruleForm2.is_partsend" :class="{error:!v.status}" v-for="(v,k) in partSendList" :key="k" :title="v.email" @dblclick="dbEdit(v,'partsend',k)"><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v,1)"></i></div>
                         <el-autocomplete  class="no_padding"  v-model.trim="state1" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox"
                         @blur="addMailbox" @focus="insertMailbox=1" placeholder="" @select="handleSelect" :trigger-on-focus="false" style="float:left">
 
@@ -141,13 +144,29 @@
                       </template>
                     </label>
                     <div class="padding_15">
-                      <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_copyer" :key="k" :title="v.email"><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey_copyer(k,v)"></i></div>
+                      <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_copyer" :key="k" :title="v.email" @dblclick="dbEdit(v,'cc',k)" ><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey_copyer(k,v)"></i></div>
                       <el-autocomplete  class="no_padding" v-model.trim="state_copyer" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox_copyer"
                         @blur="addMailbox_copyer" @focus="insertMailbox=2" placeholder=""  @select="handleSelect_copyer" :trigger-on-focus="false" style="float:left"></el-autocomplete>
                     </div>
                   </el-form-item>
+                  <el-form-item label="密   送:" prop="bcc" v-if="ruleForm2.is_bcc" v-show="!ruleForm2.is_partsend">
+                    <label slot="label">
+                      <template>
+                        <span @click="show_contact_fn('bcc')" class="show_contact_style">密送人:</span>
+                      </template>
+                    </label>
+                    <div class="padding_15">
+                      <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_bcc" :key="k" :title="v.email" @dblclick="dbEdit(v,'bcc',k)" ><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey_bcc(k,v)"></i></div>
+                      <el-autocomplete  class="no_padding" v-model.trim="state_bcc" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox_bcc"
+                        @blur="addMailbox_bcc" @focus="insertMailbox=3" placeholder=""  @select="handleSelect_bcc" :trigger-on-focus="false" style="float:left"></el-autocomplete>
+                    </div>
+                  </el-form-item>
                   <el-form-item label="主  题:" prop="subject">
                     <el-input v-model="ruleForm2.subject"></el-input>
+                  </el-form-item>
+
+                  <el-form-item label="指定回复人:" prop="reply_to" v-show="show_replay_to">
+                    <el-input v-model.trim="ruleForm2.reply_to" type="email" :placeholder="this.$parent.$parent.$parent.username"></el-input>
                   </el-form-item>
                   <el-form-item label="密  级:" prop="secret" v-if="false">
                     <el-input v-model.number="ruleForm2.secret" readonly></el-input>
@@ -170,7 +189,7 @@
                     <el-col :span="18">
 
                       <!--<el-input type="file" id="file"></el-input>-->
-                      <el-button size="small" type="text" @click="showBigDialog"><i class="el-icon-upload"></i> 添加附件</el-button>
+                      <el-button size="small" type="text" @click="showBigDialog" id="addAttachBtn"><i class="el-icon-upload"></i> 添加附件</el-button>
 
                       <el-upload v-if="false"
                           class="upload-demo"
@@ -394,7 +413,7 @@
         <el-row  :gutter="10">
           <el-col :span="6" >
 
-            <div style="height:420px;overflow: auto;width:100%;border:1px solid #dcdfe6">
+            <div style="height:520px;overflow: auto;width:100%;border:1px solid #dcdfe6">
                <!--:default-expanded-keys="default_expanded"-->
                 <!--:default-checked-keys="default_checked"-->
                 <!--:expand-on-click-node="false"-->
@@ -421,7 +440,7 @@
           </el-col>
           <el-col :span="12" style="height:420px;border-left:2px dotted #dcdfe6;border-right:2px dotted #dcdfe6;">
             <el-table
-              height="420"
+              height="520"
               :data="contactData"
               tooltip-effect="dark"
               style="width: 100%"
@@ -462,6 +481,16 @@
                 <el-col :span="22" style="overflow: hidden;white-space: nowrap" :title="t.username||t.email">{{t.name||t.fullname}} &lt;{{t.username||t.email}} &gt;</el-col>
                 <el-col :span="2" style="text-align: right">
                   <i class="el-icon-error delete_hover" @click="deleteList('cc',t.username,k)"></i>
+                </el-col>
+              </el-row>
+            </div>
+
+            密送人：(<b>{{bccList.length}}</b>)
+            <div class="address_box" :class="{active:active_box=='bcc'}" @click="switch_to('bcc',bccList)">
+              <el-row v-for="(t,k) in bccList" :key="k" class="hover_show_box">
+                <el-col :span="22" style="overflow: hidden;white-space: nowrap" :title="t.username||t.email">{{t.name||t.fullname}} &lt;{{t.username||t.email}} &gt;</el-col>
+                <el-col :span="2" style="text-align: right">
+                  <i class="el-icon-error delete_hover" @click="deleteList('bcc',t.username,k)"></i>
                 </el-col>
               </el-row>
             </div>
@@ -602,6 +631,22 @@
         </div>
       </el-dialog>
 
+      <el-dialog title="修改邮箱"  :visible.sync="dbFormVisible"  :append-to-body="true" width="420px">
+        <el-form :model="dbForm" label-width="80px" :rules="dbFormRules" ref="dbForm">
+
+          <el-form-item label="姓名" prop="fullname" >
+            <el-input v-model="dbForm.fullname"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱" prop="email" >
+            <el-input v-model="dbForm.email"></el-input>
+          </el-form-item>
+
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click.native="dbFormVisible = false">取消</el-button>
+          <el-button type="primary" @click.native="editEmail" >确定</el-button>
+        </div>
+      </el-dialog>
     </div>
 
 </template>
@@ -665,6 +710,17 @@
       };
       let _this = this;
       return {
+        show_replay_to:false,
+        dbIndex:0,
+        activeDb:'to',
+        dbFormVisible:false,
+        dbForm:{fullname:'',email:''},
+        dbFormRules:{
+          email: [
+            { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+            { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+          ]
+        },
         folder_capacity:{},
         loading2:false,
         files:[],
@@ -796,11 +852,15 @@
         is_save_contact:false,
         maillist:[],
         maillist_copyer:[],
+        maillist_bcc:[],
         fileList:[],
         ruleForm2:{
+          reply_to:'',
           is_priority:false,
           is_html:true,
           is_cc:true,
+          is_bcc:false,
+          maillist_bcc:[],
           is_partsend:false,
           to: [["512167072@qq.com",'zhouli']],
           cc: [],
@@ -851,6 +911,8 @@
         hashTo:[],
         ccList:[],
         hashCc:[],
+        bccList:[],
+        hashBcc:[],
         contact_search:'',
         pid:'',
         default_expanded:['pab'],
@@ -889,9 +951,11 @@
         hashMail:[],
         insertMailbox:1,
         hashMail_copyer:[],
+        hashMail_bcc:[],
         restaurants:[],
         state1:'',
         state_copyer:'',
+        state_bcc:'',
         toolbarItems:
         ['source', '|','formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
         'italic', 'underline',  'lineheight', '|',  'justifyleft', 'justifycenter', 'justifyright',
@@ -921,6 +985,60 @@
       };
     },
     methods:{
+      editEmail(){
+        this.$refs.dbForm.validate((valid) => {
+          if (valid) {
+            if(this.activeDb =='to'){
+              this.hashMail[this.maillist[this.dbIndex].email] = false;
+              this.maillist[this.dbIndex].fullname = this.dbForm.fullname;
+              this.maillist[this.dbIndex].email = this.dbForm.email;
+              this.maillist[this.dbIndex].status = true;
+              this.hashMail[this.dbForm.email] = true;
+            }else if(this.activeDb =='cc'){
+              this.hashMail_copyer[this.maillist_copyer[this.dbIndex].email] = false;
+              this.maillist_copyer[this.dbIndex].fullname = this.dbForm.fullname;
+              this.maillist_copyer[this.dbIndex].email = this.dbForm.email;
+              this.maillist_copyer[this.dbIndex].status = true;
+              this.hashMail_copyer[this.dbForm.email] = true;
+            }else if(this.activeDb =='bcc'){
+              this.hashMail_bcc[this.maillist_bcc[this.dbIndex].email] = false;
+              this.maillist_bcc[this.dbIndex].fullname = this.dbForm.fullname;
+              this.maillist_bcc[this.dbIndex].email = this.dbForm.email;
+              this.maillist_bcc[this.dbIndex].status = true;
+              this.hashMail_bcc[this.dbForm.email] = true;
+            }else if(this.activeDb == 'partsend'){
+              if(this.partSendList[this.dbIndex].type == 'to'){
+                this.hashMail[this.maillist[this.partSendList[this.dbIndex].k].email] = false;
+                this.maillist[this.partSendList[this.dbIndex].k].fullname = this.dbForm.fullname;
+                this.maillist[this.partSendList[this.dbIndex].k].email = this.dbForm.email;
+                this.maillist[this.partSendList[this.dbIndex].k].status = true;
+                this.hashMail[this.dbForm.email] = true;
+              }else if(this.partSendList[this.dbIndex].type == 'cc'){
+                this.hashMail_copyer[this.maillist_copyer[this.partSendList[this.dbIndex].k].email] = false;
+                this.maillist_copyer[this.partSendList[this.dbIndex].k].fullname = this.dbForm.fullname;
+                this.maillist_copyer[this.partSendList[this.dbIndex].k].email = this.dbForm.email;
+                this.maillist_copyer[this.partSendList[this.dbIndex].k].status = true;
+                this.hashMail_copyer[this.dbForm.email] = true;
+              }else if(this.partSendList[this.dbIndex].type == 'bcc'){
+                this.hashMail_bcc[this.maillist_bcc[this.partSendList[this.dbIndex].k].email] = false;
+                this.maillist_bcc[this.partSendList[this.dbIndex].k].fullname = this.dbForm.fullname;
+                this.maillist_bcc[this.partSendList[this.dbIndex].k].email = this.dbForm.email;
+                this.maillist_bcc[this.partSendList[this.dbIndex].k].status = true;
+                this.hashMail_bcc[this.dbForm.email] = true;
+              }
+            }
+
+            this.dbFormVisible = false;
+          }
+        });
+      },
+      dbEdit(v,type,k){
+        this.dbForm.email = v.email;
+        this.dbForm.fullname = v.fullname;
+        this.activeDb = type;
+        this.dbIndex = k;
+        this.dbFormVisible = true;
+      },
       loadingContact(tab){
         console.log(tab)
         if(tab.name == 'first'){
@@ -1307,9 +1425,11 @@
           readMail(row.uid,{"folder":row.folder}).then(res=>{
             let data = res.data
             pp.ruleForm2 = {
+              reply_to:'',
               is_priority:false,
               is_html:true,
               is_cc:true,
+              is_bcc:false,
               is_partsend:false,
               to: [],
               cc: [],
@@ -1509,12 +1629,18 @@
         this.transform_dialog = false
       },
       sureAddress(){
+        this.hashMail = [];
+        this.hashMail_copyer = [];
+        this.hashMail_bcc = [];
         let arr = [].concat(this.toList)
         arr.forEach((mail)=>{
           if(mail.username){
             mail.email = mail.username;
             mail.fullname = mail.name;
             mail.status = true;
+            this.hashMail[mail.username] = true;
+          }else{
+            this.hashMail[mail.email] = true;
           }
         })
         let arrcc = [].concat(this.ccList)
@@ -1523,10 +1649,25 @@
             mail.email = mail.username;
             mail.fullname = mail.name;
             mail.status = true;
+            this.hashMail_copyer[mail.username] = true;
+          }else{
+            this.hashMail_copyer[mail.email] = true;
+          }
+        })
+        let arrbcc = [].concat(this.bccList)
+        arrbcc.forEach((mail)=>{
+          if(mail.username){
+            mail.email = mail.username;
+            mail.fullname = mail.name;
+            mail.status = true;
+            this.hashMail_bcc[mail.username] = true;
+          }else{
+            this.hashMail_bcc[mail.email] = true;
           }
         })
         this.maillist = arr;
         this.maillist_copyer = arrcc;
+        this.maillist_bcc = arrbcc;
         this.transform_dialog = false
       },
 
@@ -1706,6 +1847,25 @@
 
 
       },
+      changeBcc(){
+        if(this.ruleForm2.is_bcc && this.maillist_bcc.length>0){
+          this.$confirm('<p>要删除已经存在的所有密送地址?</p>', '系统信息', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            dangerouslyUseHTMLString: true,
+            type: 'warning'
+          }).then(() => {
+            this.maillist_bcc = [];
+            this.ruleForm2.is_bcc = !this.ruleForm2.is_bcc
+          }).catch(() => {
+
+          });
+        }else{
+          this.ruleForm2.is_bcc = !this.ruleForm2.is_bcc
+        }
+
+
+      },
       backToBox(compose){
         this.$parent.$parent.$parent.removeTab(this.$parent.$parent.$parent.editableTabsValue2);
         if(compose){
@@ -1805,6 +1965,12 @@
           this.hashCc[id] = false;
           this.ccList.splice(k,1)
           if(this.active_box == 'cc'){
+            this.bang(this.ccList)
+          }
+        }else if(a == 'bcc'){
+          this.hashBcc[id] = false;
+          this.bccList.splice(k,1)
+          if(this.active_box == 'bcc'){
             this.bang(this.ccList)
           }
         }
@@ -1913,6 +2079,43 @@
               this.ccList.push(row);
             }
           }
+        }else if(this.active_box == 'bcc'){
+          if(!row){
+            let rows = this.contactData;
+            if(v.length>0){
+              for(let key in rows){
+                if(!this.hashBcc[rows[key].username]){
+                  this.hashBcc[rows[key].username] = true;
+                  this.bccList.push(rows[key]);
+                }
+              }
+            }else{
+              for(let i=0;i<rows.length;i++){
+                if(this.hashBcc[rows[i].username]){
+                  this.hashBcc[rows[i].username] = false;
+                  for(let j=0;j<this.bccList.length;j++){
+                    if(this.bccList[j].username == rows[i].username){
+                      this.bccList.splice(j,1);
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+          }else{
+            if(this.hashBcc[row.username]){
+              this.hashBcc[row.username] = false;
+              for(let i=0;i<this.bccList.length;i++){
+                if(row.username == this.bccList[i].username){
+                  this.bccList.splice(i,1);
+                  break;
+                }
+              }
+            }else{
+              this.hashBcc[row.username] = true;
+              this.bccList.push(row);
+            }
+          }
         }
       },
       bang(arr){
@@ -1932,7 +2135,10 @@
         this.transform_dialog = true;
         this.toList = [].concat(this.maillist)
         this.ccList = [].concat(this.maillist_copyer);
+        this.bccList = [].concat(this.maillist_bcc);
         this.hashTo = [];
+        this.hashCc = [];
+        this.hashBcc = [];
         this.toList.forEach((val)=>{
           val.username = val.email;
           this.hashTo[val.username] = true;
@@ -1941,10 +2147,16 @@
           val.username = val.email;
           this.hashCc[val.username] = true;
         });
+        this.bccList.forEach(val => {
+          val.username = val.email;
+          this.hashBcc[val.username] = true;
+        });
         if(this.active_box == 'to'){
           this.bang(this.toList);
-        }else{
+        }else if(this.active_box == 'cc'){
           this.bang(this.ccList);
+        }else if(this.active_box == 'bcc'){
+          this.bang(this.bccList);
         }
       },
       getPabMembers() {
@@ -2175,23 +2387,29 @@
       sentMail(type){
         this.ruleForm2.to = [];
         this.ruleForm2.cc = [];
+        this.ruleForm2.bcc = [];
         this.ruleForm2.attachments = [];
         this.ruleForm2.net_attachments = [];
         this.ruleForm2.company_attachments = [];
-
         if(this.ruleForm2.is_partsend){
           this.format(this.partSendList,this.ruleForm2.to)
         }else{
           this.format(this.maillist,this.ruleForm2.to)
           this.format(this.maillist_copyer,this.ruleForm2.cc)
+          this.format(this.maillist_bcc,this.ruleForm2.bcc)
         }
         if(type=='sent'&&this.ruleForm2.to.length<=0){
           this.$alert('请输入收件人！');
           return;
         }
-        if(type=='sent' && !this.ruleForm2.subject){
+        if(type=='sent' && !this.ruleForm2.subject&& this.fileList.length==0){
           this.$alert('请填写邮件主题！');
           return;
+        }
+        if(type=='sent' && !this.ruleForm2.subject&& this.fileList.length>0){
+          let str = this.fileList[0].filename || this.fileList[0].name;
+          str = str.slice(0,str.lastIndexOf('.'));
+          this.ruleForm2.subject = str;
         }
         if(type=='sent' && !this.content){
           this.$alert('请填写邮件内容！');
@@ -2203,6 +2421,10 @@
             this.$alert('密码格式不正确！请重新填写');
             return;
           }
+        }
+        if(type=='sent'&& this.ruleForm2.reply_to && !emailReg.test(this.ruleForm2.reply_to)){
+          this.$alert('指定回复人格式不正确！请重新填写！（不填则回复给发件人）');
+          return;
         }
         if(this.ruleForm2.is_html){
           this.ruleForm2.html_text = this.content;
@@ -2228,12 +2450,8 @@
         if(this.type!='sent'&&!this.content){
           return;
         }
-        if(type == 'sent'){
-          this.sendLoading = true;
-        }
         mailSent(param).then(res=>{
           if(this.$store.getters.getTimer){clearInterval(this.$store.getters.getTimer)}
-          this.sendLoading = false;
           let info = type=='sent'?"发送成功！":"保存草稿成功！";
           this.$message({
              message:info,
@@ -2608,15 +2826,28 @@
       addMailbox_copyer(){
         setTimeout(()=>{this.handleSelect_copyer()},300)
       },
+      addMailbox_bcc(){
+        setTimeout(()=>{this.handleSelect_bcc()},300)
+      },
       deleteMailbox_copyer(){
         if(!this.state_copyer&&this.maillist_copyer.length>0){
           this.hashMail_copyer[this.maillist_copyer[this.maillist_copyer.length-1].email] = false;
           this.maillist_copyer.pop();
         }
       },
+      deleteMailbox_bcc(){
+        if(!this.state_bcc&&this.maillist_bcc.length>0){
+          this.hashMail_bcc[this.maillist_bcc[this.maillist_bcc.length-1].email] = false;
+          this.maillist_bcc.pop();
+        }
+      },
       deleteMailboxForKey_copyer(k,v){
         this.hashMail_copyer[v.email] = false;
         this.maillist_copyer.splice(k,1)
+      },
+      deleteMailboxForKey_bcc(k,v){
+        this.hashMail_bcc[v.email] = false;
+        this.maillist_bcc.splice(k,1)
       },
       handleSelect_copyer(item) {
         if(item){
@@ -2652,6 +2883,40 @@
           this.state_copyer = '';
         }
       },
+      handleSelect_bcc(item) {
+        if(item){
+          if(this.state_bcc){
+            if(this.hashMail_bcc[item.email]){
+
+            }else{
+              this.hashMail_bcc[item.email] = true;
+              this.maillist_bcc.push(item);
+              this.state_bcc = '';
+            }
+          }
+          this.state_bcc = '';
+        }else{
+          if(this.state_bcc){
+            if(this.hashMail_bcc[this.state_bcc]){
+
+            }else{
+              this.hashMail_bcc[this.state_bcc] = true;
+              let obj = {};
+              obj.value = this.state_bcc;
+              obj.email = this.state_bcc;
+              obj.fullname = '';
+              if(emailReg.test(this.state_bcc)){
+                obj.status = true;
+              }else{
+                obj.status = false;
+              }
+              this.maillist_bcc.push(obj);
+              this.state_bcc = '';
+            }
+          }
+          this.state_bcc = '';
+        }
+      },
       querySearch(queryString, cb) {
         var restaurants = this.restaurants;
         var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
@@ -2678,6 +2943,11 @@
             if(!this.hashMail_copyer[data.email]){
               this.hashMail_copyer[data.email]=true;
               this.maillist_copyer.push({value:data.label,status:true,email:data.email,fullname:data.fullname});
+            }
+          }else if(this.insertMailbox == 3){
+            if(!this.hashMail_bcc[data.email]){
+              this.hashMail_bcc[data.email]=true;
+              this.maillist_bcc.push({value:data.label,status:true,email:data.email,fullname:data.fullname});
             }
           }
         }
@@ -2824,6 +3094,8 @@
       partSendList:function(){
         let arr = [];
         for(let i=0;i<this.maillist.length;i++){
+          this.maillist[i].type = 'to'
+          this.maillist[i].k = i
           arr.push(this.maillist[i])
         }
         for(let i=0;i<this.maillist_copyer.length;i++){
@@ -2833,7 +3105,22 @@
             }
           }
           if( j ==this.maillist.length){
+            this.maillist_copyer[i].type = 'cc'
+            this.maillist_copyer[i].k = i
             arr.push(this.maillist_copyer[i])
+          }
+        }
+        let p = [].concat(arr)
+        for(let i=0;i<this.maillist_bcc.length;i++){
+          for(var j=0;j<p.length;j++){
+            if(this.maillist_bcc[i].email == p[j].email){
+              break;
+            }
+          }
+          if( j ==p.length){
+            this.maillist_bcc[i].type = 'bcc'
+            this.maillist_bcc[i].k = i
+            arr.push(this.maillist_bcc[i])
           }
         }
         return arr;
@@ -2872,6 +3159,10 @@
         setTimeout(_this.set_main_min_height,50);
       },
       "ruleForm2.is_partsend"(nv){
+        let _this = this;
+        setTimeout(_this.set_main_min_height,50);
+      },
+      show_replay_to(){
         let _this = this;
         setTimeout(_this.set_main_min_height,50);
       },
@@ -2958,7 +3249,7 @@
     width:100px;
     text-align:right;
   }
-  #app .compose_style .delete_hover{
+  .address_box .delete_hover{
     color:red;
     display:none;
   }
@@ -2966,7 +3257,7 @@
     display:inline-block;
   }
    .address_box{
-    border:1px solid #dcdfe6;height:180px;margin-bottom:20px;overflow-y: auto;padding:4px;
+    border:1px solid #dcdfe6;height:140px;margin-bottom:20px;overflow-y: auto;padding:4px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;

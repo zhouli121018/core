@@ -333,7 +333,7 @@
                             <i class="el-icon-download"></i>
                             <p>下载</p>
                           </el-col>
-                          <el-col v-if="/.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|md|xls|xlsx|doc|docx|ppt|pptx|xml)$/.test(a.name)" class="text-center cursorP" :span="8" title="预览" @click.native="preview(a)">
+                          <el-col v-if="/.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|xls|xlsx|doc|docx|ppt|pptx|xml|csv)$/.test(a.name)" class="text-center cursorP" :span="8" title="预览" @click.native="preview(a)">
                             <i class="el-icon-view"></i>
                             <p>预览</p>
                           </el-col>
@@ -849,9 +849,11 @@
 
           readMail(this.readId,{"folder":fid,"view":view}).then(res=>{
             pp.ruleForm2 = {
+              reply_to:'',
               is_priority:false,
               is_html:true,
               is_cc:true,
+              is_bcc:false,
               is_partsend:false,
               to: [["512167072@qq.com",'zhouli']],
               cc: [],
@@ -1038,9 +1040,11 @@
         readMail(this.readId,{"folder":fid,"view":view}).then(res=>{
             this.actionLoading = false;
             pp.ruleForm2 = {
+              reply_to:'',
               is_priority:false,
               is_html:true,
               is_cc:true,
+              is_bcc:false,
               is_partsend:false,
               to: [["512167072@qq.com",'zhouli']],
               cc: [],

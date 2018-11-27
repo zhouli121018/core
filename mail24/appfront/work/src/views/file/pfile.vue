@@ -93,7 +93,7 @@
                     <span v-if="scope.row.nettype=='file'" @click="sendMail_net(scope.row)">发信</span>
                     <!--<span>共享</span>-->
                     <span @click="resetRowNameShow(scope.row)">重命名</span>
-                    <span v-if="scope.row.nettype=='file' && /.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|md|xls|xlsx|doc|docx|ppt|pptx|xml)$/.test(scope.row.name)" @click="$parent.preview(scope.row,'file',current_folder_id)">预览</span>
+                    <span v-if="scope.row.nettype=='file' && /.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|xls|xlsx|doc|docx|ppt|pptx|xml|csv)$/.test(scope.row.name)" @click="$parent.preview(scope.row,'file',current_folder_id)">预览</span>
                     <span @click="deleteRowFolders(scope.row)" style="color:#f56c6c;">删除</span>
                   </div>
                 </el-col>
@@ -624,7 +624,42 @@
         this.$confirm('确认下载当前文件或文件夹？', '提示', {
           type: 'warning'
         }).then(() => {
-          this.zipCommonDownload(that, files, folders);
+          if ( row.nettype == "file" ) {
+            this.zipCommonRowDownload(that, row.id, row.name)
+          } else {
+            this.zipCommonDownload(that, files, folders);
+          }
+        });
+      },
+      zipCommonRowDownload: function(that, file_id, file_name){
+        this.listLoading = true;
+        netdiskFileDownload(file_id).then((response)=> {
+          this.listLoading = false;
+          let blob = new Blob([response.data], { type: response.headers["content-type"] })
+          let objUrl = URL.createObjectURL(blob);
+          this.blobUrl = objUrl;
+          // let filenameHeader = response.headers['content-disposition']
+          // let filename = filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1);
+          let filename = file_name;
+          if (window.navigator.msSaveOrOpenBlob) {
+            // if browser is IE
+            navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
+          } else {
+            // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
+            var link = document.createElement("a");
+            link.setAttribute("href", objUrl);
+            link.setAttribute("download", filename);
+            document.body.appendChild(link);
+            link.click();
+          }
+          that.$message({ message: '导出成功', type: 'success' });
+          // this.getPabs();
+        }).catch(function (err) {
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
+          that.$message({ message: '导出失败！'+str,  type: 'error' });
         });
       },
       zipDownload: function () {

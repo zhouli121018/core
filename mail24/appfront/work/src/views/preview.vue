@@ -1,17 +1,34 @@
 <template>
   <div style="height:100%;overflow: hidden;position:relative">
-    <div style="padding:10px 10px;border-bottom:1px solid #e5e5e5;">
+    <div style="padding:10px 10px;border-bottom:1px solid #e5e5e5;font-size:12px;" class="header">
+      <div>
+        <h1 class="logo" style="float:left;" v-if="false">
+          <img src="@/assets/img/logo.png" alt="logo" style="width: 152px; height: 42px;">
+        </h1>
+        <span v-if="false" class="username" style="float: left;margin: 5px 0 0 60px;white-space: nowrap;">您好！<b>&lt;{{$store.getters.userInfo.name}}&gt;</b> <span style="cursor:pointer;text-decoration: underline;color:#074977;margin-left:10px;font-size:12px;" @click="closeWindow">[返回]</span></span>
+
+      </div>
       <span style="font-size:22px;font-weight: bold;">{{name}}</span> <span style="font-size:12px;color:#aaa;margin-left:10px;">({{$route.query.size |mailsize}})</span>
 
-      <el-button  type="text" size="small" style="margin:0 10px;font-size:14px;text-decoration: underline" @click="download">{{$route.query.type=='attach'?'下载附件':'下载'}}</el-button>
-      <el-button @click="refresh" size="small" type="text" style="font-size:14px;text-decoration: underline">刷新重试</el-button>
-      <p v-if="$route.query.subject">邮件标题：{{$route.query.subject}}</p>
-
+      <el-button  type="text" size="small" style="margin:0 10px;text-decoration: underline;color: #074977" @click="download">{{$route.query.type=='attach'?'[下载附件]':'[下载]'}}</el-button>
+      <!--<el-button @click="refresh" size="small" type="text" style="text-decoration: underline; color: #074977">[刷新重试]</el-button>-->
+      <p v-if="$route.query.subject" style="color:#999;font-size:14px;">邮件标题：<span style="color:#000;">{{$route.query.subject}}</span></p>
+      <p style="margin-top: 6px; color: #999;white-space: nowrap;font-size:12px;">部分格式和图片可能无法显示，请下载原文档查看</p>
     </div>
-    <div style="position:absolute;top:80px;bottom:0;left:0;right:0" v-loading="loading">
+    <div style="position:absolute;bottom:0;left:0;right:0" v-loading="loading" :class="{attachpre:$route.query.type=='attach',noread:$route.query.type!='attach'}">
       <!--<el-input type="file" @change="change" id="file"></el-input>-->
       <iframe id="previewIframe"  frameborder="0" scrolling="100%" height="200" width="100%" :src="preUrl"></iframe>
     </div>
+    <el-dialog title="提示"  :visible.sync="infoView"  :close-on-click-modal="false" :append-to-body="true" width="400px">
+        <span>附件预览时发生错误：</span> <span style="color:#f56c6c;">{{errMsg}}</span>
+        <p v-if="canRetry" style="padding:10px 0 0;">请 <span @click="preview" style="cursor:pointer;text-decoration: underline;color: #074977">重试</span> 或直接 <span style="cursor:pointer;text-decoration: underline;color: #074977" @click="download">下载</span> 查看
+        </p>
+        <p v-if="!canRetry" style="padding:10px 0 0;">请直接 <span style="cursor:pointer;text-decoration: underline;color: #074977" @click="download">下载</span> 查看
+        </p>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click.native="infoView = false">取消</el-button>
+        </div>
+      </el-dialog>
     <!--<el-button style="position:fixed;bottom:10px;right:10px;" @click="goTop">top</el-button>-->
   </div>
 </template>
@@ -23,10 +40,18 @@
       return{
         preUrl:'',
         name:'',
-        loading:false
+        loading:false,
+        infoView:false,
+        canRetry:false,
+        errMsg:'',
       }
     },
     methods:{
+      closeWindow(){
+        window.opener=null;
+        window.open('','_self');
+        window.close();
+      },
       zipRowDownload: function(row){
         let that = this;
         var files = [];
@@ -36,6 +61,7 @@
         this.$confirm('确认下载当前文件？', '提示', {
           type: 'warning'
         }).then(() => {
+          this.infoView = false;
           this.zipCommonDownload(that, files, folders);
         });
       },
@@ -74,6 +100,7 @@
         this.$confirm('确认下载？', '提示', {
           type: 'warning'
         }).then(() => {
+          this.infoView = false;
           downloadAttach2(row.id, {download: true}).then((response)=> {
             let blob = new Blob([response.data], { type: response.headers["content-type"] })
             let objUrl = URL.createObjectURL(blob);
@@ -105,13 +132,14 @@
       zipRowDownloadfile: function(row){
         let that = this;
         var files = [];
-        var folders = [];
         files.push(row.id);
+
         // let zip_list = [{'folder_id':row.id,'nettype':row.nettype} ];
         this.$confirm('确认下载当前文件？', '提示', {
           type: 'warning'
         }).then(() => {
-          this.zipCommonDownloadfile(that, files, folders);
+            this.zipCommonDownloadfile(that, row.id, row.name)
+
         });
       },
       zipCommonDownloadfile: function(that, files, folders){
@@ -162,41 +190,49 @@
         }
       },
       downloadAttach(sid,sname){
-        let param = {
+        this.$confirm('确认下载当前文件？', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.infoView = false;
+          let param = {
           uid:this.$route.query.id,
           folder:this.$route.query.fid,
           sid:sid,
           download:true
         };
-        if(this.password){
-          param.password = 1;
-        }
-        downloadAttach(param).then(response=>{
-          let blob = new Blob([response.data], { type: response.headers["content-type"] })
-          let objUrl = URL.createObjectURL(blob);
-          // let filenameHeader = response.headers['content-disposition']
-          let filename = sname;
-          if (window.navigator.msSaveOrOpenBlob) {
-            // if browser is IE
-            navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
-          } else {
-            // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
-            let link = document.createElement("a");
-            link.setAttribute("href", objUrl);
-            link.setAttribute("download", filename);
+          if(this.password){
+            param.password = 1;
+          }
+          downloadAttach(param).then(response=>{
+            let blob = new Blob([response.data], { type: response.headers["content-type"] })
+            let objUrl = URL.createObjectURL(blob);
+            // let filenameHeader = response.headers['content-disposition']
+            let filename = sname;
+            if (window.navigator.msSaveOrOpenBlob) {
+              // if browser is IE
+              navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
+            } else {
+              // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
+              let link = document.createElement("a");
+              link.setAttribute("href", objUrl);
+              link.setAttribute("download", filename);
 
-            document.body.appendChild(link);
-            link.click();
-          }
-          this.$message({ message: '下载成功！', type: 'success' });
-        },err=>{
-          console.log(err);
-          let str = '';
-          if(err.detail){
-            str = err.detail
-          }
-          this.$message({ message: '下载失败！'+str, type: 'error' });
-        })
+              document.body.appendChild(link);
+              link.click();
+            }
+            this.$message({ message: '下载成功！', type: 'success' });
+          },err=>{
+            console.log(err);
+            let str = '';
+            if(err.detail){
+              str = err.detail
+            }
+            this.$message({ message: '下载失败！'+str, type: 'error' });
+          })
+        }).catch(err=>{
+          console.log(err)
+        });
+
 
       },
       refresh(){
@@ -218,10 +254,17 @@
               setTimeout(()=>{this.get(p);},1000)
           }else{
             this.loading = false;
-            this.$message({
-              type:'error',
-              message:'预览出错！'+res.data.message
-            })
+            // this.$message({
+            //   type:'error',
+            //   message:'预览出错！'+res.data.message
+            // })
+            this.errMsg = res.data.message;
+            if(res.data.code == 102){
+              this.canRetry = true;
+            }else{
+              this.canRetry = false;
+            }
+            this.infoView = true;
 
           }
         }).catch(err=>{
@@ -247,7 +290,7 @@
           folder:routeParams.fid,
           sid:routeParams.sid,
           suffix:routeParams.suffix,
-          retry:''
+          retry:1
         };
         getOpenoffice(param).then(res=>{
           if(res.data.state == 2){
@@ -261,11 +304,19 @@
             this.get(param)
           }else{
             this.loading = false;
+            // this.$message({
+            //   type:'error',
+            //   message:'预览出错！'+res.data.message
+            // })
+            this.errMsg = res.data.message;
+            if(res.data.code == 102){
+              this.canRetry = true;
+            }else{
+              this.canRetry = false;
+            }
+            this.infoView = true;
 
-            this.$message({
-              type:'error',
-              message:'预览出错！'+res.data.message
-            })
+
           }
 
 
@@ -303,3 +354,11 @@
     },
   }
 </script>
+<style>
+  .attachpre{
+    top:100px;
+  }
+  .noread{
+    top:80px;
+  }
+</style>
