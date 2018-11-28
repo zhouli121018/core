@@ -91,7 +91,8 @@
           name = a.filename;
         }
 
-        let href = window.location.origin+'/#/preview/?id='+a.id+'&type='+type+'&size='+ size+'&suffix='+suffix+'&name='+name+'&cfid='+cfid;
+        let href = window.location.origin+'/#/preview/?id='+a.id+'&type='+type+'&size='+ size+'&suffix='+suffix+'&name='+encodeURIComponent(name)+'&cfid='+cfid;
+        console.log(href)
         window.open(href)
         return;
         let ww = window.open();

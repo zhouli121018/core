@@ -112,7 +112,7 @@
                       <el-button v-show="!ruleForm2.is_partsend" type="text"  @click="changeCc">{{ruleForm2.is_cc?"取消抄送":"抄送"}} &nbsp;&nbsp;|</el-button>
                       <el-button v-show="!ruleForm2.is_partsend" type="text"  @click="changeBcc">{{ruleForm2.is_bcc?"取消密送":"显示密送"}} &nbsp;&nbsp;|</el-button>
                       <el-button type="text" @click="ruleForm2.is_partsend = !ruleForm2.is_partsend">{{ruleForm2.is_partsend?"取消群发单显":"群发单显"}} |</el-button>
-                      <el-button type="text" @click="show_replay_to = !show_replay_to">{{show_replay_to?"隐藏指定回复人":"显示指定回复人"}}</el-button>
+                      <el-button type="text" @click="changeReply">{{show_replay_to?"取消指定回复人":"指定回复人"}}</el-button>
                     </el-col>
 
                   </el-form-item>
@@ -172,18 +172,23 @@
                     <el-input v-model.number="ruleForm2.secret" readonly></el-input>
                   </el-form-item>
 
-                  <el-form-item v-show="fileList.length>0" label="附  件:" prop="attach" class="attach_list_style">
-                    <div  v-for="(f,k) in fileList" :key="f.id" class="attach_box" @mouseenter="attach_hoverfn(f.id)" @mouseleave="remove_attach_hover" :class="{attach_hover:attachIndex == f.id}">
-                      <i class="el-icon-document"></i>
-                      <span >[非密] {{f.filename||f.name}}</span>
-                      <i class="el-icon-check" style="margin:0 5px;color:#26af1e;font-weight:bold;"></i>
-                      <span class="plan_style" v-if="f.size">{{f.size | mailsize }}</span>
-                      <span class="plan_style" v-if="!f.size">{{f.file_size }}</span>
-                      <span class="attach_actions">
-                        <el-button size="mini" type="text" plain @click="delete_attach(f.id,k)">删除</el-button>
-                        <!--<el-button size="mini" type="text" plain>下载</el-button>-->
-                      </span>
+                  <el-form-item v-show="fileList.length>0" label="附  件:" prop="attach">
+                    <div style="line-height: 20px;padding: 0 12px;margin: 10px 0;border: 1px solid #d4d7d9;background: #f0f1f3;border-radius: 3px;">{{fileList.length}} 个文件，共 {{totalAttach | mailsize}}</div>
+                    <div  class="attach_list_style">
+                      <div  v-for="(f,k) in fileList" :key="f.id" class="attach_box" @mouseenter="attach_hoverfn(f.id)" @mouseleave="remove_attach_hover" :class="{attach_hover:attachIndex == f.id}">
+                        <span>{{k+1}}. </span>
+                        <i class="el-icon-document"></i>
+                        <span >[非密] {{f.filename||f.name}}</span>
+                        <i class="el-icon-check" style="margin:0 5px;color:#26af1e;font-weight:bold;"></i>
+                        <span class="plan_style" v-if="f.size">{{f.size | mailsize }}</span>
+                        <span class="plan_style" v-if="!f.size">{{f.file_size | mailsize }}</span>
+                        <span class="attach_actions">
+                          <el-button size="mini" type="text" plain @click="delete_attach(f.id,k)">删除</el-button>
+                          <!--<el-button size="mini" type="text" plain>下载</el-button>-->
+                        </span>
+                      </div>
                     </div>
+
                   </el-form-item>
                   <el-row>
                     <el-col :span="18">
@@ -567,7 +572,7 @@
               </el-table-column>
               <el-table-column prop="file_size" label="文件大小" width="100" >
                 <template slot-scope="scope">
-                    <span  class="plan_style">{{scope.row.file_size}}</span>
+                    <span  class="plan_style">{{scope.row.file_size |mailsize}}</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -694,10 +699,15 @@
         type:Array,
         default:[]
       },
+      parent_maillist_bcc: {
+        type:Array,
+        default:[]
+      },
       parent_fileList: {
         type:Array,
         default:[]
-      }
+      },
+      parent_show_reply_to:false
     },
 
     data(){
@@ -985,6 +995,23 @@
       };
     },
     methods:{
+      changeReply(){
+        if(this.show_replay_to && this.ruleForm2.reply_to){
+          this.$confirm('<p>取消并清空指定回复人地址?</p>', '系统信息', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            dangerouslyUseHTMLString: true,
+            type: 'warning'
+          }).then(() => {
+            this.ruleForm2.reply_to = '';
+            this.show_replay_to = !this.show_replay_to
+          }).catch(() => {
+
+          });
+        }else{
+          this.show_replay_to = !this.show_replay_to
+        }
+      },
       editEmail(){
         this.$refs.dbForm.validate((valid) => {
           if (valid) {
@@ -1836,7 +1863,11 @@
             dangerouslyUseHTMLString: true,
             type: 'warning'
           }).then(() => {
+            if(this.insertMailbox == 2){
+              this.insertMailbox = 1;
+            }
             this.maillist_copyer = [];
+            this.hashMail_copyer = [];
             this.ruleForm2.is_cc = !this.ruleForm2.is_cc
           }).catch(() => {
 
@@ -1855,7 +1886,11 @@
             dangerouslyUseHTMLString: true,
             type: 'warning'
           }).then(() => {
+            if(this.insertMailbox == 3){
+              this.insertMailbox = 1;
+            }
             this.maillist_bcc = [];
+            this.hashMail_bcc = [];
             this.ruleForm2.is_bcc = !this.ruleForm2.is_bcc
           }).catch(() => {
 
@@ -2447,7 +2482,7 @@
         }
         let param = this.ruleForm2;
         param.action=type;// save_draft
-        if(this.type!='sent'&&!this.content){
+        if(type!='sent'&&!this.content){
           return;
         }
         mailSent(param).then(res=>{
@@ -2461,7 +2496,9 @@
           this.recipient = res.data.recipient;
           this.sendResult = res.data;
           this.$parent.$parent.$parent.getFloderfn()
-          // this.$parent.$parent.$children[1].$children[0].getMessageList()
+          if( type != 'sent'){
+            this.$parent.$parent.$children[1].$children[0].getMessageList()
+          }
           if(res.data.draft_id){
             this.ruleForm2.draft_id = res.data.draft_id
           }
@@ -3034,15 +3071,34 @@
       this.content = this.parent_content;
       this.maillist = this.parent_maillist;
       this.maillist_copyer = this.parent_maillist_copyer;
+      this.maillist_bcc = this.parent_maillist_bcc;
       this.fileList = this.parent_fileList;
       this.ruleForm2 = this.parent_ruleForm2;
+      this.show_replay_to = this.parent_show_reply_to;
       this.hashMail = [];
       this.hashMail_copyer = [];
+      this.hashMail_bcc = [];
+      if(this.maillist_copyer.length>0){
+        this.ruleForm2.is_cc = true;
+      }else{
+        this.ruleForm2.is_cc = false;
+      }
+      if(this.maillist_bcc.length>0){
+        this.ruleForm2.is_bcc = true;
+      }else{
+        this.ruleForm2.is_bcc = false;
+      }
+      if(this.ruleForm2.reply_to){
+        this.show_replay_to = true;
+      }
       for(let i=0;i<this.maillist.length;i++){
         this.hashMail[this.maillist[i].email] = true;
       }
       for(let i=0;i<this.maillist_copyer.length;i++){
         this.hashMail_copyer[this.maillist_copyer[i].email] = true;
+      }
+      for(let i=0;i<this.maillist_bcc.length;i++){
+        this.hashMail_bcc[this.maillist_bcc[i].email] = true;
       }
 
        $('#editor_id'+this.rid).css({'width': '100%','border':'none','boxSizing':'border-box','padding':'10px 10px 0'})
@@ -3124,7 +3180,19 @@
           }
         }
         return arr;
-      }
+      },
+      totalAttach:function(){
+        let total = 0;
+        for(let i=0;i<this.fileList.length;i++){
+          let o = this.fileList[i];
+          if(o.size){
+            total += o.size;
+          }else{
+            total += o.file_size
+          }
+        }
+        return total;
+      },
 
 
 
@@ -3143,11 +3211,18 @@
           this.allSeclect = val;
         }
       },
+      bccList(val){
+        if(this.active_box == 'bcc'){
+          this.allSeclect = val;
+        }
+      },
       active_box(val){
         if(this.active_box == 'cc'){
           this.allSeclect = this.ccList;
-        }else{
+        }else if(this.active_box == 'to'){
           this.allSeclect = this.toList;
+        }else if(this.active_box == 'bcc'){
+          this.allSeclect = this.bccList;
         }
       },
       fileList(){
@@ -3162,6 +3237,10 @@
         let _this = this;
         setTimeout(_this.set_main_min_height,50);
       },
+      "ruleForm2.is_bcc"(nv){
+        let _this = this;
+        setTimeout(_this.set_main_min_height,50);
+      },
       show_replay_to(){
         let _this = this;
         setTimeout(_this.set_main_min_height,50);
@@ -3171,6 +3250,10 @@
         setTimeout(_this.set_main_min_height,100);
       },
       maillist_copyer(){
+        let _this = this;
+        setTimeout(_this.set_main_min_height,100);
+      },
+      maillist_bcc(){
         let _this = this;
         setTimeout(_this.set_main_min_height,100);
       }
@@ -3196,7 +3279,7 @@
   #app .right_menu .el-tabs__item{
     padding:0 14px;
   }
-  #app .attach_list_style .el-form-item__content{
+  #app .attach_list_style{
     max-height: 142px;
     overflow: auto;
   }

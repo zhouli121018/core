@@ -30,6 +30,11 @@ export const rou = [
         component: _import('mailbox/mailboxTab'),
       },
       {
+        path: 'mailbox/review',
+        name:'review',
+        component: _import('mailbox/mailboxTab'),
+      },
+      {
         path: 'mailbox/innerbox/:boxId',
         name:'innerbox',
         component: _import('mailbox/mailboxTab'),

@@ -38,6 +38,9 @@
                         </span>
                       </span>
                     </el-tree>
+                    <div @click="goReview" class="review_style" :class="{active:review_active}"  style="border-top:2px solid #ddd;text-align:left;padding-left:24px;height:36px;line-height:36px;">
+                      邮件审核
+                    </div>
                 </div>
 
                       <el-dialog title="新建文件夹" :visible.sync="dialogFormVisible" :append-to-body="true">
@@ -69,11 +72,12 @@
                         <!--</div>-->
                         <Innerbox v-if="item.name=='1'" :boxId="boxId" :curr_folder="curr_folder"  @getRead="getRead" :unseencount="unseencount" :floderResult="floderResult" ref="innerbox"></Innerbox>
                         <Read :readId="item.rid" :readFolderId="item.fid" :tagName="item.name" v-if="item.type=='read'"></Read>
-                        <Compose  v-if="item.type!='read'&&item.name!='1'" :ref="'ref_compose_'+item.name" :iframe_height="iframe_height" :rid="item.name" :parent_ruleForm2="ruleForm2" :parent_content="content" :parent_maillist="maillist" :parent_maillist_copyer="maillist_copyer" :parent_fileList="fileList" :compose_type="item.type"></Compose>
+                        <Compose  v-if="item.type!='read'&&item.name!='1'" :ref="'ref_compose_'+item.name" :iframe_height="iframe_height" :rid="item.name" :parent_ruleForm2="ruleForm2" :parent_content="content" :parent_maillist="maillist" :parent_maillist_copyer="maillist_copyer" :parent_fileList="fileList" :compose_type="item.type" :parent_maillist_bcc="maillist_bcc" :parent_show_reply_to="show_reply_to"></Compose>
 
                       </el-tab-pane>
                     </el-tabs>
                     <Home v-if="showTabIndex==0"></Home>
+                    <Review v-if="showTabIndex==2"></Review>
                     <!--<Innerbox v-if="showTabIndex==1" :boxId="boxId" :curr_folder="curr_folder" @getRead="getRead" ref="innerbox"></Innerbox>-->
                     <!--<Read v-if="showTabIndex==2" :readId="readId" :readFolderId="readFolderId"></Read>-->
                     <!--<Compose v-if="showTabIndex==3" :iframe_height="iframe_height" ></Compose>-->
@@ -90,17 +94,21 @@ import Innerbox from './components/innerbox'
 import Home from './components/home'
 import Read from './components/read'
 import Compose from './components/compose'
+import Review from './components/review'
 export default {
   components:{
-    MailAside,Innerbox,Home,Read,Compose
+    MailAside,Innerbox,Home,Read,Compose,Review
   },
   data:function(){
       return{
+        review_active:false,
+        show_reply_to:false,
         content:'',
         maillist: [
           // {email:'anna@test.com',fullname:'章太炎',id:12280,status:true,value:'章太炎<anna@test.com>'}
         ],
         maillist_copyer: [],
+        maillist_bcc: [],
         fileList: [],
         ruleForm2: {
           reply_to:'',
@@ -170,6 +178,14 @@ export default {
       }
   },
   methods:{
+    goReview(){
+      this.$router.push('/mailbox/review')
+      this.showTabIndex = 2;
+      this.review_active = true;
+      let aa = [].concat(this.floderResult);
+      this.floderResult = [];
+      this.floderResult = aa;
+    },
     tabClick(tab,event){
       this.showTabIndex=1;
     },
@@ -214,7 +230,9 @@ export default {
         this.content = '';
         this.maillist = [];
         this.maillist_copyer = [];
+        this.maillist_bcc = [];
         this.fileList = [];
+        this.show_reply_to = false;
       }else if(type =='compose_net_atta'){
         this.ruleForm2['refw_type']=undefined;
         this.ruleForm2 = {
@@ -245,6 +263,8 @@ export default {
         this.content = '';
         this.maillist = [];
         this.maillist_copyer = [];
+        this.maillist_bcc = [];
+        this.show_reply_to = false;
         this.fileList = this.$store.getters.getPfileNetAtta;
       }
       if(type == 'compose_to_list'){
@@ -330,7 +350,7 @@ export default {
 
     setCurrentKey(boxId) {
       this.$nextTick(() =>{
-        this.$refs.treeMenuBar.setCurrentKey(boxId||'INBOX');
+        this.$refs.treeMenuBar.setCurrentKey(boxId);
         if(this.$refs.treeMenuBar.getCurrentNode()){
           this.unseencount = this.$refs.treeMenuBar.getCurrentNode().unseen;
           this.editableTabs2[0].title = this.$refs.treeMenuBar.getCurrentNode().label;
@@ -473,7 +493,10 @@ export default {
     },
     goToCompose(){
       // this.$emit('getCompose', {activeTab:3});
-      // this.$router.push('/mailbox/compose')
+      if(this.$route.name != 'innerbox'){
+        this.$router.push('/mailbox/innerbox/INBOX')
+      }
+
       this.addTab('compose','写信')
     },
     reloadMails(){
@@ -506,6 +529,13 @@ export default {
           obj['is_default'] = folder[i]['is_default'];
           arr.push(obj);
         }
+        // let obj={};
+        //   obj['label'] = '邮件审核';
+        //   obj['id'] = 'review';
+        //   obj['flags'] = '';
+        //   obj['unseen'] = 1;
+        //   obj['is_default'] = true;
+        //   arr.push(obj);
         return arr;
       },
     newCount(){
@@ -528,15 +558,17 @@ export default {
         this.addTab('compose_to_list','写信')
         this.$store.dispatch('setContactJ',false)
       }
+      this.review_active = false;
       // if(this.$store.getters.getNewMsg.new_jump){
       //   this.addTab('read',this.$store.getters.getNewMsg.subject,this.$store.getters.getNewMsg.uid,this.$store.getters.getNewMsg.folder)
       // }
-    }else{
+    }else if(this.$route.name == 'welcome'){
       this.showTabIndex = 0;
-      this.$nextTick(()=>{
-        this.$refs.treeMenuBar.setCurrentKey('');
-      })
-
+      this.review_active = false;
+    }
+    else if(this.$route.name == 'review'){
+      this.showTabIndex = 2;
+      this.review_active = true;
     }
 
     let perm = this.$store.getters.getSharedStatus;
@@ -545,9 +577,14 @@ export default {
       $route(v,o){
         if(v.path == '/mailbox/welcome'){
           this.showTabIndex = 0;
+          this.review_active = false;
         }else if(v.path.indexOf('/mailbox/innerbox')>=0){
           this.showTabIndex = 1;
+          this.review_active = false;
           this.setCurrentKey(v.params.boxId)
+        }else if(v.path == '/mailbox/review'){
+          this.showTabIndex = 2;
+          this.review_active = true;
         }
       },
       username(nv,ov){
@@ -628,6 +665,19 @@ export default {
 </script>
 
 <style>
+  #app .review_style{
+    margin-top:10px;
+  }
+  #app .review_style.active{
+    color: #67c23a;
+    background: #f0f9eb;
+    border-color: #c2e7b0;
+  }
+  #app .review_style:hover{
+    background-color: #e6e6e6;
+    border-color: #e6e6e6;
+    cursor:pointer;
+  }
   #app .mark_inbox .el-badge__content{
     background:#409eff;
   }

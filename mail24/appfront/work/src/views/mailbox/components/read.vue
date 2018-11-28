@@ -855,7 +855,7 @@
               is_cc:true,
               is_bcc:false,
               is_partsend:false,
-              to: [["512167072@qq.com",'zhouli']],
+              to: [],
               cc: [],
               subject: '',
               secret:'非密',
@@ -876,6 +876,8 @@
             let data = res.data
             pp.maillist = []
             pp.maillist_copyer = [];
+            pp.maillist_bcc = [];
+            pp.show_replay_to = false;
             pp.fileList = data.attachments;
             pp.ruleForm2.subject = data.subject;
             pp.ruleForm2.is_html = data.is_html;
@@ -885,15 +887,26 @@
               // pp.content = data.plain_text.replace(/(\r\n)|(\n)/g,'<br>');
               pp.content = data.plain_text;
             }
+            if(data.reply_to){
+              pp.ruleForm2.reply_to = data.reply_to;
+              pp.show_reply_to = true;
+            }
             if(data.uid)pp.ruleForm2.uid = data.uid;
             if(data.folder)pp.ruleForm2.folder = data.folder;
             if(data.refw_type)pp.ruleForm2.refw_type = data.refw_type
-              for(let i=0;i<data.to.length;i++){
-                pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
+              if(data.to && data.to.length>0){
+                for(let i=0;i<data.to.length;i++){
+                  pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
+                }
               }
-              if(data.cc){
+              if(data.cc && data.cc.length>0){
                 for(let i=0;i<data.cc.length;i++){
                   pp.maillist_copyer.push({fullname:data.cc[i][1]||'',email:data.cc[i][0],status:true})
+                }
+              }
+              if(data.bcc && data.bcc.length>0){
+                for(let i=0;i<data.bcc.length;i++){
+                  pp.maillist_bcc.push({fullname:data.bcc[i][1]||'',email:data.bcc[i][0],status:true})
                 }
               }
 
@@ -1067,8 +1080,14 @@
             let data = res.data
             pp.maillist = []
             pp.maillist_copyer = [];
+            pp.maillist_bcc = [];
+            pp.show_replay_to = false;
             pp.fileList = data.attachments;
             pp.ruleForm2.subject = data.subject;
+            if(data.reply_to){
+              pp.ruleForm2.reply_to = data.reply_to;
+              pp.show_reply_to = true;
+            }
             if(data.uid)pp.ruleForm2.uid = data.uid;
             if(data.folder)pp.ruleForm2.folder = data.folder;
             if(data.refw_type)pp.ruleForm2.refw_type = data.refw_type
@@ -1079,12 +1098,19 @@
               // pp.content = data.plain_text.replace(/(\r\n)|(\n)/g,'<br>');
               pp.content = data.plain_text;
             }
-              for(let i=0;i<data.to.length;i++){
-                pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
+              if(data.to && data.to.length>0){
+                for(let i=0;i<data.to.length;i++){
+                  pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
+                }
               }
-              if(data.cc){
+              if(data.cc && data.cc.length>0){
                 for(let i=0;i<data.cc.length;i++){
                   pp.maillist_copyer.push({fullname:data.cc[i][1]||'',email:data.cc[i][0],status:true})
+                }
+              }
+              if(data.bcc && data.bcc.length>0){
+                for(let i=0;i<data.bcc.length;i++){
+                  pp.maillist_bcc.push({fullname:data.bcc[i][1]||'',email:data.bcc[i][0],status:true})
                 }
               }
             pp.addTab('compose'+view+' ',data.subject,data.uid,fid)

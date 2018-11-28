@@ -34,7 +34,7 @@
 </template>
 
 <script>
-  import {getOpenoffice,companyDiskZipDownload,downloadAttach2,netdiskZipDownload,downloadAttach} from '@/api/api';
+  import {getOpenoffice,downloadAttach2,downloadAttach,netdiskFileDownload,companyDiskFileDownload,companyDiskZipDownload} from '@/api/api';
   export default  {
     data(){
       return{
@@ -57,22 +57,113 @@
         var files = [];
         var folders = [];
         files.push(row.id);
-        // let zip_list = [{'folder_id':row.id,'nettype':row.nettype} ];
+
         this.$confirm('确认下载当前文件？', '提示', {
           type: 'warning'
         }).then(() => {
-          this.infoView = false;
-          this.zipCommonDownload(that, files, folders);
+          this.folders(that, files, folders,row.name);
+          return;
+
+          let file_id = row.id;
+          let file_name = row.name;
+          companyDiskFileDownload(file_id).then((response)=> {
+            let blob = new Blob([response.data], { type: response.headers["content-type"] })
+            let objUrl = URL.createObjectURL(blob);
+            let filename = file_name;
+            if (window.navigator.msSaveOrOpenBlob) {
+              // if browser is IE
+              navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
+            } else {
+              // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
+              var link = document.createElement("a");
+              link.setAttribute("href", objUrl);
+              link.setAttribute("download", filename);
+              document.body.appendChild(link);
+              link.click();
+            }
+            that.$message({ message: '导出成功', type: 'success' });
+          }).catch(function (err) {
+            let str = '';
+            if(err.detail){
+              str = err.detail
+            }
+            that.$message({ message: '导出失败！'+str,  type: 'error' });
+          });
+
         });
       },
-      zipCommonDownload: function(that, files, folders){
+      zipRowDownloadmail: function (row) {
+        let that = this;
+        this.$confirm('确认下载文件？', '提示', {
+          type: 'warning'
+        }).then(() => {
+          downloadAttach2(row.id, {download: true}).then((response)=> {
+            let blob = new Blob([response.data], { type: response.headers["content-type"] })
+            let objUrl = URL.createObjectURL(blob);
+            let filename = row.name;
+            if (window.navigator.msSaveOrOpenBlob) {
+              // if browser is IE
+              navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
+            } else {
+              // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
+              var link = document.createElement("a");
+              link.setAttribute("href", objUrl);
+              link.setAttribute("download", filename);
+              document.body.appendChild(link);
+              link.click();
+            }
+            that.$message({ message: '导出成功', type: 'success' });
+          }).catch(function (err) {
+            let str = '';
+            if(err.detail){
+              str = err.detail
+            }
+            that.$message({ message: '导出失败! '+str,  type: 'error' });
+          });
+        });
+      },
+      zipRowDownloadfile: function(row){
+        console.log(row)
+        let that = this;
+        this.$confirm('确认下载当前文件？', '提示', {
+          type: 'warning'
+        }).then(() => {
+            let file_id = row.id;
+            let file_name = row.name;
+            netdiskFileDownload(file_id).then((response)=> {
+              let blob = new Blob([response.data], { type: response.headers["content-type"] })
+              let objUrl = URL.createObjectURL(blob);
+              let filename = file_name;
+              if (window.navigator.msSaveOrOpenBlob) {
+                // if browser is IE
+                navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
+              } else {
+                // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
+                var link = document.createElement("a");
+                link.setAttribute("href", objUrl);
+                link.setAttribute("download", filename);
+                document.body.appendChild(link);
+                link.click();
+              }
+              that.$message({ message: '导出成功', type: 'success' });
+            }).catch(function (err) {
+              console.log(err)
+              console.log(err.toString())
+              let str = '';
+              if(err.detail){
+                str = err.detail
+              }
+              that.$message({ message: '导出失败！'+str,  type: 'error' });
+            });
+
+        });
+      },
+      folders(that, files, folders,name){
         let para = {files: files, folders: folders, folder_id: this.$route.query.cfid};
         companyDiskZipDownload(para).then((response)=> {
           let blob = new Blob([response.data], { type: response.headers["content-type"] })
           let objUrl = URL.createObjectURL(blob);
-          // let filenameHeader = response.headers['content-disposition']
-          // let filename = filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1);
-          let filename = this.$route.query.name+'.zip';
+          let filename = name+'.zip';
           if (window.navigator.msSaveOrOpenBlob) {
             // if browser is IE
             navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
@@ -95,92 +186,16 @@
           that.$message({ message: '导出失败！'+str,  type: 'error' });
         });
       },
-      zipRowDownloadmail: function (row) {
-        let that = this;
-        this.$confirm('确认下载？', '提示', {
-          type: 'warning'
-        }).then(() => {
-          this.infoView = false;
-          downloadAttach2(row.id, {download: true}).then((response)=> {
-            let blob = new Blob([response.data], { type: response.headers["content-type"] })
-            let objUrl = URL.createObjectURL(blob);
-            // let filenameHeader = response.headers['content-disposition']
-            // let filename = filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1);
-            let filename = this.$route.query.name;
-            if (window.navigator.msSaveOrOpenBlob) {
-              // if browser is IE
-              navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
-            } else {
-              // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
-              var link = document.createElement("a");
-              link.setAttribute("href", objUrl);
-              link.setAttribute("download", filename);
-              document.body.appendChild(link);
-              link.click();
-            }
-            that.$message({ message: '导出成功', type: 'success' });
-            // this.getPabs();
-          }).catch(function (err) {
-            let str = '';
-            if(err.detail){
-              str = err.detail
-            }
-            that.$message({ message: '导出失败! '+str,  type: 'error' });
-          });
-        });
-      },
-      zipRowDownloadfile: function(row){
-        let that = this;
-        var files = [];
-        files.push(row.id);
-
-        // let zip_list = [{'folder_id':row.id,'nettype':row.nettype} ];
-        this.$confirm('确认下载当前文件？', '提示', {
-          type: 'warning'
-        }).then(() => {
-            this.zipCommonDownloadfile(that, row.id, row.name)
-
-        });
-      },
-      zipCommonDownloadfile: function(that, files, folders){
-        let para = {files: files, folders: folders, folder_id: this.$route.query.cfid};
-        netdiskZipDownload(para).then((response)=> {
-          let blob = new Blob([response.data], { type: response.headers["content-type"] })
-          let objUrl = URL.createObjectURL(blob);
-          this.blobUrl = objUrl;
-          // let filenameHeader = response.headers['content-disposition']
-          // let filename = filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1);
-          let filename = this.$route.query.name+'.zip';
-          if (window.navigator.msSaveOrOpenBlob) {
-            // if browser is IE
-            navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
-          } else {
-            // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
-            var link = document.createElement("a");
-            link.setAttribute("href", objUrl);
-            link.setAttribute("download", filename);
-            document.body.appendChild(link);
-            link.click();
-          }
-          that.$message({ message: '导出成功', type: 'success' });
-          // this.getPabs();
-        }).catch(function (err) {
-          let str = '';
-          if(err.detail){
-            str = err.detail
-          }
-          that.$message({ message: '导出失败！'+str,  type: 'error' });
-        });
-      },
       download(){
         let routeParams = this.$route.query;
           let param = {
             type:routeParams.type,
             id:routeParams.id,
-            size:routeParams.size
+            size:routeParams.size,
+            name:routeParams.name
           };
         if(this.$route.query.type=='attach'){
-          this.downloadAttach(this.$route.query.sid,this.$route.query.name)
+          this.downloadAttach(this.$route.query.sid,(this.$route.query.name))
         }else if(this.$route.query.type=='company'){
           this.zipRowDownload(param)
         }else if(this.$route.query.type=='mail'){

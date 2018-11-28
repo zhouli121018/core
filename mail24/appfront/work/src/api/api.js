@@ -425,4 +425,9 @@ export const uploadSuccess = params => { return axios.post(`${host}/netdisk/uplo
 //预览文件 /api/netdisk/openoffice/
 export const getOpenoffice = params => { return axios.get(`${host}/netdisk/openoffice/`, { params: params }) }
 
-
+//审核邮件查询 /api/mail/review/
+export const mailReview = params => { return axios.get(`${host}/mail/review/`, { params: params }) }
+//更新审核邮件状态 /api/mail/review/{id}/
+export const updateReview = (id,params) => { return axios.put(`${host}/mail/review/${id}/`, params) };
+//批量审核 /api/mail/review/batch/
+export const uploadReviews = params => { return axios.post(`${host}/mail/review/batch/`, params) };
