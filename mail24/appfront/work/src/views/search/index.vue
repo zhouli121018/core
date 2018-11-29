@@ -636,7 +636,10 @@ export default {
   created(){
     if(sessionStorage['searchIndex']){
       let index = sessionStorage['searchIndex'];
-      if(index==1){
+      if(index == 0){
+        this.activeName = 'login';
+        this.getLogin();
+      }else if(index==1){
         this.activeName = 'send';
         this.getSend();
       }else if(index == 2){

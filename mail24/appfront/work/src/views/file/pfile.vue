@@ -93,7 +93,7 @@
                     <span v-if="scope.row.nettype=='file'" @click="sendMail_net(scope.row)">发信</span>
                     <!--<span>共享</span>-->
                     <span @click="resetRowNameShow(scope.row)">重命名</span>
-                    <span v-if="scope.row.nettype=='file' && /.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|xls|xlsx|doc|docx|ppt|pptx|xml|csv)$/.test(scope.row.name)" @click="$parent.preview(scope.row,'file',current_folder_id)">预览</span>
+                    <span v-if="scope.row.nettype=='file' && /.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|xls|xlsx|doc|docx|ppt|pptx|xml|csv|md|log)$/.test(scope.row.name)" @click="$parent.preview(scope.row,'file',current_folder_id)">预览</span>
                     <span @click="deleteRowFolders(scope.row)" style="color:#f56c6c;">删除</span>
                   </div>
                 </el-col>

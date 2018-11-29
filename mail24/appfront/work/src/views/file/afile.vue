@@ -44,7 +44,7 @@
                     <span @click="$parent.sendMail_net(scope.row)">发信</span>
                     <span @click="moveFormShow2(scope.row)">保存到个人网盘</span>
                     <span @click="renewalRowFile(scope.row)">续期</span>
-                    <span @click="$parent.preview(scope.row,'mail')" v-if="/.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|xls|xlsx|doc|docx|ppt|pptx|xml|csv)$/.test(scope.row.filename)">预览</span>
+                    <span @click="$parent.preview(scope.row,'mail')" v-if="/.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|xls|xlsx|doc|docx|ppt|pptx|xml|csv|md|log)$/.test(scope.row.filename)">预览</span>
                     <span @click="deleteRowFiles(scope.row)" style="color:#f56c6c;">删除</span>
                   </div>
                 </el-col>

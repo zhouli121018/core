@@ -333,7 +333,7 @@
                             <i class="el-icon-download"></i>
                             <p>下载</p>
                           </el-col>
-                          <el-col v-if="/.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|xls|xlsx|doc|docx|ppt|pptx|xml|csv)$/.test(a.name)" class="text-center cursorP" :span="8" title="预览" @click.native="preview(a)">
+                          <el-col v-if="/.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|xls|xlsx|doc|docx|ppt|pptx|xml|csv|md|log)$/.test(a.name)" class="text-center cursorP" :span="8" title="预览" @click.native="preview(a)">
                             <i class="el-icon-view"></i>
                             <p>预览</p>
                           </el-col>
@@ -1339,7 +1339,6 @@
             this.print_html =  data.data.html_text
           }else{
             let bhtml = data.data.html_text||data.data.plain_text;
-            console.log('bhtml:'+bhtml)
             oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = '<pre>'+bhtml+'</pre>';
             this.print_html =  '<pre>'+bhtml+'</pre>'
           }

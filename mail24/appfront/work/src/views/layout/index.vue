@@ -151,7 +151,29 @@
             </div>
           </transition>
 
-      <el-dialog title="请修改密码" :visible.sync="change_password" width="450px" :close-on-click-modal="false" :show-close="false" :close-on-press-escape="false">
+      <transition name="fade" v-if="!change_password">
+            <div v-if="reviewUnseen>0" class="test" :class="{has_newMsg:newMsg}">
+              <div role="alert" class="el-notification right" style="bottom: 16px; z-index: 2000;border: 1px solid #ddd;box-shadow: 0 0 10px #aaa;"><!----><div class="el-notification__group"><h2 class="el-notification__title">{{this.$store.getters.userInfo.name}}</h2>
+                <div class="el-notification__content">
+                  <table style="margin:0 12px;cursor:pointer;height:80px;" @click="reviewMail">
+                    <tr>
+                    <td style="vertical-align:top;padding-right:10px;">
+                      <i class="el-icon-search" style="font-size:36px;"></i>
+                    </td>
+                    <td style="vertical-align:top;color:#00a6ff">
+                      <h3 class="" >您有 {{reviewUnseen }} 封邮件待审核，点击立即审核</h3>
+
+                    </td>
+                    </tr>
+                  </table>
+                  <div style="margin-top:10px;width:100%;height:2px;background:linear-gradient(to right, #409EFF , #fff);"></div>
+
+                </div>
+                <div class="el-notification__closeBtn el-icon-close" @click="newList=[]"></div></div></div>
+            </div>
+          </transition>
+
+      <el-dialog title="密码强度弱，请修改密码" :visible.sync="change_password" width="450px" :close-on-click-modal="false" :show-close="false" :close-on-press-escape="false">
           <el-form :model="passwordForm" size="small" :rules="passwordFormRules" ref="passwordForm">
 
             <el-form-item label="原始密码" prop="password" :error="password_error">
@@ -185,7 +207,7 @@
   import store from '@/store'
   import router from '@/router'
   import cookie from '@/assets/js/cookie';
-  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome,settingUsersGet,settingUsersSetpassword } from '@/api/api'
+  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome,settingUsersGet,settingUsersSetpassword,reviewShow } from '@/api/api'
   export default {
     data:function(){
       var validatePass = (rule, value, callback) => {
@@ -211,6 +233,7 @@
         }
       };
       return {
+        reviewUnseen:0,
         passwordVisible:true,
         password_error:'',
         new_password_error:'',
@@ -252,6 +275,15 @@
       }
     },
     methods:{
+      reviewMail(){
+        this.reviewUnseen = 0;
+        this.$router.push('/mailbox/review');
+      },
+      getReviewShow(){
+        reviewShow().then(res=>{
+          this.reviewUnseen = res.data.count
+        })
+      },
       backToLogin(){
         cookie.delCookie('token');
         cookie.delCookie('name');
@@ -535,6 +567,7 @@
 
     },
     created(){
+      this.getReviewShow();
       this.getUser();
       this.getShared();
       if(this.$route.path.indexOf('/mailbox')==0){
@@ -615,6 +648,9 @@
 </script>
 
 <style>
+  .test.has_newMsg{
+    bottom:202px;
+  }
   .test{
     width:330px;
     position:fixed;

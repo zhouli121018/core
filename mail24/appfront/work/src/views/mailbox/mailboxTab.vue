@@ -38,11 +38,10 @@
                         </span>
                       </span>
                     </el-tree>
-                    <div @click="goReview" class="review_style" :class="{active:review_active}"  style="border-top:2px solid #ddd;text-align:left;padding-left:24px;height:36px;line-height:36px;">
-                      邮件审核
+                    <div v-if="review_show" @click="goReview" class="review_style" :class="{active:review_active}"  style="border-top:2px solid #ddd;text-align:left;padding-left:24px;height:36px;line-height:36px;">
+                      邮件审核 <el-badge v-if="reviewUnseen" :value="reviewUnseen" type="primary"/>
                     </div>
                 </div>
-
                       <el-dialog title="新建文件夹" :visible.sync="dialogFormVisible" :append-to-body="true">
                     <el-form :model="form" :rules="rules" ref="ruleForm">
                       <el-form-item label="文件夹名称" :label-width="formLabelWidth" prop="name">
@@ -66,13 +65,14 @@
                         :name="item.name"
 
                       >
-                         <span slot="label" class="tab_title" :class="{no_close:item.name==1}" :title="item.title"><i class="" :class="{'el-icon-message':item.type=='read','el-icon-edit':item.type!='read'&&item.name!='1','el-icon-menu':item.name=='1'}"></i> {{item.title | hide_subject}} </span>
+                         <span slot="label" @click="tab_click(item)" class="tab_title" :class="{no_close:item.name==1}" :title="item.title"><i class="" :class="{'el-icon-message':item.type=='read','el-icon-edit':item.type!='read'&&item.name!='1'&&item.type!='readreview','el-icon-menu':item.name=='1','el-icon-search':item.type=='readreview'}"></i> {{item.title | hide_subject}} </span>
                         <!--<div :style="{height: tab_content_height}">-->
 
                         <!--</div>-->
                         <Innerbox v-if="item.name=='1'" :boxId="boxId" :curr_folder="curr_folder"  @getRead="getRead" :unseencount="unseencount" :floderResult="floderResult" ref="innerbox"></Innerbox>
                         <Read :readId="item.rid" :readFolderId="item.fid" :tagName="item.name" v-if="item.type=='read'"></Read>
-                        <Compose  v-if="item.type!='read'&&item.name!='1'" :ref="'ref_compose_'+item.name" :iframe_height="iframe_height" :rid="item.name" :parent_ruleForm2="ruleForm2" :parent_content="content" :parent_maillist="maillist" :parent_maillist_copyer="maillist_copyer" :parent_fileList="fileList" :compose_type="item.type" :parent_maillist_bcc="maillist_bcc" :parent_show_reply_to="show_reply_to"></Compose>
+                        <Readreview :readId="item.rid" :readFolderId="item.fid" v-if="item.type=='readreview'"></Readreview>
+                        <Compose  v-if="item.type!='read'&&item.name!='1'&&item.type!='readreview'" :ref="'ref_compose_'+item.name" :iframe_height="iframe_height" :rid="item.name" :parent_ruleForm2="ruleForm2" :parent_content="content" :parent_maillist="maillist" :parent_maillist_copyer="maillist_copyer" :parent_fileList="fileList" :compose_type="item.type" :parent_maillist_bcc="maillist_bcc" :parent_show_reply_to="show_reply_to"></Compose>
 
                       </el-tab-pane>
                     </el-tabs>
@@ -89,18 +89,21 @@
 <script>
 import router from '@/router'
 import MailAside from './components/MailAside'
-import {getMailMessage,getFloder,creatFolder,deleteFolder } from "@/api/api"
+import {getMailMessage,getFloder,creatFolder,deleteFolder,reviewShow } from "@/api/api"
 import Innerbox from './components/innerbox'
 import Home from './components/home'
 import Read from './components/read'
+import Readreview from './components/readreview'
 import Compose from './components/compose'
 import Review from './components/review'
 export default {
   components:{
-    MailAside,Innerbox,Home,Read,Compose,Review
+    MailAside,Innerbox,Home,Read,Compose,Review,Readreview
   },
   data:function(){
       return{
+        reviewUnseen:0,
+        review_show:false,
         review_active:false,
         show_reply_to:false,
         content:'',
@@ -178,6 +181,22 @@ export default {
       }
   },
   methods:{
+    tab_click(item){
+      if(item.name == '1'){
+        if(sessionStorage['checkNodes']){
+          this.$router.push('/mailbox/innerbox/'+sessionStorage['checkNodes'])
+        }else{
+          this.$router.push('/mailbox/innerbox/'+item.fid)
+        }
+
+      }
+    },
+    getReviewShow(){
+      reviewShow().then(res=>{
+        this.reviewUnseen = res.data.count
+        this.review_show = res.data.review_mail_show
+      })
+    },
     goReview(){
       this.$router.push('/mailbox/review')
       this.showTabIndex = 2;
@@ -185,6 +204,17 @@ export default {
       let aa = [].concat(this.floderResult);
       this.floderResult = [];
       this.floderResult = aa;
+      // this.editableTabs2.splice(1)
+      for(let i=0;i<this.editableTabs2.length;i++){
+        if(this.editableTabs2[i].type == 'readreview'){
+          this.editableTabs2.splice(i,1)
+        }
+      }
+      this.hashTab = [];
+      for(let i=0;i<this.editableTabs2.length;i++){
+        let o = this.editableTabs2[i]
+        this.hashTab[o.type+o.rid+o.fid+''] = o.name;
+      }
     },
     tabClick(tab,event){
       this.showTabIndex=1;
@@ -304,12 +334,16 @@ export default {
       this.editableTabsValue2 = activeName;
       for(let i=0;i<tabs.length;i++){
         if(tabs[i].name == targetName){
+          if(this.$route.name =='review' && tabs[i].type == 'readreview'){
+            this.showTabIndex = 2;
+          }
           if(tabs[i].rid && tabs[i].fid){
             this.hashTab[tabs[i].type+tabs[i].rid+tabs[i].fid+''] = false;
           }
         }
       }
       this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
+
     },
     jumpTo(path){
         router.push(path);
@@ -546,6 +580,7 @@ export default {
     }
   },
   created(){
+    this.getReviewShow();
     if(this.$route.name == 'innerbox'){
       this.showTabIndex = 1;
       // this.getData({id:'INBOX',label:'收件箱'})

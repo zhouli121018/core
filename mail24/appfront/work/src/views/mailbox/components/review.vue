@@ -1,14 +1,14 @@
 <template>
   <!--<article class="mlmain mltabview">-->
-    <div class="mltabview-content">
+    <div class="mltabview-content" id="review">
       <div class="mltabview-panel">
-      <div class="m-mlwelcome">
+      <div class="m-mlwelcome" ref="box_height">
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="待审核列表" name="wait">
             <el-row style="margin:12px 0">
               <el-col :span="12">
-                <el-button type="primary" size="small" @click="updateStatus('permit')" :disabled="sels.length==0">审核通过</el-button>
-                <el-button type="warning" size="small" @click="show_reject_dialog" :disabled="sels.length==0">拒绝通过</el-button>
+                <el-button type="primary" size="small" @click="updateStatus('permit',sels)" :disabled="sels.length==0">审核通过</el-button>
+                <el-button type="warning" size="small" @click="show_reject_dialog(sels)" :disabled="sels.length==0">拒绝通过</el-button>
               </el-col>
               <el-col :span="12">
                 <el-pagination style="text-align: right;"
@@ -22,9 +22,7 @@
                 </el-pagination>
               </el-col>
             </el-row>
-
-            <el-table
-
+            <el-table :height="table_height"
               :data="waitData.tableData"
               stripe
               :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}"
@@ -32,7 +30,7 @@
               @row-click="rowClick_wait"
               ref="waitTable"
               size="mini"
-              style="width: 100%">
+              style="width: 100%;background:rgba(255,255,255,0.4)">
               <el-table-column
                 type="selection"
                 width="55">
@@ -41,10 +39,103 @@
                 prop="subject"
                 label="主题"
                 >
+                <template slot-scope="scope">
+                  <div class="nowrap" @click.stop="readMailReview(scope.row)" :title="scope.row.subject" style="cursor:pointer;color:#409EFF;">{{scope.row.subject}}</div>
+                </template>
               </el-table-column>
               <el-table-column
                 prop="sender"
-                label="发件人">
+                label="发件人" width="180">
+                <template slot-scope="scope">
+                  <div class="nowrap" :title="scope.row.sender">
+                    {{scope.row.sender}}
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="recipient"
+                label="收件人" width="180">
+                <template slot-scope="scope">
+                  <div class="nowrap" :title="scope.row.recipient">
+                    {{scope.row.recipient}}
+                  </div>
+                </template>
+              </el-table-column>
+
+
+              <el-table-column
+                prop="datetime"
+                label="日期" width="150">
+                <template slot-scope="scope">
+                  <div class="nowrap" >
+                    {{scope.row.datetime.replace('T',' ')}}
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="mailsize"
+                label="大小" width="100">
+                <template slot-scope="scope">
+                  <div>
+                    {{scope.row.mailsize |mailsize}}
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="reason"
+                label="其他">
+                <template slot-scope="scope">
+                  <div class="nowrap" :title="scope.row.reason">
+                    {{scope.row.reason}}
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="操作" width="180">
+                <template slot-scope="scope">
+                  <div>
+                    <el-button type="text" size="small" @click.stop="updateStatus('permit',[scope.row])">通过</el-button>
+                    <el-button type="text" size="small" @click.stop="show_reject_dialog([scope.row])" style="color:#f56c6c;">拒绝</el-button>
+                    <el-button type="text" size="small" @click.stop="readMailReview(scope.row)">查看邮件</el-button>
+                  </div>
+                </template>
+              </el-table-column>
+
+            </el-table>
+
+
+          </el-tab-pane>
+          <el-tab-pane label="审核通过列表" name="permit">
+            <el-row style="margin:12px 0">
+              <el-col :span="12" :offset="12">
+                <el-pagination style="text-align: right;"
+                  @size-change="sizeChange($event,'permit')"
+                  @current-change="currentChange($event,'permit')"
+                  :current-page="permitData.page"
+                  :page-sizes="[10, 20, 50, 100]"
+                  :page-size="permitData.page_size"
+                  layout="total, sizes, prev, pager, next "
+                  :total="permitData.total">
+                </el-pagination>
+              </el-col>
+            </el-row>
+
+            <el-table ref="sendTable" id="sendTable"
+              :height="table_height"
+              :data="permitData.tableData"
+              stripe
+              :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}"
+              size="mini"
+              style="width: 100%;background:rgba(255,255,255,0.4)">
+
+              <el-table-column
+                prop="subject"
+                label="主题"
+                >
+              </el-table-column>
+              <el-table-column
+                prop="sender"
+                label="发件人" width="180">
                 <template slot-scope="scope">
                   <div>
                     {{scope.row.sender}}
@@ -53,7 +144,7 @@
               </el-table-column>
               <el-table-column
                 prop="recipient"
-                label="收件人">
+                label="收件人" width="180">
                 <template slot-scope="scope">
                   <div>
                     {{scope.row.recipient}}
@@ -64,7 +155,7 @@
 
               <el-table-column
                 prop="datetime"
-                label="日期">
+                label="日期" width="150">
                 <template slot-scope="scope">
                   <div>
                     {{scope.row.datetime.replace('T',' ')}}
@@ -73,7 +164,7 @@
               </el-table-column>
               <el-table-column
                 prop="mailsize"
-                label="大小">
+                label="大小" width="100">
                 <template slot-scope="scope">
                   <div>
                     {{scope.row.mailsize |mailsize}}
@@ -89,179 +180,79 @@
                   </div>
                 </template>
               </el-table-column>
-              <el-table-column
-                label="操作">
-                <template slot-scope="scope">
-                  <div>
-                    <el-button type="text" size="small" @click.stop="">查看邮件</el-button>
-                  </div>
-                </template>
-              </el-table-column>
-
-            </el-table>
-
-          </el-tab-pane>
-          <el-tab-pane label="审核通过列表" name="permit">
-            <el-pagination style="text-align: right;"
-              @size-change="sizeChange($event,'permit')"
-              @current-change="currentChange($event,'permit')"
-              :current-page="permitData.page"
-              :page-sizes="[10, 20, 50, 100]"
-              :page-size="permitData.page_size"
-              layout="total, sizes, prev, pager, next "
-              :total="permitData.total">
-            </el-pagination>
-            <el-table ref="sendTable" id="sendTable"
-
-              :data="permitData.tableData"
-              stripe
-              :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}"
-              size="mini"
-              style="width: 100%">
-              <el-table-column type="expand" class="expand">
-                <template slot-scope="props">
-                  <el-row v-for="(r,k) in props.row.details" v-if="props.row.details.length>1" :key="k" style="padding:4px 0;">
-                    <el-col :style="{marginLeft:expand_table.marginLeft+'px',width:expand_table.col1+'px'}" :title="r.recipient" style="box-sizing:border-box;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;padding-left:10px;">
-                      <span v-if="r.name">{{r.name +' '}} &lt;</span> <span> {{r.recipient}}</span> <span v-if="r.name">&gt;</span>
-                    <!--<span style="color:#45AB19;margin-left:20px;"> {{r.status_show +','+ r.recall_status_show}}</span>-->
-                    </el-col>
-                    <el-col :style="{width:expand_table.col2+'px'}" style="overflow: hidden; white-space: nowrap;text-overflow: ellipsis;box-sizing:border-box;padding-left:10px;">
-                      <span style="color:#45AB19;margin:20px;"> {{r.inform||''}}</span>
-                    </el-col>
-                    <el-col :style="{width:expand_table.col3+'px'}" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;box-sizing:border-box;padding-left:10px;">
-                      <el-button type="text" size="mini" v-if="r.recall_status == 'stay'" @click="recall(props.row,'single',r.recipient)">召回邮件</el-button>
-                    </el-col>
-                  </el-row>
-
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="send_time"
-                label="时 间">
-                <template slot-scope="scope">
-                  <div>
-                    {{scope.row.send_time.replace('T',' ')}}
-                  </div>
-                </template>
-              </el-table-column>
-
-              <el-table-column
-                prop="subject"
-                label="主 题"
-                >
-                <template slot-scope="scope" >
-                  <div class="nowrap" :title="scope.row.subject">
-                    {{scope.row.subject}}
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop=""
-                label="收件人">
-                <template slot-scope="scope">
-                  <div v-if="scope.row.details.length>1">
-                    <el-button type="text" size="mini" icon="el-icon-arrow-up" @click="changeExpand(scope.row)"> 所有收件人{{'（'+scope.row.details.length+'）'}}</el-button>
-                    <!--<p v-for="(r,k) in scope.row.recipients" :key="k"> {{ r[0] +' <'+r[1]+'>'}}</p>-->
-                  </div>
-                  <div v-if="scope.row.details.length==1">
-                    <span v-if="scope.row.details[0].name">{{scope.row.details[0].name+' '}} &lt;</span>
-                    <span>{{scope.row.details[0].recipient}}</span>
-                    <span v-if="scope.row.details[0].name">&gt;</span>
-
-                  </div>
-                </template>
-              </el-table-column>
-
-              <el-table-column
-                prop="details"
-                label="状 态">
-                <template slot-scope="scope" >
-                  <div v-if="scope.row.details.length==1">
-                    <!--<span style="color:#45AB19;"> {{scope.row.details[0].status_show+','+scope.row.details[0].recall_status_show}} </span>-->
-                    <span style="color:#45AB19;"> {{scope.row.details[0].inform||''}} </span>
-                  </div>
-                </template>
-              </el-table-column>
-
-              <el-table-column
-                label="操 作">
-                <template slot-scope="scope">
-                  <div>
-                    <el-button type="text" size="mini" v-if="scope.row.details.length == 1 && scope.row.details[0].recall_status == 'stay'" @click="recall(scope.row)">召回邮件</el-button>
-                    <el-button type="text" size="mini" v-if="show_recall_all(scope.row)" @click="recall(scope.row)">召回全部邮件</el-button>
-                  </div>
-
-                </template>
-              </el-table-column>
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="拒绝通过列表" name="reject">
-            <div v-if="false">
-              <span>信件来源： </span>
-              <el-button-group>
-                <el-button class="status_btn" size="mini" :class="{active:mailData.status == ''}" @click="changeStatus('')">全部来信</el-button>
-                <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'success'}" @click="changeStatus('success')">收件箱和个人文件夹</el-button>
-                <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'spam-flag'}" @click="changeStatus('spam-flag')">垃圾箱</el-button>
-                <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'virus'}" @click="changeStatus('virus')">病毒拦截</el-button>
-                <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'spam'}" @click="changeStatus('spam')">垃圾拦截</el-button>
-              </el-button-group>
-            </div>
-            <el-pagination style="text-align: right;"
-              @size-change="sizeChange($event,'reject')"
-              @current-change="currentChange($event,'reject')"
-              :current-page="rejectData.page"
-              :page-sizes="[10, 20, 50, 100]"
-              :page-size="rejectData.page_size"
-              layout="total, sizes, prev, pager, next "
-              :total="rejectData.total">
-            </el-pagination>
-            <el-table
+            <el-row style="margin:12px 0">
+              <el-col :span="12" :offset="12">
+                <el-pagination style="text-align: right;"
+                  @size-change="sizeChange($event,'reject')"
+                  @current-change="currentChange($event,'reject')"
+                  :current-page="rejectData.page"
+                  :page-sizes="[10, 20, 50, 100]"
+                  :page-size="rejectData.page_size"
+                  layout="total, sizes, prev, pager, next "
+                  :total="rejectData.total">
+                </el-pagination>
+              </el-col>
+            </el-row>
 
+            <el-table
+              :height="table_height"
               :data="rejectData.tableData"
               stripe
               :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}"
               size="mini"
-              style="width: 100%">
-              <el-table-column
-                prop="logtime"
-                label="时 间">
-                <template slot-scope="scope">
-                  <div>
-                    {{scope.row.logtime.replace('T',' ')}}
-                  </div>
-                </template>
-              </el-table-column>
-
+              style="width: 100%;background:rgba(255,255,255,0.4)">
               <el-table-column
                 prop="subject"
                 label="主题"
                 >
-                <template slot-scope="scope" >
-                  <div class="nowrap" :title="scope.row.subject">
-                    {{scope.row.subject}}
+              </el-table-column>
+              <el-table-column
+                prop="sender"
+                label="发件人" width="180">
+                <template slot-scope="scope">
+                  <div>
+                    {{scope.row.sender}}
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
-                prop="send_mail"
-                label="发件人">
+                prop="recipient"
+                label="收件人" width="180">
+                <template slot-scope="scope">
+                  <div>
+                    {{scope.row.recipient}}
+                  </div>
+                </template>
               </el-table-column>
 
+
               <el-table-column
-                prop="folder"
-                label="存储位置">
+                prop="datetime"
+                label="日期" width="150">
                 <template slot-scope="scope">
                   <div>
-                    <span> {{scope.row.folder }} </span>
+                    {{scope.row.datetime.replace('T',' ')}}
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
-                prop="remark"
-                label="备注">
+                prop="mailsize"
+                label="大小" width="100">
                 <template slot-scope="scope">
                   <div>
-                    <span> {{scope.row.remark }} </span>
+                    {{scope.row.mailsize |mailsize}}
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="reason"
+                label="其他">
+                <template slot-scope="scope">
+                  <div>
+                    {{scope.row.reason}}
                   </div>
                 </template>
               </el-table-column>
@@ -269,19 +260,33 @@
           </el-tab-pane>
         </el-tabs>
 
-        <el-dialog title="拒绝审核"  :visible.sync="waitData.show_reason"  :append-to-body="true" width="420px">
-        <el-form :model="waitData.rejectForm" label-width="100px" :rules="waitData.rejectRule" ref="dbForm" size="small">
+        <el-dialog title="拒绝审核"  :visible.sync="waitData.show_reason"  :append-to-body="true" width="520px">
+          <el-form :model="waitData.rejectForm" label-width="100px" :rules="waitData.rejectRule" ref="dbForm" size="small">
 
-          <el-form-item label="拒绝原因：" prop="reason" >
-            <el-input v-model="waitData.rejectForm.reason" placeholder="请输入拒绝原因" type="textarea" autosize></el-input>
-          </el-form-item>
+            <el-form-item label="拒绝原因：" prop="reason" >
+              <el-input v-model="waitData.rejectForm.reason" placeholder="请输入拒绝原因" type="textarea" autosize></el-input>
+            </el-form-item>
 
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click.native="waitData.show_reason = false" size="small">取消</el-button>
-          <el-button type="primary" @click.native="updateStatus('reject')" size="small">确定</el-button>
-        </div>
-      </el-dialog>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click.native="waitData.show_reason = false" size="small">取消</el-button>
+            <el-button type="primary" @click.native="updateStatus('reject',waitData.rejectForm.reject_id)" size="small">确定</el-button>
+          </div>
+        </el-dialog>
+
+        <el-dialog title="拒绝审核"  :visible.sync="waitData.show_reason"  :append-to-body="true" width="520px">
+          <el-form :model="waitData.rejectForm" label-width="100px" :rules="waitData.rejectRule" ref="dbForm" size="small">
+
+            <el-form-item label="拒绝原因：" prop="reason" >
+              <el-input v-model="waitData.rejectForm.reason" placeholder="请输入拒绝原因" type="textarea" autosize></el-input>
+            </el-form-item>
+
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click.native="waitData.show_reason = false" size="small">取消</el-button>
+            <el-button type="primary" @click.native="updateStatus('reject',waitData.rejectForm.reject_id)" size="small">确定</el-button>
+          </div>
+        </el-dialog>
 
       </div>
     </div>
@@ -297,9 +302,11 @@
     name:'Review',
     data(){
       return {
+        table_height:'300px',
         sels:[],
         activeName:'wait',
         waitData:{
+          table_height:300,
           page:1,
           page_size:10,
           total:0,
@@ -316,6 +323,7 @@
           ],
           rejectForm:{
             reason:'',
+            reject_id:[]
           },
           rejectRule:{
             reason:[
@@ -339,13 +347,16 @@
       }
     },
     methods:{
+      readMailReview(row){
+        this.$parent.addTab('readreview',row.subject,row.id,'review')
+      },
       rowClick_wait(row){
         console.log(arguments)
         this.$refs.waitTable.toggleRowSelection(row)
       },
-      updateStatus(status){
+      updateStatus(status,sels){
         let arr = [];
-        this.sels.forEach(val=>{
+        sels.forEach(val=>{
           arr.push(val.id);
         })
         let param = {
@@ -362,9 +373,19 @@
           }).then(() => {
             param.reason = '';
             uploadReviews(param).then(res=>{
-              console.log(res)
+              this.$message({
+                type:'success',
+                message:'操作成功！'
+              })
+              this.waitData.page = 1;
+              this.getWait('wait');
+              this.$parent.getReviewShow();
             }).catch(err=>{
               console.log('更新审核状态出错！',err)
+              this.$message({
+                type:'error',
+                message:'操作失败！'
+              })
             })
           }).catch(() => {
 
@@ -380,14 +401,26 @@
           uploadReviews(param).then(res=>{
             console.log(res)
             this.waitData.show_reason = false;
-            this.waitData.rejectForm.reason = ''
+            this.waitData.rejectForm.reason = '';
+            this.waitData.page = 1;
+            this.getWait('wait')
+            this.$parent.getReviewShow();
+            this.$message({
+              type:'success',
+              message:'操作成功！'
+            })
           }).catch(err=>{
+            this.$message({
+              type:'error',
+              message:'操作失败！'
+            })
             console.log('更新审核状态出错2！',err)
           })
         }
       },
-      show_reject_dialog(){
+      show_reject_dialog(reject_id){
         this.waitData.show_reason = true;
+        this.waitData.rejectForm.reject_id = reject_id;
       },
       selsChange(sels){
         console.log(sels)
@@ -458,12 +491,17 @@
       },
     },
     mounted: function(){
-
+      this.$nextTick(()=>{
+        this.table_height = (this.$refs.box_height.getBoundingClientRect().height-101 )+'px'
+      })
     },
     created(){
       if(sessionStorage['reviewIndex']){
         let index = sessionStorage['reviewIndex'];
-        if(index==1){
+        if(index==0){
+          this.activeName = 'wait';
+          this.getWait('wait');
+        }else if(index==1){
           this.activeName = 'permit';
           this.getWait('permit');
         }else if(index == 2){
@@ -474,6 +512,7 @@
         this.activeName = 'wait';
         this.getWait('wait');
       }
+
     },
     watch: {
 
@@ -482,6 +521,11 @@
 </script>
 
 <style>
-
+#review .nowrap{
+    overflow: hidden;
+    word-wrap: normal;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 </style>
 

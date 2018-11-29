@@ -65,7 +65,7 @@
                     <!--<span>共享</span>-->
                     <span @click="resetRowNameShow(scope.row)" v-if="scope.row.is_own || is_supercompany || permisson_type=='1'">重命名</span>
                     <span @click="showAddDialog(scope.row)" v-if="scope.row.nettype=='folder' &&  permisson_type=='1'">添加权限</span>
-                    <span @click="$parent.preview(scope.row,'company',current_folder_id)" v-if="scope.row.nettype=='file' && /.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|xls|xlsx|doc|docx|ppt|pptx|xml|csv)$/.test(scope.row.name)">预览</span>
+                    <span @click="$parent.preview(scope.row,'company',current_folder_id)" v-if="scope.row.nettype=='file' && /.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|xls|xlsx|doc|docx|ppt|pptx|xml|csv|md|log)$/.test(scope.row.name)">预览</span>
                     <span @click="deleteRowFolders(scope.row)" v-if="is_supercompany || permisson_type=='1'" style="color:#f56c6c;">删除</span>
                     <span @click="changeFolderTables(scope.row)" class="folder_type" v-if="scope.row.nettype=='folder' && permisson_type=='0'">访问</span>
                   </div>

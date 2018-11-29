@@ -431,3 +431,9 @@ export const mailReview = params => { return axios.get(`${host}/mail/review/`, {
 export const updateReview = (id,params) => { return axios.put(`${host}/mail/review/${id}/`, params) };
 //批量审核 /api/mail/review/batch/
 export const uploadReviews = params => { return axios.post(`${host}/mail/review/batch/`, params) };
+//查看审核邮件 /api/mail/review/{id}/
+export const readReview = id => { return axios.get(`${host}/mail/review/${id}`) }
+//下载审核邮件真实附件（sid） /api/mail/review/dowload/
+export const reviewDowload = params => { return axios.get(`${host}/mail/review/dowload/`, { params: params, responseType:'blob' }) };
+//当前用户是否展现审核邮件界面 以及 获取未审核邮件数量 GET /api/mail/review/show/
+export const reviewShow = () => { return axios.get(`${host}/mail/review/show`) }

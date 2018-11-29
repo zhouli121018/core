@@ -15,7 +15,7 @@
       <p v-if="$route.query.subject" style="color:#999;font-size:14px;">邮件标题：<span style="color:#000;">{{$route.query.subject}}</span></p>
       <p style="margin-top: 6px; color: #999;white-space: nowrap;font-size:12px;">部分格式和图片可能无法显示，请下载原文档查看</p>
     </div>
-    <div style="position:absolute;bottom:0;left:0;right:0" v-loading="loading" :class="{attachpre:$route.query.type=='attach',noread:$route.query.type!='attach'}">
+    <div style="position:absolute;bottom:0;left:0;right:0" v-loading="loading" :class="{attachpre:$route.query.type=='attach'||$route.query.type =='review',noread:$route.query.type!='attach'&&$route.query.type!='review'}">
       <!--<el-input type="file" @change="change" id="file"></el-input>-->
       <iframe id="previewIframe"  frameborder="0" scrolling="100%" height="200" width="100%" :src="preUrl"></iframe>
     </div>
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-  import {getOpenoffice,downloadAttach2,downloadAttach,netdiskFileDownload,companyDiskFileDownload,companyDiskZipDownload} from '@/api/api';
+  import {getOpenoffice,downloadAttach2,downloadAttach,netdiskFileDownload,companyDiskFileDownload,companyDiskZipDownload,reviewDowload} from '@/api/api';
   export default  {
     data(){
       return{
@@ -202,7 +202,41 @@
           this.zipRowDownloadmail(param)
         }else if(this.$route.query.type=='file'){
           this.zipRowDownloadfile(param)
+        }else if(this.$route.query.type=='review'){
+          this.downloadAttachReview(this.$route.query.sid,this.$route.query.name)
         }
+      },
+      downloadAttachReview(sid,sname){
+        let param = {
+          mail_id:this.$route.query.id,
+          sid:sid,
+        };
+        reviewDowload(param).then(response=>{
+          let blob = new Blob([response.data], { type: response.headers["content-type"] })
+          let objUrl = URL.createObjectURL(blob);
+          // let filenameHeader = response.headers['content-disposition']
+          let filename = sname;
+          if (window.navigator.msSaveOrOpenBlob) {
+            // if browser is IE
+            navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
+          } else {
+            // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
+            let link = document.createElement("a");
+            link.setAttribute("href", objUrl);
+            link.setAttribute("download", filename);
+
+            document.body.appendChild(link);
+            link.click();
+          }
+          this.$message({ message: '下载成功！', type: 'success' });
+        },err=>{
+          console.log(err);
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
+          this.$message({ message: '下载失败！'+str, type: 'error' });
+        })
       },
       downloadAttach(sid,sname){
         this.$confirm('确认下载当前文件？', '提示', {
