@@ -211,6 +211,9 @@
                 type:'success',
                 message:'操作成功！'
               })
+              this.$parent.$parent.$parent.$parent.getReviewShow()
+              this.$parent.$parent.$parent.getWait();
+              this.closeTab();
             }).catch(err=>{
               console.log('更新审核状态出错！',err)
               this.$message({
@@ -237,6 +240,9 @@
               type:'success',
               message:'操作成功！'
             })
+            this.$parent.$parent.$parent.$parent.getReviewShow()
+            this.$parent.$parent.$parent.getWait();
+            this.closeTab();
           }).catch(err=>{
             this.$message({
               type:'error',
@@ -253,7 +259,7 @@
         $('#mail_'+this.readId+'_'+this.readFolderId).animate({scrollTop:$('#mail_'+this.readId+'_'+this.readFolderId).find('.attach_box').offset().top}, 600);
       },
       closeTab(){
-        this.$parent.$parent.$parent.removeTab(this.$parent.$parent.$parent.editableTabsValue2);
+        this.$parent.$parent.$parent.removeTab(this.$parent.$parent.$parent.tabsValue);
       },
       downloadAttach(sid,sname){
         let param = {

@@ -152,7 +152,7 @@
           </transition>
 
       <transition name="fade" v-if="!change_password">
-            <div v-if="reviewUnseen>0" class="test" :class="{has_newMsg:newMsg}">
+            <div v-if="reviewUnseen>0&&show_review" class="test" :class="{has_newMsg:newMsg}">
               <div role="alert" class="el-notification right" style="bottom: 16px; z-index: 2000;border: 1px solid #ddd;box-shadow: 0 0 10px #aaa;"><!----><div class="el-notification__group"><h2 class="el-notification__title">{{this.$store.getters.userInfo.name}}</h2>
                 <div class="el-notification__content">
                   <table style="margin:0 12px;cursor:pointer;height:80px;" @click="reviewMail">
@@ -169,7 +169,7 @@
                   <div style="margin-top:10px;width:100%;height:2px;background:linear-gradient(to right, #409EFF , #fff);"></div>
 
                 </div>
-                <div class="el-notification__closeBtn el-icon-close" @click="newList=[]"></div></div></div>
+                <div class="el-notification__closeBtn el-icon-close" @click="show_review=false"></div></div></div>
             </div>
           </transition>
 
@@ -233,7 +233,7 @@
         }
       };
       return {
-        reviewUnseen:0,
+        show_review:true,
         passwordVisible:true,
         password_error:'',
         new_password_error:'',
@@ -276,12 +276,13 @@
     },
     methods:{
       reviewMail(){
-        this.reviewUnseen = 0;
+        this.show_review = false;
         this.$router.push('/mailbox/review');
       },
       getReviewShow(){
         reviewShow().then(res=>{
-          this.reviewUnseen = res.data.count
+          // this.reviewUnseen = res.data.count
+          this.$store.dispatch('setReviewCountA',res.data.count);
         })
       },
       backToLogin(){
@@ -643,6 +644,9 @@
         change_password:function(){
           return this.$store.getters.get_change_password
         },
+      reviewUnseen:function(){
+          return this.$store.getters.getReviewCount;
+      }
     }
   }
 </script>

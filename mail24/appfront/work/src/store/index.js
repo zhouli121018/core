@@ -56,6 +56,7 @@ const store = new Vuex.Store({
       subject:''
     },
     isSharedUser:false,
+    review_count:0,
   },
   getters:{
     userInfo(state) {
@@ -105,7 +106,10 @@ const store = new Vuex.Store({
     },
     getSharedStatus(state){
       return state.sharedStatus
-    }
+    },
+    getReviewCount(state){
+      return state.review_count
+    },
   },
   mutations:{
     SET_INFO (state) {
@@ -169,6 +173,9 @@ const store = new Vuex.Store({
     setIsSharedUser(state,param){
       state.isSharedUser = param;
     },
+    setReviewCount(state,param){
+      state.review_count = param;
+    }
   },
   actions: {
     setInfo(store){
@@ -221,6 +228,9 @@ const store = new Vuex.Store({
     },
     setSharedS(store,param){
       store.commit('setSharedStatus',param);
+    },
+    setReviewCountA(store,param){
+      store.commit('setReviewCount',param);
     }
 
   }

@@ -1695,6 +1695,12 @@
         this.maillist = arr;
         this.maillist_copyer = arrcc;
         this.maillist_bcc = arrbcc;
+        if(this.maillist_copyer.length>0){
+          this.ruleForm2.is_cc = true;
+        }
+        if(this.maillist_bcc.length>0){
+          this.ruleForm2.is_bcc = true;
+        }
         this.transform_dialog = false
       },
 
@@ -3080,8 +3086,6 @@
       this.hashMail_bcc = [];
       if(this.maillist_copyer.length>0){
         this.ruleForm2.is_cc = true;
-      }else{
-        this.ruleForm2.is_cc = false;
       }
       if(this.maillist_bcc.length>0){
         this.ruleForm2.is_bcc = true;

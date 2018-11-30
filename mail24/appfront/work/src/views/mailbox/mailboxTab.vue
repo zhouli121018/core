@@ -19,7 +19,7 @@
                       <span class="custom-tree-node" slot-scope="{ node, data }" :title="node.label">
 
 
-                        <span>{{ node.label }} <el-badge v-if="data.unseen" :class="{mark_inbox:data.id == 'INBOX',mark:data.id != 'INBOX'}"  :value="data.unseen" type="primary"/></span>
+                        <span>{{ node.label }} <span v-if="data.unseen">({{data.unseen}})</span> <el-badge v-if="false" :class="{mark_inbox:data.id == 'INBOX',mark:data.id != 'INBOX'}"  :value="data.unseen" type="primary"/></span>
 
                         <span class="" style="position:absolute;right:2px;" class="hide_btn">
                           <el-button
@@ -39,7 +39,7 @@
                       </span>
                     </el-tree>
                     <div v-if="review_show" @click="goReview" class="review_style" :class="{active:review_active}"  style="border-top:2px solid #ddd;text-align:left;padding-left:24px;height:36px;line-height:36px;">
-                      邮件审核 <el-badge v-if="reviewUnseen" :value="reviewUnseen" type="primary"/>
+                      邮件审核 <span  v-if="reviewUnseen"  style="color:#f56c6c;">({{reviewUnseen}})</span><el-badge v-if="false" :value="reviewUnseen" type="primary"/>
                     </div>
                 </div>
                       <el-dialog title="新建文件夹" :visible.sync="dialogFormVisible" :append-to-body="true">
@@ -57,7 +57,7 @@
 
             </aside>
             <article class="mlmain mltabview tab_box" :class="{position_top0:!tabList.length}" ref="editor_h">
-                    <el-tabs v-model="editableTabsValue2" type="card" closable @tab-remove="removeTab" class="tab_style_tt" @tab-click="tabClick" :class="{hide_tab_top:editableTabs2.length<=1}" v-if="showTabIndex==1" ref="tabref">
+                    <el-tabs v-model="editableTabsValue2"  type="card" closable @tab-remove="removeTab" class="tab_style_tt" @tab-click="tabClick" :class="{hide_tab_top:editableTabs2.length<=1}" v-if="showTabIndex==1" ref="tabref" >
                       <el-tab-pane
                         v-for="(item, index) in editableTabs2"
                         :key="item.name"
@@ -65,7 +65,7 @@
                         :name="item.name"
 
                       >
-                         <span slot="label" @click="tab_click(item)" class="tab_title" :class="{no_close:item.name==1}" :title="item.title"><i class="" :class="{'el-icon-message':item.type=='read','el-icon-edit':item.type!='read'&&item.name!='1'&&item.type!='readreview','el-icon-menu':item.name=='1','el-icon-search':item.type=='readreview'}"></i> {{item.title | hide_subject}} </span>
+                         <span slot="label" class="tab_title" :class="{no_close:item.name==1}" :title="item.title"><i class="" :class="{'el-icon-message':item.type=='read','el-icon-edit':item.type!='read'&&item.name!='1'&&item.type!='readreview','el-icon-menu':item.name=='1','el-icon-search':item.type=='readreview'}"></i> {{item.title | hide_subject}} </span>
                         <!--<div :style="{height: tab_content_height}">-->
 
                         <!--</div>-->
@@ -181,20 +181,11 @@ export default {
       }
   },
   methods:{
-    tab_click(item){
-      if(item.name == '1'){
-        if(sessionStorage['checkNodes']){
-          this.$router.push('/mailbox/innerbox/'+sessionStorage['checkNodes'])
-        }else{
-          this.$router.push('/mailbox/innerbox/'+item.fid)
-        }
-
-      }
-    },
     getReviewShow(){
       reviewShow().then(res=>{
         this.reviewUnseen = res.data.count
         this.review_show = res.data.review_mail_show
+        this.$store.dispatch('setReviewCountA',res.data.count)
       })
     },
     goReview(){
@@ -204,17 +195,17 @@ export default {
       let aa = [].concat(this.floderResult);
       this.floderResult = [];
       this.floderResult = aa;
-      // this.editableTabs2.splice(1)
-      for(let i=0;i<this.editableTabs2.length;i++){
-        if(this.editableTabs2[i].type == 'readreview'){
-          this.editableTabs2.splice(i,1)
-        }
-      }
+      this.editableTabs2.splice(1)
+      // for(let i=0;i<this.editableTabs2.length;i++){
+      //   if(this.editableTabs2[i].type == 'readreview'){
+      //     this.editableTabs2.splice(i,1)
+      //   }
+      // }
       this.hashTab = [];
-      for(let i=0;i<this.editableTabs2.length;i++){
-        let o = this.editableTabs2[i]
-        this.hashTab[o.type+o.rid+o.fid+''] = o.name;
-      }
+      // for(let i=0;i<this.editableTabs2.length;i++){
+      //   let o = this.editableTabs2[i]
+      //   this.hashTab[o.type+o.rid+o.fid+''] = o.name;
+      // }
     },
     tabClick(tab,event){
       this.showTabIndex=1;
@@ -668,7 +659,8 @@ export default {
         hasCompose = true;
       }
     }
-    if(hasCompose){
+    // if(hasCompose){
+    if(false){
       if(to.path=='/login'){
         if(this.$store.getters.getTimer){clearInterval(this.$store.getters.getTimer)}
         next();
