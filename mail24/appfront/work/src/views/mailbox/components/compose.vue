@@ -31,7 +31,7 @@
                   </el-input>
 
                   <el-tree class="filter-tree" :data="contactList" :props="defaultProps" :filter-node-method="filterNode"
-                   @node-click="selectContact"  accordion :indent="2" ref="tree2" >
+                   @node-click="selectContact"  accordion :indent="2" ref="tree2" :loading="contact_loading">
                     <span class="custom-tree-node" slot-scope="{ node, data }">
                       <span :title="node.label">{{ node.label }}</span>
                     </span>
@@ -770,10 +770,9 @@
           singleFile:false,
           chunkSize:1024*1024*2,
           simultaneousUploads:3,
-          permanentErrors:[ 415, 500, 501],
+          // permanentErrors:[ 415, 500, 501],
           preprocess:function(chunk){
-            console.log('pregrocess')
-            console.log(arguments)
+
             chunk.preprocessFinished();
           },
           processParams:function(param){
@@ -973,7 +972,7 @@
         'superscript', 'link', 'unlink','image',  'table','hr','|', 'undo', 'redo', 'preview',
            'fullscreen',
          ],
-        activeName: 'second',
+        activeName: 'first',
         number_sign:false,
         safe_secret:true,
 
@@ -1081,11 +1080,15 @@
       },
       fileSuccess(rootFile, file, message, chunk){
         console.log('successsss')
+        console.log(file)
+        console.log(message)
+        console.log(chunk.xhr.status)
         let md5 = file.uniqueIdentifier
         console.log(md5)
-        let result = this.bigUploadSuccess(file.file,md5,file);
-        console.log(result)
 
+        let result = this.bigUploadSuccess(file.file,md5,file);
+        console.log('progress:'+file.progress);
+        console.log(result)
       },
       beforeUpload(file){
         console.log('before')
@@ -3027,9 +3030,9 @@
         // return
       },
       getRightContact(){
+        this.contact_loading = true;
         contactPabGroupsGet().then(res=>{
           let _this = this;
-          this.contact_loading = true;
           let resultArr = [];
           let total = res.data.results[res.data.results.length-1].count;
           let axiosArr = [];
@@ -3065,6 +3068,8 @@
             _this.contactList = resultArr
             _this.contact_loading = false;
           }))
+        }).catch(err=>{
+          this.contact_loading = false;
         })
       },
 
@@ -3112,7 +3117,7 @@
         this.no_html();
       }
       this.getParams();
-      this.getPabGroups();
+
       sessionStorage['openGroup'] = 'oab';
       this.setEditorHeight();
       this.set_main_min_height();
@@ -3132,6 +3137,8 @@
     created(){
       this.getSignatrue();
       this.getTemplateListfn();
+      this.getPabGroups();
+      this.getRightContact();
       // this.get_transform_menu();
       // this.getMemberList(); new通讯录
       getContactInfo().then((res) => {

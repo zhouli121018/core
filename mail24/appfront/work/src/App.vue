@@ -116,5 +116,8 @@
   #app .el-badge__content{
     border:none;
   }
+  .uploader-file[status=success] .uploader-file-remove {
+       display: block !important;
+  }
 
 </style>

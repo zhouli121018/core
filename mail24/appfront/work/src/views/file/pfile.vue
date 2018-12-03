@@ -184,11 +184,65 @@
 
           <el-form-item label=" ">
 
-            <el-upload action="" :http-request="uploadFile" multiple  :file-list="uploadForm.fileList" ref="uploadFile">
-              <el-button size="small" type="primary"  plain icon="el-icon-upload" :on-success="uploadSuccess">点击上传</el-button>
-              <!--<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
+            <!--<el-upload action="" :http-request="uploadFile" multiple  :file-list="uploadForm.fileList" ref="uploadFile">-->
+              <!--<el-button size="small" type="primary"  plain icon="el-icon-upload" :on-success="uploadSuccess">点击上传</el-button>-->
+              <!--&lt;!&ndash;<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>&ndash;&gt;-->
 
-            </el-upload>
+            <!--</el-upload>-->
+
+            <uploader :options="options" class="uploader-example" :autoStart="false" :fileStatusText="fileStatusText"
+               @file-success="fileSuccess"
+               @file-added="fileAdded" >
+
+              <uploader-unsupport></uploader-unsupport>
+              <uploader-drop>
+                <!--<p>Drop files here to upload or</p>-->
+                <uploader-btn>上传文件</uploader-btn>
+              </uploader-drop>
+
+              <uploader-list v-loading="loading2"
+      element-loading-text="正在扫描文件..."
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(0, 0, 0, 0.6)" :list="true">
+
+              </uploader-list>
+
+
+
+              <uploader-files v-loading="loading2" v-if="false">
+                <template scope="scope">
+                  <ul v-if="scope.files.length>0">
+
+                    <li v-for="file in scope.files">
+                      <div :status="file.status" class="uploader-file">
+                        <div class="uploader-file-progress" style="transform: translateX(0%);"></div>
+                        <div class="uploader-file-info">
+                          <div class="uploader-file-name">
+                            <i icon="unknown" class="uploader-file-icon"></i>
+                            unins000.exe</div>
+                          <div class="uploader-file-size">696 KB</div>
+                          <div class="uploader-file-meta"></div>
+                          <div class="uploader-file-status">
+                            <span>{{fileStatusText[file.status]}}</span>
+                            <span style="display: none;">
+                              <span>100%</span>
+                              <em>0 bytes / s</em>
+                              <i></i></span>
+                          </div>
+                          <div class="uploader-file-actions">
+                            <span class="uploader-file-pause"></span>
+                            <span class="uploader-file-resume">️</span>
+                            <span class="uploader-file-retry"></span>
+                            <span class="uploader-file-remove"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </template>
+              </uploader-files>
+
+            </uploader>
 
             <!--<el-upload action="" :http-request="uploadFile" :file-list="uploadForm.fileList"-->
             <!--style="display:inline-block;"><el-button size="small" type="primary" plain icon="el-icon-upload"> 选择上传</el-button></el-upload>-->
@@ -208,14 +262,73 @@
 </template>
 
 <script>
+  import cookie from '@/assets/js/cookie';
+  import SparkMD5 from 'spark-md5'
   import axios from 'axios'
   import { netdiskGet, netdiskCapacityGet, netdiskPathGet,
     netdiskFolderCreate, netdiskFolderUpdate, netdiskFileUpload, netdiskFileUpdate,
-    netdiskDelete, netdiskBatchDelete, netdiskMove, netdiskBatchMove, netdiskFileDownload, netdiskZipDownload,getOpenoffice } from '@/api/api'
+    netdiskDelete, netdiskBatchDelete, netdiskMove, netdiskBatchMove, netdiskFileDownload, netdiskZipDownload,getOpenoffice,uploadSuccess } from '@/api/api'
 
   export default {
     data() {
       return {
+        loading2:false,
+        fileStatusText:{
+           success: '成功',
+            error: '失败',
+            uploading: '上传中...',
+            paused: '暂停',
+            waiting: '等待'
+        },
+        options: {
+          // https://github.com/simple-uploader/Uploader/tree/develop/samples/Node.js
+          // target: '/api/netdisk/upload/chunk/',
+          target: '/api/netdisk/uploadnew/',
+          testChunks: true,
+          headers:{
+            Authorization :`JWT ${cookie.getCookie('token')}`
+          },
+          query: {
+            'fileMd5' : ''
+          },
+          testMethod:'GET',
+          forceChunkSize:true,
+          allowDuplicateUploads:true,
+          fileParameterName:'chunkFile',
+          singleFile:false,
+          chunkSize:1024*1024*2,
+          simultaneousUploads:3,
+          // permanentErrors:[ 415, 500, 501],
+          preprocess:function(chunk){
+
+            chunk.preprocessFinished();
+          },
+          processParams:function(param){
+            param = {
+              chunkNumber:param.chunkNumber,
+              fileMd5:param.identifier
+            }
+            return param;
+          },
+          generateUniqueIdentifier(file){
+            // console.log('identifier')
+            // let b;
+            // _this.cfile = file;
+            // _this.calcMD56(file,(a)=>{
+            //   // _this.options.query['fileMd5'] = a
+            //   b = a;
+            // })
+            // return _this.calcMD567(file);
+          },
+          parseTimeRemaining: function (timeRemaining, parsedTimeRemaining) {
+            return parsedTimeRemaining
+              .replace(/\syears?/, '年')
+              .replace(/\days?/, '天')
+              .replace(/\shours?/, '小时')
+              .replace(/\sminutes?/, '分钟')
+              .replace(/\sseconds?/, '秒')
+          },
+        },
         fileloading:false,
         percent:0,
         is_filters_search: false,
@@ -292,6 +405,103 @@
     },
 
     methods: {
+      calcMD56(file,callback){
+          // this.upstate="MD5计算中...";
+          // this.percent=0;
+          let chunkSize=2097152,
+          chunks=Math.ceil(file.size/chunkSize),
+          currentChunk=0,
+          spark=new SparkMD5.ArrayBuffer(),
+          fileReader=new FileReader();
+          fileReader.onload=(e)=>{
+              //对于读取的文件计算hash码。
+              spark.append(e.target.result);
+              currentChunk++;
+              // this.percent=((currentChunk/chunks)*100).toFixed(2)-0;
+              if(currentChunk<chunks){
+                  loadNext();
+              }else{
+                let str = spark.end();
+                callback(str)
+                return str;
+              }
+          }
+          //分次读取大文件的内容，
+          function loadNext(){
+              let start=currentChunk*chunkSize,
+                  end=((start+chunkSize)>=file.size)?file.size:start+chunkSize;
+                  fileReader.readAsArrayBuffer(file.slice(start,end));
+          }
+          loadNext();
+      },
+      fileAdded(file){
+        if(file.size==0){
+          file.cancel();
+          return false;
+        }
+        netdiskCapacityGet().then(res=>{
+          // this.folder_capacity = res.data;
+          if(res.data.rtotal!=0 && file.size>(res.data.rtotal-res.data.rused)){
+            this.$message({
+              type:'error',
+              message:'所选文件容量超出网盘剩余容量！'
+            })
+            file.cancel();
+            return false;
+          }else{
+            this.loading2 = true;
+            this.calcMD56(file.file,(a)=>{
+              this.loading2 = false;
+              file.uniqueIdentifier = a;
+              file.resume();
+            })
+          }
+        });
+
+
+      },
+      fileSuccess(rootFile, filen, message, chunk){
+        // filen.bootstrap();
+        console.log(filen)
+        console.log(message)
+        console.log(chunk)
+        console.log(filen.progress())
+
+        let file = filen.file;
+        let fileMd5 = filen.uniqueIdentifier
+        console.log(file)
+        let param ={
+          'fileMd5':fileMd5,
+          'upload_type':'file',
+          'file_name':file.name,
+          'file_type':file.type||'application/octet-stream',
+          'file_size':file.size,
+          'folder_id':this.uploadForm.folder_id?this.uploadForm.folder_id:this.current_folder_id,
+        }
+        uploadSuccess(param).then(res=>{
+          // this.$message({
+          //   type:'success',
+          //   message:'上传成功！'
+          // })
+          // this.hashFile[res.data.id]=true;
+
+          this.tip = ''
+          filen.pause()
+          this.getCapacity();
+          this.getTables();
+        }).catch(err=>{
+          this.tip = '服务器错误！'
+          if(err.non_field_errors){
+            this.tip = err.non_field_errors[0]
+          }
+          this.$message({
+            type:"error",
+            message:' '+file.name+"上传失败！"+this.tip
+          });
+          console.log('merge错误！',err)
+          // filen.bootstrap();
+        })
+      },
       sendMail_net(row,sels){
         this.$emit('sendMail_net',row,sels)
       },

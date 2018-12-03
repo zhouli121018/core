@@ -671,7 +671,7 @@
           </el-form-item>
 
           <el-form-item label="转发选项" prop="">
-            <el-checkbox v-model="updateForm.is_forward">同时将信件保存在本邮箱内</el-checkbox>
+            <el-checkbox  :checked="updateForm.is_forward" ref="updateCheckbox">同时将信件保存在本邮箱内</el-checkbox>
           </el-form-item>
 
         </el-form>
@@ -1042,6 +1042,7 @@
             }
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
               this.updateFormLoading = true;
+              this.updateForm.is_forward = this.$refs.updateCheckbox.isChecked
               let para = Object.assign({}, this.updateForm);
               settingRefwUpdate(para.id, para)
                 .then((res) => {
