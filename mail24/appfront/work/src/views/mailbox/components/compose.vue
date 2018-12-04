@@ -9,9 +9,9 @@
                 </div>
             </div>
 
-            <el-button size="small" type="primary" @click="sentMail('sent')" element-loading-text="请稍等..."
-    element-loading-spinner="el-icon-loading"
-    element-loading-background="rgba(0, 0, 0, 0.6)" >{{ruleForm2.is_schedule?"定时发送":"发送"}}</el-button>
+            <el-button size="small" type="primary" @click="sentMail('sent')" :loading="sendLoading"
+
+    >{{ruleForm2.is_schedule?"定时发送":"发送"}}</el-button>
             <el-button-group >
               <el-button size="small" @click="preview">预览</el-button>
               <el-button size="small" @click="sentMail('save_draft')">存草稿</el-button>
@@ -173,8 +173,15 @@
                   </el-form-item>
 
                   <el-form-item v-show="fileList.length>0" label="附  件:" prop="attach">
-                    <div style="line-height: 20px;padding: 0 12px;margin: 10px 0;border: 1px solid #d4d7d9;background: #f0f1f3;border-radius: 3px;">{{fileList.length}} 个文件，共 {{totalAttach | mailsize}}</div>
-                    <div  class="attach_list_style">
+                    <el-row style="line-height: 30px;padding: 2px 12px;margin: 10px 0;border: 1px solid #d4d7d9;background: #f0f1f3;border-radius: 3px;">
+                      <el-col :span="14">
+                        {{fileList.length}} 个文件，共 {{totalAttach | mailsize}}
+                      </el-col>
+                      <el-col :span="10" style="text-align:right;">
+                        <el-button type="text" @click="remove_all_attach" style="color:rgb(245, 108, 108)">删除所有附件</el-button> |<el-button type="text" @click="show_all_attach = !show_all_attach">{{show_all_attach?'隐藏附件':'展开附件'}}</el-button>
+                      </el-col>
+                    </el-row>
+                    <div  class="attach_list_style" v-if="show_all_attach">
                       <div  v-for="(f,k) in fileList" :key="f.id" class="attach_box" @mouseenter="attach_hoverfn(f.id)" @mouseleave="remove_attach_hover" :class="{attach_hover:attachIndex == f.id}">
                         <span>{{k+1}}. </span>
                         <i class="el-icon-document"></i>
@@ -409,7 +416,7 @@
               </el-select>
             </div>
           </el-col>
-          <el-col :span="4" :offset="6">
+          <el-col :span="4">
             <el-input placeholder="请输入内容" v-model="contact_search" class="input-with-select" size="small">
               <el-button slot="append" icon="el-icon-search"  @click="search_dept"></el-button>
             </el-input>
@@ -528,11 +535,12 @@
               @size-change="attachSizeChange"
               @current-change="attachCurrentChange"
               :current-page="attachCurrentPage"
-              :page-sizes="[5,10,20,50,100, 200, 300, 400]"
+              :page-sizes="[10,20,50,100]"
               :page-size="attachPageSize" background
               layout="total, prev, pager, next, sizes"
               :total="attachTotal" small>
             </el-pagination>
+
             <el-table @selection-change="fileSelectionChange" @row-click="rowClick_afile"
               ref="afileTable" :data="coreFileList" tooltip-effect="dark" style="width: 100%"
               >
@@ -554,7 +562,7 @@
               @size-change="attachSizeChange_net"
               @current-change="attachCurrentChange_net"
               :current-page="attachCurrentPage_net"
-              :page-sizes="[5,10,20,50,100, 200, 300, 400]"
+              :page-sizes="[10,20,50,100]"
               :page-size="attachPageSize_net" background
               layout="total, prev, pager, next, sizes"
               :total="attachTotal_net" small>
@@ -567,6 +575,37 @@
               <el-table-column prop="name" label="文件名" >
                 <template slot-scope="scope">
                     <div v-if="scope.row.nettype=='folder'"><span @click="getNetfile(scope.row.id)" style="color:blue;text-decoration: underline;font-weight:bold;cursor:pointer;">{{scope.row.name}}</span></div>
+                    <div v-if="scope.row.nettype!='folder'"><span>{{scope.row.name}}</span></div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="file_size" label="文件大小" width="100" >
+                <template slot-scope="scope">
+                    <span  class="plan_style">{{scope.row.file_size |mailsize}}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="企业网盘" name="third">
+            <div style="padding:0 0 8px 4px;">
+              路径：<span v-for="(fn,k) in folder_names_company" :key="k"><b style="cursor: pointer;color:blue;" @click="getNetfile_company(fn.id)">{{fn.name}}</b> / </span>
+            </div>
+            <el-pagination class="margin-bottom-5"
+              @size-change="attachSizeChange_company"
+              @current-change="attachCurrentChange_company"
+              :current-page="attachCurrentPage_company"
+              :page-sizes="[10,20,50,100]"
+              :page-size="attachPageSize_company" background
+              layout="total, prev, pager, next, sizes"
+              :total="attachTotal_company" small>
+            </el-pagination>
+            <el-table @selection-change="fileSelectionChange" @row-click="rowClick_nfile_company"
+              ref="nfileTable_company" :data="nfileList_company" tooltip-effect="dark" style="width: 100%"
+
+              >
+              <el-table-column type="selection"  width="55" :selectable="selectablee"></el-table-column>
+              <el-table-column prop="name" label="文件名" >
+                <template slot-scope="scope">
+                    <div v-if="scope.row.nettype=='folder'"><span @click="getNetfile_company(scope.row.id)" style="color:blue;text-decoration: underline;font-weight:bold;cursor:pointer;">{{scope.row.name}}</span></div>
                     <div v-if="scope.row.nettype!='folder'"><span>{{scope.row.name}}</span></div>
                 </template>
               </el-table-column>
@@ -597,6 +636,7 @@
           <uploader :options="options" class="uploader-example" :autoStart="false" :fileStatusText="fileStatusText"
              @file-success="fileSuccess"
              @file-added="fileAdded"
+                    @file-removed="fileRemoved"
               @files-added="filesAdded">
             <uploader-unsupport></uploader-unsupport>
             <uploader-drop>
@@ -661,7 +701,7 @@
   import SparkMD5 from 'spark-md5'
   // import treeTransfer from 'el-tree-transfer'
   import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach,contactOabDepartsGet,
-  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus,settingSignatureGet,getTemplateList,getTemplateById,getDeptMail,readMail,getContactInfo,getContactLab,uploadCheck,uploadChunk,uploadSuccess,netdiskCapacityGet} from '@/api/api'
+  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus,settingSignatureGet,getTemplateList,getTemplateById,getDeptMail,readMail,getContactInfo,getContactLab,uploadCheck,uploadChunk,uploadSuccess,netdiskCapacityGet,companyDiskGet} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     props:{
@@ -720,6 +760,11 @@
       };
       let _this = this;
       return {
+        show_all_attach:true,
+        nfileList_company:[],
+        attachCurrentPage_company:1,
+        attachPageSize_company:10,
+        attachTotal_company:0,
         show_replay_to:false,
         dbIndex:0,
         activeDb:'to',
@@ -930,6 +975,7 @@
         soab_domain_options:[],
         contactData:[],
         folder_names:[],
+        folder_names_company:[],
         nfileList:[],
         activeName_file:'first',
         contact_loading:false,
@@ -994,6 +1040,29 @@
       };
     },
     methods:{
+      remove_all_attach(){
+        this.$confirm('<p>取消所有已添加的附件?</p>', '系统信息', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          dangerouslyUseHTMLString: true,
+          type: 'warning'
+        }).then(() => {
+          this.fileList = [];
+          this.hashFile = [];
+        }).catch(() => {
+
+        });
+
+      },
+      fileRemoved(file){
+
+        for(let i=0;i<this.fileList_big.length;i++){
+          if(file.id == this.fileList_big[i].fileId){
+            this.fileList_big.splice(i,1)
+            break;
+          }
+        }
+      },
       changeReply(){
         if(this.show_replay_to && this.ruleForm2.reply_to){
           this.$confirm('<p>取消并清空指定回复人地址?</p>', '系统信息', {
@@ -1086,7 +1155,7 @@
         let md5 = file.uniqueIdentifier
         console.log(md5)
 
-        let result = this.bigUploadSuccess(file.file,md5,file);
+        let result = this.bigUploadSuccess(file.file,md5,file.id);
         console.log('progress:'+file.progress);
         console.log(result)
       },
@@ -1142,7 +1211,7 @@
       submitUpload(){
          this.$refs.bigUpload.submit();
       },
-      bigUploadSuccess(file,fileMd5){
+      bigUploadSuccess(file,fileMd5,fileId){
         console.log(file)
         let param ={
           'fileMd5':fileMd5,
@@ -1158,6 +1227,7 @@
           //   message:'上传成功！'
           // })
           // this.hashFile[res.data.id]=true;
+          res.data.fileId = fileId;
           this.fileList_big.push(res.data)
           this.bigLoading = false;
           this.tip = ''
@@ -2406,9 +2476,19 @@
         }
         this.$refs.nfileTable.toggleRowSelection(row)
       },
+      rowClick_nfile_company(row){
+        if(row.nettype=='folder'){
+          return
+        }
+        this.$refs.nfileTable_company.toggleRowSelection(row)
+      },
       switch_file(tab,event){
-        if(tab.$data.index==1){
+        if(tab.name == 'second'){
           this.getNetfile(-1);
+        }else if(tab.name == 'first'){
+          this.getAttachList();
+        }else if(tab.name == 'third'){
+          this.getNetfile_company(-1)
         }
       },
       format (fromArr,toArr){
@@ -2426,6 +2506,21 @@
           this.attachTotal_net = res.data.count;
           this.nfileList = res.data.results;
           this.folder_names = res.data.folder_names;
+        });
+      },
+      getNetfile_company(n){
+        var param = {
+          "page": this.attachCurrentPage_company,
+          "page_size": this.attachPageSize_company,
+          "folder_id": n,
+        };
+        companyDiskGet(param).then(res=>{
+          this.attachTotal_company = res.data.count;
+          this.nfileList_company = res.data.results;
+          this.nfileList_company.forEach(val=>{
+            val.is_company = true;
+          })
+          this.folder_names_company = res.data.folder_names;
         });
       },
       sentMail(type){
@@ -2455,7 +2550,8 @@
           str = str.slice(0,str.lastIndexOf('.'));
           this.ruleForm2.subject = str;
         }
-        if(type=='sent' && !this.content){
+        let a = $('#editor_id'+this.rid).val()
+        if(type=='sent' && !a){
           this.$alert('请填写邮件内容！');
           return;
         }
@@ -2471,11 +2567,11 @@
           return;
         }
         if(this.ruleForm2.is_html){
-          this.ruleForm2.html_text = this.content;
+          this.ruleForm2.html_text = a;
           this.ruleForm2.plain_text = '';
         }else{
           this.ruleForm2.html_text = '';
-          this.ruleForm2.plain_text = this.content;
+          this.ruleForm2.plain_text = a;
         }
 
         for(let i=0;i<this.fileList.length;i++){
@@ -2491,10 +2587,12 @@
         }
         let param = this.ruleForm2;
         param.action=type;// save_draft
-        if(type!='sent'&&!this.content){
+        if(type!='sent'&&!a){
           return;
         }
+        this.sendLoading = true;
         mailSent(param).then(res=>{
+          this.sendLoading = false;
           if(this.$store.getters.getTimer){clearInterval(this.$store.getters.getTimer)}
           let info = type=='sent'?"发送成功！":"保存草稿成功！";
           this.$message({
@@ -2573,33 +2671,33 @@
             val.label = val.groupname
             val.keyId = 'pab'
           })
-          arr[0] = {
+          arr.push({
             id:'pab',
             label:'个人通讯录',
             keyId:'pab',
             children:arguments[0].data.results
-          }
-          arr[1] = {
+          })
+          arr.push({
             id:'oab',
             keyId:'oab',
             label:'组织通讯录',
             children:arguments[1].data.results
-          }
+          })
           if(_this.webmail_cab_show){
-            arr[2] = {
+            arr.push({
               id:'cab',
               keyId:'cab',
               label:'公共通讯录',
               children:arguments[2].data.results
-            }
+            })
           }
           if(_this.webmail_soab_show){
-            arr[3] = {
+            arr.push({
               id:'soab',
               keyId:'soab',
-              label:'其他通讯录',
-              children:arguments[3].data.results
-            }
+              label:'其他域通讯录',
+              children:arguments[arguments.length-1].data.results
+            })
           }
           arr.push({
             id:'lab',
@@ -2630,11 +2728,19 @@
       },
       attachSizeChange_net(val){
         this.attachPageSize_net = val;
-        this.getAttachList();
+        this.getNetfile(-1);
       },
       attachCurrentChange_net(val){
         this.attachCurrentPage_net = val;
-        this.getAttachList();
+        this.getNetfile(-1);
+      },
+      attachSizeChange_company(val){
+        this.attachPageSize_company = val;
+        this.getNetfile_company(-1);
+      },
+      attachCurrentChange_company(val){
+        this.attachCurrentPage_company = val;
+        this.getNetfile_company(-1);
       },
       handleSizeChange_contact(val){
         this.currentPage = 1
@@ -2694,7 +2800,11 @@
       selectUpload(command){
         if(command == 'filecore'){
           this.coreFileDialog = true;
-          this.getAttachList();
+          if(this.attachTotal == 0){
+            this.getAttachList();
+          }
+          this.activeName_file = 'first';
+
         }else if(command == 'upload'){
           document.getElementById('addAttachBtn').click()
         }
@@ -2789,6 +2899,7 @@
       },
       onContentChange (val) {
         // this.setEditorHeight();
+        console.log(this.$refs[this.editor_id].$data.outContent)
         this.content = this.$refs[this.editor_id].$data.outContent;
         // this.$refs[this.editor_id].editor.html(this.content);
         // $('#editor_id'+this.rid).val()
@@ -3115,6 +3226,7 @@
         // this.$refs[this.editor_id].editor.text(this.content)
         $('#editor_id'+this.rid).val(this.content);
         this.no_html();
+        // this.onContentChange();
       }
       this.getParams();
 
@@ -3238,7 +3350,11 @@
       },
       fileList(){
         let _this = this;
-        setTimeout(_this.set_main_min_height,50);
+        setTimeout(()=>{
+          _this.set_main_min_height();
+          // _this.setEditorHeight()
+          // _this.set_main_min_height();
+        },50);
       },
       "ruleForm2.is_cc"(nv){
         let _this = this;
@@ -3267,7 +3383,15 @@
       maillist_bcc(){
         let _this = this;
         setTimeout(_this.set_main_min_height,100);
-      }
+      },
+      show_all_attach(){
+        let _this = this;
+        setTimeout(()=>{
+          _this.set_main_min_height();
+          // _this.setEditorHeight()
+          // _this.set_main_min_height();
+        },50);
+      },
     },
     // components:{ treeTransfer } // 注册
 
@@ -3291,7 +3415,7 @@
     padding:0 14px;
   }
   #app .attach_list_style{
-    max-height: 142px;
+    /*max-height: 142px;*/
     overflow: auto;
   }
   .group_member{

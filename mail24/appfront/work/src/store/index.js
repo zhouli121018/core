@@ -57,6 +57,7 @@ const store = new Vuex.Store({
     },
     isSharedUser:false,
     review_count:0,
+    unseen_count:[],
   },
   getters:{
     userInfo(state) {
@@ -110,6 +111,9 @@ const store = new Vuex.Store({
     getReviewCount(state){
       return state.review_count
     },
+    getUnseenCount(state){
+      return state.unseen_count;
+    }
   },
   mutations:{
     SET_INFO (state) {
@@ -175,6 +179,10 @@ const store = new Vuex.Store({
     },
     setReviewCount(state,param){
       state.review_count = param;
+    },
+    setUnseenCount(state,param){
+      state.unseen_count = null;
+      state.unseen_count = param;
     }
   },
   actions: {
@@ -231,6 +239,9 @@ const store = new Vuex.Store({
     },
     setReviewCountA(store,param){
       store.commit('setReviewCount',param);
+    },
+    setUnseenCountA(store,param){
+      store.commit('setUnseenCount',param)
     }
 
   }

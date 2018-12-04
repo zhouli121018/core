@@ -193,54 +193,17 @@
             <uploader :options="options" class="uploader-example" :autoStart="false" :fileStatusText="fileStatusText"
                @file-success="fileSuccess"
                @file-added="fileAdded" >
-
               <uploader-unsupport></uploader-unsupport>
               <uploader-drop>
                 <!--<p>Drop files here to upload or</p>-->
                 <uploader-btn>上传文件</uploader-btn>
               </uploader-drop>
-
               <uploader-list v-loading="loading2"
       element-loading-text="正在扫描文件..."
       element-loading-spinner="el-icon-loading"
-      element-loading-background="rgba(0, 0, 0, 0.6)" :list="true">
+      element-loading-background="rgba(0, 0, 0, 0.6)">
 
               </uploader-list>
-
-
-
-              <uploader-files v-loading="loading2" v-if="false">
-                <template scope="scope">
-                  <ul v-if="scope.files.length>0">
-
-                    <li v-for="file in scope.files">
-                      <div :status="file.status" class="uploader-file">
-                        <div class="uploader-file-progress" style="transform: translateX(0%);"></div>
-                        <div class="uploader-file-info">
-                          <div class="uploader-file-name">
-                            <i icon="unknown" class="uploader-file-icon"></i>
-                            unins000.exe</div>
-                          <div class="uploader-file-size">696 KB</div>
-                          <div class="uploader-file-meta"></div>
-                          <div class="uploader-file-status">
-                            <span>{{fileStatusText[file.status]}}</span>
-                            <span style="display: none;">
-                              <span>100%</span>
-                              <em>0 bytes / s</em>
-                              <i></i></span>
-                          </div>
-                          <div class="uploader-file-actions">
-                            <span class="uploader-file-pause"></span>
-                            <span class="uploader-file-resume">️</span>
-                            <span class="uploader-file-retry"></span>
-                            <span class="uploader-file-remove"></span>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </template>
-              </uploader-files>
 
             </uploader>
 
@@ -460,15 +423,7 @@
 
 
       },
-      fileSuccess(rootFile, filen, message, chunk){
-        // filen.bootstrap();
-        console.log(filen)
-        console.log(message)
-        console.log(chunk)
-        console.log(filen.progress())
-
-        let file = filen.file;
-        let fileMd5 = filen.uniqueIdentifier
+      bigUploadSuccess(file,fileMd5){
         console.log(file)
         let param ={
           'fileMd5':fileMd5,
@@ -484,9 +439,7 @@
           //   message:'上传成功！'
           // })
           // this.hashFile[res.data.id]=true;
-
           this.tip = ''
-          filen.pause()
           this.getCapacity();
           this.getTables();
         }).catch(err=>{
@@ -499,8 +452,11 @@
             message:' '+file.name+"上传失败！"+this.tip
           });
           console.log('merge错误！',err)
-          // filen.bootstrap();
         })
+      },
+      fileSuccess(rootFile, file, message, chunk){
+        let md5 = file.uniqueIdentifier
+        let result = this.bigUploadSuccess(file.file,md5,file);
       },
       sendMail_net(row,sels){
         this.$emit('sendMail_net',row,sels)

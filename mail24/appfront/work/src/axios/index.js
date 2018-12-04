@@ -60,7 +60,7 @@ axios.interceptors.request.use(
       config.url += "?timestamp="+new Date().getTime();
     }
     if(config.url.indexOf('/netdisk/upload/')<0&&config.url.indexOf('/contact/pab/members')<0){
-      showFullScreenLoading()
+      // showFullScreenLoading()
     }
 
     if (cookie.getCookie('token')) {  // 判断是否存在token，如果存在的话，则每个http header都加上token

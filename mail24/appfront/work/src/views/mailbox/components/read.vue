@@ -2,7 +2,7 @@
   <!--<article class="mlmain mltabview">-->
     <div class="mltabview-content">
       <div class="mltabview-panel">
-        <section class="m-read" v-show="!notFond">
+        <section class="m-read" v-show="!notFond" v-loading="loading">
           <div class="toolbar" style="background:#fff;"
                element-loading-text="请稍等..."
                element-loading-spinner="el-icon-loading"
@@ -91,7 +91,7 @@
 
           </div>
 
-          <div class="mail" ref="iframe_height" :id="'mail_'+readId+'_'+readFolderId">
+          <div class="mail" ref="iframe_height" :id="'mail_'+readId+'_'+readFolderId" >
             <div class="j-read-alert f-pr"></div>
             <div class="mail-top j-mail-top f-pr">
                 <div class="top-bar">
@@ -584,6 +584,7 @@
 
       },
       save_attach(item){
+        this.loading = true;
         let param = {
           folder:this.readFolderId,
           uid:this.readId,
@@ -595,6 +596,7 @@
             type:'success',
             message:'保存成功！'
           })
+          this.loading = false;
         }).catch(err=>{
           let str = '';
           if(err.detail){
@@ -604,6 +606,7 @@
             type:'error',
             message:'保存失败！'+str
           })
+          this.loading = false;
         })
       },
       onContentChange (val) {
@@ -730,11 +733,13 @@
         })
       },
       recallMessage(){
+        this.loading = true;
         let param = {
           uid:this.readId,
           folder:this.readFolderId
         }
         messageRecall(param).then(res=>{
+          this.loading = false;
           let str = res.data.results[0].inform || res.data.results[0].recall_status_info
           this.$message({
             type:'success',
@@ -742,6 +747,7 @@
           })
           this.getReadMail();
         }).catch(err=>{
+          this.loading = false;
           let str = '';
           if(err.detail){
             str = err.detail
@@ -846,8 +852,9 @@
             window.open(href)
             return;
           }
-
+          this.loading = true;
           readMail(this.readId,{"folder":fid,"view":view}).then(res=>{
+            this.loading = false;
             pp.ruleForm2 = {
               reply_to:'',
               is_priority:false,
@@ -914,21 +921,24 @@
 
           }).catch(err=>{
             console.log(err)
+            this.loading = false;
           })
 
         }else if(item.id==4){ //拒收邮件
+          this.loading = true;
           rejectMessage(param).then(res=>{
+            this.loading = false;
             this.$message(
               {type:'success',message:'邮件拒收成功！'}
             )
           })
             .catch(err=>{
+              this.loading = false;
               let str = '';
             if(err.detail){
               str = err.detail
             }
-            console.log(err)
-              this.$message(
+            this.$message(
               {type:'error',message:'邮件拒收失败！'+str}
             )
           })
@@ -938,7 +948,9 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
+            this.loading = true;
             pruneMessage(param).then(res=>{
+              this.loading = false;
               this.$message(
                 {type:'success',message:'彻底删除邮件成功！'}
               )
@@ -946,6 +958,7 @@
               pp.getFloderfn();
               this.$parent.$parent.$children[1].$children[0].getMessageList()
             }).catch(err=>{
+              this.loading = false;
               let str = '';
               if(err.detail){
                 str = err.detail
@@ -963,11 +976,14 @@
           });
 
         }else if(item.id==8){//添加到通讯录
+          this.loading = true;
           pabMessage(pa).then(res=>{
+            this.loading = false;
             this.$message(
               {type:'success',message:'添加到通讯录成功！'}
             )
           }).catch(err=>{
+            this.loading = false;
             let str = '';
             if(err.detail){
               str = err.detail
@@ -977,7 +993,9 @@
             )
           })
         }else if(item.id==9){
+          this.loading = true;
           emlMessage(pa).then(response=>{
+            this.loading = false;
             let blob = new Blob([response.data], { type: response.headers["content-type"] })
             let objUrl = URL.createObjectURL(blob)
             let filenameHeader = response.headers['content-disposition']
@@ -998,6 +1016,7 @@
               {type:'success',message:'邮件下载成功！'}
             )
           }).catch(err=>{
+            this.loading = false;
             console.log(err)
             let str = '';
             if(err.detail){
@@ -1019,7 +1038,9 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          this.loading = true;
           deleteMail(params).then((suc)=>{
+            this.loading = false;
             if(suc.data.msg=='success'){
               this.$message({
                 type:'success',
@@ -1029,6 +1050,7 @@
               this.$parent.$parent.$children[1].$children[0].getMessageList()
             }
           },(err)=>{
+            this.loading = false;
             let str = '';
             if(err.detail){
               str = err.detail
@@ -1050,7 +1072,9 @@
         this.actionLoading = true;
         let pp = this.$parent.$parent.$parent;
         let fid = this.readFolderId;
+        this.loading = true;
         readMail(this.readId,{"folder":fid,"view":view}).then(res=>{
+            this.loading = false;
             this.actionLoading = false;
             pp.ruleForm2 = {
               reply_to:'',
@@ -1116,6 +1140,7 @@
             pp.addTab('compose'+view+' ',data.subject,data.uid,fid)
 
           }).catch(err=>{
+            this.loading = false;
             this.actionLoading = false;
           console.log(err)
         })
@@ -1126,9 +1151,12 @@
           folder:this.readFolderId,
           password:this.de_password
         }
+        this.loading = true;
         mailDecode(param).then(res=>{
+          this.loading = false;
           this.getReadMail();
         },err=>{
+          this.loading = false;
           this.decryption_error=true;
         })
       },
@@ -1142,7 +1170,9 @@
         if(this.password){
           param.password = 1;
         }
+        this.loading = true;
         downloadAttach(param).then(response=>{
+          this.loading = false;
           let blob = new Blob([response.data], { type: response.headers["content-type"] })
           let objUrl = URL.createObjectURL(blob);
           // let filenameHeader = response.headers['content-disposition']
@@ -1162,6 +1192,7 @@
           this.$message({ message: '下载成功！', type: 'success' });
         },err=>{
           console.log(err);
+          this.loading = false;
           let str = '';
           if(err.detail){
             str = err.detail
@@ -1199,7 +1230,9 @@
           src_folder:this.readFolderId,
           dst_folder:index
         }
+        this.loading = true;
         moveMails(params).then((suc)=>{
+          this.loading = false;
           this.$message({
               type:'success',
               message: '邮件移动成功!'
@@ -1207,11 +1240,13 @@
           this.readFolderId = index;
           // this.$parent.$parent.$parent.getFloderfn();
         },(err)=>{
+          this.loading = false;
           this.$message({
               type:'error',
               message: '邮件移动失败!'
             })
         }).catch(err=>{
+          this.loading = false;
           let str = '';
           if(err.detail){
             str = err.detail
@@ -1369,6 +1404,7 @@
           this.notFond=true;
           this.$parent.$parent.$parent.getFloderfn();
           this.$parent.$parent.$parent.$refs.innerbox[0].getMessageList();
+          this.loading = false;
         });
       },
 

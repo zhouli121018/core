@@ -1,7 +1,7 @@
 <template>
   <div style="box-sizing: border-box" id="search">
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="登录查询" name="login">
+      <el-tab-pane label="登录查询" name="login" v-loading="loginData.loading">
         <el-pagination style="text-align: right;"
           @size-change="sizeChange($event,'login')"
           @current-change="currentChange($event,'login')"
@@ -52,7 +52,7 @@
         </el-table>
 
       </el-tab-pane>
-      <el-tab-pane label="发信查询" name="send">
+      <el-tab-pane label="发信查询" name="send" v-loading="sendData.loading">
         <el-pagination style="text-align: right;"
           @size-change="sizeChange($event,'send')"
           @current-change="currentChange($event,'send')"
@@ -146,7 +146,7 @@
           </el-table-column>
         </el-table>
       </el-tab-pane>
-      <el-tab-pane label="收信查询" name="mail">
+      <el-tab-pane label="收信查询" name="mail" v-loading="mailData.loading">
         <div>
           <span>信件来源： </span>
           <el-button-group>
@@ -218,7 +218,7 @@
           </el-table-column>
         </el-table>
       </el-tab-pane>
-      <el-tab-pane label="删信查询" name="delete">
+      <el-tab-pane label="删信查询" name="delete" v-loading="deleteData.loading">
         <div>
           <span>信件来源： </span>
           <el-button-group>

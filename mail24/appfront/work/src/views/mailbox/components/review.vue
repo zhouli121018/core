@@ -39,8 +39,8 @@
                 </el-row>
                 <!--@row-click="rowClick_wait"-->
                 <!--:height="table_height"-->
-                <el-table
-                  :data="waitData.tableData"
+                <el-table :data="waitData.tableData"
+                          v-loading="reviewLoading"
                   border
                   stripe
                   :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}"
@@ -160,6 +160,7 @@
     },
     data(){
       return {
+        reviewLoading:false,
         hashTab:[],
         tableTabs: [{
           title: '邮件审核列表',
@@ -350,11 +351,13 @@
           page_size:this.waitData.page_size,
           status:this.status
         };
+        this.reviewLoading = true;
         mailReview(param).then(res=>{
-          console.log(res)
+          this.reviewLoading = false;
           this.waitData.total = res.data.count;
           this.waitData.tableData = res.data.results;
         }).catch(err=>{
+          this.reviewLoading = false;
           console.log('getWait错误',err)
         })
       },

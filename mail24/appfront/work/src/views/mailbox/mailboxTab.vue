@@ -13,6 +13,7 @@
                     <el-tree
                       :data="folderList"
                       node-key="id"
+                      v-loading="menubarLoading"
                       :default-checked-keys="checkNodes"
                       :highlight-current="true"
                       @node-click="handleNodeClick" ref="treeMenuBar" id="treeMenuBar">
@@ -102,6 +103,7 @@ export default {
   },
   data:function(){
       return{
+        menubarLoading:false,
         reviewUnseen:0,
         review_show:false,
         review_active:false,
@@ -417,8 +419,16 @@ export default {
       this.activeTab = obj.id;
     },
     getFloderfn(){
+      this.menubarLoading = true;
       getFloder().then((res)=>{
+        this.menubarLoading = false;
         this.floderResult = res.data;
+        let countArr = [];
+        this.floderResult.forEach(val=>{
+          countArr[val.raw_name] = val.unseen_count || 0;
+        })
+        console.log(countArr)
+        this.$store.dispatch('setUnseenCountA',countArr)
         if(sessionStorage['checkNodes']){
           this.checkNodes = [];
           this.checkNodes.push(sessionStorage['checkNodes'])
@@ -426,6 +436,9 @@ export default {
         if(this.$route.params.boxId)this.setCurrentKey(this.$route.params.boxId);
       },(err)=>{
         console.log(err)
+        this.menubarLoading = false;
+      }).catch(()=>{
+        this.menubarLoading = false;
       });
     },
 
@@ -552,8 +565,10 @@ export default {
           obj['flags'] = folder[i]['flags'];
           obj['unseen'] = folder[i]['unseen_count'];
           obj['is_default'] = folder[i]['is_default'];
+          obj['unseen'] = this.$store.getters.getUnseenCount[folder[i]['raw_name']];
           arr.push(obj);
         }
+
         // let obj={};
         //   obj['label'] = '邮件审核';
         //   obj['id'] = 'review';
@@ -632,6 +647,13 @@ export default {
     },
     newCount(newv){
         alert(newv)
+    },
+    folderList(){
+        if(sessionStorage['checkNodes']){
+          this.checkNodes = [];
+          this.checkNodes.push(sessionStorage['checkNodes'])
+        }
+        if(this.$route.params.boxId)this.setCurrentKey(this.$route.params.boxId);
     }
 
   },

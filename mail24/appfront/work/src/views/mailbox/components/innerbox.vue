@@ -1,7 +1,7 @@
 <template>
         <div class="mltabview-content">
             <div  class="mltabview-panel">
-                <div class="m-mllist">
+                <div class="m-mllist" v-loading="fullscreenLoading">
                     <div class="list-bg"></div>
                     <div class="m-mllist-row">
                         <div class="toolbar" style="background:#fff;" element-loading-text="请稍等..."
@@ -148,7 +148,7 @@
                         <div class="totals-info">
                         {{curr_folder}}(
                         <!--<span class="all-mail">共<span class="number">{{totalAllCount}}</span>封</span>-->
-                        <span class="unread-mail"><span class="number">{{this.$parent.$parent.$parent.unseencount}}</span>封</span>
+                        <span class="unread-mail"><span class="number">{{unseen_count_new}}</span>封</span>
                         <a href="#" @click.prevent="viewHandleCommand('unseen')">未读</a>
                         <a href="#" v-if="unreadCount" @click.prevent="readAll">，全部设为已读</a>
                         )
@@ -175,7 +175,7 @@
                     <div class="m-mllist-row mllist-list-row">
                       <div class="j-module-content j-maillist mllist-list u-scroll">
                         <div>
-                          <el-table ref="innerTable" :data="collapseItems[0].lists" style="width: 100%;" class="vertical_align_top maillist"
+                          <el-table ref="innerTable" :data="collapseItems[0].lists" style="width: 100%;" class="vertical_align_top maillist" v-loading="loading"
                               highlight-current-row  @cell-mouse-enter="hoverfn" @cell-mouse-leave="noHover" @row-click="rowClick" @cell-click="cellClick"
                                     @selection-change="handleSelectionChange"  :header-cell-style="{background:'#f0f1f3'}"
                             >
@@ -214,7 +214,7 @@
                               <template slot-scope="scope">
                                 <div class="plan_style">
                                   {{(scope.row.internaldate ||scope.row.date).replace('T',' ')}}
-                                  <p style="text-align:center;" v-if="scope.row.has_attachment" >
+                                  <p style="text-align:center;" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-attach')>=0" >
                                     <i class="iconfont icon-attachment"></i>
                                   </p>
                                 </div>
@@ -460,6 +460,9 @@
         if(!row.isread){
           this.$parent.$parent.$parent.unseencount --;
           this.$parent.$parent.$parent.$refs.treeMenuBar.getCurrentNode().unseen--;
+          let unseenArr = this.$store.getters.getUnseenCount;
+          unseenArr[this.boxId] --;
+          this.$store.dispatch('setUnseenCountA',unseenArr)
         }
           row.isread = true;
         let param = {
@@ -926,11 +929,14 @@
           let items = res.data.results;
           // this.totalAllCount = res.data.count;
           this.unreadCount = res.data.unseen_count;
-          for(let i=0;i<this.$parent.$parent.$parent.floderResult.length;i++){
-            if(this.boxId == this.$parent.$parent.$parent.floderResult[i].raw_name){
-              this.$parent.$parent.$parent.floderResult[i].unseen = res.data.unseen_count;
-            }
-          }
+          // for(let i=0;i<this.$parent.$parent.$parent.floderResult.length;i++){
+          //   if(this.boxId == this.$parent.$parent.$parent.floderResult[i].raw_name){
+          //     this.$parent.$parent.$parent.floderResult[i].unseen_count = res.data.unseen_count;
+          //   }
+          // }
+          let unseenArr = this.$store.getters.getUnseenCount;
+          unseenArr[this.boxId] = res.data.unseen_count;
+          this.$store.dispatch('setUnseenCountA',unseenArr)
           for(let i=0;i<items.length;i++){
             items[i].flagged = (items[i].flags.join('').indexOf('Flagged')>=0);
             items[i].isread = (items[i].flags.join(' ').indexOf('Seen')>=0);
@@ -960,6 +966,8 @@
           this.loading = false;
         },(err)=>{
           console.log(err)
+          this.loading = false;
+        }).catch(err=>{
           this.loading = false;
         })
       },
@@ -1003,6 +1011,10 @@
           }
         }
         return arr;
+      },
+      unseen_count_new:function(){
+        console.log(this.$store.getters.getUnseenCount[this.boxId])
+        return this.$store.getters.getUnseenCount[this.boxId]
       }
     },
     created(){

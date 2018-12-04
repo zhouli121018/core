@@ -238,6 +238,8 @@
         return this.$store.getters.userInfo.name;
       },
       inboxUnread(){
+        let c = this.$store.getters.getUnseenCount['INBOX'] || 0;
+        return  c
         for(let i=0;i<this.$parent.folderList.length;i++){
           if(this.$parent.folderList[i]['id']=='INBOX'){
             return this.$parent.folderList[i].unseen;
