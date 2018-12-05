@@ -16,7 +16,7 @@
           <el-col :span="16"><el-form-item label="确认密码" prop="confirm_password" :error="confirm_password_error"><el-input type="password" v-model.trim="passeordForm.confirm_password" auto-complete="off"></el-input></el-form-item></el-col>
         </el-row>
         <el-row><el-col :span="16"><pre style="margin-left: 100px"><strong style="color: red">注：</strong> 密码长度为8到20位，需要大写和小写字母数字组合或者特殊字符字母数字组合； 不能连续重复、递增、递减的数或字母，可包含特殊字符；<br>例：如密码为8位，则Abcd2357、1111test、1234test、4321test均不符合要求。</pre></el-col></el-row>
-        <el-row><el-col :span="24"><el-form-item><el-button type="primary" @click.native="passeordFormSubmit()" >修改</el-button></el-form-item></el-col></el-row>
+        <el-row><el-col :span="24"><el-form-item><el-button type="primary" @click.native="passeordFormSubmit()" :loading="passeordFormLoading">修改</el-button></el-form-item></el-col></el-row>
       </el-form>
 
       <el-form :model="securityForm" label-width="100px" :rules="securityFormRules" ref="securityForm" size="mini" style="margin-left:13px;margin-right:13px;margin-top: 13px">
@@ -61,7 +61,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item>
-              <el-button type="primary" @click.native="securityFormSubmit()">修改</el-button>
+              <el-button type="primary" @click.native="securityFormSubmit()" :loading="securityFormLoading">修改</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -198,6 +198,7 @@
                 }
               }).catch(function (error) {
                 console.log(error);
+                this.passeordFormLoading = false;
               });
             });
           }
@@ -239,6 +240,7 @@
                 if("security_answer3" in data) { this.security_answer3_error = data.security_answer3[0]; }
               }).catch(function (error) {
                 console.log(error);
+                this.securityFormLoading = false;
               });
             });
           }

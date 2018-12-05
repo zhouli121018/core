@@ -11,7 +11,11 @@
     </aside>
 
     <article class="mlmain mltabview overflow_auto">
-      <div  class="j-module-content j-maillist mllist-list height100 ">
+      <div  class="j-module-content j-maillist mllist-list height100 "  v-loading="listLoading"
+      >
+        <!--element-loading-text="拼命加载中"-->
+    <!--element-loading-spinner="el-icon-loading"-->
+    <!--element-loading-background="rgba(0, 0, 0, 0.8)"-->
 
         <el-row>
           <el-col :span="24" class="breadcrumb-container">
@@ -45,7 +49,7 @@
         </el-row>
 
         <!-- 普通列表 -->
-        <section class="content content-list height100" >
+        <section class="content content-list height100">
 
           <el-row class="toolbar">
             <el-col :span="12">
@@ -188,6 +192,8 @@
           this.listTables = res.data.results;
           this.listLoading = false;
           //NProgress.done();
+        }).catch(()=>{
+          this.listLoading = false;
         });
       },
       // 获取部门成员
@@ -208,6 +214,8 @@
           this.listTables = res.data.results;
           this.listLoading = false;
           //NProgress.done();
+        }).catch(()=>{
+          this.listLoading = false;
         });
       },
 
@@ -368,9 +376,9 @@
         this.$confirm('确认删除选中记录吗？', '提示', {
           type: 'warning'
         }).then(() => {
-            this.listLoading = true;
+            // this.listLoading = true;
             //NProgress.start();
-            let para = {ids: ids};
+            // let para = {ids: ids};
             // batchRemoveUser(para).then((res) => {
             //   this.listLoading = false;
             //   //NProgress.done();
@@ -413,6 +421,8 @@
             this.listLoading = false;
             //NProgress.done();
             that.$message({ message: '已成功添加联系人到个人通讯录', type: 'success' });
+          }).catch(()=>{
+            this.listLoading = false;
           });
         }).catch((error) => {
           // that.$message({ message: '操作失败，请重试',  type: 'error' });

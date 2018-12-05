@@ -12,7 +12,7 @@
 
     <el-alert title="功能说明：假如您有一个邮箱“zhangsan@example.com”，您可以使用此功能自动将“zhangsan@example.com”中的所有邮件收取到当前邮箱中。 " type="success" :closable="false"></el-alert>
 
-    <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;">
+    <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;" v-loading="listLoading">
 
       <el-row class="toolbar">
         <el-col :span="12">
@@ -79,7 +79,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="createFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="createFormSubmit()">提交</el-button>
+          <el-button type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -112,7 +112,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="updateFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="updateFormSubmit()">提交</el-button>
+          <el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -196,6 +196,8 @@
           this.total = res.data.count;
           this.listTables = res.data.results;
           this.listLoading = false;
+        }).catch(()=>{
+          this.listLoading = false;
         });
       },
 
@@ -228,6 +230,7 @@
                 })
                 .catch(function (error) {
                   console.log(error);
+                  this.createFormLoading = false;
                 });
             });
           }
@@ -265,6 +268,7 @@
                 })
                 .catch(function (error) {
                   console.log(error);
+                  this.updateFormLoading = false;
                 });
             });
           }

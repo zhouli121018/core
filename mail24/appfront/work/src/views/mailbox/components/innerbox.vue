@@ -109,7 +109,7 @@
                                     <i class="el-icon-arrow-down el-icon--right"></i>
                                     </el-button>
                                     <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-if="boxId!='Drafts'||item.id==6||item.id==7" v-for="item in moreItems" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }"
+                                    <el-dropdown-item v-if="boxId!='Drafts'||item.id==6||item.id==7||item.id==8" v-for="item in moreItems" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }"
                                     :divided="item.divided" :command="item">
                                         <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moreCheckIndex===item.id }"></i> </b>
                                         {{ item.text}}</el-dropdown-item>
@@ -241,7 +241,7 @@
         </div>
 </template>
 <script>
-  import {getMailMessage,moveMails,getFloder,getFloderMsg,deleteMail,messageFlag,readMail,rejectMessage,pruneMessage,zipMessage} from "@/api/api";
+  import {getMailMessage,moveMails,getFloder,getFloderMsg,deleteMail,messageFlag,readMail,rejectMessage,pruneMessage,zipMessage,messageExpunge} from "@/api/api";
 
   import router from '@/router'
 
@@ -346,7 +346,8 @@
             {id:4,text:'拒收邮件',divided:true,checkone:false},
             {id:5,text:'再次发送',divided:true,checkone:true},
             {id:6,text:'打包下载',divided:false,checkone:false},
-            {id:7,text:'彻底删除',divided:false,checkone:false}
+            {id:7,text:'彻底删除',divided:true,checkone:false},
+            {id:8,text:'清空文件夹',divided:false,checkone:false},
           ],
           activeNames: [0],
           activeLi:[0,0],
@@ -889,6 +890,38 @@
             });
           });
 
+        }else if(item.id == 8){//清空文件夹
+          this.$confirm('执行后邮件将被彻底删除，此操作不可恢复，是否执行?', '系统信息', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.fullscreenLoading = true;
+            messageExpunge(param).then(res=>{
+              this.fullscreenLoading = false;
+              this.$message(
+                {type:'success',message:'清空文件夹成功！'}
+              )
+              pp.getFloderfn();
+              this.getMessageList();
+            }).catch(err=>{
+              this.fullscreenLoading = false;
+              let str = '';
+              if(err.detail){
+                str = err.detail
+              }
+              this.$message({
+                type:'error',
+                message:'清空文件夹失败！'+str
+              })
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消清空文件夹'
+            });
+          });
+
         }
       },
       handleChange(value) {
@@ -935,7 +968,7 @@
           //   }
           // }
           let unseenArr = this.$store.getters.getUnseenCount;
-          unseenArr[this.boxId] = res.data.unseen_count;
+          unseenArr[params.folder] = res.data.unseen_count;
           this.$store.dispatch('setUnseenCountA',unseenArr)
           for(let i=0;i<items.length;i++){
             items[i].flagged = (items[i].flags.join('').indexOf('Flagged')>=0);

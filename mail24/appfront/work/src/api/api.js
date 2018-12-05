@@ -146,7 +146,7 @@ export const newMessage = () => { return axios.get(`${host}/mail/message/new/`) 
 //获取用户模板信列表 /api/setting/template/
 export const getTemplateList = (params) => { return axios.get(`${host}/setting/template/`,{params:params}) };
 //获取单个模板信 /api/setting/template/{id}/
-export const getTemplateById = (id) => { return axios.get(`${host}/setting/template/${id}`) };
+export const getTemplateById = (id) => { return axios.get(`${host}/setting/template/${id}/`) };
 //获取部门邮箱 /api/contact/to/?ctype=oab&cid=0
 export const getDeptMail = (params) => { return axios.get(`${host}/contact/to/`,{params:params}) };
 //查看邮件页面直接回复 /api/mail/message/reply/
@@ -432,8 +432,11 @@ export const updateReview = (id,params) => { return axios.put(`${host}/mail/revi
 //批量审核 /api/mail/review/batch/
 export const uploadReviews = params => { return axios.post(`${host}/mail/review/batch/`, params) };
 //查看审核邮件 /api/mail/review/{id}/
-export const readReview = id => { return axios.get(`${host}/mail/review/${id}`) }
+export const readReview = id => { return axios.get(`${host}/mail/review/${id}/`) }
 //下载审核邮件真实附件（sid） /api/mail/review/dowload/
 export const reviewDowload = params => { return axios.get(`${host}/mail/review/dowload/`, { params: params, responseType:'blob' }) };
 //当前用户是否展现审核邮件界面 以及 获取未审核邮件数量 GET /api/mail/review/show/
-export const reviewShow = () => { return axios.get(`${host}/mail/review/show`) }
+export const reviewShow = () => { return axios.get(`${host}/mail/review/show/`) }
+
+//清空文件夹 POST /api/mail/message/expunge/
+export const messageExpunge = params => { return axios.post(`${host}/mail/message/expunge/`, params) };

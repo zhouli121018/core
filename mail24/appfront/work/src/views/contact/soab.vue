@@ -15,7 +15,7 @@
     </aside>
 
     <article class="mlmain mltabview overflow_auto">
-      <div  class="j-module-content j-maillist mllist-list height100 ">
+      <div  class="j-module-content j-maillist mllist-list height100 " v-loading="listLoading">
 
         <el-row>
           <el-col :span="24" class="breadcrumb-container">
@@ -173,6 +173,8 @@
           this.listTables = res.data.results;
           this.listLoading = false;
           //NProgress.done();
+        }).catch(()=>{
+          this.listLoading = false;
         });
       },
       // 获取部门成员
@@ -194,6 +196,8 @@
           this.listTables = res.data.results;
           this.listLoading = false;
           //NProgress.done();
+        }).catch(()=>{
+          this.listLoading = false;
         });
       },
 
@@ -220,9 +224,9 @@
         this.$confirm('确认删除选中记录吗？', '提示', {
           type: 'warning'
         }).then(() => {
-            this.listLoading = true;
+            // this.listLoading = true;
             //NProgress.start();
-            let para = {ids: ids};
+            // let para = {ids: ids};
             // batchRemoveUser(para).then((res) => {
             //   this.listLoading = false;
             //   //NProgress.done();
@@ -268,6 +272,7 @@
           });
         }).catch(function (error) {
           console.log(error);
+          this.listLoading = false;
           // if ("detail" in error){
           //   that.$message({ message: error.detail,  type: 'error' });
           //   this.listLoading = false;

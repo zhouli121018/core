@@ -408,7 +408,10 @@
     <!--</tree-transfer>-->
         <el-row :gutter="10" style="margin-bottom:10px;">
           <el-col :span="6">
-            <div >
+            <span style="visibility: hidden"> 1</span>
+          </el-col>
+          <el-col :span="4">
+            <div v-if="webmail_soab_show">
               <input type="hidden" v-model="soab_domain_cid"/>
               域名：
               <el-select v-model="soab_domain_cid" placeholder="请选择" @change="soabChangeDomain" size="mini">
@@ -2371,9 +2374,11 @@
         });
       },
       getLabs(){
+        sessionStorage['openGroup'] = 'lab'
         let param = {
             page:this.currentPage,
-            page_size:this.pageSize
+            page_size:this.pageSize,
+            "search": this.contact_search
           }
           getContactLab(param).then(res=>{
             this.totalCount = res.data.count;
@@ -2541,7 +2546,7 @@
           this.$alert('请输入收件人！');
           return;
         }
-        if(type=='sent' && !this.ruleForm2.subject&& this.fileList.length==0){
+        if(type=='sent' && !this.ruleForm2.subject){
           this.$alert('请填写邮件主题！');
           return;
         }
@@ -2781,6 +2786,8 @@
           this.getCabMembers();
         }else if(sessionStorage['openGroup']=='soab'){
           this.getSoabMembers();
+        }else if(sessionStorage['openGroup']=='lab'){
+          this.getLabs();
         }
       },
 
@@ -3194,8 +3201,8 @@
       this.maillist = this.parent_maillist;
       this.maillist_copyer = this.parent_maillist_copyer;
       this.maillist_bcc = this.parent_maillist_bcc;
-      this.fileList = this.parent_fileList;
       this.ruleForm2 = this.parent_ruleForm2;
+      this.fileList = this.parent_fileList;
       this.show_replay_to = this.parent_show_reply_to;
       this.hashMail = [];
       this.hashMail_copyer = [];

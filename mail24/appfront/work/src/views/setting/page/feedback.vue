@@ -45,7 +45,7 @@
         </el-row>
 
         <el-form-item>
-          <el-button type="primary" @click.native="createFormSubmit()">提交</el-button>
+          <el-button type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">提交</el-button>
         </el-form-item>
       </el-form>
 
@@ -92,13 +92,14 @@
 
               this.$message({message: '反馈信息发送成功', type: 'success'});
               this.$refs['createForm'].resetFields();
-              this.createFormLoading = false;
               this.createForm.email = this.$store.state.userInfo.name;
 
               settingFeedbackSet(para)
                 .then((res) => {
+                  this.createFormLoading = false;
                 })
                 .catch(function (error) {
+                  this.createFormLoading = false;
                   console.log(error);
                 });
             });

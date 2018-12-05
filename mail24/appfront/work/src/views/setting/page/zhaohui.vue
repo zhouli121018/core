@@ -5,7 +5,7 @@
         <el-breadcrumb separator="/"><el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item><el-breadcrumb-item><a href="#">设置中心</a></el-breadcrumb-item><el-breadcrumb-item>邮件召回记录</el-breadcrumb-item></el-breadcrumb>
       </el-col>
     </el-row>
-    <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;">
+    <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;" v-loading="listLoading">
 
       <el-row class="toolbar">
         <el-col :span="24" >
@@ -64,6 +64,8 @@
         settingZhaohuiGet(param).then(res=>{
           this.total = res.data.count;
           this.listTables = res.data.results;
+          this.listLoading = false;
+        }).catch(()=>{
           this.listLoading = false;
         });
       },

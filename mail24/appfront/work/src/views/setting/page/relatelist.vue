@@ -155,9 +155,9 @@
 
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="createFormVisible = false">取消</el-button>
-          <el-button v-if="addType == '0'" type="primary" @click.native="createFormSubmit()">提交</el-button>
-          <el-button v-if="addType == '2'" type="primary" @click.native="submitFile">提交</el-button>
+          <el-button @click.native="createFormVisible = false">关闭</el-button>
+          <el-button v-if="addType == '0'" type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">提交</el-button>
+          <el-button v-if="addType == '2'" type="primary" @click.native="submitFile" :loading="fileloading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -359,7 +359,7 @@
           _this.fileloading = false;
           this.createFormVisible = false;
           _this.$message({message: '导入成功', type: 'success'});
-        },err=>{
+        }).catch((err)=>{
           _this.fileloading = false;
           _this.$message({ message: err.error,  type: 'error' });
         })
@@ -434,6 +434,7 @@
                 })
                 .catch(function (error) {
                   console.log(error);
+                  this.createFormLoading = false;
                 });
             });
           }

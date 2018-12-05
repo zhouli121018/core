@@ -11,11 +11,12 @@
         <el-row>
           <el-tree :data="pab_groups" :props="pab_defaultProps" highlight-current node-key="id"
                    :default-expanded-keys="default_expanded_keys" :default-checked-keys="default_checked_keys" @node-click="f_TreeNodeClick" ref="treeForm">
-            <table class="custom-tree-node" slot-scope="{ node, data }" style="margin-left: -5px;">
+            <table class="custom-tree-node" slot-scope="{ node, data }" style="">
               <tr>
-                <td style="text-align: left;"><span class="text_slice" style="float: left" :title="node.label">{{ node.label }}</span></td>
-                <td style="text-align: left;width: 50px;">({{ data.count }})</td>
-                <td>
+                <td style="text-align: left;">
+                  <span class="text_slice" style="float: left" :title="node.label">{{ node.label }}</span></td>
+                <td style="">({{ data.count }})</td>
+                <td style="text-align:right;">
                   <span style="margin-left: 10px;" class="hide_btn" v-if="!data.is_sysname">
                     <el-button type="text" size="mini" @click.stop.prevent="() => handlePabEdit(data)" title="编辑"><i class="el-icon-edit"></i></el-button>
                     <el-button type="text" size="mini" @click.stop="() => handlePabDel(node, data)" title="删除" style="margin-left: 0px!important;"><i class="el-icon-delete"></i></el-button>
@@ -34,7 +35,8 @@
     </aside>
 
     <article class="mlmain mltabview overflow_auto">
-      <div  class="j-module-content j-maillist mllist-list height100">
+      <div  class="j-module-content j-maillist mllist-list height100" v-loading="listLoading"
+      >
 
         <el-row>
           <el-col :span="24" class="breadcrumb-container">
@@ -123,7 +125,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="editPabFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="editPabSubmit()">提交</el-button>
+        <el-button type="primary" @click.native="editPabSubmit()" :loading="editPabLoading">提交</el-button>
       </div>
     </el-dialog>
 
@@ -136,7 +138,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="addPabFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="addPabSubmit()">提交</el-button>
+        <el-button type="primary" @click.native="addPabSubmit()" :loading="addPabLoading">提交</el-button>
       </div>
     </el-dialog>
 
@@ -236,7 +238,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="editPabMerberFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="editPabMerberSubmit()">提交</el-button>
+        <el-button type="primary" @click.native="editPabMerberSubmit()" :loading="editPabMerberLoading">提交</el-button>
       </div>
     </el-dialog>
 
@@ -334,7 +336,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="addPabMerberFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="addPabMerberSubmit()">提交</el-button>
+        <el-button type="primary" @click.native="addPabMerberSubmit()" :loading="addPabMerberLoading">提交</el-button>
       </div>
     </el-dialog>
 
@@ -354,7 +356,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="distributePabFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="distributePabSubmit()" >提交</el-button>
+        <el-button type="primary" @click.native="distributePabSubmit()" :loading="distributePabLoading">提交</el-button>
       </div>
     </el-dialog>
 
@@ -381,7 +383,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="importPabFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="importPabSubmit()">提交</el-button>
+        <el-button type="primary" @click.native="importPabSubmit()" :loading="importPabLoading">提交</el-button>
       </div>
     </el-dialog>
 
@@ -645,6 +647,8 @@
             this.pab_iscan_distribute = res.data.pab_iscan_distribute;
             this.listLoading = false;
             //NProgress.done();
+          }).catch(()=>{
+            this.listLoading = false;
           });
         } else {
           contactPabMembersGet(param).then((res) => {
@@ -653,6 +657,8 @@
             this.pab_iscan_distribute = res.data.pab_iscan_distribute;
             this.listLoading = false;
             //NProgress.done();
+          }).catch(()=>{
+            this.listLoading = false;
           });
         }
       },
@@ -729,13 +735,11 @@
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
               this.distributePabLoading = true;
               let para = Object.assign({ids: ids}, this.distributePabForm);
-              this.listLoading = true;
               contactPabMembersDistribute(para).then((res) => {
                 this.$refs['distributePabForm'].resetFields();
                 this.distributePabLoading = false;
                 this.$message({message: '提交成功', type: 'success'});
                 this.distributePabFormVisible = false;
-                this.listLoading = false;
                 this.getPabs();
               }, (data)=>{
                 this.distributePabLoading = false;
@@ -754,7 +758,6 @@
         this.$confirm('确认删除选中记录吗？', '提示', {
           type: 'warning'
         }).then(() => {
-            this.listLoading = true;
             //NProgress.start();
             let para = {ids: ids};
             // batchRemoveUser(para).then((res) => {
@@ -878,7 +881,9 @@
             "ctype":'pab',
             "cid" : this.pab_cid
           }
+          this.listLoading = true;
           getDeptMail(param).then(res=>{
+            this.listLoading = false;
             if(res.data && res.data.length==0){
               this.$message({
                 type:'error',
@@ -888,6 +893,7 @@
             }
             this.$parent.sendMail_net(res.data)
           }).catch(err=>{
+            this.listLoading = false;
           })
 
         }).catch(() => {
@@ -1026,6 +1032,7 @@
             that.$message({ message: '导出成功', type: 'success' });
             // this.getPabs();
           }).catch(function (err) {
+            this.listLoading = false;
             let str = '';
             if(err.detail){
               str = err.detail;
@@ -1095,6 +1102,8 @@
                 if("non_field_errors" in data) {
                   this.pab_groupname_error = data.non_field_errors[0];
                 }
+              }).catch(()=>{
+                this.editPabLoading = false;
               });
             }).catch(function (error) {
               console.log(error);
@@ -1130,6 +1139,7 @@
                   this.pab_groupname_error = data.non_field_errors[0];
                 }
               }).catch(function (error) {
+                this.addPabLoading = false;
                 console.log(error);
               });
             });
@@ -1265,6 +1275,8 @@
                 if("email" in data) {
                   this.pab_email_error = data.email[0];
                 }
+              }).catch(()=>{
+                this.editPabMerberLoading = false;
               });
             }).catch(function (error) {
               console.log(error);
@@ -1303,6 +1315,8 @@
                 if("email" in data) {
                   this.pab_email_error = data.email[0];
                 }
+              }).catch(()=>{
+                this.addPabMerberLoading = false;
               });
             }).catch(function (error) {
               console.log(error);

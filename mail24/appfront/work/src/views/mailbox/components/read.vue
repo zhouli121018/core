@@ -121,7 +121,7 @@
                       <a href="javascript:void(0)" title="发起会议" @click.prevent="mail_event">发起会议</a>
                     </div>
                     <div class="f-tar">
-                        <span>{{time}}</span>
+                        <span>{{time?time.replace('T',' '):''}}</span>
                     </div>
                 </div>
                 <div class="mail-top-info" style="min-height: 42px;">

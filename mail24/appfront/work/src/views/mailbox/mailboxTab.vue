@@ -4,9 +4,10 @@
             <!--<MailAside @getData="getData" @getCompose="getCompose" ref="menubar"></MailAside>-->
             <aside class="mlsidebar">
                 <div class="mlsidebar-bg"></div>
-                <div class="u-btns">
-                    <button class="u-btn u-btn-default u-btn-large btn-compose j-mlsb" type="button" @click="goToCompose"><i class="iconfont icon-iconcreate"></i> <span class="title">写 信</span></button>
-                    <button class="u-btn u-btn-default u-btn-large btn-inbox j-mlsb" type="button" @click="reloadMails"><i class="iconfont icon-iconinbox"></i></button>
+                <div class="u-btns" style="width:100%;margin:0;padding:12px 12px 0;box-sizing: border-box">
+                    <button class="u-btn u-btn-default u-btn-large btn-compose j-mlsb" title="写信" type="button" @click="goToCompose" style="width:60%;box-sizing: border-box"><i class="iconfont icon-iconcreate"></i> <span class="title">写 信</span></button>
+                  <button class="u-btn u-btn-default u-btn-large btn-inbox j-mlsb" type="button" @click="showDialog" title="添加文件夹" style="width:20%;box-sizing: border-box"><i class="el-icon-plus"></i></button>
+                    <button class="u-btn u-btn-default u-btn-large btn-inbox j-mlsb" title="刷新邮件列表" type="button" @click="reloadMails" style="width:20%;box-sizing: border-box"><i class="iconfont icon-iconinbox"></i></button>
                 </div>
 
                 <div class="wrapper u-scroll">
@@ -23,7 +24,7 @@
                         <span>{{ node.label }} <span v-if="data.unseen">({{data.unseen}})</span> <el-badge v-if="false" :class="{mark_inbox:data.id == 'INBOX',mark:data.id != 'INBOX'}"  :value="data.unseen" type="primary"/></span>
 
                         <span class="" style="position:absolute;right:2px;" class="hide_btn">
-                          <el-button
+                          <el-button v-if="false"
                             type="text"
                             size="mini"
                             @click.stop.prevent="() => showDialog(data)" title="新建文件夹">

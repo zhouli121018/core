@@ -19,7 +19,7 @@
         <el-row><el-form-item label="自动保存收件人到通讯录"><el-radio-group v-model="sForm.save_contact"><el-radio v-for="item in disabled_options" :label="item.value" :key="item.value">{{item.label}}</el-radio></el-radio-group></el-form-item></el-row>
         <el-row><el-form-item label="邮件自动回执"><el-radio-group v-model="sForm.auto_receipt"><el-radio v-for="item in disabled_options" :label="item.value" :key="item.value">{{item.label}}</el-radio></el-radio-group></el-form-item></el-row>
         <el-row><el-form-item label="邮件编辑时自动保存草稿"><el-radio-group v-model="sForm.auto_save_draft"><el-radio v-for="item in disabled_options" :label="item.value" :key="item.value">{{item.label}}</el-radio></el-radio-group></el-form-item></el-row>
-        <el-row><el-form-item label=" "><el-button type="primary" @click.native="sFormSubmit()" >修改</el-button></el-form-item></el-row>
+        <el-row><el-form-item label=" "><el-button type="primary" @click.native="sFormSubmit()" :loading="sFormLoading">修改</el-button></el-form-item></el-row>
       </el-form>
     </section>
   </div>
@@ -88,7 +88,9 @@
                 this.$message({message: '参数修改成功', type: 'success'});
               }, (data)=>{
                 console.log(data)
+                this.sFormLoading = false;
               }).catch(function (error) {
+                this.sFormLoading = false;
                 console.log(error);
               });
             });

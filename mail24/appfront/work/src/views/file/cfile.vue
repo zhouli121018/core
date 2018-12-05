@@ -1,7 +1,7 @@
 <template>
   <div class="j-module-content j-maillist mllist-list height100 " >
 
-    <section class="content content-list height100" style="background-color: #fff;">
+    <section class="content content-list height100" style="background-color: #fff;" v-loading="listLoading">
       <div style="padding:4px 0 4px 4px;">
         <el-form :inline="true" :model="filters">
           <el-form-item style="margin-bottom: 0px!important;">
@@ -113,7 +113,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="createFolderFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="createFolderFormSubmit()" >提交</el-button>
+          <el-button type="primary" @click.native="createFolderFormSubmit()" :loading="createFolderFormLoading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -128,7 +128,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="updateFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="updateFormSubmit()">提交</el-button>
+          <el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -145,7 +145,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="moveFolderFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="moveFolderFormSubmit()">提交</el-button>
+          <el-button type="primary" @click.native="moveFolderFormSubmit()" :loading="moveFolderFormLoading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -921,6 +921,8 @@
             }
           }
           this.listLoading = false;
+        }).catch(()=>{
+          this.listLoading = false;
         });
       },
       getCapacity: function(){
@@ -974,7 +976,6 @@
                     this.$message.error(data.limited_error_message);
                     this.$refs['createFolderForm'].resetFields();
                     this.createFolderFormVisible = false;
-                    this.createFolderFormLoading = false;
                     this.getTables();
                   }
                   if("non_field_errors" in data) {
@@ -983,7 +984,6 @@
                   if ("error_message" in data) {
                     this.$message({ message: data.error_message,  type: 'error' });
                     this.getTables();
-                    this.createFolderFormLoading = false;
                     this.createFolderFormVisible = false;
                   }
                   if ("detail" in data) {
@@ -993,6 +993,7 @@
                 })
                 .catch(function (error) {
                   console.log(error);
+                  this.createFolderFormLoading = false;
                 });
             });
           }
@@ -1036,6 +1037,7 @@
                   })
                   .catch(function (error) {
                     console.log(error);
+                    this.updateFormLoading = false;
                   });
               } else if (nettype == 'file') {
                 companyDiskFileUpdate(para.id, para)
@@ -1064,6 +1066,7 @@
                   })
                   .catch(function (error) {
                     console.log(error);
+                    this.updateFormLoading = false;
                   });
               }
 
@@ -1113,29 +1116,27 @@
                   this.$message({message: '移动成功', type: 'success'});
                   this.getTables();
                 }, (data) => {
+                  this.moveFolderFormLoading = false;
                   if("non_field_errors" in data) {
                     this.folder_id_error = data.non_field_errors[0];
-                    this.moveFolderFormLoading = false;
                   } else {
                     this.getTables();
                     if("error_message" in data) {
-                      this.moveFolderFormLoading = false;
                       this.moveFolderFormVisible = false;
                       this.$message({ message: data.error_message,  type: 'error' });
                     }else if('detail' in data){
-                      this.moveFolderFormLoading = false;
                       this.moveFolderFormVisible = false;
                       this.$message({ message: data.detail,  type: 'error' });
 
                     } else {
                       that.$message({ message: '移动失败，请重试',  type: 'error' });
-                      this.moveFolderFormLoading = false;
                       this.moveFolderFormVisible = false;
                     }
                   }
                 })
                 .catch(function (error) {
                   console.log(error);
+                  this.moveFolderFormLoading = false;
                 });
 
             });
@@ -1253,6 +1254,7 @@
             str = err.detail
           }
           that.$message({ message: '导出失败！'+str,  type: 'error' });
+          this.listLoading = false;
         });
       },
       zipDownload: function () {
@@ -1307,6 +1309,7 @@
             str = err.detail
           }
           that.$message({ message: '导出失败！'+str,  type: 'error' });
+          this.listLoading = false;
         });
       },
 

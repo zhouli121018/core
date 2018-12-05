@@ -1,7 +1,7 @@
 <template>
   <div class="j-module-content j-maillist mllist-list height100 " >
 
-    <section class="content content-list height100" style="background-color: #fff;">
+    <section class="content content-list height100" style="background-color: #fff;" v-loading="fullLoading">
       <div style="padding:4px 0 4px 4px;">
         <el-form :inline="true" :model="filters">
           <el-form-item style="margin-bottom: 0px!important;">
@@ -133,7 +133,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="createFolderFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="createFolderFormSubmit()">提交</el-button>
+          <el-button type="primary" @click.native="createFolderFormSubmit()" :loading="createFolderFormLoading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -165,7 +165,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="moveFolderFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="moveFolderFormSubmit()">提交</el-button>
+          <el-button type="primary" @click.native="moveFolderFormSubmit()" :loading="moveLoading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -235,6 +235,8 @@
   export default {
     data() {
       return {
+        moveLoading:false,
+        fullLoading:false,
         loading2:false,
         fileStatusText:{
            success: '成功',
@@ -509,6 +511,7 @@
       },
       searchTables: function(){
         this.listLoading = true;
+        this.fullLoading = true;
         this.current_folder_id = -1;
         var param = {
           "page": this.page,
@@ -536,6 +539,9 @@
             }
           }
           this.listLoading = false;
+          this.fullLoading = false;
+        }).catch(()=>{
+          this.fullLoading = false;
         });
       },
       getCapacity: function(){
@@ -604,6 +610,7 @@
                 })
                 .catch(function (error) {
                   console.log(error);
+                  this.createFolderFormLoading = false;
                 });
             });
           }
@@ -696,8 +703,10 @@
               para.folder_id = this.current_folder_id;
               para.file_ids = file_ids;
               para.folder_ids = folder_ids;
+              this.moveLoading = true;
               netdiskBatchMove(para)
                 .then((res) => {
+                  this.moveLoading = false;
                   this.$refs['moveFolderForm'].resetFields();
                   this.moveFolderFormLoading = false;
                   this.moveFolderFormVisible = false;
@@ -708,9 +717,11 @@
                     this.folder_id_error = data.non_field_errors[0];
                   }
                   this.moveFolderFormLoading = false;
+                  this.moveLoading = false;
                 })
                 .catch(function (error) {
                   console.log(error);
+                  this.moveLoading = false;
                 });
 
             });
@@ -799,8 +810,10 @@
       },
       zipCommonRowDownload: function(that, file_id, file_name){
         this.listLoading = true;
+        this.fullLoading = true;
         netdiskFileDownload(file_id).then((response)=> {
           this.listLoading = false;
+          this.fullLoading = false;
           let blob = new Blob([response.data], { type: response.headers["content-type"] })
           let objUrl = URL.createObjectURL(blob);
           this.blobUrl = objUrl;
@@ -821,6 +834,7 @@
           that.$message({ message: '导出成功', type: 'success' });
           // this.getPabs();
         }).catch(function (err) {
+          this.fullLoading = false;
           let str = '';
           if(err.detail){
             str = err.detail
@@ -851,9 +865,11 @@
       },
       zipCommonDownload: function(that, files, folders){
         this.listLoading = true;
+        this.fullLoading = true;
         let para = {files: files, folders: folders, folder_id: this.current_folder_id};
         netdiskZipDownload(para).then((response)=> {
           this.listLoading = false;
+          this.fullLoading = false;
           let blob = new Blob([response.data], { type: response.headers["content-type"] })
           let objUrl = URL.createObjectURL(blob);
           this.blobUrl = objUrl;
@@ -874,6 +890,7 @@
           that.$message({ message: '导出成功', type: 'success' });
           // this.getPabs();
         }).catch(function (err) {
+          this.fullLoading = false;
           let str = '';
           if(err.detail){
             str = err.detail

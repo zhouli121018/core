@@ -11,7 +11,7 @@
     </aside>
 
     <article class="mlmain mltabview overflow_auto">
-      <div  class="j-module-content j-maillist mllist-list height100 ">
+      <div  class="j-module-content j-maillist mllist-list height100 " v-loading="listLoading">
 
         <el-row>
           <el-col :span="24" class="breadcrumb-container">
@@ -162,6 +162,8 @@
           this.listTables = res.data.results;
           this.listLoading = false;
           //NProgress.done();
+        }).catch(()=>{
+          this.listLoading = false;
         });
       },
       // 获取成员
@@ -182,6 +184,8 @@
           this.listTables = res.data.results;
           this.listLoading = false;
           //NProgress.done();
+        }).catch(()=>{
+          this.listLoading = false;
         });
       },
       f_TableSelsChange: function (sels) {
@@ -193,9 +197,9 @@
         this.$confirm('确认删除选中记录吗？', '提示', {
           type: 'warning'
         }).then(() => {
-            this.listLoading = true;
+            // this.listLoading = true;
             //NProgress.start();
-            let para = {ids: ids};
+            // let para = {ids: ids};
             // batchRemoveUser(para).then((res) => {
             //   this.listLoading = false;
             //   //NProgress.done();
@@ -218,7 +222,9 @@
             "ctype":'cab',
             "cid":this.cab_cid
           }
+          this.listLoading = true;
           getDeptMail(param).then(res=>{
+            this.listLoading = false;
             if(res.data && res.data.length==0){
               this.$message({
                 type:'error',
@@ -228,6 +234,7 @@
             }
             this.$parent.sendMail_net(res.data)
           }).catch(err=>{
+            this.listLoading = false;
             console.log('获取组邮箱错误！',err)
           })
         }).catch(() => {
@@ -248,7 +255,7 @@
             that.$message({ message: '已成功添加联系人到个人通讯录', type: 'success' });
           });
         }).catch((error) => {
-          // that.listLoading = false;
+          that.listLoading = false;
           console.log(error);
           // that.$message({ message: '操作失败，请重试',  type: 'error' });
         });

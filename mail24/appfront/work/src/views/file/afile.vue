@@ -1,7 +1,7 @@
 <template>
   <div class="j-module-content j-maillist mllist-list height100 ">
 
-    <section class="content content-list height100" style="background-color: #fff;">
+    <section class="content content-list height100" style="background-color: #fff;" v-loading="listLoading">
       <el-form :inline="true" :model="filters" style="padding:4px 0 4px 4px;">
         <el-row>
           <el-col :span="12" style="text-align:left">
@@ -86,7 +86,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="moveFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="moveFormSubmit()" >提交</el-button>
+          <el-button type="primary" @click.native="moveFormSubmit()" :loading="moveFormLoading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -207,6 +207,8 @@
             o['classObject'][str] = true;
           }
           this.listLoading = false;
+        }).catch(()=>{
+          this.listLoading = false;
         });
       },
       deleteFiles(){
@@ -222,6 +224,7 @@
             that.$message({ message: '删除成功', type: 'success' });
             this.getTables();
           }).catch(function (err) {
+            this.listLoading = false;
             let str = '';
             if(err.detail){
               str = err.detail
@@ -242,6 +245,7 @@
             that.$message({ message: '删除成功', type: 'success' });
             this.getTables();
           }).catch(function (err) {
+            this.listLoading = false;
             let str = '';
               if(err.detail){
                 str = err.detail
@@ -259,6 +263,7 @@
           that.$message({ message: '文件续期成功', type: 'success' });
           this.getTables();
         }).catch(function (err) {
+          this.listLoading = false;
           let str = '';
           if(err.detail){
             str = err.detail
@@ -300,6 +305,7 @@
             that.$message({ message: '导出成功', type: 'success' });
             // this.getPabs();
           }).catch(function (err) {
+            this.listLoading = false;
             let str = '';
             if(err.detail){
               str = err.detail
@@ -337,6 +343,7 @@
             that.$message({ message: '导出成功', type: 'success' });
             // this.getPabs();
           }).catch(function (err) {
+            this.listLoading = false;
             let str = '';
             if(err.detail){
               str = err.detail
@@ -389,6 +396,7 @@
                   this.moveFormLoading = false;
                 })
                 .catch(function (error) {
+                  this.moveFormLoading = false;
                   console.log(error);
                 });
 

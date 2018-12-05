@@ -5,7 +5,7 @@
         <el-breadcrumb separator="/"><el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item><el-breadcrumb-item><a href="#">设置中心</a></el-breadcrumb-item><el-breadcrumb-item>外发邮件中转站</el-breadcrumb-item></el-breadcrumb>
       </el-col>
     </el-row>
-    <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;">
+    <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;" v-loading="listLoading">
 
       <el-row class="toolbar">
         <el-col :span="12"><el-button type="primary" @click="createFormShow" size="mini">添加</el-button></el-col>
@@ -86,7 +86,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="createFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="createFormSubmit()">提交</el-button>
+          <el-button type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -128,7 +128,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="updateFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="updateFormSubmit()">提交</el-button>
+          <el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -199,6 +199,8 @@
           this.total = res.data.count;
           this.listTables = res.data.results;
           this.listLoading = false;
+        }).catch(()=>{
+          this.listLoading = false;
         });
       },
 
@@ -231,6 +233,7 @@
                 })
                 .catch(function (error) {
                   console.log(error);
+                  this.createFormLoading = false;
                 });
             });
           }
@@ -268,6 +271,7 @@
                   }
                 })
                 .catch(function (error) {
+                  this.updateFormLoading = false;
                   console.log(error);
                 });
             });

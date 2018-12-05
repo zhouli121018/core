@@ -266,15 +266,24 @@
           </el-table-column>
           <el-table-column
             prop="send_mail"
-            label="发件人">
+            label="发件人 / 操作人">
           </el-table-column>
 
           <el-table-column
-            prop="folder"
+            prop="type_show"
             label="删除信息">
             <template slot-scope="scope">
               <div>
                 <span> {{scope.row.type_show }} </span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="folder"
+            label="删除位置">
+            <template slot-scope="scope">
+              <div>
+                <span> {{scope.row.folder }} </span>
               </div>
             </template>
           </el-table-column>

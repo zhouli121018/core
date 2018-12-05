@@ -8,7 +8,7 @@
 
     <el-alert title="功能说明：白名单的来信，将绕过反垃圾系统直达收件箱。白名单可以是一个邮箱地址或者是一个域，例如：zhangsan@example.com 或 @example.com。" type="success" :closable="false"></el-alert>
 
-    <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;">
+    <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;" v-loading="listLoading">
 
       <el-row class="toolbar">
         <el-col :span="12">
@@ -58,7 +58,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="createFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="createFormSubmit()">提交</el-button>
+          <el-button type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -130,6 +130,8 @@
           this.total = res.data.count;
           this.listTables = res.data.results;
           this.listLoading = false;
+        }).catch(()=>{
+          this.listLoading = false;
         });
       },
 
@@ -161,6 +163,7 @@
                 })
                 .catch(function (error) {
                   console.log(error);
+                  this.createFormLoading = false;
                 });
             });
           }
