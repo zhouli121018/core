@@ -522,6 +522,8 @@
           this.$store.dispatch('setLoginUrlAction',suc.data.login_url)
           this.$store.dispatch('setAdminIsActive',suc.data.is_active)
           this.$store.dispatch('setChangePwd',suc.data.change_password)
+          this.$store.dispatch('setIsSwtimeA',suc.data.is_swtime)
+
           this.isSharedUser = suc.data.is_shareduser;
           if(suc.data.is_shareduser){
             this.mainUsername = suc.data.results.username;

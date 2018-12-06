@@ -3,8 +3,14 @@
     <aside class="mlsidebar">
       <div class="wrapper u-scroll top0">
         <div class="el-row" style="background: #f2f2f2;border-bottom: 1px solid #dfe6ec;">
-          <div class="el-col el-col-24">
+          <div class="el-col el-col-12">
             <div class="pab-header">联系组</div>
+          </div>
+          <div class="el-col el-col-12">
+            <div style="text-align:right;">
+              <i class="el-icon-plus add_btn_style"  title="添加联系组"  @click="handlePabAdd"></i>
+            </div>
+
           </div>
         </div>
 
@@ -28,7 +34,7 @@
         </el-row>
 
         <el-row style="text-align: left; margin-left: 13px;">
-          <el-button type="button" class="el-button control-button el-tooltip el-button--text el-button--small" @click="handlePabAdd">添加联系组</el-button>
+
           <!--<el-button type="success" @click="handlePabAdd" size="mini">添加联系组</el-button>-->
         </el-row>
       </div>
@@ -1336,5 +1342,11 @@
   }
   .disabled .el-upload--picture-card {
     display: none;
+  }
+  .add_btn_style:hover{
+    background:#e6e6e6;
+  }
+  .add_btn_style{
+    cursor:pointer;font-weight:bold;display:inline-block;border-left:1px solid #d9d9d9;height:28px;padding:0 10px;line-height:28px;
   }
 </style>

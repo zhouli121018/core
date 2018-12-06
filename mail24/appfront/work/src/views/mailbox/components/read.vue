@@ -300,7 +300,7 @@
                 <div class="no-decryption">
                     <div class="lock-item" style="padding:20px;"><i class="lock_style"></i></div>
                     <div class="action-item">
-                        <input type="password" placeholder="输入密码" class="u-input" v-model="de_password" name="password" maxlength="6" autocomplete="off">
+                        <input type="text" placeholder="输入密码" class="u-input" v-model="de_password" maxlength="6">
                     </div>
                     <div class="decryption-msg">
                         <span class="j-decryption-error decryption-error" v-show="decryption_error">密码错误，请重新输入</span>
@@ -423,6 +423,7 @@
     },
     data(){
       return {
+        passwordType:'text',
         show_change_btn:true,
         prev_src:'',
         show_pic:false,
@@ -513,6 +514,10 @@
       }
     },
     methods:{
+      changeType(){
+        this.passwordType = 'password';
+        console.log(this.passwordType)
+      },
       seeAttach(){
         $('#mail_'+this.readId+'_'+this.readFolderId).animate({scrollTop:$('#mail_'+this.readId+'_'+this.readFolderId).find('.attach_box').offset().top}, 600);
       },
@@ -1146,6 +1151,7 @@
         })
       },
       mailDecodeFn(){
+        this.passwordType = 'text'
         let param = {
           uid:this.readId,
           folder:this.readFolderId,
@@ -1293,6 +1299,7 @@
               }
           }else{
             this.flagged = false;
+            this.flag_color = ''
           }
         },(err)=>{
 
@@ -1306,6 +1313,23 @@
               message: '邮件标记失败! '+str
             })
         })
+      },
+      set_12_time(time){
+        let theHour = time.slice(0,2);
+        let min_ss = time.slice(2);
+        let flag = ''
+        if(theHour>=12){
+          flag = " 下午 "
+        }else{
+          flag = ' 上午 '
+        }
+        if (theHour > 12) {
+           theHour = theHour-12
+        }
+        if (theHour == 0) {
+          theHour = 12;
+        }
+        return flag+theHour+min_ss
       },
       getReadMail(){
         this.loading = true;
@@ -1327,6 +1351,10 @@
           this.password = data.data.attrs.password;
           this.subject = data.data.subject;
           this.time = data.data.date;
+          if(this.$store.getters.getIsSwtime){
+            let index = this.time.indexOf('T');
+            this.time = this.time.slice(0,index) + this.set_12_time(this.time.slice(index+1))
+          }
           if(data.data.mfrom){this.mfrom = data.data.mfrom[1]+' < '+data.data.mfrom[0]+' > ';}
           this.to = [];
           if(data.data.to && data.data.to.length>0){

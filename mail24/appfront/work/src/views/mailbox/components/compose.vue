@@ -1,7 +1,7 @@
 <template>
     <div class="mltabview-content" :id="'compose'+rid">
       <div class="mltabview-panel compose_style">
-        <section class="m-mlcompose m_box_height" v-if="!send_suc">
+        <section class="m-mlcompose m_box_height" v-if="!send_suc" v-loading="sendLoading">
           <div class="toolbar" style="background:#fff;">
             <div id="pagination" class="f-fr">
                 <div class="" @click="show_contact = !show_contact">
@@ -31,7 +31,7 @@
                   </el-input>
 
                   <el-tree class="filter-tree" :data="contactList" :props="defaultProps" :filter-node-method="filterNode"
-                   @node-click="selectContact"  accordion :indent="2" ref="tree2" :loading="contact_loading">
+                   @node-click="selectContact"  accordion :indent="2" ref="tree2" v-loading="contact_loading">
                     <span class="custom-tree-node" slot-scope="{ node, data }">
                       <span :title="node.label">{{ node.label }}</span>
                     </span>
@@ -1181,11 +1181,27 @@
         this.bigList = fileList;
 
       },
+      setSubject(val){
+        if(this.ruleForm2.subject){
+          return;
+        }else{
+          if(this.fileList.length>0){
+            let str = this.fileList[0].filename || this.fileList[0].name;
+            str = str.slice(0,str.lastIndexOf('.'));
+            this.ruleForm2.subject = str;
+          }else{
+            this.ruleForm2.subject = val
+          }
+        }
+
+
+      },
       addBigAttach(){
         this.fileList_big.forEach(val=>{
           if(!this.hashFile[val.id]){
             this.fileList.push(val)
             this.hashFile[val.id] = true;
+            this.setSubject(val);
           }
         })
         this.bigUploadVisible = false
@@ -1676,6 +1692,7 @@
           .then(() => {
             this.sentMail('save_draft')
             this.selectId = t.id;
+
             getTemplateById(t.id).then(res=>{
               this.content = res.data.content;
               if(this.ruleForm2.is_html){
@@ -1685,6 +1702,7 @@
                 this.$refs[this.editor_id].editor.html(this.content);
                 this.no_html();
               }
+              this.setSubject(t.caption)
 
             }).catch(err=>{
               console.log('获取单个模板信错误！',err)
@@ -1702,6 +1720,7 @@
                 this.$refs[this.editor_id].editor.html(this.content);
                 this.no_html();
               }
+              this.setSubject(t.caption)
 
             }).catch(err=>{
               console.log('获取单个模板信错误！',err)
@@ -1720,6 +1739,7 @@
                 this.$refs[this.editor_id].editor.html(this.content);
                 this.no_html();
               }
+              this.setSubject(t.caption)
             }).catch(err=>{
               console.log('获取单个模板信错误！',err)
             })
@@ -2796,6 +2816,7 @@
           if(!(this.hashFile[this.fileSelection[i].id])){
             this.hashFile[this.fileSelection[i].id] = true
             this.fileList.push(this.fileSelection[i]);
+            this.setSubject(this.fileSelection[i]);
           }
         }
         this.coreFileDialog = false;
@@ -2846,6 +2867,7 @@
           var obj = res.data;
           this.hashFile[res.data.id]=true;
           this.fileList.push(res.data)
+          this.setSubject(res.data);
          this.$message({
              message:"上传成功",
              type:'success'
@@ -2867,6 +2889,7 @@
       },
       sucUpload(response, file, fileList){
         this.fileList.push(file);
+        this.setSubject(file);
       },
       imgChange(param){
         var file= param.file;

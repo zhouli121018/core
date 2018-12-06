@@ -58,6 +58,7 @@ const store = new Vuex.Store({
     isSharedUser:false,
     review_count:0,
     unseen_count:[],
+    is_swtime:false,
   },
   getters:{
     userInfo(state) {
@@ -113,6 +114,9 @@ const store = new Vuex.Store({
     },
     getUnseenCount(state){
       return state.unseen_count;
+    },
+    getIsSwtime(state){
+      return state.is_swtime
     }
   },
   mutations:{
@@ -183,9 +187,15 @@ const store = new Vuex.Store({
     setUnseenCount(state,param){
       state.unseen_count = null;
       state.unseen_count = param;
+    },
+    setIsSwtime(state,param){
+      state.is_swtime = param;
     }
   },
   actions: {
+    setIsSwtimeA(store,param){
+      store.commit('setIsSwtime',param)
+    },
     setInfo(store){
       store.commit('SET_INFO');
     },

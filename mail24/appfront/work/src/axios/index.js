@@ -10,6 +10,7 @@ import cookie from '../assets/js/cookie';
 import router from '../router'
 import { Loading } from 'element-ui'
 import { Message } from 'element-ui';
+import { MessageBox  } from 'element-ui';
 let needLoadingRequestCount = 0
 let loading
 
@@ -41,7 +42,7 @@ const tryHideFullScreenLoading = function () {
 }
 
 
-
+let hasBox = false;
 
 // http request 拦截器
 axios.interceptors.request.use(
@@ -50,8 +51,19 @@ axios.interceptors.request.use(
       return config;
     }
     if(config.url.indexOf('login')==-1 &&!cookie.getCookie('token')){
+      console.log('ceshicesce')
       store.dispatch('setInfo');
-      router.push('/')
+      if(!hasBox){
+        hasBox = true;
+        MessageBox.alert('会话已过期，请重新登录','系统信息',{
+          confirmButtonText: '确定',
+          callback: action => {
+            hasBox = false;
+            router.push('/')
+          }
+        })
+      }
+
       return;
     }
     if(config.url.indexOf('?')>-1){
@@ -74,7 +86,6 @@ axios.interceptors.request.use(
     return Promise.reject(err);
   });
 
-
 // http response 拦截器
 axios.interceptors.response.use(
   res=>{
@@ -82,7 +93,6 @@ axios.interceptors.response.use(
     return res;
   },
   error => {
-
     let res = error.response;
     if(res && res.status){
       switch (res.status) {
@@ -90,8 +100,20 @@ axios.interceptors.response.use(
         // 返回 401 清除token信息并跳转到登录页面
         cookie.delCookie('token');
         store.dispatch('setInfo');
-        console.log('未登录 或者token过期');
-        router.push('/')
+        // if(res.request.responseURL.indexOf('login')==-1){
+          if(!hasBox){
+            hasBox = true;
+            MessageBox.alert('会话已过期，请重新登录','系统信息',{
+              confirmButtonText: '确定',
+              callback: action => {
+                hasBox = false;
+                console.log('未登录 或者token过期');
+                router.push('/')
+              }
+            })
+          }
+        // }
+
         break;
       case 403:
         let detail = '';

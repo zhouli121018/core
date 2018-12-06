@@ -144,7 +144,7 @@
 
                         </div>
 
-                    <div class="mail-totals j-mail-totals" v-if="multipleSelection.length==0">
+                    <div class="mail-totals j-mail-totals" v-if="multipleSelection.length==0" style="line-height: 36px;">
                         <div class="totals-info">
                         {{curr_folder}}(
                         <!--<span class="all-mail">共<span class="number">{{totalAllCount}}</span>封</span>-->
@@ -153,14 +153,7 @@
                         <a href="#" v-if="unreadCount" @click.prevent="readAll">，全部设为已读</a>
                         )
 
-                        </div>
-                    </div>
-                    <div class="j-select-count select-count" v-if="multipleSelection.length>0">
-                        <span class="j-desc desc">已选择 {{multipleSelection.length}} 封</span>
-                        <a class="j-cancel cancel" href="#" @click="noSelect">取消</a>
-                    </div>
-                      <div style="text-align:right;padding:4px;height:32px;">
-                        <el-pagination
+                          <el-pagination style="float:right;text-align:right;padding:4px;height:32px;"
                               @size-change="handleSizeChange"
                               @current-change="handleCurrentChange"
                               background
@@ -170,7 +163,24 @@
                               layout="total, sizes, prev, pager, next, jumper"
                               :total="totalCount">
                             </el-pagination>
-                      </div>
+
+                        </div>
+                    </div>
+                    <div class="j-select-count select-count" v-if="multipleSelection.length>0" style="line-height: 36px;">
+                        <span class="j-desc desc">已选择 {{multipleSelection.length}} 封</span>
+                        <a class="j-cancel cancel" href="#" @click="noSelect">取消</a>
+
+                      <el-pagination style="float:right;text-align:right;padding:4px;height:32px;"
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        background
+                        :current-page="currentPage"
+                        :page-sizes="[10, 20, 50,100]"
+                        :page-size="pageSize"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="totalCount">
+                      </el-pagination>
+                    </div>
                     </div>
                     <div class="m-mllist-row mllist-list-row">
                       <div class="j-module-content j-maillist mllist-list u-scroll">
@@ -182,16 +192,20 @@
                             <el-table-column
                               type="selection"
                               width="46"
+                              label="全选/取消"
 
                             >全选/取消
                             </el-table-column>
 
                             <el-table-column prop="subject"  label="" @click="">
                               <template slot-scope="scope">
-                                <div class="clear mainMsg" style="font-size:16px;" :class="[{flagged:scope.row.flagged,unseen:!scope.row.isread,hoverStyle:scope.row.uid==hoverIndex},scope.row.color]">
+                                <div class="clear mainMsg" style="font-size:16px;" :class="[{flagged:scope.row.flagged,unseen:!scope.row.isread},scope.row.color]">
                                   <span class="fl_l subject_hover" style="width:80%;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" @click.stop.prevent="readMail(scope.row)" >{{scope.row.subject||'无主题'}}</span>
                                   <span class="fl_r">
-                                    <i :title="scope.row.flagged?'点击取消旗帜':'设为红旗'" @click.stop="changeFlags(scope.row)" class="iconfont" :class="{'icon-iconflatcolor':scope.row.flagged||scope.row.color,'icon-iconflat':!scope.row.flagged&&!scope.row.color}" style="cursor:pointer;"></i>
+                                    <!--<i :title="scope.row.flagged?'点击取消旗帜':'设为红旗'" @click.stop="changeFlags(scope.row)" class="iconfont" :class="{'icon-iconflatcolor':scope.row.flagged||scope.row.color,'icon-iconflat':!scope.row.flagged&&!scope.row.color}" style="cursor:pointer;"></i>-->
+
+
+
                                   </span>
                                 </div>
                                 <div class="info-summary" :class="scope.row.color">
@@ -207,16 +221,32 @@
                                 </div>
                               </template>
                             </el-table-column>
+                            <el-table-column width="100" class-name="flag_btn">
+                              <template slot-scope="scope">
+                                <div class="mainMsg" :class="{hoverStyle:scope.row.uid==hoverIndex}">
+                                  <el-dropdown trigger="click" @command="signHandleCommand_new($event,scope.row)">
+                                      <span class="el-dropdown-link" title="设置旗帜">
+
+                                        <i class="iconfont icon-iconflat" v-if="!scope.row.flagged" style="cursor:pointer;"></i><i class="iconfont icon-iconflatcolor" v-if="scope.row.flagged" style="color:#c00;cursor:pointer;" :class="scope.row.color"></i><i class="el-icon-arrow-down el-icon--right" style="cursor:pointer;"></i>
+                                      </span>
+                                      <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item  v-for="(c,k) in flagsData" :key="k" class="dropdown_item" :command="c">
+                                            <i class="iconfont icon-iconflatcolor" :class="[c.classN,{'icon-iconflat':k==flagsData.length-1}]" ></i> {{c.text}}
+                                        </el-dropdown-item>
+
+                                      </el-dropdown-menu>
+                                    </el-dropdown>
+                                </div>
+                              </template>
+                            </el-table-column>
 
 
 
-                            <el-table-column class="plan_style" prop="date" label="时间"   width="160"  >
+                            <el-table-column class="plan_style" prop="date" label="时间"   :width="$store.getters.getIsSwtime?180:160"  >
                               <template slot-scope="scope">
                                 <div class="plan_style">
                                   {{(scope.row.internaldate ||scope.row.date).replace('T',' ')}}
-                                  <p style="text-align:center;" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-attach')>=0" >
-                                    <i class="iconfont icon-attachment"></i>
-                                  </p>
+
                                 </div>
 
                               </template>
@@ -225,6 +255,9 @@
                               <template slot-scope="scope">
                                 <div class="plan_style">
                                   {{scope.row.size | mailsize}}
+                                  <p style="padding-left:10px" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-attach')>=0" >
+                                    <i class="iconfont icon-attachment"></i>
+                                  </p>
                                 </div>
                               </template>
                             </el-table-column>
@@ -256,6 +289,18 @@
 
     data() {
         return {
+          flagsData:[
+          {flags:'\\flagged',action:'add',text:'红旗',classN:'redcolor'},
+          {flags:'umail-green',action:'add',text:'绿旗',classN:'flag-green'},
+          {flags:'umail-orange',action:'add',text:'橙旗',classN:'flag-orange'},
+          {flags:'umail-blue',action:'add',text:'蓝旗',classN:'flag-blue'},
+          {flags:'umail-pink',action:'add',text:'粉旗',classN:'flag-pink'},
+          {flags:'umail-cyan',action:'add',text:'青旗',classN:'flag-cyan'},
+          {flags:'umail-yellow',action:'add',text:'黄旗',classN:'flag-yellow'},
+          {flags:'umail-purple',action:'add',text:'紫旗',classN:'flag-purple'},
+          {flags:'umail-gray',action:'add',text:'灰旗',classN:'flag-gray'},
+          {flags:'\\flagged',text:'取消旗帜',action:'remove'},
+        ],
           fullscreenLoading:false,
           reject_is_delete:false,
           boxId:'INBOX',
@@ -364,9 +409,40 @@
         }
     },
     methods:{
+      signHandleCommand_new:function(item,row){
+        if(!item){
+          return;
+        }
+        let param = {
+          uids:[row.uid],
+          folder:this.$route.params.boxId,
+          action:item.action,
+          flags:[item.flags]
+        }
+        messageFlag(param).then((suc)=>{
+          this.$message({
+              type:'success',
+              message: '邮件标记成功!'
+            })
+          this.getMessageList();
+        },(err)=>{
+
+        }).catch(err=>{
+          let str = '';
+            if(err.detail){
+              str = err.detail
+            }
+          this.$message({
+              type:'error',
+              message: '邮件标记失败! '+str
+            })
+        })
+      },
       cellClick(row,col){
         if(col.type=='default'){
-          this.readMail(row)
+          if(col.className!='flag_btn'){
+            this.readMail(row)
+          }
         }else{
           this.$refs.innerTable.toggleRowSelection(row)
         }
@@ -994,7 +1070,18 @@
             }
             items[i].plain = '';
             items[i].checked = false;
+            if(this.$store.getters.getIsSwtime){
+              if(items[i].internaldate){
+                let index = items[i].internaldate.indexOf('T');
+                items[i].internaldate = items[i].internaldate.slice(0,index) + this.set_12_time(items[i].internaldate.slice(index+1))
+              }else if(items[i].date){
+                let index = items[i].date.indexOf('T');
+                items[i].date = items[i].date.slice(0,index) + this.set_12_time(items[i].date.slice(index+1))
+              }
+
+            }
           }
+          console.log(items)
           this.collapseItems[0].lists = items;
           this.loading = false;
         },(err)=>{
@@ -1003,6 +1090,23 @@
         }).catch(err=>{
           this.loading = false;
         })
+      },
+      set_12_time(time){
+        let theHour = time.slice(0,2);
+        let min_ss = time.slice(2);
+        let flag = ''
+        if(theHour>=12){
+          flag = " 下午 "
+        }else{
+          flag = ' 上午 '
+        }
+        if (theHour > 12) {
+           theHour = theHour-12
+        }
+        if (theHour == 0) {
+          theHour = 12;
+        }
+        return flag+theHour+min_ss
       },
       getFloderMsgById(param){
         getFloderMsg(param).then((suc)=>{
@@ -1158,10 +1262,10 @@
   .maillist.el-table td{
     padding:18px 0;
   }
-  .mainMsg .icon-iconflat{
+  .mainMsg .icon-iconflat,.mainMsg .el-icon-arrow-down{
   display:none;
 }
-.mainMsg.hoverStyle .icon-iconflat{
+.mainMsg.hoverStyle .icon-iconflat,.mainMsg.hoverStyle .el-icon-arrow-down{
   display:inline;
 }
 .dropdown_item.active{

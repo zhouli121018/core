@@ -40,16 +40,16 @@
                 <el-input v-model.trim="formLabelAlign.username"></el-input>
               </el-form-item>
               <el-form-item label="密码" prop="password">
-                <el-input type="password" v-model="formLabelAlign.password" auto-complete="off"></el-input>
+                <el-input type="password" v-model="formLabelAlign.password"></el-input>
               </el-form-item>
               <div style="height:30px;">
-                <el-checkbox style="float:left;" v-model="rememberUserInfo" :class="{'is-checked el-checkbox__input':rememberUserInfo}">记住用户名和密码</el-checkbox>
+                <!--<el-checkbox style="float:left;" v-model="rememberUserInfo" :class="{'is-checked el-checkbox__input':rememberUserInfo}">记住用户名和密码</el-checkbox>-->
                 <el-button type="text" style="float:right;padding:0;color:#e6a23c;" @click="forget">忘记密码？</el-button>
               </div>
 
             </el-form>
             <div class="text-center">
-              <el-button type="primary" @click="login">登录</el-button>
+              <el-button type="primary" @click="login" style="width:50%">登录</el-button>
             </div>
 
           </div>
@@ -323,13 +323,14 @@
               cookie.setCookie('name', this.formLabelAlign.username, 7);
               cookie.setCookie('token', response.data.token, 7);
               cookie.delCookie('locked')
-              if (this.rememberUserInfo) {
-                cookie.setCookie('rememberName', this.formLabelAlign.username, 7);
-                cookie.setCookie('rememberPwd', this.formLabelAlign.password, 7);
-              } else {
-                cookie.setCookie('rememberName', '');
-                cookie.setCookie('rememberPwd', '');
-              }
+              //去掉记住用户名和密码
+              // if (this.rememberUserInfo) {
+              //   cookie.setCookie('rememberName', this.formLabelAlign.username, 7);
+              //   cookie.setCookie('rememberPwd', this.formLabelAlign.password, 7);
+              // } else {
+              //   cookie.setCookie('rememberName', '');
+              //   cookie.setCookie('rememberPwd', '');
+              // }
 
               // 设置联系人的初始值
               window.sessionStorage.clear();
@@ -374,19 +375,20 @@
     },
     mounted: function () {
       // this.test();
-      this.formLabelAlign.username = cookie.getCookie('rememberName');
-      this.formLabelAlign.password = cookie.getCookie('rememberPwd');
+      // 去掉记住用户名和密码
+      // this.formLabelAlign.username = cookie.getCookie('rememberName');
+      // this.formLabelAlign.password = cookie.getCookie('rememberPwd');
 
     },
     computed: {
-      rememberUserInfo: {
-        get: function () {
-          return this.$store.state.rememberUserInfo
-        },
-        set: function () {
-          this.$store.dispatch('setMember');
-        }
-      }
+      // rememberUserInfo: {
+        // get: function () {
+        //   return this.$store.state.rememberUserInfo
+        // },
+        // set: function () {
+        //   this.$store.dispatch('setMember');
+        // }
+      // }
     },
     created: function () {
       var lett = this;

@@ -487,7 +487,7 @@ export default {
       const parent = node.parent;
       const children = parent.data.children || parent.data;
       const index = children.findIndex(d => d.id === data.id);
-      this.$confirm('删除 "'+data.label+'" 文件夹, 是否继续?', '提示', {
+      this.$confirm('确认删除 "'+data.label+'" 文件夹？执行后邮件将被彻底删除，此操作不可恢复，是否执行?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

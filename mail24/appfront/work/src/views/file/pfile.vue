@@ -1,7 +1,7 @@
 <template>
   <div class="j-module-content j-maillist mllist-list height100 " >
 
-    <section class="content content-list height100" style="background-color: #fff;" v-loading="fullLoading">
+    <section class="content content-list height100" style="background-color: #fff;" v-loading="listLoading">
       <div style="padding:4px 0 4px 4px;">
         <el-form :inline="true" :model="filters">
           <el-form-item style="margin-bottom: 0px!important;">
@@ -507,6 +507,8 @@
             }
           }
           this.listLoading = false;
+        }).catch(()=>{
+          this.listLoading = false;
         });
       },
       searchTables: function(){
@@ -542,6 +544,7 @@
           this.fullLoading = false;
         }).catch(()=>{
           this.fullLoading = false;
+          this.listLoading = false;
         });
       },
       getCapacity: function(){
@@ -835,6 +838,7 @@
           // this.getPabs();
         }).catch(function (err) {
           this.fullLoading = false;
+          this.listLoading = false;
           let str = '';
           if(err.detail){
             str = err.detail
@@ -891,6 +895,7 @@
           // this.getPabs();
         }).catch(function (err) {
           this.fullLoading = false;
+          this.listLoading = false;
           let str = '';
           if(err.detail){
             str = err.detail
