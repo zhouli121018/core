@@ -493,11 +493,14 @@ export default {
               message_id: message_id,
               recipient: str
             }
+            this.sendData.loading = true;
             sendRecall(param).then(res => {
               this.recallData = res.data.results;
+              this.sendData.loading = false;
               this.recallTableVisible = true;
               this.getSend();
             }).catch(err=>{
+              this.sendData.loading = false;
               let str = '';
               if(err.detail){
                 str = err.detail

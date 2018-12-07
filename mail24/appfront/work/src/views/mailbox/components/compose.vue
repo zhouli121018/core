@@ -26,16 +26,60 @@
             <div class="mn-aside right_menu" :class="{show_contact:show_contact}">
               <el-tabs v-model="activeName" @tab-click="loadingContact">
                 <!--个人通讯录-->
-                <el-tab-pane label="个人通讯录" name="first">
-                  <el-input  placeholder="搜索" prefix-icon="el-icon-search" v-model="filterText" size="small" style="margin:6px 0;">
+                <el-tab-pane label="个人通讯录" name="first" v-loading="contact_loading">
+                  <!--<el-input  placeholder="搜索" prefix-icon="el-icon-search" v-model="filterText" size="small" style="margin:6px 0;">-->
+                  <!--</el-input>-->
+                  <el-input placeholder="请输入内容" v-model="right_search" class="input-with-select">
+                    <el-button slot="append" icon="el-icon-search" @click="getRightContact"></el-button>
+                    <el-button slot="append" icon="el-icon-refresh" @click="refresh_right"></el-button>
                   </el-input>
+                  <!--<el-pagination-->
+                    <!--v-if="right_page_total>0"-->
+                    <!--class="only_current_page"-->
+                    <!--style="text-align:center; margin-top:10px;"-->
+                    <!--@current-change="contact_page_change"-->
+                    <!--background-->
+                    <!--:current-page="right_cpage"-->
+                    <!--layout="prev,pager,next"-->
+                    <!--prev-text=" 上一页 "-->
+                    <!--next-text=" 下一页 "-->
+                    <!--:total="right_page_total">-->
+                  <!--</el-pagination>-->
+                  <!--<el-tree class="filter-tree" :data="contactList" :props="defaultProps" :filter-node-method="filterNode"-->
+                   <!--@node-click="selectContact"  accordion :indent="2" ref="tree2" v-loading="contact_loading">-->
+                    <!--<span class="custom-tree-node" slot-scope="{ node, data }">-->
 
-                  <el-tree class="filter-tree" :data="contactList" :props="defaultProps" :filter-node-method="filterNode"
-                   @node-click="selectContact"  accordion :indent="2" ref="tree2" v-loading="contact_loading">
-                    <span class="custom-tree-node" slot-scope="{ node, data }">
-                      <span :title="node.label">{{ node.label }}</span>
-                    </span>
-                  </el-tree>
+                      <!--<span :title="node.label">{{ node.label }}</span> <span v-if="data.count && data.count>0">( {{data.count}} )</span>-->
+                    <!--</span>-->
+                  <!--</el-tree>-->
+
+                  <div >
+                    <div v-for="(m,k) in contactList" :key="k" style="line-height:32px;cursor:pointer" :title="m.label">
+                      <div class="right_con_list"  @click="changeShowIndex(k)">
+                        <i class="el-icon-caret-right" v-if="!m.show" style="margin-right:6px;" :style="{visibility:m.count==0?'hidden':''}"></i>
+                        <i class="el-icon-caret-bottom" v-if="m.show" style="margin-right:6px;" :style="{visibility:m.count==0?'hidden':''}"></i>
+                        <span>{{m.label}}</span>
+                        <span v-if="m.count && m.count>0">( {{m.count}} )</span>
+                      </div>
+                      <transition>
+
+                      </transition>
+                      <div v-if="m.show" style="overflow:auto;" v-loading="m.loading">
+                        <div v-for="(c,kk) in m.children" class="right_con_list" @click="selectContact(c)" :key="kk" :title="c.email" style="padding-left:30px;white-space: nowrap;">
+                          <span>{{c.label}}</span>
+                        </div>
+                      </div>
+                      <div v-if="m.show && m.count>10" style="text-align: center;">
+                        <el-button size="mini" @click="plus(false,m)" :disabled="m.page<=1">上一页</el-button>
+                        <el-button type="primary" size="small">{{m.page}}</el-button>
+                        <el-button size="mini" @click="plus(true,m)" :disabled="m.page >= parseInt(m.count/10)">下一页</el-button>
+                      </div>
+
+                    </div>
+                  </div>
+
+
+
 
                   <!--<el-input v-model="member_search" placeholder="请输入关键字搜索" class="input-with-select" size="small" style="margin:6px 0;">-->
 
@@ -124,8 +168,27 @@
                       </template>
                     </label>
                     <div class="padding_15">
-                        <div class="mailbox_s" v-if="!ruleForm2.is_partsend" :class="{error:!v.status}" v-for="(v,k) in maillist" :key="k" :title="v.email" @dblclick="dbEdit(v,'to',k)"><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click.stop="deleteMailboxForKey(k,v)"></i></div>
-                        <div class="mailbox_s" v-if="ruleForm2.is_partsend" :class="{error:!v.status}" v-for="(v,k) in partSendList" :key="k" :title="v.email" @dblclick="dbEdit(v,'partsend',k)"><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v,1)"></i></div>
+                        <!--<el-popover-->
+                           <!--v-for="(v,k) in maillist" :key="v.email"-->
+                          <!--placement="bottom"-->
+                          <!--width="400"-->
+                          <!--trigger="click">-->
+                          <!--<el-form label-width="80px" :rules="dbFormRules" ref="dbForm">-->
+                            <!--<el-form-item label="姓名" prop="fullname" >-->
+                              <!--<el-input v-model="v.fullname"></el-input>-->
+                            <!--</el-form-item>-->
+                            <!--<el-form-item label="邮箱" prop="email" >-->
+                              <!--<el-input v-model="v.email"></el-input>-->
+                            <!--</el-form-item>-->
+                          <!--</el-form>-->
+
+                          <!--<el-button slot="reference">-->
+                            <!--<div class="mailbox_s" v-if="!ruleForm2.is_partsend" :class="{error:!v.status}" :title="v.email" @dblclick="dbEdit(v,'to',k)"><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click.stop="deleteMailboxForKey(k,v)"></i></div>-->
+                          <!--</el-button>-->
+                        <!--</el-popover>-->
+
+                        <div class="mailbox_s" v-if="!ruleForm2.is_partsend" :class="{error:!v.status}" v-for="(v,k) in maillist" :key="k" :title="v.email" @dblclick="dbEdit(v,'to',k)"><b>{{ v.fullname?(v.fullname+' <'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click.stop="deleteMailboxForKey(k,v)"></i></div>
+                        <div class="mailbox_s" v-if="ruleForm2.is_partsend" :class="{error:!v.status}" v-for="(v,k) in partSendList" :key="k" :title="v.email" @dblclick="dbEdit(v,'partsend',k)"><b>{{ v.fullname?(v.fullname+' <'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v,1)"></i></div>
                         <el-autocomplete  class="no_padding"  v-model.trim="state1" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox"
                         @blur="addMailbox" @focus="insertMailbox=1" placeholder="" @select="handleSelect" :trigger-on-focus="false" style="float:left">
 
@@ -144,7 +207,7 @@
                       </template>
                     </label>
                     <div class="padding_15">
-                      <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_copyer" :key="k" :title="v.email" @dblclick="dbEdit(v,'cc',k)" ><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey_copyer(k,v)"></i></div>
+                      <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_copyer" :key="k" :title="v.email" @dblclick="dbEdit(v,'cc',k)" ><b>{{ v.fullname?(v.fullname+' <'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey_copyer(k,v)"></i></div>
                       <el-autocomplete  class="no_padding" v-model.trim="state_copyer" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox_copyer"
                         @blur="addMailbox_copyer" @focus="insertMailbox=2" placeholder=""  @select="handleSelect_copyer" :trigger-on-focus="false" style="float:left"></el-autocomplete>
                     </div>
@@ -156,7 +219,7 @@
                       </template>
                     </label>
                     <div class="padding_15">
-                      <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_bcc" :key="k" :title="v.email" @dblclick="dbEdit(v,'bcc',k)" ><b>{{ v.fullname?(v.fullname+'<'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey_bcc(k,v)"></i></div>
+                      <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_bcc" :key="k" :title="v.email" @dblclick="dbEdit(v,'bcc',k)" ><b>{{ v.fullname?(v.fullname+' <'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey_bcc(k,v)"></i></div>
                       <el-autocomplete  class="no_padding" v-model.trim="state_bcc" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox_bcc"
                         @blur="addMailbox_bcc" @focus="insertMailbox=3" placeholder=""  @select="handleSelect_bcc" :trigger-on-focus="false" style="float:left"></el-autocomplete>
                     </div>
@@ -322,7 +385,7 @@
             </form>
           </div>
         </section>
-        <section class="m-mlcompose" v-if="send_suc" >
+        <section class="m-mlcompose" v-if="send_suc" v-loading="recallLoading">
           <div class="suc-main u-scroll">
             <div class="suc-title j-suc-title">
                 <div class="h2">
@@ -763,6 +826,10 @@
       };
       let _this = this;
       return {
+        right_search:'',
+        right_cpage:1,
+        right_page_total:0,
+        recallLoading:false,
         show_all_attach:true,
         nfileList_company:[],
         attachCurrentPage_company:1,
@@ -1028,7 +1095,8 @@
         contactList: [],
         defaultProps: {
           children: 'children',
-          label: 'label'
+          label: 'label',
+          count:'count'
         },
         pickerBeginDateBefore: {
           disabledDate(time) {
@@ -1043,6 +1111,17 @@
       };
     },
     methods:{
+      htmlDecodeByRegExp:function (str){
+        var s = "";
+        if(str.length == 0) return "";
+        s = str.replace(/&amp;/g,"&");
+        s = s.replace(/&lt;/g,"<");
+        s = s.replace(/&gt;/g,">");
+        s = s.replace(/&nbsp;/g," ");
+        s = s.replace(/&#39;/g,"\'");
+        s = s.replace(/&quot;/g,"\"");
+        return s;
+      },
       remove_all_attach(){
         this.$confirm('<p>取消所有已添加的附件?</p>', '系统信息', {
           confirmButtonText: '确定',
@@ -1829,6 +1908,7 @@
         }else if(sign == 'editSign'){
           this.$router.push('/setting/signature')
         }else{
+          sign.content = this.htmlDecodeByRegExp(sign.content)
           if(sign)this.signCheck = sign.id;
           if(this.ruleForm2.is_html){
             let html = this.$refs[this.editor_id].editor.html();
@@ -2025,14 +2105,18 @@
               message_id: this.message_id,
               recipient: this.recipient
             }
+            this.recallLoading = true;
             sendRecall(param).then(res => {
               this.getMessageStatus();
+              this.recallLoading = false;
               if(res.data.results[0].recall_status=='recall_succ'){this.isRecall = true;}
               this.recallData = res.data.results;
               this.recallTableVisible = true;
 
+
             }, err => {
               console.log(err)
+              this.recallLoading = false;
               let str = '';
               if(err.detail){
                 str = err.detail
@@ -2929,7 +3013,7 @@
       },
       onContentChange (val) {
         // this.setEditorHeight();
-        console.log(this.$refs[this.editor_id].$data.outContent)
+        // console.log(this.$refs[this.editor_id].$data.outContent)
         this.content = this.$refs[this.editor_id].$data.outContent;
         // this.$refs[this.editor_id].editor.html(this.content);
         // $('#editor_id'+this.rid).val()
@@ -3137,6 +3221,9 @@
               this.maillist_bcc.push({value:data.label,status:true,email:data.email,fullname:data.fullname});
             }
           }
+        }else{
+          this.right_cpage = 1;
+          this.right_page_total = data.count;
         }
       },
       //获取个人通讯录组数据
@@ -3170,7 +3257,7 @@
         // })
         // return
       },
-      getRightContact(){
+      getRightContact1(){
         this.contact_loading = true;
         contactPabGroupsGet().then(res=>{
           let _this = this;
@@ -3213,7 +3300,131 @@
           this.contact_loading = false;
         })
       },
+      getRightContact(){
+        this.contact_loading = true;
+        contactPabGroupsGet().then(res=>{
+          let _this = this;
+          let resultArr = [];
+          let total = res.data.results[res.data.results.length-1].count;
+          let axiosArr = [];
+          for(let i=0;i<res.data.results.length;i++) {
+            let ob = res.data.results[i];
+            let param = {
+              "page": 1,
+              "page_size": 10,
+              "search": this.right_search,
+              "group_id": ob.id,
+            };
+            if (ob.id > 0) {
+              axiosArr.push(contactPabMapsGet(param))
+            } else {
+              axiosArr.push(contactPabMembersGet(param))
+            }
+            resultArr.push({label:ob.groupname,id:ob.id,children:[],count:ob.count,show:false,page:1,loading:false})
+          }
+          axios.all(axiosArr).then(axios.spread(function () {
+            // 所有请求现在都执行完成
+            for(let k = 0;k<arguments.length;k++){
+              let ko = arguments[k];
+              // resultArr[k]['label'] += ' （'+ko.data.count+'）'
+              for(let j=0;j<ko.data.results.length;j++){
+                let obj = {};
+                obj.id = ko.data.results[j].contact_id;
+                obj.email = ko.data.results[j].email;
+                obj.fullname = ko.data.results[j].fullname;
+                obj.label = ko.data.results[j].fullname + '<'+ko.data.results[j].email+'>';
+                resultArr[k]['children'].push(obj)
 
+              }
+              resultArr[k]['count'] = ko.data.count
+            }
+            _this.contactList = resultArr
+            _this.contact_loading = false;
+          }))
+
+
+
+
+        }).catch(err=>{
+          this.contact_loading = false;
+        })
+      },
+      plus(b,m){
+        if(b){
+          m.page++;
+          this.getOneByPage(m)
+        }else{
+          m.page--;
+          this.getOneByPage(m)
+        }
+      },
+      getOneByPage(m){
+        let param = {
+            "page": m.page,
+            "page_size": 10,
+            "search": this.right_search,
+            "group_id": m.id
+          };
+
+          m.loading = true;
+          if (m.id > 0) {
+            contactPabMapsGet(param).then(res=>{
+              let arr = [];
+              for(let j=0;j<res.data.results.length;j++){
+                let obj = {};
+                obj.id = res.data.results[j].contact_id;
+                obj.email = res.data.results[j].email;
+                obj.fullname = res.data.results[j].fullname;
+                obj.label = res.data.results[j].fullname + '<'+res.data.results[j].email+'>';
+                arr.push(obj)
+              }
+              m.loading = false;
+              m.children = arr;
+            }).catch(err=>{
+              m.loading = false;
+              console.log('出错了error:'+error)
+            })
+          } else {
+            contactPabMembersGet(param).then(res=>{
+              let arr = [];
+              for(let j=0;j<res.data.results.length;j++){
+                let obj = {};
+                obj.id = res.data.results[j].contact_id;
+                obj.email = res.data.results[j].email;
+                obj.fullname = res.data.results[j].fullname;
+                obj.label = res.data.results[j].fullname + '<'+res.data.results[j].email+'>';
+                arr.push(obj)
+              }
+              m.loading = false;
+              m.children = arr;
+            }).catch(err=>{
+              m.loading = false;
+              console.log('出错了error:'+error)
+            })
+          }
+      },
+      changeShowIndex(k){
+        console.log(k)
+        console.log(this.contactList[k].show)
+        if(this.contactList[k].show){
+          this.contactList[k].show = false;
+          console.log('123')
+        }else{
+          console.log('1sdfa23')
+          for(let i=0;i<this.contactList.length;i++){
+            if(i==k){
+              this.contactList[i].show = true;
+            }else{
+              this.contactList[i].show = false;
+            }
+          }
+        }
+
+      },
+      refresh_right(){
+        this.right_search = '';
+        this.getRightContact();
+      },
 
     },
     mounted() {
@@ -3428,6 +3639,15 @@
   }
 </script>
 <style>
+  .right_con_list:hover{
+    background:#e6e6e6;
+  }
+  .only_current_page .el-pager>li.number{
+    display:none;
+  }
+  .only_current_page .el-pager>li.number.active{
+    display:inline-block;
+  }
   .bigUpload .el-progress-bar__outer{
     height: 10px !important;
   }
@@ -3644,6 +3864,8 @@
     margin-right:6px;
     padding:0 4px;
     border-radius:12px;
+    font-size: 12px;
+    margin-bottom: 4px;
   }
   #app .compose_style .mailbox_s.error{
     background-color: #f2dede;

@@ -47,22 +47,26 @@ let hasBox = false;
 // http request 拦截器
 axios.interceptors.request.use(
   config => {
+    console.log('route')
     if( config.url.indexOf('/setting/secret-reset')>-1){
       return config;
     }
     if(config.url.indexOf('login')==-1 &&!cookie.getCookie('token')){
       console.log('ceshicesce')
       store.dispatch('setInfo');
-      if(!hasBox){
-        hasBox = true;
-        MessageBox.alert('会话已过期，请重新登录','系统信息',{
-          confirmButtonText: '确定',
-          callback: action => {
-            hasBox = false;
-            router.push('/')
-          }
-        })
+      if(router.currentRoute.path != '/login'){
+        if(!hasBox){
+          hasBox = true;
+          MessageBox.alert('会话已过期，请重新登录','系统信息',{
+            confirmButtonText: '确定',
+            callback: action => {
+              hasBox = false;
+              router.push('/')
+            }
+          })
+        }
       }
+
 
       return;
     }
@@ -93,26 +97,36 @@ axios.interceptors.response.use(
     return res;
   },
   error => {
+
     let res = error.response;
+    console.log(res)
     if(res && res.status){
       switch (res.status) {
       case 401:
         // 返回 401 清除token信息并跳转到登录页面
         cookie.delCookie('token');
         store.dispatch('setInfo');
-        // if(res.request.responseURL.indexOf('login')==-1){
+
+        if(router.currentRoute.path != '/login'){
           if(!hasBox){
+            let str = '会话已过期，请重新登录';
+            if(res.data && res.data.detail){
+              str = res.data.detail
+            }
+            if(res.data && res.data.non_field_errors) {
+              str = res.data.non_field_errors[0]
+            }
             hasBox = true;
-            MessageBox.alert('会话已过期，请重新登录','系统信息',{
+            MessageBox.alert(str,'系统信息',{
               confirmButtonText: '确定',
               callback: action => {
                 hasBox = false;
-                console.log('未登录 或者token过期');
+                console.log(str);
                 router.push('/')
               }
             })
           }
-        // }
+        }
 
         break;
       case 403:

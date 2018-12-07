@@ -776,7 +776,7 @@
         }
         if(item.id==0 || item.id==1 || item.id==2 || item.id==3 || item.id==5){
           this.fullscreenLoading = true;
-          let fid = pp.activeMenubar.id;
+          let fid = pp.activeMenubar.id || this.$route.params.boxId;
           let view = 3; //回复
           if(item.id == 0){
             view = 3;
