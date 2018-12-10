@@ -2,7 +2,7 @@
   <div style="box-sizing: border-box" id="search">
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="登录查询" name="login" v-loading="loginData.loading">
-        <el-pagination style="text-align: right;"
+        <el-pagination style="text-align: right;padding-bottom:10px;"
           @size-change="sizeChange($event,'login')"
           @current-change="currentChange($event,'login')"
           :current-page="loginData.page"
@@ -34,6 +34,12 @@
             label="IP地址"
             >
           </el-table-column>
+
+          <el-table-column
+            prop="area"
+            label="登录地区">
+          </el-table-column>
+
           <el-table-column
             prop="type"
             label="登录方式">
@@ -46,14 +52,21 @@
               <div>
                 <span style="color:#45AB19;"> {{scope.row.remark }} </span>
               </div>
-
             </template>
           </el-table-column>
+
+          <el-table-column
+            prop="browser"
+            label="浏览器类型">
+          </el-table-column>
+
+
+
         </el-table>
 
       </el-tab-pane>
       <el-tab-pane label="发信查询" name="send" v-loading="sendData.loading">
-        <el-pagination style="text-align: right;"
+        <el-pagination style="text-align: right;padding-bottom:10px;"
           @size-change="sizeChange($event,'send')"
           @current-change="currentChange($event,'send')"
           :current-page="sendData.page"
@@ -77,10 +90,10 @@
                 <!--<span style="color:#45AB19;margin-left:20px;"> {{r.status_show +','+ r.recall_status_show}}</span>-->
                 </el-col>
                 <el-col :style="{width:expand_table.col2+'px'}" style="overflow: hidden; white-space: nowrap;text-overflow: ellipsis;box-sizing:border-box;padding-left:10px;">
-                  <span style="color:#45AB19;margin:20px;"> {{r.inform||''}}</span>
+                  <span style="color:#45AB19;" :class="{is_red:r.is_red}"> {{r.inform||''}}</span>
                 </el-col>
                 <el-col :style="{width:expand_table.col3+'px'}" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;box-sizing:border-box;padding-left:10px;">
-                  <el-button type="text" size="mini" v-if="r.recall_status == 'stay'" @click="recall(props.row,'single',r.recipient)">召回邮件</el-button>
+                  <el-button type="text" size="mini" v-if="!r.is_zhaohui" @click="recall(props.row,'single',r.recipient)">召回邮件</el-button>
                 </el-col>
               </el-row>
 
@@ -129,7 +142,7 @@
             <template slot-scope="scope" >
               <div v-if="scope.row.details.length==1">
                 <!--<span style="color:#45AB19;"> {{scope.row.details[0].status_show+','+scope.row.details[0].recall_status_show}} </span>-->
-                <span style="color:#45AB19;"> {{scope.row.details[0].inform||''}} </span>
+                <span style="color:#45AB19;" :class="{is_red:scope.row.details[0].is_red}"> {{scope.row.details[0].inform||''}} </span>
               </div>
             </template>
           </el-table-column>
@@ -138,7 +151,7 @@
             label="操 作">
             <template slot-scope="scope">
               <div>
-                <el-button type="text" size="mini" v-if="scope.row.details.length == 1 && scope.row.details[0].recall_status == 'stay'" @click="recall(scope.row)">召回邮件</el-button>
+                <el-button type="text" size="mini" v-if="scope.row.details.length == 1 && !scope.row.details[0].is_zhaohui" @click="recall(scope.row)">召回邮件</el-button>
                 <el-button type="text" size="mini" v-if="show_recall_all(scope.row)" @click="recall(scope.row)">召回全部邮件</el-button>
               </div>
 
@@ -147,25 +160,31 @@
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="收信查询" name="mail" v-loading="mailData.loading">
-        <div>
-          <span>信件来源： </span>
-          <el-button-group>
-            <el-button class="status_btn" size="mini" :class="{active:mailData.status == ''}" @click="changeStatus('')">全部来信</el-button>
-            <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'success'}" @click="changeStatus('success')">收件箱和个人文件夹</el-button>
-            <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'spam-flag'}" @click="changeStatus('spam-flag')">垃圾箱</el-button>
-            <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'virus'}" @click="changeStatus('virus')">病毒拦截</el-button>
-            <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'spam'}" @click="changeStatus('spam')">垃圾拦截</el-button>
-          </el-button-group>
-        </div>
-        <el-pagination style="text-align: right;"
-          @size-change="sizeChange($event,'mail')"
-          @current-change="currentChange($event,'mail')"
-          :current-page="mailData.page"
-          :page-sizes="[10, 20, 50, 100]"
-          :page-size="mailData.page_size"
-          layout="total, sizes, prev, pager, next "
-          :total="mailData.total">
-        </el-pagination>
+        <el-row style="padding-bottom:10px;">
+          <el-col :span="12">
+            <span>信件来源： </span>
+            <el-button-group>
+              <el-button class="status_btn" size="mini" :class="{active:mailData.status == ''}" @click="changeStatus('')">全部来信</el-button>
+              <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'success'}" @click="changeStatus('success')">收件箱和个人文件夹</el-button>
+              <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'spam-flag'}" @click="changeStatus('spam-flag')">垃圾箱</el-button>
+              <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'virus'}" @click="changeStatus('virus')">病毒拦截</el-button>
+              <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'spam'}" @click="changeStatus('spam')">垃圾拦截</el-button>
+            </el-button-group>
+          </el-col>
+          <el-col :span="12" style="text-align:right;">
+            <el-pagination style="text-align: right;"
+              @size-change="sizeChange($event,'mail')"
+              @current-change="currentChange($event,'mail')"
+              :current-page="mailData.page"
+              :page-sizes="[10, 20, 50, 100]"
+              :page-size="mailData.page_size"
+              layout="total, sizes, prev, pager, next "
+              :total="mailData.total">
+            </el-pagination>
+          </el-col>
+
+        </el-row>
+
         <el-table
 
           :data="mailData.tableData"
@@ -219,24 +238,29 @@
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="删信查询" name="delete" v-loading="deleteData.loading">
-        <div>
-          <span>信件来源： </span>
-          <el-button-group>
-            <el-button class="status_btn" size="mini" :class="{active:deleteData.status == ''}" @click="changeType('')">全部删信</el-button>
-            <el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'web'}" @click="changeType('web')">网页删信</el-button>
-            <el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'system'}" @click="changeType('system')">自动清理</el-button>
-            <el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'client'}" @click="changeType('client')">客户端删信</el-button>
-          </el-button-group>
-        </div>
-        <el-pagination style="text-align: right;"
-          @size-change="sizeChange($event,'delete')"
-          @current-change="currentChange($event,'delete')"
-          :current-page="deleteData.page"
-          :page-sizes="[10, 20, 50, 100]"
-          :page-size="deleteData.page_size"
-          layout="total, sizes, prev, pager, next "
-          :total="deleteData.total">
-        </el-pagination>
+        <el-row style="padding-bottom:10px;">
+          <el-col :span="12">
+            <span>信件来源： </span>
+            <el-button-group>
+              <el-button class="status_btn" size="mini" :class="{active:deleteData.status == ''}" @click="changeType('')">全部删信</el-button>
+              <el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'web'}" @click="changeType('web')">网页删信</el-button>
+              <el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'system'}" @click="changeType('system')">自动清理</el-button>
+              <el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'client'}" @click="changeType('client')">客户端删信</el-button>
+            </el-button-group>
+          </el-col>
+          <el-col :span="12">
+            <el-pagination style="text-align: right;"
+              @size-change="sizeChange($event,'delete')"
+              @current-change="currentChange($event,'delete')"
+              :current-page="deleteData.page"
+              :page-sizes="[10, 20, 50, 100]"
+              :page-size="deleteData.page_size"
+              layout="total, sizes, prev, pager, next "
+              :total="deleteData.total">
+            </el-pagination>
+          </el-col>
+        </el-row>
+
         <el-table
 
           :data="deleteData.tableData"
@@ -302,7 +326,7 @@
 
 <script>
 
-import {getLoginList,getSendlog,getMaillog,getDeletellog,sendRecall} from '@/api/api'
+import {getLoginList,getSendlog,getMaillog,getDeletellog,sendRecall,logRecall} from '@/api/api'
 export default {
   data() {
     return {
@@ -453,13 +477,15 @@ export default {
   },
   methods: {
     show_recall_all(row){
-      let result =  row.details.length > 1;
+      let len = row.details.length >1;
+      let result =  false;
       for(let i=0;i<row.details.length;i++){
-        if(row.details[i].recall_status!='stay'){
-          result = false;
+        if(!row.details[i].is_zhaohui){
+          result = true;
           break;
         }
       }
+      result = len && result;
       return result;
     },
     resetWidth(){
@@ -481,35 +507,53 @@ export default {
           }).then(() => {
             let message_id = row.message_id;
             let str = '';
-            if(type && type =='single'){
-              str = r;
-            }else{
-              row.details.forEach(val=>{
-                str += val.recipient+','
-              })
-              str = str.slice(0,str.length-1)
-            }
             let param = {
               message_id: message_id,
-              recipient: str
             }
-            this.sendData.loading = true;
-            sendRecall(param).then(res => {
-              this.recallData = res.data.results;
-              this.sendData.loading = false;
-              this.recallTableVisible = true;
-              this.getSend();
-            }).catch(err=>{
-              this.sendData.loading = false;
-              let str = '';
-              if(err.detail){
-                str = err.detail
-              }
-              this.$message({
-                message: '邮件召回失败！'+str,
-                type: 'error'
+            if(type && type =='single'){
+              param.recipient = r;
+              this.sendData.loading = true;
+              logRecall(param).then(res=>{
+                this.recallData = res.data.results;
+                this.sendData.loading = false;
+                this.recallTableVisible = true;
+                this.getSend();
+              }).catch(err=>{
+                this.sendData.loading = false;
+                let str = '';
+                if(err.detail){
+                  str = err.detail
+                }
+                this.$message({
+                  message: '邮件召回失败！'+str,
+                  type: 'error'
+                })
               })
-            })
+            }else{
+              // row.details.forEach(val=>{
+              //   str += val.recipient+','
+              // })
+              // str = str.slice(0,str.length-1)
+              this.sendData.loading = true;
+              sendRecall(param).then(res => {
+                this.recallData = res.data.results;
+                this.sendData.loading = false;
+                this.recallTableVisible = true;
+                this.getSend();
+              }).catch(err=>{
+                this.sendData.loading = false;
+                let str = '';
+                if(err.detail){
+                  str = err.detail
+                }
+                this.$message({
+                  message: '邮件召回失败！'+str,
+                  type: 'error'
+                })
+              })
+            }
+
+
           }).catch(() => {
             this.$message({
               type: 'info',
@@ -677,6 +721,9 @@ export default {
 };
 </script>
 <style>
+  .is_red{
+    color:red !important;
+  }
   #search .el-tabs__nav-wrap::after{
         background-color: #555C64;
   }

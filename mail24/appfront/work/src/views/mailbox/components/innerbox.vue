@@ -193,13 +193,19 @@
                               type="selection"
                               width="46"
                               label="全选/取消"
+                            >
+                            </el-table-column>
 
-                            >全选/取消
+                            <el-table-column width="30">
+                              <template slot-scope="scope">
+                                <span class="read_bg" :class="{unseen:!scope.row.isread,answered:scope.row.flags.join().indexOf('Answered')>=0,forward:scope.row.flags.join().indexOf('umail-forword')>=0}" :title="scope.row.flagStr"></span>
+                              </template>
                             </el-table-column>
 
                             <el-table-column prop="subject"  label="" @click="">
                               <template slot-scope="scope">
                                 <div class="clear mainMsg" style="font-size:16px;" :class="[{flagged:scope.row.flagged,unseen:!scope.row.isread},scope.row.color]">
+
                                   <span class="fl_l subject_hover" style="width:80%;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" @click.stop.prevent="readMail(scope.row)" >{{scope.row.subject||'无主题'}}</span>
                                   <span class="fl_r">
                                     <!--<i :title="scope.row.flagged?'点击取消旗帜':'设为红旗'" @click.stop="changeFlags(scope.row)" class="iconfont" :class="{'icon-iconflatcolor':scope.row.flagged||scope.row.color,'icon-iconflat':!scope.row.flagged&&!scope.row.color}" style="cursor:pointer;"></i>-->
@@ -1080,6 +1086,17 @@
               }
 
             }
+            let flagStr = '已读';
+            if(items[i].flags.join('').indexOf('umail-forword')>=0){
+              flagStr = '已转发';
+            }
+            if(items[i].flags.join('').indexOf('Answered')>=0){
+              flagStr = '已回复';
+            }
+            if(!items[i].isread){
+              flagStr = '未读';
+            }
+            items[i].flagStr = flagStr
           }
           console.log(items)
           this.collapseItems[0].lists = items;
@@ -1228,6 +1245,25 @@
 </script>
 
 <style>
+  .read_bg.forward{
+    background:url("../../../assets/img/maillistbg.png") no-repeat scroll -48px -48px transparent;
+  }
+  .read_bg.answered{
+    background:url("../../../assets/img/maillistbg.png") no-repeat scroll -48px -32px transparent;
+  }
+  .read_bg.unseen{
+    background:url("../../../assets/img/maillistbg.png") no-repeat scroll -48px 0 transparent;
+  }
+  .read_bg{
+    display:inline-block;
+    cursor: pointer;
+    height: 18px;
+    position:relative;
+    top:2px;
+    overflow: hidden;
+    width: 18px;
+    background:url(../../../assets/img/maillistbg.png) no-repeat scroll -48px -16px transparent
+  }
   .greencolor{
     color:rgb(46, 169, 98);
   }

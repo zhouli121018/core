@@ -23,10 +23,10 @@
             </a>
           </li>
           <li>
-            <a class="fl-m-nav-trigger" href="#" :class="{'fl-nav-current':activeT=='afile'}" title="附件管理" @click.prevent.stop="jumpTo('afile')">
+            <a class="fl-m-nav-trigger" href="#" :class="{'fl-nav-current':activeT=='afile'}" title="文件中转站" @click.prevent.stop="jumpTo('afile')">
                 <span>
                   <i class="iconfont icon-iconaccfile menu_icon_box"></i>
-                  <div>附件管理</div>
+                  <div>文件中转站</div>
                 </span>
             </a>
           </li>

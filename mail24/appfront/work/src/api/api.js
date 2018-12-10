@@ -440,3 +440,6 @@ export const reviewShow = () => { return axios.get(`${host}/mail/review/show/`) 
 
 //清空文件夹 POST /api/mail/message/expunge/
 export const messageExpunge = params => { return axios.post(`${host}/mail/message/expunge/`, params) };
+
+//日志查询单个收件人召回 POST /api/mail/message/log-recall/
+export const logRecall = params => { return axios.post(`${host}/mail/message/log-recall/`, params) };

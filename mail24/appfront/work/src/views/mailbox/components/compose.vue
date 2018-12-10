@@ -29,8 +29,8 @@
                 <el-tab-pane label="个人通讯录" name="first" v-loading="contact_loading">
                   <!--<el-input  placeholder="搜索" prefix-icon="el-icon-search" v-model="filterText" size="small" style="margin:6px 0;">-->
                   <!--</el-input>-->
-                  <el-input placeholder="请输入内容" v-model="right_search" class="input-with-select">
-                    <el-button slot="append" icon="el-icon-search" @click="getRightContact"></el-button>
+                  <el-input placeholder="请输入内容" v-model="right_search" class="input-with-select" @keyup.native="getRightContact">
+                    <el-button slot="append" icon="el-icon-search" @click="getRightContact" style="border-right: 1px solid #dcdfe6;border-radius: 0;"></el-button>
                     <el-button slot="append" icon="el-icon-refresh" @click="refresh_right"></el-button>
                   </el-input>
                   <!--<el-pagination-->
@@ -54,8 +54,8 @@
                   <!--</el-tree>-->
 
                   <div >
-                    <div v-for="(m,k) in contactList" :key="k" style="line-height:32px;cursor:pointer" :title="m.label">
-                      <div class="right_con_list"  @click="changeShowIndex(k)">
+                    <div v-for="(m,k) in contactList" :key="k" style="line-height:32px;cursor:pointer">
+                      <div class="right_con_list"  @click="changeShowIndex(k)" :title="m.label" v-show="!right_search || m.id==0" style="font-size:16px;">
                         <i class="el-icon-caret-right" v-if="!m.show" style="margin-right:6px;" :style="{visibility:m.count==0?'hidden':''}"></i>
                         <i class="el-icon-caret-bottom" v-if="m.show" style="margin-right:6px;" :style="{visibility:m.count==0?'hidden':''}"></i>
                         <span>{{m.label}}</span>
@@ -69,10 +69,11 @@
                           <span>{{c.label}}</span>
                         </div>
                       </div>
-                      <div v-if="m.show && m.count>10" style="text-align: center;">
-                        <el-button size="mini" @click="plus(false,m)" :disabled="m.page<=1">上一页</el-button>
-                        <el-button type="primary" size="small">{{m.page}}</el-button>
-                        <el-button size="mini" @click="plus(true,m)" :disabled="m.page >= parseInt(m.count/10)">下一页</el-button>
+                      <div v-if="m.show && m.count>10" style="text-align: center;margin:10px 0;">
+                        <el-button type="primary" size="mini" @click="plus(false,m)" title="上一页" :disabled="m.page<=1" circle><i class="el-icon-arrow-left"></i></el-button>
+                        <!--<el-button  type="text" size="small"><b>{{m.page}}</b></el-button>-->
+                        第 <el-input @change="changePage($event,m)" min="1" :max="Math.ceil(m.count/10)" type="number" v-model="m.page" style="width:50px;" class="no-padding" size="mini"></el-input>页
+                        <el-button size="mini" title="下一页" @click="plus(true,m)" type="primary" :disabled="m.page>= Math.ceil(m.count/10)" circle><i class="el-icon-arrow-right"></i></el-button>
                       </div>
 
                     </div>
@@ -474,7 +475,7 @@
             <span style="visibility: hidden"> 1</span>
           </el-col>
           <el-col :span="4">
-            <div v-if="webmail_soab_show">
+            <div v-if="webmail_soab_show && expand_soab">
               <input type="hidden" v-model="soab_domain_cid"/>
               域名：
               <el-select v-model="soab_domain_cid" placeholder="请选择" @change="soabChangeDomain" size="mini">
@@ -500,6 +501,7 @@
                 node-key="id"
                 :data="transform_menu"
                 @node-expand="nodeExpand"
+                @node-collapse="nodeCollapse"
                 accordion
                 ref="contactTreeRef"
                 :highlight-current="true"
@@ -596,7 +598,7 @@
 
       <el-dialog title="文件中心" :visible.sync="coreFileDialog" :modal-append-to-body="false">
         <el-tabs v-model="activeName_file" @tab-click="switch_file" style="min-height:200px;">
-          <el-tab-pane label="来往附件" name="first">
+          <el-tab-pane label="文件中转站" name="first">
             <el-pagination class="margin-bottom-5"
               @size-change="attachSizeChange"
               @current-change="attachCurrentChange"
@@ -826,6 +828,7 @@
       };
       let _this = this;
       return {
+        expand_soab:false,
         right_search:'',
         right_cpage:1,
         right_page_total:0,
@@ -1260,27 +1263,27 @@
         this.bigList = fileList;
 
       },
-      setSubject(val){
+      setSubject(val,type){
         if(this.ruleForm2.subject){
           return;
         }else{
-          if(this.fileList.length>0){
-            let str = this.fileList[0].filename || this.fileList[0].name;
-            str = str.slice(0,str.lastIndexOf('.'));
-            this.ruleForm2.subject = str;
-          }else{
+          if(type && type=='template'){
             this.ruleForm2.subject = val
+          }else{
+            if(this.fileList.length>0){
+              let str = this.fileList[0].filename || this.fileList[0].name;
+              str = str.slice(0,str.lastIndexOf('.'));
+              this.ruleForm2.subject = str;
+            }
           }
         }
-
-
       },
       addBigAttach(){
         this.fileList_big.forEach(val=>{
           if(!this.hashFile[val.id]){
             this.fileList.push(val)
             this.hashFile[val.id] = true;
-            this.setSubject(val);
+            this.setSubject();
           }
         })
         this.bigUploadVisible = false
@@ -1594,7 +1597,7 @@
           if(res.data.rtotal!=0 && file.size>(res.data.rtotal-res.data.rused)){
             this.$message({
               type:'error',
-              message:'所选文件容量超出网盘剩余容量！'
+              message:'上传文件已超过个人网盘容量！'
             })
             file.cancel();
             return false;
@@ -1612,8 +1615,19 @@
       },
       nodeExpand(data,node,vc){
         console.log('expand')
+        console.log(data)
+        if(data.id=='soab'){
+          this.expand_soab = true;
+        }else if(data.id == 'oab'||data.id=='pab'||data.id=='cab'){
+          this.expand_soab = false;
+        }
         if(data.id == 'oab'||data.id=='pab'||data.id=='cab'||data.id=='soab'){
           sessionStorage['openGroup'] = data.id;
+        }
+      },
+      nodeCollapse(data){
+        if(data.keyId == 'soab'){
+          this.expand_soab = false;
         }
       },
       goEdit(){
@@ -1781,7 +1795,7 @@
                 this.$refs[this.editor_id].editor.html(this.content);
                 this.no_html();
               }
-              this.setSubject(t.caption)
+              this.setSubject(t.caption,'template')
 
             }).catch(err=>{
               console.log('获取单个模板信错误！',err)
@@ -1799,7 +1813,7 @@
                 this.$refs[this.editor_id].editor.html(this.content);
                 this.no_html();
               }
-              this.setSubject(t.caption)
+              this.setSubject(t.caption,'template')
 
             }).catch(err=>{
               console.log('获取单个模板信错误！',err)
@@ -1818,7 +1832,7 @@
                 this.$refs[this.editor_id].editor.html(this.content);
                 this.no_html();
               }
-              this.setSubject(t.caption)
+              this.setSubject(t.caption,'template')
             }).catch(err=>{
               console.log('获取单个模板信错误！',err)
             })
@@ -2103,7 +2117,7 @@
           }).then(() => {
             let param = {
               message_id: this.message_id,
-              recipient: this.recipient
+              // recipient: this.recipient
             }
             this.recallLoading = true;
             sendRecall(param).then(res => {
@@ -2137,7 +2151,7 @@
       getMessageStatus(){
         let param = {
           message_id: this.message_id,
-          recipient: this.recipient
+          // recipient: this.recipient
         }
         getMessageStatus(param).then(res=>{
           this.mail_results = res.data.results;
@@ -2478,6 +2492,7 @@
         });
       },
       getLabs(){
+        this.expand_soab = false;
         sessionStorage['openGroup'] = 'lab'
         let param = {
             page:this.currentPage,
@@ -2900,7 +2915,7 @@
           if(!(this.hashFile[this.fileSelection[i].id])){
             this.hashFile[this.fileSelection[i].id] = true
             this.fileList.push(this.fileSelection[i]);
-            this.setSubject(this.fileSelection[i]);
+            this.setSubject();
           }
         }
         this.coreFileDialog = false;
@@ -2951,7 +2966,7 @@
           var obj = res.data;
           this.hashFile[res.data.id]=true;
           this.fileList.push(res.data)
-          this.setSubject(res.data);
+          this.setSubject();
          this.$message({
              message:"上传成功",
              type:'success'
@@ -2973,7 +2988,7 @@
       },
       sucUpload(response, file, fileList){
         this.fileList.push(file);
-        this.setSubject(file);
+        this.setSubject();
       },
       imgChange(param){
         var file= param.file;
@@ -3229,33 +3244,72 @@
       //获取个人通讯录组数据
       getPabGroups(){
         let _this = this;
-        let param = {
-          "group_id":0,
-          "page_size":10000,
-          "page":1
-        }
-        contactPabMembersGet(param).then((suc)=>{
-          let arr = [];
-          for(let i=0;i<suc.data.results.length;i++){
-            let o = suc.data.results[i];
-            let obj = {};
-            obj.id = o.contact_id;
-            let str = o.fullname + '<'+o.email+'>';
-            obj.value = str;
-            obj.fullname = o.fullname;
-            obj.email = o.email;
-            obj.status = true;
-            arr.push(obj);
-          }
-          this.restaurants = arr;
-        },(err)=>{
-          console.log(err);
-        })
 
-        // contactPabGroupsGet().then(res=> {
-        //   this.contact_groups = res.data.results
-        // })
-        // return
+        let count = 1;
+        let arr = [];
+        function getResult(page){
+          console.log('page')
+          console.log(page)
+          let param = {
+            "page": page,
+            "page_size": 10,
+            "search": '',
+            "group_id": 0,
+          };
+          contactPabMembersGet(param).then(suc=>{
+            for(let i=0;i<suc.data.results.length;i++){
+              let o = suc.data.results[i];
+              let obj = {};
+              obj.id = o.contact_id;
+              let str = o.fullname + '<'+o.email+'>';
+              obj.value = str;
+              obj.fullname = o.fullname;
+              obj.email = o.email;
+              obj.status = true;
+              arr.push(obj);
+            }
+            console.log(count<Math.ceil(suc.data.count/10))
+            if(count<Math.ceil(suc.data.count/10)){
+              count ++;
+              getResult(count);
+            }else{
+              _this.restaurants = arr;
+              _this.$store.dispatch('setFilterContactA',arr);
+            }
+          }).catch(err=>{
+            console.log(err);
+          })
+        }
+        if(this.$store.getters.getFilterContact.length==0){
+          // getResult(count);
+          let param = {
+            "group_id":0,
+            "page_size":10000,
+            "page":1
+          }
+          contactPabMembersGet(param).then((suc)=>{
+            let arr = [];
+            for(let i=0;i<suc.data.results.length;i++){
+              let o = suc.data.results[i];
+              let obj = {};
+              obj.id = o.contact_id;
+              let str = o.fullname + '<'+o.email+'>';
+              obj.value = str;
+              obj.fullname = o.fullname;
+              obj.email = o.email;
+              obj.status = true;
+              arr.push(obj);
+            }
+            this.restaurants = arr;
+            this.$store.dispatch('setFilterContactA',arr);
+          },(err)=>{
+            console.log(err);
+          })
+        }else{
+          this.restaurants = this.$store.getters.getFilterContact
+        }
+
+
       },
       getRightContact1(){
         this.contact_loading = true;
@@ -3320,7 +3374,11 @@
             } else {
               axiosArr.push(contactPabMembersGet(param))
             }
-            resultArr.push({label:ob.groupname,id:ob.id,children:[],count:ob.count,show:false,page:1,loading:false})
+            let show = false;
+            if(ob.id == 0 ){
+              show = true;
+            }
+            resultArr.push({label:ob.groupname,id:ob.id,children:[],count:ob.count,show:show,page:1,loading:false})
           }
           axios.all(axiosArr).then(axios.spread(function () {
             // 所有请求现在都执行完成
@@ -3357,6 +3415,12 @@
           m.page--;
           this.getOneByPage(m)
         }
+      },
+      changePage(val,m){
+        if(val<=1){val = 1}
+        if(val>= Math.ceil(m.count/10)){val = Math.ceil(m.count/10)}
+        m.page = val;
+        this.getOneByPage(m);
       },
       getOneByPage(m){
         let param = {
@@ -3639,6 +3703,10 @@
   }
 </script>
 <style>
+  .no-padding>.el-input__inner{
+    padding:0 2px;
+    text-align: center;
+  }
   .right_con_list:hover{
     background:#e6e6e6;
   }

@@ -290,6 +290,9 @@ export default {
         this.maillist_bcc = [];
         this.show_reply_to = false;
         this.fileList = this.$store.getters.getPfileNetAtta;
+        let str = this.fileList[0].filename || this.fileList[0].name;
+        str = str.slice(0,str.lastIndexOf('.'));
+        this.ruleForm2.subject = str;
       }
       if(type == 'compose_to_list'){
         this.maillist = this.$store.getters.getToList;

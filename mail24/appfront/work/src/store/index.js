@@ -59,8 +59,12 @@ const store = new Vuex.Store({
     review_count:0,
     unseen_count:[],
     is_swtime:false,
+    filter_contact:[]
   },
   getters:{
+    getFilterContact(state){
+      return state.filter_contact;
+    },
     userInfo(state) {
       return state.userInfo;
     },
@@ -120,6 +124,10 @@ const store = new Vuex.Store({
     }
   },
   mutations:{
+    setFilterContact(state,param){
+      state.filter_contact = null;
+      state.filter_contact = param
+    },
     SET_INFO (state) {
       state.userInfo = {
         name:cookie.getCookie('name'),
@@ -252,6 +260,9 @@ const store = new Vuex.Store({
     },
     setUnseenCountA(store,param){
       store.commit('setUnseenCount',param)
+    },
+    setFilterContactA(store,param){
+      store.commit('setFilterContact',param)
     }
 
   }

@@ -47,12 +47,10 @@ let hasBox = false;
 // http request 拦截器
 axios.interceptors.request.use(
   config => {
-    console.log('route')
     if( config.url.indexOf('/setting/secret-reset')>-1){
       return config;
     }
     if(config.url.indexOf('login')==-1 &&!cookie.getCookie('token')){
-      console.log('ceshicesce')
       store.dispatch('setInfo');
       if(router.currentRoute.path != '/login'){
         if(!hasBox){
@@ -99,7 +97,6 @@ axios.interceptors.response.use(
   error => {
 
     let res = error.response;
-    console.log(res)
     if(res && res.status){
       switch (res.status) {
       case 401:
@@ -121,7 +118,6 @@ axios.interceptors.response.use(
               confirmButtonText: '确定',
               callback: action => {
                 hasBox = false;
-                console.log(str);
                 router.push('/')
               }
             })

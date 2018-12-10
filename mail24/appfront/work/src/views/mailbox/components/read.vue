@@ -255,6 +255,8 @@
                 <el-button type="text" style="padding:0;" v-if="show_result" @click="refreshStatus">[刷新]</el-button>
                 共发给 {{mail_results.length}} 个收件人，其中
                 <span v-if="undeliverCount">{{undeliverCount}} 个信件 未投递，</span>
+                <span v-if="reviewCount">{{reviewCount}} 个信件 审核中，</span>
+                <span v-if="sequesterCount">{{sequesterCount}} 个信件 隔离中，</span>
                 <span v-if="deliverCount">{{deliverCount}} 个信件 已投递，</span>
                 <span v-if="readedCount">{{readedCount}} 个信件 已读，</span>
                 <span v-if="deliver_failCount">{{deliver_failCount}} 个信件 投递失败</span>
@@ -423,6 +425,8 @@
     },
     data(){
       return {
+        reviewCount:0,
+        sequesterCount:0,
         passwordType:'text',
         show_change_btn:true,
         prev_src:'',
@@ -797,7 +801,7 @@
         }
         getMessageStatus(param).then(res=>{
           this.mail_results = res.data.results;
-          let a=0,b=0,c=0,d=0;
+          let a=0,b=0,c=0,d=0,e=0,f=0;
           for(let i=0;i<this.mail_results.length;i++){
             let o = this.mail_results[i];
             if(o.status == 'undeliver'){
@@ -808,6 +812,10 @@
               c++;
             }else if(o.status == 'deliver_fail'){
               d++;
+            }else if(o.status == 'review'){
+              e++;
+            }else if(o.status == 'sequester'){
+              f++;
             }
             if(d>0){
               this.send_desc = '部分发送失败'
@@ -819,6 +827,8 @@
           this.deliverCount = b;
           this.readedCount = c;
           this.deliver_failCount = d;
+          this.reviewCount = e;
+          this.sequesterCount = f;
         },err=>{
           console.log(err);
         })
