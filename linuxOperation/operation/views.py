@@ -85,9 +85,9 @@ def licence(request):
             #    return HttpResponseRedirect(reverse('system_licence'))
 
             now = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-            if info_new.get("expires_time","") and info_new["expires_time"].strftime('%Y%m%d%H%M%S')<=now:
-                messages.add_message(request, messages.ERROR, u'授权截至日期错误，请重新导入')
-                return HttpResponseRedirect(reverse('system_licence'))
+            #if info_new.get('evaluation',"") and info_new.get("expires_time","") and info_new["expires_time"].strftime('%Y%m%d%H%M%S')<=now:
+            #    messages.add_message(request, messages.ERROR, u'授权截截止日期错误，请重新导入')
+            #    return HttpResponseRedirect(reverse('system_licence'))
 
             try:
                 if os.path.exists(licence_file):
@@ -182,43 +182,47 @@ def home(request, template_name='home.html'):
     umail_repo = "/etc/yum.repos.d/umail.repo"
     umail_repo_http = "http://update.comingchina.com:8080/repo/umail_beta.repo"
     cmd = 'yum --disablerepo=* --enablerepo=umail_beta repolist'
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    res = p.stdout.read()
+    import gevent
+    try:
+        with gevent.Timeout(10):
+            p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            res = p.stdout.read()
+            if res.lower().find('error') != -1:
+                try:
+                    with open(umail_repo, 'a') as fw:
+                        fw.write(urllib2.urlopen(umail_repo_http, timeout=5).read())
+                except Exception,err:
+                    print "download %s error: %s"%(umail_repo_http, str(err))
 
-    if res.lower().find('error') != -1:
-        try:
-            with open(umail_repo, 'a') as fw:
-                fw.write(urllib2.urlopen(umail_repo_http).read())
-        except Exception,err:
-            print "download %s error: %s"%(umail_repo_http, str(err))
+            versions = []
+            cmd = "yum --disablerepo=* --enablerepo=umail_beta info umail_webmail"
+            p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            p.wait()
+            lines = p.stdout.readlines()
+            for line in lines:
+                line = line.decode('utf-8', 'ignore')
+                if line.find('Version') != -1 or line.find(u'版本') != -1:
+                    versions.append(line.replace(u'：', ':').split(':')[-1].strip())
+            install_version = versions[0] if (versions and versions[0]) else u'未识别'
+            available_version = versions[1] if len(versions) >= 2 else None
 
-    versions = []
-    cmd = "yum --disablerepo=* --enablerepo=umail_beta info umail_webmail"
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    p.wait()
-    lines = p.stdout.readlines()
-    for line in lines:
-        line = line.decode('utf-8', 'ignore')
-        if line.find('Version') != -1 or line.find(u'版本') != -1:
-            versions.append(line.replace(u'：', ':').split(':')[-1].strip())
-    install_version = versions[0] if (versions and versions[0]) else u'未识别'
-    available_version = versions[1] if len(versions) >= 2 else None
+            sys_info = get_sysinfo(request)
 
-    sys_info = get_sysinfo(request)
-
-    ntcp_info_json, bntcp_info_json = get_tcp_connect_info()
-    network_monitor_keys, network_monitor_infos = get_network_monitor_info()
-
-    return render(request, template_name, {
-        'info': sys_info,
-        "pid": pid,
-        "install_version": install_version,
-        "available_version": available_version,
-        "ntcp_info_json": ntcp_info_json,
-        "bntcp_info_json": bntcp_info_json,
-        "network_monitor_infos": network_monitor_infos,
-        "network_monitor_keys": network_monitor_keys,
-    })
+            ntcp_info_json, bntcp_info_json = get_tcp_connect_info()
+            network_monitor_keys, network_monitor_infos = get_network_monitor_info()
+            return render(request, template_name, {
+                'info': sys_info,
+                "pid": pid,
+                "install_version": install_version,
+                "available_version": available_version,
+                "ntcp_info_json": ntcp_info_json,
+                "bntcp_info_json": bntcp_info_json,
+                "network_monitor_infos": network_monitor_infos,
+                "network_monitor_keys": network_monitor_keys,
+            })
+    except gevent.Timeout:
+        print "exec %s timeout!"%cmd
+        return HttpResponseRedirect(reverse('domain_list'))
 
 def demo_login(request):
     from django.contrib import auth

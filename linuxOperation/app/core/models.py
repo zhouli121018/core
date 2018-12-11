@@ -5,6 +5,7 @@ import datetime
 import time
 from django.utils import timezone
 from passlib.hash import md5_crypt
+from django.conf import settings
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import Permission, Group
@@ -449,11 +450,8 @@ class Mailbox(AbstractUser):
             num += 1
 
     @property
-    def is_new_version_webmail(self):
-        # insert into core_config(function,enabled) values('new_version_webmail','1');
-        # delete from core_config where function='new_version_webmail';
-        obj = CoreConfig.objects.filter(function="new_version_webmail").first()
-        if obj and obj.enabled == '1':
+    def is_old_version_webmail(self):
+        if hasattr(settings,"OLD_WEBMAIL_VERSION") and settings.OLD_WEBMAIL_VERSION:
             return True
         return False
 

@@ -74,6 +74,12 @@ class BaseCfilterOptionFied(object):
     def set_error(self, error):
         self.error = error
 
+    @property
+    def int_value(self):
+        try:
+            return int(self.value)
+        except:
+            return 0
 
 class DotDict(dict):
     '''用于操作 dict 对象

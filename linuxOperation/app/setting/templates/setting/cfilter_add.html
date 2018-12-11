@@ -42,7 +42,8 @@
                             }
                             form.submit();
                             return true;
-                        } else if(data.status == 'OK'){
+                        } else if(data.status == 'NET_FAIL'){
+                            alert(data.msg);
                             form.submit();
                             return true;
                         }
@@ -162,7 +163,7 @@
                                         <select class="col-xs-12 col-sm-12 {% if d.suboption not in form.G_COND_OPTION_IN  %} display-none {% endif %}"
                                                 name="option_value_dpt{{ d.id }}--{{ d.parent_id }}" id="option_value_dpt{{ d.id }}--{{ d.parent_id }}" style="height: 34px;">
                                             {% for dpt in form.DepartMent %}
-                                                <option value="{{ dpt.id }}"  {% if dpt.id == d.value %} selected {% endif %}>{{ dpt.title }}</option>
+                                                <option value="{{ dpt.id }}" {% if dpt.id == d.int_value %} selected {% endif %}>{{ dpt.title }}</option>
                                             {% endfor %}
                                         </select>
 
@@ -253,7 +254,7 @@
                                                     <select class="col-xs-12 col-sm-12 {% if dd.suboption not in form.G_COND_OPTION_IN  %} display-none {% endif %}"
                                                             name="option_value_dpt{{ dd.id }}--{{ dd.parent_id }}" id="option_value_dpt{{ dd.id }}--{{ dd.parent_id }}" style="height: 34px;">
                                                         {% for dpt in form.DepartMent %}
-                                                            <option value="{{ dpt.id }}"  {% if dpt.id == dd.value %} selected {% endif %}>{{ dpt.title }}</option>
+                                                            <option value="{{ dpt.id }}"  {% if dpt.id == dd.int_value %} selected {% endif %}>{{ dpt.title }}</option>
                                                         {% endfor %}
                                                     </select>
 
@@ -497,17 +498,17 @@
                                 <span class="middle text-success">“邮件主题替换”和“邮件正文替换”当前支持以下变量：</span>
                             </div>
                             <div class="">
-                                <span class="middle text-success">邮件外发代理：当服务器地址后接':xxx'格式时表示自定义端口号，如example.com:10025。</span>
-                            </div>
-                            <div class="">
-                                <span class="middle text-success">“邮件外发代理”作用在“发送”类型的过滤器下，且只对外发的邮件生效。</span>
-                            </div>
-                            <div class="">
                                 <span class="middle text-success"> {SUBJECT} ： 邮件原始主题 ，</span>
                                 <span class="middle text-success"> {RECIPIENT} ： 收件人 ，</span>
                                 <span class="middle text-success"> {SENDER} ： 发件人 ，</span>
                                 <span class="middle text-success"> {DOMAIN} ： 服务器域名 </span>
                                 <span class="middle text-success"> {ATTACHMENT} ： 附件名 </span>
+                            </div>
+                            <div class="">
+                                <span class="middle text-success">邮件外发代理：当服务器地址后接':xxx'格式时表示自定义端口号，如example.com:10025。</span>
+                            </div>
+                            <div class="">
+                                <span class="middle text-success">设置了“邮件外发代理”，邮件将会改成由设置的服务器地址上的帐号投递给收信人</span>
                             </div>
                         </span>
                     </div>

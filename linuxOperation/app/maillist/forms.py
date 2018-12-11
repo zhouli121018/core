@@ -62,6 +62,14 @@ class ExtListForm(forms.ModelForm):
             raise forms.ValidationError(_(self.error_notify))
         return address
 
+    def save(self, commit=True):
+        obj = super(ExtListForm, self).save(commit=False)
+        if obj and obj.address.split('@')[0]=="everyone":
+            obj.listtype="sys"
+        if commit:
+            obj.save()
+        return obj
+
     class Meta:
         model = ExtList
         fields = ('domain_id', 'listname', 'address', 'description', 'permission', 'disabled')

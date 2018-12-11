@@ -111,9 +111,7 @@ class DepartmentForm(forms.ModelForm):
         if obj:
             return obj.id
         #新版本webmail，新增的邮件列表名称以dept_开头
-        if self.request.user.is_new_version_webmail:
-            address = "dept_%s@%s"%(o_dept.id, self.domain)
-        else:
+        if self.request.user.is_old_version_webmail:
             #没有就新建个部门列表，老版本部门列表是按索引递增的，所以需要把所有部门列表都查出来
             all_depts = {}
             for obj in ExtList.objects.filter(listtype=u'dept', domain_id=o_dept.domain_id).all():
@@ -123,6 +121,8 @@ class DepartmentForm(forms.ModelForm):
             while address in all_depts:
                 idx += 1
                 address = "d_%s@%s"%(idx,self.domain)
+        else:
+            address = "dept_%s@%s"%(o_dept.id, self.domain)
 
         obj = ExtList.objects.create(
             address=address,

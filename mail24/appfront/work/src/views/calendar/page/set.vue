@@ -264,29 +264,31 @@
         count0:0,
         options: [],
         my_calendar:[
-          {
-            id:0,
-            name: '我的日程',
-            address: '上海市普陀区金沙江路'
-          }, {
-            id:1,
-            name: 'yc日程',
-            address: '上海市普陀区金沙江路'
-          }, {
-            id:2,
-            name: '王小虎',
-            address: '上海市普陀区金沙江路'
-          }],
+          // {
+          //   id:0,
+          //   name: '我的日程',
+          //   address: '上海市普陀区金沙江路'
+          // }, {
+          //   id:1,
+          //   name: 'yc日程',
+          //   address: '上海市普陀区金沙江路'
+          // }, {
+          //   id:2,
+          //   name: '王小虎',
+          //   address: '上海市普陀区金沙江路'
+          // }
+          ],
         share_calendar:[
-          {
-            id:0,
-            name: '我的共享日程',
-            share: '512@163.com'
-          }, {
-            id:1,
-            name: 'yc日程',
-            share: 'qq@test.com'
-          }],
+          // {
+          //   id:0,
+          //   name: '我的共享日程',
+          //   share: '512@163.com'
+          // }, {
+          //   id:1,
+          //   name: 'yc日程',
+          //   share: 'qq@test.com'
+          // }
+          ],
         addFormVisible:false,
         addForm:{
           name:'',

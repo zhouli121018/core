@@ -138,6 +138,13 @@ class ExtCfilterNewCond(models.Model):
         return ExtCfilterNewCond.objects.filter(parent_id=self.id)
 
     @property
+    def int_value(self):
+        try:
+            return int(self.value)
+        except:
+            return 0
+
+    @property
     def suboption_display(self):
         if self.option in ("header", "extra"):
             d = dict(constants.ALL_CONDITION_SUBOPTION)

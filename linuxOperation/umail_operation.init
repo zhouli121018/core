@@ -34,13 +34,18 @@ stop_supervisor() {
     fi
 
     # stop supervisor
-    kill `cat $SUPERVISOR_PID` ;
-    sleep 1 ;
-    if [ -f $SUPERVISOR_PID ]; then
-        return 1 ;
-    else
-        return 0
-    fi
+    for t in 1 3 5 10 30 60
+    do
+        if [ -f $SUPERVISOR_PID ]; then
+            kill `cat $SUPERVISOR_PID` ;
+            echo "wait operation stopped"
+            sleep $t
+            continue
+        else
+            echo "operation stop success"
+            return 0
+        fi
+    done
 }
 
 status_supervisor(){

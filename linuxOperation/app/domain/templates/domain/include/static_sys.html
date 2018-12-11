@@ -394,15 +394,6 @@
                 {% csrf_token %}
             <table  class="table  table-bordered table-striped">
                 <tr>
-                    <td class="text-right" style="width:312px;">邮箱容量满后拒绝接收邮件：</td>
-                    <td>
-                        <label class="inline" >
-                            <input name="sw_full_reject" {% if form_others.sw_full_reject.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5 open">
-                            <span class="lbl"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
                     <td class="text-right">邮箱空间定时清理功能：</td>
                     <td class="row" style="padding:8px;">
                         <div class="col-sm-4 no-padding">
@@ -428,15 +419,6 @@
                         <div class="col-sm-8 no-padding">
                             <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#custom_set">客户端网络附件设置</button>
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="text-right" >登录默认打开收件箱：</td>
-                    <td >
-                        <label class="inline" >
-                            <input name="sw_auto_inbox" {% if form_others.sw_auto_inbox.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5 open">
-                            <span class="lbl"></span>
-                        </label>
                     </td>
                 </tr>
                 <tr>
@@ -611,15 +593,15 @@
                         <td class="text-right">邮件内容：</td>
                         <td>
                             <textarea name="content"  rows="8" class="form-control">
-                                {{ form_space_clean.content }}
+{{ form_space_clean.content }}
                             </textarea>
                         </td>
                     </tr>
                     <tr>
                         <td class="text-right">变量说明：</td>
                         <td>
-                            <p>{MAIL_ADDRESS}：收件人邮件地址</p>
-                            <p>{USE_SIZE}：收件人邮件地址</p>
+                            <p>{MAIL_ADDRESS}：用户帐号</p>
+                            <p>{USE_SIZE}：当前邮箱容量</p>
                             <p>{TOTAL_SIZE}：管理员分配的邮箱大小</p>
                         </td>
                     </tr>

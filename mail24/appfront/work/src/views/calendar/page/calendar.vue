@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="listLoading">
 
     <full-calendar :events="fcEvents" ref="calendar" :config="config"
                          @event-selected="eventClick"
@@ -484,6 +484,7 @@
     data() {
       let _self = this;
       return {
+        listLoading:false,
         currentPage_list:1,
         pageSize_list:10,
         totalCount_list:200,
@@ -638,6 +639,7 @@
           },
           eventRender: function (event, element) {
             if (event.title) {
+              this.listLoading = true;
               $(element).attr('title', event.title)
               let html = '<span class="fc_time"></span>'
               if(event.id>0){
@@ -658,7 +660,7 @@
                 html += '<span class="fc-title">' + event.title + '</span>';
                 $(element).find('.fc-content').html(html)
               }
-
+              this.listLoading = false;
             }
           },
           eventAfterAllRender: function (view) {
@@ -827,6 +829,7 @@
             params.search = this.event_search;
           }
         }
+        this.listLoading = true;
         getEvents(params).then(res=>{
           this.newEvent = false;
           this.totalCount_list = res.data.count;
@@ -854,8 +857,9 @@
             start:'',
             textColor:'#aaa'
           })
-        },err=>{
-          console.log(err);
+          this.listLoading = false;
+        }).catch(()=>{
+          this.listLoading = false;
         })
       },
       getDate   (datestr) {
@@ -1166,6 +1170,7 @@
 
       },
       eventClick (data){
+        this.listLoading = true;
         if(this.deptOptions.length<=0){
           this.getDeptOptions();
           this.searchOabMembers(1);
@@ -1178,6 +1183,7 @@
           }else{
             this.newForm.start_day = new Date(data.start).Format('yyyy-MM-dd');
           }
+          this.listLoading = false;
           this.newForm.end_day = this.newForm.start_day
         }else{
           getEventById(data.id).then(res=>{
@@ -1192,8 +1198,9 @@
                 }
               }
             }
-          },err=>{
-            console.log(err);
+            this.listLoading = false;
+          }).catch(()=>{
+            this.listLoading = false;
           })
 
           this.viewEventDialog = true;

@@ -232,9 +232,9 @@
                 <div style="margin-top:10px;padding-left:18px;" v-show="show_change_btn">
                   <span style="font-size:14px;color:#777;"><i class="el-icon-info"></i> <b>是否接受该邀请？</b></span>
                   <span>
-                    <el-button type="success" @click="changeStatus('pass')" v-if="msg.attrs.calendar_eventer_status!='pass'"> 接 受 </el-button>
-                    <el-button type="info" @click="changeStatus('wait')" v-if="msg.attrs.calendar_eventer_status!='wait'"> 待 办 </el-button>
-                    <el-button type="danger" @click="changeStatus('reject')" v-if="msg.attrs.calendar_eventer_status!='reject'"> 拒 绝 </el-button>
+                    <el-button type="success" @click="changeStatus('pass')" v-if="msg.attrs.calendar_eventer_status!='pass'" size="mini"> 接 受 </el-button>
+                    <el-button type="info" @click="changeStatus('wait')" v-if="msg.attrs.calendar_eventer_status!='wait'" size="mini"> 待 办 </el-button>
+                    <el-button type="danger" @click="changeStatus('reject')" v-if="msg.attrs.calendar_eventer_status!='reject'" size="mini"> 拒 绝 </el-button>
                   </span>
                 </div>
               </div>
@@ -259,7 +259,7 @@
                 <span v-if="sequesterCount">{{sequesterCount}} 个信件 隔离中，</span>
                 <span v-if="deliverCount">{{deliverCount}} 个信件 已投递，</span>
                 <span v-if="readedCount">{{readedCount}} 个信件 已读，</span>
-                <span v-if="deliver_failCount">{{deliver_failCount}} 个信件 投递失败</span>
+                <span v-if="deliver_failCount" style="color:red;">{{deliver_failCount}} 个信件 投递失败</span>
               </div>
               <div class="" v-show="show_result">
                 <el-table

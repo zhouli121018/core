@@ -27,17 +27,19 @@ class MailboxPasswordChecker(object):
 
     Name = "Password"
 
-    RuleTypeList = [
+    RuleTypeList = {
     #是否限制密码长度，密码长度的值
     #>=2.2.59 后 "passwd_size" 强制判断
-    "passwd_size2",
+    "passwd_size2"      :   1,
     #续3位及以上数字不能连号
-    "passwd_digital",
+    "passwd_digital"    :   1,
     #连续3位及以上字母不能连号， 密码不能包含连续3个及以上相同字符
-    "passwd_letter","passwd_letter2",
+    "passwd_letter"     :   1,
+    "passwd_letter2"    :   1,
     #密码不能包含账号， 密码不能包含用户姓名大小写全拼
-    "passwd_name","passwd_name2",
-    ]
+    "passwd_name"       :   1,
+    "passwd_name2"      :   1,
+    }
     #密码限制操作
     LimitTypeList = {
         #禁止发邮件
@@ -103,8 +105,11 @@ class MailboxPasswordChecker(object):
             pwdValue = {} if not value else value
         except:
             pwdValue = {}
-        if pwdValue:
-            self.setting.update(pwdValue)
+        for k,default in self.RuleTypeList.items():
+            if not k in pwdValue:
+                pwdValue[k] = default
+        self.setting.update(pwdValue)
+
         value = self.loadDomainAttr(item='cf_pwd_forbid')
         try:
             value = json.loads(value)
@@ -150,11 +155,24 @@ class MailboxPasswordChecker(object):
         except:
             passwd_forbid = {}
         setting = {}
-        for k in self.RuleTypeList:
-            setting[k] = 1 if k in passwd_other else -1
+        for k,default in self.RuleTypeList.items():
+            if k in passwd_other:
+                v = passwd_other[k]
+                #前面组权限存的值是passwd_digital : passwd_digital 格式的
+                if str(v) in ("1","-1"):
+                    setting[k] = int(v)
+                else:
+                    setting[k] = 1
+            else:
+                setting[k] = default
         for k, default in self.LimitTypeList.items():
             if k in passwd_forbid:
-                setting[k] = int(passwd_forbid[k]) if (passwd_forbid[k] and str(passwd_forbid[k]).isdigit()) else -1
+                v = passwd_forbid[k]
+                #前面组权限存的值是passwd_digital : passwd_digital 格式的
+                if str(v) in ("1","-1"):
+                    setting[k] = int(v)
+                else:
+                    setting[k] = 1
             else:
                 setting[k] = default
 
@@ -304,6 +322,8 @@ class MailboxPasswordChecker(object):
     def CheckPassword(self):
         def CheckPassword2():
             password = self.GetOriginPassword()
+            if not self.CheckRule_6():
+                return -7, u"密码在弱密码列表中"
             passwd_type = self.GetSettingValue("passwd_type")
             passwd_type_count = {
                 "digit"     :   0,
@@ -322,7 +342,6 @@ class MailboxPasswordChecker(object):
                     passwd_type_count["lower"] = 1
             if(sum(passwd_type_count.values())) < passwd_type:
                 return -9, u"密码组成字符必须包含 数字、大写字母、小写字母、特殊字符 中的 {} 种".format(passwd_type)
-
             if not self.CheckRule_0():
                 return -1, u"密码长度不够"
             if not self.CheckRule_1():
@@ -335,8 +354,6 @@ class MailboxPasswordChecker(object):
                 return -5, u"密码不能包含连续3个及以上相同字符"
             if not self.CheckRule_5():
                 return -6, u"密码不能包含用户姓名大小写全拼"
-            if not self.CheckRule_6():
-                return -7, u"密码在弱密码列表中"
             return 0, u""
         ret, reason = CheckPassword2()
         self.debugLog(u"CheckPassword: %s : %s"%(unicode(ret),reason))
@@ -372,6 +389,10 @@ def CheckMailboxPasswordLimit(domain_id=0, mailbox_id=0, mailbox=u"", realname=u
     return objGroup.CheckPasswordLimit()
 
 if __name__ == "__main__":
-    mailbox_id = Mailbox.objects.filter(username='anna@test.com').first().id
-    ret = CheckMailboxPasswordLimit(domain_id=1, mailbox_id=mailbox_id, password=u"1QAZ2wsx123")
+    mailbox_id = Mailbox.objects.filter(username='anshanshan@test.com').first().id
+    ret = CheckMailboxPassword(domain_id=1, mailbox_id=mailbox_id, password=u"1QAZ2wsx123")
     print ret
+    result = CheckMailboxPasswordLimit(domain_id=1, mailbox_id=mailbox_id, password=u"1QAZ2wsx123")
+    #返回值，登陆是否需要修改密码，密码校验失败原因
+    ret, change_pwd, reason = result
+    print result

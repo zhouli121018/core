@@ -5,6 +5,7 @@ import re
 import json
 import time
 import uuid
+import base64
 import random
 from django.shortcuts import render
 from django.contrib import messages
@@ -15,6 +16,7 @@ from django.core.urlresolvers import reverse
 from django.db.transaction import atomic
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.translation import ugettext_lazy as _
 
 from django_redis import get_redis_connection
 from app.core.models import Mailbox, DomainAttr, Domain, CoreMonitor, CoreAlias, MailboxExtra, MailboxUser
@@ -423,7 +425,7 @@ def domainSign(request):
         "form_personal" :  form_personal,
     })
 
-@licence_required
+@csrf_exempt
 def ajax_domainSignPersonal(request):
     domain = getDomainObj(request)
     if not domain:
@@ -432,11 +434,11 @@ def ajax_domainSignPersonal(request):
     data = form_personal.personal_sign_templ
     return HttpResponse(json.dumps({'data':data,"result":0}),content_type="application/json")
 
-@licence_required
+@csrf_exempt
 def ajax_domainSignDomain(request):
     domain = getDomainObj(request)
     if not domain:
-        return HttpResponse(json.dumps({'data':"","result":0}),content_type="application/json")
+        return HttpResponse(json.dumps({'data':{"html":"","text":""},"result":0}),content_type="application/json")
     form_domain = DomainSignDomainForm(domain_id=domain.id, request=request)
     data = {
         "html"  :   form_domain.content_html,
@@ -444,36 +446,43 @@ def ajax_domainSignDomain(request):
     }
     return HttpResponse(json.dumps({'data':data,"result":0}),content_type="application/json")
 
+@csrf_exempt
+def ajax_domainSignPicTransform(request):
+    """ 上传图片 """
+    data = request.FILES
+    fobj = data['imgFile']
+    content_type = fobj.content_type
+    if content_type.startswith("image/"):
+        content = fobj.read()
+        if len(content) >= 50*1024:
+            return HttpResponse(json.dumps({'error': 1, 'url': '', 'message': _(u'ERROR：上传的图片不能大于50KB')%{} }),
+                        content_type="text/plain")
+        content = base64.b64encode(content)
+        url = "data:{};base64,{}".format(content_type, content)
+        return HttpResponse(json.dumps({'error': 0, 'url': url, 'message': ''}), content_type="text/plain")
+    return HttpResponse(json.dumps({'error': 1, 'url': '', 'message': _(u'ERROR：上传的非图片，请选择图片上传')%{} }),
+                        content_type="text/plain")
+
 @licence_required
 def domainModule(request):
     domain = getDomainObj(request)
     if not domain:
         return HttpResponseRedirect(reverse('domain_home'))
-    form_home = DomainModuleHomeForm(domain_id=domain.id, request=request)
     form_mail = DomainModuleMailForm(domain_id=domain.id, request=request)
     form_set = DomainModuleSetForm(domain_id=domain.id, request=request)
-    form_other = DomainModuleOtherForm(domain_id=domain.id, request=request)
     if request.method == "POST":
         action = request.POST.get('action', '')
-        if action == "home":
-            form_home = DomainModuleHomeForm(domain_id=domain.id, post=request.POST, request=request)
-            form_home.checkSave()
-        elif action == "mail":
+        if action == "mail":
             form_mail = DomainModuleMailForm(domain_id=domain.id, post=request.POST, request=request)
             form_mail.checkSave()
         elif action == "set":
             form_set = DomainModuleSetForm(domain_id=domain.id, post=request.POST, request=request)
             form_set.checkSave()
-        elif action == "other":
-            form_other = DomainModuleOtherForm(domain_id=domain.id, post=request.POST, request=request)
-            form_other.checkSave()
     return render(request, "domain/include/static_module.html", context={
         "page": "module",
         "domain": domain,
-        "form_home"     :  form_home,
         "form_mail"     :  form_mail,
         "form_set"      :  form_set,
-        "form_other"    :  form_other,
     })
 
 @licence_required
@@ -693,12 +702,11 @@ def domainPublic_Ajax(request):
     d_cate_name = {}
     for d in lists.object_list:
         cate_id = d.cate_id
-
-        if not cate_id in d_cate_name:
+        if not cate_id in d_cate_name and cate_id:
             obj_cate = WmCustomerCate.objects.filter(id=cate_id).first()
             cate_name = u"" if not obj_cate else obj_cate.name
             d_cate_name[cate_id] = cate_name
-        cate_name = d_cate_name[cate_id]
+        cate_name = d_cate_name.get(cate_id,u"无分类")
 
         tel_list = []
         if d.work_tel:

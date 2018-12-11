@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^sign/$', views.domainSign, name='domain_sign'),
     url(r'^sign/ajax_personal$', views.ajax_domainSignPersonal, name='ajax_domainSignPersonal'),
     url(r'^sign/ajax_domain$', views.ajax_domainSignDomain, name='ajax_domainSignDomain'),
+    url(r'^sign/ajax_pic$', views.ajax_domainSignPicTransform, name='ajax_domainSignPicTransform'),
     url(r'^module/$', views.domainModule, name='domain_module'),
     url(r'^secret/$', views.domainSecret, name='domain_secret'),
     url(r'^public/$', views.domainPublicList, name='domain_public'),

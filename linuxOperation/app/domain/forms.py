@@ -5,7 +5,8 @@ import os
 import math
 import json
 from lib.forms import BaseFied, BaseFieldFormatExt, DotDict, BaseCfilterActionFied, BaseCfilterOptionFied
-from app.core.models import Mailbox, Domain, CoCompany, CoreAlias, DomainAttr, Department, CoreConfig, CoreMonitor, CoreWhitelist
+from app.core.models import Mailbox, MailboxUserAttr, Domain, CoCompany, CoreAlias, DomainAttr, \
+                                  Department, CoreConfig, CoreMonitor, CoreWhitelist
 from app.domain.models import Signature, SecretMail, WmCustomerInfo, WmCustomerCate, WmTemplate
 from app.utils.MailboxLimitChecker import MailboxLimitChecker
 from django import forms
@@ -306,7 +307,7 @@ class DomainSysRecvWhiteListForm(DotDict):
 
     @property
     def getSendLimitWhiteList(self):
-        lists = CoreWhitelist.objects.filter(type=u"fix_send", domain_id=self.domain_id.value, mailbox_id=0).all()
+        lists = CoreWhitelist.objects.filter(type=u"fix_send", operator=u"sys", domain_id=self.domain_id.value, mailbox_id=0).all()
         num = 1
         for d in lists:
             yield num, d.id, d.email, str(d.disabled)
@@ -314,7 +315,7 @@ class DomainSysRecvWhiteListForm(DotDict):
 
     @property
     def getRecvLimitWhiteList(self):
-        lists = CoreWhitelist.objects.filter(type=u"fix_recv", domain_id=self.domain_id.value, mailbox_id=0).all()
+        lists = CoreWhitelist.objects.filter(type=u"fix_recv", operator=u"sys", domain_id=self.domain_id.value, mailbox_id=0).all()
         num = 1
         for d in lists:
             yield num, d.id, d.email, str(d.disabled)
@@ -378,7 +379,7 @@ class DomainSysRecvWhiteListForm(DotDict):
     def saveNewEmail(self, mailbox):
         if mailbox in self.mailboxDict:
             return
-        obj = CoreWhitelist.objects.create(type=u"fix_{}".format(self.type), domain_id=self.domain_id.value, mailbox_id=0, email=mailbox)
+        obj = CoreWhitelist.objects.create(type=u"fix_{}".format(self.type), operator=u"sys", domain_id=self.domain_id.value, mailbox_id=0, email=mailbox)
         obj.save()
 
     def saveOldEmail(self):
@@ -609,7 +610,7 @@ class DomainSysOthersCleanForm(DomainForm):
         self.spam_keep_time     = get_unicode(oldCleanData.get(u"spam_keep_time", u"0"))
         self.trash_keep_time    = get_unicode(oldCleanData.get(u"trash_keep_time", u"0"))
 
-        self.subject = oldMailData.get(u"subject", u"")
+        self.subject = oldMailData.get(u"subject", u"").strip()
         self.content = oldMailData.get(u"content", u"")
         self.warn_rate=get_unicode(oldMailData.get(u"warn_rate", u"85"))
         if newData:
@@ -618,7 +619,7 @@ class DomainSysOthersCleanForm(DomainForm):
             self.spam_keep_time     = get_unicode(newData.get(u"spam_keep_time", u"0"))
             self.trash_keep_time    = get_unicode(newData.get(u"trash_keep_time", u"0"))
 
-            self.subject = newData.get(u"subject", u"")
+            self.subject = newData.get(u"subject", u"").strip()
             self.content = newData.get(u"content", u"")
             self.warn_rate=get_unicode(newData.get(u"warn_rate", u"85"))
 
@@ -820,8 +821,26 @@ class DomainModuleMailForm(DomainForm):
     PARAM_LIST = dict(constants.DOMAIN_MODULE_MAIL_VALUE)
     PARAM_TYPE = dict(constants.DOMAIN_MODULE_MAIL_TYPE)
 
-    def initPostParams(self):
+    def initialize(self):
+        self.initBasicParams()
+        self.sw_save_client_sent_email_old = self.sw_save_client_sent_email.value
         self.initPostParamsDefaultDisable()
+
+    def save(self):
+        super(DomainModuleMailForm, self).save()
+        #与上次的值不同，就更新所有邮箱用户的按钮
+        if self.sw_save_client_sent_email_old != self.sw_save_client_sent_email.value:
+            for obj in Mailbox.objects.filter(domain_id=self.domain_id.value).all():
+                obj_attr = MailboxUserAttr.objects.filter(mailbox_id=obj.id, item=u'save_client_sent').first()
+                if not obj_attr:
+                    obj_attr = MailboxUserAttr.objects.create(
+                            domain_id=self.domain_id.value,
+                            mailbox_id=obj.id,
+                            item=u'save_client_sent',
+                        )
+                obj_attr.type = u"user"
+                obj_attr.value = self.sw_save_client_sent_email.value
+                obj_attr.save()
 
 class DomainModuleSetForm(DomainForm):
 

@@ -87,7 +87,7 @@ PASSWD_LEVEL = (
 
 FREQUENCYSET_PARAM_OPERATOR = (
     (u'block', u'只可发送本地邮件'),
-    (u'disable', u'禁用账户'),
+    #(u'disable', u'永久禁用外发'),   修改的是core_mailbox.limit_send，这个设定目前与组权限冲突！
 )
 
 AUTO_CLEAN_OPEN = (
@@ -156,7 +156,7 @@ class CoreGroup(models.Model):
     is_suggest = models.BooleanField(_(u'邮箱意见反馈功能'), default=1)
     is_view = models.BooleanField(_(u'邮件召回记录查看'), default=1)
     is_filter = models.BooleanField(_(u'邮件过滤功能'), default=1)
-    is_smtp_tans = models.BooleanField(_(u'SMTP外发邮件中转'), default=1)
+    is_smtp_tans = models.BooleanField(_(u'SMTP外发代理'), default=1)
 
     # 账号密级
     passwd_level = models.IntegerField(_(u"账号密级"), default=1, choices=PASSWD_LEVEL)
@@ -199,7 +199,35 @@ class CoreGroup(models.Model):
 
     def delete(self, using=None, keep_parents=False):
         CoreGroupMember.objects.filter(group_id=self.id).delete()
+        #CoreGroupSetting.objects.filter(group_id=self.id).delete()
         super(CoreGroup, self).delete(using=using, keep_parents=keep_parents)
+
+GROUP_SETTING_TYPE=(
+    (u"basic", u"常规设置"),
+    (u"login", u"登陆方式限制"),
+    (u"password", u"密码规则"),
+    (u"spam", u"反垃圾/反病毒"),
+    (u"frequency", u"发信频率设置"),
+    (u"oab", u"企业通讯录设置"),
+    (u"space", u"邮箱空间设置"),
+)
+class CoreGroupSetting(models.Model):
+
+    group = models.ForeignKey(CoreGroup, related_name='group_setting', on_delete=models.CASCADE, verbose_name=_(u"组权限管理"))
+    type = models.CharField(u"类型", choices=GROUP_SETTING_TYPE, max_length=50, null=False, blank=False)
+    value = models.TextField(u"值")
+
+    class Meta:
+        managed = False
+        db_table = 'core_group_setting'
+        verbose_name = _(u'组权限设置')
+        verbose_name_plural = _(u'组权限设置')
+        unique_together = (
+            ('group', 'type'),
+        )
+
+    def loads_value(self):
+        return {}
 
 class CoreGroupMember(models.Model):
     group = models.ForeignKey(CoreGroup, related_name='group_member', on_delete=models.CASCADE, verbose_name=_(u"组权限管理"))
@@ -217,5 +245,6 @@ class CoreGroupMember(models.Model):
         )
 
 from auditlog.registry import auditlog
-auditlog.register(CoreGroup, exclude_fields=['group_member'])
+auditlog.register(CoreGroup, exclude_fields=['group_member','group_setting'])
+#auditlog.register(CoreGroupSetting)
 auditlog.register(CoreGroupMember, exclude_fields=['created'])

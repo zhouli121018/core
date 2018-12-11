@@ -177,17 +177,16 @@ CHECKRULE_CONDITION_LOGIC = (
 
 # domain_attr_default DomainAttr 域名系统设置的一些默认值
 DOMAINATTR_DEFULT = (
-        # Webmail 属性
+    # Webmail 属性
     ('sw_login_captcha_error_num', '3'),
     ('sw_token_switch', '-1'),
-    ('sw_email_used_see','1'),
+    #('sw_email_used_see','1'),    #邮箱容量查看功能，这开关去掉
     ('sw_pass_severe_new', '1'),   #PHP用了sw_pass_severe，同样是强密码，但规则与超管不同，启用超管必须禁用PHP的，否则会引起混乱
     ('sw_user_reg', '-1'),
     ('sw_reg_ratify', '1'),
     ('sw_change_pass', '1'),
     ('sw_change_userinfo', '1'),
     ('sw_auth_api', '-1'),
-    ('sw_weather', '-1'),
     ('sw_oab', '1'),
     ('sw_netdisk', '1'),
     ('sw_drafts', '1'),
@@ -198,7 +197,6 @@ DOMAINATTR_DEFULT = (
     ('sw_auto_forward', '1'),
     ('sw_user_score', '-1'),
     ('sw_wgt_maps', '1'),
-    ('sw_wgt_cale', '1'),
     ('sw_wgt_calc', '1'),
     ('sw_link_admin', '1'),
     ('sw_link_logout', '1'),
@@ -207,7 +205,7 @@ DOMAINATTR_DEFULT = (
     ('sw_login_ldap_switch', '-1'),
     ('sw_realaddress_alert', '1'),
     ('sw_cab', '1'),
-    ('sw_oab_share', '1'),
+    #('sw_oab_share', '1'),
     ('sw_dept_maillist', '-1'),
     ('sw_oab_dumpbutton', '1'),
     ('sw_time_mode', '-1'),
@@ -217,7 +215,7 @@ DOMAINATTR_DEFULT = (
     #('sw_autoforward_visible', '1'),
     ('sw_dept_showall', '-1'),
     #('display_everyone', '1'),
-    ('sw_department_openall', '-1'),
+    #('sw_department_openall', '-1'),
     ('sw_mail_log_save_day', '15'),
     ('sw_welcome_open_recipient', '-1'),
     ('sw_mail_encryption', '-1'),
@@ -234,7 +232,6 @@ DOMAINATTR_DEFULT = (
     ('sw_mailboxmove', '1'),
     ('sw_zhaohui', '1'),
     ('sw_business_tools', '1'),
-    ('sw_size_limit_recv', '-1'),
     ('sw_domain_signature', '1'),
     ('sw_welcome_letter', '1'),
     ('sw_ldap', '1'),

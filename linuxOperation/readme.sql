@@ -96,7 +96,7 @@ CREATE TABLE `core_group` (
   `is_suggest` tinyint(1) NOT NULL DEFAULT '1' COMMENT '邮箱意见反馈功能',
   `is_view` tinyint(1) NOT NULL DEFAULT '1' COMMENT '邮件召回记录查看',
   `is_filter` tinyint(1) NOT NULL DEFAULT '1' COMMENT '邮件过滤功能',
-  `is_smtp_tans` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'SMTP外发邮件中转',
+  `is_smtp_tans` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'SMTP外发代理',
   `passwd_level` tinyint(1) NOT NULL DEFAULT '1' COMMENT '账号密级',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

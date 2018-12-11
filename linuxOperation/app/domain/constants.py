@@ -272,10 +272,10 @@ DOMAIN_SYS_INTERFACE_IM_API_TYPE = (
 )
 
 DOMAIN_SYS_OTHERS_PARAMS = (
-    (u"sw_full_reject",        u"邮箱容量满后拒绝接收邮件"),
+    #(u"sw_size_limit_recv",        u"邮箱容量满后拒绝接收邮件"),  这个开关没意义，去掉了
     (u"sw_auto_clean",         u"邮箱空间定时清理功能"),
     (u"sw_online_attach_switch",      u"客户端网络附件开关"),
-    (u"sw_auto_inbox",          u"登录默认打开收件箱"),
+    #(u"sw_auto_inbox",          u"登录默认打开收件箱"),
     (u"sw_filter_duplicate_mail",    u"收件时是否过滤重复邮件"),
     #这个开关没有意义，应该作为通用设置存在
     #(u"sw_display_list",       u"邮件列表发来邮件显示邮件列表名称"),
@@ -284,10 +284,10 @@ DOMAIN_SYS_OTHERS_PARAMS = (
 )
 
 DOMAIN_SYS_OTHERS_VALUE = (
-    (u"sw_full_reject",        u"1"),
+    #(u"sw_size_limit_recv",        u"1"),
     (u"sw_auto_clean",         u"1"),
     (u"sw_online_attach_switch",      u"-1"),
-    (u"sw_auto_inbox",          u"1"),
+    #(u"sw_auto_inbox",          u"1"),
     (u"sw_filter_duplicate_mail",    u"1"),
     (u"sw_display_list",       u"1"),
     (u"sw_recvsms",             u"-1"),
@@ -295,10 +295,10 @@ DOMAIN_SYS_OTHERS_VALUE = (
 )
 
 DOMAIN_SYS_OTHERS_TYPE = (
-    (u"sw_full_reject",        u"webmail"),
+    #(u"sw_size_limit_recv",        u"system"),
     (u"sw_auto_clean",         u"webmail"),
     (u"sw_online_attach_switch",      u"system"),
-    (u"sw_auto_inbox",          u"webmail"),
+    #(u"sw_auto_inbox",          u"webmail"),
     (u"sw_filter_duplicate_mail",    u"webmail"),
     (u"sw_display_list",       u"webmail"),
     (u"sw_recvsms",               u"webmail"),
@@ -368,110 +368,111 @@ DOMAIN_SIGN_PERSONAL_VALUE_DEFAULT = (
 )
 
 DOMAIN_MODULE_HOME_PARAMS = (
-    (u'sw_business_tools', u'商务小工具栏目'),
-    (u'sw_wgt_cale', u'万年历'),
-    (u'sw_wgt_calc', u'万用计算器'),
-    (u'sw_wgt_maps', u'城市地图'),
+    #(u'sw_business_tools', u'商务小工具栏目'),    新版本webmail去掉
+    #(u'sw_wgt_cale', u'万年历'),
+    #(u'sw_wgt_calc', u'万用计算器'),
+    #(u'sw_wgt_maps', u'城市地图'),
 
-    (u'sw_email_used_see', u'用户已用邮箱容量查看功能'),
-    (u'sw_weather', u'天气预报功能'),
-    (u'sw_oab', u'企业通讯录'),
-    (u'sw_cab', u'公共通讯录'),
-    (u'sw_oab_share', u'其他域通讯录共享'),
-    (u'sw_oab_dumpbutton', u'通讯录导出按钮开关'),
+    #(u'sw_email_used_see', u'用户已用邮箱容量查看功能'),
+    #(u'sw_weather', u'天气预报功能'),
+    #(u'sw_oab', u'企业通讯录'),
+    #(u'sw_cab', u'公共通讯录'),
+    #(u'sw_oab_share', u'其他域通讯录共享'),    #这个开关不知道有什么用
 
-    (u'sw_department_openall', u'企业通讯录域组合'),
-    (u'sw_dept_showall', u'父部门中是否显示子部门邮件账号'),
-    (u'sw_netdisk', u'网络硬盘功能'),
-    (u'sw_calendar', u'日程功能'),
-    (u'sw_notes', u'便签功能'),
-
-    (u'oab_show_mod', u'企业通讯录设置'),    #新版webmail使用
+    #(u'sw_department_openall', u'企业通讯录域组合'),
+    #(u'sw_dept_showall', u'父部门中是否显示子部门邮件账号'),
+    #(u'sw_netdisk', u'网络硬盘功能'),
+    #(u'sw_calendar', u'日程功能'),
+    #(u'sw_notes', u'便签功能'),
 )
 
 DOMAIN_MODULE_HOME_VALUE = (
-    (u'sw_business_tools', u'1'),
-    (u'sw_wgt_cale', u'1'),
-    (u'sw_wgt_calc', u'1'),
-    (u'sw_wgt_maps', u'1'),
+    #(u'sw_business_tools', u'1'),
+    #(u'sw_wgt_cale', u'1'),
+    #(u'sw_wgt_calc', u'1'),
+    #(u'sw_wgt_maps', u'1'),
 
-    (u'sw_email_used_see', u'1'),
-    (u'sw_weather', u'1'),
-    (u'sw_oab', u'1'),
-    (u'sw_cab', u'1'),
-    (u'sw_oab_share', u'1'),
-    (u'sw_oab_dumpbutton', u'1'),
-    (u'oab_show_mod', u'1'),
-
-    (u'sw_department_openall', u'1'),
-    (u'sw_dept_showall', u'1'),
-    (u'sw_netdisk', u'1'),
-    (u'sw_calendar', u'1'),
-    (u'sw_notes', u'1'),
+    #(u'sw_email_used_see', u'1'), #邮箱容量查看功能，这开关去掉
+    #(u'sw_weather', u'1'),
+    #(u'sw_oab', u'1'),
+    #(u'sw_cab', u'1'),
+    #(u'sw_oab_share', u'1'),
+    #(u'sw_department_openall', u'1'),
+    #(u'sw_dept_showall', u'1'),
+    #(u'sw_netdisk', u'1'),
+    #(u'sw_calendar', u'1'),
+    #(u'sw_notes', u'1'),
 )
 
 DOMAIN_MODULE_HOME_TYPE = (
-    (u'sw_business_tools', u'webmail'),
-    (u'sw_wgt_cale', u'webmail'),
-    (u'sw_wgt_calc', u'webmail'),
-    (u'sw_wgt_maps', u'webmail'),
+    #(u'sw_business_tools', u'webmail'),
+    #(u'sw_wgt_cale', u'webmail'),
+    #(u'sw_wgt_calc', u'webmail'),
+    #(u'sw_wgt_maps', u'webmail'),
 
-    (u'sw_email_used_see', u'webmail'),
-    (u'sw_weather', u'webmail'),
-    (u'sw_oab', u'webmail'),
-    (u'sw_cab', u'webmail'),
-    (u'sw_oab_share', u'webmail'),
-    (u'sw_oab_dumpbutton', u'webmail'),#是否显示通讯录导出按钮
-    (u'oab_show_mod', u'webmail'),      # JSON， 显示所有部门 等按钮设置
+    #(u'sw_email_used_see', u'webmail'),
+    #(u'sw_weather', u'webmail'),
+    #(u'sw_oab', u'webmail'),
+    #(u'sw_cab', u'webmail'),
+    #(u'sw_oab_share', u'webmail'),
 
-    (u'sw_department_openall', u'webmail'),
-    (u'sw_dept_showall', u'webmail'),
-    (u'sw_netdisk', u'webmail'),
-    (u'sw_calendar', u'webmail'),
-    (u'sw_notes', u'webmail'),
+    #(u'sw_department_openall', u'webmail'),
+    #(u'sw_dept_showall', u'webmail'),
+    #(u'sw_netdisk', u'webmail'),
+    #(u'sw_calendar', u'webmail'),
+    #(u'sw_notes', u'webmail'),
 )
 
 DOMAIN_MODULE_MAIL_PARAMS = (
-    (u'sw_drafts', u'保存草稿功能'),
-    (u'sw_mail_encryption', u'发送邮件显示加密选项'),
-    (u'sw_show_add_paper', u'显示地址簿和信纸模块'),
-    (u'sw_mailpaper', u'去掉信纸模块'),
+    #(u'sw_drafts', u'保存草稿功能'),
+    #(u'sw_mail_encryption', u'发送邮件显示加密选项'),
+    #(u'sw_show_add_paper', u'显示地址簿和信纸模块'),
+    #(u'sw_mailpaper', u'去掉信纸模块'),
 
-    (u'sw_auto_receipt', u'自动发送回执功能'),
+    #(u'sw_auto_receipt', u'自动发送回执功能'),  这个开关在新版没什么意义
     (u'sw_mail_in_reply_to', u'添加Reply-To到邮件头'),
     (u'sw_mail_recall_notify', u'邮件召回成功后提示收件人'),
+    (u'sw_save_client_sent_email', u'保存客户端已发送邮件'),
+    (u'sw_oab_dumpbutton', u'通讯录导出按钮开关'),
+    (u'oab_show_mod', u'企业通讯录设置'),    #新版webmail使用
 )
 
 DOMAIN_MODULE_MAIL_VALUE = (
-    (u'sw_drafts', u'1'),
-    (u'sw_mail_encryption', u'-1'),
-    (u'sw_show_add_paper', u'-1'),
-    (u'sw_mailpaper', u'-1'),
+    #(u'sw_drafts', u'1'),
+    #(u'sw_mail_encryption', u'-1'),
+    #(u'sw_show_add_paper', u'-1'),
+    #(u'sw_mailpaper', u'-1'),
 
-    (u'sw_auto_receipt', u'1'),
+    #(u'sw_auto_receipt', u'1'),
     (u'sw_mail_in_reply_to', u'1'),
-    (u'sw_mail_recall_notify', u'1')
+    (u'sw_mail_recall_notify', u'1'),
+    (u'sw_save_client_sent_email', u'-1'),
+    (u'sw_oab_dumpbutton', u'1'),
+    (u'oab_show_mod', u'1'),
 )
 
 DOMAIN_MODULE_MAIL_TYPE = (
-    (u'sw_drafts', u'webmail'),
-    (u'sw_mail_encryption', u'webmail'),
-    (u'sw_show_add_paper', u'webmail'),
-    (u'sw_mailpaper', u'webmail'),
+    #(u'sw_drafts', u'webmail'),
+    #(u'sw_mail_encryption', u'webmail'),
+    #(u'sw_show_add_paper', u'webmail'),
+    #(u'sw_mailpaper', u'webmail'),
 
-    (u'sw_auto_receipt', u'webmail'),
+    #(u'sw_auto_receipt', u'webmail'),
     (u'sw_mail_in_reply_to', u'webmail'),
-    (u'sw_mail_recall_notify', u'webmail')
+    (u'sw_mail_recall_notify', u'webmail'),
+    (u'sw_save_client_sent_email', u'webmail'),
+    (u'sw_oab_dumpbutton', u'webmail'),#是否显示通讯录导出按钮
+    (u'oab_show_mod', u'webmail'),      # JSON， 显示所有部门 等按钮设置
 )
 
 DOMAIN_MODULE_SET_PARAMS = (
     (u'sw_change_userinfo', u'个人资料功能'),
     (u'sw_change_pass', u'密码修改功能'),
-    (u'sw_options', u'参数设置功能'),
-    (u'sw_signature', u'邮件签名功能'),
+    #(u'sw_options', u'参数设置功能'),
+    #(u'sw_signature', u'邮件签名功能'),
 
-    (u'sw_auto_reply', u'自动回复功能'),
-    (u'sw_auto_forward', u'自动转发功能'),
+    #(u'sw_auto_reply', u'自动回复功能'),
+    #(u'sw_auto_forward', u'自动转发功能'),
     #(u'sys_userbwlist', u'黑白名单功能'),
     #(u'sw_autoforward_visible', u'设置自动转发默认值'),
     (u'sw_mailboxmove', u'邮箱搬家功能'),
@@ -480,16 +481,18 @@ DOMAIN_MODULE_SET_PARAMS = (
     (u'sw_zhaohui', u'邮件召回记录查看'),
     (u'sw_cfilter', u'邮件过滤功能'),
     (u'sw_smtptransfer_visible', u'SMTP外发邮件代理'),
+    (u'sw_realaddress_alert', u'代发邮件地址提醒'),
+    (u'sw_time_mode', u'邮件内容中时间显示'),
 )
 
 DOMAIN_MODULE_SET_VALUE = (
     (u'sw_change_userinfo', u'1'),
     (u'sw_change_pass', u'1'),
-    (u'sw_options', u'1'),
-    (u'sw_signature', u'1'),
+    #(u'sw_options', u'1'),
+    #(u'sw_signature', u'1'),
 
-    (u'sw_auto_reply', u'1'),
-    (u'sw_auto_forward', u'1'),
+    #(u'sw_auto_reply', u'1'),
+    #(u'sw_auto_forward', u'1'),
     #(u'userbwlist', u'黑白名单功能'),
     #(u'sw_autoforward_visible', u'1'),
     (u'sw_mailboxmove', u'1'),
@@ -498,16 +501,18 @@ DOMAIN_MODULE_SET_VALUE = (
     (u'sw_zhaohui', u'1'),
     (u'sw_cfilter', u'1'),
     (u'sw_smtptransfer_visible', u'-1'),
+    (u'sw_realaddress_alert', u'1'),
+    (u'sw_time_mode', u'-1'),
 )
 
 DOMAIN_MODULE_SET_TYPE = (
     (u'sw_change_userinfo', u'webmail'),
     (u'sw_change_pass', u'webmail'),
-    (u'sw_options', u'webmail'),
-    (u'sw_signature', u'webmail'),
+    #(u'sw_options', u'webmail'),
+    #(u'sw_signature', u'webmail'),
 
-    (u'sw_auto_reply', u'webmail'),
-    (u'sw_auto_forward', u'webmail'),
+    #(u'sw_auto_reply', u'webmail'),
+    #(u'sw_auto_forward', u'webmail'),
     #(u'userbwlist', u'-1'),
     #(u'sw_autoforward_visible', u'webmail'),
     (u'sw_mailboxmove', u'webmail'),
@@ -516,29 +521,25 @@ DOMAIN_MODULE_SET_TYPE = (
     (u'sw_zhaohui', u'webmail'),
     (u'sw_cfilter', u'webmail'),
     (u'sw_smtptransfer_visible', u'webmail'),
+    (u'sw_realaddress_alert', u'webmail'),
+    (u'sw_time_mode', u'webmail'),
 )
 
 DOMAIN_MODULE_OTHER_PARAMS = (
-    (u'sw_folder_clean', u'清空文件夹功能'),
-    (u'sw_realaddress_alert', u'代发邮件地址提醒'),
-    (u'sw_time_mode', u'邮件内容中时间显示'),
+    #(u'sw_folder_clean', u'清空文件夹功能'),
     #(u'sw_user_score', u'用户积分功能'),
     #部门邮件列表 这个开关毫无存在意义
     #(u'sw_dept_maillist', u'部门邮件列表'),
 )
 
 DOMAIN_MODULE_OTHER_VALUE = (
-    (u'sw_folder_clean', u'-1'),
-    (u'sw_realaddress_alert', u'1'),
-    (u'sw_time_mode', u'-1'),
+    #(u'sw_folder_clean', u'-1'),
     #(u'sw_user_score', u'1'),
     #(u'sw_dept_maillist', u'-1'),
 )
 
 DOMAIN_MODULE_OTHER_TYPE = (
-    (u'sw_folder_clean', u'webmail'),
-    (u'sw_realaddress_alert', u'webmail'),
-    (u'sw_time_mode', u'webmail'),
+    #(u'sw_folder_clean', u'webmail'),
     #(u'sw_user_score', u'webmail'),
     #(u'sw_dept_maillist', u'webmail'),
 )

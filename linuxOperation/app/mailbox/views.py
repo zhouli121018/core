@@ -621,6 +621,8 @@ def delete_account(request, template_name='mailbox/delete_account.html'):
         mailboxs = Mailbox.objects.filter(username__in=mailbox_list)
         if mailboxs.filter(name__in=LICENCE_EXCLUDE_LIST).count()>0:
             messages.add_message(request, messages.ERROR, '禁止删除特殊管理帐号system')
+        elif not request.user.is_superuser and mailboxs.filter(is_superuser=True).count()>0:
+            messages.add_message(request, messages.ERROR, '当前帐号没有删除超级管理员的权限')
         else:
             ids = list(mailboxs.values_list('id', flat=True))
             ids = ','.join([str(id) for id in ids])

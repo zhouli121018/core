@@ -774,7 +774,6 @@ def ajax_cfilter(request):
 def smtp_verify_account(account):
     import smtplib
 
-    print ">>>>>>>>  smtp_verify_account   ",account
     if not account or "server" not in account or "account" not in account:
         return "FAIL", "缺少数据"
     status = "FAIL"
@@ -800,9 +799,9 @@ def smtp_verify_account(account):
         else:
             trans_server, port = trans_server, 25
         if trans_ssl == "1":
-            smtpObj = smtplib.SMTP_SSL(host=trans_server,port=int(port),timeout=10)
+            smtpObj = smtplib.SMTP_SSL(host=trans_server,port=int(port),timeout=20)
         else:
-            smtpObj = smtplib.SMTP(host=trans_server,port=int(port),timeout=10)
+            smtpObj = smtplib.SMTP(host=trans_server,port=int(port),timeout=20)
 
         status = "OK"
         if trans_auth == "1":
@@ -812,8 +811,8 @@ def smtp_verify_account(account):
         status = "FAIL"
         msg = "服务器验证失败： %s"%str(err)
     except Exception,err:
-        status = "FAIL"
-        msg = "服务器连接出错： %s"%str(err)
+        status = "NET_FAIL"
+        msg = "您输入的帐号因为网络原因验证失败，服务器已保存您当前输入的数据，请检查网络后重新检查数据是否能通过验证： %s"%str(err)
     return status, msg
 
 @licence_required

@@ -43,6 +43,7 @@
                             </td>
                             <td>
                                 <a type="button" class="green btn btn-white btn-primary btn-xs" href="{% url 'core_group_modify' d.id %}">{% trans "修改" %}</a>
+                                <a type="button" class="green btn btn-white btn-primary btn-xs" href="{% url 'core_group_info' d.id %}">{% trans "新版组权限配置修改" %}</a>
                                 <a type="button" class="blue btn btn-white btn-success btn-xs" href="{% url 'core_group_member' d.id %}">{% trans "成员管理" %}</a>
                                 {% if not d.is_everyone %}
                                     <a type="button" class="red delete btn btn-white btn-danger btn-xs" href="Javascript: Delete({{ d.id }}, '{{ d.name }}')">{% trans "删除" %}</a>

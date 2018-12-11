@@ -11,8 +11,8 @@ from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.utils.translation import ugettext_lazy as _
 
 from app.core.models import Mailbox, Department
-from .models import CoreGroup, CoreGroupMember
-from .forms import CoreGroupForms, CoreGroupMemberForm, CoreGroupMemberImportForm
+from .models import CoreGroup, CoreGroupMember, CoreGroupSetting, GROUP_SETTING_TYPE
+from .forms import CoreGroupForms, CoreGroupMemberForm, CoreGroupMemberImportForm, CoreGroupSettingForm
 from app.utils.domain_session import get_domainid_bysession, get_session_domain
 from lib.tools import clear_redis_cache
 from app.utils.regex import pure_email_regex
@@ -53,15 +53,15 @@ def groups_modify(request, group_id):
     obj = CoreGroup.objects.get(id=group_id)
     form = CoreGroupForms(obj.domain_id, obj.domain, instance=obj)
     group_id = obj.id if obj else 0
-    print "groups_modify:   ",request.POST
     if request.method == "POST":
         form = CoreGroupForms(obj.domain_id, obj.domain, request.POST, instance=obj)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加成功')
+            messages.add_message(request, messages.SUCCESS, u'保存成功')
             return HttpResponseRedirect(reverse('core_group_list'))
     return render(request, "group/groups_add.html",
-                  { 'form': form, "group_id":group_id })
+                  { 'form': form, "group_id":group_id,
+                  })
 
 @licence_required
 def groups_mem(request, group_id):
@@ -406,3 +406,131 @@ def group_limit_whitelist_ajax(request):
         "message"      :   "Success",
     }
     return HttpResponse(json.dumps(data), content_type="application/json")
+
+#--------------------新版本组权限的设置操作函数------------------------------------------
+def core_group_list(request):
+    data = {}
+    for obj in CoreGroup.objects.all():
+        data[obj.id] = {"domain_id":obj.domain_id,"name":obj.name,"id":obj.id}
+    return HttpResponse(json.dumps(data), content_type="application/json")
+
+def core_group_info(request, group_id):
+    obj = CoreGroup.objects.get(id=group_id)
+    form = CoreGroupForms(obj.domain_id, obj.domain, instance=obj)
+    return render(request, "group/groups_info.html",
+                  { 'form': form, "group_id":group_id,
+                  })
+
+def ajax_group_setting_list(request):
+    group_id = request.GET.get("group_id", 0)
+    data = {}
+    for idx, v in enumerate(GROUP_SETTING_TYPE):
+        t = v[0]
+        obj = CoreGroupSetting.objects.filter(group_id=group_id, type=t).first()
+        if obj:
+            data[idx] = {"type":t,"id":obj.id}
+    result = {
+        "group_id"      :   group_id,
+        "data"          :   data,
+    }
+    return HttpResponse(json.dumps(result), content_type="application/json")
+
+def ajax_group_setting_info(request):
+    setting_id = request.GET.get("setting_id", 0)
+    data = {}
+    obj = CoreGroupSetting.objects.filter(id=setting_id).first()
+    if obj:
+        data = obj.loads_value()
+    result = {
+        "setting_id"       :   setting_id,
+        "data"              :   data,
+    }
+    return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def ajax_group_setting_white(request):
+    setting_id = request.GET.get("setting_id", 0)
+    obj = CoreGroupSetting.objects.filter(id=setting_id).first()
+    if not obj or obj.type != "basic":
+        return HttpResponse(json.dumps({"recv":[],"send":[]}))
+    form = CoreGroupSettingForm("basic", obj)
+    value = form.value.get("limit_whitelist", {})
+    if not value:
+        value = {"recv":[],"send":[]}
+    return HttpResponse(json.dumps(value))
+
+@csrf_exempt
+def ajax_group_setting_white_mdf(request):
+    setting_id = request.POST.get("setting_id", 0)
+    obj = CoreGroupSetting.objects.filter(id=setting_id).first()
+    if not obj or obj.type != "basic":
+        data = {
+            "status"        :   "failure",
+            "message"      :   "不正确的组配置或类型",
+        }
+    else:
+        form = CoreGroupSettingForm("basic", obj, request.POST)
+        success, message = form.update_limit_whitelist()
+        status = "OK" if success else "failure"
+        data = {
+            "status"        :   status,
+            "message"       :   message,
+        }
+    return HttpResponse(json.dumps(data), content_type="application/json")
+
+@csrf_exempt
+def ajax_group_setting_dept(request):
+    setting_id = request.GET.get("setting_id", 0)
+    obj = CoreGroupSetting.objects.filter(id=setting_id).first()
+    if not obj or obj.type != "oab":
+        return HttpResponse(json.dumps([]))
+    form = CoreGroupSettingForm("oab", obj)
+    value = form.value.get("oab_dept_list", [])
+    return HttpResponse(json.dumps(value))
+
+@csrf_exempt
+def ajax_group_setting_dept_mdf(request):
+    setting_id = request.POST.get("setting_id", 0)
+    obj = CoreGroupSetting.objects.filter(id=setting_id).first()
+    if not obj or obj.type != "oab":
+        data = {
+            "status"        :   "failure",
+            "message"      :   "不正确的组配置或类型",
+        }
+    else:
+        form = CoreGroupSettingForm("oab", obj, request.POST)
+        success, message = form.update_oab_dept_list()
+        status = "OK" if success else "failure"
+        data = {
+            "status"        :   status,
+            "message"       :   message,
+        }
+    return HttpResponse(json.dumps(data), content_type="application/json")
+
+@csrf_exempt
+def ajax_group_setting_mdf(request):
+    group_id = request.POST.get("group_id", 0)
+    group_obj = CoreGroup.objects.filter(id=group_id).first()
+    if not group_obj:
+        return HttpResponse(json.dumps({"status":"failure","message":u"不存在的组{}".format(str(group_id))}), content_type="application/json")
+    t = request.POST.get("type", "")
+    setting_id = request.POST.get("setting_id", 0)
+    obj = CoreGroupSetting.objects.filter(id=setting_id).first()
+    form = CoreGroupSettingForm(t, obj, request.POST)
+    if form.save():
+        data = {"status":"OK","message":u"添加成功！"}
+    else:
+        data = {"status":"failure","message":u"添加失败： {}".format(form.error_message)}
+    return HttpResponse(json.dumps(data), content_type="application/json")
+
+@csrf_exempt
+def ajax_group_setting_del(request):
+    setting_id = request.POST.get("setting_id", 0)
+    data = {}
+    obj = CoreGroupSetting.objects.filter(id=setting_id).first()
+    if obj:
+        obj.delete()
+    data = {"status":"OK","message":u"删除成功！"}
+    return HttpResponse(json.dumps(data), content_type="application/json")
+
+#--------------------新版本组权限的设置操作函数------------------------------------------

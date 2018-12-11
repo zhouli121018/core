@@ -79,9 +79,11 @@
                         <label>
                             <input type="radio" name="operate" value="block" {% if form.operate.value == 'block'  %} checked="" {% endif %}><span>只可发送本地邮件</span>
                         </label>
+                        <!-- 去掉与组权限冲突的选项
                         <label>
-                            <input type="radio" name="operate" value="disable" {% if form.operate.value != 'block'  %} checked="" {% endif %}><span>禁用帐户</span>
+                            <input type="radio" name="operate" value="disable" {% if form.operate.value != 'block'  %} checked="" {% endif %}><span>永久禁用外发</span>
                         </label>
+                        -->
                     </label>
                 </td>
             </tr>

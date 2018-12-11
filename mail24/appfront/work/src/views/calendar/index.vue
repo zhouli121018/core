@@ -1,7 +1,7 @@
 <template>
   <div id="calendar_id" ref="calendar">
 
-    <section class="m-mail">
+    <section class="m-mail" v-loading="listLoading">
 
       <aside class="fl-g-sidebar">
         <div class="fl-m-nav-bg"></div>
@@ -52,16 +52,14 @@
   export default {
     data() {
       return {
+        listLoading:false,
         selectedIndex:'1',
         calendar_id:'',
         calendars:[
-          {id:1,mailbox_id:7368,name:'我的日程'},
-          {id:2,mailbox_id:7368,name:'xx的日程'},
+
           ],
         share_calendars:[
-          {id:6,mailbox_id:7368,name:'共享日程1'},
-          {id:7,mailbox_id:7368,name:'共享日程2'},
-          {id:8,mailbox_id:7368,name:'共享日程3'},
+
         ],
       };
     },
@@ -84,6 +82,7 @@
         if(c.id&&c.id!=0){this.calendar_id = c.calender_id||c.id;}
       },
       getCalendars(){
+        this.listLoading = true;
         getCalendarsList().then(res=>{
           this.calendars = res.data.results;
           for(let i=0;i<res.data.results.length;i++){
@@ -104,8 +103,9 @@
               this.share_calendars.push(o)
             }
           }
-        },err=>{
-          console.log(err);
+          this.listLoading = false;
+        }).catch(()=>{
+          this.listLoading = false;
         })
       }
 

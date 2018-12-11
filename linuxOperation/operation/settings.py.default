@@ -211,3 +211,9 @@ CELERY_ENABLE_UTC = True
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_DEFAULT_QUEUE =  'linux-operation-celery-default' #  默认队列
 # ---------------------------
+
+
+# -------------------------------
+# 是否是旧版WEBMAIL
+OLD_WEBMAIL_VERSION = False
+# -------------------------------

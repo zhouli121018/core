@@ -69,11 +69,11 @@ FREQUENCYSET_PARAM_DEFAULT = (
 # ------发信操作选项 --------
 FREQUENCYSET_PARAM_OPERATOR = (
     (u'block', u'只可发送本地邮件'),
-    (u'disable', u'禁用账户'),
+    #(u'disable', u'永久禁用外发'),   修改的是core_mailbox.limit_send，这个设定目前与组权限冲突！
 )
 
 # ------发信操作选项 --------
 FREQUENCYSET_PARAM_OPERATOR = (
     (u'block', u'只可发送本地邮件'),
-    (u'disable', u'禁用账户'),
+    #(u'disable', u'永久禁用外发'),   修改的是core_mailbox.limit_send，这个设定目前与组权限冲突！
 )

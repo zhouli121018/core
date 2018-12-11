@@ -10,6 +10,11 @@
                             <span class=" f-fr j-setting">
                             <el-button  icon="el-icon-setting" circle></el-button></span>
 
+                            <el-button size="mini" @click="selectAll" type="primary">
+                              {{is_checked?'取消全选':'全选'}}
+                              <!--<el-checkbox @change="selectAll" :checked="is_checked" class="check_btn"></el-checkbox>-->
+                            </el-button>
+
                             <!--排序-->
                             <el-dropdown @command="orderHandleCommand" placement="bottom-start" trigger="click">
                                 <el-button  size="small" plain>
@@ -33,8 +38,8 @@
                                 </el-button>
                                 <el-dropdown-menu slot="dropdown">
                                   <el-dropdown-item v-if="!item.children" v-for="(item,k) in viewItems" :key="k" class="dropdown_item"
-                                   :command="item.id" :divided="item.divided">
-                                      <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
+                                   :command="item.id" :divided="item.divided" :class="{ active: viewCheckIndex===item.id }">
+                                      <b><i class="el-icon-check vibility_hide" v-if="!item.classN" :class="{ vibility_show: viewCheckIndex===item.id }"></i> </b><i :class="item.classN"></i>
                                       {{ item.text}}
                                   </el-dropdown-item>
                                   <el-dropdown-item class="dropdown_item" v-else="item.children" :divided="item.divided">
@@ -184,10 +189,13 @@
                     </div>
                     <div class="m-mllist-row mllist-list-row">
                       <div class="j-module-content j-maillist mllist-list u-scroll">
-                        <div>
-                          <el-table ref="innerTable" :data="collapseItems[0].lists" style="width: 100%;" class="vertical_align_top maillist" v-loading="loading"
+                        <div class="table_box">
+
+                          <div v-for="(m,k) in listData">
+                            <h4 style="padding:8px 14px;border-bottom:1px solid #e3e4e5;cursor:pointer" @click="changeShow(m)">{{m.title}} ({{m.arr.length}})</h4>
+                              <el-table v-show="m.show" :show-header="false" ref="innerTable"  :data="m.arr" style="width: 100%;" class="vertical_align_top maillist" v-loading="loading"
                               highlight-current-row  @cell-mouse-enter="hoverfn" @cell-mouse-leave="noHover" @row-click="rowClick" @cell-click="cellClick"
-                                    @selection-change="handleSelectionChange"  :header-cell-style="{background:'#f0f1f3'}"
+                                @select-all="selectAllTable"    @selection-change="handleSelectionChange"  :header-cell-style="{background:'#f0f1f3'}"
                             >
                             <el-table-column
                               type="selection"
@@ -268,6 +276,10 @@
                               </template>
                             </el-table-column>
                           </el-table>
+
+                          </div>
+
+
                         </div>
                       </div>
 
@@ -295,6 +307,8 @@
 
     data() {
         return {
+          is_checked:false,
+          listData:[],
           flagsData:[
           {flags:'\\flagged',action:'add',text:'红旗',classN:'redcolor'},
           {flags:'umail-green',action:'add',text:'绿旗',classN:'flag-green'},
@@ -415,6 +429,25 @@
         }
     },
     methods:{
+      selectAll(val){
+        if(!this.is_checked){
+          this.$refs.innerTable.forEach(val=>{
+            val.clearSelection();
+          })
+          $('.table_box .el-table-column--selection').click();
+
+
+        }else{
+          this.$refs.innerTable.forEach(val=>{
+            val.clearSelection();
+          })
+        }
+      },
+      selectAllTable(val){
+      },
+      changeShow(m){
+        m.show = !m.show;
+      },
       signHandleCommand_new:function(item,row){
         if(!item){
           return;
@@ -444,13 +477,14 @@
             })
         })
       },
-      cellClick(row,col){
+      cellClick(row,col,cell){
         if(col.type=='default'){
           if(col.className!='flag_btn'){
             this.readMail(row)
           }
         }else{
-          this.$refs.innerTable.toggleRowSelection(row)
+          // this.$refs.innerTable.toggleRowSelection(row)
+          $(cell).find('label').click();
         }
       },
       refresh(){
@@ -547,7 +581,7 @@
           unseenArr[this.boxId] --;
           this.$store.dispatch('setUnseenCountA',unseenArr)
         }
-          row.isread = true;
+        row.isread = true;
         let param = {
           uids:[row.uid],
           folder:this.boxId,
@@ -642,7 +676,19 @@
         }
       },
       handleSelectionChange(val) {
-        this.multipleSelection = val;
+        this.multipleSelection = [];
+        let check = true;
+        this.$refs.innerTable.forEach(val=>{
+          if(val.selection.length < val.data.length){
+            check = false;
+          }
+          this.multipleSelection = this.multipleSelection.concat(val.selection)
+        })
+        if(check){
+          this.is_checked = true
+        }else{
+          this.is_checked = false
+        }
       },
       formatter(row, column) {
         return row.date.replace('T','  ');
@@ -672,6 +718,7 @@
         if(index == 'other'){
           return;
         }
+        this.viewCheckIndex = index;
         this.search = index;
         this.currentPage = 1;
         this.getMessageList();
@@ -863,6 +910,16 @@
               }
             // }
             pp.addTab('compose'+view+' ',data.subject,data.uid,fid)
+            let row = this.multipleSelection[0];
+            if(!row.isread){
+              this.$parent.$parent.$parent.unseencount --;
+              this.$parent.$parent.$parent.$refs.treeMenuBar.getCurrentNode().unseen--;
+              let unseenArr = this.$store.getters.getUnseenCount;
+              unseenArr[this.boxId] --;
+              this.$store.dispatch('setUnseenCountA',unseenArr)
+            }
+            row.isread = true;
+
 
           }).catch(err=>{
             this.fullscreenLoading = false;
@@ -1009,7 +1066,10 @@
       handleChange(value) {
       },
       noSelect(){
-        this.$refs.innerTable.clearSelection();
+        // this.$refs.innerTable.clearSelection();
+        this.$refs.innerTable.forEach(val=>{
+          val.clearSelection();
+        })
       },
       getMessageList(){
         this.loading = true;
@@ -1098,8 +1158,53 @@
             }
             items[i].flagStr = flagStr
           }
-          console.log(items)
           this.collapseItems[0].lists = items;
+
+          let result = [];
+          let today = {title:'今天 ',arr:[],show:true},yestoday = {title:'昨天 ',arr:[],show:true},beforeYesdoday = {title:'前天 ',arr:[],show:true},earlier = {title:'更早 ',arr:[],show:true};
+          items.forEach(val=>{
+            if(val.internaldate){
+              let date = new Date(val.internaldate.slice(0,10));
+              let now = new Date();
+              let count = now.getDate()-date.getDate()
+              if(count == 0){
+                today.arr.push(val)
+              }else if(count == 1){
+                yestoday.arr.push(val)
+              }else if(count == 1){
+                beforeYesdoday.arr.push(val)
+              }else{
+                earlier.arr.push(val)
+              }
+            }else{
+              let date = new Date(val.date.slice(0,10));
+              let now = new Date();
+              let count = now.getDate()-date.getDate()
+              if(count == 0){
+                today.arr.push(val)
+              }else if(count == 1){
+                yestoday.arr.push(val)
+              }else if(count == 1){
+                beforeYesdoday.arr.push(val)
+              }else{
+                earlier.arr.push(val)
+              }
+            }
+          })
+          if(today.arr.length>0){
+            result.push(today)
+          }
+          if(yestoday.arr.length>0){
+            result.push(yestoday)
+          }
+          if(beforeYesdoday.arr.length>0){
+            result.push(beforeYesdoday)
+          }
+          if(earlier.arr.length>0){
+            result.push(earlier)
+          }
+          this.listData = result;
+
           this.loading = false;
         },(err)=>{
           console.log(err)
@@ -1167,9 +1272,54 @@
         return arr;
       },
       unseen_count_new:function(){
-        console.log(this.$store.getters.getUnseenCount[this.boxId])
         return this.$store.getters.getUnseenCount[this.boxId]
-      }
+      },
+      listData1:function(){
+        let result = [];
+        let today = {title:'今天 ',arr:[]},yestoday = {title:'昨天 ',arr:[]},beforeYesdoday = {title:'前天 ',arr:[]},earlier = {title:'更早 ',arr:[]};
+        this.collapseItems[0].lists.forEach(val=>{
+          if(val.internaldate){
+            let date = new Date(val.internaldate.slice(0,10));
+            let now = new Date();
+            let count = now.getDate()-date.getDate()
+            if(count == 0){
+              today.arr.push(val)
+            }else if(count == 1){
+              yestoday.arr.push(val)
+            }else if(count == 1){
+              beforeYesdoday.arr.push(val)
+            }else{
+              earlier.arr.push(val)
+            }
+          }else{
+            let date = new Date(val.date.slice(0,10));
+            let now = new Date();
+            let count = now.getDate()-date.getDate()
+            if(count == 0){
+              today.arr.push(val)
+            }else if(count == 1){
+              yestoday.arr.push(val)
+            }else if(count == 1){
+              beforeYesdoday.arr.push(val)
+            }else{
+              earlier.arr.push(val)
+            }
+          }
+        })
+        if(today.arr.length>0){
+          result.push(today)
+        }
+        if(yestoday.arr.length>0){
+          result.push(yestoday)
+        }
+        if(beforeYesdoday.arr.length>0){
+          result.push(beforeYesdoday)
+        }
+        if(earlier.arr.length>0){
+          result.push(earlier)
+        }
+        return result
+      },
     },
     created(){
       this.boxId = this.$route.params.boxId || 'INBOX'
@@ -1239,6 +1389,7 @@
         this.boxId = this.$route.params.boxId;
         this.curr_folder = sessionStorage['checkNodeLabel'] || '收件箱'
       },
+
     },
 
 }

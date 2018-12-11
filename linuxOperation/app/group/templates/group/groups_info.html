@@ -19,9 +19,6 @@
                         <div id="edit_email_tabs" style="margin-bottom: 13px">
                             <ul>
                                 <li>
-                                    <a href="#group_info1">{% trans '组信息' %}</a>
-                                </li>
-                                <li>
                                     <a href="#group_info2">{% trans '常规设置' %}</a>
                                 </li>
                                 <li>
@@ -53,17 +50,6 @@
                                     <a href="#group_info7" class="display-none">{% trans '账号密级' %}</a>
                                 </li>
                             </ul>
-
-                            <div id="group_info1">
-                                <div class="row">
-                                    <div class="col-sm-10">
-                                        {{ form.domain_id }}
-                                        {{ form.name|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.description|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                    </div>
-                                    <div class="col-sm-2"></div>
-                                </div>
-                            </div>
 
                             <div id="group_info2">
                                 <div class="row">

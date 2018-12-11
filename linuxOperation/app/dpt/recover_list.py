@@ -21,13 +21,9 @@ from app.core.models import Department, Domain, CoreConfig
 from app.maillist.models import ExtList
 
 def is_new_version_webmail():
-    # insert into core_config(function,enabled) values('new_version_webmail','1');
-    # delete from core_config where function='new_version_webmail';
-    obj = CoreConfig.objects.filter(function="new_version_webmail").first()
-    if obj and unicode(obj.enabled) == u'1':
-        return True
-    return False
+    return True
 
+ExtList.objects.filter(listtype=u'dept').delete()
 for o_dept in Department.objects.all():
     obj = ExtList.objects.filter(listtype=u'dept', domain_id=o_dept.domain_id, dept_id=o_dept.id).first()
     if obj:

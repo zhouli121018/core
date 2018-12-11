@@ -70,8 +70,11 @@
                     <tr>
                         <td>签名模板</td>
                         <td>
-                            <div class="wysiwyg-editor" id="editor_sign">
-                            </div>
+                            <!-- <div class="wysiwyg-editor" id="editor_sign">
+                            </div> -->
+                            <textarea id="editor_id" name="content" style="width:100%;height:300px;">
+
+                            </textarea>
                             <div class="widget-toolbox padding-4  admin_setted center">
                                 <button type="button" class="btn btn-info" onclick="clickSubmitButton('personal_sign','form_personal')">
                                     <i class="ace-icon fa fa-floppy-o bigger-110"></i>
@@ -96,10 +99,32 @@
 </div>
 
 
-
 <script>
-    $('#sub_sign_tabs').tabs();
 
+    /*
+    items:['source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+                'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'multiimage',
+                'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                'anchor', 'link', 'unlink', '|', 'about']
+            };
+            */
+    var options = {
+            filterMode : false,
+            uploadJson:"{% url 'ajax_domainSignPicTransform' %}",
+            items:['source', '|', 'undo', 'redo', '|', 'cut', 'copy', 'paste','wordpaste','|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen',
+                'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image',
+                'flash', 'media', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak', 'link', 'unlink', '|', 'about']
+            };
+    
+    $('#sub_sign_tabs').tabs();
+    var editor;
     //$('#editor2').html(editor2_content);
     //$('#editor_sign').html(editor_sign_content);
     //initEditor('#editor2');
@@ -111,6 +136,11 @@
             console.log("data.data== "+data.data);
             $('#editor_sign').html(data.data);
             initEditor('#editor_sign');
+            $('#editor_id').html(data.data);
+            KindEditor.ready(function(K) {
+                editor = K.create('#editor_id', options);
+            });
+
         }
     })
     $.ajax({
@@ -118,10 +148,15 @@
         type:'POST',
         success:function(data){
             console.log("data.data== "+data.data);
-           if(data.data.html){
-              $('#editor2').html(data.data.html);
-              initEditor('#editor2');
-           }
+            $('#editor2').html(data.data.html);
+            initEditor('#editor2');
+        }
+    })
+    $.ajax({
+        url:" {% url 'ajax_domainSignDomain' %}",
+        type:'POST',
+        success:function(data){
+            console.log("data.data== "+data.data);
         }
     })
 
@@ -133,8 +168,14 @@
             content = encodeURIComponent(content);
             data = data + '&action=domain_sign&content_html='+content;
         }else{
-            content = $("#editor_sign").html();
+            // content = $("#editor_sign").html();
+            // content = encodeURIComponent(content);
+            editor.sync();
+            let content = ''
+            content =  $('#editor_id').val();
             content = encodeURIComponent(content);
+            console.log(content)
+
             data = data + '&action=' + action + '&content_html='+content;
         }
         $.ajax({
