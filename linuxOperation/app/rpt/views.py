@@ -750,8 +750,8 @@ def maillog_list_ajax(request):
             q = add_condition(q,Q(attachment_size__lte=max_attach))
         condition = add_condition(condition, q)
 
-    #每次查询只显示前10000结果
-    max_show = 10000
+    #每次查询只显示前1000结果
+    max_show = 1000
     lists = MailLog.objects.filter( condition )
 
     if order_column and int(order_column) < len(colums):

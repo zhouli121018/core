@@ -195,19 +195,6 @@ class DomainBasicForm(DomainForm):
     def save(self):
         self.paramSave()
 
-#用户注册
-class DomainRegLoginForm(DomainForm):
-
-    PARAM_NAME = dict(constants.DOMAIN_REG_LOGIN_PARAMS)
-    PARAM_LIST = dict(constants.DOMAIN_REG_LOGIN_VALUE)
-    PARAM_TYPE = dict(constants.DOMAIN_REG_LOGIN_TYPE)
-
-    def initPostParams(self):
-        self.initPostParamsDefaultDisable()
-
-    def check(self):
-        return self.valid
-
 class DomainRegLoginWelcomeForm(DomainForm):
 
     PARAM_NAME = dict(constants.DOMAIN_REG_LOGIN_WELCOME_PARAMS)

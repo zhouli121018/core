@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from __future__ import unicode_literals
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -227,7 +228,11 @@ class CoreGroupSetting(models.Model):
         )
 
     def loads_value(self):
-        return {}
+        try:
+            import json
+            return json.loads(self.value)
+        except Exception,err:
+            return {}
 
 class CoreGroupMember(models.Model):
     group = models.ForeignKey(CoreGroup, related_name='group_member', on_delete=models.CASCADE, verbose_name=_(u"组权限管理"))

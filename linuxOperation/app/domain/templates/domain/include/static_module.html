@@ -66,6 +66,24 @@
                         </div>
                     </td>
                 </tr>
+                <tr>
+                    <td class="text-right" >公共通讯录功能：</td>
+                    <td>
+                        <label class="inline" >
+                            <input name="sw_cab" value="1" {% if form_mail.sw_cab.value == "1" %} checked {% endif %}  type="checkbox" class="ace ace-switch ace-switch-5 open">
+                            <span class="lbl"></span>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right">其他域通讯录共享功能：</td>
+                    <td>
+                        <label class="inline" >
+                            <input name="sw_oab_share" value="1" {% if form_mail.sw_oab_share.value == "1" %} checked {% endif %}  type="checkbox" class="ace ace-switch ace-switch-5 open">
+                            <span class="lbl"></span>
+                        </label>
+                    </td>
+                </tr>
             </table>
             <div class=" ">
             <input type="hidden" value="{{ domain.id }}" name="domain_id" id="domain_id" />

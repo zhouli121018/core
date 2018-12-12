@@ -16,42 +16,47 @@
                     <div class="panel-heading">{% trans "组配置信息" %}</div>
                     <div class="panel-body">
                         {% csrf_token %}
+                        <div style="margin-bottom: 10px;">
+                            <span>添加配置项：</span>
+                            <select  id="add_tab">
+                                <option value="basic">常规设置</option>
+                                <option value="login">登陆方式限制</option>
+                                <option value="password">密码规则</option>
+                                <option value="spam">反垃圾/反病毒</option>
+                                <option value="frequency">发信频率设置</option>
+                                <option value="oab">企业通讯录设置</option>
+                                <option value="space">邮箱空间设置</option>
+                            </select>
+                            <button class="btn btn-success btn-sm" type="button" id="add_btn">添加</button>
+                        </div>
                         <div id="edit_email_tabs" style="margin-bottom: 13px">
                             <ul>
-                                <li>
-                                    <a href="#group_info2">{% trans '常规设置' %}</a>
+                                <li class="basic">
+                                    <a href="#basic">{% trans '常规设置' %}</a>
                                 </li>
-                                <li>
-                                    <a href="#group_info3">{% trans '登录方式限制' %}</a>
+                                <li class="login">
+                                    <a href="#login">{% trans '登录方式限制' %}</a>
                                 </li>
-                                <li>
-                                    <a href="#group_info4">{% trans '密码规则' %}</a>
+                                <li class="password">
+                                    <a href="#password">{% trans '密码规则' %}</a>
                                 </li>
-                                <li>
-                                    <a href="#group_info5">{% trans '反垃圾/反病毒' %}</a>
+                                <li class="spam">
+                                    <a href="#spam">{% trans '反垃圾/反病毒' %}</a>
                                 </li>
-                                <li>
-                                    <a href="#group_info8">{% trans '发信频率设置' %}</a>
+                                <li class="frequency">
+                                    <a href="#frequency">{% trans '发信频率设置' %}</a>
                                 </li>
                                 {% if not request.user.is_old_version_webmail %}
-                                    <li>
-                                        <a href="#group_info9">{% trans '企业通讯录设置' %}</a>
+                                    <li class="oab">
+                                        <a href="#oab">{% trans '企业通讯录设置' %}</a>
                                     </li>
                                 {% endif %}
                                 <li>
-                                    <a href="#group_info10">{% trans '邮箱空间清理设置' %}</a>
-                                </li>
-                                <li>
-                                    <!--web未实现的部分先隐藏-->
-                                    <a href="#group_info6" class="display-none">{% trans '账号页面设置' %}</a>
-                                </li>
-                                <li>
-                                    <!--web未实现的部分先隐藏-->
-                                    <a href="#group_info7" class="display-none">{% trans '账号密级' %}</a>
+                                    <a href="#space">{% trans '邮箱空间清理设置' %}</a>
                                 </li>
                             </ul>
 
-                            <div id="group_info2">
+                            <div id="basic">
                                 <div class="row">
                                     <div class="col-sm-10">
                                         {{ form.mail_space|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
@@ -86,9 +91,14 @@
                                     </div>
                                     <div class="col-sm-2"></div>
                                 </div>
+                                <div>
+                                    <button type="button" class="btn btn-primary btn-sm edit_btn">确认提交</button>
+                                    <!-- <button class="btn btn-sm" type="reset">{% trans "重置" %}</button> -->
+                                    <button type="button" class="btn btn-danger btn-sm del_btn">删除配置</button>
+                                </div>
                             </div>
 
-                            <div id="group_info3">
+                            <div id="login">
                                 <div class="row">
                                     <div class="col-sm-10">
                                         {{ form.is_pop|bootstrap_horizontal_bool }}
@@ -97,9 +107,14 @@
                                     </div>
                                     <div class="col-sm-2"></div>
                                 </div>
+                                <div>
+                                    <button type="button" class="btn btn-primary btn-sm edit_btn">确认提交</button>
+                                    <!-- <button class="btn btn-sm" type="reset">{% trans "重置" %}</button> -->
+                                    <button type="button" class="btn btn-danger btn-sm del_btn">删除配置</button>
+                                </div>
                             </div>
 
-                            <div id="group_info4">
+                            <div id="password">
                                 <div class="row">
                                     <div class="col-sm-10">
                                         {{ form.is_passwd|bootstrap_horizontal_bool }}
@@ -206,9 +221,14 @@
                                     </div>
                                     <div class="col-sm-2"></div>
                                 </div>
+                                <div>
+                                    <button type="button" class="btn btn-primary btn-sm edit_btn">确认提交</button>
+                                    <!-- <button class="btn btn-sm" type="reset">{% trans "重置" %}</button> -->
+                                    <button type="button" class="btn btn-danger btn-sm del_btn">删除配置</button>
+                                </div>
                             </div>
 
-                            <div id="group_info5">
+                            <div id="spam">
                                 <div class="row">
                                     <div class="col-sm-10">
                                         {{ form.is_virus|bootstrap_horizontal_bool }}
@@ -331,39 +351,14 @@
                                     </div>
                                     <div class="col-sm-2"></div>
                                 </div>
-                            </div>
-
-                            <div id="group_info6">
-                                <div class="row">
-                                    <div class="col-sm-10">
-                                        {{ form.is_info|bootstrap_horizontal_bool }}
-                                        {{ form.is_passwd_mdf|bootstrap_horizontal_bool }}
-                                        {{ form.is_param|bootstrap_horizontal_bool }}
-                                        {{ form.is_signature|bootstrap_horizontal_bool }}
-                                        {{ form.is_autoreply|bootstrap_horizontal_bool }}
-                                        {{ form.is_autotans|bootstrap_horizontal_bool }}
-                                        {{ form.is_blackwhite|bootstrap_horizontal_bool }}
-                                        {{ form.is_tansdefault|bootstrap_horizontal_bool }}
-                                        {{ form.is_move|bootstrap_horizontal_bool }}
-                                        {{ form.is_suggest|bootstrap_horizontal_bool }}
-                                        {{ form.is_view|bootstrap_horizontal_bool }}
-                                        {{ form.is_filter|bootstrap_horizontal_bool }}
-                                        {{ form.is_smtp_tans|bootstrap_horizontal_bool }}
-                                    </div>
-                                    <div class="col-sm-2"></div>
+                                <div>
+                                    <button type="button" class="btn btn-primary btn-sm edit_btn">确认提交</button>
+                                    <!-- <button class="btn btn-sm" type="reset">{% trans "重置" %}</button> -->
+                                    <button type="button" class="btn btn-danger btn-sm del_btn">删除配置</button>
                                 </div>
                             </div>
 
-                            <div id="group_info7">
-                                <div class="row">
-                                    <div class="col-sm-10">
-                                        {{ form.passwd_level|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                    </div>
-                                    <div class="col-sm-2"></div>
-                                </div>
-                            </div>
-
-                            <div id="group_info8">
+                            <div id="frequency">
                                 <div class="row">
                                     <div class="col-sm-10">
                                         {{ form.is_frequency|bootstrap_horizontal_bool }}
@@ -388,10 +383,15 @@
                                     </div>
                                     <div class="col-sm-2"></div>
                                 </div>
+                                <div>
+                                    <button type="button" class="btn btn-primary btn-sm edit_btn">确认提交</button>
+                                    <!-- <button class="btn btn-sm" type="reset">{% trans "重置" %}</button> -->
+                                    <button type="button" class="btn btn-danger btn-sm del_btn">删除配置</button>
+                                </div>
                             </div>
 
                             {% if not request.user.is_old_version_webmail %}
-                                <div id="group_info9">
+                                <div id="oab">
                                     <div class="row">
                                         <div class="col-sm-10">
                                             <div class="form-group">
@@ -442,10 +442,15 @@
                                         </div>
                                         <div class="col-sm-2"></div>
                                     </div>
+                                    <div>
+                                        <button type="button" class="btn btn-primary btn-sm edit_btn">确认提交</button>
+                                        <!-- <button class="btn btn-sm" type="reset">{% trans "重置" %}</button> -->
+                                        <button type="button" class="btn btn-danger btn-sm del_btn">删除配置</button>
+                                    </div>
                                 </div>
                             {% endif %}
 
-                            <div id="group_info10">
+                            <div id="space">
                                 <div class="row">
                                     <div class="col-sm-10">
                                         {{ form.is_space_clean|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
@@ -456,13 +461,14 @@
                                     </div>
                                     <div class="col-sm-2"></div>
                                 </div>
+                                <div>
+                                    <button type="button" class="btn btn-primary btn-sm edit_btn">确认提交</button>
+                                    <!-- <button class="btn btn-sm" type="reset">{% trans "重置" %}</button> -->
+                                    <button type="button" class="btn btn-danger btn-sm del_btn">删除配置</button>
+                                </div>
                             </div>
 
                         </div>
-
-                        <button type="submit" class="btn btn-primary btn-sm">{% trans "确认" %}</button>
-                        <button class="btn btn-sm" type="reset">{% trans "重置" %}</button>
-                        <button type="button" class="btn btn-link btn-sm" onclick="location.href='{% url 'core_group_list' %}'">{% trans "取消" %}</button>
                     </div>
                 </div>
             </div>
@@ -516,8 +522,8 @@
                             </div>
                         </div>
                         <div class=" ">
-                        <input type="hidden" value="{{ group_id }}" name="group_id" id="id_group_id" />
-                        <input type="hidden" value="send" name="type" id="id_send_limit_type" />
+                        <input type="hidden" value="{{ group_id }}" name="group_id"  />
+                        <input type="hidden" value="send" name="type" />
                         </div>
                         <div class="center" style="background:#fafafa;">
                             <button class="btn btn-primary submit_send_permit_btn" type="button">确定</button>
@@ -576,8 +582,8 @@
                             </div>
                         </div>
                         <div class=" ">
-                        <input type="hidden" value="{{ group_id }}" name="group_id" id="id_group_id" />
-                        <input type="hidden" value="recv" name="type" id="id_send_limit_type" />
+                        <input type="hidden" value="{{ group_id }}" name="group_id"  />
+                        <input type="hidden" value="recv" name="type" />
                         </div>
                         <div class="center" style="background:#fafafa;">
                             <button class="btn btn-primary submit_recv_permit_btn" type="button">确定</button>
@@ -978,6 +984,281 @@
 
 
 
+    </script>
+
+    <script>
+        function init(){
+            $('#edit_email_tabs>ul>li').addClass('display-none');
+            $('#edit_email_tabs>div').hide();
+            $.ajax({
+                url:"{% url 'ajax_group_setting_list' %}",
+                method:'GET',
+                data:{group_id:"{{ group_id }}"},
+                success:function(data){
+                    var res = data.data;
+                    var hashArr = [];
+                    var arr = [['basic','常规设置'],['login','登录方式限制'],['password','密码规则'],['spam','反垃圾/反病毒'],['frequency','发信频率设置'],['oab','企业通讯录设置'],['space','邮箱空间清理设置']];
+                    for(var key in res){
+                        var type = res[key].type;
+                        var id = res[key].id;
+                        if(key==0){
+                            $('#edit_email_tabs [href="#'+type+'"]').parent().removeClass('display-none');
+                            $('#edit_email_tabs [href="#'+type+'"]').parent().addClass('ui-tabs-active');
+                            $('#edit_email_tabs>div#'+type).show();
+                        }else{
+                            $('#edit_email_tabs [href="#'+type+'"]').parent().removeClass('display-none');
+                        }
+                        $('#'+type+'>div>button').attr('data_type',type);
+                        $('#'+type+'>div>button').attr('data_id',id);
+                        $('#edit_email_tabs [href="#'+type+'"]').attr('data_id',id)
+                        hashArr[type] = true;
+                    }
+                    for(var i=0,html='';i<arr.length;i++){
+                        if(!hashArr[arr[i][0]]){
+                            html += '<option value="'+arr[i][0]+'">'+arr[i][1]+'</option>'
+                        }
+                    }
+                    $('#add_tab').html(html);
+                }
+            })
+
+        }
+        init();
+
+        function getList(){
+            $.ajax({
+                url:"{% url 'ajax_group_setting_list' %}",
+                method:'GET',
+                data:{group_id:"{{ group_id }}"},
+                success:function(data){
+                    var res = data.data;
+                    var hashArr = [];
+                    var arr = [['basic','常规设置'],['login','登录方式限制'],['password','密码规则'],['spam','反垃圾/反病毒'],['frequency','发信频率设置'],['oab','企业通讯录设置'],['space','邮箱空间清理设置']];
+                    for(var key in res){
+                        var type = res[key].type;
+                        var id = res[key].id;
+                        $('#'+type+'>div>button').attr('data_type',type);
+                        $('#'+type+'>div>button').attr('data_id',id);
+                        $('#edit_email_tabs [href="#'+type+'"]').attr('data_id',id)
+                        hashArr[type] = true;
+                    }
+                    for(var i=0,html='';i<arr.length;i++){
+                        if(!hashArr[arr[i][0]]){
+                            html += '<option value="'+arr[i][0]+'">'+arr[i][1]+'</option>'
+                        }
+                    }
+                    $('#add_tab').html(html);
+                }
+            })
+        }
+        
+        //修改/添加某个组配置 {% url 'ajax_group_setting_mdf' %}
+        // (u"basic", u"常规设置"),
+        //                 (u"login", u"登陆方式限制"),
+        //                 (u"password", u"密码规则"),
+        //                 (u"spam", u"反垃圾/反病毒"),
+        //                 (u"frequency", u"发信频率设置"),
+        //                 (u"oab", u"企业通讯录设置"),
+        //                 (u"space", u"邮箱空间设置"),
+        function addTab(type,setting_id,val){
+            var value = '';
+            if(setting_id == 0 ){
+                type = $('#add_tab').val();
+                if(type == 'basic'){
+                    value = {
+                        mail_space:0,
+                        net_space:0,
+                        allow_out_size:0,
+                        send_limit:0,
+                        recv_limit:0,
+                        limit_whitelist:0,
+                    }
+                }else if(type == 'login'){
+                    value = {
+                        "is_pop": 1,
+                        "is_smtp": 1,
+                        "is_imap": 1
+                    }
+                }else if(type == 'password'){
+                    value = {
+                        "is_passwd": 1,
+                        "passwd_day": 0,
+                        "passwd_size": 8, 
+                        "passwd_type": 2,   
+                        "passwd_other": "", 
+                        "passwd_forbid": ""
+                    }
+                }else if(type == 'spam'){
+                    value = {
+                        "is_virus": 1,
+                        "is_spam": 1,
+                        "check_attach": "",
+                        "match_black": "", 
+                        "check_spam": "",  
+                        "is_formt": 1,
+                        "spam_folder": "spam",
+                        "spam_subject_flag": "",
+                        "isolate_day": 15,
+                        "is_send_isolate": 0,
+                        "send_isolate_name": "",  
+                        "isolate_url": "",       
+                        "check_object": "",      
+                        "check_local": "",        
+                        "check_outside": ""
+                    }
+                }else if(type == 'frequency'){
+                    value = {
+                        "is_frequency": 0,
+                        "frequency_minute": 0,
+                        "frequency_minute_count": 0,
+                        "frequency_hour_count": 0,
+                        "frequency_day_count": 0,
+                        "frequency_operate": 0,
+                    }
+                }else if(type == 'oab'){
+                    value = {
+                        "oab_show_mod": 1, 
+                        "oab_show_export": 0,
+                        "oab_dept_list": ""
+                    }
+
+                }else if(type == 'space'){
+                    value = {
+                        "is_space_clean": 0,
+                        "space_clean_normal": 0,
+                        "space_clean_sent": 0,
+                        "space_clean_spam": 0,
+                        "space_clean_trash": 0
+                    }
+                }
+            }else{
+                value = val;
+            }
+            $.ajax({
+                url:"{% url 'ajax_group_setting_mdf' %}",
+                method:'POST',
+                data:{
+                    group_id: "{{group_id}}",
+                    setting_id  : setting_id,
+                    type: type,
+                    value : value         
+                },
+                success:function(data){
+                    $('#edit_email_tabs>ul>li').removeClass('ui-tabs-active')
+                    $('#edit_email_tabs>div').hide();
+                    $('#edit_email_tabs [href="#'+type+'"]').parent().removeClass('display-none');
+                    $('#edit_email_tabs [href="#'+type+'"]').parent().addClass('ui-tabs-active');
+                    $('#edit_email_tabs>div#'+type).show();
+                    getList();
+                }
+            })
+        }
+        
+        $('#add_btn').click(function(){
+            addTab(1,0);
+        })
+        
+        //获取某个具体的组配置参数 {% url 'ajax_group_setting_info' %}
+        $('#edit_email_tabs>ul>li>a').click(function(){
+            console.log(this);
+           
+            $.ajax({
+                url:"{% url 'ajax_group_setting_info' %}",
+                type:'GET',
+                data:{setting_id:$(this).attr('data_id')},
+                success:function(data){
+                    console.log(data)
+                }
+            })
+        })
+
+
+        //修改某个组配置
+        $('#edit_email_tabs .edit_btn').click(function(){
+            let type = $(this).attr('data_type')
+            let value = ''
+            if(type == 'basic'){
+                value = {
+                    mail_space: $('#basic [name="mail_space"]').val(),
+                    net_space:0,
+                    allow_out_size:0,
+                    send_limit:0,
+                    recv_limit:0,
+                    limit_whitelist:0,
+                }
+            }else if(type == 'login'){
+                value = {
+                    "is_pop": 1,
+                    "is_smtp": 1,
+                    "is_imap": 1
+                }
+            }else if(type == 'password'){
+                value = {
+                    "is_passwd": 1,
+                    "passwd_day": 0,
+                    "passwd_size": 8, 
+                    "passwd_type": 2,   
+                    "passwd_other": "", 
+                    "passwd_forbid": ""
+                }
+            }else if(type == 'spam'){
+                value = {
+                    "is_virus": 1,
+                    "is_spam": 1,
+                    "check_attach": "",
+                    "match_black": "", 
+                    "check_spam": "",  
+                    "is_formt": 1,
+                    "spam_folder": "spam",
+                    "spam_subject_flag": "",
+                    "isolate_day": 15,
+                    "is_send_isolate": 0,
+                    "send_isolate_name": "",  
+                    "isolate_url": "",       
+                    "check_object": "",      
+                    "check_local": "",        
+                    "check_outside": ""
+                }
+            }else if(type == 'frequency'){
+                value = {
+                    "is_frequency": 0,
+                    "frequency_minute": 0,
+                    "frequency_minute_count": 0,
+                    "frequency_hour_count": 0,
+                    "frequency_day_count": 0,
+                    "frequency_operate": 0,
+                }
+            }else if(type == 'oab'){
+                value = {
+                    "oab_show_mod": 1, 
+                    "oab_show_export": 0,
+                    "oab_dept_list": ""
+                }
+
+            }else if(type == 'space'){
+                value = {
+                    "is_space_clean": 0,
+                    "space_clean_normal": 0,
+                    "space_clean_sent": 0,
+                    "space_clean_spam": 0,
+                    "space_clean_trash": 0
+                }
+            }
+            addTab($(this).attr('data_type'),$(this).attr('data_id'),value)
+        })
+
+        //删除某个组配置   {% url 'ajax_group_setting_del' %}
+        $('#edit_email_tabs .del_btn').click(function(){
+            $.ajax({
+                url:"{% url 'ajax_group_setting_del' %}",
+                type:'POST',
+                data:{setting_id:$(this).attr('data_id')},
+                success:function(data){
+                    console.log(data)
+                    getList();
+                }
+            })
+        })
     </script>
 
 {% endblock %}

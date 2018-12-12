@@ -205,7 +205,7 @@ DOMAINATTR_DEFULT = (
     ('sw_login_ldap_switch', '-1'),
     ('sw_realaddress_alert', '1'),
     ('sw_cab', '1'),
-    #('sw_oab_share', '1'),
+    ('sw_oab_share', '1'),
     ('sw_dept_maillist', '-1'),
     ('sw_oab_dumpbutton', '1'),
     ('sw_time_mode', '-1'),

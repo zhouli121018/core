@@ -12,7 +12,7 @@ DOMAIN_BASIC_PARAMS = (
     (u"cf_limit_mailbox_size", u"限定邮箱空间总容量"),
     (u"cf_limit_netdisk_size", u"限定网络硬盘总容量"),
     (u"cf_limit_email_size", u"发送邮件限制大小"),
-    (u"cf_limit_attach_size", u"WebMail单附件大小"),
+    #(u"cf_limit_attach_size", u"WebMail单附件大小"),    #新版webmail不需要这个按钮
     (u"cf_def_mailbox_size", u"用户邮箱默认容量"),
     (u"cf_def_netdisk_size", u"网络硬盘默认容量"),
 )
@@ -23,7 +23,7 @@ DOMAIN_BASIC_PARAMS_VALUE = (
     (u"cf_limit_mailbox_size",   "0"),
     (u"cf_limit_netdisk_size",   "500"),
     (u"cf_limit_email_size",     "0"),
-    (u"cf_limit_attach_size",    "10"),
+    #(u"cf_limit_attach_size",    "10"),
     (u"cf_def_mailbox_size",     "100"),
     (u"cf_def_netdisk_size",     "100"),
 )
@@ -34,7 +34,7 @@ DOMAIN_BASIC_PARAMS_TYPE = (
     (u"cf_limit_mailbox_size",   "system"),
     (u"cf_limit_netdisk_size",   "system"),
     (u"cf_limit_email_size",   "system"),
-    (u"cf_limit_attach_size",   "system"),
+    #(u"cf_limit_attach_size",   "system"),
     (u"cf_def_mailbox_size",   "system"),
     (u"cf_def_netdisk_size",   "system"),
 )
@@ -49,7 +49,7 @@ DOMAIN_BASIC_STATUS = (
 DOMAIN_REG_LOGIN_PARAMS = (
     (u"sw_user_reg", u"用户申请邮箱功能"),
     (u"sw_reg_ratify", u"管理员审核开通"),
-    (u"sw_link_admin", u"管理员登陆链接显示在邮件系统登陆页"),
+    #(u"sw_link_admin", u"管理员登陆链接显示在邮件系统登陆页"),      #无语加无用的开关
     (u"sw_welcome_letter", u"新用户欢迎信功能"),
     (u"sw_agreement", u"新用户欢迎信功能"),
 )
@@ -57,7 +57,7 @@ DOMAIN_REG_LOGIN_PARAMS = (
 DOMAIN_REG_LOGIN_VALUE = (
     (u"sw_user_reg",         "-1"),
     (u"sw_reg_ratify",       "-1"),
-    (u"sw_link_admin",       "1"),
+    #(u"sw_link_admin",       "1"),
     (u"sw_welcome_letter",   "1"),
     (u"sw_agreement",         "1"),
 )
@@ -65,7 +65,7 @@ DOMAIN_REG_LOGIN_VALUE = (
 DOMAIN_REG_LOGIN_TYPE = (
     (u"sw_user_reg",            "webmail"),
     (u"sw_reg_ratify",          "webmail"),
-    (u"sw_link_admin",          "webmail"),
+    #(u"sw_link_admin",          "webmail"),
     (u"sw_welcome_letter",      "system"),
     (u"sw_agreement",            "webmail"),
 )
@@ -278,7 +278,9 @@ DOMAIN_SYS_OTHERS_PARAMS = (
     #(u"sw_auto_inbox",          u"登录默认打开收件箱"),
     (u"sw_filter_duplicate_mail",    u"收件时是否过滤重复邮件"),
     #这个开关没有意义，应该作为通用设置存在
-    #(u"sw_display_list",       u"邮件列表发来邮件显示邮件列表名称"),
+    (u"sw_display_list",       u"邮件列表发来邮件显示邮件列表名称"),
+    (u"sw_welcome_letter", u"新用户欢迎信功能"),
+    (u"sw_agreement", u"新用户欢迎信功能"),
     (u"sw_recvsms",               u"短信通知接收邮件"),
     (u"sw_sendsms",               u"短信通知发送邮件"),
 )
@@ -290,6 +292,8 @@ DOMAIN_SYS_OTHERS_VALUE = (
     #(u"sw_auto_inbox",          u"1"),
     (u"sw_filter_duplicate_mail",    u"1"),
     (u"sw_display_list",       u"1"),
+    (u"sw_welcome_letter",   "1"),
+    (u"sw_agreement",         "1"),
     (u"sw_recvsms",             u"-1"),
     (u"sw_sendsms",             u"-1"),
 )
@@ -301,6 +305,8 @@ DOMAIN_SYS_OTHERS_TYPE = (
     #(u"sw_auto_inbox",          u"webmail"),
     (u"sw_filter_duplicate_mail",    u"webmail"),
     (u"sw_display_list",       u"webmail"),
+    (u"sw_welcome_letter",      "system"),
+    (u"sw_agreement",            "webmail"),
     (u"sw_recvsms",               u"webmail"),
     (u"sw_sendsms",               u"webmail"),
 )
@@ -376,8 +382,6 @@ DOMAIN_MODULE_HOME_PARAMS = (
     #(u'sw_email_used_see', u'用户已用邮箱容量查看功能'),
     #(u'sw_weather', u'天气预报功能'),
     #(u'sw_oab', u'企业通讯录'),
-    #(u'sw_cab', u'公共通讯录'),
-    #(u'sw_oab_share', u'其他域通讯录共享'),    #这个开关不知道有什么用
 
     #(u'sw_department_openall', u'企业通讯录域组合'),
     #(u'sw_dept_showall', u'父部门中是否显示子部门邮件账号'),
@@ -395,8 +399,6 @@ DOMAIN_MODULE_HOME_VALUE = (
     #(u'sw_email_used_see', u'1'), #邮箱容量查看功能，这开关去掉
     #(u'sw_weather', u'1'),
     #(u'sw_oab', u'1'),
-    #(u'sw_cab', u'1'),
-    #(u'sw_oab_share', u'1'),
     #(u'sw_department_openall', u'1'),
     #(u'sw_dept_showall', u'1'),
     #(u'sw_netdisk', u'1'),
@@ -413,8 +415,6 @@ DOMAIN_MODULE_HOME_TYPE = (
     #(u'sw_email_used_see', u'webmail'),
     #(u'sw_weather', u'webmail'),
     #(u'sw_oab', u'webmail'),
-    #(u'sw_cab', u'webmail'),
-    #(u'sw_oab_share', u'webmail'),
 
     #(u'sw_department_openall', u'webmail'),
     #(u'sw_dept_showall', u'webmail'),
@@ -435,6 +435,8 @@ DOMAIN_MODULE_MAIL_PARAMS = (
     (u'sw_save_client_sent_email', u'保存客户端已发送邮件'),
     (u'sw_oab_dumpbutton', u'通讯录导出按钮开关'),
     (u'oab_show_mod', u'企业通讯录设置'),    #新版webmail使用
+    (u'sw_oab_share', u'其他域通讯录共享'),
+    (u'sw_cab', u'公共通讯录'),
 )
 
 DOMAIN_MODULE_MAIL_VALUE = (
@@ -449,6 +451,8 @@ DOMAIN_MODULE_MAIL_VALUE = (
     (u'sw_save_client_sent_email', u'-1'),
     (u'sw_oab_dumpbutton', u'1'),
     (u'oab_show_mod', u'1'),
+    (u'sw_oab_share', u'1'),
+    (u'sw_cab', u'1'),
 )
 
 DOMAIN_MODULE_MAIL_TYPE = (
@@ -463,6 +467,8 @@ DOMAIN_MODULE_MAIL_TYPE = (
     (u'sw_save_client_sent_email', u'webmail'),
     (u'sw_oab_dumpbutton', u'webmail'),#是否显示通讯录导出按钮
     (u'oab_show_mod', u'webmail'),      # JSON， 显示所有部门 等按钮设置
+    (u'sw_oab_share', u'webmail'),
+    (u'sw_cab', u'webmail'),
 )
 
 DOMAIN_MODULE_SET_PARAMS = (
@@ -564,7 +570,7 @@ DOMAIN_LIST_PARAMS = (
     (u"cf_limit_mailbox_size", u"限定邮箱空间总容量"),
     (u"cf_limit_netdisk_size", u"限定网络硬盘总容量"),
     (u"cf_limit_email_size", u"发送邮件限制大小"),
-    (u"cf_limit_attach_size", u"WebMail单附件大小"),
+    #(u"cf_limit_attach_size", u"WebMail单附件大小"),
     (u"cf_def_mailbox_size", u"用户邮箱默认容量"),
     (u"cf_def_netdisk_size", u"网络硬盘默认容量"),
     (u"limit_send", u"发信功能限制"),
@@ -576,7 +582,7 @@ DOMAIN_LIST_PARAMS_VALUE = (
     (u"cf_limit_mailbox_size",   u"0"),
     (u"cf_limit_netdisk_size",   u"500"),
     (u"cf_limit_email_size",     u"0"),
-    (u"cf_limit_attach_size",    u"10"),
+    #(u"cf_limit_attach_size",    u"10"),
     (u"cf_def_mailbox_size",     u"100"),
     (u"cf_def_netdisk_size",     u"100"),
     (u"limit_send",              u"-1"),
@@ -588,7 +594,7 @@ DOMAIN_LIST_PARAMS_TYPE = (
     (u"cf_limit_mailbox_size",  u"system"),
     (u"cf_limit_netdisk_size",  u"system"),
     (u"cf_limit_email_size",    u"system"),
-    (u"cf_limit_attach_size",   u"system"),
+    #(u"cf_limit_attach_size",   u"system"),
     (u"cf_def_mailbox_size",    u"system"),
     (u"cf_def_netdisk_size",    u"system"),
     (u"limit_send",              u"system"),
@@ -603,7 +609,7 @@ DOMAIN_WEB_BASIC_PARAMS = (
     (u"cf_icp_url", u"ICP 备案链接地址"),
     (u"cf_faq_url", u"帮助文件地址"),
     (u"sw_unique_login", u"登录系统地点限制"),
-    (u"sw_login_captcha_error_num", u"启用验证码功能"),
+    #(u"sw_login_captcha_error_num", u"启用验证码功能"),
     (u"cf_logout_url", u"登出跳转地址"),
     (u"sw_login_ssl", u"SSL访问"),
 )
@@ -616,20 +622,20 @@ DOMAIN_WEB_BASIC_VALUE = (
     (u"cf_icp_url", u""),
     (u"cf_faq_url", u"http://www.comingchina.com/html/faq/"),
     (u"sw_unique_login", u"-1"),
-    (u"sw_login_captcha_error_num", u"-1"),
+    #(u"sw_login_captcha_error_num", u"-1"),
     (u"cf_logout_url", u""),
     (u"sw_login_ssl", u"-1"),
 )
 DOMAIN_WEB_BASIC_TYPE = (
     (u"cf_title",           u"webmail"),
-    (u"cf_login_page",     u"system"),
+    (u"cf_login_page",     u"webmail"),
     (u"sw_icp_show",       u"webmail"),
     (u"cf_icp_number",     u"webmail"),
     (u"cf_icp_url",        u"webmail"),
     (u"cf_faq_url",        u"webmail"),
     (u"sw_unique_login",   u"webmail"),
     (u"sw_login_ssl",      u"webmail"),
-    (u"sw_login_captcha_error_num",      u"webmail"),
+    #(u"sw_login_captcha_error_num",      u"webmail"),
     (u"cf_logout_url",      u"webmail"),
 )
 
@@ -674,7 +680,7 @@ DOMAIN_LOGIN_TEMP_LIST = (
 )
 
 DOMAIN_WEB_AD_PARAMS = (
-    (u"cf_adsetting", u"广告设置"),
+    (u"cf_adsetting", u"页面广告设置"),
 )
 
 DOMAIN_WEB_AD_VALUE = (

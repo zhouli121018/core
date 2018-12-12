@@ -21,7 +21,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_redis import get_redis_connection
 from app.core.models import Mailbox, DomainAttr, Domain, CoreMonitor, CoreAlias, MailboxExtra, MailboxUser
 from app.domain.models import Signature, SecretMail, WmCustomerInfo, WmCustomerCate, WmTemplate
-from app.domain.forms import DomainBasicForm, DomainRegLoginForm, DomainRegLoginWelcomeForm, DomainRegLoginAgreeForm, \
+from app.domain.forms import DomainBasicForm, DomainRegLoginWelcomeForm, DomainRegLoginAgreeForm, \
                                 DomainSysRecvLimitForm, DomainSysSecurityForm, DomainSysRecvWhiteListForm, DomainSysSecurityPasswordForm, \
                                 DomainSysPasswordForm, DomainSysInterfaceForm, DomainSysInterfaceAuthApiForm, DomainSysInterfaceIMApiForm, \
                                 DomainSysOthersForm, DomainSysOthersCleanForm, DomainSysOthersAttachForm, \
@@ -72,20 +72,18 @@ def domainBasic(request):
         "domain": domain,
     })
 
+#这个函数在 >= 2.2.61 后就没使用了
 @licence_required
 def domainRegLogin(request):
     domain = getDomainObj(request)
     if not domain:
         return HttpResponseRedirect(reverse('domain_home'))
-    form = DomainRegLoginForm(domain_id=domain.id, request=request)
     form_welcome = DomainRegLoginWelcomeForm(domain_id=domain.id, request=request)
     form_agree = DomainRegLoginAgreeForm(domain_id=domain.id, request=request)
     if request.method == "POST":
         action = request.POST.get('action', '')
-        if action == "setting":
-            form = DomainRegLoginForm(domain_id=domain.id, post=request.POST, request=request)
-            form.checkSave()
-        elif action == "welcome":
+        print "action == ",action
+        if action == "welcome":
             form_welcome = DomainRegLoginWelcomeForm(domain_id=domain.id, post=request.POST, request=request)
             form_welcome.checkSave()
         elif action == "agreement":
@@ -93,7 +91,6 @@ def domainRegLogin(request):
             form_agree.checkSave()
     return render(request, "domain/include/static_reg_login.html", context={
         "page": "reg_login",
-        "form": form,
         "form_welcome": form_welcome,
         "form_agree"  : form_agree,
         "domain": domain,
@@ -120,6 +117,9 @@ def domainSys(request):
 
     form_space_clean = DomainSysOthersCleanForm(domain_id=domain.id, request=request)
     form_client_attach = DomainSysOthersAttachForm(domain_id=domain.id, request=request)
+
+    form_welcome = DomainRegLoginWelcomeForm(domain_id=domain.id, request=request)
+    form_agree = DomainRegLoginAgreeForm(domain_id=domain.id, request=request)
 
     if request.method == "POST":
         action = request.POST.get('action', '')
@@ -160,6 +160,12 @@ def domainSys(request):
         elif action == "client_attach":
             form_client_attach = DomainSysOthersAttachForm(domain_id=domain.id, post=request.POST, request=request)
             form_client_attach.checkSave()
+        elif action == "welcome":
+            form_welcome = DomainRegLoginWelcomeForm(domain_id=domain.id, post=request.POST, request=request)
+            form_welcome.checkSave()
+        elif action == "agreement":
+            form_agree = DomainRegLoginAgreeForm(domain_id=domain.id, post=request.POST, request=request)
+            form_agree.checkSave()
     return render(request, "domain/include/static_sys.html", context={
         "page": "sys",
         "domain": domain,
@@ -178,6 +184,9 @@ def domainSys(request):
 
         "form_space_clean"      :   form_space_clean,
         "form_client_attach"    :   form_client_attach,
+
+        "form_welcome": form_welcome,
+        "form_agree"  : form_agree,
     })
 
 @licence_required
@@ -791,12 +800,14 @@ def domainList(request):
         id = request.POST.get('id', "")
         action = request.POST.get('action', "")
         if action == "delete":
+            if Domain.objects.all().count()<=1:
+                messages.add_message(request, messages.ERROR, u'不能删除唯一的域名!')
+                return HttpResponseRedirect(reverse('domain_list'))
             obj = Domain.objects.filter(pk=id).first()
             if obj:
                 if obj.domain in ("comingchina.com","fenbu.comingchina.com") and unicode(request.user).startswith(u"demo_admin@"):
                     messages.add_message(request, messages.ERROR, u'不能删除演示版本域名!')
                     return HttpResponseRedirect(reverse('domain_list'))
-
                 obj.delete()
     domain_list = Domain.objects.all().order_by('id')
     form = DomainListForm(domain_id=domain.id, request=request)

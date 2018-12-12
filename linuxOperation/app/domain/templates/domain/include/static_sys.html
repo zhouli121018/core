@@ -430,6 +430,21 @@
                         </label>
                     </td>
                 </tr>
+                <tr>
+                    <td class="text-right">用户注册及新用户欢迎信功能：</td>
+                    <td class="row">
+                        <div class="col-sm-4 no-padding">
+                            <label class="inline" >
+                                <input name="sw_welcome_letter" value="1" {% if form_others.sw_welcome_letter.value == '1' %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5 open">
+                                <span class="lbl"></span>
+                            </label>
+                        </div>
+                        <div class="col-sm-8 no-padding">
+                                <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#wlcmletter">设置欢迎信内容</button>
+                                <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#reg_content">用户注册协议</button>
+                        </div>
+                    </td>
+                </tr>
                 {% if request.user.licence_validsms %}
                     <tr>
                         <td class="text-right" >短信通知邮件接收：</td>
@@ -995,7 +1010,126 @@
     </div>
 </div>
 
+<div class="modal fade" id="wlcmletter" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">新用户欢迎信设置</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal welcome_form" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">邮件主题：</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="subject" class="form-control" placeholder="邮件主题" value="{{ form_welcome.subject }}" >
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">邮件内容：</label>
+                        <div class="col-sm-10">
+                            <div class="wysiwyg-editor" name="content" id="editor1" style="width:100%;box-sizing: border-box;"> {{ form_welcome.content }} </div>
+                        </div>
+                    </div>
+                    <div class=" ">
+                    <input type="hidden" value="{{ domain.id }}" name="domain_id" id="domain_id" />
+                    <input type="hidden" value="{{ domain.domain }}" name="domain" id="domain" />
+                    <input type="hidden" value="welcome" name="action" id="welcome" />
+                    </div>
+                    <div class="modal-footer center">
+                        <button type="button" class="btn btn-success submit_welcome_btn">提交</button>
+                        <button type="button"  class="btn btn-warning">重置</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="modal fade" id="reg_content" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">用户注册协议</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal agreement_form">
+                    {% csrf_token %}
+                     <div class="wysiwyg-editor" name="cf_agreement" id="reg_content_editor" style="width:100%;box-sizing: border-box;"> {{ form_agree.cf_agreement.value }} </div>
+                    <div class=" ">
+                    <input type="hidden" value="{{ domain.id }}" name="domain_id" id="domain_id" />
+                    <input type="hidden" value="{{ domain.domain }}" name="domain" id="domain" />
+                    <input type="hidden" value="agreement" name="action" id="agreement" />
+                    </div>
+                    <div class="modal-footer center">
+                        <button type="button" class="btn btn-success submit_agreement_btn">提交</button>
+                        <button type="button"  class="btn btn-warning">重置</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function(){
+        var editor1_content = htmlDecodeByRegExp($('#editor1').html());
+        var reg_content_editor_content = htmlDecodeByRegExp($('#reg_content_editor').html());
+        $('#editor1').html(editor1_content);
+        $('#reg_content_editor').html(reg_content_editor_content);
+        initEditor('#editor1');
+        initEditor('#reg_content_editor');
+    })
+
+    $('.submit_btn').click(function(){
+        var str = $(".reg_login_form").serialize();
+        $.ajax({
+            url:"{% url 'domain_sys' %}",
+            type:"POST",
+            data:str,
+            success:function(data){
+                $('#domain_sys').html('<div>保存中...</div>');
+                setTimeout(function(){
+                    $('#domain_sys').html(data);
+                },100)
+                //console.log(data);
+            }
+        })
+    })
+
+    $('.submit_welcome_btn').click(function(){
+        var str = $(".welcome_form").serialize();
+        var content = $("#editor1").html();
+        content = encodeURIComponent(content);
+        //console.log(str);
+        $.ajax({
+            url:"{% url 'domain_sys' %}",
+            type:"POST",
+            data:str+'&content='+content,
+            success:function(data){
+                $('#wlcmletter').modal('hide');
+            }
+        })
+    })
+
+    $('.submit_agreement_btn').click(function(){
+        var str = $(".agreement_form").serialize();
+        var cf_agreement = $("#reg_content_editor").html();
+        cf_agreement = encodeURIComponent(cf_agreement);
+        //console.log(str);
+        $.ajax({
+            url:"{% url 'domain_sys' %}",
+            type:"POST",
+            data:str+'&action=agreement&cf_agreement='+cf_agreement,
+            success:function(data){
+                $('#reg_content').modal('hide');
+            }
+        })
+    })
+
+</script>
 
 <script>
     $( "#sub_sys_tabs" ).tabs();
