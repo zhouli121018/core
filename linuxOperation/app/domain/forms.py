@@ -31,25 +31,34 @@ from auditlog.api import api_create_admin_log
 
 from app.core.constants import MAILBOX_SEND_PERMIT, MAILBOX_RECV_PERMIT
 
+def getSavePath(saveName):
+    #新版本webmail保存位置
+    saveDir = u"/usr/local/u-mail/data/www/webmail/netdisk/media"
+    if not os.path.exists(saveDir):
+        recursion_make_dir(saveDir)
+        user_name = "umail_apache"
+        os.chown(saveDir, get_system_user_id(user_name), get_system_group_id(user_name) )
+    #旧版本webmail保存位置
+    #saveDir2 = u"/usr/local/u-mail/data/www/webmail/attachment"
+    savePath = u"%s/%s"%(saveDir, saveName)
+    return savePath
+
 def saveLogoToPath(filedata):
     filedata = base64.decodestring(filedata.encode("utf-8","ignore").strip())
     user_name = "umail_apache"
-    saveDir = u"/usr/local/u-mail/data/www/webmail/attachment"
-    recursion_make_dir(saveDir)
-    os.chown(saveDir, get_system_user_id(user_name), get_system_group_id(user_name) )
-
     now = time.strftime("%Y%m%d%H%M%S")
     decimal,_= math.modf(time.time())
     saveName = u"logo_%s_%s_%03d.jpg"%(get_random_string(5), now, int(decimal*1000))
-    savePath = u"%s/%s"%(saveDir, saveName)
+    savePath = getSavePath(saveName)
     with open(savePath, "wb+") as f:
         f.write(filedata)
     os.chown(savePath, get_system_user_id(user_name), get_system_group_id(user_name) )
     return saveName
 
 def deleteLogoFromPath(saveName):
-    saveDir = u"/usr/local/u-mail/data/www/webmail/attachment"
-    savePath = u"%s/%s"%(saveDir, saveName)
+    if not saveName:
+        return
+    savePath = getSavePath(saveName)
     try:
         if os.path.exists(savePath):
             os.unlink(savePath)
@@ -1635,8 +1644,7 @@ class DomainWebLogoForm(DomainForm):
             return getattr(self, cache)
         value = DomainAttr.getAttrObjValue(self.domain_id.value, type=u"webmail", item=item)
         if value and value.strip():
-            saveDir = u"/usr/local/u-mail/data/www/webmail/attachment"
-            savePath = u"%s/%s"%(saveDir, value)
+            savePath = getSavePath(value)
             if os.path.exists(savePath):
                 with open(savePath,"rb") as f:
                     data = f.read()
@@ -1717,7 +1725,10 @@ class DomainWebAdForm(DomainForm):
 
     def initialize(self):
         self.initBasicParams()
-        data = phpLoads(self.cf_adsetting.value)
+        try:
+            data = json.loads(self.cf_adsetting2.value)
+        except:
+            data = {}
 
         self.login_1 = data.get(u"login_1", {})
         self.login_2 = data.get(u"login_2", {})
@@ -1739,8 +1750,7 @@ class DomainWebAdForm(DomainForm):
             return u""
         value = data.get(name,{}).get(u"image","")
         if value and value.strip():
-            saveDir = u"/usr/local/u-mail/data/www/webmail/attachment"
-            savePath = u"%s/%s"%(saveDir, value)
+            savePath = getSavePath(value)
             if os.path.exists(savePath):
                 with open(savePath,"rb") as f:
                     data = f.read()
@@ -1751,12 +1761,15 @@ class DomainWebAdForm(DomainForm):
         return u""
 
     def getData(self):
-        item = u"cf_adsetting"
+        item = u"cf_adsetting2"
         cache = u"cache_%s"%item
         if hasattr(self, cache):
             return getattr(self, cache)
         data = DomainAttr.getAttrObjValue(domain_id=self.domain_id.value, type=u"webmail", item=item)
-        data = phpLoads(data)
+        try:
+            data = json.loads(data)
+        except:
+            data = {}
         setattr(self, cache, data)
         return data
 
@@ -1778,12 +1791,15 @@ class DomainWebAdForm(DomainForm):
             return
         name = saveLogoToPath(filedata)
         if action == "login_advert_1":
+            deleteLogoFromPath(self.image_name_1)
             self.image_name_1 = name
             self.advert_link_1 = self.post.get(u"advert_link_1", u"")
         elif action == "login_advert_2":
+            deleteLogoFromPath(self.image_name_2)
             self.image_name_2 = name
             self.advert_link_2 = self.post.get(u"advert_link_2", u"")
         elif action == "login_advert_3":
+            deleteLogoFromPath(self.webmail_name)
             self.webmail_name = name
             self.webmail_link = self.post.get(u"webmail_link", u"")
         self.saveData()
@@ -1809,8 +1825,8 @@ class DomainWebAdForm(DomainForm):
             "login_2"   :   {"image":self.image_name_2,"link":self.advert_link_2},
             "webmail"   :   {"image":self.webmail_name,"link":self.webmail_link},
         }
-        data = phpDumps(data)
-        DomainAttr.saveAttrObjValue(domain_id=self.domain_id.value, type=u"webmail", item=u"cf_adsetting", value=data)
+        data = json.dumps(data)
+        DomainAttr.saveAttrObjValue(domain_id=self.domain_id.value, type=u"webmail", item=u"cf_adsetting2", value=data)
 
 #首页链接设置
 class DomainWebLinkForm(DomainForm):
@@ -1821,21 +1837,26 @@ class DomainWebLinkForm(DomainForm):
 
     def initialize(self):
         """
-        {0:
+        {'0':
             {'order': '',
-            'links': {
-                0: {'url': 'http://', 'desc': '', 'icon': None, 'title': ''},
-                1: {'url': 'http://', 'desc': '', 'icon': '', 'title': ''},
-                2: {'url': 'http://', 'desc': '', 'icon': '', 'title': ''},
-                3: {'url': 'http://', 'desc': '', 'icon': '', 'title': ''}
-                },
+            'links': [
+                {'url': 'http://', 'desc': '', 'icon': None, 'title': ''},
+                {'url': 'http://', 'desc': '', 'icon': '', 'title': ''},
+                {'url': 'http://', 'desc': '', 'icon': '', 'title': ''},
+                {'url': 'http://', 'desc': '', 'icon': '', 'title': ''}
+                ],
             'title': ''
             }
         }
         """
         self.initBasicParams()
-        data = phpLoads(self.cf_webmail_link.value)
+        try:
+            data = json.loads(self.cf_webmail_link2.value)
+        except:
+            data = {}
         self.data = data
+        if not isinstance(self.data, dict):
+            self.data = {}
 
     def getLinkList(self):
         for i in self.data.keys():
@@ -1846,8 +1867,7 @@ class DomainWebLinkForm(DomainForm):
         dd = {
                 u"order"    :   u"",
                 u"title"    :   u"",
-                u"links"    :   {
-                }
+                u"links"    :   [],
         }
         for j in xrange(4):
             dd["url_%s"%j] = u""
@@ -1858,7 +1878,7 @@ class DomainWebLinkForm(DomainForm):
 
         if not str(idx).isdigit():
             return dd
-        idx = int(idx)
+        idx = str(idx)
         if not idx in self.data:
             return dd
         dd = {
@@ -1866,22 +1886,20 @@ class DomainWebLinkForm(DomainForm):
             u"title"    :   self.data[idx][u"title"],
         }
         d_link = self.data[idx][u"links"]
-        for j in xrange(4):
-            icon = d_link[j][u"icon"]
-            dd["url_%s"%j] = d_link[j][u"url"]
-            dd["desc_%s"%j] = d_link[j][u"desc"]
-            dd["icon_%s"%j] = d_link[j][u"icon"]
-            dd["title_%s"%j] = d_link[j][u"title"]
-
-            imgData = self.getImgData(d_link[j][u"icon"])
+        for j,v in enumerate(d_link):
+            icon = v[u"icon"]
+            dd["url_%s"%j] = v[u"url"]
+            dd["desc_%s"%j] = v[u"desc"]
+            dd["icon_%s"%j] = v[u"icon"]
+            dd["title_%s"%j] = v[u"title"]
+            imgData = self.getImgData(v[u"icon"])
             dd["img_%s"%j] = imgData
 
         return dd
 
     def getImgData(self, value):
         if value.strip():
-            saveDir = u"/usr/local/u-mail/data/www/webmail/attachment"
-            savePath = u"%s/%s"%(saveDir, value)
+            savePath = getSavePath(value)
             if os.path.exists(savePath):
                 with open(savePath,"rb") as f:
                     data = f.read()
@@ -1922,42 +1940,34 @@ class DomainWebLinkForm(DomainForm):
         data = {
             u'order'    :   order,
             u'title'    :   title,
-            u'links'    :   {
-                0   :   data_link_1,
-                1   :   data_link_2,
-                2   :   data_link_3,
-                3   :   data_link_4,
-            },
+            u'links'    :   [data_link_1, data_link_2, data_link_3, data_link_4],
         }
 
         if str(idx).isdigit():
             idx = int(idx)
             self.checkDelete(idx)
         else:
-            idx = 0 if not self.data else max(self.data.keys())+1
-        self.data[idx] = data
+            idx = 0 if not self.data else max( [int(i) for i in self.data.keys()] )+1
+        self.data[str(idx)] = data
         self.saveData()
         return True
 
     def setLogoData(self, idx):
         def setLogoData2(default, logofile):
-            if logofile:
-                if default:
-                    deleteLogoFromPath(default)
-                return saveLogoToPath(logofile)
-            return default
+            if default:
+                deleteLogoFromPath(default)
+            return saveLogoToPath(logofile)
         #end def
         icon_1_default = u""
         icon_2_default = u""
         icon_3_default = u""
         icon_4_default = u""
-        if str(idx).isdigit():
-            idx = int(idx)
-            if idx in self.data:
-                icon_1_default = self.data[idx]["links"][0]["icon"]
-                icon_2_default = self.data[idx]["links"][1]["icon"]
-                icon_3_default = self.data[idx]["links"][2]["icon"]
-                icon_4_default = self.data[idx]["links"][3]["icon"]
+        idx = str(idx)
+        if idx in self.data:
+            icon_1_default = self.data[idx]["links"][0]["icon"]
+            icon_2_default = self.data[idx]["links"][1]["icon"]
+            icon_3_default = self.data[idx]["links"][2]["icon"]
+            icon_4_default = self.data[idx]["links"][3]["icon"]
 
         icon_1 = setLogoData2(icon_1_default, self.post.get(u"logofile_1", "").strip())
         icon_2 = setLogoData2(icon_2_default, self.post.get(u"logofile_2", "").strip())
@@ -1968,15 +1978,17 @@ class DomainWebLinkForm(DomainForm):
     def checkDelete(self, idx):
         if not str(idx).isdigit():
             return False
-        idx = int(idx)
+        idx = str(idx)
         if not idx in self.data:
             return False
         data = self.data.pop(idx)
         self.saveData()
+        for d in data["links"]:
+            deleteLogoFromPath(d["icon"])
 
     def saveData(self):
-        data = phpDumps(self.data)
-        self.cf_webmail_link = BaseFied(value=data, error=None)
+        data = json.dumps(self.data)
+        self.cf_webmail_link2 = BaseFied(value=data, error=None)
         self.save()
 
 #信纸设置
@@ -2009,8 +2021,7 @@ class DomainWebLetterForm(DotDict):
     def getImgData(self):
         value = self.image
         if value and value.strip():
-            saveDir = u"/usr/local/u-mail/data/www/webmail/attachment"
-            savePath = u"%s/%s"%(saveDir, value)
+            savePath = getSavePath(value)
             if os.path.exists(savePath):
                 with open(savePath,"rb") as f:
                     data = f.read()

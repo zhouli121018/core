@@ -680,25 +680,27 @@ DOMAIN_LOGIN_TEMP_LIST = (
 )
 
 DOMAIN_WEB_AD_PARAMS = (
-    (u"cf_adsetting", u"页面广告设置"),
+    #(u"cf_adsetting", u"页面广告设置"),   #老版本webmail
+    (u"cf_adsetting2", u"页面广告设置"),   #新版本webmail
 )
 
 DOMAIN_WEB_AD_VALUE = (
-    (u"cf_adsetting", u""),
+    (u"cf_adsetting2", u""),
 )
 
 DOMAIN_WEB_AD_TYPE = (
-    (u"cf_adsetting", u"webmail"),
+    (u"cf_adsetting2", u"webmail"),
 )
 
 DOMAIN_WEB_LINK_PARAMS = (
-    (u"cf_webmail_link", u"首页链接设置"),
+    #(u"cf_webmail_link", u"首页链接设置"),      #老版本webmail
+    (u"cf_webmail_link2", u"首页链接设置"),      #新版本webmail
 )
 
 DOMAIN_WEB_LINK_VALUE = (
-    (u"cf_webmail_link", u""),
+    (u"cf_webmail_link2", u""),
 )
 
 DOMAIN_WEB_LINK_TYPE = (
-    (u"cf_webmail_link", u"webmail"),
+    (u"cf_webmail_link2", u"webmail"),
 )

@@ -514,7 +514,6 @@ class CoreGroupSettingForm(forms.Form):
         else:
             self.error_message = _(u"保存的类型不匹配 '%s'"%self.type)
             return False
-        print "data == ",data
         if not self.instance:
             obj = CoreGroupSetting.objects.filter(group_id=group_id, type=self.type).first()
             if obj:

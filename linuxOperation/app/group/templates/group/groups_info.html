@@ -628,6 +628,19 @@
     <script src="{% static "components/datetimepiker/bootstrap-datetimepicker.zh-CN.js" %}"></script>
 
     <script>
+        var limit_whitelist = {}
+        function get_limit_whitelist(){
+            var setting_id = $('#basic>div>button').attr('data_id');
+            $.ajax({
+                url:"{% url 'ajax_group_setting_white' %}",
+                type:'GET',
+                async: false,
+                data:{setting_id:setting_id},
+                success:function(data){
+                    limit_whitelist = data;
+                }
+            })
+        }
         $('.limit_send_select').change(function(){
             if($(this).val()=='3'){
                 $(this).next().show();
@@ -636,35 +649,75 @@
             }
         })
         $('.submit_send_permit_btn').click(function(){
-            var str = $(".form_send_limit_white").serialize();
-            //console.log("str  ==  "+str);
+            // var str = $(".form_send_limit_white").serialize();
+            // str +='&type=send&setting_id='+"{{group_id}}"
+            // get_limit_whitelist();
             $.ajax({
-                url:"{% url 'group_limit_whitelist_ajax' %}",
-                type:"POST",
-                data:str,
+                url:"{% url 'ajax_group_setting_white' %}",
+                type:'GET',
+                data:{setting_id:$('#basic>div>button').attr('data_id')},
                 success:function(data){
-                    if(data.status=='OK'){
-                        alert("设置成功！");
-                        $('#allow_send_email_dress').modal('hide');
-                        window.location.href="";
-                    }else{
-                        alert("设置失败：  "+data.message);
+                    var sendList = data.send ||[];
+                    console.log($(".form_send_limit_white [name='new_mailbox']").val())
+                    sendList.push($(".form_send_limit_white [name='new_mailbox']").val());
+                    var str = {
+                        value : sendList,
+                        type: 'send',
+                        setting_id: $('#basic>div>button').attr('data_id')
                     }
+                    console.log(str)
+                    str = JSON.stringify(str)
+                    console.log("str1  ==  "+str);
+                    $.ajax({
+                        // url:"{% url 'group_limit_whitelist_ajax' %}",
+                        url:"{% url 'ajax_group_setting_white_mdf' %}",
+                        type:"POST",
+                        data:str,
+                        success:function(data){
+                            if(data.status=='OK'){
+                                alert("设置成功！");
+                                $('#allow_send_email_dress').modal('hide');
+                                // window.location.href="";
+                            }else{
+                                alert("设置失败：  "+data.message);
+                            }
+                        }
+                    })
+        
                 }
             })
         })
         $('.submit_recv_permit_btn').click(function(){
-            var str = $(".form_recv_limit_white").serialize();
-            //console.log("str  ==  "+str);
             $.ajax({
-                url:"{% url 'group_limit_whitelist_ajax' %}",
-                type:"POST",
-                data:str,
+                url:"{% url 'ajax_group_setting_white' %}",
+                type:'GET',
+                async: false,
+                data:{setting_id: $('#basic>div>button').attr('data_id')},
                 success:function(data){
-                    $('#allow_recv_email_dress').modal('hide');
-                    window.location.href="";
+                    var recvList = data.recv ||[];
+                    // var str = $(".form_recv_limit_white").serialize();
+                    // str +='&type=recv&setting_id='+"{{group_id}}"
+                    recvList.push($(".form_recv_limit_white [name='new_mailbox']").val());
+                    var str = {
+                        value : sendList,
+                        type: 'recv',
+                        setting_id: $('#basic>div>button').attr('data_id')
+                    }
+                    str = JSON.stringify(str)
+                    console.log("str2  ==  "+str);
+                    $.ajax({
+                        // url:"{% url 'group_limit_whitelist_ajax' %}",
+                        url:"{% url 'ajax_group_setting_white_mdf' %}",
+                        type:"POST",
+                        data:str,
+                        success:function(data){
+                            $('#allow_recv_email_dress').modal('hide');
+                            // window.location.href="";
+                        }
+                    })
                 }
             })
+            
         })
         function clickLimitSendDelete(type, num){
             var entry = "id_" + type + "_row_" + num;
@@ -987,9 +1040,13 @@
     </script>
 
     <script>
-        function init(){
-            $('#edit_email_tabs>ul>li').addClass('display-none');
-            $('#edit_email_tabs>div').hide();
+        var limit_whitelist = {};
+        function init(isInit){
+            if(isInit=='1'){
+                console.log('init')
+                $('#edit_email_tabs>ul>li').addClass('display-none');
+                $('#edit_email_tabs>div').hide();
+            }
             $.ajax({
                 url:"{% url 'ajax_group_setting_list' %}",
                 method:'GET',
@@ -1001,12 +1058,12 @@
                     for(var key in res){
                         var type = res[key].type;
                         var id = res[key].id;
-                        if(key==0){
-                            $('#edit_email_tabs [href="#'+type+'"]').parent().removeClass('display-none');
-                            $('#edit_email_tabs [href="#'+type+'"]').parent().addClass('ui-tabs-active');
-                            $('#edit_email_tabs>div#'+type).show();
-                        }else{
-                            $('#edit_email_tabs [href="#'+type+'"]').parent().removeClass('display-none');
+                        $('#edit_email_tabs [href="#'+type+'"]').parent().removeClass('display-none');
+                        if(isInit=='1'){
+                            let ctype = $('#edit_email_tabs>ul>li:not(".display-none"):eq(0)').find('>a').attr('href').slice(1)
+                            $('#edit_email_tabs>ul>li:not(".display-none"):eq(0)').find('>a').click();
+                            // $('#edit_email_tabs [href="#'+ctype+'"]').parent().addClass('ui-tabs-active');
+                            $('#edit_email_tabs>div#'+ctype).show();
                         }
                         $('#'+type+'>div>button').attr('data_type',type);
                         $('#'+type+'>div>button').attr('data_id',id);
@@ -1018,38 +1075,21 @@
                             html += '<option value="'+arr[i][0]+'">'+arr[i][1]+'</option>'
                         }
                     }
-                    $('#add_tab').html(html);
+                    if(html == ''){
+                        $('#add_tab').parent().hide();
+                    }else{
+                        $('#add_tab').html(html);
+                        $('#add_tab').parent().show();
+                    }
+                    
                 }
             })
 
         }
-        init();
+        init(1);
 
         function getList(){
-            $.ajax({
-                url:"{% url 'ajax_group_setting_list' %}",
-                method:'GET',
-                data:{group_id:"{{ group_id }}"},
-                success:function(data){
-                    var res = data.data;
-                    var hashArr = [];
-                    var arr = [['basic','常规设置'],['login','登录方式限制'],['password','密码规则'],['spam','反垃圾/反病毒'],['frequency','发信频率设置'],['oab','企业通讯录设置'],['space','邮箱空间清理设置']];
-                    for(var key in res){
-                        var type = res[key].type;
-                        var id = res[key].id;
-                        $('#'+type+'>div>button').attr('data_type',type);
-                        $('#'+type+'>div>button').attr('data_id',id);
-                        $('#edit_email_tabs [href="#'+type+'"]').attr('data_id',id)
-                        hashArr[type] = true;
-                    }
-                    for(var i=0,html='';i<arr.length;i++){
-                        if(!hashArr[arr[i][0]]){
-                            html += '<option value="'+arr[i][0]+'">'+arr[i][1]+'</option>'
-                        }
-                    }
-                    $('#add_tab').html(html);
-                }
-            })
+           init(0);
         }
         
         //修改/添加某个组配置 {% url 'ajax_group_setting_mdf' %}
@@ -1069,9 +1109,9 @@
                         mail_space:0,
                         net_space:0,
                         allow_out_size:0,
-                        send_limit:0,
-                        recv_limit:0,
-                        limit_whitelist:0,
+                        send_limit:-1,
+                        recv_limit:-1,
+                        limit_whitelist:{},
                     }
                 }else if(type == 'login'){
                     value = {
@@ -1085,16 +1125,27 @@
                         "passwd_day": 0,
                         "passwd_size": 8, 
                         "passwd_type": 2,   
-                        "passwd_other": "", 
-                        "passwd_forbid": ""
+                        "passwd_other":  {
+                            "passwd_digital": 1, 
+                            "passwd_name2": 1, 
+                            "passwd_name": 1, 
+                            "passwd_letter": 1, 
+                            "passwd_letter2": 1
+                            }, 
+                        "passwd_forbid": {
+                            "forbid_send": 1, 
+                            "force_change": 1, 
+                            "force_change_in_weak": 1, 
+                            "forbid_send_in_weak": 1
+                            }
                     }
                 }else if(type == 'spam'){
                     value = {
                         "is_virus": 1,
                         "is_spam": 1,
-                        "check_attach": "",
-                        "match_black": "", 
-                        "check_spam": "",  
+                        "check_attach": {"high": 1, "low": 0},
+                        "match_black": {"content": 1, "sender": 1, "subject": 1}, 
+                        "check_spam": {"spamassassion": 1, "dspam": 1},  
                         "is_formt": 1,
                         "spam_folder": "spam",
                         "spam_subject_flag": "",
@@ -1102,9 +1153,9 @@
                         "is_send_isolate": 0,
                         "send_isolate_name": "",  
                         "isolate_url": "",       
-                        "check_object": "",      
-                        "check_local": "",        
-                        "check_outside": ""
+                        "check_object": {"outside": 1, "local": 1},      
+                        "check_local": {"virus": 1, "spam": 1},        
+                        "check_outside": {"virus": 1, "spam": 1}
                     }
                 }else if(type == 'frequency'){
                     value = {
@@ -1134,6 +1185,7 @@
             }else{
                 value = val;
             }
+            console.log(typeof JSON.stringify(value))
             $.ajax({
                 url:"{% url 'ajax_group_setting_mdf' %}",
                 method:'POST',
@@ -1141,14 +1193,19 @@
                     group_id: "{{group_id}}",
                     setting_id  : setting_id,
                     type: type,
-                    value : value         
+                    value : JSON.stringify(value)         
                 },
                 success:function(data){
-                    $('#edit_email_tabs>ul>li').removeClass('ui-tabs-active')
-                    $('#edit_email_tabs>div').hide();
-                    $('#edit_email_tabs [href="#'+type+'"]').parent().removeClass('display-none');
-                    $('#edit_email_tabs [href="#'+type+'"]').parent().addClass('ui-tabs-active');
-                    $('#edit_email_tabs>div#'+type).show();
+                    let str = '修改配置成功！';
+                    if(setting_id ==0){
+                        str = '添加配置成功！';
+                        $('#edit_email_tabs>ul>li').removeClass('ui-tabs-active')
+                        $('#edit_email_tabs>div').hide();
+                        $('#edit_email_tabs [href="#'+type+'"]').parent().removeClass('display-none');
+                        $('#edit_email_tabs [href="#'+type+'"]').click();
+                        $('#edit_email_tabs>div#'+type).show();
+                    }
+                    alert(str)
                     getList();
                 }
             })
@@ -1161,13 +1218,120 @@
         //获取某个具体的组配置参数 {% url 'ajax_group_setting_info' %}
         $('#edit_email_tabs>ul>li>a').click(function(){
             console.log(this);
-           
+            var type = $(this).attr('href').slice(1);
             $.ajax({
                 url:"{% url 'ajax_group_setting_info' %}",
                 type:'GET',
                 data:{setting_id:$(this).attr('data_id')},
                 success:function(data){
                     console.log(data)
+                    var res = data.data;
+                    for(var key in res){
+                        if(type == 'basic'){
+                            $('#basic [name="mail_space"]').val(res['mail_space']);
+                            $('#basic [name="net_space"]').val(res['net_space'])
+                            $('#basic [name="allow_out_size"]').val(res['allow_out_size'])
+                            $('#basic [name="send_limit"]').val(res['send_limit'])
+                            $('#basic [name="recv_limit"]').val(res['recv_limit'])
+                            if(res['send_limit'] == 3){
+                                $('#basic [name="send_limit"]').next().show()
+                            }else{
+                                $('#basic [name="send_limit"]').next().hide()
+                            }
+                            if(res['recv_limit'] == 3){
+                                $('#basic [name="recv_limit"]').next().show()
+                            }else{
+                                $('#basic [name="recv_limit"]').next().hide()
+                            }
+                        }else if(type == 'login'){
+                            $('#login [name="is_pop"]').prop('checked',res['is_pop']);
+                            $('#login [name="is_smtp"]').prop('checked',res['is_smtp']);
+                            $('#login [name="is_imap"]').prop('checked',res['is_imap']);
+                        }else if(type == 'password'){
+                            $('#password [name="is_passwd"]').prop('checked',res['is_passwd'])
+                            $('#password [name="passwd_day"]').val(res['passwd_day'])
+                            $('#password [name="passwd_other_letter"]').val(res['passwd_size'])
+                            $('#password [name="passwd_type"]').val(res['passwd_type'])
+                            if(res['passwd_other']){
+                                $('#password [name="passwd_other_bak"][value="passwd_digital"]').prop('checked',res['passwd_other']['passwd_digital'])
+                                $('#password [name="passwd_other_bak"][value="passwd_name2"]').prop('checked',res['passwd_other']['passwd_name2']) 
+                                $('#password [name="passwd_other_bak"][value="passwd_name"]').prop('checked',res['passwd_other']['passwd_name']) 
+                                $('#password [name="passwd_other_bak"][value="passwd_letter"]').prop('checked',res['passwd_other']['passwd_letter']) 
+                                $('#password [name="passwd_other_bak"][value="passwd_letter2"]').prop('checked',res['passwd_other']['passwd_letter2'])
+                            }
+                            if(res['passwd_forbid']){
+                                $('#password [name="passwd_forbid_bak"][value="forbid_send"]').prop('checked',res['passwd_forbid']['forbid_send']) 
+                                $('#password [name="passwd_forbid_bak"][value="force_change"]').prop('checked',res['passwd_forbid']['force_change'])
+                                $('#password [name="passwd_forbid_bak"][value="force_change_in_weak"]').prop('checked',res['passwd_forbid']['force_change_in_weak']) 
+                                $('#password [name="passwd_forbid_bak"][value="forbid_send_in_weak"]').prop('checked',res['passwd_forbid']['forbid_send_in_weak'])
+                            }
+                            
+                        }else if(type == 'spam'){
+                            $('#spam [name="is_virus"]').prop('checked',res['is_virus'])
+                            $('#spam [name="is_spam"]').prop('checked',res['is_spam'])
+                            if(res['check_attach']){
+                                $('#spam [name="check_attach_bak"][value="high"]').prop('checked',res['check_attach']['high'])
+                                $('#spam [name="check_attach_bak"][value="low"]').prop('checked',res['check_attach']['low'])
+                            }
+                            if(res['match_black']){
+                                $('#spam [name="match_black_bak"][value="content"]').prop('checked',res['match_black']['content'])
+                                $('#spam [name="match_black_bak"][value="sender"]').prop('checked',res['match_black']['sender'])
+                                $('#spam [name="match_black_bak"][value="subject"]').prop('checked',res['match_black']['subject'])
+                            }
+                            if(res['check_spam']){
+                                $('#spam [name="check_spam_bak"][value="spamassassion"]').prop('checked',res['check_spam']['spamassassion'])
+                                $('#spam [name="check_spam_bak"][value="dspam"]').prop('checked',res['check_spam']['dspam'])
+                            }
+                            $('#spam [name="is_formt"]').prop('checked',res['is_formt'])
+                            $('#spam [name="spam_folder"]').val(res['spam_folder'])
+                            $('#spam [name="spam_subject_flag"]').val(res['spam_subject_flag'])
+                            $('#spam [name="isolate_day"]').val(res['isolate_day'])
+                            $('#spam [name="is_send_isolate"]').prop('checked',res['is_send_isolate'])
+                            $('#spam [name="send_isolate_name"]').val(res['send_isolate_name'])
+                            $('#spam [name="isolate_url"]').val(res['isolate_url'])
+                            if(res['check_object']){
+                                $('#spam [name="check_object_bak"][value="outside"]').prop('checked',res['check_object']['outside'])
+                                $('#spam [name="check_object_bak"][value="local"]').prop('checked',res['check_object']['local'])
+                            }
+                            if(res['check_local']){
+                                $('#spam [name="check_local_bak"][value="virus"]').prop('checked',res['check_local']['virus'])
+                                $('#spam [name="check_local_bak"][value="spam"]').prop('checked',res['check_local']['spam'])
+                            }
+                            if(res['check_outside']){
+                                $('#spam [name="check_outside_bak"][value="virus"]').prop('checked',res['check_outside']['virus'])
+                                $('#spam [name="check_outside_bak"][value="spam"]').prop('checked',res['check_outside']['spam'])
+                            }
+                        }else if(type == 'frequency'){
+                            $('#frequency [name="is_frequency"]').prop('checked',res['is_frequency'])
+                            $('#frequency [name="frequency_minute"]').val(res['frequency_minute'])
+                            $('#frequency [name="frequency_minute_count"]').val(res['frequency_minute_count'])
+                            $('#frequency [name="frequency_hour_count"]').val(res['frequency_hour_count'])
+                            $('#frequency [name="frequency_day_count"]').val(res['frequency_day_count'])
+                            $('#frequency [name="frequency_operate"]').val(res['frequency_operate'])
+                           
+                        }else if(type == 'oab'){
+                            $('#oab [name="oab_show_mod"]').prop('checked',false);
+                            $('#oab [name="oab_show_mod"][value="'+res['oab_show_mod']+'"]').prop('checked',true)
+                            $('#oab [name="oab_show_export_bak"]').prop('checked',res['oab_show_export'])
+
+                            if(res['oab_show_mod'] == 4){
+                                $('.dept_list').addClass('active')
+                            }else{
+                                $('.dept_list').removeClass('active')
+                            }
+                            
+
+                        }else if(type == 'space'){
+                            $('#space [name="is_space_clean"]').val(res['is_space_clean'])
+                            $('#space [name="space_clean_normal"]').val(res['space_clean_normal'])
+                            $('#space [name="space_clean_sent"]').val(res['space_clean_sent'])
+                            $('#space [name="space_clean_spam"]').val(res['space_clean_spam'])
+                            $('#space [name="space_clean_trash"]').val(res['space_clean_trash'])
+                           
+                        }
+
+
+                    }
                 }
             })
         })
@@ -1178,70 +1342,101 @@
             let type = $(this).attr('data_type')
             let value = ''
             if(type == 'basic'){
+                get_limit_whitelist();
                 value = {
                     mail_space: $('#basic [name="mail_space"]').val(),
-                    net_space:0,
-                    allow_out_size:0,
-                    send_limit:0,
-                    recv_limit:0,
-                    limit_whitelist:0,
+                    net_space: $('#basic [name="net_space"]').val(),
+                    allow_out_size: $('#basic [name="allow_out_size"]').val(),
+                    send_limit: $('#basic [name="send_limit"]').val(),
+                    recv_limit: $('#basic [name="recv_limit"]').val(),
+                    limit_whitelist: limit_whitelist,
                 }
             }else if(type == 'login'){
                 value = {
-                    "is_pop": 1,
-                    "is_smtp": 1,
-                    "is_imap": 1
+                    "is_pop": $('[name="is_pop"]').prop('checked')?1:0,
+                    "is_smtp": $('[name="is_smtp"]').prop('checked')?1:0,
+                    "is_imap": $('[name="is_imap"]').prop('checked')?1:0
                 }
             }else if(type == 'password'){
                 value = {
-                    "is_passwd": 1,
-                    "passwd_day": 0,
-                    "passwd_size": 8, 
-                    "passwd_type": 2,   
-                    "passwd_other": "", 
-                    "passwd_forbid": ""
+                    "is_passwd": $('#password [name="is_passwd"]').prop('checked')?1:0,
+                    "passwd_day": $('#password [name="passwd_day"]').val(),
+                    "passwd_size": $('#password [name="passwd_other_letter"]').val(), 
+                    "passwd_type": $('#password [name="passwd_type"]').val(),   
+                    "passwd_other": {
+                        "passwd_digital": $('#password [name="passwd_other_bak"][value="passwd_digital"]').prop('checked')?1:0, 
+                        "passwd_name2": $('#password [name="passwd_other_bak"][value="passwd_name2"]').prop('checked')?1:0, 
+                        "passwd_name": $('#password [name="passwd_other_bak"][value="passwd_name"]').prop('checked')?1:0, 
+                        "passwd_letter": $('#password [name="passwd_other_bak"][value="passwd_letter"]').prop('checked')?1:0, 
+                        "passwd_letter2": $('#password [name="passwd_other_bak"][value="passwd_letter2"]').prop('checked')?1:0
+                        }, 
+                    "passwd_forbid":  {
+                        "forbid_send": $('#password [name="passwd_forbid_bak"][value="forbid_send"]').prop('checked')?1:0, 
+                        "force_change": $('#password [name="passwd_forbid_bak"][value="force_change"]').prop('checked')?1:0, 
+                        "force_change_in_weak": $('#password [name="passwd_forbid_bak"][value="force_change_in_weak"]').prop('checked')?1:0, 
+                        "forbid_send_in_weak": $('#password [name="passwd_forbid_bak"][value="forbid_send_in_weak"]').prop('checked')?1:0
+                        }
                 }
             }else if(type == 'spam'){
                 value = {
-                    "is_virus": 1,
-                    "is_spam": 1,
-                    "check_attach": "",
-                    "match_black": "", 
-                    "check_spam": "",  
-                    "is_formt": 1,
-                    "spam_folder": "spam",
-                    "spam_subject_flag": "",
-                    "isolate_day": 15,
-                    "is_send_isolate": 0,
-                    "send_isolate_name": "",  
-                    "isolate_url": "",       
-                    "check_object": "",      
-                    "check_local": "",        
-                    "check_outside": ""
+                    "is_virus": $('#spam [name="is_virus"]').prop('checked')?1:0,
+                    "is_spam": $('#spam [name="is_spam"]').prop('checked')?1:0,
+                    "check_attach": {
+                        "high": $('#spam [name="check_attach_bak"][value="high"]').prop('checked')?1:0, 
+                        "low": $('#spam [name="check_attach_bak"][value="low"]').prop('checked')?1:0,
+                        },
+                    "match_black": {
+                        "content": $('#spam [name="match_black_bak"][value="content"]').prop('checked')?1:0, 
+                        "sender": $('#spam [name="match_black_bak"][value="sender"]').prop('checked')?1:0, 
+                        "subject": $('#spam [name="match_black_bak"][value="subject"]').prop('checked')?1:0
+                        }, 
+                    "check_spam": {
+                        "spamassassion": $('#spam [name="check_spam_bak"][value="spamassassion"]').prop('checked')?1:0, 
+                        "dspam": $('#spam [name="check_spam_bak"][value="dspam"]').prop('checked')?1:0
+                        },  
+                    "is_formt": $('#spam [name="is_formt"]').prop('checked')?1:0,
+                    "spam_folder": $('#spam [name="is_formt"]').val(),
+                    "spam_subject_flag": $('#spam [name="spam_subject_flag"]').val(),
+                    "isolate_day": $('#spam [name="isolate_day"]').val(),
+                    "is_send_isolate": $('#spam [name="is_send_isolate"]').prop('checked')?1:0,
+                    "send_isolate_name": $('#spam [name="send_isolate_name"]').val(), 
+                    "isolate_url": $('#spam [name="isolate_url"]').val(),     
+                    "check_object": {
+                        "outside":  $('#spam [name="check_object_bak"][value="outside"]').prop('checked')?1:0, 
+                        "local":  $('#spam [name="check_object_bak"][value="local"]').prop('checked')?1:0
+                        },      
+                    "check_local": {
+                        "virus": $('#spam [name="check_local_bak"][value="virus"]').prop('checked')?1:0,
+                        "spam": $('#spam [name="check_local_bak"][value="spam"]').prop('checked')?1:0, 
+                        },        
+                    "check_outside": {
+                        "virus": $('#spam [name="check_outside_bak"][value="virus"]').prop('checked')?1:0,
+                        "spam": $('#spam [name="check_outside_bak"][value="spam"]').prop('checked')?1:0, 
+                        }
                 }
             }else if(type == 'frequency'){
                 value = {
-                    "is_frequency": 0,
-                    "frequency_minute": 0,
-                    "frequency_minute_count": 0,
-                    "frequency_hour_count": 0,
-                    "frequency_day_count": 0,
-                    "frequency_operate": 0,
+                    "is_frequency": $('#frequency [name="is_frequency"]').prop('checked')?1:0,
+                    "frequency_minute": $('#frequency [name="frequency_minute"]').val(),
+                    "frequency_minute_count": $('#frequency [name="frequency_minute_count"]').val(),
+                    "frequency_hour_count":$('#frequency [name="frequency_hour_count"]').val(),
+                    "frequency_day_count": $('#frequency [name="frequency_day_count"]').val(),
+                    "frequency_operate": $('#frequency [name="frequency_operate"]').val()
                 }
             }else if(type == 'oab'){
                 value = {
-                    "oab_show_mod": 1, 
-                    "oab_show_export": 0,
+                    "oab_show_mod":  $('#oab [name="oab_show_mod"]:checked').val(), 
+                    "oab_show_export": $('#oab [name="oab_show_export_bak"]').prop('checked')?1:0,
                     "oab_dept_list": ""
                 }
 
             }else if(type == 'space'){
                 value = {
-                    "is_space_clean": 0,
-                    "space_clean_normal": 0,
-                    "space_clean_sent": 0,
-                    "space_clean_spam": 0,
-                    "space_clean_trash": 0
+                    "is_space_clean": $('#space [name="is_space_clean"]').val(),
+                    "space_clean_normal": $('#space [name="space_clean_normal"]').val(),
+                    "space_clean_sent": $('#space [name="space_clean_sent"]').val(),
+                    "space_clean_spam": $('#space [name="space_clean_spam"]').val(),
+                    "space_clean_trash": $('#space [name="space_clean_trash"]').val()
                 }
             }
             addTab($(this).attr('data_type'),$(this).attr('data_id'),value)
@@ -1255,10 +1450,28 @@
                 data:{setting_id:$(this).attr('data_id')},
                 success:function(data){
                     console.log(data)
-                    getList();
+                    alert('删除配置成功！')
+                    init(1);
                 }
             })
         })
+    
+        //获取某个组配置的“指定外域收发权限白名单”    {% url 'ajax_group_setting_white' %}    请求方式：   GET
+        function get_limit_whitelist(){
+            var setting_id = $('#basic>div>button').attr('data_id');
+            $.ajax({
+                url:"{% url 'ajax_group_setting_white' %}",
+                type:'GET',
+                async: false,
+                data:{setting_id:setting_id},
+                success:function(data){
+                    limit_whitelist = data;
+                }
+            })
+        }
+
+        //更新某个组配置的“指定外域收发权限白名单”    {% url 'ajax_group_setting_white_mdf' %}    请求方式：   POST
+
     </script>
 
 {% endblock %}
