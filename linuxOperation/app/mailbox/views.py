@@ -193,15 +193,43 @@ def account(request, template_name='mailbox/emailAccounts.html'):
 
         name = 'mailbox-list_{}'.format(time.strftime('%Y%m%d%H%M%S'))
         lists = get_mailbox_list(request)
+        all_data_size = {}
+        all_data_user = {}
+        all_data_position = {}
+        all_data_depts = {}
+        all_data_depts2 = {}
+        # 不预先把所有值取出来的话，会非常，非常，非常卡
+        for d in MailboxUser.objects.all().values("mailbox_id","realname","eenumber","tel_mobile","tel_work","last_login"):
+            all_data_user[d["mailbox_id"]] = d
+        for d in MailboxSize.objects.all().values("mailbox_id","size"):
+            all_data_size[d["mailbox_id"]] = d
+        for d in DepartmentMember.objects.values("mailbox_id","position"):
+            mailbox_id = d["mailbox_id"]
+            all_data_position.setdefault(mailbox_id, [])
+            if d["position"]:
+                all_data_position[mailbox_id].append( unicode(d["position"]) )
+        for d in Department.objects.values("id","title"):
+            all_data_depts[d["id"]] = d["title"] if d["title"] else u""
+        for d in DepartmentMember.objects.values("dept_id","mailbox_id"):
+            all_data_depts2.setdefault(d["mailbox_id"], [])
+            if not d["dept_id"] in all_data_depts:
+                continue
+            all_data_depts2[d["mailbox_id"]].append( all_data_depts.get(d["dept_id"], "") )
         for l in lists:
-            depts = u'-'.join([d.title for d in l.depts])
+            data_user = all_data_user[l.id]
             status = '1' if l.disabled == '-1' else '-1'
-            position = u'-'.join([d.position for d in DepartmentMember.objects.filter(mailbox_id=l.id)])
-            last_login = l.user.last_login.strftime("%Y-%m-%d %H:%M:%S") if l.user.last_login else ''
-            used = l.size.size if l.size else 0
+
+            depts = u'-'.join(all_data_depts2.get(l.id, []))
+            position = u'-'.join(all_data_position.get(l.id, []))
+            if data_user["last_login"]:
+                last_login = data_user["last_login"].strftime("%Y-%m-%d %H:%M:%S")
+            else:
+                last_login = ""
+            used = all_data_size[l.id]["size"]
+            used = int(used) if used else 0
             list.append(
-                [l.name, l.quota_mailbox, l.quota_netdisk, l.user.realname, l.username, depts, l.user.eenumber, status,
-                 l.user.tel_mobile, l.user.tel_work, position, domain.domain, last_login, used])
+                [l.name, l.quota_mailbox, l.quota_netdisk, data_user["realname"], l.username, depts, data_user["eenumber"], status,
+                 data_user["tel_mobile"], data_user["tel_work"], position, domain.domain, last_login, used])
         return ExcelResponse(list, name, encoding='gbk')
 
     if request.method == 'POST':

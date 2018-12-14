@@ -100,21 +100,6 @@
                 {% csrf_token %}
             <table class="table table-bordered table-striped">
                 <tr>
-                    <td class="text-right" >个人资料功能：</td>
-                    <td class="row" style="padding:8px;">
-                        <div class="col-sm-4 no-padding">
-                            <label class="inline" >
-                                <input name="sw_change_userinfo" value="1" {% if form_set.sw_change_userinfo.value == "1" %} checked {% endif %}  type="checkbox" class="ace ace-switch ace-switch-5 open">
-                                <span class="lbl"></span>
-                            </label>
-                        </div>
-                        <div class="col-sm-8 no-padding">
-                            注：关闭此功能后用户无法查看和修改个人资料；
-                        </div>
-                    </td>
-
-                </tr>
-                <tr>
                     <td class="text-right">密码修改功能：</td>
                     <td class="row" style="padding:8px;">
                         <div class="col-sm-4 no-padding">

@@ -102,88 +102,8 @@ class CoreGroup(models.Model):
     name = models.CharField(_(u'组名称'), max_length=100, blank=False, null=False)
     description = models.TextField(_(u'组描述'), null=True, blank=True)
 
-    # 常规设置
-    mail_space = models.IntegerField(_(u'邮箱空间'), default=0)
-    net_space = models.IntegerField(_(u"网络硬盘空间"), default=0)
-    allow_out_size = models.IntegerField(_(u"允许发送邮件大小"), default=0)
-    send_limit = models.IntegerField(_(u'发信功能限制'), choices=SEND_LIMIT, default=-1)
-    recv_limit = models.IntegerField(_(u'收信功能限制'), choices=RECV_LIMIT, default=-1)
-    limit_whitelist = models.TextField(_(u"收发限制白名单"), null=True, blank=True)
-
-    # 登录方式限制
-    is_pop = models.BooleanField(_(u'POP/POPS邮箱收取功能'), default=1)
-    is_smtp = models.BooleanField(_(u'SMTP/SMTPS客户端邮件发送功能'), default=1)
-    is_imap = models.BooleanField(_(u'IMAP/IMAPS客户端邮件收发功能'), default=1)
-
-    # 密码规则
-    is_passwd = models.BooleanField(_(u'定期密码修改设置'), default=1)
-    passwd_day = models.IntegerField(_(u'密码有效期'), default=0, help_text=_(u"0代表永远有效，大于0代表多少天密码过期后会强制用户修改密码"))
-    #is_passwd_first = models.BooleanField(_(u'首次登录修改密码'), default=1)
-    passwd_type = models.IntegerField(u'密码组成字符种类', choices=PASSWD_TYPE, default=2, help_text=_(u"密码组成字符包括四种：数字、大写字母、小写字母、特殊字符"))
-    passwd_other = models.TextField(_(u"其他密码规则设置"), null=True, blank=True)
-    passwd_forbid = models.TextField(_(u"用户密码强度低于规则操作"), null=True, blank=True)
-
-    # 反垃圾/反病毒
-    is_virus = models.BooleanField(_(u'反病毒功能'), default=1)
-    is_spam = models.BooleanField(_(u'反垃圾功能'), default=1)
-    #除非把SPF和灰名单的配置从postfix移出来，不然组权限根本控制不到
-    #is_spf = models.BooleanField(_(u'SPF检测'), default=0)
-    #is_grey = models.BooleanField(_(u'灰名单检测'), default=0)
-    check_attach = models.TextField(_(u"检查附件"), null=True, blank=True)
-    match_black = models.TextField(_(u"匹配黑名单"), null=True, blank=True)
-    check_spam = models.TextField(_(u"反垃圾引擎"), null=True, blank=True)
-    is_formt = models.BooleanField(_(u'检查发件人格式'), default=1, help_text=_(u"此选项不会作用于“本域进站邮件” "))
-    spam_folder = models.CharField(_(u'垃圾邮件投递位置'), default='spam', choices=SPAM_FOLDER, max_length=10)
-    spam_subject_flag = models.CharField(_(u'垃圾邮件主题标识'), null=True, blank=True, max_length=200)
-    isolate_day = models.IntegerField(_(u'隔离邮件保存天数'), default=15)
-    is_send_isolate = models.BooleanField(_(u"发送隔离报告"), default=0)
-    send_isolate_name = models.CharField(_(u"隔离报告发件人"), null=True, blank=True, max_length=100)
-    isolate_url = models.CharField(_(u'隔离报告链接地址'), null=True, blank=True, max_length=200,
-                                   help_text=u" “链接地址”必须为类似“mail.example.com“或“114.114.114.114“这种可以通过外网点击访问的地址。如果是“127.0.0.1“,“192.168.xx.xx“这种地址，会导致外网登录的用户无法通过链接操作隔离邮件。 ")
-    check_object = models.TextField(_(u"检测对象"), null=True, blank=True)
-    check_local = models.TextField(_(u"本域进站邮件"), null=True, blank=True, help_text=_(u"“反垃圾功能”和“反病毒功能”开启后，这里对应的勾选框才会生效"))
-    check_outside = models.TextField(_(u"外域进站邮件"), null=True, blank=True, help_text=u"“反垃圾功能”和“反病毒功能”开启后，这里对应的勾选框才会生效")
-
-    # 账号设置
-    is_info = models.BooleanField(_(u'个人资料功能'), default=0, help_text=_(u"关闭此功能后用户无法查看和修改个人资料"))
-    is_passwd_mdf = models.BooleanField(_(u'密码修改功能'), default=1, help_text=_(u"关闭此功能后用户无法修改邮箱密"))
-    is_param = models.BooleanField(_(u'参数设置功能'), default=1)
-    is_signature = models.BooleanField(_(u'邮件签名功能'), default=1)
-    is_autoreply = models.BooleanField(_(u'自动回复功能'), default=1)
-    is_autotans = models.BooleanField(_(u'自动转发功能'), default=1, help_text=_(u"全局自动转发开闭开关，除此之外，每个邮箱用户也有单独开启自动转发开关，在邮箱账号管理中设置"))
-    is_blackwhite = models.BooleanField(_(u'黑白名单功能'), default=1)
-    is_tansdefault = models.BooleanField(_(u'设置自动转发默认值'), default=1, help_text=_(u"选择“是”，在后台邮件账户管理中，用户是否可以自行设置自动转发的默认值是“是”，否则为“否”"))
-    is_move = models.BooleanField(_(u'邮箱搬家功能'), default=1)
-    is_suggest = models.BooleanField(_(u'邮箱意见反馈功能'), default=1)
-    is_view = models.BooleanField(_(u'邮件召回记录查看'), default=1)
-    is_filter = models.BooleanField(_(u'邮件过滤功能'), default=1)
-    is_smtp_tans = models.BooleanField(_(u'SMTP外发代理'), default=1)
-
-    # 账号密级
-    passwd_level = models.IntegerField(_(u"账号密级"), default=1, choices=PASSWD_LEVEL)
-
-    # 发信频率设置
-    is_frequency = models.BooleanField(_(u'开启发信频率限制'), default=1, help_text=_(u"关闭此功能后用户向外域发送邮件时将不受限制"))
-    frequency_minute = models.IntegerField(_(u'发信频率间隔'), default=5, help_text=_(u"发信频率间隔"))
-    frequency_minute_count = models.IntegerField(_(u'分钟发信频率次数'), default=50, help_text=_(u"0代表不限制"))
-    frequency_hour_count = models.IntegerField(_(u'每小时发信数量'), default=0, help_text=_(u"0代表不限制"))
-    frequency_day_count = models.IntegerField(_(u'每天发信数量'), default=0, help_text=_(u"0代表不限制"))
-    frequency_operate = models.CharField(_(u'发信频率超限操作'), default='block', choices=FREQUENCYSET_PARAM_OPERATOR, max_length=10)
-
-    # 邮箱空间清理
-    is_space_clean = models.IntegerField(_(u'邮箱空间定时清理'), default=0, choices=AUTO_CLEAN_OPEN, help_text=_(u"设置用户各类邮件的保留时间，超过设置时间的邮件会被自动删除；设置为“0”时会永久保留用户邮件；系统会在每天凌晨 03:50 分自动进行清理"))
-    space_clean_normal = models.IntegerField(_(u'普通邮件保留天数'), null=True, default=0)
-    space_clean_sent = models.IntegerField(_(u'发件箱邮件保留天数'), null=True, default=0)
-    space_clean_spam = models.IntegerField(_(u'垃圾箱邮件保留天数'), null=True, default=0)
-    space_clean_trash = models.IntegerField(_(u'废件箱邮件保留天数'), null=True, default=0)
-
-    # 企业通讯录设置
-    oab_show_mod = models.IntegerField(_(u"企业通讯录显示限制"), default=1, null=False, blank=True)
-    oab_show_export = models.IntegerField(_(u"企业通讯录导出按钮"), default=0, null=True, blank=True)
-    oab_dept_list = models.TextField(_(u"企业通讯录部门列表"), null=True, blank=True)
-
     class Meta:
-        managed = True
+        managed = False
         db_table = 'core_group'
         verbose_name = _(u'组权限')
         verbose_name_plural = _(u'组权限')
@@ -200,7 +120,7 @@ class CoreGroup(models.Model):
 
     def delete(self, using=None, keep_parents=False):
         CoreGroupMember.objects.filter(group_id=self.id).delete()
-        #CoreGroupSetting.objects.filter(group_id=self.id).delete()
+        CoreGroupSetting.objects.filter(group_id=self.id).delete()
         super(CoreGroup, self).delete(using=using, keep_parents=keep_parents)
 
 GROUP_SETTING_TYPE=(
@@ -241,7 +161,7 @@ class CoreGroupMember(models.Model):
     created = models.DateTimeField(_(u'添加时间'), auto_now_add=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'core_group_member'
         verbose_name = _(u'组权限成员表')
         verbose_name_plural = _(u'组权限成员表')
@@ -251,5 +171,5 @@ class CoreGroupMember(models.Model):
 
 from auditlog.registry import auditlog
 auditlog.register(CoreGroup, exclude_fields=['group_member','group_setting'])
-#auditlog.register(CoreGroupSetting)
+auditlog.register(CoreGroupSetting)
 auditlog.register(CoreGroupMember, exclude_fields=['created'])

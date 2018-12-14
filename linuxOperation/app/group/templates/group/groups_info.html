@@ -46,50 +46,87 @@
                                 <li class="frequency">
                                     <a href="#frequency">{% trans '发信频率设置' %}</a>
                                 </li>
-                                {% if not request.user.is_old_version_webmail %}
-                                    <li class="oab">
-                                        <a href="#oab">{% trans '企业通讯录设置' %}</a>
-                                    </li>
-                                {% endif %}
+                                <li class="oab">
+                                    <a href="#oab">{% trans '企业通讯录设置' %}</a>
+                                </li>
                                 <li>
                                     <a href="#space">{% trans '邮箱空间清理设置' %}</a>
                                 </li>
                             </ul>
 
                             <div id="basic">
-                                <div class="row">
-                                    <div class="col-sm-10">
-                                        {{ form.mail_space|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.net_space|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.allow_out_size|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        <div class="form-group">
-                                            <label class="control-label col-sm-3 " for="id_limit_send">发信权限：</label>
-                                            <div class=" col-sm-9 col-lg-9 ">
-                                                <select name="send_limit" class=" form-control limit_send_select" id="id_limit_send">
-                                                  <option value="-1" {% if form.send_limit.value == -1 %} selected {% endif %}>不限制邮件发送</option>
-                                                  <option value="1" {% if form.send_limit.value == 1 %} selected {% endif %}>禁止发送所有邮件</option>
-                                                  <option value="2" {% if form.send_limit.value == 2 %} selected {% endif %}>只发送本地域邮件</option>
-                                                  <option value="3" {% if form.send_limit.value == 3 %} selected {% endif %}>可发送指定外域邮件</option>
-                                                  <option value="4" {% if form.send_limit.value == 4 %} selected {% endif %}>可发送本地所有域邮件</option>
-                                                </select>
-                                                <button type="button" class="btn btn-xs btn-info"  {% if form.send_limit.value != 3 %} style="display:none;" {% endif %} data-toggle="modal" data-target="#allow_send_email_dress">设置允许名单</button>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label col-sm-3 " for="id_limit_recv">收信权限：</label>
-                                            <div class=" col-sm-9 col-lg-9 ">
-                                                <select name="recv_limit" class=" form-control limit_send_select" id="id_limit_recv">
-                                                  <option value="-1" {% if form.recv_limit.value == -1 %} selected {% endif %}>不限制邮件接收</option>
-                                                  <option value="1" {% if form.recv_limit.value == 1 %} selected {% endif %}>禁止接收所有邮件</option>
-                                                  <option value="2" {% if form.recv_limit.value == 2 %} selected {% endif %}>只接收本地域邮件</option>
-                                                  <option value="3" {% if form.recv_limit.value == 3 %} selected {% endif %}>可接收指定外域邮件</option>
-                                                  <option value="4" {% if form.recv_limit.value == 4 %} selected {% endif %}>可接收本地所有域邮件</option>
-                                                </select>
-                                                <button type="button" class="btn btn-xs btn-info"  {% if form.recv_limit.value != 3 %} style="display:none;" {% endif %} data-toggle="modal" data-target="#allow_recv_email_dress">设置允许名单</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-2"></div>
+
+                                <div>
+                                    <table class="table table-bordered table-striped">
+                                        <tr>
+                                            <td class="text-right" style="width:300px;">
+                                                    <span class="red bold">*</span> 邮箱空间：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4 no-padding">
+                                                    <div class="input-group">
+                                                        <input type="number" name="mail_space" required class="form-control">
+                                                        <span class="input-group-addon">MB</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">
+                                                    <span class="red bold">*</span> 网络硬盘空间：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4 no-padding">
+                                                    <div class="input-group">
+                                                        <input type="number" name="net_space" required class="form-control">
+                                                        <span class="input-group-addon">MB</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">
+                                                    <span class="red bold">*</span> 允许发送邮件大小：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4 no-padding">
+                                                    <div class="input-group">
+                                                        <input type="number" name="allow_out_size" required class="form-control">
+                                                        <span class="input-group-addon">MB</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">发信权限：</td>
+                                            <td class="">
+                                                <div class="col-sm-4 no-padding">
+                                                    <select name="send_limit" class=" form-control limit_send_select" id="id_limit_send">
+                                                        <option value="-1">不限制邮件发送</option>
+                                                        <option value="1">禁止发送所有邮件</option>
+                                                        <option value="2">只发送本地域邮件</option>
+                                                        <option value="3">可发送指定外域邮件</option>
+                                                        <option value="4">可发送本地所有域邮件</option>
+                                                    </select>
+                                                    <button type="button" class="btn btn-xs btn-info show_send_btn"  style="display:none;">设置允许名单</button>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">收信权限：</td>
+                                            <td class="">
+                                                <div class="col-sm-4 no-padding">
+                                                    <select name="recv_limit" class=" form-control limit_send_select" id="id_limit_recv">
+                                                        <option value="-1">不限制邮件接收</option>
+                                                        <option value="1">禁止接收所有邮件</option>
+                                                        <option value="2">只接收本地域邮件</option>
+                                                        <option value="3">可接收指定外域邮件</option>
+                                                        <option value="4">可接收本地所有域邮件</option>
+                                                    </select>
+                                                    <button type="button" class="btn btn-xs btn-info show_recv_btn" style="display:none;">设置允许名单</button>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
                                 <div>
                                     <button type="button" class="btn btn-primary btn-sm edit_btn">确认提交</button>
@@ -99,13 +136,36 @@
                             </div>
 
                             <div id="login">
-                                <div class="row">
-                                    <div class="col-sm-10">
-                                        {{ form.is_pop|bootstrap_horizontal_bool }}
-                                        {{ form.is_smtp|bootstrap_horizontal_bool }}
-                                        {{ form.is_imap|bootstrap_horizontal_bool }}
-                                    </div>
-                                    <div class="col-sm-2"></div>
+                                <div>
+                                    <table class="table table-bordered table-striped">
+                                        <tr>
+                                            <td class="text-right" style="width:300px;">POP/POPS邮箱收取功能：</td>
+                                            <td>
+                                                <label class="inline" >
+                                                    <input name="is_pop" checked  type="checkbox" class="ace ace-switch ace-switch-5 open">
+                                                    <span class="lbl"></span>
+                                                </label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">SMTP/SMTPS客户端邮件发送功能：</td>
+                                            <td>
+                                                <label class="inline" >
+                                                    <input name="is_smtp" checked  type="checkbox" class="ace ace-switch ace-switch-5 open">
+                                                    <span class="lbl"></span>
+                                                </label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">IMAP/IMAPS客户端邮件收发功能：</td>
+                                            <td>
+                                                <label class="inline" >
+                                                    <input name="is_imap" checked  type="checkbox" class="ace ace-switch ace-switch-5 open">
+                                                    <span class="lbl"></span>
+                                                </label>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
                                 <div>
                                     <button type="button" class="btn btn-primary btn-sm edit_btn">确认提交</button>
@@ -115,112 +175,141 @@
                             </div>
 
                             <div id="password">
-                                <div class="row">
-                                    <div class="col-sm-10">
-                                        {{ form.is_passwd|bootstrap_horizontal_bool }}
-                                        {{ form.passwd_day|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.passwd_type|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
+                                <div>
+                                    <table class="table table-bordered table-striped">
+                                        <tr>
+                                            <td class="text-right" style="width:300px;">定期密码修改设置：</td>
+                                            <td>
+                                                <label class="inline" >
+                                                    <input name="is_passwd" checked  type="checkbox" class="ace ace-switch ace-switch-5">
+                                                    <span class="lbl"></span>
+                                                </label>
+                                            </td>
+                                        </tr>
+                                        <tr class="nable_set">
+                                            <td class="text-right" style="width:120px;"><span class="red bold">*</span> 密码有效期：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4 no-padding">
+                                                    <div class="input-group">
+                                                        <input type="number" name="passwd_day" value="365" required class="form-control" placeholder="密码有效期">
+                                                        <span class="input-group-addon">天</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-8 ">
+                                                    <p class="help-block green">0代表永远有效，大于0代表多少天密码过期后会强制用户修改密码</p>
 
-                                        <div class="form-group">
-                                            <label class="control-label col-sm-3 col-lg-3 " for="{{ form.passwd_other_bak.auto_id }}">{{ form.passwd_other_bak.label }}</label>
-                                            <div class=" col-sm-9 col-lg-9 ">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">密码组成字符种类：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4 no-padding">
+                                                    <select class="form-control" name="passwd_type">
+                                                        <option value="2">必须包含两种字符</option>
+                                                        <option value="3">必须包含三种字符</option>
+                                                        <option value="4">必须包含四种字符</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <p class="grey">密码组成字符包括四种：数字、大写字母、小写字母、特殊字符</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">其他密码规则设置：</td>
+                                            <td class="">
                                                 <div class="control-group">
+                                                    <!-- #section:custom/checkbox -->
                                                     <div class="checkbox">
                                                         <label>
+                                                            <input name="passwd_other_bak" value="passwd_size" type="checkbox" checked class="ace">
                                                             <span class="lbl">
-                                                            <span class="">&nbsp;&nbsp;&nbsp;密码长度为</span>
-                                                            <select name="passwd_other_letter" id="id_passwd_other_letter" autocomplete="off">
-                                                                <option value="8" {% if form.passwd_size2 == '8' %}selected{% endif %}>8</option>
-                                                                <option value="9" {% if form.passwd_size2 == '9' %}selected{% endif %}>9</option>
-                                                                <option value="10" {% if form.passwd_size2 == '10' %}selected{% endif %}>10</option>
-                                                                <option value="11" {% if form.passwd_size2 == '11' %}selected{% endif %}>11</option>
-                                                                <option value="12" {% if form.passwd_size2 == '12' %}selected{% endif %}>12</option>
-                                                                <option value="13" {% if form.passwd_size2 == '13' %}selected{% endif %}>13</option>
-                                                                <option value="14" {% if form.passwd_size2 == '14' %}selected{% endif %}>14</option>
-                                                                <option value="15" {% if form.passwd_size2 == '15' %}selected{% endif %}>15</option>
-                                                                <option value="16" {% if form.passwd_size2 == '16' %}selected{% endif %}>16</option>
-                                                            </select>
-                                                            <span class="">至16位</span>
-                                                    </span>
+                                                                    <span class="">密码长度为</span>
+                                                                    <select class="" name="passwd_size">
+                                                                        <option value="8" selected>8</option>
+                                                                        <option value="9">9</option>
+                                                                        <option value="10">10</option>
+                                                                        <option value="11">11</option>
+                                                                        <option value="12">12</option>
+                                                                        <option value="13">13</option>
+                                                                        <option value="14">14</option>
+                                                                        <option value="15">15</option>
+                                                                        <option value="16">16</option>
+                                                                    </select>
+                                                                    <span class="">至16位</span>
+
+                                                            </span>
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label>
-                                                            <input name="{{ form.passwd_other_bak.name }}" class="ace" type="checkbox" value="passwd_name" {% if form.passwd_other.passwd_name == 1 %}checked{% endif %}>
+                                                            <input name="passwd_other_bak" value="passwd_name" type="checkbox" checked class="ace">
                                                             <span class="lbl"> 密码不能包含账号 </span>
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label>
-                                                            <input name="{{ form.passwd_other_bak.name }}" class="ace" type="checkbox" value="passwd_digital" {% if form.passwd_other.passwd_digital == 1 %}checked{% endif %}>
+                                                            <input name="passwd_other_bak" value="passwd_digital" type="checkbox" checked class="ace">
                                                             <span class="lbl"> 连续3位及以上数字不能连号（例如：123、654） </span>
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label>
-                                                            <input name="{{ form.passwd_other_bak.name }}" class="ace" type="checkbox" value="passwd_letter" {% if form.passwd_other.passwd_letter == 1 %}checked{% endif %}>
+                                                            <input name="passwd_other_bak" value="passwd_letter" type="checkbox" class="ace">
                                                             <span class="lbl"> 连续3位及以上字母不能连号（例如：abc、cba） </span>
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label>
-                                                            <input name="{{ form.passwd_other_bak.name }}" class="ace" type="checkbox" value="passwd_letter2" {% if form.passwd_other.passwd_letter2 == 1 %}checked{% endif %}>
+                                                            <input name="passwd_other_bak" value="passwd_letter2" type="checkbox" class="ace">
                                                             <span class="lbl"> 密码不能包含连续3个及以上相同字符（例如：aaa、rrr） </span>
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label>
-                                                            <input name="{{ form.passwd_other_bak.name }}" class="ace" type="checkbox" value="passwd_name2" {% if form.passwd_other.passwd_name2 == 1 %}checked{% endif %}>
+                                                            <input name="passwd_other_bak" value="passwd_name2" type="checkbox" class="ace">
                                                             <span class="lbl"> 密码不能包含用户姓名大小写全拼 </span>
                                                         </label>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="control-label col-sm-3 col-lg-3 " for="{{ form.passwd_forbid_bak.auto_id }}">用户不满足密码强度时：</label>
-                                            <div class=" col-sm-9 col-lg-9 ">
-                                                <div class="control-group">
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            <input name="{{ form.passwd_forbid_bak.name }}" class="ace" type="checkbox" value="forbid_send" {% if form.passwd_forbid.forbid_send == 1 %}checked{% endif %}>
-                                                            <span class="lbl"> 禁止外发邮件 </span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            <input name="{{ form.passwd_forbid_bak.name }}" class="ace" type="checkbox" value="force_change" {% if form.passwd_forbid.force_change == 1 %}checked{% endif %}>
-                                                            <span class="lbl"> 登录后强制修改密码 </span>
-                                                        </label>
-                                                    </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="sw_antivirus">
+                                            <td class="text-right">用户不满足密码强度时：
+                                            </td>
+                                            <td>
+                                                <div class="checkbox">
+                                                    <label style="margin-right:20px;">
+                                                        <input name="passwd_forbid_bak" value="forbid_send" type="checkbox" checked class="ace">
+                                                        <span class="lbl"> 禁止外发邮件 </span>
+                                                    </label>
+                                                    <label>
+                                                        <input name="passwd_forbid_bak" value="force_change" type="checkbox" checked class="ace">
+                                                        <span class="lbl"> 登录后强制修改密码 </span>
+                                                    </label>
                                                 </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="control-label col-sm-3 col-lg-3 " for="{{ form.passwd_forbid_bak.auto_id }}">用户处于弱密码库中时：</label>
-                                            <div class=" col-sm-9 col-lg-9 ">
-                                                <div class="control-group">
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            &nbsp;&nbsp;
-                                                            <span class="lbl"> 禁止外发邮件 </span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            <input name="{{ form.passwd_forbid_bak.name }}" class="ace" type="checkbox" value="force_change_in_weak" {% if form.passwd_forbid.force_change_in_weak == 1 %}checked{% endif %}>
-                                                            <span class="lbl"> 登录后强制修改密码 </span>
-                                                        </label>
-                                                    </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="sw_antivirus">
+                                            <td class="text-right">用户处于弱密码库中时：
+                                            </td>
+                                            <td>
+                                                <div class="checkbox">
+                                                    <label style="margin-right:20px;">
+                                                        <input name="passwd_forbid_bak" value="forbid_send_in_weak" type="checkbox" checked class="ace">
+                                                        <span class="lbl"> 禁止外发邮件 </span>
+                                                    </label>
+                                                    <label>
+                                                        <input name="passwd_forbid_bak" value="force_change_in_weak" type="checkbox" checked class="ace">
+                                                        <span class="lbl"> 登录后强制修改密码 </span>
+                                                    </label>
                                                 </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="col-sm-2"></div>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
+
                                 <div>
                                     <button type="button" class="btn btn-primary btn-sm edit_btn">确认提交</button>
                                     <!-- <button class="btn btn-sm" type="reset">{% trans "重置" %}</button> -->
@@ -229,127 +318,219 @@
                             </div>
 
                             <div id="spam">
-                                <div class="row">
-                                    <div class="col-sm-10">
-                                        {{ form.is_virus|bootstrap_horizontal_bool }}
-                                        {{ form.is_spam|bootstrap_horizontal_bool }}
 
-                                        <div class="form-group">
-                                            <label class="control-label col-sm-3 col-lg-3 " for="{{ form.check_attach_bak.auto_id }}">{{ form.check_attach_bak.label }}</label>
-                                            <div class=" col-sm-9 col-lg-9 ">
-                                                <div class="control-group">
-                                                    <label class="checkbox checkbox-inline no-padding margin-top-0 form-inline" style="margin-top: 7px;">
+                                <div>
+                                    <table class="table table-bordered table-striped">
+                                        <tbody>
+                                        <tr>
+                                            <td class="text-right" style="width:200px;">反病毒功能：</td>
+                                            <td>
+                                                <label class="inline" >
+                                                    <input name="is_virus" checked type="checkbox" class="ace ace-switch ace-switch-5">
+                                                    <span class="lbl"></span>
+                                                </label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">反垃圾功能：</td>
+                                            <td>
+                                                <label class="inline" >
+                                                        <!-- sw_antivirus -->
+                                                    <input name="is_spam" checked type="checkbox" class="ace ace-switch ace-switch-5">
+                                                    <span class="lbl"></span>
+                                                </label>
+                                            </td>
+                                        </tr>
+                                        <tr class="sw_antivirus">
+                                            <td class="text-right">检查附件：
+                                            </td>
+                                            <td>
+                                                <div class="checkbox">
+                                                    <label style="margin-right:20px;">
+                                                        <input name="check_attach_bak" value="low" type="checkbox" checked class="ace">
+                                                        <span class="lbl"> 小危附件 </span>
+                                                    </label>
+                                                    <label>
+                                                        <input name="check_attach_bak" value="high" type="checkbox" checked class="ace">
+                                                        <span class="lbl"> 高危附件 </span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="sw_antivirus">
+                                            <td class="text-right">匹配黑名单：
+                                            </td>
+                                            <td>
+                                                <div class="checkbox">
+                                                    <label style="margin-right:20px;">
+                                                        <input name="match_black_bak" value="sender" type="checkbox" checked class="ace">
+                                                        <span class="lbl"> 发件人黑名单 </span>
+                                                    </label>
+                                                    <label>
+                                                        <input name="match_black_bak" value="subject" type="checkbox" checked class="ace">
+                                                        <span class="lbl"> 主题黑名单 </span>
+                                                    </label>
+                                                    <label>
+                                                        <input name="match_black_bak" value="content" type="checkbox" checked class="ace">
+                                                        <span class="lbl"> 内容黑名单 </span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="sw_antivirus">
+                                            <td class="text-right">反垃圾引擎：
+                                            </td>
+                                            <td>
+                                                <div class="checkbox">
+                                                    <label style="margin-right:20px;">
+                                                        <input name="check_spam_bak" value="dspam" type="checkbox" checked class="ace">
+                                                        <span class="lbl"> Dspam </span>
+                                                    </label>
+                                                    <label>
+                                                        <input name="check_spam_bak" value="spamassassion" type="checkbox" checked class="ace">
+                                                        <span class="lbl"> Spamassassion </span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="sw_antivirus">
+                                            <td class="text-right"> 检查发件人格式：
+                                            </td>
+                                            <td class="row">
+                                                <div class="col-sm-4 no-padding">
+                                                    <label class="inline" >
+                                                        <input name="is_formt" checked  type="checkbox" class="ace ace-switch ace-switch-5">
+                                                        <span class="lbl"></span>
+                                                    </label>
+                                                </div>
+                                                <div class="col-sm-8 no-padding">
+                                                    <span class="middle text-success "><strong style="color: red">注：</strong> 此选项不会作用于“本域进站邮件” </span>
+
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="sw_antivirus">
+                                            <td class="text-right"> 垃圾邮件投递位置：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4 no-padding">
+                                                    <select class="form-control" name="spam_folder" style="max-width:200px;">
+                                                        <option value="spam"> 垃圾箱 </option>
+                                                        <option value="sequester"> 隔离队列 </option>
+                                                        <option value="inbox" selected> 收件箱 </option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="sw_antivirus">
+                                            <td class="text-right" >
+                                                垃圾邮件主题标识：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4 no-padding">
+                                                    <input type="text" name="spam_subject_flag" placeholder="[***SPAM***]" class="form-control" style="max-width:200px;">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="sw_antivirus">
+                                            <td class="text-right"><span class="red bold">*</span> 隔离邮件保存天数：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4 no-padding">
+                                                    <input type="number" name="isolate_day" value="15" style="max-width:200px;" class="form-control">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="sw_antivirus">
+                                            <td class="text-right">发送隔离报告：</td>
+                                            <td>
+                                                <label class="inline" >
+                                                    <input name="is_send_isolate" checked type="checkbox" class="ace ace-switch ace-switch-5">
+                                                    <span class="lbl"></span>
+                                                </label>
+                                            </td>
+                                        </tr>
+                                        <tr class="sw_antivirus">
+                                            <td class="text-right">隔离报告发件人：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4 no-padding">
+                                                    <input type="text" name="send_isolate_name" style="max-width:200px;" value="spamreporter" class="form-control">
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        <tr class="sw_antivirus">
+                                            <td class="text-right">隔离报告链接地址：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4 no-padding">
+                                                    <input type="text" name="isolate_url" value="http://mail.test.com" class="form-control" style="max-width:200px;">
+
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <div style="clear: both">
+                                                        <span class="middle text-success "><strong style="color: red">注：</strong> “链接地址”必须为类似“mail.example.com“或“114.114.114.114“这种可以通过外网点击访问的地址。如果是“127.0.0.1“,“192.168.xx.xx“这种地址，会导致外网登录的用户无法通过链接操作隔离邮件。 </span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="sw_antivirus">
+                                            <td class="text-right">检测对象：
+                                            </td>
+                                            <td>
+                                                <div class="checkbox">
+                                                    <label style="margin-right:20px;">
+                                                        <input name="check_object_bak" value="local" type="checkbox" checked class="ace">
+                                                        <span class="lbl"> 本域进站邮件 </span>
+                                                    </label>
+                                                    <label>
+                                                        <input name="check_object_bak" value="outside" type="checkbox" checked class="ace">
+                                                        <span class="lbl"> 外域进站邮件 </span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="sw_antivirus">
+                                            <td class="text-right">本域进站邮件：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4 no-padding">
+                                                    <div class="checkbox">
                                                         <label style="margin-right:20px;">
-                                                            <input name="{{ form.check_attach_bak.name }}" value="low" type="checkbox" {% if 'low' in form.check_attach %}checked{% endif %}><span>小危附件</span>
+                                                            <input name="check_local_bak" value="spam" type="checkbox" checked class="ace">
+                                                            <span class="lbl"> 开启反垃圾 </span>
                                                         </label>
                                                         <label>
-                                                            <input name="{{ form.check_attach_bak.name }}" value="high" type="checkbox" {% if 'high' in form.check_attach %}checked{% endif %}><span>高危附件</span>
+                                                            <input name="check_local_bak" value="virus" type="checkbox" checked class="ace">
+                                                            <span class="lbl"> 开启反病毒 </span>
                                                         </label>
-                                                    </label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
+                                                <div class="col-sm-8">
+                                                    <span class="middle text-success "><strong style="color: red">注：</strong> “反垃圾功能”和“反病毒功能”开启后，这里对应的勾选框才会生效 </span>
 
-                                        <div class="form-group">
-                                            <label class="control-label col-sm-3 col-lg-3 " for="{{ form.match_black_bak.auto_id }}">{{ form.match_black_bak.label }}</label>
-                                            <div class=" col-sm-9 col-lg-9 ">
-                                                <div class="control-group">
-                                                    <label class="checkbox checkbox-inline no-padding margin-top-0 form-inline" style="margin-top: 7px;">
-                                                        <label style="margin-right:20px;">
-                                                            <input name="{{ form.match_black_bak.name }}" value="sender" type="checkbox" {% if 'sender' in form.match_black %}checked{% endif %}><span>发件人黑名单</span>
-                                                        </label>
-                                                        <label style="margin-right:20px;">
-                                                            <input name="{{ form.match_black_bak.name }}" value="subject" type="checkbox" {% if 'subject' in form.match_black %}checked{% endif %}><span>主题黑名单</span>
-                                                        </label>
-                                                        <label style="margin-right:20px;">
-                                                            <input name="{{ form.match_black_bak.name }}" value="content" type="checkbox" {% if 'content' in form.match_black %}checked{% endif %}><span>内容黑名单</span>
-                                                        </label>
-                                                        <!--
-                                                        <label style="margin-right:20px;">
-                                                            <input name="{{ form.match_black_bak.name }}" value="attach" type="checkbox" {% if 'attach"' in form.match_black %}checked{% endif %}><span>附件黑名单</span>
-                                                        </label>
-                                                        -->
-                                                    </label>
                                                 </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="control-label col-sm-3 col-lg-3 " for="{{ form.check_spam_bak.auto_id }}">{{ form.check_spam_bak.label }}</label>
-                                            <div class=" col-sm-9 col-lg-9 ">
-                                                <div class="control-group">
-                                                    <label class="checkbox checkbox-inline no-padding margin-top-0 form-inline" style="margin-top: 7px;">
+                                            </td>
+                                        </tr>
+                                        <tr class="sw_antivirus">
+                                            <td class="text-right">外域进站邮件：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4 no-padding">
+                                                    <div class="checkbox">
                                                         <label style="margin-right:20px;">
-                                                            <input name="{{ form.check_spam_bak.name }}" value="dspam" type="checkbox" {% if 'dspam' in form.check_spam %}checked{% endif %}><span>Dspam</span>
+                                                            <input name="check_outside_bak" value="spam" type="checkbox" checked class="ace">
+                                                            <span class="lbl"> 开启反垃圾 </span>
                                                         </label>
                                                         <label>
-                                                            <input name="{{ form.check_spam_bak.name }}" value="spamassassion" type="checkbox" {% if 'spamassassion' in form.check_spam %}checked{% endif %}><span>Spamassassion</span>
+                                                            <input name="check_outside_bak" value="virus" type="checkbox" checked class="ace">
+                                                            <span class="lbl"> 开启反病毒 </span>
                                                         </label>
-                                                    </label>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
+                                                <div class="col-sm-8">
+                                                    <span class="middle text-success "><strong style="color: red">注：</strong> “反垃圾功能”和“反病毒功能”开启后，这里对应的勾选框才会生效 </span>
 
-                                        {{ form.is_formt|bootstrap_horizontal_bool }}
-                                        {{ form.spam_folder|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.spam_subject_flag|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.isolate_day|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.is_send_isolate|bootstrap_horizontal_bool }}
-                                        {{ form.send_isolate_name|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.isolate_url|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-
-                                        <div class="form-group">
-                                            <label class="control-label col-sm-3 col-lg-3 " for="{{ form.check_object_bak.auto_id }}">{{ form.check_object_bak.label }}</label>
-                                            <div class=" col-sm-9 col-lg-9 ">
-                                                <div class="control-group">
-                                                    <label class="checkbox checkbox-inline no-padding margin-top-0 form-inline" style="margin-top: 7px;">
-                                                        <label style="margin-right:20px;">
-                                                            <input name="{{ form.check_object_bak.name }}" value="local" type="checkbox" {% if 'local' in form.check_object %}checked{% endif %}><span>本域进站邮件</span>
-                                                        </label>
-                                                        <label>
-                                                            <input name="{{ form.check_object_bak.name }}" value="outside" type="checkbox" {% if 'outside' in form.check_object %}checked{% endif %}><span>外域进站邮件</span>
-                                                        </label>
-                                                    </label>
                                                 </div>
-                                            </div>
-                                        </div>
+                                            </td>
+                                        </tr>
 
-                                        <div class="form-group">
-                                            <label class="control-label col-sm-3 col-lg-3 " for="{{ form.check_local_bak.auto_id }}">{{ form.check_local_bak.label }}</label>
-                                            <div class=" col-sm-9 col-lg-9 ">
-                                                <div class="control-group">
-                                                    <label class="checkbox checkbox-inline no-padding margin-top-0 form-inline" style="margin-top: 7px;">
-                                                        <label style="margin-right:20px;">
-                                                            <input name="{{ form.check_local_bak.name }}" value="spam" type="checkbox" {% if 'spam' in form.check_local %}checked{% endif %}><span>开启反垃圾</span>
-                                                        </label>
-                                                        <label>
-                                                            <input name="{{ form.check_local_bak.name }}" value="virus" type="checkbox" {% if 'virus' in form.check_local %}checked{% endif %}><span>开启反病毒</span>
-                                                        </label>
-                                                    </label>
-                                                </div>
-                                                <p class="help-block">{{ form.check_outside_bak.help_text }}</p>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="control-label col-sm-3 col-lg-3 " for="{{ form.check_outside_bak.auto_id }}">{{ form.check_outside_bak.label }}</label>
-                                            <div class=" col-sm-9 col-lg-9 ">
-                                                <div class="control-group">
-                                                    <label class="checkbox checkbox-inline no-padding margin-top-0 form-inline" style="margin-top: 7px;">
-                                                        <label style="margin-right:20px;">
-                                                            <input name="{{ form.check_outside_bak.name }}" value="spam" type="checkbox" {% if 'spam' in form.check_outside %}checked{% endif %}><span>开启反垃圾</span>
-                                                        </label>
-                                                        <label>
-                                                            <input name="{{ form.check_outside_bak.name }}" value="virus" type="checkbox" {% if 'virus' in form.check_outside %}checked{% endif %}><span>开启反病毒</span>
-                                                        </label>
-                                                    </label>
-                                                </div>
-                                                <p class="help-block">{{ form.check_outside_bak.help_text }}</p>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="col-sm-2"></div>
+                                        </tbody>
+                                    </table>
                                 </div>
                                 <div>
                                     <button type="button" class="btn btn-primary btn-sm edit_btn">确认提交</button>
@@ -359,30 +540,84 @@
                             </div>
 
                             <div id="frequency">
-                                <div class="row">
-                                    <div class="col-sm-10">
-                                        {{ form.is_frequency|bootstrap_horizontal_bool }}
-                                        <div class="form-group">
-                                            <label class="control-label col-sm-3 col-lg-3 "> {% trans "速率" %} </label>
-                                            <div class=" col-sm-9 col-lg-9 ">
-                                                <div class="control-group">
-                                                        <label>
-                                                            <span class="">{% trans "每" %}</span>
-                                                            <input name="{{ form.frequency_minute.name }}" class="ace" type="number" value="{{ form.frequency_minute.value }}">
-                                                            <span class="lbl">
-                                                            <span class="">{% trans "分钟发信数量" %}</span>
-                                                            <input name="{{ form.frequency_minute_count.name }}" class="ace" type="number" value="{{ form.frequency_minute_count.value }}">
-                                                            </span>
-                                                        </label>
+                                <div>
+                                    <table class="table table-bordered table-striped">
+                                        <tbody>
+                                        <tr>
+                                            <td class="text-right">开启发信频率限制：
+                                                </td>
+                                            <td class="row">
+                                                <div class="col-sm-4">
+                                                    <label class="inline" >
+                                                        <input name="is_frequency" checked type="checkbox" class="ace ace-switch ace-switch-5">
+                                                        <span class="lbl"></span>
+                                                    </label>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        {{ form.frequency_hour_count|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.frequency_day_count|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.frequency_operate|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                    </div>
-                                    <div class="col-sm-2"></div>
+                                                <div class="col-sm-8">
+                                                    <div style="clear: both">
+                                                        <span class="middle text-success "><strong style="color: red">注：</strong> 关闭此功能后用户向外域发送邮件时将不受限制 </span>
+                                                    </div>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">速率：</td>
+                                            <td class="row">
+                                                <div class="col-sm-12">
+                                                    每
+                                                    <input type="number" name="frequency_minute"  value="5" style="max-width:50px;">
+                                                    分钟发信数量
+                                                    <input type="number" name="frequency_minute_count"  value="200">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right"> <span class="red bold">*</span>   每小时发信数量：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4">
+                                                    <input type="number" name="frequency_hour_count" value="0" class=" form-control max-width-200">
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <div style="clear: both">
+                                                        <span class="middle text-success "><strong style="color: red">注：</strong> 输入&lt;=0的值代表不限制 </span>
+                                                    </div>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right"><span class="red bold">*</span> 每天发信数量：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4">
+                                                    <input type="number" name="frequency_day_count"  value="0" class="form-control max-width-200">
+
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <div style="clear: both">
+                                                        <span class="middle text-success "><strong style="color: red">注：</strong> 输入&lt;=0的值代表不限制 </span>
+                                                    </div>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">发信频率超限操作：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4">
+                                                    <select name="frequency_operate" class=" form-control  max-width-200">
+
+                                                        <option value="block" >只可发送本地邮件</option>
+
+                                                    </select>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
+
                                 <div>
                                     <button type="button" class="btn btn-primary btn-sm edit_btn">确认提交</button>
                                     <!-- <button class="btn btn-sm" type="reset">{% trans "重置" %}</button> -->
@@ -390,43 +625,67 @@
                                 </div>
                             </div>
 
-                            {% if not request.user.is_old_version_webmail %}
-                                <div id="oab">
-                                    <div class="row">
-                                        <div class="col-sm-10">
-                                            <div class="form-group">
-                                                <label class="control-label col-sm-3 col-lg-3 "> {% trans "界面显示控制" %} </label>
-                                                <input type="radio" name="oab_show_mod" value="1" {% if form.oab_show_mod.value == 1 %} checked {% endif %} class="radio radio-inline">
-                                                <span class="lbl"> {% trans "所有部门" %} </span>
-                                                <input type="radio" name="oab_show_mod" value="2" {% if form.oab_show_mod.value == 2 %} checked {% endif %} class="radio radio-inline">
-                                                <span class="lbl"> {% trans "仅本部门" %} </span>
-                                                <input type="radio" name="oab_show_mod" value="3" {% if form.oab_show_mod.value == 3 %} checked {% endif %} class="radio radio-inline">
-                                                <span class="lbl"> {% trans "本部门和子部门" %} </span>
-                                                <input type="radio" name="oab_show_mod" value="4" {% if form.oab_show_mod.value == 4 %} checked {% endif %} class="radio radio-inline">
-                                                <span class="lbl"> {% trans "指定部门及其子部门" %} </span>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label col-sm-3 col-lg-3 "> {% trans "通讯录导出按钮" %} </label>
-                                                <input name="{{ form.oab_show_export_bak.name }}" value="1" {% if form.oab_show_export == 1 %} checked {% endif %} type="checkbox"  class="ace">
-                                                <span class="lbl"> 显示 </span>
-                                            </div>
-                                            {% if group_id > 0 %}
-                                                <div class="form-group dept_list {% if form.oab_show_mod.value == 4 %} active {% endif %}">
-                                                    <label class="control-label col-sm-3 col-lg-3 "> {% trans "显示指定部门" %} </label>
-                                                    <div class="col-sm-8 no-padding"  style="max-height:400px;overflow: auto">
-                                                        <table id="deptNames" class="table table-bordered table-hover">
-                                                        </table>
+                            <div id="oab">
+
+                                <div>
+                                    <table class="table table-bordered table-striped">
+                                        <tr>
+                                            <td class="text-right">界面显示控制：</td>
+                                            <td>
+                                                <label class="radio radio-inline padding-top-0 margin-top-0 form-inline">
+                                                    <label>
+                                                        <input type="radio" name="oab_show_mod" value="1" ><span>所有部门 </span>
+                                                    </label>
+                                                    <label>
+                                                        <input type="radio" name="oab_show_mod" value="2"><span>仅本部门 </span>
+                                                    </label>
+                                                    <label>
+                                                        <input type="radio" name="oab_show_mod" value="3"><span>本部门和子部门 </span>
+                                                    </label>
+                                                    <label>
+                                                        <input type="radio" name="oab_show_mod" value="4"><span>指定部门及其子部门 </span>
+                                                    </label>
+                                                </label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">通讯录导出按钮：
+                                            </td>
+                                            <td>
+                                                <div class="checkbox">
+                                                    <label style="margin-right:20px;">
+                                                        <input name="oab_show_export" type="checkbox" checked class="ace">
+                                                        <span class="lbl"> 显示 </span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">显示指定部门：
+                                            </td>
+                                            <td>
+                                                <div class=" dept_list  active">
+                                                    <div style="max-height:400px;overflow: auto;max-width:500px;">
+                                                            <table id="deptNames" class="table table-bordered table-hover">
+                                                            </table>
                                                     </div>
                                                 </div>
-                                                <div class="form-group dept_list {% if form.oab_show_mod.value == 4 %} active {% endif %}">
-                                                    <div style="position:relative;padding-left:0" class="col-sm-8 col-sm-offset-3">
+
+                                            </td>
+                                        </tr>
+                                        <tr >
+                                            <td class="text-right">
+                                            </td>
+                                            <td>
+                                                <div class="dept_list active">
+                                                    <div style="position:relative;padding-left:0">
                                                         <div id="input_box" class="input-group" style="max-width:300px;">
                                                             <input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">
                                                             <input type="hidden" class="id_dept_id" value="" name="target_dept">
                                                             <span class="input-group-addon clear_dept" style="cursor:pointer;background:#a0a0a0;color:#fff;">清空</span><span class="input-group-addon submit_dept_permit_btn" style="cursor:pointer;background:#1b6aaa;color:#fff;">添加部门</span>
                                                         </div>
                                                         <div class="widget-box widget-color-blue2 email_box_tree" id="tree_box" style="position:absolute;top:32px;z-index:10;min-width:60%;max-width:100%;left:0;">
-                                                            <button type="button" class="btn btn-danger btn-sm pull-right close_btn" style="">&times;</button>
+                                                            <button type="button" class="btn btn-danger btn-sm pull-right close_btn" >&times;</button>
                                                             <div class="widget-body" style="padding-right:20px;">
                                                                 <div style="padding:20px  6px 0;">
                                                                     <input type="text" class="search_input form-control" placeholder="输入关键字搜索...">
@@ -438,28 +697,93 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            {% endif %}
-                                        </div>
-                                        <div class="col-sm-2"></div>
-                                    </div>
-                                    <div>
-                                        <button type="button" class="btn btn-primary btn-sm edit_btn">确认提交</button>
-                                        <!-- <button class="btn btn-sm" type="reset">{% trans "重置" %}</button> -->
-                                        <button type="button" class="btn btn-danger btn-sm del_btn">删除配置</button>
-                                    </div>
+
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
-                            {% endif %}
+                                <div>
+                                    <button type="button" class="btn btn-primary btn-sm edit_btn">确认提交</button>
+                                    <!-- <button class="btn btn-sm" type="reset">{% trans "重置" %}</button> -->
+                                    <button type="button" class="btn btn-danger btn-sm del_btn">删除配置</button>
+                                </div>
+                            </div>
 
                             <div id="space">
-                                <div class="row">
-                                    <div class="col-sm-10">
-                                        {{ form.is_space_clean|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.space_clean_normal|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.space_clean_sent|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.space_clean_spam|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.space_clean_trash|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                    </div>
-                                    <div class="col-sm-2"></div>
+                                <div>
+                                    <table class="table table-bordered table-striped">
+                                        <tbody>
+                                        <tr>
+                                            <td class="text-right"> 邮箱空间定时清理：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4">
+                                                    <select name="is_space_clean" class=" form-control  max-width-200">
+                                                        <option value="-1">关闭</option>
+
+                                                        <option value="0" selected="">与域名配置相同</option>
+
+                                                        <option value="1">开启</option>
+
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <div style="clear: both">
+                                                        <span class="middle text-success "><strong style="color: red">注：</strong> 设置用户各类邮件的保留时间，超过设置时间的邮件会被自动删除；设置为“0”时会永久保留用户邮件；系统会在每天凌晨  03:50 分自动进行清理</span>
+                                                    </div>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right"> <span class="red bold">*</span>  普通邮件保留天数：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4">
+                                                    <input type="number" name="space_clean_normal" value="0" class=" form-control max-width-200">
+                                                </div>
+                                                <div class="col-sm-8">
+
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right"> <span class="red bold">*</span>  发件箱邮件保留天数：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4">
+                                                    <input type="number" name="space_clean_sent" value="0" class=" form-control max-width-200">
+                                                </div>
+                                                <div class="col-sm-8">
+
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right"> <span class="red bold">*</span>  垃圾箱邮件保留天数：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4">
+                                                    <input type="number" name="space_clean_spam" value="0" class=" form-control max-width-200">
+                                                </div>
+                                                <div class="col-sm-8">
+
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right"> <span class="red bold">*</span>  废件箱邮件保留天数：</td>
+                                            <td class="row">
+                                                <div class="col-sm-4">
+                                                    <input type="number" name="space_clean_trash" value="0" class=" form-control max-width-200">
+                                                </div>
+                                                <div class="col-sm-8">
+
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                                 <div>
                                     <button type="button" class="btn btn-primary btn-sm edit_btn">确认提交</button>
@@ -485,30 +809,28 @@
             <div class="modal-body">
                 <div class="table-header">例外地址</div>
                 <div>
-                    <form class="form-horizontal form_send_limit_white" role="form" name="form_send_limit_white" action="" method="POST">
                         {% csrf_token %}
-                        <table class="table table-bordered table-center">
-                            <thead>
-                            <tr>
-                                <th>序号</th>
-                                <th>邮件地址</th>
-                                <th>操作</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for num,mailbox in form.getSendLimitWhiteList %}
-                                <tr id="id_send_row_{{ num }}">
-                                    <td> {{ num }} </td>
-                                    <td> {{ mailbox }} </td>
-                                <td>
-                                    <button class="btn btn-xs btn-danger" type="button" onclick="clickLimitSendDelete('send', '{{ num }}')">删除</button>
-                                </td>
-                                <input type="hidden" value="{{ mailbox }}" name="send_{{ mailbox }}_id" id="id_send_id_{{ num }}" />
-                                <input type="hidden" value="-1" name="send_{{ mailbox }}_delete" id="id_send_delete_{{ num }}" />
+                        <div style="max-height: 300px;overflow: auto;border-bottom: 1px solid #ddd; margin-bottom: 20px;">
+                            <table class="table table-bordered table-center">
+                                <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>邮件地址</th>
+                                    <th>操作</th>
                                 </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody id="send_tbody">
+                                    <tr >
+                                        <td> </td>
+                                        <td> </td>
+                                        <td>
+                                            <button class="btn btn-xs btn-danger" type="button" onclick="clickLimitSendDelete()">删除</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
                         <div class="row">
                             <div class="col-sm-10 col-sm-offset-1">
                                 <div class="input-group margin-bottom-8">
@@ -521,15 +843,10 @@
                                 <p class="alert alert-warning"><b class="red">注：</b>当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“@域名”，如“@test.com”。</p>
                             </div>
                         </div>
-                        <div class=" ">
-                        <input type="hidden" value="{{ group_id }}" name="group_id"  />
-                        <input type="hidden" value="send" name="type" />
-                        </div>
                         <div class="center" style="background:#fafafa;">
                             <button class="btn btn-primary submit_send_permit_btn" type="button">确定</button>
                             <button class="btn btn-warning" type="reset">重置</button>
                         </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -545,30 +862,29 @@
             <div class="modal-body">
                 <div class="table-header">例外地址</div>
                 <div>
-                    <form class="form-horizontal form_recv_limit_white" role="form" name="form_recv_limit_white" action="" method="POST">
+                    
                         {% csrf_token %}
-                        <table class="table table-bordered table-center">
-                            <thead>
-                            <tr>
-                                <th>序号</th>
-                                <th>邮件地址</th>
-                                <th>操作</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for num,mailbox in form.getRecvLimitWhiteList %}
-                                <tr id="id_recv_row_{{ num }}">
-                                    <td> {{ num }} </td>
-                                    <td> {{ mailbox }} </td>
-                                <td>
-                                    <button class="btn btn-xs btn-danger" type="button" onclick="clickLimitSendDelete('recv', '{{ num }}')">删除</button>
-                                </td>
-                                <input type="hidden" value="{{ mailbox }}" name="recv_{{ mailbox }}_id" id="id_recv_id_{{ num }}" />
-                                <input type="hidden" value="-1" name="recv_{{ mailbox }}_delete" id="id_recv_delete_{{ num }}" />
+                        <div style="max-height: 300px;overflow: auto;border-bottom: 1px solid #ddd; margin-bottom: 20px;">
+                            <table class="table table-bordered table-center">
+                                <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>邮件地址</th>
+                                    <th>操作</th>
                                 </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody id="recv_tbody">
+                                    <tr>
+                                        <td> </td>
+                                        <td>  </td>
+                                    <td>
+                                        <button class="btn btn-xs btn-danger" type="button" onclick="clickLimitSendDelete('recv', '{{ num }}')">删除</button>
+                                    </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
                         <div class="row">
                             <div class="col-sm-10 col-sm-offset-1">
                                 <div class="input-group margin-bottom-8">
@@ -582,14 +898,11 @@
                             </div>
                         </div>
                         <div class=" ">
-                        <input type="hidden" value="{{ group_id }}" name="group_id"  />
-                        <input type="hidden" value="recv" name="type" />
                         </div>
                         <div class="center" style="background:#fafafa;">
                             <button class="btn btn-primary submit_recv_permit_btn" type="button">确定</button>
                             <button class="btn btn-warning" type="reset">重置</button>
                         </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -628,6 +941,58 @@
     <script src="{% static "components/datetimepiker/bootstrap-datetimepicker.zh-CN.js" %}"></script>
 
     <script>
+        var alsendList = [];
+        var hashSend = [];
+        var alrecvList = [];
+        var hashRecv = [];
+        function freshHtmlSend(){
+            var setting_id = $('#basic>div>button').attr('data_id');
+            $.ajax({
+                url:"{% url 'ajax_group_setting_white' %}",
+                type:'GET',
+                async: false,
+                data:{setting_id:setting_id},
+                success:function(data){
+                    data = JSON.parse(data)
+                    var sendList = data.send||[];
+                    alsendList = data.send||[];
+                    hashSend = [];
+                    for(var i=0,html='';i<sendList.length;i++){
+                        hashSend[sendList[i]] = true;
+                        html += '<tr><td>'+(i+1)+'</td><td>'+sendList[i]+'</td> <td> <button class="btn btn-xs btn-danger delete_send_btn" data_email="'+sendList[i]+'" type="button">删除</button></td></tr>'
+                    }
+                    $('#send_tbody').html(html);
+                    $('#allow_send_email_dress').modal('show');
+                }
+            })
+        }
+        function freshHtmlRecv(){
+            var setting_id = $('#basic>div>button').attr('data_id');
+            $.ajax({
+                url:"{% url 'ajax_group_setting_white' %}",
+                type:'GET',
+                async: false,
+                data:{setting_id:setting_id},
+                success:function(data){
+                    data = JSON.parse(data)
+                    var recvList = data.recv||[];
+                    alrecvList = data.recv||[];
+                    hashRecv = [];
+                    for(var i=0,html='';i<recvList.length;i++){
+                        hashSend[recvList[i]] = true;
+                        html += '<tr><td>'+(i+1)+'</td><td>'+recvList[i]+'</td> <td> <button class="btn btn-xs btn-danger delete_recv_btn" data_email="'+recvList[i]+'" type="button">删除</button></td></tr>'
+                    }
+                    $('#recv_tbody').html(html);
+                    $('#allow_recv_email_dress').modal('show');
+                }
+            })
+        }
+        $('.show_send_btn').click(function(){
+            freshHtmlSend()
+        })
+        $('.show_recv_btn').click(function(){
+            freshHtmlRecv()
+        })
         var limit_whitelist = {}
         function get_limit_whitelist(){
             var setting_id = $('#basic>div>button').attr('data_id');
@@ -649,76 +1014,122 @@
             }
         })
         $('.submit_send_permit_btn').click(function(){
-            // var str = $(".form_send_limit_white").serialize();
-            // str +='&type=send&setting_id='+"{{group_id}}"
-            // get_limit_whitelist();
+            var addval = $("#allow_send_email_dress [name='new_mailbox']").val();
+            var addStr = $("#allow_send_email_dress [name='new_mailbox_list']").val()
+            if(!addval&&!addStr){
+                layer.msg('请输入内容~');
+                return;
+            }
+            if(hashSend[addval]){
+                layer.msg('已经添加过了~');
+                return;
+            }
+            var sendList = alsendList;
+            if(addval!=''&&addval!=undefined){
+                sendList.push(addval);
+            }
+            if(addStr!=''&&addStr!=undefined){
+                var addList = addStr.split('|')
+                sendList = sendList.concat(addList)
+            }
+            updateSend(sendList)
+            $("#allow_send_email_dress [name='new_mailbox']").val('')
+            $("#allow_send_email_dress [name='new_mailbox_list']").val('')
+        })
+        $('#send_tbody').on('click',' .delete_send_btn',function(){
+            var a = $(this).attr('data_email');
+            for(var i=0;i<alsendList.length;i++){
+                if(alsendList[i]==a){
+                    hashSend[a] = false;
+                    alsendList.splice(i,1);
+                    updateSend(alsendList);
+                    break;
+                }
+            }
+        })
+        function updateSend(sendList){
+            var str = {
+                value : sendList,
+                type: 'send',
+                setting_id: $('#basic>div>button').attr('data_id')
+            }
+            str = JSON.stringify(str)
             $.ajax({
-                url:"{% url 'ajax_group_setting_white' %}",
-                type:'GET',
-                data:{setting_id:$('#basic>div>button').attr('data_id')},
+                // url:"{% url 'group_limit_whitelist_ajax' %}",
+                url:"{% url 'ajax_group_setting_white_mdf' %}",
+                type:"POST",
+                data:str,
                 success:function(data){
-                    var sendList = data.send ||[];
-                    console.log($(".form_send_limit_white [name='new_mailbox']").val())
-                    sendList.push($(".form_send_limit_white [name='new_mailbox']").val());
-                    var str = {
-                        value : sendList,
-                        type: 'send',
-                        setting_id: $('#basic>div>button').attr('data_id')
+                    if(data.status=='OK'){
+                        layer.msg("操作成功！");
+                        freshHtmlSend()
+                        // $('#allow_send_email_dress').modal('hide');
+                    }else{
+                        layer.msg("操作失败：  "+data.message);
                     }
-                    console.log(str)
-                    str = JSON.stringify(str)
-                    console.log("str1  ==  "+str);
-                    $.ajax({
-                        // url:"{% url 'group_limit_whitelist_ajax' %}",
-                        url:"{% url 'ajax_group_setting_white_mdf' %}",
-                        type:"POST",
-                        data:str,
-                        success:function(data){
-                            if(data.status=='OK'){
-                                alert("设置成功！");
-                                $('#allow_send_email_dress').modal('hide');
-                                // window.location.href="";
-                            }else{
-                                alert("设置失败：  "+data.message);
-                            }
-                        }
-                    })
-        
                 }
             })
-        })
+        }
         $('.submit_recv_permit_btn').click(function(){
+            var addval = $("#allow_recv_email_dress [name='new_mailbox']").val();
+            var addStr = $("#allow_recv_email_dress [name='new_mailbox_list']").val()
+            if(!addval&&!addStr){
+                layer.msg('请输入内容~');
+                return;
+            }
+            if(hashSend[addval]){
+                layer.msg('已经添加过了~');
+                return;
+            }
+            var sendList = alrecvList;
+            if(addval!=''&&addval!=undefined){
+                sendList.push(addval);
+            }
+            if(addStr!=''&&addStr!=undefined){
+                var addList = addStr.split('|')
+                sendList = sendList.concat(addList)
+            }
+            updateRecv(sendList)
+            $("#allow_recv_email_dress [name='new_mailbox']").val('')
+            $("#allow_recv_email_dress [name='new_mailbox_list']").val('')
+        })
+        $('#recv_tbody').on('click',' .delete_recv_btn',function(){
+            var a = $(this).attr('data_email');
+            for(var i=0;i<alrecvList.length;i++){
+                if(alsendList[i]==a){
+                    hashRecv[a] = false;
+                    alrecvList.splice(i,1);
+                    updateRecv(alrecvList);
+                    break;
+                }
+            }
+        })
+        
+        function updateRecv(sendList){
+            var str = {
+                value : sendList,
+                type: 'recv',
+                setting_id: $('#basic>div>button').attr('data_id')
+            }
+            str = JSON.stringify(str)
             $.ajax({
-                url:"{% url 'ajax_group_setting_white' %}",
-                type:'GET',
-                async: false,
-                data:{setting_id: $('#basic>div>button').attr('data_id')},
+                // url:"{% url 'group_limit_whitelist_ajax' %}",
+                url:"{% url 'ajax_group_setting_white_mdf' %}",
+                type:"POST",
+                data:str,
                 success:function(data){
-                    var recvList = data.recv ||[];
-                    // var str = $(".form_recv_limit_white").serialize();
-                    // str +='&type=recv&setting_id='+"{{group_id}}"
-                    recvList.push($(".form_recv_limit_white [name='new_mailbox']").val());
-                    var str = {
-                        value : sendList,
-                        type: 'recv',
-                        setting_id: $('#basic>div>button').attr('data_id')
+                    if(data.status=='OK'){
+                        layer.msg("操作成功！");
+                        freshHtmlRecv()
+                        // $('#allow_send_email_dress').modal('hide');
+                    }else{
+                        layer.msg("操作失败：  "+data.message);
                     }
-                    str = JSON.stringify(str)
-                    console.log("str2  ==  "+str);
-                    $.ajax({
-                        // url:"{% url 'group_limit_whitelist_ajax' %}",
-                        url:"{% url 'ajax_group_setting_white_mdf' %}",
-                        type:"POST",
-                        data:str,
-                        success:function(data){
-                            $('#allow_recv_email_dress').modal('hide');
-                            // window.location.href="";
-                        }
-                    })
                 }
             })
-            
-        })
+        }
+
+
         function clickLimitSendDelete(type, num){
             var entry = "id_" + type + "_row_" + num;
             var entry_val = "id_" + type + "_delete_" + num;
@@ -736,19 +1147,6 @@
 
     <script>
         $('#edit_email_tabs').tabs();
-        var passobj = $('#{{ form.passwd_start.auto_id }}').parent();
-        var template = passobj.html();
-        var template2 = '<div class="input-group">' + template + '<span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span></div>'
-        passobj.html(template2);
-        $('#{{ form.passwd_start.auto_id }}').datetimepicker({
-            format: 'yyyy-mm-dd hh:ii:00',
-            language: 'zh-CN',
-            weekStart: 1,
-            todayBtn: 1,
-            autoclose: 1,
-            // minView: 2,
-            pickerPosition: "top-right",
-        });
     </script>
 
     <script>
@@ -958,88 +1356,78 @@
             $('#deptNames').html(html);
         }
 
-        //获取已添加的列表
-         function group_oab_dept_permit_ajax(){
-            alreadyDeptList = '';
-            idArr = [];
-            hashId = [];
-            alreadyDeptArr = [];
-            var str="group_id="+"{{ group_id }}";
+         //获取已添加的部门列表 新的
+        function get_groups_new(){
             $.ajax({
-                url:"{% url 'group_oab_dept_permit_ajax' %}",
+                url:" {% url 'ajax_group_setting_dept' %}",
                 type:"GET",
-                data:str,
+                data:{setting_id:$('#oab>div>button').attr('data_id')},
                 success:function(data){
-                    if(data.status=='OK'){
-                        for(var key in data.data){
-                            alreadyDeptList += key+'|';
-                            idArr.push(key);
-                            hashId[key] = true;
-                            var obj = [];
-                            obj['name'] = data.data[key];
-                            obj['id'] = key;
-                            alreadyDeptArr.push(obj)
-                        }
-                        formatStr(alreadyDeptArr);
-
-                    }else{
-                        alert("获取组数据失败：  "+data.message);
+                    data = JSON.parse(data)
+                    console.log(data)
+                    alreadyDeptArr = [];
+                    idArr = [];
+                    hashId = [];
+                    for(var key in data){
+                        let obj = {};
+                        obj.id = key
+                        obj.name = data[key];
+                        alreadyDeptArr.push(obj)
+                        idArr.push(key)
+                        hashId[key] = true;
                     }
+                    formatStr(alreadyDeptArr)
                 }
             })
          }
-         group_oab_dept_permit_ajax();
 
-
-        //删除
-        $('body').on('click','.dept_delete_btn',function(){
-            var id = $(this).attr('data_id');
-            action = "del";
-            str="group_id="+"{{ group_id }}&action="+action+"&del_list="+id;
+        //更新某个组配置的“指定部门及其子部门”    {% url 'ajax_group_setting_dept_mdf' %}    请求方式：   POST
+        function updateDept(arr){
             $.ajax({
-                url:"{% url 'group_oab_dept_permit_ajax' %}",
-                type:"GET",
-                data:str,
+                url:"{% url 'ajax_group_setting_dept_mdf' %}",
+                type:'POST',
+                data:{
+                    setting_id:$('#oab>div>button').attr('data_id'),
+                    value:JSON.stringify(arr)
+                    },
                 success:function(data){
-                    if(data.status=='OK'){
-                        group_oab_dept_permit_ajax();
-                        alert('删除成功！')
+                    if(data.status == 'OK'){
+                        layer.msg('操作成功！')
                     }else{
-                        alert("获取组数据失败：  "+data.message);
+                        layer.msg('操作失败！')
                     }
+                    get_groups_new()
                 }
             })
-        })
+        }
 
         $('.submit_dept_permit_btn').click(function(){
-            //var str = $(".form_dept_permit_list").serialize();
-            var deptId = $('#input_box .id_dept_id').val();
-            if(hashId[deptId]){
-                alert('此部门已经添加，请重新选择！');
-                return;
+            var addval = $('#oab .id_dept_id').val();
+            if(!addval){
+                layer.msg('请选择部门~')
             }
-            str="group_id="+"{{ group_id }}"+"&dept_list="+alreadyDeptList+deptId;
-            console.log("str  ==  "+str);
-            $.ajax({
-                url:"{% url 'group_oab_dept_permit_add' %}",
-                type:"POST",
-                data:str,
-                success:function(data){
-                    if(data.status=='OK'){
-                        group_oab_dept_permit_ajax();
-                        alert("添加成功！");
-                    }else{
-                        alert("添加失败：  "+data.message);
-                    }
-                }
-            })
+            if(addval){
+                idArr.push(addval)
+                updateDept(idArr)
+            }
         })
-
-
-
-    </script>
-
-    <script>
+        $('#oab').on('click',' .dept_delete_btn',function(){
+            var a = $(this).attr('data_id')
+            for(var i=0;i<idArr.length;i++){
+                if(idArr[i] == a){
+                    idArr.splice(i,1);
+                    updateDept(idArr);
+                }
+            }
+        })
+        
+        $("#spam [name='is_spam']").on('click', function(){
+            if($(this).prop('checked')){
+                $('.sw_antivirus').show();
+            }else{
+                $('.sw_antivirus').hide();
+            }
+        });
         var limit_whitelist = {};
         function init(isInit){
             if(isInit=='1'){
@@ -1081,7 +1469,7 @@
                         $('#add_tab').html(html);
                         $('#add_tab').parent().show();
                     }
-                    
+
                 }
             })
 
@@ -1091,7 +1479,7 @@
         function getList(){
            init(0);
         }
-        
+
         //修改/添加某个组配置 {% url 'ajax_group_setting_mdf' %}
         // (u"basic", u"常规设置"),
         //                 (u"login", u"登陆方式限制"),
@@ -1123,19 +1511,19 @@
                     value = {
                         "is_passwd": 1,
                         "passwd_day": 0,
-                        "passwd_size": 8, 
-                        "passwd_type": 2,   
+                        "passwd_size": 8,
+                        "passwd_type": 2,
                         "passwd_other":  {
-                            "passwd_digital": 1, 
-                            "passwd_name2": 1, 
-                            "passwd_name": 1, 
-                            "passwd_letter": 1, 
+                            "passwd_digital": 1,
+                            "passwd_name2": 1,
+                            "passwd_name": 1,
+                            "passwd_letter": 1,
                             "passwd_letter2": 1
-                            }, 
+                            },
                         "passwd_forbid": {
-                            "forbid_send": 1, 
-                            "force_change": 1, 
-                            "force_change_in_weak": 1, 
+                            "forbid_send": 1,
+                            "force_change": 1,
+                            "force_change_in_weak": 1,
                             "forbid_send_in_weak": 1
                             }
                     }
@@ -1144,17 +1532,17 @@
                         "is_virus": 1,
                         "is_spam": 1,
                         "check_attach": {"high": 1, "low": 0},
-                        "match_black": {"content": 1, "sender": 1, "subject": 1}, 
-                        "check_spam": {"spamassassion": 1, "dspam": 1},  
+                        "match_black": {"content": 1, "sender": 1, "subject": 1},
+                        "check_spam": {"spamassassion": 1, "dspam": 1},
                         "is_formt": 1,
                         "spam_folder": "spam",
                         "spam_subject_flag": "",
                         "isolate_day": 15,
                         "is_send_isolate": 0,
-                        "send_isolate_name": "",  
-                        "isolate_url": "",       
-                        "check_object": {"outside": 1, "local": 1},      
-                        "check_local": {"virus": 1, "spam": 1},        
+                        "send_isolate_name": "",
+                        "isolate_url": "",
+                        "check_object": {"outside": 1, "local": 1},
+                        "check_local": {"virus": 1, "spam": 1},
                         "check_outside": {"virus": 1, "spam": 1}
                     }
                 }else if(type == 'frequency'){
@@ -1164,11 +1552,11 @@
                         "frequency_minute_count": 0,
                         "frequency_hour_count": 0,
                         "frequency_day_count": 0,
-                        "frequency_operate": 0,
+                        "frequency_operate": "block",
                     }
                 }else if(type == 'oab'){
                     value = {
-                        "oab_show_mod": 1, 
+                        "oab_show_mod": 1,
                         "oab_show_export": 0,
                         "oab_dept_list": ""
                     }
@@ -1193,7 +1581,7 @@
                     group_id: "{{group_id}}",
                     setting_id  : setting_id,
                     type: type,
-                    value : JSON.stringify(value)         
+                    value : JSON.stringify(value)
                 },
                 success:function(data){
                     let str = '修改配置成功！';
@@ -1205,20 +1593,30 @@
                         $('#edit_email_tabs [href="#'+type+'"]').click();
                         $('#edit_email_tabs>div#'+type).show();
                     }
-                    alert(str)
+                    layer.msg(str);
+                    // alert(str)
                     getList();
+                },
+                error:function(err){
+                    let str = '修改配置失败！';
+                    if(setting_id == 0){
+                        str = '添加配置失败！'
+                    }
+                    console.log(str,err);
+                    layer.msg(str);
                 }
             })
         }
-        
+
         $('#add_btn').click(function(){
             addTab(1,0);
         })
-        
+
         //获取某个具体的组配置参数 {% url 'ajax_group_setting_info' %}
         $('#edit_email_tabs>ul>li>a').click(function(){
             console.log(this);
             var type = $(this).attr('href').slice(1);
+            get_groups_new();
             $.ajax({
                 url:"{% url 'ajax_group_setting_info' %}",
                 type:'GET',
@@ -1250,25 +1648,30 @@
                         }else if(type == 'password'){
                             $('#password [name="is_passwd"]').prop('checked',res['is_passwd'])
                             $('#password [name="passwd_day"]').val(res['passwd_day'])
-                            $('#password [name="passwd_other_letter"]').val(res['passwd_size'])
+                            $('#password [name="passwd_size"]').val(res['passwd_size'])
                             $('#password [name="passwd_type"]').val(res['passwd_type'])
                             if(res['passwd_other']){
                                 $('#password [name="passwd_other_bak"][value="passwd_digital"]').prop('checked',res['passwd_other']['passwd_digital'])
-                                $('#password [name="passwd_other_bak"][value="passwd_name2"]').prop('checked',res['passwd_other']['passwd_name2']) 
-                                $('#password [name="passwd_other_bak"][value="passwd_name"]').prop('checked',res['passwd_other']['passwd_name']) 
-                                $('#password [name="passwd_other_bak"][value="passwd_letter"]').prop('checked',res['passwd_other']['passwd_letter']) 
+                                $('#password [name="passwd_other_bak"][value="passwd_name2"]').prop('checked',res['passwd_other']['passwd_name2'])
+                                $('#password [name="passwd_other_bak"][value="passwd_name"]').prop('checked',res['passwd_other']['passwd_name'])
+                                $('#password [name="passwd_other_bak"][value="passwd_letter"]').prop('checked',res['passwd_other']['passwd_letter'])
                                 $('#password [name="passwd_other_bak"][value="passwd_letter2"]').prop('checked',res['passwd_other']['passwd_letter2'])
                             }
                             if(res['passwd_forbid']){
-                                $('#password [name="passwd_forbid_bak"][value="forbid_send"]').prop('checked',res['passwd_forbid']['forbid_send']) 
+                                $('#password [name="passwd_forbid_bak"][value="forbid_send"]').prop('checked',res['passwd_forbid']['forbid_send'])
                                 $('#password [name="passwd_forbid_bak"][value="force_change"]').prop('checked',res['passwd_forbid']['force_change'])
-                                $('#password [name="passwd_forbid_bak"][value="force_change_in_weak"]').prop('checked',res['passwd_forbid']['force_change_in_weak']) 
+                                $('#password [name="passwd_forbid_bak"][value="force_change_in_weak"]').prop('checked',res['passwd_forbid']['force_change_in_weak'])
                                 $('#password [name="passwd_forbid_bak"][value="forbid_send_in_weak"]').prop('checked',res['passwd_forbid']['forbid_send_in_weak'])
                             }
-                            
+
                         }else if(type == 'spam'){
                             $('#spam [name="is_virus"]').prop('checked',res['is_virus'])
                             $('#spam [name="is_spam"]').prop('checked',res['is_spam'])
+                            if(res['is_spam'] == 1){
+                                $('.sw_antivirus').show();
+                            }else{
+                                $('.sw_antivirus').hide();
+                            }
                             if(res['check_attach']){
                                 $('#spam [name="check_attach_bak"][value="high"]').prop('checked',res['check_attach']['high'])
                                 $('#spam [name="check_attach_bak"][value="low"]').prop('checked',res['check_attach']['low'])
@@ -1308,18 +1711,18 @@
                             $('#frequency [name="frequency_hour_count"]').val(res['frequency_hour_count'])
                             $('#frequency [name="frequency_day_count"]').val(res['frequency_day_count'])
                             $('#frequency [name="frequency_operate"]').val(res['frequency_operate'])
-                           
+
                         }else if(type == 'oab'){
                             $('#oab [name="oab_show_mod"]').prop('checked',false);
                             $('#oab [name="oab_show_mod"][value="'+res['oab_show_mod']+'"]').prop('checked',true)
-                            $('#oab [name="oab_show_export_bak"]').prop('checked',res['oab_show_export'])
+                            $('#oab [name="oab_show_export"]').prop('checked',res['oab_show_export'])
 
                             if(res['oab_show_mod'] == 4){
                                 $('.dept_list').addClass('active')
                             }else{
                                 $('.dept_list').removeClass('active')
                             }
-                            
+
 
                         }else if(type == 'space'){
                             $('#space [name="is_space_clean"]').val(res['is_space_clean'])
@@ -1327,7 +1730,7 @@
                             $('#space [name="space_clean_sent"]').val(res['space_clean_sent'])
                             $('#space [name="space_clean_spam"]').val(res['space_clean_spam'])
                             $('#space [name="space_clean_trash"]').val(res['space_clean_trash'])
-                           
+
                         }
 
 
@@ -1361,19 +1764,19 @@
                 value = {
                     "is_passwd": $('#password [name="is_passwd"]').prop('checked')?1:0,
                     "passwd_day": $('#password [name="passwd_day"]').val(),
-                    "passwd_size": $('#password [name="passwd_other_letter"]').val(), 
-                    "passwd_type": $('#password [name="passwd_type"]').val(),   
+                    "passwd_size": $('#password [name="passwd_size"]').val(),
+                    "passwd_type": $('#password [name="passwd_type"]').val(),
                     "passwd_other": {
-                        "passwd_digital": $('#password [name="passwd_other_bak"][value="passwd_digital"]').prop('checked')?1:0, 
-                        "passwd_name2": $('#password [name="passwd_other_bak"][value="passwd_name2"]').prop('checked')?1:0, 
-                        "passwd_name": $('#password [name="passwd_other_bak"][value="passwd_name"]').prop('checked')?1:0, 
-                        "passwd_letter": $('#password [name="passwd_other_bak"][value="passwd_letter"]').prop('checked')?1:0, 
+                        "passwd_digital": $('#password [name="passwd_other_bak"][value="passwd_digital"]').prop('checked')?1:0,
+                        "passwd_name2": $('#password [name="passwd_other_bak"][value="passwd_name2"]').prop('checked')?1:0,
+                        "passwd_name": $('#password [name="passwd_other_bak"][value="passwd_name"]').prop('checked')?1:0,
+                        "passwd_letter": $('#password [name="passwd_other_bak"][value="passwd_letter"]').prop('checked')?1:0,
                         "passwd_letter2": $('#password [name="passwd_other_bak"][value="passwd_letter2"]').prop('checked')?1:0
-                        }, 
+                        },
                     "passwd_forbid":  {
-                        "forbid_send": $('#password [name="passwd_forbid_bak"][value="forbid_send"]').prop('checked')?1:0, 
-                        "force_change": $('#password [name="passwd_forbid_bak"][value="force_change"]').prop('checked')?1:0, 
-                        "force_change_in_weak": $('#password [name="passwd_forbid_bak"][value="force_change_in_weak"]').prop('checked')?1:0, 
+                        "forbid_send": $('#password [name="passwd_forbid_bak"][value="forbid_send"]').prop('checked')?1:0,
+                        "force_change": $('#password [name="passwd_forbid_bak"][value="force_change"]').prop('checked')?1:0,
+                        "force_change_in_weak": $('#password [name="passwd_forbid_bak"][value="force_change_in_weak"]').prop('checked')?1:0,
                         "forbid_send_in_weak": $('#password [name="passwd_forbid_bak"][value="forbid_send_in_weak"]').prop('checked')?1:0
                         }
                 }
@@ -1382,36 +1785,36 @@
                     "is_virus": $('#spam [name="is_virus"]').prop('checked')?1:0,
                     "is_spam": $('#spam [name="is_spam"]').prop('checked')?1:0,
                     "check_attach": {
-                        "high": $('#spam [name="check_attach_bak"][value="high"]').prop('checked')?1:0, 
+                        "high": $('#spam [name="check_attach_bak"][value="high"]').prop('checked')?1:0,
                         "low": $('#spam [name="check_attach_bak"][value="low"]').prop('checked')?1:0,
                         },
                     "match_black": {
-                        "content": $('#spam [name="match_black_bak"][value="content"]').prop('checked')?1:0, 
-                        "sender": $('#spam [name="match_black_bak"][value="sender"]').prop('checked')?1:0, 
+                        "content": $('#spam [name="match_black_bak"][value="content"]').prop('checked')?1:0,
+                        "sender": $('#spam [name="match_black_bak"][value="sender"]').prop('checked')?1:0,
                         "subject": $('#spam [name="match_black_bak"][value="subject"]').prop('checked')?1:0
-                        }, 
+                        },
                     "check_spam": {
-                        "spamassassion": $('#spam [name="check_spam_bak"][value="spamassassion"]').prop('checked')?1:0, 
+                        "spamassassion": $('#spam [name="check_spam_bak"][value="spamassassion"]').prop('checked')?1:0,
                         "dspam": $('#spam [name="check_spam_bak"][value="dspam"]').prop('checked')?1:0
-                        },  
+                        },
                     "is_formt": $('#spam [name="is_formt"]').prop('checked')?1:0,
                     "spam_folder": $('#spam [name="is_formt"]').val(),
                     "spam_subject_flag": $('#spam [name="spam_subject_flag"]').val(),
                     "isolate_day": $('#spam [name="isolate_day"]').val(),
                     "is_send_isolate": $('#spam [name="is_send_isolate"]').prop('checked')?1:0,
-                    "send_isolate_name": $('#spam [name="send_isolate_name"]').val(), 
-                    "isolate_url": $('#spam [name="isolate_url"]').val(),     
+                    "send_isolate_name": $('#spam [name="send_isolate_name"]').val(),
+                    "isolate_url": $('#spam [name="isolate_url"]').val(),
                     "check_object": {
-                        "outside":  $('#spam [name="check_object_bak"][value="outside"]').prop('checked')?1:0, 
+                        "outside":  $('#spam [name="check_object_bak"][value="outside"]').prop('checked')?1:0,
                         "local":  $('#spam [name="check_object_bak"][value="local"]').prop('checked')?1:0
-                        },      
+                        },
                     "check_local": {
                         "virus": $('#spam [name="check_local_bak"][value="virus"]').prop('checked')?1:0,
-                        "spam": $('#spam [name="check_local_bak"][value="spam"]').prop('checked')?1:0, 
-                        },        
+                        "spam": $('#spam [name="check_local_bak"][value="spam"]').prop('checked')?1:0,
+                        },
                     "check_outside": {
                         "virus": $('#spam [name="check_outside_bak"][value="virus"]').prop('checked')?1:0,
-                        "spam": $('#spam [name="check_outside_bak"][value="spam"]').prop('checked')?1:0, 
+                        "spam": $('#spam [name="check_outside_bak"][value="spam"]').prop('checked')?1:0,
                         }
                 }
             }else if(type == 'frequency'){
@@ -1425,8 +1828,8 @@
                 }
             }else if(type == 'oab'){
                 value = {
-                    "oab_show_mod":  $('#oab [name="oab_show_mod"]:checked').val(), 
-                    "oab_show_export": $('#oab [name="oab_show_export_bak"]').prop('checked')?1:0,
+                    "oab_show_mod":  $('#oab [name="oab_show_mod"]:checked').val(),
+                    "oab_show_export": $('#oab [name="oab_show_export"]').prop('checked')?1:0,
                     "oab_dept_list": ""
                 }
 
@@ -1450,12 +1853,12 @@
                 data:{setting_id:$(this).attr('data_id')},
                 success:function(data){
                     console.log(data)
-                    alert('删除配置成功！')
+                    layer.msg('删除配置成功！')
                     init(1);
                 }
             })
         })
-    
+
         //获取某个组配置的“指定外域收发权限白名单”    {% url 'ajax_group_setting_white' %}    请求方式：   GET
         function get_limit_whitelist(){
             var setting_id = $('#basic>div>button').attr('data_id');

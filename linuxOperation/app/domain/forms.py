@@ -1865,7 +1865,7 @@ class DomainWebLinkForm(DomainForm):
 
     def getLinkIndex(self, idx):
         dd = {
-                u"order"    :   u"",
+                u"order"    :   u"1",
                 u"title"    :   u"",
                 u"links"    :   [],
         }
@@ -1909,7 +1909,7 @@ class DomainWebLinkForm(DomainForm):
 
     def checkSaveNew(self, idx=""):
         title = self.post.get(u"title", "")
-        order = self.post.get(u"order", "")
+        order = self.post.get(u"order", "1")
         data_link_1 = {
             u"url"      :      self.post.get(u"url_0", ""),
             u"desc"     :      self.post.get(u"desc_0", ""),

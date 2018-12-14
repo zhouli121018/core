@@ -422,7 +422,7 @@
                   :data="mail_results"
                   style="width: 100%">
                   <el-table-column
-                    prop="email"
+                    prop="recipient"
                     label="收件人"
                     >
                   </el-table-column>
@@ -441,9 +441,15 @@
                       {{scope.row.recall_status_info}}
                     </template>
                   </el-table-column>
-                  <el-table-column label="描述">
+                  <el-table-column label="详情">
                     <template slot-scope="scope">
-                      <span style="color: #f56c6c;">{{scope.row.error_message}}</span>
+                      <span style="color: #f56c6c;" v-if="scope.row.is_red">{{scope.row.inform}}</span>
+                      <span v-if="!scope.row.is_red">{{scope.row.inform}}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作">
+                    <template slot-scope="scope">
+                      <el-button type="text" size="small" v-if="!scope.row.is_zhaohui" @click="recall_single(scope.row)">召回邮件</el-button>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -693,8 +699,13 @@
 
       <el-dialog title="邮件召回" :visible.sync="recallTableVisible" :append-to-body="true">
         <el-table :data="recallData">
-          <el-table-column property="email" label="收件人"></el-table-column>
-          <el-table-column property="recall_status_info" label="召回状态" width="200"></el-table-column>
+          <el-table-column property="recipient" label="收件人"></el-table-column>
+          <el-table-column property="inform" label="详情">
+            <template slot-scope="scope">
+              <span style="color: #f56c6c;" v-if="scope.row.is_red">{{scope.row.inform}}</span>
+              <span v-if="!scope.row.is_red">{{scope.row.inform}}</span>
+            </template>
+          </el-table-column>
         </el-table>
       </el-dialog>
 
@@ -769,7 +780,7 @@
   import SparkMD5 from 'spark-md5'
   // import treeTransfer from 'el-tree-transfer'
   import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach,contactOabDepartsGet,
-  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus,settingSignatureGet,getTemplateList,getTemplateById,getDeptMail,readMail,getContactInfo,getContactLab,uploadCheck,uploadChunk,uploadSuccess,netdiskCapacityGet,companyDiskGet} from '@/api/api'
+  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus,settingSignatureGet,getTemplateList,getTemplateById,getDeptMail,readMail,getContactInfo,getContactLab,uploadCheck,uploadChunk,uploadSuccess,netdiskCapacityGet,companyDiskGet,logRecall} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     props:{
@@ -1114,6 +1125,45 @@
       };
     },
     methods:{
+      recall_single(row){
+        this.$confirm('<p>确定召回此邮件吗？</p>', '召回邮件', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          dangerouslyUseHTMLString: true,
+          type: 'warning'
+        }).then(() => {
+          let message_id = this.message_id;
+          let param = {
+            message_id: message_id,
+            recipient: row.recipient
+          }
+          this.recallLoading = true;
+          logRecall(param).then(res=>{
+            this.getMessageStatus();
+            this.recallLoading = false;
+            this.recallData = res.data.results;
+            this.recallTableVisible = true;
+          }).catch(err=>{
+            this.recallLoading = false;
+            console.log(err)
+            let str = '';
+            if(err.detail){
+              str = err.detail
+            }
+            this.$message({
+              message: '邮件召回失败！'+str,
+              type: 'error'
+            })
+          })
+
+
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消召回'
+          });
+        });
+      },
       htmlDecodeByRegExp:function (str){
         var s = "";
         if(str.length == 0) return "";

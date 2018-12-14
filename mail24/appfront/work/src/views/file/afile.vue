@@ -61,7 +61,7 @@
           <el-table-column label="时间" width="200">
             <template slot-scope="scope">
               <i class="el-icon-time"></i>
-              <span style="margin-left: 10px">{{scope.row.created}}</span>
+              <span style="margin-left: 10px">{{scope.row.created.replace('T',' ')}}</span>
             </template>
           </el-table-column>
 
@@ -70,7 +70,6 @@
               <span style="margin-left: 10px">{{scope.row.left_timestamp| validateLeft}}</span>
             </template>
           </el-table-column>
-
         </el-table>
       </el-row>
 

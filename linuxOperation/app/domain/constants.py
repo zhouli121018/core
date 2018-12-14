@@ -472,7 +472,7 @@ DOMAIN_MODULE_MAIL_TYPE = (
 )
 
 DOMAIN_MODULE_SET_PARAMS = (
-    (u'sw_change_userinfo', u'个人资料功能'),
+    #(u'sw_change_userinfo', u'个人资料功能'),
     (u'sw_change_pass', u'密码修改功能'),
     #(u'sw_options', u'参数设置功能'),
     #(u'sw_signature', u'邮件签名功能'),
@@ -492,7 +492,7 @@ DOMAIN_MODULE_SET_PARAMS = (
 )
 
 DOMAIN_MODULE_SET_VALUE = (
-    (u'sw_change_userinfo', u'1'),
+    #(u'sw_change_userinfo', u'1'),
     (u'sw_change_pass', u'1'),
     #(u'sw_options', u'1'),
     #(u'sw_signature', u'1'),
@@ -512,7 +512,7 @@ DOMAIN_MODULE_SET_VALUE = (
 )
 
 DOMAIN_MODULE_SET_TYPE = (
-    (u'sw_change_userinfo', u'webmail'),
+    #(u'sw_change_userinfo', u'webmail'),
     (u'sw_change_pass', u'webmail'),
     #(u'sw_options', u'webmail'),
     #(u'sw_signature', u'webmail'),

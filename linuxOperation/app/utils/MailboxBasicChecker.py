@@ -22,7 +22,7 @@ if __name__ == "__main__":
     django.setup()
     DEBUG=True
 from app.core.models import Mailbox, MailboxUser, MailboxUserAttr, Domain, DomainAttr, CoreWhitelist
-from app.group.models import CoreGroup, CoreGroupMember
+from app.group.models import CoreGroup, CoreGroupMember, CoreGroupSetting
 from app.utils.regex import pure_digits_regex, pure_english_regex, pure_tel_regex, pure_digits_regex2, pure_lower_regex2, pure_upper_regex2
 
 
@@ -53,7 +53,7 @@ class MailboxBasicChecker(object):
                 return {}
             return json.loads(data)
         except Exception,err:
-            outerror("%s decode '%s' error： %s"%(self.Name,get_string(data),str(err)))
+            print err
             return default
 
     def getSendLimitWhiteList(self, mailbox_id):
@@ -118,20 +118,21 @@ class MailboxBasicChecker(object):
         groupMember = CoreGroupMember.objects.filter(mailbox_id=self.mailbox_id).order_by('id').first()
         if not groupMember:
             return
-        group = CoreGroup.objects.filter(id=groupMember.group_id).order_by('id').first()
-        if not group:
+        groupSetting = CoreGroupSetting.objects.filter(group_id=groupMember.group_id, type=u"basic").first()
+        if not groupSetting or not groupSetting.value:
             return
+        value = self.JsonLoads(groupSetting.value)
         #邮箱空间
-        self.quota_mailbox = int(group.mail_space)
+        self.quota_mailbox = int(value.get("mail_space",0))
         #网络硬盘空间
-        self.quota_netdisk = int(group.net_space)
+        self.quota_netdisk = int(value.get("net_space",0))
         #允许发送邮件大小
-        self.limit_email_size = int(group.allow_out_size)
+        self.limit_email_size = int(value.get("allow_out_size",0))
         #发信功能限制
-        self.limit_send = group.send_limit
+        self.limit_send = int(value.get("send_limit", -1))
         #recv_limit
-        self.limit_recv = group.recv_limit
-        self.limit_whitelist = self.JsonLoads(group.limit_whitelist)
+        self.limit_recv = int(value.get("recv_limit", -1))
+        self.limit_whitelist = value.get("limit_whitelist", {})
     #============================================ Basic 外部调用函数=============================================
 
     def debugLog(self, msg):
@@ -156,5 +157,5 @@ def CheckMailboxBasic(domain_id=0, mailbox_id=0, mailbox=u""):
     return objGroup.GetSetting()
 
 if __name__ == "__main__":
-    mailbox_id = Mailbox.objects.filter(username='anna@test.com').first().id
+    mailbox_id = Mailbox.objects.filter(username='anshanshan@domain.com').first().id
     print CheckMailboxBasic(domain_id=1, mailbox_id=mailbox_id)

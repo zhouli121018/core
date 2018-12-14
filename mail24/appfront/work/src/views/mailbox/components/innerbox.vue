@@ -503,6 +503,7 @@
 
       },
       moreSearchfn(){
+        this.currentPage = 1;
         this.loading = true;
         let params = {
           folder:this.boxId,
@@ -520,20 +521,7 @@
           str += ' body "'+this.searchForm.body+'"';
         }
         if(str){params['search'] = str;}
-        getMailMessage(params).then((res)=>{
-          this.totalCount = res.data.count;
-          var items = res.data.results;
-          for(var i=0;i<items.length;i++){
-            items[i].flagged = (items[i].flags.join('').indexOf('Flagged')>=0);
-            items[i].isread = (items[i].flags.join(' ').indexOf('Seen')>=0);
-            items[i].plain = '';
-            items[i].checked = false;
-          }
-          this.collapseItems[0].lists = items;
-          this.loading = false;
-        },(err)=>{
-          console.log(err)
-        })
+        this.getDateN(params);
       },
       hoverfn(row, column, cell, event){
         this.hoverIndex = row.uid;
@@ -1099,6 +1087,11 @@
         if(this.sort){
           params['sort'] = this.sort;
         }
+        this.getDateN(params);
+
+      },
+      getDateN(params){
+        this.loading = true;
         getMailMessage(params).then((res)=>{
           this.totalCount = res.data.count;
           let items = res.data.results;

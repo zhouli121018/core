@@ -274,7 +274,7 @@
                     label="收件人"
                     >
                     <template slot-scope="scope">
-                      {{scope.row.email}}
+                      {{scope.row.recipient}}
                     </template>
                   </el-table-column>
 
@@ -290,6 +290,19 @@
                     label="召回状态" >
                     <template slot-scope="scope">
                       {{scope.row.recall_status_info}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="inform"
+                    label="详情" >
+                    <template slot-scope="scope">
+                      <span :class="{red:scope.row.is_red}">{{scope.row.inform}}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="操作" >
+                    <template slot-scope="scope">
+                      <el-button type="text" size="small" v-if="!scope.row.is_zhaohui" @click="recall_single(scope.row)">召回邮件</el-button>
                     </template>
                   </el-table-column>
 
@@ -415,7 +428,7 @@
 
 <script>
 
-  import {readMail,downloadAttach,mailDecode,moveMails,messageFlag,rejectMessage,zipMessage,pruneMessage,emlMessage,pabMessage,deleteMail,getMessageStatus,messageRecall,notifyRecall,notifyMessage,replayMessage,saveNetAttach,setStatus,getOpenoffice} from '@/api/api';
+  import {readMail,downloadAttach,mailDecode,moveMails,messageFlag,rejectMessage,zipMessage,pruneMessage,emlMessage,pabMessage,deleteMail,getMessageStatus,messageRecall,notifyRecall,notifyMessage,replayMessage,saveNetAttach,setStatus,getOpenoffice,logRecall} from '@/api/api';
   export default  {
     name:'Read',
     props:{
@@ -518,6 +531,39 @@
       }
     },
     methods:{
+      recall_single(row){
+        this.$confirm('<p>确定召回此邮件吗？</p>', '召回邮件', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          dangerouslyUseHTMLString: true,
+          type: 'warning'
+        }).then(() => {
+          let message_id = this.msg.message_id;
+          let param = {
+            message_id: message_id,
+            recipient: row.recipient
+          }
+          logRecall(param).then(res=>{
+            this.getMessageStatus();
+          }).catch(err=>{
+            console.log(err)
+            let str = '';
+            if(err.detail){
+              str = err.detail
+            }
+            this.$message({
+              message: '邮件召回失败！'+str,
+              type: 'error'
+            })
+            this.getMessageStatus();
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消召回'
+          });
+        });
+      },
       changeType(){
         this.passwordType = 'password';
         console.log(this.passwordType)
@@ -1480,6 +1526,9 @@
   }
 </script>
 <style>
+  .red{
+    color:red;
+  }
   .lock_style{
     display:inline-block;
     width:62px;

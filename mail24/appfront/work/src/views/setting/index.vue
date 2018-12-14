@@ -84,7 +84,7 @@
 
             <el-menu-item index="/setting/transfer" style="text-align: left" v-show="menuShow.setting_transfer_show">
               <img src="./img/op_autoforward.gif" style="width:20px;">
-              <span slot="title" title="利用其他邮件服务器代发出站邮件">外发邮件中转</span>
+              <span slot="title" title="利用其他邮件服务器代发出站邮件">SMTP外发代理</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/accountcancel" style="text-align: left" v-show="menuShow.setting_accountcancel_show">

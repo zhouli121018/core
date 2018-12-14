@@ -262,82 +262,6 @@ def groups_mem_add(request, group_id):
 from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
 @licence_required
-def group_oab_dept_permit_add(request):
-    group_id = request.POST.get("group_id", "")
-    obj = CoreGroup.objects.get(id=group_id)
-    if not group_id or not obj:
-        data = {
-            "status"        :   "Failure",
-            "message"      :    u"未指定权限组",
-        }
-        return HttpResponse(json.dumps(data), content_type="application/json")
-    dept_list = request.POST.get("dept_list", "")
-    dept_list = dept_list.strip().split("|")
-    dept_list = [] if not dept_list else [int(dept_id) for dept_id in dept_list if str(dept_id).isdigit()]
-    obj.oab_dept_list = json.dumps(dept_list)
-    obj.save()
-    data = {
-        "status"        :   "OK",
-        "message"      :   "Success",
-    }
-    return HttpResponse(json.dumps(data), content_type="application/json")
-
-@csrf_exempt
-@licence_required
-def group_oab_dept_permit_ajax(request):
-    group_id = request.GET.get("group_id", "")
-    action = request.GET.get("action", "get")
-
-    obj = CoreGroup.objects.get(id=group_id)
-    if not group_id or not obj:
-        data = {
-            "status"        :   "Failure",
-            "message"      :    u"组不存在",
-            "data"         :    [],
-        }
-        return HttpResponse(json.dumps(data), content_type="application/json")
-
-    dept_list = [] if not obj.oab_dept_list else json.loads(obj.oab_dept_list)
-    dept_list = [int(i) for i in dept_list]
-    if action == "del":
-        del_list = request.GET.get("del_list", "")
-        del_list = del_list.strip().split("|")
-        del_list = [int(i) for i in del_list if str(i).isdigit()]
-        dept_list = list(set(dept_list)-set(del_list))
-    #去重，同一个子树只保留子树根节点
-    for dept_id in dept_list[:]:
-        obj_dept = Department.objects.filter(id=dept_id).first()
-        if not obj_dept:
-            dept_list.remove(dept_id)
-            continue
-        parent_list = []
-        while int(obj_dept.parent_id) > 0:
-            obj_dept = Department.objects.filter(id=obj_dept.parent_id).first()
-            if not obj_dept:
-                break
-            parent_list.append( obj_dept.id )
-        for parent_id in parent_list:
-            #父节点也在列表中，那么本节点就不添加进来
-            if parent_id in dept_list:
-                dept_list.remove(dept_id)
-                break
-    obj.oab_dept_list = json.dumps(dept_list)
-    obj.save()
-    dept_info = {}
-    for dept_id in dept_list:
-        obj_dept = Department.objects.filter(id=dept_id).first()
-        if not obj_dept:
-            continue
-        dept_info[dept_id] = obj_dept.title
-    data = {
-        "status"        :   "OK",
-        "message"      :   "Success",
-        "data"         :    dept_info,
-    }
-    return HttpResponse(json.dumps(data), content_type="application/json")
-
-@csrf_exempt
-@licence_required
 def group_limit_whitelist_ajax(request):
     def getPostMailbox(key):
         #从 entry_{{ mailbox }}_id 这种格式中把 mailbox 提取出来
@@ -415,11 +339,8 @@ def core_group_list(request):
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 def core_group_info(request, group_id):
-    obj = CoreGroup.objects.get(id=group_id)
-    form = CoreGroupForms(obj.domain_id, obj.domain, instance=obj)
     return render(request, "group/groups_info.html",
-                  { 'form': form, "group_id":group_id,
-                  })
+                  { "group_id":group_id })
 
 def ajax_group_setting_list(request):
     group_id = request.GET.get("group_id", 0)
@@ -461,7 +382,11 @@ def ajax_group_setting_white(request):
 
 @csrf_exempt
 def ajax_group_setting_white_mdf(request):
-    setting_id = request.POST.get("setting_id", 0)
+    try:
+        post = json.loads(request.body)
+    except:
+        post = {}
+    setting_id = post.get("setting_id", 0)
     obj = CoreGroupSetting.objects.filter(id=setting_id).first()
     if not obj or obj.type != "basic":
         data = {
@@ -469,7 +394,7 @@ def ajax_group_setting_white_mdf(request):
             "message"      :   "不正确的组配置或类型",
         }
     else:
-        form = CoreGroupSettingForm("basic", obj, request.POST)
+        form = CoreGroupSettingForm("basic", obj, post)
         success, message = form.update_limit_whitelist()
         status = "OK" if success else "failure"
         data = {
@@ -485,12 +410,22 @@ def ajax_group_setting_dept(request):
     if not obj or obj.type != "oab":
         return HttpResponse(json.dumps([]))
     form = CoreGroupSettingForm("oab", obj)
-    value = form.value.get("oab_dept_list", [])
-    return HttpResponse(json.dumps(value))
+    dept_list = form.value.get("oab_dept_list", [])
+    dept_info = {}
+    for dept_id in dept_list:
+        obj_dept = Department.objects.filter(id=dept_id).first()
+        if not obj_dept:
+            continue
+        dept_info[dept_id] = obj_dept.title
+    return HttpResponse(json.dumps(dept_info))
 
 @csrf_exempt
 def ajax_group_setting_dept_mdf(request):
-    setting_id = request.POST.get("setting_id", 0)
+    try:
+        data = json.loads(request.body)
+    except:
+        data = {}
+    setting_id = data.get("setting_id", 0)
     obj = CoreGroupSetting.objects.filter(id=setting_id).first()
     if not obj or obj.type != "oab":
         data = {
@@ -498,7 +433,7 @@ def ajax_group_setting_dept_mdf(request):
             "message"      :   "不正确的组配置或类型",
         }
     else:
-        form = CoreGroupSettingForm("oab", obj, request.POST)
+        form = CoreGroupSettingForm("oab", obj, data)
         success, message = form.update_oab_dept_list()
         status = "OK" if success else "failure"
         data = {

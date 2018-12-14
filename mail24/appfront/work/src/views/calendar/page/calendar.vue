@@ -617,7 +617,8 @@
           header: {
             center: "prev title next",
             left: "today",
-            right: 'month,agendaWeek,agendaDay,listMonth,timelineDay'
+            right: 'month,listMonth,timelineDay'
+            // right: 'month,agendaWeek,agendaDay,listMonth,timelineDay'
           },
           views: {
             agendaWeek: {
@@ -831,6 +832,7 @@
         }
         this.listLoading = true;
         getEvents(params).then(res=>{
+          this.listLoading = false;
           this.newEvent = false;
           this.totalCount_list = res.data.count;
           this.event_list = res.data.results;
@@ -857,7 +859,6 @@
             start:'',
             textColor:'#aaa'
           })
-          this.listLoading = false;
         }).catch(()=>{
           this.listLoading = false;
         })

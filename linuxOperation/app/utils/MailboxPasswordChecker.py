@@ -18,7 +18,7 @@ if __name__ == "__main__":
     django.setup()
     DEBUG=True
 from app.core.models import Mailbox, MailboxUser, MailboxUserAttr, Domain, DomainAttr
-from app.group.models import CoreGroup, CoreGroupMember
+from app.group.models import CoreGroup, CoreGroupMember, CoreGroupSetting
 from app.utils.regex import pure_digits_regex, pure_english_regex, pure_tel_regex, pure_digits_regex2, pure_lower_regex2, pure_upper_regex2
 
 
@@ -70,6 +70,15 @@ class MailboxPasswordChecker(object):
         if DEBUG:
             print msg
 
+    def JsonLoads(self, data, default={}):
+        try:
+            if not data:
+                return {}
+            return json.loads(data)
+        except Exception,err:
+            print err
+            return default
+
     def GetSetting(self):
         return self.setting
 
@@ -97,7 +106,7 @@ class MailboxPasswordChecker(object):
             1       :      3,   #至少三种字符
             2       :      4,   #至少四种字符
         }
-        self.setting["passwd_type"] = PasswordTypeCheck.get(passwd_type, 3)
+        self.setting["passwd_type"] = PasswordTypeCheck.get(passwd_type, 2)
 
         value = self.loadDomainAttr(item='cf_pwd_rule')
         try:
@@ -131,36 +140,29 @@ class MailboxPasswordChecker(object):
         self.mailbox = obj.username
 
         groupMember = CoreGroupMember.objects.filter(mailbox_id=self.mailbox_id).order_by('id').first()
-        self.debugLog(u">>> GroupMember: %s"%(groupMember))
         if not groupMember:
+            self.debugLog(u">>> Not in Group")
             return
-        group = CoreGroup.objects.filter(id=groupMember.group_id).order_by('id').first()
-        self.debugLog(u">>> Group: %s"%(group))
-        if not group:
+        self.debugLog(u">>> Group: %s Member: %s"%(groupMember.group_id, groupMember.id))
+        groupSetting = CoreGroupSetting.objects.filter(group_id=groupMember.group_id, type=u"password").first()
+        if not groupSetting or not groupSetting.value:
             return
+
+        value = self.JsonLoads(groupSetting.value)
         #密码组成类型
-        passwd_type = group.passwd_type
+        passwd_type = value.get("passwd_type", 2)
         #其他密码规则
-        passwd_other = group.passwd_other
-        try:
-            passwd_other = json.loads(passwd_other)
-            passwd_other = {} if not passwd_other else passwd_other
-        except:
-            passwd_other = {}
+        passwd_other = value.get("passwd_other", {})
         #密码禁止规则
-        passwd_forbid = group.passwd_forbid
-        try:
-            passwd_forbid = json.loads(passwd_forbid)
-            passwd_forbid = {} if not passwd_forbid else passwd_forbid
-        except:
-            passwd_forbid = {}
+        passwd_forbid = value.get("passwd_forbid", {})
+
         setting = {}
         for k,default in self.RuleTypeList.items():
             if k in passwd_other:
                 v = passwd_other[k]
                 #前面组权限存的值是passwd_digital : passwd_digital 格式的
-                if str(v) in ("1","-1"):
-                    setting[k] = int(v)
+                if str(v) in ("1","-1", "0"):
+                    setting[k] = 1 if str(v)=="1" else 0
                 else:
                     setting[k] = 1
             else:
@@ -169,8 +171,8 @@ class MailboxPasswordChecker(object):
             if k in passwd_forbid:
                 v = passwd_forbid[k]
                 #前面组权限存的值是passwd_digital : passwd_digital 格式的
-                if str(v) in ("1","-1"):
-                    setting[k] = int(v)
+                if str(v) in ("1","-1", "0"):
+                    setting[k] = 1 if str(v)=="1" else 0
                 else:
                     setting[k] = 1
             else:
@@ -389,10 +391,10 @@ def CheckMailboxPasswordLimit(domain_id=0, mailbox_id=0, mailbox=u"", realname=u
     return objGroup.CheckPasswordLimit()
 
 if __name__ == "__main__":
-    mailbox_id = Mailbox.objects.filter(username='anshanshan@test.com').first().id
-    ret = CheckMailboxPassword(domain_id=1, mailbox_id=mailbox_id, password=u"1QAZ2wsx123")
+    mailbox_id = Mailbox.objects.filter(username='anshanshan@domain.com').first().id
+    ret = CheckMailboxPassword(domain_id=1, mailbox_id=mailbox_id, password=u"1QAZ2wsxqianzhongshu")
     print ret
-    result = CheckMailboxPasswordLimit(domain_id=1, mailbox_id=mailbox_id, password=u"1QAZ2wsx123")
+    result = CheckMailboxPasswordLimit(domain_id=1, mailbox_id=mailbox_id, password=u"1QAZ2wsxqianzhongshu")
     #返回值，登陆是否需要修改密码，密码校验失败原因
     ret, change_pwd, reason = result
     print result
