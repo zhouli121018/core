@@ -443,3 +443,6 @@ export const messageExpunge = params => { return axios.post(`${host}/mail/messag
 
 //日志查询单个收件人召回 POST /api/mail/message/log-recall/
 export const logRecall = params => { return axios.post(`${host}/mail/message/log-recall/`, params) };
+
+//获取登录前设置  /api/core/login-before/
+export const loginBefore = params => { return axios.get(`${host}/core/login-before/`,{ params: params }) }

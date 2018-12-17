@@ -415,7 +415,7 @@
                   >
                 </el-alert>
               </div>
-              <div class="j-status-detail" v-show="show_result">
+              <div class="j-status-detail" v-show="show_result&& sendResult.type!='schedule'">
                 <el-table
                   type="expand"
                   :header-cell-style="{background:'#f0f1f3'}"

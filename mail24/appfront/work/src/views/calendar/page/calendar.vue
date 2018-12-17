@@ -426,7 +426,7 @@
               @current-change="handleCurrentChange_list"
               background
               :current-page="currentPage_list"
-              :page-sizes="[5,10,20,50,100,200]"
+              :page-sizes="[10,20,50,100]"
               :page-size="pageSize_list"
               layout="total, prev, pager, next, sizes"
               :total="totalCount_list">

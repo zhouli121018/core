@@ -7,26 +7,34 @@
     <div class="main">
       <div class="content">
         <div>
+          <a href="#" class="login_logo" v-if="loginBeforeData.login_logo">
+            <img :src="loginBeforeData.login_logo" alt="U-Mail">
+          </a>
 
-          <a href="http://www.coremail.cn" target="_blank" class="login_logo">
 
+        </div>
+        <div class="version" style="width:200px;padding-left:20px;">
+          <a :href="loginBeforeData.login_ads[0].link" target="_blank" v-if="loginBeforeData.login_ads && loginBeforeData.login_ads[0]">
+            <img :src="loginBeforeData.login_ads[0].image" style="width:100%;max-width:100%;">
           </a>
         </div>
-        <div class="version">
-          <!-- <img src="../assets/img/login_center.png" alt="1"> -->
-        </div>
+        <!--<div style="width:300px;padding-left:20px;margin-top:30px;">-->
+          <!--<a :href="loginBeforeData.login_ads[0].link" target="_blank" >-->
+            <!--<img :src="loginBeforeData.login_ads[0].image" style="width:100%;max-width:100%;">-->
+          <!--</a>-->
+        <!--</div>-->
         <div class="copyright">
           <label>
             Copyright © U-Mail Co.,Ltd.
           </label>
         </div>
       </div>
-      <div class="aside-blur" >
+      <div class="aside-blur" style="min-width: 330px;">
 
       </div>
-      <div class="aside">
+      <div class="aside" style="min-width: 330px;">
         <div class="loginArea normalForm" curtype="normalForm">
-          <div id="login_box" style="min-width:200px;">
+          <div id="login_box" style="min-width:260px;width: 54%;margin:0 auto;">
 
 
             <!-- <el-radio-group v-model="labelPosition" size="small">
@@ -37,7 +45,12 @@
             <h2 class="text-center">用户登录</h2>
             <el-form :label-position="labelPosition" class="loginForm" ref="loginForm" :rules="rules" label-width="80px" :model="formLabelAlign">
               <el-form-item label="用户名" prop="username">
-                <el-input v-model.trim="formLabelAlign.username"></el-input>
+                <!--<el-input v-model.trim="formLabelAlign.username"></el-input>-->
+                <el-input placeholder="请输入内容" v-model.trim="formLabelAlign.username" class="input-with-select">
+                  <el-select v-model="loginBeforeData.domain" slot="append" placeholder="请选择"  style="width:120px" @change="changeDomain">
+                    <el-option v-for="(d,k) in loginBeforeData.domains" :key="k" :label="d[1]" :value="d[1]"></el-option>
+                  </el-select>
+                </el-input>
               </el-form-item>
               <el-form-item label="密码" prop="password">
                 <el-input type="password" v-model="formLabelAlign.password"></el-input>
@@ -109,13 +122,14 @@
 </template>
 <script>
   import cookie from '@/assets/js/cookie';
-  import {login,resetSecret1,resetSecret2,resetSecret3} from '@/api/api'
+  import {login,resetSecret1,resetSecret2,resetSecret3,loginBefore} from '@/api/api'
+  const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   import router from '@/router'
   import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
   export default {
 
     data() {
-       var validatePass = (rule, value, callback) => {
+      var validatePass = (rule, value, callback) => {
          // let reg =  /^(.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*)|(.*(?=.{6,})(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*? ]).*)$/;
          let reg =  /^[\d]{6}$/;
         if (value === '') {
@@ -134,6 +148,21 @@
         }
       };
       return {
+        loginBeforeData:{
+          "domain":"test.com",
+          "name":"77777umail",
+          "title":"11111111111",
+          "is_domain":true,
+          "domains":[[1,"test.com"],[33,"zsh1.com"],[31,"zsh.com"],[24,"domain2.com"],[25,"test.cn.com"],[26,"test1.cn.com"]],
+          "is_icp":false,
+          "icp_no":"",
+          "icp_link":"",
+          "is_ssl":false,
+          "login_logo":"/media/logo_5CrSq_20181213113208_763.jpg",
+          "login_ads":[
+            {"image":"/media/logo_FbIHh_20181213113253_180.jpg","link":"https://www.baidu.com/"}
+            ]
+        },
         reset1_show:false,
         form3Visible:false,
         form3:{
@@ -198,6 +227,30 @@
       };
     },
     methods: {
+      changeDomain(val){
+        console.log(val)
+        let param = {
+          domain:val
+        }
+        this.getLoginBefore(param)
+      },
+      getLoginBefore(param){
+        loginBefore(param).then(res=>{
+          let origin =  window.location.origin  //window.location.origin  'http://192.168.1.39:81'
+          this.loginBeforeData = res.data;
+          this.loginBeforeData.login_logo = origin + this.loginBeforeData.login_logo;
+          if(this.loginBeforeData.login_ads && this.loginBeforeData.login_ads[0]){
+            this.loginBeforeData.login_ads[0].image = origin + this.loginBeforeData.login_ads[0].image;
+          }
+          if(!res.data.is_domain){
+            this.loginBeforeData.domains = [[res.data.domain,res.data.domain]]
+          }
+
+          $('title').text(res.data.title)
+        }).catch(err=>{
+          console.log(err)
+        })
+      },
       reset3_submit(){
         this.$refs['reset3Form'].validate(valid=>{
           if(valid){
@@ -315,12 +368,16 @@
         var that = this;
         this.$refs['loginForm'].validate((valid) => {
           if (valid) {
+            let str = this.formLabelAlign.username;
+            if(!emailReg.test(this.formLabelAlign.username)){
+              str +='@'+ this.loginBeforeData.domain;
+            }
 
-            login({"username": this.formLabelAlign.username, "password": this.formLabelAlign.password})
+            login({"username": str, "password": this.formLabelAlign.password})
             .then((response) => {
               // var token = response.data.token;
               //本地存储用户信息
-              cookie.setCookie('name', this.formLabelAlign.username, 7);
+              cookie.setCookie('name', str, 7);
               cookie.setCookie('token', response.data.token, 7);
               cookie.delCookie('locked')
               //去掉记住用户名和密码
@@ -391,9 +448,11 @@
       // }
     },
     created: function () {
+      this.getLoginBefore()
       var lett = this;
 
       document.onkeydown = function (e) {
+        console.log(this.$route)
         var key = e.keyCode;
         if (key == 13) {
           if( lett.reset1_show || lett.formVisible || lett.form3Visible ){
@@ -468,9 +527,11 @@
   }
   .loginArea {
     position: absolute;
-    top: 33%;
-    left: 23%;
-    width: 54%;
+    top: 20%;
+    /*left: 23%;*/
+    /*width: 54%;*/
+    left:0;
+    right:0;
   }
   .loginArea .loginType {
     display: table;

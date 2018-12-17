@@ -10,10 +10,10 @@
                             <span class=" f-fr j-setting">
                             <el-button  icon="el-icon-setting" circle></el-button></span>
 
-                            <el-button size="mini" @click="selectAll" type="primary">
-                              {{is_checked?'取消全选':'全选'}}
-                              <!--<el-checkbox @change="selectAll" :checked="is_checked" class="check_btn"></el-checkbox>-->
-                            </el-button>
+                            <!--<el-button size="mini" @click="selectAll" type="primary">-->
+                              <!--{{is_checked?'取消全选':'全选'}}-->
+                              <!--&lt;!&ndash;<el-checkbox @change="selectAll" :checked="is_checked" class="check_btn"></el-checkbox>&ndash;&gt;-->
+                            <!--</el-button>-->
 
                             <!--排序-->
                             <el-dropdown @command="orderHandleCommand" placement="bottom-start" trigger="click">
@@ -189,55 +189,27 @@
                     </div>
                     <div class="m-mllist-row mllist-list-row">
                       <div class="j-module-content j-maillist mllist-list u-scroll">
-                        <div class="table_box">
-
-                          <div v-for="(m,k) in listData">
-                            <h4 style="padding:8px 14px;border-bottom:1px solid #e3e4e5;cursor:pointer" @click="changeShow(m)">{{m.title}} ({{m.arr.length}})</h4>
-                              <el-table v-show="m.show" :show-header="false" ref="innerTable"  :data="m.arr" style="width: 100%;" class="vertical_align_top maillist" v-loading="loading"
+                        <div class="table_box" style="height:100%">
+                           <el-table  :show-header="true" ref="innerTable" height="100%" :data="listData_new" style="width: 100%;height:100%" class="vertical_align_top maillist" v-loading="loading"
                               highlight-current-row  @cell-mouse-enter="hoverfn" @cell-mouse-leave="noHover" @row-click="rowClick" @cell-click="cellClick"
                                 @select-all="selectAllTable"    @selection-change="handleSelectionChange"  :header-cell-style="{background:'#f0f1f3'}"
+                                :span-method="arraySpanMethod"
                             >
+                                <!--:span-method="arraySpanMethod"-->
                             <el-table-column
                               type="selection"
                               width="46"
-                              label="全选/取消"
+                              label="全选"
+                              :selectable="selectablee"
                             >
                             </el-table-column>
-
-                            <el-table-column width="30">
+                            <el-table-column width="110" class-name="flag_btn">
                               <template slot-scope="scope">
-                                <span class="read_bg" :class="{unseen:!scope.row.isread,answered:scope.row.flags.join().indexOf('Answered')>=0,forward:scope.row.flags.join().indexOf('umail-forword')>=0}" :title="scope.row.flagStr"></span>
-                              </template>
-                            </el-table-column>
 
-                            <el-table-column prop="subject"  label="" @click="">
-                              <template slot-scope="scope">
-                                <div class="clear mainMsg" style="font-size:16px;" :class="[{flagged:scope.row.flagged,unseen:!scope.row.isread},scope.row.color]">
-
-                                  <span class="fl_l subject_hover" style="width:80%;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" @click.stop.prevent="readMail(scope.row)" >{{scope.row.subject||'无主题'}}</span>
-                                  <span class="fl_r">
-                                    <!--<i :title="scope.row.flagged?'点击取消旗帜':'设为红旗'" @click.stop="changeFlags(scope.row)" class="iconfont" :class="{'icon-iconflatcolor':scope.row.flagged||scope.row.color,'icon-iconflat':!scope.row.flagged&&!scope.row.color}" style="cursor:pointer;"></i>-->
-
-
-
-                                  </span>
-                                </div>
-                                <div class="info-summary" :class="scope.row.color">
-                                  <p class="summary-text">
-                                    <span class="fromto">from</span>
-                                    <span class="fromto">:</span>
-                                    <span class="fromto from" v-if="scope.row.mfrom">{{scope.row.mfrom[1]}} <{{scope.row.mfrom[0]}}></span>
-                                    <!--<span class="fromto">:</span>-->
-                                    <!--<span class="summary">-->
-                                      <!--sdajpofjsdfhup测试-->
-                                    <!--</span>-->
-                                  </p>
-                                </div>
-                              </template>
-                            </el-table-column>
-                            <el-table-column width="100" class-name="flag_btn">
-                              <template slot-scope="scope">
-                                <div class="mainMsg" :class="{hoverStyle:scope.row.uid==hoverIndex}">
+                                <div class="mainMsg" :class="{hoverStyle:scope.row.uid==hoverIndex}" v-if="!scope.row.is_header">
+                                  <span class="read_bg" :class="scope.row.flagbg_class" :title="scope.row.flagStr"></span>
+                                  <i title="附件" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-attach')>=0" class="iconfont icon-attachment" style="color:#777;"></i>
+                                  <b class="is_red" title="紧急邮件" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-emergent')>=0">!</b>
                                   <el-dropdown trigger="click" @command="signHandleCommand_new($event,scope.row)">
                                       <span class="el-dropdown-link" title="设置旗帜">
 
@@ -250,15 +222,66 @@
 
                                       </el-dropdown-menu>
                                     </el-dropdown>
+
+                                </div>
+                                <div v-if="scope.row.is_header" style="cursor:pointer;">
+                                  <div style="font-weight:bold;font-size:14px;">
+                                    <span>{{scope.row.title}}</span>
+                                    <span>({{scope.row.count}})</span>
+                                  </div>
+                                </div>
+                              </template>
+                            </el-table-column>
+
+                            <!--<el-table-column width="80">-->
+                              <!--<template slot-scope="scope">-->
+                                <!--<b class="is_red" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-emergent')>=0">!</b>-->
+                                <!--<i v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-attach')>=0" class="iconfont icon-attachment" style="color:#777;"></i>-->
+                                <!--<span class="read_bg" :class="{unseen:!scope.row.isread,answered:scope.row.flags.join().indexOf('Answered')>=0,forward:scope.row.flags.join().indexOf('umail-forword')>=0}" :title="scope.row.flagStr"></span>-->
+                              <!--</template>-->
+                            <!--</el-table-column>-->
+
+                            <el-table-column width="160" label="发件人">
+                              <template slot-scope="scope">
+                                 <div class="info-summary" :class="scope.row.color">
+                                  <p class="summary-text">
+                                    <span class="fromto from" v-if="scope.row.mfrom" :class="{flagged:scope.row.flagged,unseen:!scope.row.isread}" :title="scope.row.mfrom[1]+' <'+scope.row.mfrom[0]+'>'" style="font-size:14px;">{{scope.row.mfrom[1]}} <{{scope.row.mfrom[0]}}></span>
+                                    <!--<span class="fromto">:</span>-->
+                                    <!--<span class="summary">-->
+                                      <!--sdajpofjsdfhup测试-->
+                                    <!--</span>-->
+                                  </p>
+                                </div>
+                              </template>
+                            </el-table-column>
+
+                            <el-table-column prop="subject"  label="主题" >
+                              <template slot-scope="scope">
+                                <div class="clear mainMsg" style="font-size:16px;" :class="[{flagged:scope.row.flagged,unseen:!scope.row.isread},scope.row.color]">
+
+                                  <span class="fl_l subject_hover" style="width:96%;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" @click.stop.prevent="readMail(scope.row)" :title="scope.row.subject||''">{{scope.row.subject||'无主题'}}</span>
+                                  <span class="fl_r">
+                                    <!--<i :title="scope.row.flagged?'点击取消旗帜':'设为红旗'" @click.stop="changeFlags(scope.row)" class="iconfont" :class="{'icon-iconflatcolor':scope.row.flagged||scope.row.color,'icon-iconflat':!scope.row.flagged&&!scope.row.color}" style="cursor:pointer;"></i>-->
+                                  </span>
+                                </div>
+                                <div class="info-summary" :class="scope.row.color" v-if="false">
+                                  <p class="summary-text">
+                                    <span class="fromto from" v-if="scope.row.mfrom">{{scope.row.mfrom[1]}} <{{scope.row.mfrom[0]}}></span>
+                                    <!--<span class="fromto">:</span>-->
+                                    <!--<span class="summary">-->
+                                      <!--sdajpofjsdfhup测试-->
+                                    <!--</span>-->
+                                  </p>
                                 </div>
                               </template>
                             </el-table-column>
 
 
 
+
                             <el-table-column class="plan_style" prop="date" label="时间"   :width="$store.getters.getIsSwtime?180:160"  >
                               <template slot-scope="scope">
-                                <div class="plan_style">
+                                <div class="plan_style" v-if="!scope.row.is_header">
                                   {{(scope.row.internaldate ||scope.row.date).replace('T',' ')}}
 
                                 </div>
@@ -269,15 +292,15 @@
                               <template slot-scope="scope">
                                 <div class="plan_style">
                                   {{scope.row.size | mailsize}}
-                                  <p style="padding-left:10px" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-attach')>=0" >
-                                    <i class="iconfont icon-attachment"></i>
-                                  </p>
+                                  <!--<p style="padding-left:10px" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-attach')>=0" >-->
+                                    <!--<i class="iconfont icon-attachment"></i>-->
+                                  <!--</p>-->
                                 </div>
                               </template>
                             </el-table-column>
                           </el-table>
 
-                          </div>
+
 
 
                         </div>
@@ -309,6 +332,7 @@
         return {
           is_checked:false,
           listData:[],
+          listData_new:[],
           flagsData:[
           {flags:'\\flagged',action:'add',text:'红旗',classN:'redcolor'},
           {flags:'umail-green',action:'add',text:'绿旗',classN:'flag-green'},
@@ -341,7 +365,7 @@
           unreadCount:0,
           totalCount:0,
           currentPage:1,
-          pageSize:10,
+          pageSize:20,
           checkIndex:'',
           checkAll:false,
           checkItems:[
@@ -429,6 +453,22 @@
         }
     },
     methods:{
+      selectablee(row,index){
+        if(row.is_header){
+          return false
+        }else{
+          return true;
+        }
+      },
+      arraySpanMethod({ row, column, rowIndex, columnIndex }) {
+        if(row.is_header){
+          if (columnIndex === 1) {
+            return [1, 6];
+          } else  {
+            return [0, 0];
+          }
+        }
+      },
       selectAll(val){
         if(!this.is_checked){
           this.$refs.innerTable.forEach(val=>{
@@ -482,6 +522,10 @@
           if(col.className!='flag_btn'){
             this.readMail(row)
           }
+          if(row.is_header){
+            console.log(row)
+            console.log('sdlkf')
+          }
         }else{
           // this.$refs.innerTable.toggleRowSelection(row)
           $(cell).find('label').click();
@@ -524,7 +568,9 @@
         this.getDateN(params);
       },
       hoverfn(row, column, cell, event){
-        this.hoverIndex = row.uid;
+        if(row.uid){
+          this.hoverIndex = row.uid;
+        }
       },
       noHover(){
         this.hoverIndex = '';
@@ -666,17 +712,18 @@
       handleSelectionChange(val) {
         this.multipleSelection = [];
         let check = true;
-        this.$refs.innerTable.forEach(val=>{
-          if(val.selection.length < val.data.length){
-            check = false;
-          }
-          this.multipleSelection = this.multipleSelection.concat(val.selection)
-        })
-        if(check){
-          this.is_checked = true
-        }else{
-          this.is_checked = false
-        }
+        this.multipleSelection = val
+        // this.$refs.innerTable.forEach(val=>{
+        //   if(val.selection.length < val.data.length){
+        //     check = false;
+        //   }
+        //   this.multipleSelection = this.multipleSelection.concat(val.selection)
+        // })
+        // if(check){
+        //   this.is_checked = true
+        // }else{
+        //   this.is_checked = false
+        // }
       },
       formatter(row, column) {
         return row.date.replace('T','  ');
@@ -1055,9 +1102,9 @@
       },
       noSelect(){
         // this.$refs.innerTable.clearSelection();
-        this.$refs.innerTable.forEach(val=>{
-          val.clearSelection();
-        })
+        // this.$refs.innerTable.forEach(val=>{
+        //   val.clearSelection();
+        // })
       },
       getMessageList(){
         this.loading = true;
@@ -1139,21 +1186,39 @@
               }
 
             }
+            let flagbg_class = '';
             let flagStr = '已读';
-            if(items[i].flags.join('').indexOf('umail-forword')>=0){
-              flagStr = '已转发';
-            }
-            if(items[i].flags.join('').indexOf('Answered')>=0){
-              flagStr = '已回复';
-            }
             if(!items[i].isread){
               flagStr = '未读';
+              flagbg_class = 'unseen';
             }
+            // if(items[i].flags.join('').indexOf('umail-deliver')>=0){
+            //   flagStr = '投递成功';
+            //   flagbg_class = 'sendsuc';
+            // }
+            if(items[i].flags.join('').indexOf('Answered')>=0 && items[i].flags.join('').indexOf('umail-forword')>= 0){
+              flagStr = '已回复并已转发';
+              flagbg_class = 'reandfw';
+            }
+            if(items[i].flags.join('').indexOf('umail-forword')>=0 && items[i].flags.join('').indexOf('Answered')==-1){
+              flagStr = '已转发';
+              flagbg_class = 'forward';
+            }
+            if(items[i].flags.join('').indexOf('Answered')>=0 && items[i].flags.join('').indexOf('umail-forword') == -1){
+              flagStr = '已回复';
+              flagbg_class = 'answered';
+            }
+            if(items[i].flags.join('').indexOf('umail-schedule')>=0){
+              flagStr = '定时邮件';
+              flagbg_class = 'schedule';
+            }
+            items[i].flagbg_class = flagbg_class
             items[i].flagStr = flagStr
           }
           this.collapseItems[0].lists = items;
 
           let result = [];
+          let result_new = [];
           let today = {title:'今天 ',arr:[],show:true},yestoday = {title:'昨天 ',arr:[],show:true},beforeYesdoday = {title:'前天 ',arr:[],show:true},earlier = {title:'更早 ',arr:[],show:true};
           items.forEach(val=>{
             if(val.internaldate){
@@ -1186,17 +1251,42 @@
           })
           if(today.arr.length>0){
             result.push(today)
+            let obj = [].concat(today.arr[0])
+            obj.title = '今天'
+            obj.count = today.arr.length
+            obj.is_header = true
+            result_new.push(obj)
+            result_new = result_new.concat(today.arr);
           }
           if(yestoday.arr.length>0){
             result.push(yestoday)
+            let obj = [].concat(yestoday.arr[0])
+            obj.title = '昨天'
+            obj.count = yestoday.arr.length
+            obj.is_header = true
+            result_new.push(obj)
+            result_new = result_new.concat(yestoday.arr);
           }
           if(beforeYesdoday.arr.length>0){
             result.push(beforeYesdoday)
+            let obj = [].concat(beforeYesdoday.arr[0])
+            obj.title = '前天'
+            obj.count = beforeYesdoday.arr.length
+            obj.is_header = true
+            result_new.push(obj)
+            result_new = result_new.concat(beforeYesdoday.arr);
           }
           if(earlier.arr.length>0){
             result.push(earlier)
+            let obj = [].concat(earlier.arr[0])
+            obj.title = '更早'
+            obj.count = earlier.arr.length
+            obj.is_header = true
+            result_new.push(obj)
+            result_new = result_new.concat(earlier.arr);
           }
           this.listData = result;
+          this.listData_new = result_new;
 
           this.loading = false;
         },(err)=>{
@@ -1389,14 +1479,14 @@
 </script>
 
 <style>
-  .read_bg.forward{
-    background:url("../../../assets/img/maillistbg.png") no-repeat scroll -48px -48px transparent;
+  .fromto.from{
+    color:#222;
   }
-  .read_bg.answered{
-    background:url("../../../assets/img/maillistbg.png") no-repeat scroll -48px -32px transparent;
+  .fromto.unseen{
+    font-weight:700;
   }
-  .read_bg.unseen{
-    background:url("../../../assets/img/maillistbg.png") no-repeat scroll -48px 0 transparent;
+  .is_red{
+    color:red;
   }
   .read_bg{
     display:inline-block;
@@ -1408,10 +1498,31 @@
     width: 18px;
     background:url(../../../assets/img/maillistbg.png) no-repeat scroll -48px -16px transparent
   }
+  .read_bg.forward{
+    background:url("../../../assets/img/maillistbg.png") no-repeat scroll -48px -48px transparent;
+  }
+  .read_bg.answered{
+    background:url("../../../assets/img/maillistbg.png") no-repeat scroll -48px -32px transparent;
+  }
+  .read_bg.unseen{
+    background:url("../../../assets/img/maillistbg.png") no-repeat scroll -48px 0 transparent;
+  }
+  .read_bg.reandfw{
+    background:url("../../../assets/img/reandfw.jpg") no-repeat scroll transparent;
+  }
+  .read_bg.sendsuc{
+    background:url("../../../assets/img/sendsuc.jpg") no-repeat scroll transparent;
+  }
+  .read_bg.schedule{
+    background:url("../../../assets/img/schedule.jpg") no-repeat scroll transparent;
+  }
   .greencolor{
     color:rgb(46, 169, 98);
   }
-  .redcolor{
+  .redcolor,.redcolor .fromto.from{
+    color:#c00;
+  }
+  .flagged,.flagged.fromto.from{
     color:#c00;
   }
   .flag-green,.flag-green .fromto{
@@ -1440,7 +1551,7 @@
   }
 
   .maillist.el-table td{
-    padding:18px 0;
+    padding:8px 0;
   }
   .mainMsg .icon-iconflat,.mainMsg .el-icon-arrow-down{
   display:none;
