@@ -282,7 +282,7 @@
                             <el-table-column class="plan_style" prop="date" label="时间"   :width="$store.getters.getIsSwtime?180:160"  >
                               <template slot-scope="scope">
                                 <div class="plan_style" v-if="!scope.row.is_header">
-                                  {{(scope.row.internaldate ||scope.row.date).replace('T',' ')}}
+                                  {{(scope.row.date ||scope.row.internaldate).replace('T',' ')}}
 
                                 </div>
 
@@ -609,11 +609,14 @@
       },
       readMail(row){
         if(!row.isread){
-          this.$parent.$parent.$parent.unseencount --;
-          this.$parent.$parent.$parent.$refs.treeMenuBar.getCurrentNode().unseen--;
           let unseenArr = this.$store.getters.getUnseenCount;
           unseenArr[this.boxId] --;
           this.$store.dispatch('setUnseenCountA',unseenArr)
+          console.log(row)
+          if(row.flagbg_class == 'unseen'){
+            row.flagStr = '已读';
+            row.flagbg_class = ''
+          }
         }
         row.isread = true;
         let param = {
@@ -1177,12 +1180,12 @@
             items[i].plain = '';
             items[i].checked = false;
             if(this.$store.getters.getIsSwtime){
-              if(items[i].internaldate){
-                let index = items[i].internaldate.indexOf('T');
-                items[i].internaldate = items[i].internaldate.slice(0,index) + this.set_12_time(items[i].internaldate.slice(index+1))
-              }else if(items[i].date){
+              if(items[i].date){
                 let index = items[i].date.indexOf('T');
                 items[i].date = items[i].date.slice(0,index) + this.set_12_time(items[i].date.slice(index+1))
+              }else if(items[i].internaldate){
+                let index = items[i].internaldate.indexOf('T');
+                items[i].internaldate = items[i].internaldate.slice(0,index) + this.set_12_time(items[i].internaldate.slice(index+1))
               }
 
             }
@@ -1221,8 +1224,8 @@
           let result_new = [];
           let today = {title:'今天 ',arr:[],show:true},yestoday = {title:'昨天 ',arr:[],show:true},beforeYesdoday = {title:'前天 ',arr:[],show:true},earlier = {title:'更早 ',arr:[],show:true};
           items.forEach(val=>{
-            if(val.internaldate){
-              let date = new Date(val.internaldate.slice(0,10));
+            if(val.date){
+              let date = new Date(val.date.slice(0,10));
               let now = new Date();
               let count = now.getDate()-date.getDate()
               if(count == 0){
@@ -1234,8 +1237,8 @@
               }else{
                 earlier.arr.push(val)
               }
-            }else{
-              let date = new Date(val.date.slice(0,10));
+            }else if(val.internaldate){
+              let date = new Date(val.internaldate.slice(0,10));
               let now = new Date();
               let count = now.getDate()-date.getDate()
               if(count == 0){
@@ -1356,52 +1359,6 @@
       },
       unseen_count_new:function(){
         return this.$store.getters.getUnseenCount[this.boxId]
-      },
-      listData1:function(){
-        let result = [];
-        let today = {title:'今天 ',arr:[]},yestoday = {title:'昨天 ',arr:[]},beforeYesdoday = {title:'前天 ',arr:[]},earlier = {title:'更早 ',arr:[]};
-        this.collapseItems[0].lists.forEach(val=>{
-          if(val.internaldate){
-            let date = new Date(val.internaldate.slice(0,10));
-            let now = new Date();
-            let count = now.getDate()-date.getDate()
-            if(count == 0){
-              today.arr.push(val)
-            }else if(count == 1){
-              yestoday.arr.push(val)
-            }else if(count == 1){
-              beforeYesdoday.arr.push(val)
-            }else{
-              earlier.arr.push(val)
-            }
-          }else{
-            let date = new Date(val.date.slice(0,10));
-            let now = new Date();
-            let count = now.getDate()-date.getDate()
-            if(count == 0){
-              today.arr.push(val)
-            }else if(count == 1){
-              yestoday.arr.push(val)
-            }else if(count == 1){
-              beforeYesdoday.arr.push(val)
-            }else{
-              earlier.arr.push(val)
-            }
-          }
-        })
-        if(today.arr.length>0){
-          result.push(today)
-        }
-        if(yestoday.arr.length>0){
-          result.push(yestoday)
-        }
-        if(beforeYesdoday.arr.length>0){
-          result.push(beforeYesdoday)
-        }
-        if(earlier.arr.length>0){
-          result.push(earlier)
-        }
-        return result
       },
     },
     created(){

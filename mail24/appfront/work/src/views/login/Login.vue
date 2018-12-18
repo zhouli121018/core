@@ -1,5 +1,5 @@
 <template>
-  <div id="login_bg" >
+  <div id="login_bg" ref="login_bg">
     <div class="main-bottom main-bottom-0"></div>
     <div class="main-middle main-middle-0"></div>
 
@@ -7,16 +7,23 @@
     <div class="main">
       <div class="content">
         <div>
-          <a href="#" class="login_logo" v-if="loginBeforeData.login_logo">
+          <a href="#" class="login_logo"  v-if="loginBeforeData.login_logo">
             <img :src="loginBeforeData.login_logo" alt="U-Mail">
           </a>
 
 
         </div>
-        <div class="version" style="width:200px;padding-left:20px;">
-          <a :href="loginBeforeData.login_ads[0].link" target="_blank" v-if="loginBeforeData.login_ads && loginBeforeData.login_ads[0]">
-            <img :src="loginBeforeData.login_ads[0].image" style="width:100%;max-width:100%;">
-          </a>
+        <div class="version" style="width:420px;min-height:200px;right:38%;left:auto;">
+
+          <el-carousel trigger="click" indicator-position="outside" style="margin-left:20px;">
+            <el-carousel-item v-for="(item,k) in loginBeforeData.login_ads" :key="k" v-if="loginBeforeData.login_ads">
+              <a :href="item.link" target="_blank" v-if="item.link">
+                <img :src="item.image" style="width:100%;max-width:100%;">
+              </a>
+              <img :src="item.image" style="width:100%;max-width:100%;" v-if="!item.link">
+            </el-carousel-item>
+          </el-carousel>
+
         </div>
         <!--<div style="width:300px;padding-left:20px;margin-top:30px;">-->
           <!--<a :href="loginBeforeData.login_ads[0].link" target="_blank" >-->
@@ -25,14 +32,18 @@
         <!--</div>-->
         <div class="copyright">
           <label>
-            Copyright © U-Mail Co.,Ltd.
+            Copyright © <span>{{loginBeforeData.name}}</span>
+            <span v-if="loginBeforeData.is_icp">
+              <a :href="loginBeforeData.icp_link" v-if="loginBeforeData.icp_link"  target="_blank" style="color:#fff;text-decoration:none;"> | {{loginBeforeData.icp_no}}</a>
+              <span v-if="!loginBeforeData.icp_link"> | {{loginBeforeData.icp_no}}</span>
+            </span>
           </label>
         </div>
       </div>
-      <div class="aside-blur" style="min-width: 330px;">
+      <div class="aside-blur" style="min-width: 330px;z-index:10;">
 
       </div>
-      <div class="aside" style="min-width: 330px;">
+      <div class="aside" style="min-width: 330px;z-index:11;" ref="aside">
         <div class="loginArea normalForm" curtype="normalForm">
           <div id="login_box" style="min-width:260px;width: 54%;margin:0 auto;">
 
@@ -46,14 +57,17 @@
             <el-form :label-position="labelPosition" class="loginForm" ref="loginForm" :rules="rules" label-width="80px" :model="formLabelAlign">
               <el-form-item label="用户名" prop="username">
                 <!--<el-input v-model.trim="formLabelAlign.username"></el-input>-->
-                <el-input placeholder="请输入内容" v-model.trim="formLabelAlign.username" class="input-with-select">
-                  <el-select v-model="loginBeforeData.domain" slot="append" placeholder="请选择"  style="width:120px" @change="changeDomain">
+                <el-input placeholder="请输入内容" v-model.trim="formLabelAlign.username" class="input-with-select" name="username">
+                  <template slot="append">@
+                  <el-select v-model="loginBeforeData.domain"  placeholder="请选择"  style="width:120px" @change="changeDomain">
                     <el-option v-for="(d,k) in loginBeforeData.domains" :key="k" :label="d[1]" :value="d[1]"></el-option>
                   </el-select>
+                  </template>
+
                 </el-input>
               </el-form-item>
               <el-form-item label="密码" prop="password">
-                <el-input type="password" v-model="formLabelAlign.password"></el-input>
+                <el-input type="password" name="password" v-model="formLabelAlign.password"></el-input>
               </el-form-item>
               <div style="height:30px;">
                 <!--<el-checkbox style="float:left;" v-model="rememberUserInfo" :class="{'is-checked el-checkbox__input':rememberUserInfo}">记住用户名和密码</el-checkbox>-->
@@ -154,13 +168,15 @@
           "title":"11111111111",
           "is_domain":true,
           "domains":[[1,"test.com"],[33,"zsh1.com"],[31,"zsh.com"],[24,"domain2.com"],[25,"test.cn.com"],[26,"test1.cn.com"]],
-          "is_icp":false,
-          "icp_no":"",
-          "icp_link":"",
+          "is_icp":true,
+          "icp_no":"dsfdsa",
+          "icp_link":"dsa",
           "is_ssl":false,
           "login_logo":"/media/logo_5CrSq_20181213113208_763.jpg",
           "login_ads":[
-            {"image":"/media/logo_FbIHh_20181213113253_180.jpg","link":"https://www.baidu.com/"}
+            // {"image":"http://192.168.1.39:81/media/logo_FbIHh_20181213113253_180.jpg","link":"12"},
+            // {"image":"http://192.168.1.39:81/media/logo_FbIHh_20181213113253_180.jpg","link":"1234"},
+            // {"image":"http://192.168.1.39:81/media/logo_FbIHh_20181213113253_180.jpg","link":"12"}
             ]
         },
         reset1_show:false,
@@ -236,7 +252,7 @@
       },
       getLoginBefore(param){
         loginBefore(param).then(res=>{
-          let origin =  window.location.origin  //window.location.origin  'http://192.168.1.39:81'
+          let origin = window.location.origin  //window.location.origin  'http://192.168.1.39:81'
           this.loginBeforeData = res.data;
           this.loginBeforeData.login_logo = origin + this.loginBeforeData.login_logo;
           if(this.loginBeforeData.login_ads && this.loginBeforeData.login_ads[0]){
@@ -436,6 +452,11 @@
       // this.formLabelAlign.username = cookie.getCookie('rememberName');
       // this.formLabelAlign.password = cookie.getCookie('rememberPwd');
 
+      // this.$nextTick(()=>{
+      //   this.table_width = this.$refs.login_bg.getBoundingClientRect().width-this.$refs.aside.getBoundingClientRect().width-40
+      //   // this.read_height = (this.$refs.box_height.getBoundingClientRect().height-83 )+'px'
+      // })
+
     },
     computed: {
       // rememberUserInfo: {
@@ -450,15 +471,16 @@
     created: function () {
       this.getLoginBefore()
       var lett = this;
+      if(lett.$route.name && lett.$route.name == 'login'){
+        document.onkeydown = function (e) {
 
-      document.onkeydown = function (e) {
-        console.log(this.$route)
-        var key = e.keyCode;
-        if (key == 13) {
-          if( lett.reset1_show || lett.formVisible || lett.form3Visible ){
+          var key = e.keyCode;
+          if (key == 13) {
+            if( lett.reset1_show || lett.formVisible || lett.form3Visible ){
 
-          }else{
-            lett.login();
+            }else{
+              lett.login();
+            }
           }
         }
       }
@@ -654,11 +676,12 @@
   }
   .version {
     position: absolute;
-    top: 30%;
+    top: 20%;
     left: 0;
     right: 0;
     text-align: center;
     /* background: url(../assets/img/login_center.png) 50% 50%; */
   }
+
 </style>
 

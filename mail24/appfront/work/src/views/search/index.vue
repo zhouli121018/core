@@ -1,93 +1,53 @@
 <template>
   <div style="box-sizing: border-box" id="search">
     <el-tabs v-model="activeName" @tab-click="handleClick">
+
       <el-tab-pane label="登录查询" name="login" v-loading="loginData.loading">
-        <el-pagination style="text-align: right;padding-bottom:10px;"
-                       @size-change="sizeChange($event,'login')"
-                       @current-change="currentChange($event,'login')"
-                       :current-page="loginData.page"
-                       :page-sizes="[10, 20, 50, 100]"
-                       :page-size="loginData.page_size"
-                       layout="total, sizes, prev, pager, next "
-                       :total="loginData.total">
-        </el-pagination>
-        <el-table
-
-          :data="loginData.tableData"
-          stripe
-          :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}"
-          size="mini"
-          style="width: 100%">
-          <el-table-column
-            prop="created"
-            label="登录时间">
-            <template slot-scope="scope">
-              <div>
-                {{scope.row.created.replace('T',' ')}}
-
-              </div>
+        <el-row style="padding-bottom:10px;">
+          <el-col :span="12">
+            <el-date-picker type="date" placeholder="查询日期" v-model="loginfilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchLoginDate"></el-date-picker>
+          </el-col>
+          <el-col :span="12" style="text-align:right;">
+            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'login')" @current-change="currentChange($event,'login')" :current-page="loginData.page" :page-sizes="[10, 20, 50, 100]" :page-size="loginData.page_size" layout="total, sizes, prev, pager, next " :total="loginData.total"></el-pagination>
+          </el-col>
+        </el-row>
+        <el-table :data="loginData.tableData" stripe :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}" size="mini" style="width: 100%">
+          <el-table-column prop="created" label="登录时间" width="180">
+            <template slot-scope="scope"><div>{{scope.row.created.replace('T',' ')}}</div></template>
+          </el-table-column>
+          <el-table-column prop="client_ip" label="IP地址" width="200"></el-table-column>
+          <el-table-column prop="area" label="登录地区" width="300">
+            <template slot-scope="scope" >
+              <div class="nowrap" :title="scope.row.area">{{scope.row.area}}</div>
             </template>
           </el-table-column>
-
-          <el-table-column
-            prop="client_ip"
-            label="IP地址"
-          >
+          <el-table-column prop="type" label="登录方式" width="100"></el-table-column>
+          <el-table-column prop="remark" label="登录结果" width="150">
+            <template slot-scope="scope"><div><span style="color:#45AB19;"> {{scope.row.remark }} </span></div></template>
           </el-table-column>
-
-          <el-table-column
-            prop="area"
-            label="登录地区">
-          </el-table-column>
-
-          <el-table-column
-            prop="type"
-            label="登录方式">
-          </el-table-column>
-
-          <el-table-column
-            prop="remark"
-            label="登录结果">
-            <template slot-scope="scope">
-              <div>
-                <span style="color:#45AB19;"> {{scope.row.remark }} </span>
-              </div>
+          <el-table-column prop="browser" label="浏览器类型">
+            <template slot-scope="scope" >
+              <div class="nowrap" :title="scope.row.browser">{{scope.row.browser}}</div>
             </template>
           </el-table-column>
-
-          <el-table-column
-            prop="browser"
-            label="浏览器类型">
-          </el-table-column>
-
-
-
         </el-table>
-
       </el-tab-pane>
-      <el-tab-pane label="发信查询" name="send" v-loading="sendData.loading">
-        <el-pagination style="text-align: right;padding-bottom:10px;"
-                       @size-change="sizeChange($event,'send')"
-                       @current-change="currentChange($event,'send')"
-                       :current-page="sendData.page"
-                       :page-sizes="[10, 20, 50, 100]"
-                       :page-size="sendData.page_size"
-                       layout="total, sizes, prev, pager, next "
-                       :total="sendData.total">
-        </el-pagination>
-        <el-table ref="sendTable" id="sendTable"
 
-                  :data="sendData.tableData"
-                  stripe
-                  :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}"
-                  size="mini"
-                  style="width: 100%">
+      <el-tab-pane label="发信查询" name="send" v-loading="sendData.loading">
+        <el-row style="padding-bottom:10px;">
+          <el-col :span="12">
+            <el-date-picker type="date" placeholder="查询日期" v-model="sendfilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchSendDate"></el-date-picker>
+          </el-col>
+          <el-col :span="12" style="text-align:right;">
+            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'send')" @current-change="currentChange($event,'send')" :current-page="sendData.page" :page-sizes="[10, 20, 50, 100]" :page-size="sendData.page_size" layout="total, sizes, prev, pager, next " :total="sendData.total"></el-pagination>
+          </el-col>
+        </el-row>
+        <el-table ref="sendTable" id="sendTable" :data="sendData.tableData" stripe :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}" size="mini" style="width: 100%">
           <el-table-column type="expand" class="expand">
             <template slot-scope="props">
               <el-row v-for="(r,k) in props.row.details" v-if="props.row.details.length>1" :key="k" style="padding:4px 0;">
                 <el-col :style="{marginLeft:expand_table.marginLeft+'px',width:expand_table.col1+'px'}" :title="r.recipient" style="box-sizing:border-box;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;padding-left:10px;">
                   <span v-if="r.name">{{r.name +' '}} &lt;</span> <span> {{r.recipient}}</span> <span v-if="r.name">&gt;</span>
-                  <!--<span style="color:#45AB19;margin-left:20px;"> {{r.status_show +','+ r.recall_status_show}}</span>-->
                 </el-col>
                 <el-col :style="{width:expand_table.col2+'px'}" style="overflow: hidden; white-space: nowrap;text-overflow: ellipsis;box-sizing:border-box;padding-left:10px;">
                   <span style="color:#45AB19;" :class="{is_red:r.is_red}"> {{r.inform||''}}</span>
@@ -96,36 +56,22 @@
                   <el-button type="text" size="mini" v-if="!r.is_zhaohui" @click="recall(props.row,'single',r.recipient)">召回邮件</el-button>
                 </el-col>
               </el-row>
-
             </template>
           </el-table-column>
-          <el-table-column
-            prop="send_time"
-            label="时 间">
+          <el-table-column prop="send_time" label="时 间" width="180">
             <template slot-scope="scope">
-              <div>
-                {{scope.row.send_time.replace('T',' ')}}
-              </div>
+              <div>{{scope.row.send_time.replace('T',' ')}}</div>
             </template>
           </el-table-column>
-
-          <el-table-column
-            prop="subject"
-            label="主 题"
-          >
+          <el-table-column prop="subject" label="主 题">
             <template slot-scope="scope" >
-              <div class="nowrap" :title="scope.row.subject">
-                {{scope.row.subject}}
-              </div>
+              <div class="nowrap" :title="scope.row.subject">{{scope.row.subject}}</div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop=""
-            label="收件人">
+          <el-table-column prop="" label="收件人">
             <template slot-scope="scope">
               <div v-if="scope.row.details.length>1">
                 <el-button type="text" size="mini" icon="el-icon-arrow-up" @click="changeExpand(scope.row)"> 所有收件人{{'（'+scope.row.details.length+'）'}}</el-button>
-                <!--<p v-for="(r,k) in scope.row.recipients" :key="k"> {{ r[0] +' <'+r[1]+'>'}}</p>-->
               </div>
               <div v-if="scope.row.details.length==1">
                 <span v-if="scope.row.details[0].name">{{scope.row.details[0].name+' '}} &lt;</span>
@@ -135,19 +81,15 @@
             </template>
           </el-table-column>
 
-          <el-table-column
-            prop="details"
-            label="状 态">
+          <el-table-column prop="details" label="状 态">
             <template slot-scope="scope" >
               <div v-if="scope.row.details.length==1">
-                <!--<span style="color:#45AB19;"> {{scope.row.details[0].status_show+','+scope.row.details[0].recall_status_show}} </span>-->
                 <span style="color:#45AB19;" :class="{is_red:scope.row.details[0].is_red}"> {{scope.row.details[0].inform||''}} </span>
               </div>
             </template>
           </el-table-column>
 
-          <el-table-column
-            label="操 作">
+          <el-table-column label="操 作" width="150">
             <template slot-scope="scope">
               <div>
                 <el-button type="text" size="mini" v-if="scope.row.details.length == 1 && !scope.row.details[0].is_zhaohui" @click="recall(scope.row)">召回邮件</el-button>
@@ -157,10 +99,10 @@
           </el-table-column>
         </el-table>
       </el-tab-pane>
+
       <el-tab-pane label="收信查询" name="mail" v-loading="mailData.loading">
         <el-row style="padding-bottom:10px;">
           <el-col :span="12">
-            <span>信件来源： </span>
             <el-button-group>
               <el-button class="status_btn" size="mini" :class="{active:mailData.status == ''}" @click="changeStatus('')">全部来信</el-button>
               <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'success'}" @click="changeStatus('success')">收件箱和个人文件夹</el-button>
@@ -168,155 +110,90 @@
               <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'virus'}" @click="changeStatus('virus')">病毒拦截</el-button>
               <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'spam'}" @click="changeStatus('spam')">垃圾拦截</el-button>
             </el-button-group>
+            <el-date-picker type="date" placeholder="查询日期" v-model="receivefilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchReceiveDate"></el-date-picker>
           </el-col>
           <el-col :span="12" style="text-align:right;">
-            <el-pagination style="text-align: right;"
-                           @size-change="sizeChange($event,'mail')"
-                           @current-change="currentChange($event,'mail')"
-                           :current-page="mailData.page"
-                           :page-sizes="[10, 20, 50, 100]"
-                           :page-size="mailData.page_size"
-                           layout="total, sizes, prev, pager, next "
-                           :total="mailData.total">
-            </el-pagination>
+            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'mail')" @current-change="currentChange($event,'mail')" :current-page="mailData.page" :page-sizes="[10, 20, 50, 100]" :page-size="mailData.page_size" layout="total, sizes, prev, pager, next " :total="mailData.total"></el-pagination>
           </el-col>
-
         </el-row>
-
-        <el-table
-
-          :data="mailData.tableData"
-          stripe
-          :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}"
-          size="mini"
-          style="width: 100%">
-          <el-table-column
-            prop="logtime"
-            label="时 间">
+        <el-table :data="mailData.tableData" stripe :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}" size="mini" style="width: 100%">
+          <el-table-column prop="logtime" label="时 间" width="180">
             <template slot-scope="scope">
-              <div>
-                {{scope.row.logtime.replace('T',' ')}}
-              </div>
+              <div>{{scope.row.logtime.replace('T',' ')}}</div>
             </template>
           </el-table-column>
-
-          <el-table-column
-            prop="subject"
-            label="主题"
-          >
+          <el-table-column prop="subject" label="主题">
             <template slot-scope="scope" >
-              <div class="nowrap" :title="scope.row.subject">
-                {{scope.row.subject}}
-              </div>
+              <div class="nowrap" :title="scope.row.subject">{{scope.row.subject}}</div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="send_mail"
-            label="发件人">
-          </el-table-column>
-
-          <el-table-column
-            prop="folder"
-            label="存储位置">
-            <template slot-scope="scope">
-              <div>
-                <span> {{scope.row.folder }} </span>
-              </div>
+          <el-table-column prop="send_mail" label="发件人" width="250">
+            <template slot-scope="scope" >
+              <div class="nowrap" :title="scope.row.send_mail">{{scope.row.send_mail}}</div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="remark"
-            label="备注">
+          <el-table-column prop="folder" label="存储位置" width="250">
             <template slot-scope="scope">
-              <div>
-                <span> {{scope.row.remark }} </span>
-              </div>
+              <div class="nowrap" :title="scope.row.folder">{{scope.row.folder }} </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="remark" label="备注" width="300">
+            <template slot-scope="scope">
+              <div><span> {{scope.row.remark }} </span></div>
             </template>
           </el-table-column>
         </el-table>
       </el-tab-pane>
+
       <el-tab-pane label="删信查询" name="delete" v-loading="deleteData.loading">
         <el-row style="padding-bottom:10px;">
           <el-col :span="12">
-            <span>信件来源： </span>
             <el-button-group>
               <el-button class="status_btn" size="mini" :class="{active:deleteData.status == ''}" @click="changeType('')">全部删信</el-button>
               <el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'web'}" @click="changeType('web')">网页删信</el-button>
               <el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'system'}" @click="changeType('system')">自动清理</el-button>
               <el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'client'}" @click="changeType('client')">客户端删信</el-button>
             </el-button-group>
+            <el-date-picker type="date" placeholder="查询日期" v-model="deleletfilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchDeleteDate"></el-date-picker>
           </el-col>
           <el-col :span="12">
-            <el-pagination style="text-align: right;"
-                           @size-change="sizeChange($event,'delete')"
-                           @current-change="currentChange($event,'delete')"
-                           :current-page="deleteData.page"
-                           :page-sizes="[10, 20, 50, 100]"
-                           :page-size="deleteData.page_size"
-                           layout="total, sizes, prev, pager, next "
-                           :total="deleteData.total">
-            </el-pagination>
+            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'delete')" @current-change="currentChange($event,'delete')" :current-page="deleteData.page" :page-sizes="[10, 20, 50, 100]" :page-size="deleteData.page_size" layout="total, sizes, prev, pager, next " :total="deleteData.total"></el-pagination>
           </el-col>
         </el-row>
-
-        <el-table
-
-          :data="deleteData.tableData"
-          stripe
-          :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}"
-          size="mini"
-          style="width: 100%">
-          <el-table-column
-            prop="created"
-            label="删除时间">
+        <el-table :data="deleteData.tableData" stripe :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}" size="mini" style="width: 100%">
+          <el-table-column prop="created" label="删除时间" width="180">
             <template slot-scope="scope">
-              <div>
-                {{scope.row.created.replace('T',' ')}}
-              </div>
+              <div>{{scope.row.created.replace('T',' ')}}</div>
             </template>
           </el-table-column>
-
-          <el-table-column
-            prop="subject"
-            label="主题"
-          >
+          <el-table-column prop="subject" label="主题">
             <template slot-scope="scope" >
-              <div class="nowrap" :title="scope.row.subject">
-                {{scope.row.subject}}
-              </div>
+              <div class="nowrap" :title="scope.row.subject">{{scope.row.subject}}</div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="send_mail"
-            label="发件人 / 操作人">
-          </el-table-column>
-
-          <el-table-column
-            prop="type_show"
-            label="删除信息">
-            <template slot-scope="scope">
-              <div>
-                <span> {{scope.row.type_show }} </span>
-              </div>
+          <el-table-column prop="send_mail" label="发件人 / 操作人" width="250">
+            <template slot-scope="scope" >
+              <div class="nowrap" :title="scope.row.send_mail">{{scope.row.send_mail}}</div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="folder"
-            label="删除位置">
+          <el-table-column prop="type_show" label="删除信息" width="200">
             <template slot-scope="scope">
-              <div>
-                <span> {{scope.row.folder }} </span>
-              </div>
+              <div><span> {{scope.row.type_show }} </span></div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="folder" label="删除位置" width="250">
+            <template slot-scope="scope">
+              <div class="nowrap" :title="scope.row.folder">{{scope.row.folder }} </div>
             </template>
           </el-table-column>
         </el-table>
       </el-tab-pane>
     </el-tabs>
+
     <el-dialog title="邮件召回" :visible.sync="recallTableVisible" :append-to-body="true" size="mini">
       <el-table :data="recallData">
         <el-table-column property="recipient" label="收件人"></el-table-column>
         <el-table-column property="recall_status_info" label="召回状态" width="200"></el-table-column>
-        <!--<el-table-column property="inform" label="邮件详情"></el-table-column>-->
         <el-table-column prop="" label="详情">
           <template slot-scope="scope">
             <span style="color:#45AB19;" v-if="!scope.row.is_red"> {{scope.row.inform||''}}</span>
@@ -340,6 +217,10 @@
           col2:100,
           col3:100,
         },
+        loginfilterdate: '',
+        sendfilterdate: '',
+        receivefilterdate: '',
+        deleletfilterdate: '',
         recallTableVisible:false,
         recallData:[],
         activeName: 'login',
@@ -349,33 +230,6 @@
           page_size:20,
           total:200,
           tableData: [
-            // {
-            //   "id": 499369,
-            //   "created": "2018-11-01T14:27:30",
-            //   "client_ip": "192.168.1.200",
-            //   "area": "",
-            //   "type": "web",
-            //   "is_login": true,
-            //   "remark": "登录成功"
-            // },
-            // {
-            //   "id": 499364,
-            //   "created": "2018-11-01T14:25:08",
-            //   "client_ip": "192.168.1.24",
-            //   "area": "",
-            //   "type": "imap",
-            //   "is_login": true,
-            //   "remark": "登录成功"
-            // },
-            // {
-            //   "id": 499343,
-            //   "created": "2018-11-01T14:24:52",
-            //   "client_ip": "192.168.1.200",
-            //   "area": "",
-            //   "type": "web",
-            //   "is_login": true,
-            //   "remark": "登录成功"
-            // }
           ]
         },
         sendData:{
@@ -384,38 +238,6 @@
           page_size:20,
           total:200,
           tableData: [
-            // {
-            //   "id": 113,
-            //   "mailbox": 7368,
-            //   "message_id": "<2596ac02dd7d11e885b1005056a7d988@test.com>",
-            //   "send_time": "2018-11-01T10:23:40",
-            //   "subject": "lw@test.com",
-            //   "recipients":[['李威','lw@test.com'],['李威','lw@test.com']],
-            //   "details":{
-            //     "status": "deliver",
-            //     "status_show": "已投递",
-            //     "inform": null,
-            //     "recall_status": "stay",
-            //     "recall_status_show": "未召回",
-            //     "recipient": "lw@test.com"
-            //   }
-            // },
-            // {
-            //   "id": 114,
-            //   "mailbox": 7368,
-            //   "message_id": "<2596ac02dd7d11e885b1005056a7d988@test.com>",
-            //   "send_time": "2018-11-01T10:23:40",
-            //   "subject": "lw@test.com",
-            //   "recipients":[['李威','lw@test.com']],
-            //   "details":{
-            //     "status": "deliver",
-            //     "status_show": "已投递",
-            //     "inform": null,
-            //     "recall_status": "stay",
-            //     "recall_status_show": "未召回",
-            //     "recipient": "lw@test.com"
-            //   }
-            // }
           ]
         },
         mailData:{
@@ -424,26 +246,6 @@
           page_size:20,
           total:200,
           tableData: [
-            // {
-            //   "id": 275591,
-            //   "logtime": "2018-11-01 10:21:44",
-            //   "subject": "lw@test.com",
-            //   "result": "1",
-            //   "result_show": "成功",
-            //   "send_mail": "lw@test.com",
-            //   "folder": "收件箱",
-            //   "remark": ""
-            // },
-            // {
-            //   "id": 275589,
-            //   "logtime": "2018-11-01 10:15:19",
-            //   "subject": "测试",
-            //   "result": "1",
-            //   "result_show": "成功",
-            //   "send_mail": "anna@test.com",
-            //   "folder": "收件箱",
-            //   "remark": ""
-            // }
           ],
           status:''
         },
@@ -453,26 +255,6 @@
           page_size:20,
           total:200,
           tableData: [
-            // {
-            //   "id": 7,
-            //   "created": "2018-10-29T17:29:06",
-            //   "subject": "aaaaaaaaaaaaaaaaaaaaaa",
-            //   "send_mail": "lw@test.com",
-            //   "type": "web",
-            //   "type_show": "网页删信",
-            //   "message_id": "<f94dec6adb4611e885b1005056a7d988@test.com>",
-            //   "folder": "Drafts"
-            // },
-            // {
-            //   "id": 6,
-            //   "created": "2018-10-29T17:29:06",
-            //   "subject": "",
-            //   "send_mail": "lw@test.com",
-            //   "type": "web",
-            //   "type_show": "网页删信",
-            //   "message_id": "<355e0662db5211e885b1005056a7d988@test.com>",
-            //   "folder": "Drafts"
-            // }
           ],
           status:''
         }
@@ -480,6 +262,22 @@
       };
     },
     methods: {
+      searchLoginDate(val){
+        this.loginfilterdate = val;
+        this.getLogin();
+      },
+      searchSendDate(val){
+        this.sendfilterdate = val;
+        this.getSend();
+      },
+      searchReceiveDate(val){
+        this.deleletfilterdate = val;
+        this.getMail();
+      },
+      searchDeleteDate(val){
+        this.deleletfilterdate = val;
+        this.getDelete();
+      },
       show_recall_all(row){
         let len = row.details.length >1;
         let result =  false;
@@ -627,7 +425,8 @@
         this.loginData.loading = true;
         let param ={
           page:this.loginData.page,
-          page_size:this.loginData.page_size
+          page_size:this.loginData.page_size,
+          filterdate:this.loginfilterdate,
         };
         getLoginList(param).then(res=>{
           this.loginData.total = res.data.count;
@@ -642,7 +441,8 @@
         this.sendData.loading = true;
         let param ={
           page:this.sendData.page,
-          page_size:this.sendData.page_size
+          page_size:this.sendData.page_size,
+          filterdate:this.sendfilterdate,
         };
         getSendlog(param).then(res=>{
           this.sendData.total = res.data.count;
@@ -660,7 +460,8 @@
         this.mailData.loading = true;
         let param ={
           page:this.mailData.page,
-          page_size:this.mailData.page_size
+          page_size:this.mailData.page_size,
+          filterdate:this.receivefilterdate,
         };
         if(this.mailData.status){
           param.status = this.mailData.status;
@@ -678,7 +479,8 @@
         this.deleteData.loading = true;
         let param ={
           page:this.deleteData.page,
-          page_size:this.deleteData.page_size
+          page_size:this.deleteData.page_size,
+          filterdate:this.deleletfilterdate,
         };
         if(this.deleteData.status){
           param.type = this.deleteData.status;

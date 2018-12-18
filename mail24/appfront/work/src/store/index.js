@@ -59,9 +59,13 @@ const store = new Vuex.Store({
     review_count:0,
     unseen_count:[],
     is_swtime:false,
-    filter_contact:[]
+    filter_contact:[],
+    login_after:{}
   },
   getters:{
+    getLoginAfter(state){
+      return state.login_after;
+    },
     getFilterContact(state){
       return state.filter_contact;
     },
@@ -198,9 +202,15 @@ const store = new Vuex.Store({
     },
     setIsSwtime(state,param){
       state.is_swtime = param;
+    },
+    setLoginAfter(state,param){
+      state.login_after = param;
     }
   },
   actions: {
+    setLoginAfterA(store,param){
+      store.commit('setLoginAfter',param);
+    },
     setIsSwtimeA(store,param){
       store.commit('setIsSwtime',param)
     },

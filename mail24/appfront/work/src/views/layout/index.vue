@@ -67,7 +67,7 @@
           <header class="lyheader">
             <div class="logo">
               <a href="javascript:void(0);" class="u-img j-lylogo" data-trigger="mail.welcome">
-                <img src="@/assets/img/logo.png" alt="logo" style="width: 152px; height: 42px;">
+                <img :src="welcome_logo" alt="U-Mail" style=" height: 42px;">
               </a>
             </div>
             <ul class="u-list u-list-horizontal">
@@ -207,7 +207,7 @@
   import store from '@/store'
   import router from '@/router'
   import cookie from '@/assets/js/cookie';
-  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome,settingUsersGet,settingUsersSetpassword,reviewShow } from '@/api/api'
+  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome,settingUsersGet,settingUsersSetpassword,reviewShow,loginAfter } from '@/api/api'
   export default {
     data:function(){
       var validatePass = (rule, value, callback) => {
@@ -275,6 +275,15 @@
       }
     },
     methods:{
+      getLoginAfter(){
+        loginAfter().then(res=>{
+          console.log(res)
+          this.$store.dispatch('setLoginAfterA',res.data);
+          $('title').text(res.data.title)
+        }).catch(err=>{
+          console.log(err)
+        })
+      },
       reviewMail(){
         this.show_review = false;
         this.$router.push('/mailbox/review');
@@ -488,7 +497,17 @@
           cookie.delCookie('name');
           this.$store.dispatch('setInfo');
           store.commit('setIsCompose',false);
-          router.push('/login')
+          console.log(this.$store.getters.getLoginAfter.logout_url)
+          console.log(this.$store.getters.getLoginAfter)
+          if(this.$store.getters.getLoginAfter.logout_url && this.$store.getters.getLoginAfter.logout_url!=null && this.$store.getters.getLoginAfter.logout_url!=''){
+            // let href = window.location.origin+'/#/messageInfo/'+this.readId+'?folder='+encodeURIComponent(this.readFolderId)+'&view='+view;
+            let href = this.$store.getters.getLoginAfter.logout_url;
+            window.open(href)
+            router.push('/login')
+          }else{
+            router.push('/login')
+          }
+
         }).catch(() => {
 
         });
@@ -573,6 +592,7 @@
       this.getReviewShow();
       this.getUser();
       this.getShared();
+      this.getLoginAfter();
       if(this.$route.path.indexOf('/mailbox')==0){
           this.activeTab = 0;
         }else if(this.$route.path.indexOf('/calendar')==0){
@@ -634,21 +654,26 @@
       }
     },
     computed: {
-        newMsg: function(){
-          return this.newList[this.newIndex]
-        },
-        token:function(){ return this.$store.getters.userInfo.token},
-        login_url:function(){ return this.$store.getters.getLoginUrl},
-        admin_is_active:function(){ return this.$store.getters.getAdminIsActive},
-        userName(){
-          return this.$store.getters.userInfo.name
-        },
-        change_password:function(){
-          return this.$store.getters.get_change_password
-        },
+      newMsg: function(){
+        return this.newList[this.newIndex]
+      },
+      token:function(){ return this.$store.getters.userInfo.token},
+      login_url:function(){ return this.$store.getters.getLoginUrl},
+      admin_is_active:function(){ return this.$store.getters.getAdminIsActive},
+      userName(){
+        return this.$store.getters.userInfo.name
+      },
+      change_password:function(){
+        return this.$store.getters.get_change_password
+      },
       reviewUnseen:function(){
           return this.$store.getters.getReviewCount;
+      },
+      welcome_logo:function(){
+        let origin = window.location.origin  //  window.location.origin  'http://192.168.1.39:81'
+        return  origin + this.$store.getters.getLoginAfter.welcome_logo;
       }
+
     }
   }
 </script>

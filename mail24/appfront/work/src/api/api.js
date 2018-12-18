@@ -446,3 +446,5 @@ export const logRecall = params => { return axios.post(`${host}/mail/message/log
 
 //获取登录前设置  /api/core/login-before/
 export const loginBefore = params => { return axios.get(`${host}/core/login-before/`,{ params: params }) }
+//获取登录后设置 GET /api/core/login-after/
+export const loginAfter = () => { return axios.get(`${host}/core/login-after/`)}

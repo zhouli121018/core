@@ -2,11 +2,11 @@
   <div v-loading="listLoading">
 
     <full-calendar :events="fcEvents" ref="calendar" :config="config"
-                         @event-selected="eventClick"
-                         @day-click="dayClick"
-                         @event-created="eventCreated"
+                   @event-selected="eventClick"
+                   @day-click="dayClick"
+                   @event-created="eventCreated"
 
-          ></full-calendar>
+    ></full-calendar>
 
     <el-dialog title="新建事件" :visible.sync="newEventDialog" :modal-append-to-body="false">
       <el-form :model="newForm" :rules="rules" ref="newForm" label-width="100px" class="demo-ruleForm" size="small">
@@ -70,7 +70,7 @@
             <el-option label="日" value="86400"></el-option>
             <el-option label="周" value="604800"></el-option>
           </el-select>
-          提醒
+            提醒
           </div>
 
         </el-form-item>
@@ -125,74 +125,74 @@
 
         <el-form-item v-show="showChoice" label="选择邮箱：">
 
-            <el-row style="margin-bottom:6px;">
-              <el-col :span="16">
-                <el-cascader  change-on-select style="width:100%"
-                                 :options="deptOptions" @change="menu_change" placeholder="请选择部门">
-                </el-cascader>
-              </el-col>
-              <el-col :span="5" :offset="1">
-                <el-input v-model="searchMailbox" size="small" placeholder="请输入内容"></el-input>
+          <el-row style="margin-bottom:6px;">
+            <el-col :span="16">
+              <el-cascader  change-on-select style="width:100%"
+                            :options="deptOptions" @change="menu_change" placeholder="请选择部门">
+              </el-cascader>
+            </el-col>
+            <el-col :span="5" :offset="1">
+              <el-input v-model="searchMailbox" size="small" placeholder="请输入内容"></el-input>
 
-              </el-col>
-              <el-col :span="2" style="text-align:right">
-                <el-button size="small" type="primary" @click="searchOabMembers(1)">搜索</el-button>
-              </el-col>
-            </el-row>
+            </el-col>
+            <el-col :span="2" style="text-align:right">
+              <el-button size="small" type="primary" @click="searchOabMembers(1)">搜索</el-button>
+            </el-col>
+          </el-row>
 
-            <el-table
-              :data="contactData"
-              tooltip-effect="dark"
-              style="width: 100%" border
-              @selection-change="handleSelectionChange" @row-click="rowClick" ref="contactTable" :header-cell-style="{background:'#f0f1f3'}">
-              <el-table-column
-                type="selection"
-                width="55">
-              </el-table-column>
-              <el-table-column prop="name" label="姓名&邮箱">
-                <template slot-scope="scope">
-                  <span>{{ scope.row.name +'<' +scope.row.username +'>'}}</span>
-                </template>
-              </el-table-column>
-              <el-table-column  label="部门">
-                <template slot-scope="scope">
-                  <span>{{scope.row.department}}</span>
-                </template>
-              </el-table-column>
-            </el-table>
-            <el-pagination
-              @size-change="handleSizeChange" small
-              @current-change="handleCurrentChange"
-              :current-page="currentPage"
-              :page-sizes="[5,10, 20,50,100,200, 300, 400]"
-              :page-size="pageSize"
-              layout="   prev, pager, next,sizes"
-              :total="totalCount">
-            </el-pagination>
-          </el-form-item>
+          <el-table
+            :data="contactData"
+            tooltip-effect="dark"
+            style="width: 100%" border
+            @selection-change="handleSelectionChange" @row-click="rowClick" ref="contactTable" :header-cell-style="{background:'#f0f1f3'}">
+            <el-table-column
+              type="selection"
+              width="55">
+            </el-table-column>
+            <el-table-column prop="name" label="姓名&邮箱">
+              <template slot-scope="scope">
+                <span>{{ scope.row.name +'<' +scope.row.username +'>'}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column  label="部门">
+              <template slot-scope="scope">
+                <span>{{scope.row.department}}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination
+            @size-change="handleSizeChange" small
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[5,10, 20,50,100,200, 300, 400]"
+            :page-size="pageSize"
+            layout="   prev, pager, next,sizes"
+            :total="totalCount">
+          </el-pagination>
+        </el-form-item>
 
       </el-form>
 
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="newEventDialog = false" size="small">取 消</el-button>
-          <el-button type="primary"  size="small"  @click="submitForm('newForm')">立即创建</el-button>
-        </div>
-      </el-dialog>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="newEventDialog = false" size="small">取 消</el-button>
+        <el-button type="primary"  size="small"  @click="submitForm('newForm')">立即创建</el-button>
+      </div>
+    </el-dialog>
 
     <el-dialog :title="viewForm.title" :visible.sync="viewEventDialog"  :close-on-click-modal="false" :append-to-body="true">
       <el-form :model="viewForm" :rules="view_rules" ref="viewForm" label-width="100px"  size="small">
         <el-card class="box-card" v-if="permisson.invite" style="background:#FFFFE1;margin-bottom:16px;">
-            <h3>您是否参加活动？</h3>
-            <el-radio-group v-model="invitor_status" style="padding:16px 0;">
-              <el-radio label="pass">参加</el-radio>
-              <el-radio label="reject">拒绝</el-radio>
-              <el-radio label="wait">待定</el-radio>
-            </el-radio-group>
+          <h3>您是否参加活动？</h3>
+          <el-radio-group v-model="invitor_status" style="padding:16px 0;">
+            <el-radio label="pass">参加</el-radio>
+            <el-radio label="reject">拒绝</el-radio>
+            <el-radio label="wait">待定</el-radio>
+          </el-radio-group>
 
-            <div>
-              <el-button type="primary" size="mini" @click="saveStatus">保 存</el-button>
-              <!--<el-button  size="mini">取 消</el-button>-->
-            </div>
+          <div>
+            <el-button type="primary" size="mini" @click="saveStatus">保 存</el-button>
+            <!--<el-button  size="mini">取 消</el-button>-->
+          </div>
         </el-card>
 
         <div v-if="!permisson.edit">
@@ -224,8 +224,8 @@
 
         <div  v-if="permisson.edit">
           <el-form-item label="标 题" prop="title">
-          <el-input v-model="viewForm.title"></el-input>
-        </el-form-item>
+            <el-input v-model="viewForm.title"></el-input>
+          </el-form-item>
           <el-form-item label="开始截止日期">
             <el-date-picker
               v-model="viewForm.start_day"
@@ -283,7 +283,7 @@
               <el-option label="天" :value="86400"></el-option>
               <el-option label="周" :value="604800"></el-option>
             </el-select>
-            提醒
+              提醒
             </div>
 
           </el-form-item>
@@ -348,7 +348,7 @@
             <el-row style="margin-bottom:6px;">
               <el-col :span="16">
                 <el-cascader  change-on-select style="width:100%"
-                                 :options="deptOptions" @change="menu_change" placeholder="请选择部门">
+                              :options="deptOptions" @change="menu_change" placeholder="请选择部门">
                 </el-cascader>
               </el-col>
               <el-col :span="5" :offset="1">
@@ -393,83 +393,83 @@
         </div>
 
       </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="viewEventDialog = false" size="small">关 闭</el-button>
-          <el-button type="danger"  size="small"  @click="deleteEventSubmit(viewForm.id)"  v-if="permisson.edit">删除事件</el-button>
-          <el-button type="primary"  size="small"  @click="updateEventSubmit"  v-if="permisson.edit">确定修改</el-button>
-        </div>
-      </el-dialog>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="viewEventDialog = false" size="small">关 闭</el-button>
+        <el-button type="danger"  size="small"  @click="deleteEventSubmit(viewForm.id)"  v-if="permisson.edit">删除事件</el-button>
+        <el-button type="primary"  size="small"  @click="updateEventSubmit"  v-if="permisson.edit">确定修改</el-button>
+      </div>
+    </el-dialog>
     <el-popover
       :offset="150"
       placement="top"
       id="dd"
       ref="popoverfile"
-      >
+    >
       <div style="text-align: right; margin: 0">
         <el-button size="mini" type="primary" >编辑</el-button>
         <el-button type="warning" size="mini">删除</el-button>
       </div>
     </el-popover>
     <div v-if="!show_calendar" id="ces">
-        <el-row style="padding:6px 0;">
-          <el-col :span="6">
-            <el-input
-              placeholder="请输入事件标题"
-              prefix-icon="el-icon-search"
-              v-model="event_search" size="small" style="width:auto">
-            </el-input>
-            <el-button size="small" type="primary" plain @click="event_search_fn">查询</el-button>
-          </el-col>
-          <el-col :span="18" style="text-align:right">
-            <el-pagination
-              @size-change="handleSizeChange_list"
-              @current-change="handleCurrentChange_list"
-              background
-              :current-page="currentPage_list"
-              :page-sizes="[10,20,50,100]"
-              :page-size="pageSize_list"
-              layout="total, prev, pager, next, sizes"
-              :total="totalCount_list">
-            </el-pagination>
-          </el-col>
-        </el-row>
-       <el-table
-          :header-cell-style="{background:'#f0f1f3'}"
-          :data="event_list"
-          stripe
-          style="width: 100%">
-          <el-table-column
-            sortable
-            prop="start_day"
-            label="开始时间"
-            width="200"
-            >
-            <template slot-scope="scope">
-              {{scope.row.start_day}} {{scope.row.start_time?' '+scope.row.start_time:''}}
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="title"
-            label="标题"
-            >
-          </el-table-column>
-          <el-table-column
-            prop="status"
-            label="状态"
-            width="300"
-            >
-            <template slot-scope="scope">
-              <span>{{scope.row.cycle_mode==0?'不重复':(scope.row.cycle_mode==1?'每天重复 ':scope.row.cycle_mode==2?'每周重复 ':scope.row.cycle_mode==3?'每月重复 ':'每年重复 ')}}</span> <span v-if="scope.row.cycle_mode>0"> {{scope.row.cycle_type?' 永远重复':' 重复至 '}}</span> <span v-if="scope.row.cycle_mode>0 && !scope.row.cycle_type">{{scope.row.cycle_day}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="操作" width="200">
-            <template slot-scope="scope">
-              <el-button  type="text" size="small" @click="editEvent(scope.row)">{{scope.row.permisson.edit?'编辑':'查看'}}</el-button>
-              <el-button size="mini" type="text"  @click="deleteEventSubmit(scope.row.id)"  v-if="scope.row.permisson.edit" style="color:red">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+      <el-row style="padding:6px 0;">
+        <el-col :span="6">
+          <el-input
+            placeholder="请输入事件标题"
+            prefix-icon="el-icon-search"
+            v-model="event_search" size="small" style="width:auto">
+          </el-input>
+          <el-button size="small" type="primary" plain @click="event_search_fn">查询</el-button>
+        </el-col>
+        <el-col :span="18" style="text-align:right">
+          <el-pagination
+            @size-change="handleSizeChange_list"
+            @current-change="handleCurrentChange_list"
+            background
+            :current-page="currentPage_list"
+            :page-sizes="[10,20,50,100]"
+            :page-size="pageSize_list"
+            layout="total, prev, pager, next, sizes"
+            :total="totalCount_list">
+          </el-pagination>
+        </el-col>
+      </el-row>
+      <el-table
+        :header-cell-style="{background:'#f0f1f3'}"
+        :data="event_list"
+        stripe
+        style="width: 100%">
+        <el-table-column
+          sortable
+          prop="start_day"
+          label="开始时间"
+          width="200"
+        >
+          <template slot-scope="scope">
+            {{scope.row.start_day}} {{scope.row.start_time?' '+scope.row.start_time:''}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="title"
+          label="标题"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="status"
+          label="状态"
+          width="300"
+        >
+          <template slot-scope="scope">
+            <span>{{scope.row.cycle_mode==0?'不重复':(scope.row.cycle_mode==1?'每天重复 ':scope.row.cycle_mode==2?'每周重复 ':scope.row.cycle_mode==3?'每月重复 ':'每年重复 ')}}</span> <span v-if="scope.row.cycle_mode>0"> {{scope.row.cycle_type?' 永远重复':' 重复至 '}}</span> <span v-if="scope.row.cycle_mode>0 && !scope.row.cycle_type">{{scope.row.cycle_day}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作" width="200">
+          <template slot-scope="scope">
+            <el-button  type="text" size="small" @click="editEvent(scope.row)">{{scope.row.permisson.edit?'编辑':'查看'}}</el-button>
+            <el-button size="mini" type="text"  @click="deleteEventSubmit(scope.row.id)"  v-if="scope.row.permisson.edit" style="color:red">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
   </div>
 </template>
@@ -644,18 +644,18 @@
               $(element).attr('title', event.title)
               let html = '<span class="fc_time"></span>'
               if(event.id>0){
-                  let per = event.permisson
-                  if(per.invite && per.edit){
-                    html += '<i class="el-icon-edit" style="color:#409EFF"></i>'
-                  }else if(per.edit && !per.invite){
-                    html += '<i class="el-icon-edit" style="color:red"></i>'
-                  }else if(!per.edit && per.invite){
-                    html += '<i class="el-icon-star-on" style="color:#409EFF"></i>'
-                  }else if(!per.edit && !per.invite){
-                    html += '<i class="el-icon-star-on" style="color:red"></i>'
-                  }
-                  html += '<span class="fc-title">' + event.title + '</span>';
-                  $(element).find('.fc-content').html(html)
+                let per = event.permisson
+                if(per.invite && per.edit){
+                  html += '<i class="el-icon-edit" style="color:#409EFF"></i>'
+                }else if(per.edit && !per.invite){
+                  html += '<i class="el-icon-edit" style="color:red"></i>'
+                }else if(!per.edit && per.invite){
+                  html += '<i class="el-icon-star-on" style="color:#409EFF"></i>'
+                }else if(!per.edit && !per.invite){
+                  html += '<i class="el-icon-star-on" style="color:red"></i>'
+                }
+                html += '<span class="fc-title">' + event.title + '</span>';
+                $(element).find('.fc-content').html(html)
               }else{
                 html += '<i class="el-icon-info" style="color:#409EFF"></i>'
                 html += '<span class="fc-title">' + event.title + '</span>';
@@ -866,10 +866,10 @@
       getDate   (datestr) {
         var temp = datestr.split("-");
         if (temp[1] === '01') {
-            temp[0] = parseInt(temp[0],10) - 1;
-            temp[1] = '12';
+          temp[0] = parseInt(temp[0],10) - 1;
+          temp[1] = '12';
         } else {
-            temp[1] = parseInt(temp[1],10) - 1;
+          temp[1] = parseInt(temp[1],10) - 1;
         }
         //new Date()的月份入参实际都是当前值-1
         var date = new Date(temp[0], temp[1], temp[2]);
@@ -880,13 +880,13 @@
         var endTime = this.getDate(end);
         var dateArr = [];
         while ((endTime.getTime() - startTime.getTime()) > 0) {
-            var year = startTime.getFullYear();
-            var month = startTime.getMonth().toString().length === 1 ? "0" + (parseInt(startTime.getMonth().toString(),10) + 1) : (startTime.getMonth() + 1);
-            var day = startTime.getDate().toString().length === 1 ? "0" + startTime.getDate() : startTime.getDate();
-            month = parseInt(month)
-            if(month<10){month = '0'+month}
-            dateArr.push(year + "-" + month + "-" + day);
-            startTime.setDate(startTime.getDate() + 1);
+          var year = startTime.getFullYear();
+          var month = startTime.getMonth().toString().length === 1 ? "0" + (parseInt(startTime.getMonth().toString(),10) + 1) : (startTime.getMonth() + 1);
+          var day = startTime.getDate().toString().length === 1 ? "0" + startTime.getDate() : startTime.getDate();
+          month = parseInt(month)
+          if(month<10){month = '0'+month}
+          dateArr.push(year + "-" + month + "-" + day);
+          startTime.setDate(startTime.getDate() + 1);
         }
         dateArr.push(end);
         return dateArr;
@@ -1002,9 +1002,9 @@
             this.viewForm.invitors.splice(k,1)
           },err=>{
             let str = '';
-              if(err.detail){
-                str = err.detail
-              }
+            if(err.detail){
+              str = err.detail
+            }
             this.$message({message:'取消邀请失败！'+str,type:'error'});
           })
         }else{
@@ -1018,14 +1018,16 @@
         setStatus(this.event_id,this.invitor_status).then(res=>{
           this.$message({message:'操作成功！',type:'success'});
         },err=>{
-          let str = '';
-          if(err.detail){
-            str = err.detail
+          if("detail" in err){
+            this.$message({message:err.detail,type:'error'});
+            this.createFormLoading = false;
+          } else if ( "non_field_errors" in err ){
+            this.$message({message:err.non_field_errors[0],type:'error'});
+            this.createFormLoading = false;
+          } else {
+            this.$message({message:err,type:'error'});
+            this.createFormLoading = false;
           }
-          if(err.non_field_errors && err.non_field_errors[0]){
-            str = err.non_field_errors[0]
-          }
-          this.$message({message:'操作失败！'+str,type:'error'});
         })
       },
       submitForm(formName) {
@@ -1061,17 +1063,17 @@
               this.$refs.contactTable.clearSelection();
               this.showChoice = false;
             },err=>{
-              let str = '';
-              if(err.detail){
-                str = err.detail
+              if("detail" in err){
+                this.$message({message:err.detail,type:'error'});
+                this.createFormLoading = false;
+              } else if ( "non_field_errors" in err ){
+                this.$message({message:err.non_field_errors[0],type:'error'});
+                this.createFormLoading = false;
+              } else {
+                this.$message({message:err,type:'error'});
+                this.createFormLoading = false;
               }
-              if(err.non_field_errors){
-                str = err.non_field_errors
-              }
-              this.$message({message:'创建事件失败！'+str,type:'error'});
-              console.log(err)
             })
-
           } else {
             return false;
           }
@@ -1115,14 +1117,17 @@
               this.$message({message:'修改成功！',type:'success'});
               this.getEventList();
             },err=>{
-              let str = '';
-              if(err.detail){
-                str = err.detail
+              if("detail" in err){
+                this.$message({message:err.detail,type:'error'});
+                this.createFormLoading = false;
+              } else if ( "non_field_errors" in err ){
+                this.$message({message:err.non_field_errors[0],type:'error'});
+                this.createFormLoading = false;
+              } else {
+                this.$message({message:err,type:'error'});
+                this.createFormLoading = false;
               }
-              this.$message({message:'修改失败！'+str,type:'error'});
-              console.log(err)
             })
-
           } else {
             return false;
           }
@@ -1139,12 +1144,16 @@
             this.viewEventDialog = false;
             this.getEventList();
           },err=>{
-            let str = '';
-              if(err.detail){
-                str = err.detail
-              }
-            this.$message({message:'删除事件失败！'+str,type:'error'});
-            console.log(err);
+            if("detail" in err){
+              this.$message({message:err.detail,type:'error'});
+              this.createFormLoading = false;
+            } else if ( "non_field_errors" in err ){
+              this.$message({message:err.non_field_errors[0],type:'error'});
+              this.createFormLoading = false;
+            } else {
+              this.$message({message:err,type:'error'});
+              this.createFormLoading = false;
+            }
           })
         }).catch(() => {
           this.$message({
