@@ -185,9 +185,24 @@
             <el-form-item label="确认新密码" prop="confirm_password" :error="confirm_password_error">
               <el-input v-model="passwordForm.confirm_password" type="password" auto-complete="off"></el-input>
             </el-form-item>
-            <p style="color:#aaa;font-size:12px;padding-top:10px;">
+            <p style="color:#aaa;font-size:12px;padding-top:10px;" v-if="false">
               <strong style="color: red">注：</strong> 密码长度为8到20位，需要大写和小写字母数字组合或者特殊字符字母数字组合； 不能连续重复、递增、递减的数或字母，可包含特殊字符；<br>例：如密码为8位，则Abcd2357、1111test、1234test、4321test均不符合要求。
             </p>
+            <div style="padding-top:10px;">
+              <strong style="color: red">密码必须满足以下条件：</strong>
+              <ul style="margin-left: 26px;">
+                <li style="list-style-type:circle;">密码长度为{{passwordRules.passwd_size2}}至16位；</li>
+                <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;">必须包含两种字符（数字、大写字母、小写字母、特殊字符）；</li>
+                <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">必须包含三种字符（数字、大写字母、小写字母、特殊字符）；</li>
+                <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">必须包含四种字符（数字、大写字母、小写字母、特殊字符）；</li>
+                <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">连续3位及以上数字不能连号（例如：123、654）；</li>
+                <li v-if="passwordRules.passwd_name" style="list-style-type:circle;">密码不能包含账号；</li>
+                <li v-if="passwordRules.passwd_name2" style="list-style-type:circle;">密码不能包含用户姓名大小写全拼；</li>
+                <li v-if="passwordRules.passwd_letter" style="list-style-type:circle;">连续3位及以上字母不能连号（例如：abc、cba）；</li>
+                <li v-if="passwordRules.passwd_letter2" style="list-style-type:circle;">密码不能包含连续3个及以上相同字符（例如：aaa、rrr）；</li>
+              </ul>
+            </div>
+
 
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -207,7 +222,7 @@
   import store from '@/store'
   import router from '@/router'
   import cookie from '@/assets/js/cookie';
-  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome,settingUsersGet,settingUsersSetpassword,reviewShow,loginAfter } from '@/api/api'
+  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome,settingUsersGet,settingUsersSetpassword,reviewShow,loginAfter,settingUsersGetpassword } from '@/api/api'
   export default {
     data:function(){
       var validatePass = (rule, value, callback) => {
@@ -233,6 +248,15 @@
         }
       };
       return {
+        passwordRules:{
+          "passwd_type": 2,
+          "passwd_size2": 8,
+          "passwd_digital": false,
+          "passwd_name": false,
+          "passwd_name2": false,
+          "passwd_letter": false,
+          "passwd_letter2": false,
+        },
         show_review:true,
         passwordVisible:true,
         password_error:'',
@@ -275,6 +299,11 @@
       }
     },
     methods:{
+      getPassword: function(){
+        settingUsersGetpassword().then(res=>{
+          this.passwordRules = res.data;
+        });
+      },
       getLoginAfter(){
         loginAfter().then(res=>{
           console.log(res)
@@ -499,6 +528,8 @@
           store.commit('setIsCompose',false);
           console.log(this.$store.getters.getLoginAfter.logout_url)
           console.log(this.$store.getters.getLoginAfter)
+          // router.push('/login')
+          // return;
           if(this.$store.getters.getLoginAfter.logout_url && this.$store.getters.getLoginAfter.logout_url!=null && this.$store.getters.getLoginAfter.logout_url!=''){
             // let href = window.location.origin+'/#/messageInfo/'+this.readId+'?folder='+encodeURIComponent(this.readFolderId)+'&view='+view;
             let href = this.$store.getters.getLoginAfter.logout_url;
@@ -548,6 +579,9 @@
             this.mainUsername = suc.data.results.username;
           }else{
             this.sharedList = suc.data.results;
+          }
+          if(suc.data.change_password){
+            this.getPassword();
           }
         },(err)=>{
           console.log(err)

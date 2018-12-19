@@ -74,7 +74,7 @@
                         <Innerbox v-if="item.name=='1'" :boxId="boxId" :curr_folder="curr_folder"  @getRead="getRead" :unseencount="unseencount" :floderResult="floderResult" ref="innerbox"></Innerbox>
                         <Read :readId="item.rid" :readFolderId="item.fid" :tagName="item.name" v-if="item.type=='read'"></Read>
                         <Readreview :readId="item.rid" :readFolderId="item.fid" v-if="item.type=='readreview'"></Readreview>
-                        <Compose  v-if="item.type!='read'&&item.name!='1'&&item.type!='readreview'" :ref="'ref_compose_'+item.name" :iframe_height="iframe_height" :rid="item.name" :parent_ruleForm2="ruleForm2" :parent_content="content" :parent_maillist="maillist" :parent_maillist_copyer="maillist_copyer" :parent_fileList="fileList" :compose_type="item.type" :parent_maillist_bcc="maillist_bcc" :parent_show_reply_to="show_reply_to"></Compose>
+                        <Compose  v-if="item.type!='read'&&item.name!='1'&&item.type!='readreview'" :ref="'ref_compose_'+item.name" :iframe_height="iframe_height" :rid="item.name" :parent_ruleForm2="ruleForm2" :parent_content="content" :parent_maillist="maillist" :parent_maillist_copyer="maillist_copyer" :parent_fileList="fileList" :compose_type="item.type" :parent_maillist_bcc="maillist_bcc" :parent_show_reply_to="show_reply_to" :type="item.type"></Compose>
 
                       </el-tab-pane>
                     </el-tabs>

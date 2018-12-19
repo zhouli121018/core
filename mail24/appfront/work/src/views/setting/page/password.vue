@@ -15,8 +15,24 @@
           <el-col :span="16"><el-form-item label="新密码" prop="new_password" :error="new_password_error"><el-input type="password" v-model.trim="passeordForm.new_password" auto-complete="off"></el-input></el-form-item></el-col><br>
           <el-col :span="16"><el-form-item label="确认密码" prop="confirm_password" :error="confirm_password_error"><el-input type="password" v-model.trim="passeordForm.confirm_password" auto-complete="off"></el-input></el-form-item></el-col>
         </el-row>
-        <el-row><el-col :span="16"><pre style="margin-left: 100px"><strong style="color: red">注：</strong> 密码长度为8到20位，需要大写和小写字母数字组合或者特殊字符字母数字组合； 不能连续重复、递增、递减的数或字母，可包含特殊字符；<br>例：如密码为8位，则Abcd2357、1111test、1234test、4321test均不符合要求。</pre></el-col></el-row>
-        <el-row><el-col :span="24"><el-form-item><el-button type="primary" @click.native="passeordFormSubmit()" :loading="passeordFormLoading">修改</el-button></el-form-item></el-col></el-row>
+        <el-row><el-col :span="16">
+          <div style="margin-left: 100px">
+            <strong style="color: red">密码必须满足以下条件：</strong>
+            <ul style="margin-left: 26px;">
+              <li style="list-style-type:circle;">密码长度为{{passwordRules.passwd_size2}}至16位；</li>
+              <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;">必须包含两种字符（数字、大写字母、小写字母、特殊字符）；</li>
+              <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">必须包含三种字符（数字、大写字母、小写字母、特殊字符）；</li>
+              <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">必须包含四种字符（数字、大写字母、小写字母、特殊字符）；</li>
+              <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">连续3位及以上数字不能连号（例如：123、654）；</li>
+              <li v-if="passwordRules.passwd_name" style="list-style-type:circle;">密码不能包含账号；</li>
+              <li v-if="passwordRules.passwd_name2" style="list-style-type:circle;">密码不能包含用户姓名大小写全拼；</li>
+              <li v-if="passwordRules.passwd_letter" style="list-style-type:circle;">连续3位及以上字母不能连号（例如：abc、cba）；</li>
+              <li v-if="passwordRules.passwd_letter2" style="list-style-type:circle;">密码不能包含连续3个及以上相同字符（例如：aaa、rrr）；</li>
+            </ul>
+          </div>
+        </el-col>
+        </el-row>
+        <el-row><el-col :span="24"><el-form-item style="margin-top: 13px;"><el-button type="primary" @click.native="passeordFormSubmit()" :loading="passeordFormLoading">修改</el-button></el-form-item></el-col></el-row>
       </el-form>
 
       <el-form :model="securityForm" label-width="100px" :rules="securityFormRules" ref="securityForm" size="mini" style="margin-left:13px;margin-right:13px;margin-top: 13px">
@@ -75,11 +91,27 @@
 
 <script>
   import cookie from '@/assets/js/cookie';
-  import { settingUsersSetpassword, settingUsersGetSecurity, settingUsersSetSecurity } from '@/api/api'
+  import {
+    settingUsersGetpassword,
+    settingUsersGetSecurity,
+    settingUsersSetpassword,
+    settingUsersSetSecurity
+  } from '@/api/api'
+
   export default {
     data() {
       return {
         passeordFormLoading: false,
+        // 密码规则
+        passwordRules:{
+          "passwd_type": 2,
+          "passwd_size2": 8,
+          "passwd_digital": false,
+          "passwd_name": false,
+          "passwd_name2": false,
+          "passwd_letter": false,
+          "passwd_letter2": false,
+        },
         // 错误信息展示
         password_error:'',
         new_password_error:'',
@@ -159,10 +191,15 @@
       }
     },
     mounted: function(){
+      this.getPassword();
       this.getSecurity();
     },
     methods: {
-
+      getPassword: function(){
+        settingUsersGetpassword().then(res=>{
+          this.passwordRules = res.data;
+        });
+      },
       getSecurity: function(){
         settingUsersGetSecurity().then(res=>{
           this.securityForm = res.data.results;

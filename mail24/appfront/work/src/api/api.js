@@ -170,6 +170,8 @@ export const settingUsersGet = params => { return axios.get(`${host}/setting/use
 // 更新个人资料
 export const settingUsersUpdate = params => { return axios.post(`${host}/setting/users/set/`, params) }
 // 修改密码
+export const settingUsersGetpassword = params => { return axios.get(`${host}/setting/users/get-password/`,  { params: params }) }
+// 修改密码
 export const settingUsersSetpassword = params => { return axios.post(`${host}/setting/users/set-password/`, params) }
 // 获取密保
 export const settingUsersGetSecurity = params => { return axios.get(`${host}/setting/users/get-security/`, { params: params }) }
@@ -448,3 +450,6 @@ export const logRecall = params => { return axios.post(`${host}/mail/message/log
 export const loginBefore = params => { return axios.get(`${host}/core/login-before/`,{ params: params }) }
 //获取登录后设置 GET /api/core/login-after/
 export const loginAfter = () => { return axios.get(`${host}/core/login-after/`)}
+
+//获取单个用户签名 url?replace=1: 表示替换变量 GET /api/setting/signatures/{id}/
+export const singleSignatures = id => { return axios.get(`${host}/setting/signatures/${id}/`,{ params: {replace:1} }) }

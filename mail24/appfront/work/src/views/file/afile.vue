@@ -52,7 +52,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="大小" width="120">
+          <el-table-column label="大小" width="100">
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{scope.row.size| mailsize}}</span>
             </template>
@@ -65,9 +65,14 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="有效时间" width="120">
+          <el-table-column label="有效时间" width="150">
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{scope.row.left_timestamp| validateLeft}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="邮件主题" width="250">
+            <template slot-scope="scope" >
+              <div class="nowrap" :title="scope.row.subject">{{scope.row.subject}}</div>
             </template>
           </el-table-column>
         </el-table>
@@ -148,6 +153,9 @@
         }
         if(!daysRound && !hoursRound){
           return '即将过期'
+        }
+        if(daysRound>30 || (daysRound==30 && (hoursRound>0 ||minutesRound>0))){
+          return '永久'
         }
         return str;
         return timestamp;
@@ -246,9 +254,9 @@
           }).catch(function (err) {
             this.listLoading = false;
             let str = '';
-              if(err.detail){
-                str = err.detail
-              }
+            if(err.detail){
+              str = err.detail
+            }
             that.$message({ message: '删除失败! '+str,  type: 'error' });
           });
         });
@@ -436,6 +444,12 @@
   }
   .el-progress__text{
     display: none!important;
+  }
+  .nowrap{
+    overflow: hidden;
+    word-wrap: normal;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 </style>
 

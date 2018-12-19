@@ -772,7 +772,6 @@
         </div>
       </el-dialog>
     </div>
-
 </template>
 <script>
   import axios from 'axios';
@@ -780,10 +779,11 @@
   import SparkMD5 from 'spark-md5'
   // import treeTransfer from 'el-tree-transfer'
   import { contactPabGroupsGet,contactPabMapsGet,contactPabMembersGet,postAttach,deleteAttach,getAttach,contactOabDepartsGet,
-  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus,settingSignatureGet,getTemplateList,getTemplateById,getDeptMail,readMail,getContactInfo,getContactLab,uploadCheck,uploadChunk,uploadSuccess,netdiskCapacityGet,companyDiskGet,logRecall} from '@/api/api'
+  mailSent,netdiskGet,contactCabGroupsGet,contactSoabDomainsGet, contactSoabGroupsGet,contactOabMembersGet,contactCabMembersGet,contactSoabMembersGet,getParamBool,sendRecall,getMessageStatus,settingSignatureGet,getTemplateList,getTemplateById,getDeptMail,readMail,getContactInfo,getContactLab,uploadCheck,uploadChunk,uploadSuccess,netdiskCapacityGet,companyDiskGet,logRecall,singleSignatures} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     props:{
+      type:'',
       compose_type:'',
       iframe_height:'',
       rid:'',
@@ -965,25 +965,21 @@
         ],
         checkBg:'',
         stationeryList:[
-          {id:0,src:require('../img/0.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_04.jpg) repeat-x #cdede2'},
-          {id:1,src:require('../img/1.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_01.jpg) no-repeat #f6ffec'},
-          {id:2,src:require('../img/2.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_12.jpg) repeat-x left bottom #e3ebf4'},
+          {id:0,src:require('../img/0.png'),background:'url(/static/img/a_04.jpg) repeat-x #cdede2'},
+          {id:1,src:require('../img/1.png'),background:'url(/static/img/a_01.jpg) no-repeat #f6ffec'},
+          {id:2,src:require('../img/2.png'),background:'url(/static/img/a_12.jpg) repeat-x left bottom #e3ebf4'},
 
-          {id:5,src:require('../img/5.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_07.jpg) repeat-x #e4ebf5'},
-          {id:6,src:require('../img/6.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/b_02.jpg)'},
-          {id:7,src:require('../img/7.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/b_01.jpg)'},
-          {id:8,src:require('../img/8.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_02.jpg) no-repeat #fffaf6'},
-          {id:9,src:require('../img/9.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_03.jpg) no-repeat #fbf7f4'},
-          {id:10,src:require('../img/10.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_05.jpg) no-repeat #a7dcd2'},
-          {id:11,src:require('../img/11.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_08.jpg) no-repeat #f3f3eb'},
-          {id:12,src:require('../img/12.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_09.jpg) repeat-x #0e9dbb'},
-          {id:13,src:require('../img/13.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_10.jpg) repeat-x #bfdfec'},
-          {id:14,src:require('../img/14.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_11.jpg) no-repeat #fff2d8'},
-          {id:3,src:require('../img/3.png'),background:'url(https://rescdn.qqmail.com/zh_CN/htmledition/images/xinzhi/bg/a_06.jpg) repeat-x #221f18'},
-
-
-
-
+          {id:5,src:require('../img/5.png'),background:'url(/static/img/a_07.jpg) repeat-x #e4ebf5'},
+          {id:6,src:require('../img/6.png'),background:'url(/static/img/b_02.jpg)'},
+          {id:7,src:require('../img/7.png'),background:'url(/static/img/b_01.jpg)'},
+          {id:8,src:require('../img/8.png'),background:'url(/static/img/a_02.jpg) no-repeat #fffaf6'},
+          {id:9,src:require('../img/9.png'),background:'url(/static/img/a_03.jpg) no-repeat #fbf7f4'},
+          {id:10,src:require('../img/10.png'),background:'url(/static/img/a_05.jpg) no-repeat #a7dcd2'},
+          {id:11,src:require('../img/11.png'),background:'url(/static/img/a_08.jpg) no-repeat #f3f3eb'},
+          {id:12,src:require('../img/12.png'),background:'url(/static/img/a_09.jpg) repeat-x #0e9dbb'},
+          {id:13,src:require('../img/13.png'),background:'url(/static/img/a_10.jpg) repeat-x #bfdfec'},
+          {id:14,src:require('../img/14.png'),background:'url(/static/img/a_11.jpg) no-repeat #fff2d8'},
+          {id:3,src:require('../img/3.png'),background:'url(/static/img/a_06.jpg) repeat-x #221f18'},
         ],
         signCheck:'',
         signatureList:[],
@@ -1954,7 +1950,7 @@
             this.$refs[this.editor_id].editor.html(html)
           }else{
             this.checkBg = m.id;
-            let newHtml = `<table style="width:99.8%;"><tr><td id="stationery" style="background:${m.background};min-height: 550px;padding: 100px 55px 200px;">${html}</td></tr></table>`
+            let newHtml = `<table style="width:99.8%;"><tr><td id="stationery"  style="background:${m.background};min-height: 550px;padding: 100px 55px 200px;">${html}</td></tr></table>`
             this.$refs[this.editor_id].editor.html(newHtml)
           }
         }else{
@@ -1972,40 +1968,59 @@
         }else if(sign == 'editSign'){
           this.$router.push('/setting/signature')
         }else{
-          sign.content = this.htmlDecodeByRegExp(sign.content)
           if(sign)this.signCheck = sign.id;
-          if(this.ruleForm2.is_html){
-            let html = this.$refs[this.editor_id].editor.html();
-            let hasSign = $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#sign').length>0;
-            let hasBg = $(html).find('#stationery').length>0;
+          singleSignatures(sign.id).then(res=>{
+            let sign_content = res.data.content;
+            sign_content = this.htmlDecodeByRegExp(sign_content)
+            if(this.ruleForm2.is_html){
+              let html = this.$refs[this.editor_id].editor.html();
+              let hasSign = $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#sign').length>0;
+              let hasBg = $(html).find('#stationery').length>0;
 
-            if(hasSign){
-              $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#sign').html('--<br><br>'+sign.content)
-            }else if(hasBg && !hasSign){
-              let ht = $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#stationery').html();
-              $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#stationery').html(ht+'<p><br><br></p><div id="sign">--<br><br>'+sign.content+'</div><br>')
+              if(hasSign){
+                $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#sign').html('<br><br>'+sign_content)
+              }else if(hasBg && !hasSign){
+                let ht = $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#stationery').html();
+                $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#stationery').html(ht+'<p><br><br></p><div id="sign"><br><br>'+sign_content+'</div><br>')
+              }else{
+                this.$refs[this.editor_id].editor.appendHtml('<p><br><br></p><div id="sign">'+'<br><br>'+sign_content+'</div><br>')
+              }
             }else{
-              this.$refs[this.editor_id].editor.appendHtml('<p><br><br></p><div id="sign">'+'--<br><br>'+sign.content+'</div><br>')
+              // 纯文本签名
+              let html = this.$refs[this.editor_id].editor.html();
+              this.$refs[this.editor_id].editor.html('<p>'+html+'</p>')
+              this.$refs[this.editor_id].editor.appendHtml('<p><br><br></p><div id="sign">'+'<br><br>'+sign_content+'</div>')
+              this.content = this.htmlToText(this.$refs[this.editor_id].editor.text());
+              this.$refs[this.editor_id].editor.text(this.content);
+              // this.$refs[this.editor_id].editor.text(this.content);
+              // $('#editor_id'+this.rid).val(html)
+
             }
-          }else{
-            // 纯文本签名
-            let html = this.$refs[this.editor_id].editor.html();
-            this.$refs[this.editor_id].editor.html('<p>'+html+'</p>')
-            this.$refs[this.editor_id].editor.appendHtml('<p><br><br></p><div id="sign">'+'--<br><br>'+sign.content+'</div>')
-            this.content = this.htmlToText(this.$refs[this.editor_id].editor.text());
-            this.$refs[this.editor_id].editor.text(this.content);
-            // this.$refs[this.editor_id].editor.text(this.content);
-            // $('#editor_id'+this.rid).val(html)
-            // this.$refs[this.editor_id].editor.text(text+sign.content)
 
-          }
-
+          }).catch(err=>{
+            console.log(err)
+          })
         }
 
       },
       getSignatrue(){
         settingSignatureGet().then(res=>{
           this.signatureList = res.data.results;
+          if(this.type == 'compose' ||this.type == 'compose_to_list' || this.type == 'compose_net_atta'){
+            let sign_content = res.data.defaults.default_content;
+            sign_content = this.htmlDecodeByRegExp(sign_content)
+            if(this.ruleForm2.is_html){
+              let html = this.$refs[this.editor_id].editor.html();
+              this.$refs[this.editor_id].editor.html('<p><br><br></p><div id="sign">'+'<br><br>'+ sign_content +'</div><br>' + html)
+            }
+          }else if(this.type == 'compose3 '||this.type == 'compose4 '|| this.type == 'compose5 '||this.type == 'compose6 '){
+            let sign_content = res.data.defaults.refw_default_content;
+            sign_content = this.htmlDecodeByRegExp(sign_content)
+            if(this.ruleForm2.is_html){
+              let html = this.$refs[this.editor_id].editor.html();
+              this.$refs[this.editor_id].editor.html('<p><br><br></p><div id="sign">'+'<br><br>'+ sign_content +'</div><br>' + html)
+            }
+          }
         });
       },
       change_show_result(){
@@ -3542,6 +3557,7 @@
 
     },
     mounted() {
+      console.log(this.type)
        this.$nextTick(() => {
         // window.uploader = this.$refs.uploader.uploader
       })

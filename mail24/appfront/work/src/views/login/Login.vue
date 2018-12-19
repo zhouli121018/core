@@ -13,9 +13,9 @@
 
 
         </div>
-        <div class="version" style="width:420px;min-height:200px;right:38%;left:auto;">
+        <div class="version" style="width:60%;min-height:200px;margin:0 auto;">
 
-          <el-carousel trigger="click" indicator-position="outside" style="margin-left:20px;">
+          <el-carousel trigger="click" indicator-position="outside">
             <el-carousel-item v-for="(item,k) in loginBeforeData.login_ads" :key="k" v-if="loginBeforeData.login_ads">
               <a :href="item.link" target="_blank" v-if="item.link">
                 <img :src="item.image" style="width:100%;max-width:100%;">
@@ -82,7 +82,7 @@
           </div>
         </div>
 
-        <el-dialog title="重置密码" :visible.sync="formVisible" width="400px">
+        <el-dialog title="重置密码" :visible.sync="formVisible" width="400px" :append-to-body="true" :close-on-click-modal="false">
           <el-form :model="form" size="small" :rules="formRule" ref="reset2Form">
             <el-input v-model="form.carbled" type="hidden" style="display:none;"></el-input>
             <el-form-item :label="'请输入验证码: '+form.code_label" prop="code">
@@ -105,7 +105,7 @@
           </div>
         </el-dialog>
 
-        <el-dialog title="重置密码" :visible.sync="form3Visible" width="400px">
+        <el-dialog title="重置密码" :visible.sync="form3Visible" width="400px" :append-to-body="true" :close-on-click-modal="false">
           <el-form :model="form3" size="small" :rules="form3Rule" ref="reset3Form">
             <el-input v-model="form3.carbled" type="hidden" style="display:none;"></el-input>
             <el-input v-model="form3.new_carbled" type="hidden" style="display:none;"></el-input>
@@ -116,6 +116,22 @@
             <el-form-item label="确认密码" prop="confirm_password">
               <el-input v-model="form3.confirm_password" type="password" auto-complete="off"></el-input>
             </el-form-item>
+            <div>
+              <div>
+                <strong style="color: red">密码必须满足以下条件：</strong>
+                <ul style="margin-left: 26px;">
+                  <li style="list-style-type:circle;">密码长度为{{passwordRules.passwd_size2}}至16位；</li>
+                  <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;">必须包含两种字符（数字、大写字母、小写字母、特殊字符）；</li>
+                  <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">必须包含三种字符（数字、大写字母、小写字母、特殊字符）；</li>
+                  <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">必须包含四种字符（数字、大写字母、小写字母、特殊字符）；</li>
+                  <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">连续3位及以上数字不能连号（例如：123、654）；</li>
+                  <li v-if="passwordRules.passwd_name" style="list-style-type:circle;">密码不能包含账号；</li>
+                  <li v-if="passwordRules.passwd_name2" style="list-style-type:circle;">密码不能包含用户姓名大小写全拼；</li>
+                  <li v-if="passwordRules.passwd_letter" style="list-style-type:circle;">连续3位及以上字母不能连号（例如：abc、cba）；</li>
+                  <li v-if="passwordRules.passwd_letter2" style="list-style-type:circle;">密码不能包含连续3个及以上相同字符（例如：aaa、rrr）；</li>
+                </ul>
+              </div>
+            </div>
 
           </el-form>
           <div slot="footer" class="dialog-footer">
@@ -162,6 +178,7 @@
         }
       };
       return {
+        passwordRules:{},
         loginBeforeData:{
           "domain":"test.com",
           "name":"77777umail",
@@ -314,6 +331,7 @@
               this.$refs.reset2Form.resetFields();
               this.form3.carbled = res.data.carbled;
               this.form3.new_carbled = res.data.new_carbled;
+              this.passwordRules = res.data.rules
               this.form3Visible = true;
             }).catch(err=>{
               this.$message({
@@ -488,6 +506,19 @@
   }
 </script>
 <style>
+  #login_bg>.main{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+  #login_bg .main>.content {
+    position: absolute;
+    top: 0;
+    right: 36%;
+    left: 0;
+    bottom: 0;
+    overflow: hidden;
+  }
   .login_logo{
     padding:20px;
     display:inline-block

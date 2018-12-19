@@ -832,6 +832,9 @@
                 type:'success',
                 message: '邮件删除成功!'
               })
+              if((this.currentPage-1)*this.pageSize >= this.totalCount-this.checkedMails.length){
+                this.currentPage = 1;
+              }
               this.getMessageList();
               this.$parent.$parent.$parent.getFloderfn()
             }

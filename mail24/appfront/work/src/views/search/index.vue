@@ -58,12 +58,12 @@
               </el-row>
             </template>
           </el-table-column>
-          <el-table-column prop="send_time" label="时 间" width="180">
+          <el-table-column prop="send_time" label="时间" width="180">
             <template slot-scope="scope">
               <div>{{scope.row.send_time.replace('T',' ')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="subject" label="主 题">
+          <el-table-column prop="subject" label="邮件主题">
             <template slot-scope="scope" >
               <div class="nowrap" :title="scope.row.subject">{{scope.row.subject}}</div>
             </template>
@@ -81,7 +81,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="details" label="状 态">
+          <el-table-column prop="details" label="状态">
             <template slot-scope="scope" >
               <div v-if="scope.row.details.length==1">
                 <span style="color:#45AB19;" :class="{is_red:scope.row.details[0].is_red}"> {{scope.row.details[0].inform||''}} </span>
@@ -89,7 +89,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="操 作" width="150">
+          <el-table-column label="操作" width="150">
             <template slot-scope="scope">
               <div>
                 <el-button type="text" size="mini" v-if="scope.row.details.length == 1 && !scope.row.details[0].is_zhaohui" @click="recall(scope.row)">召回邮件</el-button>
@@ -117,12 +117,12 @@
           </el-col>
         </el-row>
         <el-table :data="mailData.tableData" stripe :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}" size="mini" style="width: 100%">
-          <el-table-column prop="logtime" label="时 间" width="180">
+          <el-table-column prop="logtime" label="时间" width="180">
             <template slot-scope="scope">
               <div>{{scope.row.logtime.replace('T',' ')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="subject" label="主题">
+          <el-table-column prop="subject" label="邮件主题">
             <template slot-scope="scope" >
               <div class="nowrap" :title="scope.row.subject">{{scope.row.subject}}</div>
             </template>
@@ -166,7 +166,7 @@
               <div>{{scope.row.created.replace('T',' ')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="subject" label="主题">
+          <el-table-column prop="subject" label="邮件主题">
             <template slot-scope="scope" >
               <div class="nowrap" :title="scope.row.subject">{{scope.row.subject}}</div>
             </template>

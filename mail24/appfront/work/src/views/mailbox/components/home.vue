@@ -58,9 +58,9 @@
           </div>
 
           <div class="main j-main">
-            <div class="bulletins">
+            <div class="bulletins" style="background: #fff;">
               <div class="panel-sbj" v-if="loginAfterData.system_name">
-                <div class="tag skin-primary-bg"></div> 系统公告： {{loginAfterData.system_name}}
+                <div class="tag skin-primary-bg"></div> {{loginAfterData.system_name}}
               </div>
               <div style="padding:20px;line-height:20px;" v-if="loginAfterData.system_name" v-html="loginAfterData.system_remark">
 
@@ -68,61 +68,53 @@
 
               <el-tabs type="border-card" v-if="loginAfterData.welcome_links && loginAfterData.welcome_links.length>0">
                 <el-tab-pane v-for="(l,k) in loginAfterData.welcome_links" :label="l.title" :key="k">
-                  <div style="width:80%;margin:0 auto;">
-                      <el-carousel trigger="click" indicator-position="outside" height="200px">
-                        <el-carousel-item v-for="(item,c) in l.links" :key="c" v-if="l.links && l.links.length>0">
-                          <table style="width:100%;height:200px;border:none">
-                            <tr>
-                              <td style="width:60%;">
-                                  <a :href="item.url" target="_blank" v-if="item.url">
-                                    <img :src="origin + item.icon" style="width:100%;max-width:100%;">
-                                    <!--<img src="http://192.168.1.39:81/media/logo_f0XiV_20181218112627_990.jpg" style="width:100%;max-width:100%;">-->
-                                  </a>
-                                  <img :src="origin + item.icon" style="width:100%;max-width:100%;" v-if="!item.url">
-                                  <!--<img src="http://192.168.1.39:81/media/logo_f0XiV_20181218112627_990.jpg" style="width:100%;max-width:100%;" v-if="!item.url">-->
-                              </td>
-                              <td  style="background:#fff;vertical-align: top;padding-left:10px;border:none;">
-                                <div>
-                                  <p style="font-size:16px;">
-                                    <a href="item.url" target="_blank" v-if="item.url" style="color:#333;text-decoration: none"><b> {{item.title}}</b></a></p>
-                                    <b v-if="!item.url"> {{item.title}}</b>
-                                  <p>
-                                    {{item.desc}}
-                                  </p>
-                                </div>
-                              </td>
-                            </tr>
+                  <el-row :gutter="10">
+                    <el-col :xs="12" :sm="12" :md="8" :lg="6" :xl="6" v-for="(item,c) in l.links" :key="c" v-if="l.links && l.links.length>0">
+                      <div style="border:1px solid #ECECEC;height:150px;overflow: auto;" class="clear">
+                          <div style="float:left;width:48%;padding:1%;">
+                            <a :href="item.url" target="_blank" v-if="item.url">
+                              <img :src="origin + item.icon" style="width:100%;max-width:100%;">
+                              <!--<img src="http://192.168.1.39:81/media/logo_f0XiV_20181218112627_990.jpg" style="width:100%;max-width:100%;">-->
+                            </a>
+                            <img :src="origin + item.icon" style="width:100%;max-width:100%;" v-if="!item.url">
+                          </div>
+                          <div style="float:left;width:48%;padding:1%;">
+                            <p style="font-size:16px;">
+                              <a :href="item.url" target="_blank" v-if="item.url" style="color:#333;text-decoration: none"><b> {{item.title}}</b></a></p>
+                              <b v-if="!item.url"> {{item.title}}</b>
+                            <p>
+                              {{item.desc}}
+                            </p>
+                          </div>
+                      </div>
 
-                          </table>
+                    </el-col>
+                  </el-row>
 
-                        </el-carousel-item>
-                      </el-carousel>
-                  </div>
 
                 </el-tab-pane>
               </el-tabs>
+              <div v-if="!loginAfterData.system_name && loginAfterData.welcome_links && loginAfterData.welcome_links.length == 0">
+                <div class="panel-sbj">
+                  <div class="tag skin-primary-bg"></div> 欢迎使用 Webmail
+                </div>
+                <div style="padding:20px 10px;">
+                  <el-carousel trigger="click" >
+                    <el-carousel-item v-for="banner in banners" :key="banner.id" >
+                      <a href="http://www.comingchina.com" target="_blank">
+                        <img :src="banner.url" :alt="banner.url" style="width:100%;">
+                      </a>
+                    </el-carousel-item>
+                  </el-carousel>
+                </div>
+
+              </div>
               <div class="panel-sbj" v-if="false">
                 <div class="tag skin-primary-bg"></div>
               </div>
               <div class="panel-cnt" v-if="false">
                 <div class="content">
 
-                  <!--<p>-->
-                    <!--<a href="http://www.lunkr.cn/" class="lunkr_image" target="_blank" title="了解Coremail论客" style="display: block;width: 100%;height: 266px;background-size: cover;background-repeat:no-repeat;">-->
-                      <!--&lt;!&ndash; <img src="../assets/img/lunkr_banner.png" alt="" style="width: 100%; max-width: 100%;"> &ndash;&gt;-->
-                    <!--</a>-->
-                  <!--</p>-->
-                  <!--<p class="lunkr_download_links">-->
-                    <!--<a href="http://www.lunkr.cn/" target="_blank">-->
-                      <!--<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF8AAABGCAYAAACqlUimAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA9FJREFUeNrsnF1y2jAQxx3KU2c69Q3KDeqeIHACwgkSTkD8zAPkIc+BE0BOUPcEOCeIewP3BKUvfetMd5PVsGigcQdZyPDfGQ22JJT4p9Xuog+3IsjRpAUEgA/4EMA/G2mfyoPc39/f0Mc1pcfxeLwEfD/QE/r4SqkjWU/QfD/gGfiKUqyyc9h8P7KwwJdkcgDfk7npWtkpoh0/YoO/I63PAL8eTe/uyF5T4sjmC4Gfcp099YKUiwaEjyNKicouKM0pZQR8LXX6lK6sr7/UCznsvAgUeizhowstZlM05I4K7Bnfh2p2Vo7ARzIiJgE+47tWgFo/tczMoWLMFH5kVZCRw7bY1PRCMzlBRjsSqcQOm0xDBR9iqOkyTFyHPsF2ylPKBX5kQc4SfgL4x5M49KmG0ODnjtubAP7xnCRPtC0Av4JITO66A26oA55l1Qvw35A6pgISaH41yWRawKkvoVFVAn410+Na+++g+dVlRql0qPU54P+f9g8dNOWqnfP6kSXaeuhuhGGItr4Rv3AJ3GxHB5hF8wGlnmh2tkvjQ9/NEPQCuhGJ0U2cXuyao5d13+RfdQJ7pg8R5HjwMaUMmw/4EMAHfAjgAz4E8AEfAviADwF8wIcAPuBDAB/wKwuvVvne2Cqn2M2R0618OdM7lTNitUi75ofjpb3n6PWQsjkz21FVlmqBm/MZfu6R/0P0ug7Mr4pZCmg+0/tNyvl/KRsJX4DrA2n8kGYDE3fMgsrngS10p572+fzxcRoxtjokVyODr3kXcabND33wCCnsTlEjJ7fa6fAIUuUzvYAubfJ5XPucltnDr/fys8nRf5a/U9SgmL9bnoZ2Vemr+hNjkwXgQspf2rTsNI+glYD/KB1qvteV+0Igr3Zpu7q+jDa7ILi9SSPNTgV/wKAfVTZrdCrlhWhrYTqBygZSjx0h+xKtxQOj7VJmZKTKcir7zH9b7tfWCOKO4jdVcTnXvYpqfHNV+wjQjeaxI3uyTMsvPdzVddfqpEhAJsYkWPt09DVr760yJR3RbIbeESf7Kdpszi2izUHsflTjJlvv8AlS71C/oTqqyoHptRVB5TKajO8w4WQsncBK8d34jzq3GzblHWuZREoa4iWDqwi/tCGKKfth1TWOm7cp/uQQuc6HagR8Ni0EhJ3srZiFaxWLvyVzE9JKR/TFryTR9hGk2PJF7E9GdF/bKwR8RDvpnmtbCsuBbt2LuSrF/s9lE+2+dlMrtB0qWz9X9jy3ohx2rivxRUNzLx0CcRxt6amN2KR99SAnJJjVBHzAhwA+4EMA/7TlrwADAH6KibcsLrLQAAAAAElFTkSuQmCC" alt="iphone">-->
-                    <!--</a><a href="http://www.lunkr.cn/" target="_blank">-->
-                    <!--<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF8AAABGCAYAAACqlUimAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA+lJREFUeNrsXE1y2jAYdSmrznTingB6gvgGhRMEThBzgg5rFoRF1sAJ4pwAOAHkBPURnBPU3XTXmeobnpqvGv+QYCd2+97MN7ZsWdhPn94nbEkdj3gzdEgBySf5BMkn+QTJJ/kEyfdub28HxvoleYKyPCT/ZUiMLQuI981mPpvNkjY8zLu2NVVD8I3ZXBgLYEJ4DJP9tSH/QPKrJz6E5/sF2VJjE1MBW8pOtR5/h2Sck816/wYV1WzyzU1+EGt6oBUtR1IkZZeTdYG4IFg2PfCK57+HNRlf1f5IVYSLjTFLuF+Qj7LzDIxe+bpXQbcNzJvg2bpeWSvJlz9JZrOHbCyg8fszipxAfkSOIlORE8pOsVTYrmQVmn2t4kCjekB8t0PyST5B8kk+QfJJPvEfkS+vglPsLyoo7957etkW8R9u8asEeS38Sf3jHZxZZGLK/EzPJ1pHfnrm9THJP0+GxtB/V7OjkuNjc33a1GdryytlCcJb6H+og6l8LM87TtkhSD7Jb0+QJvkZ2i86vkJyZXUd20gdj1vxQCZYfRSjCNDzST5B8kk+QfJJPkHyST5B8kk+QfJJPkHyST5RjG5bblSmds5ms6jOcjF7UT7EyOSMvv1egJntMmNGzl96x2/EceM9X25c5tDiAc7B9Qt/X9Zr2J9YbqhIHuD6795x4vUAeXZVfawRz/9VM/8jPGDivcFwPYxuSM4oIq5rHlfXFPyz5ue/MjZFBUTKI6VZJxj2IbbVHoWWEiIZOd5s5UHOH+Q6HAtxPLLjdbJaHGan93OcIcC2hzL9jCGLcRXjgTp1Sw60U8bdBA4RoUl/Q+UINs51cq4H/d04RS9xTM6lagajh2v26rcCVYlS9kb95lKR/Re53nGArYWehG1nNjY+4IrkHLC/RVp728IuUGFIuRAPQ5ALcU63FK3bPs4fFKFDu9QLPFts5TiDEJ1qGcmIB7EecGXOp1a+kJ5Xqfl1S84Dmu0j0pp83XR/qP0v5gHHZVrupLWuS4XeueRD3u7LAjvu98KUObVB1hwboUUkVZHTqVly7Ho4A2yDE3s9z+0Z+U5FpDlllJXbQ4u6wb32QfYWMWt+QuU1QvNHCKI31iBBp6yHEOslW06osFTngZfucrT8uqBC+k4LEvIfUZly3K9yDGi3ZslxZ5bs3F5PDtYImjawXZ6Yf+o9rTYyzJAqGWw7N7aEzF2WtIYrSM7ABmYVlxrt+Ws3MCG4rlX3UZ//k4b3DVVcmMAsphn6P1YyN1Rdwdip7CHijy1nqFrLQ0a3M0BljmHLNiyk1Do40hXg37lflI9oKfhWk+STfILkk3yC5P/b+C3AANzxh9SCcTwmAAAAAElFTkSuQmCC" alt="android">-->
-                  <!--</a><a href="http://www.lunkr.cn/download.html?p=pc" target="_blank">-->
-                    <!--<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF8AAABGCAYAAACqlUimAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAArlJREFUeNrsnEFu2kAUhgdE1nCD+AaQEwROQHOCKCcoWXsDC9akJ0g5QckJcG9AT1D3Bum6UtV59W9liuJCEApj833SaIztIPK98ZvBM8Y5AAAAAAA4hPl83vNlGONn6zRQ9sBXJrvvy0DFaCH/uKITyb1WPazT5+/USHQvFJym6dRX3+vceDo1TB9G1oQU2YlQ+sJXk3MYDLT9P9uN7DMNzmQUdtH29QUD0tM0/DYOTmgfBchHPjDOX/rydcc5ueoZ8o/LJpBbxXMTvmzFKH/hdt+jMekjX9ZveN/obqyR85GPfEA+8uFM5efIPxFpmt750tJQ8t6XVVMDEu1Mlg9ApvH8g73WNKKN/+1+fxf57xuMZ10Fq2D3lYLRDwKD/HcKiN2K2IT7tEYnXNGQIP+06WqA/NOlq4zRDiAf+YB85CMfkI98QD7yAfnIB+QjH5CPfEB+zWjUTJY9u2vzuprHzf12rv2JK+ZybTrx0peZZriQvyVwGrw0QZ9DUZqTted0r3V8pol0w5aX23ofk59J+qMrVjz8dMVkexaD+FL+r8j8j12xWMqpta69xJuyFbtiTX7miqdSLBALHa8SutRPBcTG71aELX/tZY2C1x8sCH7fg7bHtqqt6m8VlFtfvrlipZsFcxmepxUOdLgHXBWf9jhv6V7W8/QUjJJHOtz9rgJLOx99KVt6EuT3VwlbtTpeuwL6tl/9xQb51QyUPpxEzYJ8v2+H3Q3Szt+OW+ItbT0hv5pNmPO3j1ne98dX/2n5U7X4oXbl6qAnSlsjvmQdxpPS0D9je7Xq10g03s/KjjeWYWbt5EtibmnJ0ot+m+eLSdaPI23n87Fy/aQc+agfQX4F9zsCcOdenjz/4cuVOuHbrXzeVaAsOJf+nBu991qBgiOOjHrhtrVw1b2q8wAAAAAAGsofAQYAfXLtOs6wzyYAAAAASUVORK5CYII=" alt="pc">-->
-                  <!--</a><a href="http://www.lunkr.cn/download.html?p=mac" target="_blank">-->
-                    <!--<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF8AAABGCAYAAACqlUimAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAABKZJREFUeNrsnDFMIkEUhkfjJXZscbEUbLTSw8LSiIl2JmJvAtYWHJZSqIW1Z2ENJNpLtNPkMJY2G0srsLM66DTX3PzLGxnW3T0WwR30/clkl93ZYfnemzezszOMClZkGmUEDJ/hsxg+w2cx/E+tsWG62cPDw4TcJCnpashkFwqF6jD9npEhAG7JTVqmnAd0L53LdDwMhhgxHHxWbo5ksnq4HPDz0gg2ww/v7UXy+PcKBvjF8LsH/7vLENOtStIAW9zb+XjwUFaWXTQOvrypmEH3UxwAeN0AadM8/5tBjeug4RSpdnHYcWmvl4tisVAV16LeE8N3eX2il2vj8Xgv4cdi+G1lwmReXFwUm5ubzv7T05NYWFgI+31pht/u4aTChBnAV+EG8GdmZsKGn3WG31IyrNdDl5eXr8fu7+/F6upqmGJSDD8kfMT3ubk58fj4KOr1egf8yclJMT09HabhZfhBIHZ2dsTu7u5rfFdef3Fx4YDGOaTx8XFxd3cn1tbWnH20ATiOzwHhLsXwAwSQOmx4N7y82Wx2hJnZ2VnnOPKvrKw4hkAey7JM/nlmj+dfXV2Jl5cXByS8//n5WVxfXzuNK2ArqTyAjnCE8HR7e+scC1CN4QvhO+QLmCrcADiAwgBI2Pcy1vb2tpP37Oyso11wq1Ao1DjsdOGBCDnKs/8nGAaamJjoyeBfCj697Gj4nUfvBl5+enr6CjZI8HgYCbUF1/qoyvDbOg+Crzy/G8FACDdofAMevCrc4LZ1jDEXrxPo6XQLXunh4UGcnJz49XZqprzfNcLzKfR4en9Y8Pp1Pg1u3pTenEn9/HxQ7O+TqtLQ5wzfu+s3SK+EYTdMeo4x6glXGqAkN1sDAr8sy28w/I81gAJv3PwdI8d2yADLfRgCQHyfMnXilLEDa9QdnJfpoIeG2CZv3zAt1JjYz/czAMDtI9G0D7yB8pooq55aAb1s8hTBDskf9V2wOOwwfBbDZ/gshs/wWQyf4bMYPsNnMXyGz2L4w6Kxz/rD6H8aMCSN+SMJNV2EFmNgSBrnf4gIh6BNWJmy714jhc84/s6isxrkFJX7R7QWxKUoTyXKsX94/t+I+e+Rh+pL9NN0fL/P32WbtBJ9TN5MM+J7QDjIuOBnhGs+pfTaJBkFhirprwdpoQNS1TUbTb3xilMYsjwWRdhRvWo0pcG1Ca6CXHOBTxN4BbaoncuK9tranBdcxHXtc85V6xJfvcEtE5Qt8vqy0BZF0ywzNdOsKgHrS0dz8vx8QJipaoZqUHmq8d2LOuZHLsCQIJT3puTnPMC4vB8erl6gW1otqQYUnaGaEEOZqpGlmmSLiFenmNTPr9A/g1Q8ekQ/5WZJtP47Z0q0FzfACH5tFpamH8j8aLSTFPNrVIMyVLPKDL+lEnUPSx7n1tFLcS/lofCx5FNewpUf8OvUuOK4FfVUcWMesgBKeueyz1qpGnm/Ld7+15pNNaZMPZ4azXh7Y0CqXSl1PfajNIAJnp93efKb49p+kvbntWvyGng0sCWK6Teu71GTrRBuNigdUVvC6vOTs6U/I9BTsxWUj/WFxKOaDJ/hsxg+w2cx/M+tfwIMAMzZ4vjxC6g+AAAAAElFTkSuQmCC" alt="mac">-->
-                  <!--</a>-->
-                  <!--</p>-->
 
                 </div>
               </div>
@@ -177,7 +169,7 @@
 
                 <div class="app">
                   <div>
-                    <el-carousel trigger="click" indicator-position="outside" height="120px">
+                    <el-carousel trigger="click" indicator-position="outside" height="120px" v-if="loginAfterData.welcome_ads && loginAfterData.welcome_ads.length>0">
                       <el-carousel-item v-for="(item,k) in loginAfterData.welcome_ads" :key="k" v-if="loginAfterData.welcome_ads">
                         <a :href="item.link" target="_blank" v-if="item.link">
                           <img :src="origin + item.image" style="width:100%;max-width:100%;">
@@ -213,6 +205,12 @@
     name:'Home',
     data(){
       return {
+        banners:[
+          {id:1,url:require('../img/banner1.jpg')},
+          {id:4,url:require('../img/banner4.jpg')},
+          {id:2,url:require('../img/banner2.jpg')},
+          {id:3,url:require('../img/banner3.jpg')},
+        ],
         origin:window.location.origin, // window.location.origin 'http://192.168.1.39:81'
         userinfo: {
           "capacity_used": 1,
