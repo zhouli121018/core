@@ -10,20 +10,14 @@
                 <a href="#tabs_logo">页面LOGO设置</a>
             </li>
             <li >
-                <a href="#tabs_login">登录模板选择</a>
-            </li>
-
-            <li >
                 <a href="#tabs_ad">页面广告设置</a>
             </li>
             <li >
                 <a href="#tabs_first" onclick="clickWebmailLink()">首页链接设置</a>
             </li>
-
             <li >
-                <a href="#tabs_paple" onclick="clickWebmailLetter()">信纸管理</a>
+                <a href="#tabs_login">登录模板选择</a>
             </li>
-
         </ul>
 
         <div id="sub_webmail">
@@ -140,50 +134,6 @@
         <div id="tabs_logo">
             <div class="content_1">
                 <div class="table-header">
-                    Webmail Logo 设置
-                </div>
-                <form class="form-horizontal form_webmail_logo" role="form" action="" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <table class="table table-bordered">
-                        <tr>
-                            <td>
-                                <span class="blue">当前Logo：</span>
-                            </td>
-                            <td>
-                                <span>
-                                    {% if form_logo.getWebmailLogoData %}
-                                        <img src="data:image/png;base64,{{ form_logo.getWebmailLogoData }}">
-                                    {% else %}
-                                        当前没有设置Logo！
-                                    {% endif %}
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="blue">更新Logo：</span>
-                            </td>
-                            <td class="row no-padding-left">
-                                <div class="col-sm-6">
-                                    <input type="file" name="logofile" class="class_import_logo_webmail"  value="" style="float: left">
-                                    <p class="help-block">
-                                        注：图片推荐大小为 350 x 50 像素。允许后缀:jpg, png, gif。
-                                    </p>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                    <div class=" ">
-                    <input type="hidden" value="{{ domain.id }}" name="domain_id"  />
-                    <input type="hidden" value="{{ domain.domain }}" name="domain" />
-                    </div>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="importLogoFile('webmail_logo','form_webmail_logo')" >{% trans "确认" %}</button>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="deleteLogoFile('webmail_logo_del','form_webmail_logo')" >{% trans "删除" %}</button>
-                    <button class="btn btn-sm" type="reset">{% trans "重置" %}</button>
-                </form>
-
-                <div class="hr hr-18 dotted hr-double"></div>
-                <div class="table-header">
                     登录页面 Logo 设置
                 </div>
                 <form class="form-horizontal form_login_logo" role="form" action="" method="post" enctype="multipart/form-data">
@@ -211,7 +161,7 @@
                                 <div class="col-sm-6">
                                     <input type="file" name="logofile" class="class_import_logo_login"  value="" style="float: left">
                                     <p class="help-block">
-                                        注：图片推荐大小为 180 x 45 像素。允许后缀:jpg, png, gif。
+                                        注：图片推荐大小为 192 x 56 像素。允许后缀:jpg, png, gif。
                                     </p>
                                 </div>
                             </td>
@@ -223,6 +173,49 @@
                     </div>
                     <button type="button" class="btn btn-primary btn-sm" onclick="importLogoFile('login_logo','form_login_logo')" >{% trans "确认" %}</button>
                     <button type="button" class="btn btn-primary btn-sm" onclick="deleteLogoFile('login_logo_del','form_login_logo')" >{% trans "删除" %}</button>
+                    <button class="btn btn-sm" type="reset">{% trans "重置" %}</button>
+                </form>
+                <div class="hr hr-18 dotted hr-double"></div>
+                <div class="table-header">
+                    Webmail Logo 设置
+                </div>
+                <form class="form-horizontal form_webmail_logo" role="form" action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>
+                                <span class="blue">当前Logo：</span>
+                            </td>
+                            <td>
+                                <span>
+                                    {% if form_logo.getWebmailLogoData %}
+                                        <img src="data:image/png;base64,{{ form_logo.getWebmailLogoData }}">
+                                    {% else %}
+                                        当前没有设置Logo！
+                                    {% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="blue">更新Logo：</span>
+                            </td>
+                            <td class="row no-padding-left">
+                                <div class="col-sm-6">
+                                    <input type="file" name="logofile" class="class_import_logo_webmail"  value="" style="float: left">
+                                    <p class="help-block">
+                                        注：图片推荐大小为 152 x 42 像素。允许后缀:jpg, png, gif。
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class=" ">
+                    <input type="hidden" value="{{ domain.id }}" name="domain_id"  />
+                    <input type="hidden" value="{{ domain.domain }}" name="domain" />
+                    </div>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="importLogoFile('webmail_logo','form_webmail_logo')" >{% trans "确认" %}</button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="deleteLogoFile('webmail_logo_del','form_webmail_logo')" >{% trans "删除" %}</button>
                     <button class="btn btn-sm" type="reset">{% trans "重置" %}</button>
                 </form>
             </div>
@@ -315,7 +308,7 @@
                                 </p>
                                 <input type="file" name="advert_logo_1" class="class_import_advert_logo_1"  value="" style="float: left">
                                 <p class="help-block">
-                                    注：图片推荐大小为 380 x 60 像素。允许后缀:jpg, png, gif。链接不能为空。
+                                    注：图片推荐大小为长:宽为 4:3 比例。允许后缀:jpg, png, gif。链接不能为空。
                                 </p>
                                 <p class="red">链接地址</p>
                                 <input type="text" name="advert_link_1" value="{{ form_login_advert.advert_link_1 }}" style="width:200px;">
@@ -347,7 +340,7 @@
                                 </p>
                                 <input type="file" name="advert_logo_2" class="class_import_advert_logo_2"  value="" style="float: left">
                                 <p class="help-block">
-                                    注：图片推荐大小为 380 x 60 像素。允许后缀:jpg, png, gif。链接不能为空。
+                                    注：图片推荐大小为长:宽为 4:3 比例。允许后缀:jpg, png, gif。链接不能为空。
                                 </p>
                                 <p class="red">链接地址</p>
                                 <input type="text" name="advert_link_2" value="{{ form_login_advert.advert_link_2 }}" style="width:200px;">
@@ -385,7 +378,7 @@
                                 </p>
                                 <input type="file" name="advert_logo_3" class="class_import_advert_logo_3"  value="" style="float: left">
                                 <p class="help-block">
-                                    注：图片推荐大小为 230 x 490 像素。允许后缀:jpg, png, gif。
+                                    注：图片推荐大小为 266 x 120 像素。允许后缀:jpg, png, gif。
                                 </p>
                                 <p class="red">链接地址</p>
                                 <input type="text" name="webmail_link" value="{{ form_login_advert.webmail_link }}" style="width:200px;">

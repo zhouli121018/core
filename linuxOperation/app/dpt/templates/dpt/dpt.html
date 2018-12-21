@@ -82,7 +82,7 @@
                                 <th width="8%">{% trans "序号" %}</th>
                                 <th width="8%" class='display-none'>{% trans "ID" %}</th>
                                 <th width="50%">{% trans "部门名称" %}</th>
-                                <th width="15%">{% trans "排序" %}</th>
+                                <th width="15%" onclick="clickDeptOrder()">{% trans "排序" %}</th>
                                 <th width="27%">{% trans "操作" %}</th>
                             </tr>
                             </thead>
@@ -94,12 +94,8 @@
                                     <td>
                                         <a href="{% url 'department_member' d.id %}" title="查看部门成员">{{ d.title }}</a>
                                     </td>
-                                    <td class="field-move_up_down_links">
-                                        <a onclick="Move('{{ d.id }}', 'up')" title="部门顺序上移一位" class="purple bigger-140 show-details-btn">
-                                            <i class="ace-icon fa fa-angle-double-up"></i><span class="sr-only">Details</span></a>
-                                        <a onclick="Move('{{ d.id }}', 'down')" title="部门顺序下移一位" class="green bigger-140 show-details-btn">
-                                            <i class="ace-icon fa fa-angle-double-down"></i><span class="sr-only">Details</span></a>
-                                        <a style="cursor:pointer;"  onclick="Move('{{ d.id }}', 'top')" class="glyphicon glyphicon-eject" title="部门顺序置顶"></a>
+                                    <td class="col-sm-3">
+                                        <input type="number" name="order_{{ d.id }}" class="col-sm-3" value="{{ d.order }}" onchange="onchangeDeptOrder({{ d.id }}, this.value)">
                                     </td>
                                     <td>
                                         <a type="button" class="red delete btn btn-white btn-primary btn-xs" href="{% url 'department_modify' d.id %}">{% trans "修改" %}</a>
@@ -432,6 +428,29 @@
                 return false;
             }
             window.location.href="{% url 'department_export' %}"+"?key="+key+"&ids="+id_array+"&coding="+coding;
+        }
+
+        function onchangeDeptOrder(dpt_id, value){
+            var data = {};
+            data["dpt_id"] = dpt_id;
+            data["order"] = value;
+            $.ajax(
+                {
+                    url: "{% url 'ajax_update_depart_order' %}",
+                    type:"POST",
+                    data:data,
+                    success:function(data){
+                        if (data.status!="OK"){
+                            alert(data.message);
+                        }
+                    }
+                }
+                );
+        }
+
+        function clickDeptOrder(){
+            console.log("clickDeptOrder");
+            window.location.href="";
         }
 
     </script>

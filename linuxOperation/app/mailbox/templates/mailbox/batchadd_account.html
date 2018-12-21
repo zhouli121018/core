@@ -96,38 +96,37 @@
         <div class="tab-content">
             <div class="tab-pane fade in active">
 
-                <form class="form-horizontal" action="" method="POST"  onsubmit="return checkForm(this);">
+                <form class="form-horizontal" action="" method="POST"  onsubmit="return checkForm(this);" enctype="multipart/form-data">
                     {% csrf_token %}
                     <table class="table  table-bordered  ">
                         <tbody>
                         <tr>
                             <td class="text-right">格式说明：</td>
                             <td colspan="5">
-                                <p>用户名可以是字符、数字、上划线、下划线、点，但用户名的第一个字必须是数字或字母。
+                                <p>用户名可以是字符、数字、上划线、下划线，但用户名的第一个字必须是数字或字母。
                                     如果输入的用户名是大写字母，系统将自动转为小写！</p>
                                 <p><span class="red">注意：</span>每行的格式为
                                     <span class="blue">
-                    用户名 密码 邮箱大小 网盘大小 真实名称 所属部门 工号 职位 手机号码 电话号码 QQ 出生日期
+                    用户名 真实名称 所属部门 职位 工号 手机号码 电话号码 密码 邮箱容量 网盘容量 排序权重 QQ号码 出生日期 密码
                     </span> 之间用“TAB”符号隔开
-                                    “邮箱大小”和“网盘大小”的单位为“M”</p>
-                                <p>eg:</p>
-                                <textarea   rows="6" class="form-control">tina	password1	500	100	水中花	技术部	12345	高级工程师	13600000000	88776655	123456	1985-01-01
-gary	password2	100	100	张三	财务部	12346	会计员	13700000000	88995566	987456	1990-10-25
-tom	djd834kjd	200	50	李四	后勤部	12347	司机	13811110000	88661122	657823	1980-07-11</textarea>
+                                    “邮箱容量”和“网盘容量”的单位为“M”</p>
+                                <p>文件内容举例:</p>
+                                <textarea   rows="4" class="form-control">用户名 真实名称 所属部门 职位 工号 手机号码 电话号码 邮箱容量 网盘容量 排序权重 QQ号码 出生日期 密码
+wangwu 王五 技术部 高级工程师 U0003 13600000000 13600000000 500 500 0 88776655 1985-01-01 password1
+lisi 李四 技术部 中级工程师 U0004 13600000001 13600000001 500 500 0 88776656 1988-01-01 password2</textarea>
                                 <div class="hr hr-18 dotted hr-double"></div>
                                 <p>另外:有相同的子部门时，所属部门用 - 隔开如：</p>
-                                <textarea  rows="4" class="form-control">toy	password4	100	100	王五	华南区-财务部	12348	出纳	13122223333	56485264	545847	1984-08-16
-mike	password5	100	100	李明	华北区-财务部	12349	财务主管	13956485264	58746932	568742	1977-05-11</textarea>
+                                <textarea  rows="2" class="form-control">mike 王五 华北区-财务部 财务主管 U0003 13600000000 13600000000 500 500 0 88776655 1985-01-01 password3</textarea>
                                 <div class="hr hr-18 dotted hr-double"></div>
                                 <p>标准操作步骤：</p>
                                 <ul>
-                                    <li>1、使用EXCEL先进行数据处理，处理成sys_mailbox_eg格式</li>
-                                    <li>2、然后将EXCEL文件内容拷贝到文本文件，见然后将EXCEL文件内容拷贝到文本文件，见。</li>
-                                    <li>3、然后将文本文件内容拷入下面的表格。</li>
-                                    <li>4、点击表格下方的添加进行批量添加用户</li>
-                                    <li>5、eg:显示名称 为空，则默认为选择列表"所属部门"的设置值</li>
-                                    <li>6、eg:邮箱大小或网盘大小为空，则默认为邮箱容量或网盘容量的设置值</li>
-                                    <li>7、eg:所属部门为空，则默认为选择列表"所属部门"的设置值</li>
+                                    <li>1、根据"格式说明"里的范例将用户数据保存为excel或者txt/csv格式的文件，分隔符为tab</li>
+                                    <li>2、点击表格下方的“导入文件”将文件提交</li>
+                                    <li>3、eg:显示名称 为空，则默认为选择列表"所属部门"的设置值</li>
+                                    <li>4、eg:邮箱大小或网盘大小为空，则默认为邮箱容量或网盘容量的设置值</li>
+                                    <li>5、eg:所属部门为空，则默认为选择列表"所属部门"的设置值</li>
+                                    <li>6、eg:从"帐号列表"--"导出excel"导出的文件，在删掉"邮箱地址"列后可直接导入</li>
+                                    <li>7、eg:请将要导入的文件内容保存为GBK编码</li>
                                 </ul>
                             </td>
                         </tr>
@@ -177,14 +176,11 @@ mike	password5	100	100	李明	华北区-财务部	12349	财务主管	13956485264
                             </td>
                         </tr>
                         <tr>
-                            <td class="text-right" id="tip">导入数据：</td>
-                            <td colspan="5">
-                                <textarea name="data" rows="6" class="form-control">{% for f in failures %}
-{{ f.1 }}{% endfor %}
-                                </textarea>
+                            <td class="text-right" style="width:100px;">导入文件：</td>
+                            <td>
+                            <input type="file" name="txtfile" required="" id="id_txtfile">
                             </td>
                         </tr>
-
                         </tbody>
                     </table>
                     <div class="clearfix form-actions">
@@ -222,50 +218,14 @@ mike	password5	100	100	李明	华北区-财务部	12349	财务主管	13956485264
 <script>
 function checkForm(form) {
     var checkpass = "{{ severe_pass|default_if_none:0 }}";
-    form.data.value = form.data.value.trim();
-
     if(!checkFormat(form.quota_mailbox.value, 'number')) {
         alert("{% trans '默认邮箱容量格式错误，无法提交数据！' %}");
         return false;
     }
-
     if(!checkFormat(form.quota_netdisk.value, 'number')) {
         alert("{% trans '默认网盘容量格式错误，无法提交数据！' %}");
         return false;
     }
-
-    //检测导入数据是否为空
-    if(form.data.value == "") {
-        alert("{% trans '请填写所要导入的数据！' %}");
-        return false;
-    }
-
-    //检测导入数据中的邮箱名称、密码是否符合规定
-    var lines = form.data.value.split("\n");
-    if (lines.length>100) {
-        alert("{% trans '过长的数据可能会被防火墙截断，单次只能提交最多100行记录' %}");
-        return false;
-    }
-    for(var i=0;i<lines.length;i++) {
-        var arr  = lines[i].trim().split(';');
-        var name = arr[0].trim();
-        var pass = arr[1].trim();
-        if(checkMailName(name) == false) {
-            alert("{% trans '邮箱名称' %}“" + name + "”{% trans '格式错误；邮件名称需由字母、数字或下划线组成！' %}");
-            return false;
-        }
-        if(checkpass == '1') {
-            var ret = checkStrongCipher(pass, false);
-            if(ret[0] == false) {
-                alert("{% trans '邮箱' %}“" + name + "”" + ret[1]);
-                return false;
-            }
-        } else if(pass == '') {
-            alert("{% trans '邮箱' %}“" + name + "”{% trans '的密码为空，无法提交数据！' %}");
-            return false;
-        }
-    }
-
     return true;
 }
 

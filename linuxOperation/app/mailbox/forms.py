@@ -39,6 +39,7 @@ class MailboxForm(forms.ModelForm):
         })
         self.domain = domain
         self.domain_str = domain.domain
+        self.mailbox = None
         self.fields['domain'].required = False
         self.fields['domain_str'].required = False
         self.fields['username'].required = False
@@ -91,6 +92,7 @@ class MailboxForm(forms.ModelForm):
 
     def clean_name(self):
         name = self.cleaned_data.get('name', '')
+        self.mailbox = u"{}@{}".format(name, self.domain)
         if not pure_english_regex(name):
             raise forms.ValidationError(_(u"邮箱名称只能由字母、数字或下划线点横杠组成！", ))
         if Mailbox.objects.exclude(id=self.instance.id).filter(name=name, domain=self.domain):
@@ -100,14 +102,15 @@ class MailboxForm(forms.ModelForm):
     def clean_password1(self):
         password1 = self.cleaned_data.get('password1')
         if password1 and self.server_pass == '1':
+            ret, reason = 0, ""
             if self.instance.pk:
                 ret, reason = CheckMailboxPassword(domain_id=self.instance.domain_id, mailbox_id=self.instance.id, password=password1)
             else:
                 domain_id = Domain.objects.filter(domain=self.domain).first().id
-                name = self.cleaned_data.get('name', '')
-                mailbox = u"{}@{}".format(name, self.domain)
-                realname = self.data.get(u"realname", "")
-                ret, reason = CheckMailboxPassword(domain_id=domain_id, mailbox=mailbox, realname=realname, password=password1)
+                #前面的clean_name会在name不合格时把name从cleaned_data删掉
+                if self.mailbox:
+                    realname = self.cleaned_data.get(u"realname", "")
+                    ret, reason = CheckMailboxPassword(domain_id=domain_id, mailbox=self.mailbox, realname=realname, password=password1)
             if ret!=0:
                 raise forms.ValidationError(_(reason))
         return password1
@@ -212,9 +215,13 @@ class MailboxUserForm(forms.ModelForm):
 class BatchAddMailboxForm(forms.Form):
     quota_mailbox = forms.CharField(label=u'默认邮箱容量：', widget=forms.TextInput(attrs={'addon': u'MB'}))
     quota_netdisk = forms.CharField(label=u'默认网盘容量：', widget=forms.TextInput(attrs={'addon': u'MB'}))
+    txtfile = forms.FileField(label=u'选择文件', required=True)
 
-    def __init__(self, domain, *args, **kwargs):
+    def __init__(self, domain, post={}, *args, **kwargs):
         super(BatchAddMailboxForm, self).__init__(*args, **kwargs)
+        self.file_name = None
+        self.file_ext = None
+        self.file_obj = None
 
     def clean_domain(self):
         return self.domain
@@ -239,6 +246,19 @@ class BatchAddMailboxForm(forms.Form):
             if MailboxUser.objects.exclude(id=self.instance.id).filter(tel_mobile=data, domain=self.domain):
                 raise forms.ValidationError(u"手机号码重复")
         return data
+
+    def clean_txtfile(self):
+        f = self.files.get('txtfile', None)
+        if not f:
+            raise forms.ValidationError(_(u"请选择文件。", ))
+        file_name = f.name
+        fext = file_name.split('.')[-1]
+        if fext not in ('xls', 'xlsx', 'csv', 'txt'):
+            raise forms.ValidationError(_(u"只支持excel、txt、csv文件导入。", ))
+        self.file_name = file_name
+        self.file_ext = fext
+        self.file_obj = f
+        return f
 
     def save(self, id, commit=True):
         mem = super(MailboxUserForm, self).save(commit=False)

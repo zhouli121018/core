@@ -416,7 +416,12 @@ class ExtCfilterRuleNewForm(object):
         obj.save()
 
     def DepartMent(self):
-        return Department.objects.all()
+        if hasattr(self, "dept_tmp"):
+            return self.dept_tmp
+        self.dept_tmp = []
+        for d in Department.objects.all():
+            self.dept_tmp.append(d)
+        return self.dept_tmp
 
     def __check(self):
         pass
@@ -795,7 +800,15 @@ class ExtCfilterRuleNewForm(object):
             self.cfilteraction = BaseFied(value=actions, error=None)
 
             options=[]
+            all_options = {}
+            all_options2 = {}
             for d in obj.getOptions():
+                all_options[d.id] = d
+                if d.parent_id <=0 :
+                    continue
+                all_options2.setdefault(d.parent_id, [])
+                all_options2[d.parent_id].append(d)
+            for id, d in all_options.items():
                 childs = []
                 this_id = d.id
                 logic = d.logic
@@ -803,8 +816,7 @@ class ExtCfilterRuleNewForm(object):
                 suboption = d.suboption
                 action = d.action
                 value = d.value
-
-                for dd in obj.getOptions(parent_id=this_id):
+                for dd in all_options2.get(this_id, []):
                     sub_id = dd.id
                     sub_parent_id = this_id
                     sub_logic = logic
@@ -888,6 +900,95 @@ class ExtCfilterConfigForm(object):
         obj.value=self.value.value
         obj.save()
         clear_redis_cache()
+
+class ExtUserCfilterForm(object):
+
+    def __init__(self, rule_id=0, mailbox_id=0, post=None, extype=""):
+        self.rule_id = int(rule_id)
+        self.mailbox_id = mailbox_id
+        self.post = post or {}
+        self.extype = extype
+
+    def is_valid(self):
+        mailbox_id = self.mailbox_id
+        value = self.post
+        if int(mailbox_id) <= 0:
+            return False, u"不存在的邮箱帐号: {}".format(mailbox_id)
+        Box = Mailbox.objects.filter(id=mailbox_id).first()
+        if not Box:
+            return False, u"不存在的邮箱帐号: {}".format(mailbox_id)
+        extype = self.extype
+        if not extype in ("re", "fw"):
+            return False, u"错误类型: '{}'".format(extype)
+        if not value:
+            return False, u"数据为空"
+        value = json.loads(value)
+        cond_list = value.get("condition", [])
+        if not cond_list:
+            return False, u"条件参数不完整"
+        action_list = value.get("action", [])
+        if not action_list:
+            return False, u"动作参数不完整"
+        if self.rule_id > 0:
+            obj_rule = ExtCfilterRuleNew.objects.filter(id=self.rule_id).first()
+            if not obj_rule:
+                return False, u"需要修改的规则 '{}' 已经被删除".format(self.rule_id)
+        return True, ""
+
+    def save(self):
+        rule_id = int(self.rule_id)
+        value = json.loads(self.post)
+        #修改逻辑，删除旧的数据重新插入
+        if rule_id > 0:
+            obj_rule = ExtCfilterRuleNew.objects.filter(id=rule_id).first()
+            obj_rule.mailbox_id = self.mailbox_id
+            obj_rule.name = value.get("name", "")
+            obj_rule.sequence = value.get("sequence", 999)
+            obj_rule.disabled = value.get("disabled", "-1")
+            obj_rule.logic = value.get("logic", "all")
+            obj_rule.extype = self.extype
+            obj_rule.save()
+            ExtCfilterNewCond.objects.filter(rule_id=rule_id).delete()
+            ExtCfilterNewAction.objects.filter(rule_id=rule_id).delete()
+        else:
+            obj_rule = ExtCfilterRuleNew.objects.create(
+                name = u"{}".format(value.get("name", "")),
+                type = 1,   #用户过滤全部都是收信过滤
+                mailbox_id = self.mailbox_id,
+                sequence = value.get("sequence", 999),
+                disabled = value.get("disabled", "-1"),
+                logic = u"{}".format(value.get("logic", "all")),
+                extype = u"{}".format(self.extype),
+            )
+        cond_list = value.get("condition", [])
+        for cond in cond_list:
+            obj_cond = ExtCfilterNewCond.objects.create(
+                parent_id = 0,
+                rule_id = int(obj_rule.id),
+                logic = cond.get("logic", "all"),
+                option = u"header",
+                suboption = cond.get("suboption", ""),
+                action = cond.get("action", ""),
+                value = cond.get("value", ""),
+            )
+            for sub in cond.get("subs", []):
+                obj_cond2 = ExtCfilterNewCond.objects.create(
+                    parent_id = obj_cond.id,
+                    rule_id = int(obj_rule.id),
+                    logic = sub.get("logic", "all"),
+                    option = u"header",
+                    suboption = sub.get("suboption", ""),
+                    action = sub.get("action", ""),
+                    value = sub.get("value", ""),
+                )
+        action_list = value.get("action", [])
+        for act in action_list:
+            obj_act = ExtCfilterNewAction.objects.create(
+                rule_id = int(obj_rule.id),
+                sequence = act.get("sequence", 999),
+                action = act.get("action", ""),
+                value = act.get("value", ""),
+            )
 
 class MailTransferSenderForm(DotDict):
 

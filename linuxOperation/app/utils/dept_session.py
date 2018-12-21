@@ -110,7 +110,7 @@ def get_user_child_departments(request, domain_id=None, current_dpt_id=None):
     if not domain_id:
         domain_id = get_domainid_bysession(request)
     department_ids = get_user_department_ids(request, domain_id)
-    dpt_lists = Department.objects.filter(domain_id=domain_id).order_by("order")
+    dpt_lists = Department.objects.filter(domain_id=domain_id).order_by("-order")
     dataDept = get_dept_list(dpt_lists, department_ids, current_dpt_id)
     dept_list = get_dept_list_sort(dataDept)
     return dept_list
@@ -120,7 +120,7 @@ def get_user_child_departments_kv(request, domain_id=None, current_dpt_id=None):
     if not domain_id:
         domain_id = get_domainid_bysession(request)
     department_ids = get_user_department_ids(request, domain_id)
-    dpt_lists = Department.objects.filter(domain_id=domain_id).order_by("order")
+    dpt_lists = Department.objects.filter(domain_id=domain_id).order_by("-order")
     dataDept = get_dept_list(dpt_lists, department_ids, current_dpt_id)
     return dataDept
 
@@ -178,7 +178,7 @@ def get_dept_list(dpt_lists, department_ids, current_dpt_id=None):
 
 def get_dept_list_sort(dataDept):
     l = [ v for k, v in
-             sorted(dataDept.items(), key=lambda v: v[1]['order'], reverse=False)
+             sorted(dataDept.items(), key=lambda v: v[1]['order'], reverse=True)
              ]
     return l
 
@@ -203,7 +203,7 @@ def get_remove_deptid_child2(dataDept, dpt_id, pid, current_dpt_id):
     if pid not in (0, -1):
         if pid == current_dpt_id:
             return dpt_id
-        else:
+        elif pid in dataDept:
             pid = dataDept[pid]['parent']
             return get_remove_deptid_child2(dataDept, dpt_id, pid, current_dpt_id)
         return None

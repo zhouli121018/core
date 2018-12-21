@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     url(r'^$', views.department, name='department_list'),
     url(r'^add/$', views.department_add, name='department_add'),
+    url(r'^order/ajax$', views.ajax_update_depart_order, name='ajax_update_depart_order'),
     url(r'^export/$', views.department_export, name='department_export'),
     url(r'^(?P<dpt_id>\d+)/$', views.department_modify, name='department_modify'),
     url(r'^mem/(?P<dpt_id>\d+)/$', views.department_member, name='department_member'),

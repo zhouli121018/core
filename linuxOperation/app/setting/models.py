@@ -214,7 +214,7 @@ class ExtCfilterNewAction(models.Model):
             htmls.append(T)
             htmls.append( safe_format(load_html, **{ "name": u"设置值", "value":  value }) )
 
-        if self.action in ("jump_to", "forward", "delete_header", "append_body"):
+        if self.action in ("jump_to", "forward", "reply", "append_body"):
             value = dict_compatibility(j, "value")
             htmls.append(T)
             htmls.append( safe_format(load_html, **{ "name": u"设置值", "value":  value }) )
@@ -225,6 +225,11 @@ class ExtCfilterNewAction(models.Model):
             htmls.append(T)
             htmls.append( safe_format(load_html, **{ "name": u"邮件头", "value":  field }) )
             htmls.append( safe_format(load_html, **{ "name": u"邮件头设置值", "value":  value }) )
+
+        if self.action in ("delete_header", ):
+            field = dict_compatibility(j, "field")
+            htmls.append(T)
+            htmls.append( safe_format(load_html, **{ "name": u"邮件头", "value":  field }) )
 
         if self.action in ("mail", ):
             mail_sender = dict_compatibility(j, "sender")

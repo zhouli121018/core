@@ -382,11 +382,7 @@ def ajax_group_setting_white(request):
 
 @csrf_exempt
 def ajax_group_setting_white_mdf(request):
-    try:
-        post = json.loads(request.body)
-    except:
-        post = {}
-    setting_id = post.get("setting_id", 0)
+    setting_id = request.POST.get("setting_id", 0)
     obj = CoreGroupSetting.objects.filter(id=setting_id).first()
     if not obj or obj.type != "basic":
         data = {
@@ -394,7 +390,7 @@ def ajax_group_setting_white_mdf(request):
             "message"      :   "不正确的组配置或类型",
         }
     else:
-        form = CoreGroupSettingForm("basic", obj, post)
+        form = CoreGroupSettingForm("basic", obj, request.POST)
         success, message = form.update_limit_whitelist()
         status = "OK" if success else "failure"
         data = {
@@ -421,11 +417,7 @@ def ajax_group_setting_dept(request):
 
 @csrf_exempt
 def ajax_group_setting_dept_mdf(request):
-    try:
-        data = json.loads(request.body)
-    except:
-        data = {}
-    setting_id = data.get("setting_id", 0)
+    setting_id = request.POST.get("setting_id", 0)
     obj = CoreGroupSetting.objects.filter(id=setting_id).first()
     if not obj or obj.type != "oab":
         data = {
@@ -433,7 +425,7 @@ def ajax_group_setting_dept_mdf(request):
             "message"      :   "不正确的组配置或类型",
         }
     else:
-        form = CoreGroupSettingForm("oab", obj, data)
+        form = CoreGroupSettingForm("oab", obj, post=request.POST)
         success, message = form.update_oab_dept_list()
         status = "OK" if success else "failure"
         data = {

@@ -11,17 +11,19 @@ from django.template.response import TemplateResponse
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
+from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 from django_redis import get_redis_connection
 from wsgiref.util import FileWrapper
 
 from app.core.models import CoreTrustIP, CoreMonitor, CoreAlias, CoreBlacklist, \
     CoreWhitelist, DomainAttr, Domain, CoreConfig, Mailbox
-from app.setting.models import ExtCfilterRuleNew, PostTransfer, ExtTranslateHeader, ADSync
+from app.setting.models import PostTransfer, ExtTranslateHeader, ADSync
+from app.setting.models import ExtCfilterRuleNew, ExtCfilterNewCond, ExtCfilterNewAction
 from app.setting import sslopts
 from app.utils.domain_session import get_domainid_bysession, get_session_domain
 from app.setting.forms import SystemSetForm, CoreAliasForm, ExtCfilterRuleNewForm, \
-    ExtCfilterConfigForm, PostTransferForm,  MailTransferSenderForm, \
+    ExtCfilterConfigForm, ExtUserCfilterForm, PostTransferForm,  MailTransferSenderForm, \
     MailboxAliasForm, MailboxMonitorForm, HeaderTransForm, \
     LdapFormAD, LdapFormLDAP, LdapFormADObj
 from lib import validators
@@ -171,7 +173,7 @@ def getBlack_or_Whitelist(request, model, ltype):
     order_column = data.get('order[0][column]', '')
     order_dir = data.get('order[0][dir]', '')
     search = data.get('search[value]', '')
-    colums = ['id', 'type', 'email', 'add_time', 'disabled']
+    colums = ['id', 'type', 'operator', 'email', 'add_time', 'disabled']
     lists = model.objects.filter(type=ltype)
     if search:
         lists = lists.filter(email__icontains=search)
@@ -1463,9 +1465,6 @@ def sslView(request):
             if not sigvalue:
                 messages.add_message(request, messages.ERROR, u'签名请求 不存在')
                 return HttpResponseRedirect(reverse("ssl_maintain"))
-            elif len(sigvalue)>64:
-                messages.add_message(request, messages.ERROR, u'签名请求不能大于64个字符')
-                return HttpResponseRedirect(reverse("ssl_maintain"))
             else:
                 try:
                     wrapper = FileWrapper(StringIO.StringIO(sigvalue))
@@ -1705,3 +1704,129 @@ def sslCertView(request):
             messages.add_message(request, messages.ERROR, u'无法解析证书，请检测证书文件！')
             return HttpResponseRedirect(reverse("ssl_maintain"))
     raise Http404
+
+@csrf_exempt
+def user_cfilter_list(request):
+    """
+    {
+        rule_id    :   {
+            "id"        :   rule_id,
+            "name"      :   name,
+            "sequence" :   sequence,
+            "disabled" :   disabled,
+            "logic"     :   logic,
+            "condition":   [
+                {
+                    "id"            :      cond_id,
+                    "parent_id"    :     parent_id,
+                    "logic"         :     logic,
+                    "suboption"    :     suboption,
+                    "action"        :     action,
+                    "value"         :     value,
+                },
+            ],
+            "action"   :    [
+                {
+                    "action"       :        action,
+                    "value"        :        value,
+                    "sequence"    :        sequence,
+                },
+            ],
+        }
+    }
+    """
+    mailbox_id = request.GET.get("mailbox_id", 0)
+    if int(mailbox_id) <= 0:
+        result = {"status":"failure","message":u"不存在的邮箱帐号！"}
+        return HttpResponse(json.dumps(result), content_type="application/json")
+    extype = request.GET.get("extype", "")
+    if not extype in ("re", "fw", "ot"):
+        result = {"status":"failure","message":u"错误类型: '{}'".format(extype)}
+        return HttpResponse(json.dumps(result), content_type="application/json")
+    data = {}
+    for obj in ExtCfilterRuleNew.objects.filter(mailbox_id=mailbox_id, extype=extype):
+        rule_data = {
+            "id"            :    obj.id,
+            "name"          :   obj.name,
+            "sequence"     :   obj.sequence,
+            "disabled"     :   obj.disabled,
+            "logic"        :    obj.logic,
+            "condition"   :    [],
+            "action"       :    [],
+        }
+        for cond in ExtCfilterNewCond.objects.filter(rule_id=obj.id, parent_id=0):
+            cond_data = {
+                "parent_id"    :   0,
+                "logic"         :   cond.logic,
+                "suboption"    :   cond.suboption,
+                "action"        :   cond.action,
+                "value"         :   cond.value,
+                "subs"          :   [],
+            }
+            for sub in ExtCfilterNewCond.objects.filter(parent_id=cond.id):
+                cond_data2 = {
+                    "parent_id"    :   cond.id,
+                    "suboption"    :   cond.suboption,
+                    "action"        :   cond.action,
+                    "value"         :   cond.value,
+                }
+                cond_data["subs"].append(cond_data2)
+            rule_data["condition"].append(cond_data)
+        for act in ExtCfilterNewAction.objects.filter(rule_id=obj.id):
+            act_data = {
+                "sequence"     :   act.sequence,
+                "value"         :   act.value,
+            }
+            rule_data["action"].append(act_data)
+        data[obj.id] = rule_data
+    result = {"status":"OK", "message":u"", "data":data}
+    return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def user_cfilter_mdf(request):
+    rule_id = request.POST.get("rule_id", 0)
+    data = request.POST.get("value", "")
+    mailbox_id = request.POST.get("mailbox_id", 0)
+    extype = request.POST.get("extype", "")
+    form = ExtUserCfilterForm(rule_id=rule_id, mailbox_id=mailbox_id, post=data, extype=extype)
+    succ, reason = form.is_valid()
+    if not succ:
+        result = {"status":"failure","message":reason}
+        return HttpResponse(json.dumps(result), content_type="application/json")
+    form.save()
+    result = {"status":"OK", "message":u"更新成功！"}
+    return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def user_cfilter_mdf_batch(request):
+    ids = request.POST.get("ids", "")
+    data = request.POST.get("value", "")
+    extype = request.POST.get("extype", "")
+    mailbox_lst = [int(id) for id in ids.split(",") if id.isdigit()]
+    result = {"status":"OK", "message":u"", "success":{},"failure":{}}
+    success_list = {}
+    failure_list = {}
+    for mailbox_id in mailbox_lst:
+        Box = Mailbox.objects.filter(id=mailbox_id).first()
+        if not Box:
+            failure_list[mailbox_id] = u"邮箱帐号不存在"
+            continue
+        form = ExtUserCfilterForm(rule_id=0, mailbox_id=mailbox_id, post=data, extype=extype)
+        succ, reason = form.is_valid()
+        if not succ:
+            failure_list[mailbox_id] = reason
+            continue
+        form.save()
+        success_list[mailbox_id] = ""
+    result["success"] = success_list
+    result["failure"] = failure_list
+    return HttpResponse(json.dumps(result), content_type="application/json")
+
+@csrf_exempt
+def user_cfilter_del(request):
+    rule_id = request.POST.get("rule_id", 0)
+    ExtCfilterNewCond.objects.filter(rule_id=rule_id).delete()
+    ExtCfilterNewAction.objects.filter(rule_id=rule_id).delete()
+    ExtCfilterRuleNew.objects.filter(id=rule_id).delete()
+    data = {"status":"OK","message":u"删除成功！"}
+    return HttpResponse(json.dumps(data), content_type="application/json")

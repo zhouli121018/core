@@ -1,70 +1,62 @@
 <template>
         <div class="mltabview-content">
-            <div v-if="collapseItems[0].lists.length>0" class="mltabview-panel">
-                <div class="m-mllist">
+            <div  class="mltabview-panel">
+                <div class="m-mllist" v-loading="fullscreenLoading">
                     <div class="list-bg"></div>
                     <div class="m-mllist-row">
-                        <div class="toolbar" style="background:#fff;">
+                        <div class="toolbar" style="background:#fff;" element-loading-text="请稍等..."
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.6)" >
                             <span class=" f-fr j-setting">
-                                <el-button  icon="el-icon-setting" circle></el-button></span>
-                            <div id="pagination" class="f-fr">
-                            <div class="">
-                                <el-dropdown trigger="click">
-                                <span class="el-dropdown-link">
-                                    1 / 1 <i class="el-icon-arrow-down el-icon--right"></i>
-                                </span>
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item>1</el-dropdown-item>
-                                    <el-dropdown-item>2</el-dropdown-item>
-                                </el-dropdown-menu>
-                                </el-dropdown>
-                                <el-button-group>
-                                <el-button  size="small" icon="el-icon-arrow-left" plain round></el-button>
-                                <el-button  size="small" plain round><i class="el-icon-arrow-right el-icon--right"></i></el-button>
-                                </el-button-group>
-                            </div>
-                            </div>
+                            <el-button  icon="el-icon-setting" circle></el-button></span>
 
-                            <!--选择-->
-                            <el-dropdown @command="handleCommand">
-                                <el-button  size="small" plain>
-                                    <span><el-checkbox v-model="checkAll" @change="tabCheckAll"></el-checkbox></span>
-                                    <i class="el-icon-arrow-down el-icon--right"></i>
-                                </el-button>
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-for="item in checkItems" :key="item.id" class="dropdown_item" :class="{ active: checkIndex===item.id }"
-                                    :divided="item.divided" :command="item.id">
-                                    <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: checkIndex===item.id }"></i>
-                                    </b> {{item.text}}
-                                    </el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
+                            <!--<el-button size="mini" @click="selectAll" type="primary">-->
+                              <!--{{is_checked?'取消全选':'全选'}}-->
+                              <!--&lt;!&ndash;<el-checkbox @change="selectAll" :checked="is_checked" class="check_btn"></el-checkbox>&ndash;&gt;-->
+                            <!--</el-button>-->
 
                             <!--排序-->
-                            <el-dropdown @command="orderHandleCommand">
+                            <el-dropdown @command="orderHandleCommand" placement="bottom-start" trigger="click">
                                 <el-button  size="small" plain>
                                     <span>排序</span>
                                     <i class="el-icon-arrow-down el-icon--right"></i>
                                 </el-button>
                                 <el-dropdown-menu slot="dropdown">
                                     <el-dropdown-item v-for="item in orderItems" :key="item.id" class="dropdown_item" :class="{ active: orderCheckIndex===item.id }"
-                                    :divided="item.divided" :command="item.id">
+                                    :divided="item.divided" :command="item">
                                     <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: orderCheckIndex===item.id }"></i> </b>
                                     {{ item.text}}</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
 
                             <!--查看-->
-                            <el-dropdown @command="viewHandleCommand">
-                                <el-button  size="small" plain>
+
+                            <el-dropdown @command="viewHandleCommand" trigger="click">
+                                <el-button  size="small" plain >
                                     <span>查看</span>
                                     <i class="el-icon-arrow-down el-icon--right"></i>
                                 </el-button>
                                 <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-for="item in viewItems" :key="item.id" class="dropdown_item" :class="{ active: viewCheckIndex===item.id }"
-                                    :divided="item.divided" :command="item.id">
-                                    <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: viewCheckIndex===item.id }"></i> </b>
-                                    {{ item.text}}</el-dropdown-item>
+                                  <el-dropdown-item v-if="!item.children" v-for="(item,k) in viewItems" :key="k" class="dropdown_item"
+                                   :command="item.id" :divided="item.divided" :class="{ active: viewCheckIndex===item.id }">
+                                      <b><i class="el-icon-check vibility_hide" v-if="!item.classN" :class="{ vibility_show: viewCheckIndex===item.id }"></i> </b><i :class="item.classN"></i>
+                                      {{ item.text}}
+                                  </el-dropdown-item>
+                                  <el-dropdown-item class="dropdown_item" v-else="item.children" :divided="item.divided">
+                                    <el-dropdown @command="viewHandleCommand"  placement="right-start">
+                                      <span class="el-dropdown-link">
+                                        <b><i class="el-icon-check vibility_hide" :class="item.classN"></i> </b>
+                                      {{item.text}}<i class="el-icon-arrow-right el-icon--right"></i>
+                                      </span>
+                                        <el-dropdown-menu slot="dropdown">
+                                          <el-dropdown-item  v-for="(c,k) in item.children" :key="k" class="dropdown_item" :command="c.id">
+                                              <i class="iconfont icon-iconflatcolor" :class="c.classN"></i> {{c.text}}
+                                          </el-dropdown-item>
+
+                                        </el-dropdown-menu>
+
+                                    </el-dropdown>
+                                  </el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
 
@@ -74,7 +66,7 @@
                                     删除
                                 </el-button>
 
-                                <el-dropdown @command="moveHandleCommand">
+                                <el-dropdown @command="moveHandleCommand" trigger="click" v-if="boxId!='Drafts'">
                                     <el-button  size="small" plain>
                                     <span>移动到</span>
                                     <i class="el-icon-arrow-down el-icon--right"></i>
@@ -87,29 +79,43 @@
                                     </el-dropdown-menu>
                                 </el-dropdown>
 
-                                <el-dropdown @command="signHandleCommand">
+                                <el-dropdown @command="signHandleCommand" trigger="click">
                                     <el-button  size="small" plain >
                                         <span>标记为</span>
                                         <i class="el-icon-arrow-down el-icon--right"></i>
                                     </el-button>
                                     <el-dropdown-menu slot="dropdown">
-                                      <el-dropdown-item v-for="item in signItems" :key="item.id" class="dropdown_item"
-                                       :command="item">
-                                          <b><i class="el-icon-check vibility_hide"></i> </b>
+                                      <el-dropdown-item v-if="!item.children" v-for="item in signItems" :key="item.id" class="dropdown_item"
+                                       :command="item" :divided="item.divided">
+                                          <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
                                           {{ item.text}}
                                       </el-dropdown-item>
-                                    </el-dropdown-menu>
+                                      <el-dropdown-item class="dropdown_item" v-else="item.children" :divided="item.divided">
+                                        <el-dropdown @command="signHandleCommand"  placement="right-start">
+                                          <span class="el-dropdown-link">
+                                            <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
+                                          {{item.text}}<i class="el-icon-arrow-right el-icon--right"></i>
+                                          </span>
+                                            <el-dropdown-menu slot="dropdown">
+                                              <el-dropdown-item  v-for="(c,k) in item.children" :key="k" class="dropdown_item" :command="c">
+                                                  <i class="iconfont icon-iconflatcolor" :class="c.classN"></i> {{c.text}}
+                                              </el-dropdown-item>
 
+                                            </el-dropdown-menu>
+
+                                        </el-dropdown>
+                                      </el-dropdown-item>
+                                    </el-dropdown-menu>
                                 </el-dropdown>
 
-                                <el-dropdown @command="moreHandleCommand">
+                                <el-dropdown @command="moreHandleCommand" trigger="click">
                                     <el-button  size="small" plain>
                                     <span>更多</span>
                                     <i class="el-icon-arrow-down el-icon--right"></i>
                                     </el-button>
                                     <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-for="item in moreItems" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }"
-                                    :divided="item.divided" :command="item.id">
+                                    <el-dropdown-item v-if="boxId!='Drafts'||item.id==6||item.id==7||item.id==8" v-for="item in moreItems" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }"
+                                    :divided="item.divided" :command="item">
                                         <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moreCheckIndex===item.id }"></i> </b>
                                         {{ item.text}}</el-dropdown-item>
                                     </el-dropdown-menu>
@@ -118,62 +124,147 @@
                             </div>
 
                             <!--刷新-->
-                            <el-button  size="small" plain>
+                            <el-button  size="small" plain @click="refresh">
                                 刷新  <!-- <i class="el-icon-refresh el-icon--right"></i> -->
                             </el-button>
-                    </div>
+                            <el-button v-show="!moreSearch" @click="moreSearch=true" size="small">更多搜索</el-button>
 
-                    <div class="mail-totals j-mail-totals" v-if="multipleSelection.length==0">
-                        <div class="totals-info">
-                        {{boxName}}(
-                        <span class="all-mail">共<span class="number">{{totalCount}}</span>封</span>
-                        <span class="unread-mail"><span class="number">{{unreadCount}}</span>封</span>
-                        <a href="#" >未读</a>
-                        <a href="#" v-if="unreadCount">，全部设为已读</a>
-                        )
+                            <div v-show="moreSearch">
+                              <el-form :inline="true" :model="searchForm" ref="searchForm" class="demo-form-inline" size="small">
+                                <el-form-item label="发件人">
+                                  <el-input v-model="searchForm.from" placeholder="发件人"></el-input>
+                                </el-form-item>
+                                <el-form-item label="邮件主题">
+                                  <el-input v-model="searchForm.subject" placeholder="邮件主题"></el-input>
+                                </el-form-item>
+                                <el-form-item label="邮件内容">
+                                  <el-input v-model="searchForm.body" placeholder="邮件内容"></el-input>
+                                </el-form-item>
+                                <el-form-item>
+                                  <el-button type="primary" @click="moreSearchfn">查询</el-button>
+                                  <el-button v-show="moreSearch" @click="moreSearch=false" size="small">隐藏</el-button>
+                                </el-form-item>
+                              </el-form>
+                            </div>
 
                         </div>
-                    </div>
-                    <div class="j-select-count select-count" v-if="multipleSelection.length>0">
-                        <span class="j-desc desc">已选择 {{multipleSelection.length}} 封</span>
-                        <a class="j-cancel cancel" href="#" @click="noSelect">取消</a>
-                    </div>
-                      <div style="text-align:right;padding:4px;height:32px;">
-                        <el-pagination
+
+                    <div class="mail-totals j-mail-totals" v-if="multipleSelection.length==0" style="line-height: 36px;">
+                        <div class="totals-info">
+                        {{curr_folder}}(
+                        <!--<span class="all-mail">共<span class="number">{{totalAllCount}}</span>封</span>-->
+                        <span class="unread-mail"><span class="number">{{unseen_count_new}}</span>封</span>
+                        <a href="#" @click.prevent="viewHandleCommand('unseen')">未读</a>
+                        <a href="#" v-if="unreadCount" @click.prevent="readAll">，全部设为已读</a>
+                        )
+
+                          <el-pagination style="float:right;text-align:right;padding:4px;height:32px;"
                               @size-change="handleSizeChange"
                               @current-change="handleCurrentChange"
                               background
                               :current-page="currentPage"
-                              :page-sizes="[5,10, 15, 20,30, 50,100,300,500]"
+                              :page-sizes="[10, 20, 50,100]"
                               :page-size="pageSize"
                               layout="total, sizes, prev, pager, next, jumper"
                               :total="totalCount">
                             </el-pagination>
-                      </div>
+
+                        </div>
+                    </div>
+                    <div class="j-select-count select-count" v-if="multipleSelection.length>0" style="line-height: 36px;">
+                        <span class="j-desc desc">已选择 {{multipleSelection.length}} 封</span>
+                        <a class="j-cancel cancel" href="#" @click="noSelect">取消</a>
+
+                      <el-pagination style="float:right;text-align:right;padding:4px;height:32px;"
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        background
+                        :current-page="currentPage"
+                        :page-sizes="[10, 20, 50,100]"
+                        :page-size="pageSize"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="totalCount">
+                      </el-pagination>
+                    </div>
                     </div>
                     <div class="m-mllist-row mllist-list-row">
                       <div class="j-module-content j-maillist mllist-list u-scroll">
-                        <div>
-                          <el-table :data="collapseItems[0].lists" style="width: 100%;" class="vertical_align_top maillist"
-                              highlight-current-row  @cell-mouse-enter="hoverfn" @cell-mouse-leave="noHover" @cell-click="readMail"
-                                    @selection-change="handleSelectionChange"
+                        <div class="table_box" style="height:100%">
+                           <el-table  :show-header="true" ref="innerTable" height="100%" :data="listData_new" style="width: 100%;height:100%" class="vertical_align_top maillist" v-loading="loading"
+                              highlight-current-row  @cell-mouse-enter="hoverfn" @cell-mouse-leave="noHover" @row-click="rowClick" @cell-click="cellClick"
+                                @select-all="selectAllTable"    @selection-change="handleSelectionChange"  :header-cell-style="{background:'#f0f1f3'}"
+                                :span-method="arraySpanMethod"
                             >
+                                <!--:span-method="arraySpanMethod"-->
                             <el-table-column
                               type="selection"
-                              width="36"
+                              width="46"
+                              label="全选"
+                              :selectable="selectablee"
+                            >
+                            </el-table-column>
+                            <el-table-column width="110" class-name="flag_btn">
+                              <template slot-scope="scope">
 
-                            >全选/取消
+                                <div class="mainMsg" :class="{hoverStyle:scope.row.uid==hoverIndex}" v-if="!scope.row.is_header">
+                                  <span class="read_bg" :class="scope.row.flagbg_class" :title="scope.row.flagStr"></span>
+                                  <i title="附件" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-attach')>=0" class="iconfont icon-attachment" style="color:#777;"></i>
+                                  <b class="is_red" title="紧急邮件" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-emergent')>=0">!</b>
+                                  <el-dropdown trigger="click" @command="signHandleCommand_new($event,scope.row)">
+                                      <span class="el-dropdown-link" title="设置旗帜">
+
+                                        <i class="iconfont icon-iconflat" v-if="!scope.row.flagged" style="cursor:pointer;"></i><i class="iconfont icon-iconflatcolor" v-if="scope.row.flagged" style="color:#c00;cursor:pointer;" :class="scope.row.color"></i><i class="el-icon-arrow-down el-icon--right" style="cursor:pointer;"></i>
+                                      </span>
+                                      <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item  v-for="(c,k) in flagsData" :key="k" class="dropdown_item" :command="c">
+                                            <i class="iconfont icon-iconflatcolor" :class="[c.classN,{'icon-iconflat':k==flagsData.length-1}]" ></i> {{c.text}}
+                                        </el-dropdown-item>
+
+                                      </el-dropdown-menu>
+                                    </el-dropdown>
+
+                                </div>
+                                <div v-if="scope.row.is_header" style="cursor:pointer;">
+                                  <div style="font-weight:bold;font-size:14px;">
+                                    <span>{{scope.row.title}}</span>
+                                    <span>({{scope.row.count}})</span>
+                                  </div>
+                                </div>
+                              </template>
                             </el-table-column>
 
-                            <el-table-column prop="subject"  label="" @click="">
+                            <!--<el-table-column width="80">-->
+                              <!--<template slot-scope="scope">-->
+                                <!--<b class="is_red" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-emergent')>=0">!</b>-->
+                                <!--<i v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-attach')>=0" class="iconfont icon-attachment" style="color:#777;"></i>-->
+                                <!--<span class="read_bg" :class="{unseen:!scope.row.isread,answered:scope.row.flags.join().indexOf('Answered')>=0,forward:scope.row.flags.join().indexOf('umail-forword')>=0}" :title="scope.row.flagStr"></span>-->
+                              <!--</template>-->
+                            <!--</el-table-column>-->
+
+                            <el-table-column width="160" label="发件人">
                               <template slot-scope="scope">
-                                <div class="clear mainMsg" style="font-size:16px;" :class="{flagged:scope.row.flagged,unseen:!scope.row.isread,hoverStyle:scope.row.uid==hoverIndex}">
-                                  <span class="fl_l" style="width:80%;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{scope.row.subject||'无主题'}}</span>
+                                 <div class="info-summary" :class="scope.row.color">
+                                  <p class="summary-text">
+                                    <span class="fromto from" v-if="scope.row.mfrom" :class="{flagged:scope.row.flagged,unseen:!scope.row.isread}" :title="scope.row.mfrom[1]+' <'+scope.row.mfrom[0]+'>'" style="font-size:14px;">{{scope.row.mfrom[1]}} <{{scope.row.mfrom[0]}}></span>
+                                    <!--<span class="fromto">:</span>-->
+                                    <!--<span class="summary">-->
+                                      <!--sdajpofjsdfhup测试-->
+                                    <!--</span>-->
+                                  </p>
+                                </div>
+                              </template>
+                            </el-table-column>
+
+                            <el-table-column prop="subject"  label="主题" >
+                              <template slot-scope="scope">
+                                <div class="clear mainMsg" style="font-size:16px;" :class="[{flagged:scope.row.flagged,unseen:!scope.row.isread},scope.row.color]">
+
+                                  <span class="fl_l subject_hover" style="width:96%;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" @click.stop.prevent="readMail(scope.row)" :title="scope.row.subject||''">{{scope.row.subject||'无主题'}}</span>
                                   <span class="fl_r">
-                                    <i :title="scope.row.flagged?'点击取消旗帜':'设为红旗'" @click.stop="changeFlags(scope.row)" class="iconfont" :class="{'icon-iconflatcolor':scope.row.flagged,'icon-iconflat':!scope.row.flagged}" style="cursor:pointer;"></i>
+                                    <!--<i :title="scope.row.flagged?'点击取消旗帜':'设为红旗'" @click.stop="changeFlags(scope.row)" class="iconfont" :class="{'icon-iconflatcolor':scope.row.flagged||scope.row.color,'icon-iconflat':!scope.row.flagged&&!scope.row.color}" style="cursor:pointer;"></i>-->
                                   </span>
                                 </div>
-                                <div class="info-summary">
+                                <div class="info-summary" :class="scope.row.color" v-if="false">
                                   <p class="summary-text">
                                     <span class="fromto from" v-if="scope.row.mfrom">{{scope.row.mfrom[1]}} <{{scope.row.mfrom[0]}}></span>
                                     <!--<span class="fromto">:</span>-->
@@ -187,46 +278,94 @@
 
 
 
-                            <el-table-column  prop="date" label="时间" sortable  width="160" :formatter="formatter"></el-table-column>
+
+                            <el-table-column class="plan_style" prop="date" label="时间"   :width="$store.getters.getIsSwtime?180:160"  >
+                              <template slot-scope="scope">
+                                <div class="plan_style" v-if="!scope.row.is_header">
+                                  {{(scope.row.date ||scope.row.internaldate).replace('T',' ')}}
+
+                                </div>
+
+                              </template>
+                            </el-table-column>
+                            <el-table-column class="plan_style" prop="size" label="大小"   width="100">
+                              <template slot-scope="scope">
+                                <div class="plan_style">
+                                  {{scope.row.size | mailsize}}
+                                  <!--<p style="padding-left:10px" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-attach')>=0" >-->
+                                    <!--<i class="iconfont icon-attachment"></i>-->
+                                  <!--</p>-->
+                                </div>
+                              </template>
+                            </el-table-column>
                           </el-table>
+
+
+
+
                         </div>
                       </div>
 
                     </div>
                 </div>
             </div>
-            <div v-if="collapseItems[0].lists.length==0" class="mltabview-panel">
+            <div v-if="false" class="mltabview-panel">
                <h3 style="margin:30px 0 0 20px;font-size:24px;font-weight:normal;"> "{{curr_folder}}" 没有邮件</h3>
             </div>
         </div>
 </template>
 <script>
-  import {getMailMessage,moveMails,getFloder,getFloderMsg,deleteMail,messageFlag} from "@/api/api";
+  import {getMailMessage,moveMails,getFloder,getFloderMsg,deleteMail,messageFlag,readMail,rejectMessage,pruneMessage,zipMessage,messageExpunge} from "@/api/api";
 
   import router from '@/router'
 
   export default {
     name:'Innerbox',
     props:{
-      boxId:'',
-      curr_folder:{
-        type:String,
-        default:''
-      }
+      floderResult:{
+        type:Array,
+        default: []
+      },
     },
 
     data() {
         return {
+          is_checked:false,
+          listData:[],
+          listData_new:[],
+          flagsData:[
+          {flags:'\\flagged',action:'add',text:'红旗',classN:'redcolor'},
+          {flags:'umail-green',action:'add',text:'绿旗',classN:'flag-green'},
+          {flags:'umail-orange',action:'add',text:'橙旗',classN:'flag-orange'},
+          {flags:'umail-blue',action:'add',text:'蓝旗',classN:'flag-blue'},
+          {flags:'umail-pink',action:'add',text:'粉旗',classN:'flag-pink'},
+          {flags:'umail-cyan',action:'add',text:'青旗',classN:'flag-cyan'},
+          {flags:'umail-yellow',action:'add',text:'黄旗',classN:'flag-yellow'},
+          {flags:'umail-purple',action:'add',text:'紫旗',classN:'flag-purple'},
+          {flags:'umail-gray',action:'add',text:'灰旗',classN:'flag-gray'},
+          {flags:'\\flagged',text:'取消旗帜',action:'remove'},
+        ],
+          fullscreenLoading:false,
+          reject_is_delete:false,
+          boxId:'INBOX',
+          curr_folder:'收件箱',
+          moreSearch:false,
+          searchForm: {
+            from: '',
+            subject: '',
+            body: ''
+          },
+          loading: false,
           sort:'',
           search:'',
           hoverIndex:'',
-
+          totalAllCount:0,
           multipleSelection:[],
           tableData: [],
           unreadCount:0,
           totalCount:0,
           currentPage:1,
-          pageSize:10,
+          pageSize:20,
           checkIndex:'',
           checkAll:false,
           checkItems:[
@@ -239,57 +378,65 @@
           ],
           orderCheckIndex:'',
           orderItems:[
-            {id:0,text:'按时间从新到旧',divided:false},
-            {id:1,text:'按时间从旧到新',divided:false},
-            {id:2,text:'按发件人降序',divided:true},
-            {id:3,text:'按发件人升序',divided:false},
-            {id:4,text:'按主题降序',divided:true},
-            {id:5,text:'按主题升序',divided:false},
-            {id:6,text:'按附件降序',divided:true},
-            {id:7,text:'按附件升序',divided:false},
+            {id:0,text:'按时间从新到旧',divided:false,sort:'REVERSE ARRIVAL'},
+            {id:1,text:'按时间从旧到新',divided:false,sort:'ARRIVAL'},
+            {id:3,text:'按发件人升序',divided:true,sort:'FROM'},
+            {id:2,text:'按发件人降序',divided:false,sort:'REVERSE FROM'},
+            {id:4,text:'按邮件主题降序',divided:true,sort:'REVERSE SUBJECT '},
+            {id:5,text:'按邮件主题升序',divided:false,sort:'SUBJECT '},
+            {id:8,text:'按邮件大小（从小到大）',divided:true,sort:'SIZE'},
+            {id:9,text:'按邮件大小（从大到小）',divided:false,sort:'REVERSE SIZE'},
           ],
+
           viewCheckIndex:'',
           viewItems:[
             {id:'',text:'全部邮件',divided:false},
             {id:'unseen',text:'未读邮件',divided:false},
             {id:'seen',text:'已读邮件',divided:false},
-            {id:'flagged',text:'已标记邮件',divided:true},
-            {id:4,text:'未标记邮件',divided:false},
-            {id:5,text:'紧急',divided:true},
-            {id:6,text:'普通',divided:false},
-            {id:7,text:'缓慢',divided:false},
-            {id:8,text:'包含附件',divided:true},
-            {id:9,text:'不包含附件',divided:false},
-            {id:10,text:'已回复',divided:true},
-            {id:11,text:'已转发',divided:false},
+            {id:'flagged',text:'已标记邮件',divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
+            {id:'other',text:'其他标记',divided:false,children:[
+                {id:'KEYWORD umail-green',text:'绿旗',classN:'flag-green'},
+                {id:'KEYWORD umail-orange',text:'橙旗',classN:'flag-orange'},
+                {id:'KEYWORD umail-blue',text:'蓝旗',classN:'flag-blue'},
+                {id:'KEYWORD umail-pink',text:'粉旗',classN:'flag-pink'},
+                {id:'KEYWORD umail-cyan',text:'青旗',classN:'flag-cyan'},
+                {id:'KEYWORD umail-yellow',text:'黄旗',classN:'flag-yellow'},
+                {id:'KEYWORD umail-purple',text:'紫旗',classN:'flag-purple'},
+                {id:'KEYWORD umail-gray',text:'灰旗',classN:'flag-gray'}
+              ]},
+            {id:'unflagged',text:'未标记邮件',divided:false,classN:'iconfont icon-iconflat'},
+            {id:'ANSWERED',text:'已回复',divided:true,classN:'iconfont icon-iconback greencolor'},
+            {id:'KEYWORD umail-forword',text:'已转发',divided:false,classN:'iconfont icon-Forward greencolor'},
           ],
           moveCheckIndex:'',
-          moveItems:[
-            {id:0,text:'已发送',divided:false},
-            {id:1,text:'已删除',divided:false},
-            {id:2,text:'垃圾邮件',divided:false},
-            {id:3,text:'病毒文件夹',divided:false}
-          ],
+
           signItems:[
-
-
             {id:0,flags:'\\Seen',text:'已读邮件',divided:false,action:'add'},
             {id:1,flags:'\\Seen',text:'未读邮件',divided:false,action:'remove'},
-            {id:2,flags:'\\flagged',text:'红旗',divided:true,action:'add'},
-            {id:3,flags:'\\flagged',text:'取消红旗',divided:true,action:'remove'},
+            {id:2,flags:'\\flagged',text:'红旗',divided:true,action:'add',classN:'iconfont icon-iconflatcolor redcolor'},
+            {id:3,text:'其他旗帜',divided:false,children:[
+                {flags:'umail-green',action:'add',text:'绿旗',classN:{'flag-green':true}},
+                {flags:'umail-orange',action:'add',text:'橙旗',classN:{'flag-orange':true}},
+                {flags:'umail-blue',action:'add',text:'蓝旗',classN:{'flag-blue':true}},
+                {flags:'umail-pink',action:'add',text:'粉旗',classN:{'flag-pink':true}},
+                {flags:'umail-cyan',action:'add',text:'青旗',classN:{'flag-cyan':true}},
+                {flags:'umail-yellow',action:'add',text:'黄旗',classN:{'flag-yellow':true}},
+                {flags:'umail-purple',action:'add',text:'紫旗',classN:{'flag-purple':true}},
+                {flags:'umail-gray',action:'add',text:'灰旗',classN:{'flag-gray':true}}
+              ]},
+            {id:4,flags:'\\flagged',text:'取消旗帜',divided:false,action:'remove'},
           ],
           moreCheckIndex:'',
           moreItems:[
-            {id:0,text:'回复',divided:false},
-            {id:1,text:'回复全部',divided:false},
-            {id:2,text:'转发',divided:true},
-            {id:3,text:'附件方式转发',divided:false},
-            {id:4,text:'举报',divided:true},
-            {id:5,text:'拒收邮件',divided:false},
-            {id:6,text:'来信分类',divided:false},
-            {id:7,text:'再次发送',divided:true},
-            {id:8,text:'打包下载',divided:false},
-            {id:9,text:'彻底删除',divided:false}
+            {id:0,text:'回复',divided:false,checkone:true},
+            {id:1,text:'回复全部',divided:false,checkone:true},
+            {id:2,text:'转发',divided:true,checkone:true},
+            {id:3,text:'附件方式转发',divided:false,checkone:true},
+            {id:4,text:'拒收邮件',divided:true,checkone:false},
+            {id:5,text:'再次发送',divided:true,checkone:true},
+            {id:6,text:'打包下载',divided:false,checkone:false},
+            {id:7,text:'彻底删除',divided:true,checkone:false},
+            {id:8,text:'清空文件夹',divided:false,checkone:false},
           ],
           activeNames: [0],
           activeLi:[0,0],
@@ -306,24 +453,280 @@
         }
     },
     methods:{
+      selectablee(row,index){
+        if(row.is_header){
+          return false
+        }else{
+          return true;
+        }
+      },
+      arraySpanMethod({ row, column, rowIndex, columnIndex }) {
+        if(row.is_header){
+          if (columnIndex === 1) {
+            return [1, 6];
+          } else  {
+            return [0, 0];
+          }
+        }
+      },
+      selectAll(val){
+        if(!this.is_checked){
+          this.$refs.innerTable.forEach(val=>{
+            val.clearSelection();
+          })
+          $('.table_box .el-table-column--selection').click();
+
+
+        }else{
+          this.$refs.innerTable.forEach(val=>{
+            val.clearSelection();
+          })
+        }
+      },
+      selectAllTable(val){
+      },
+      changeShow(m){
+        m.show = !m.show;
+      },
+      signHandleCommand_new:function(item,row){
+        if(!item){
+          return;
+        }
+        let param = {
+          uids:[row.uid],
+          folder:this.$route.params.boxId,
+          action:item.action,
+          flags:[item.flags]
+        }
+        messageFlag(param).then((suc)=>{
+          this.$message({
+              type:'success',
+              message: '邮件标记成功!'
+            })
+          this.getMessageList();
+        },(err)=>{
+
+        }).catch(err=>{
+          let str = '';
+            if(err.detail){
+              str = err.detail
+            }
+          this.$message({
+              type:'error',
+              message: '邮件标记失败! '+str
+            })
+        })
+      },
+      cellClick(row,col,cell){
+        if(col.type=='default'){
+          if(col.className!='flag_btn'){
+            this.readMail(row)
+          }
+          if(row.is_header){
+            console.log(row)
+            console.log('sdlkf')
+          }
+        }else{
+          // this.$refs.innerTable.toggleRowSelection(row)
+          $(cell).find('label').click();
+        }
+      },
+      refresh(){
+        this.sort = '';
+        this.orderCheckIndex = '';
+        this.search = '';
+        this.searchForm = {
+            from: '',
+            subject: '',
+            body: ''
+          }
+        this.$parent.$parent.$parent.getFloderfn()
+        this.getMessageList();
+      },
+      rowClick(row,e,col){
+
+      },
+      moreSearchfn(){
+        this.currentPage = 1;
+        this.loading = true;
+        let params = {
+          folder:this.boxId,
+          limit:this.pageSize,
+          offset:0,
+        }
+        let str='';
+        if(this.searchForm.from){
+          str += ' from "'+this.searchForm.from+'"';
+        }
+        if(this.searchForm.subject){
+          str += ' subject "'+this.searchForm.subject+'"';
+        }
+        if(this.searchForm.body){
+          str += ' body "'+this.searchForm.body+'"';
+        }
+        if(str){params['search'] = str;}
+        this.getDateN(params);
+      },
       hoverfn(row, column, cell, event){
-        this.hoverIndex = row.uid;
+        if(row.uid){
+          this.hoverIndex = row.uid;
+        }
       },
       noHover(){
         this.hoverIndex = '';
       },
       changeFlags(row){
         row.flagged=!row.flagged;
+        if(row.color){
+          row.color=null
+        }
+        let ac = row.flagged?'add':'remove';
+        let param = {
+          uids:[row.uid],
+          folder:this.boxId,
+          action:ac,
+          flags:['\\flagged']
+        }
+        messageFlag(param).then((suc)=>{
+
+        },(err)=>{
+
+        })
       },
-      readMail(row, column, cell, event){
-          row.isread = true;
-          this.$parent.showTabIndex=2;
+      readAll(){
+        let param = {
+          uids:['all'],
+          folder:this.boxId,
+          action:'add',
+          flags:['\\Seen']
+        }
+        messageFlag(param).then((suc)=>{
+          this.getMessageList();
+          this.$parent.$parent.$parent.getFloderfn();
+        },(err)=>{
+
+        })
+      },
+      readMail(row){
+        if(!row.isread){
+          let unseenArr = this.$store.getters.getUnseenCount;
+          unseenArr[this.boxId] --;
+          this.$store.dispatch('setUnseenCountA',unseenArr)
           console.log(row)
-        this.$parent.getRead({'id':row.uid,'subject':row.subject})
+          if(row.flagbg_class == 'unseen'){
+            row.flagStr = '已读';
+            row.flagbg_class = ''
+          }
+        }
+        row.isread = true;
+        let param = {
+          uids:[row.uid],
+          folder:this.boxId,
+          action:'add',
+          flags:['\\Seen']
+        }
+        // messageFlag(param).then((suc)=>{
+        //   // this.getMessageList();
+        //   this.$parent.$parent.$parent.getFloderfn();
+        // },(err)=>{
+        //
+        // })
+        if(this.boxId=='Drafts'){
+          let pp = this.$parent.$parent.$parent;
+          readMail(row.uid,{"folder":this.boxId}).then(res=>{
+            // this.$parent.$parent.$parent.getFloderfn();
+            let data = res.data
+            pp.ruleForm2 = {
+              reply_to:'',
+              is_priority:false,
+              is_html:true,
+              is_cc:true,
+              is_bcc:false,
+              is_partsend:false,
+              to: [],
+              cc: [],
+              subject: '',
+              secret:'非密',
+              is_save_sent:true,
+              is_confirm_read:true,
+              is_schedule:false,
+              schedule_day:'',
+              is_password:false,
+              password:'',
+              is_burn:false,
+              burn_limit:1,
+              burn_day:'',
+              html_text:'',
+              plain_text:'',
+              attachments:[],
+              net_attachments:[]
+            }
+            // pp.ruleForm2 = res.data;
+            pp.maillist = []
+            pp.maillist_copyer = [];
+            pp.maillist_bcc = [];
+            pp.show_replay_to = false;
+            pp.fileList = data.attachments;
+            pp.ruleForm2.subject = data.subject;
+            pp.ruleForm2.draft_id = data.attrs.draft_id;
+            pp.ruleForm2.is_burn = data.attrs.is_burn;
+            pp.ruleForm2.is_password = data.attrs.is_password;
+            pp.ruleForm2.is_schedule = data.attrs.is_schedule;
+            // pp.ruleForm2.password = data.attrs.password;
+            pp.ruleForm2.schedule_day = data.attrs.schedule_day;
+            pp.ruleForm2.is_html = data.is_html;
+            if(data.reply_to){
+              pp.ruleForm2.reply_to = data.reply_to;
+              pp.show_reply_to = true;
+            }
+            if(data.is_html){
+              pp.content = data.html_text ;
+            }else{
+              pp.content = data.plain_text;
+            }
+            // pp.ruleForm2.flags = data.flags;
+            if(data.to && data.to.length>0){
+              for(let i=0;i<data.to.length;i++){
+                pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
+              }
+            }
+
+            if(data.cc && data.cc.length>0){
+              for(let i=0;i<data.cc.length;i++){
+                pp.maillist_copyer.push({fullname:data.cc[i][1]||'',email:data.cc[i][0],status:true})
+              }
+            }
+            if(data.bcc && data.bcc.length>0){
+              for(let i=0;i<data.bcc.length;i++){
+                pp.maillist_bcc.push({fullname:data.bcc[i][1]||'',email:data.bcc[i][0],status:true})
+              }
+            }
+
+            pp.addTab('composedrafts',data.subject,row.uid,this.boxId)
+
+          }).catch(err=>{
+            console.log(err)
+          })
+        }else{
+          this.$parent.$parent.$parent.addTab('read',row.subject,row.uid,this.boxId)
+          // this.$parent.$parent.$parent.getFloderfn();
+        }
       },
-       handleSelectionChange(val) {
-        this.multipleSelection = val;
-        console.log(this.multipleSelection)
+      handleSelectionChange(val) {
+        this.multipleSelection = [];
+        let check = true;
+        this.multipleSelection = val
+        // this.$refs.innerTable.forEach(val=>{
+        //   if(val.selection.length < val.data.length){
+        //     check = false;
+        //   }
+        //   this.multipleSelection = this.multipleSelection.concat(val.selection)
+        // })
+        // if(check){
+        //   this.is_checked = true
+        // }else{
+        //   this.is_checked = false
+        // }
       },
       formatter(row, column) {
         return row.date.replace('T','  ');
@@ -344,134 +747,582 @@
           this.checkAll=false;
         }
       },
-      tabCheckAll:function(){
-        if(this.checkAll){
-          this.checkIndex=0;
-          for(var i=0;i<this.collapseItems.length;i++){
-              for(var k=0;k<this.collapseItems[i].lists.length;k++){
-                  this.collapseItems[i].lists[k].checked = true;
-
-              }
-          }
-        }else{
-          this.checkIndex='';
-          for(var i=0;i<this.collapseItems.length;i++){
-              for(var k=0;k<this.collapseItems[i].lists.length;k++){
-                  this.collapseItems[i].lists[k].checked = false;
-              }
-          }
-        }
-      },
-      orderHandleCommand:function(index){
-        this.orderCheckIndex = index;
+      orderHandleCommand:function(item){
+        this.orderCheckIndex = item.id;
+        this.sort = item.sort;
+        this.getMessageList();
       },
       viewHandleCommand:function(index){
-        console.log(index);
+        if(index == 'other'){
+          return;
+        }
+        this.viewCheckIndex = index;
         this.search = index;
         this.currentPage = 1;
         this.getMessageList();
-        this.viewCheckIndex = index;
       },
       moveHandleCommand:function(index){
+        this.fullscreenLoading = true;
         var params={
           uids:this.checkedMails,
-          src_folder:this.$parent.activeMenubar.id,
+          src_folder:this.boxId,
           dst_folder:index
         }
         moveMails(params).then((suc)=>{
-          console.log(suc.data)
-          console.log(suc.data.msg)
+          this.fullscreenLoading = false;
           if(suc.data.msg=='success'){
             this.$message({
               type:'success',
               message: '邮件移动成功!'
             })
             this.getMessageList();
-            this.$parent.refreshMenu()
+            this.$parent.$parent.$parent.getFloderfn();
           }
         },(err)=>{
+          this.fullscreenLoading = false;
           console.log(err);
+        }).catch(err=>{
+          this.fullscreenLoading = false;
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
+          this.$message({
+            type:"error",
+            message:'邮件移动失败！ '+str
+          })
         })
       },
       signHandleCommand:function(item){
-        console.log(item);
+        this.fullscreenLoading = true;
+        if(!item){
+          return;
+        }
         let param = {
           uids:this.checkedMails,
-          folder:this.$parent.activeMenubar.id,
+          folder:this.boxId,
           action:item.action,
           flags:[item.flags]
         }
         messageFlag(param).then((suc)=>{
+          this.fullscreenLoading = false;
           this.getMessageList();
+          this.$parent.$parent.$parent.getFloderfn();
         },(err)=>{
-
+          this.fullscreenLoading = false;
+        }).catch(err=>{
+          this.fullscreenLoading = false;
         })
       },
       deleteMailById(){
         var params={
           uids:this.checkedMails,
-          folder:this.$parent.activeMenubar.id,
+          folder:this.boxId,
         };
-        deleteMail(params).then((suc)=>{
-          if(suc.data.msg=='success'){
+        this.$confirm('删除此邮件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.fullscreenLoading = true;
+          deleteMail(params).then((suc)=>{
+            this.fullscreenLoading = false;
+            if(suc.data.msg=='success'){
+              this.$message({
+                type:'success',
+                message: '邮件删除成功!'
+              })
+              if((this.currentPage-1)*this.pageSize >= this.totalCount-this.checkedMails.length){
+                this.currentPage = 1;
+              }
+              this.getMessageList();
+              this.$parent.$parent.$parent.getFloderfn()
+            }
+          },(err)=>{
+            let str = '';
+            if(err.detail){
+              str = err.detail
+            }
+            this.fullscreenLoading = false
             this.$message({
-              type:'success',
-              message: '邮件删除成功!'
-            })
-            this.getMessageList();
-            this.$parent.refreshMenu()
-          }
-        },(err)=>{
+                type:'error',
+                message: '删除失败！'+str
+              })
+          })
+        }).catch(() => {
+          this.fullscreenLoading = false;
           this.$message({
-              type:'error',
-              message: '删除失败！!'
-            })
-        })
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+
       },
-      moreHandleCommand:function(index){
-        this.moreCheckIndex = index;
+      moreHandleCommand:function(item){
+        if(item.checkone && this.checkedMails.length > 1){
+          this.$alert('您只能选择一封邮件进行 '+item.text+' !','提示');
+          return;
+        }
+        let pp = this.$parent.$parent.$parent;
+        let param = {
+          uids:this.checkedMails,
+          folder:pp.activeMenubar.id || this.$route.params.boxId
+        }
+        if(item.id==0 || item.id==1 || item.id==2 || item.id==3 || item.id==5){
+          this.fullscreenLoading = true;
+          let fid = pp.activeMenubar.id || this.$route.params.boxId;
+          let view = 3; //回复
+          if(item.id == 0){
+            view = 3;
+          }else if(item.id == 1){
+            view = 4;
+          }else if(item.id == 2){
+            view = 5;
+          }else if(item.id == 3){
+            view = 6;
+          }else if(item.id == 5){
+            view = 7;
+          }
+          readMail(this.multipleSelection[0].uid,{"folder":fid,"view":view}).then(res=>{
+            this.fullscreenLoading = false;
+            pp.ruleForm2 = {
+              reply_to:'',
+              is_priority:false,
+              is_html:true,
+              is_cc:true,
+              is_bcc:false,
+              is_partsend:false,
+              to: [],
+              cc: [],
+              subject: '',
+              secret:'非密',
+              is_save_sent:true,
+              is_confirm_read:true,
+              is_schedule:false,
+              schedule_day:'',
+              is_password:false,
+              password:'',
+              is_burn:false,
+              burn_limit:1,
+              burn_day:'',
+              html_text:'',
+              plain_text:'',
+              attachments:[],
+              net_attachments:[]
+            }
+
+            let data = res.data
+            // pp.ruleForm2 = res.data;
+            pp.maillist = []
+            pp.maillist_copyer = [];
+            pp.maillist_bcc = [];
+            pp.show_replay_to = false;
+
+            pp.fileList = data.attachments;
+            pp.ruleForm2.subject = data.subject;
+            if(data.reply_to){
+              pp.ruleForm2.reply_to = data.reply_to;
+              pp.show_reply_to = true;
+            }
+            if(data.uid)pp.ruleForm2.uid = data.uid;
+            if(data.folder)pp.ruleForm2.folder = data.folder;
+            if(data.refw_type)pp.ruleForm2.refw_type = data.refw_type
+            pp.ruleForm2.is_html = data.is_html;
+            if(data.is_html){
+              pp.content = data.html_text ;
+            }else{
+              pp.content = data.plain_text;
+            }
+            // if(item.id == 0 || item.id ==1 || item.id==5){
+              if(data.to && data.to.length>0){
+                for(let i=0;i<data.to.length;i++){
+                  pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
+                }
+              }
+              if(data.cc && data.cc.length>0){
+                for(let i=0;i<data.cc.length;i++){
+                  pp.maillist_copyer.push({fullname:data.cc[i][1]||'',email:data.cc[i][0],status:true})
+                }
+              }
+              if(data.bcc && data.bcc.length>0){
+                for(let i=0;i<data.bcc.length;i++){
+                  pp.maillist_bcc.push({fullname:data.bcc[i][1]||'',email:data.bcc[i][0],status:true})
+                }
+              }
+            // }
+            pp.addTab('compose'+view+' ',data.subject,data.uid,fid)
+            let row = this.multipleSelection[0];
+            if(!row.isread){
+              this.$parent.$parent.$parent.unseencount --;
+              this.$parent.$parent.$parent.$refs.treeMenuBar.getCurrentNode().unseen--;
+              let unseenArr = this.$store.getters.getUnseenCount;
+              unseenArr[this.boxId] --;
+              this.$store.dispatch('setUnseenCountA',unseenArr)
+            }
+            row.isread = true;
+
+
+          }).catch(err=>{
+            this.fullscreenLoading = false;
+            console.log(err)
+          })
+
+        }else if(item.id==4){ //拒收邮件
+
+          this.$confirm('<p>添加黑名单将无法收到对方发来的邮件。</p><p style="margin-bottom:20px;">您真的要拒收吗？</p> <input type="checkbox" id="is_delete"> 拒收同时删除邮件', '系统信息', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            dangerouslyUseHTMLString: true,
+
+          }).then(() => {
+            this.fullscreenLoading = true;
+            if($('#is_delete').prop('checked')) {
+              param.is_delete = true
+            }
+            rejectMessage(param).then(res=>{
+              this.fullscreenLoading = false;
+              this.$message(
+                {type:'success',message:'邮件拒收成功！'}
+              )
+              this.getMessageList();
+            })
+              .catch(err=>{
+                let str = '';
+                if(err.detail){
+                  str = err.detail
+                }
+                this.fullscreenLoading = false;
+                this.$message(
+                {type:'error',message:'邮件拒收失败！'+str}
+              )
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消邮件拒收'
+            });
+          });
+
+        }else if(item.id==6){//打包下载
+          this.fullscreenLoading = true;
+          zipMessage(param).then(response=>{
+            this.fullscreenLoading = false;
+            let blob = new Blob([response.data], { type: response.headers["content-type"] })
+            let objUrl = URL.createObjectURL(blob);
+            this.blobUrl = objUrl;
+            let filenameHeader = response.headers['content-disposition']
+            let filename = decodeURIComponent(filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1));
+            if (window.navigator.msSaveOrOpenBlob) {
+              // if browser is IE
+              navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
+            } else {
+              // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
+              var link = document.createElement("a");
+              link.setAttribute("href", objUrl);
+              link.setAttribute("download", filename);
+
+              document.body.appendChild(link);
+              link.click();
+            }
+            this.$message(
+              {type:'success',message:'打包下载邮件成功！'}
+            )
+          }).catch(err=>{
+            let str = '';
+            if(err.detail){
+              str = err.detail
+            }
+            this.fullscreenLoading = false;
+            this.$message(
+              {type:'error',message:'打包下载邮件失败！'+str}
+            )
+          })
+
+        }else if(item.id == 7){//彻底删除
+          this.$confirm('彻底删除此邮件, 是否继续?', '系统信息', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.fullscreenLoading = true;
+            pruneMessage(param).then(res=>{
+              this.fullscreenLoading = false;
+              this.$message(
+                {type:'success',message:'彻底删除邮件成功！'}
+              )
+              pp.getFloderfn();
+              this.getMessageList();
+            }).catch(err=>{
+              this.fullscreenLoading = false;
+              let str = '';
+              if(err.detail){
+                str = err.detail
+              }
+              this.$message({
+                type:'error',
+                message:'彻底删除邮件失败！'+str
+              })
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消彻底删除'
+            });
+          });
+
+        }else if(item.id == 8){//清空文件夹
+          this.$confirm('执行后邮件将被彻底删除，此操作不可恢复，是否执行?', '系统信息', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.fullscreenLoading = true;
+            messageExpunge(param).then(res=>{
+              this.fullscreenLoading = false;
+              this.$message(
+                {type:'success',message:'清空文件夹成功！'}
+              )
+              pp.getFloderfn();
+              this.getMessageList();
+            }).catch(err=>{
+              this.fullscreenLoading = false;
+              let str = '';
+              if(err.detail){
+                str = err.detail
+              }
+              this.$message({
+                type:'error',
+                message:'清空文件夹失败！'+str
+              })
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消清空文件夹'
+            });
+          });
+
+        }
       },
       handleChange(value) {
-        console.log(value);
       },
       noSelect(){
-          for(var i=0;i<this.collapseItems.length;i++){
-              for(var k=0;k<this.collapseItems[i].lists.length;k++){
-                  this.collapseItems[i].lists[k].checked = false;
-              }
-          }
+        this.$refs.innerTable.clearSelection();
+        // this.$refs.innerTable.clearSelection();
+        // this.$refs.innerTable.forEach(val=>{
+        //   val.clearSelection();
+        // })
       },
       getMessageList(){
+        this.loading = true;
         let params = {
           folder:this.boxId,
           limit:this.pageSize,
           offset:(this.currentPage-1)*this.pageSize,
-
         }
         if(this.search){
           params['search'] = this.search;
         }
+        let str=this.search||'';
+        if(this.searchForm.from){
+          str += ' from "'+this.searchForm.from+'"';
+        }
+        if(this.searchForm.subject){
+          str += ' subject "'+this.searchForm.subject+'"';
+        }
+        if(this.searchForm.body){
+          str += ' body "'+this.searchForm.body+'"';
+        }
+        if(str){
+          params['search'] = str;
+        }
+
+
         if(this.sort){
           params['sort'] = this.sort;
         }
+        this.getDateN(params);
+
+      },
+      getDateN(params){
+        this.loading = true;
         getMailMessage(params).then((res)=>{
           this.totalCount = res.data.count;
-          var items = res.data.results;
-          for(var i=0;i<items.length;i++){
+          let items = res.data.results;
+          // this.totalAllCount = res.data.count;
+          this.unreadCount = res.data.unseen_count;
+          // for(let i=0;i<this.$parent.$parent.$parent.floderResult.length;i++){
+          //   if(this.boxId == this.$parent.$parent.$parent.floderResult[i].raw_name){
+          //     this.$parent.$parent.$parent.floderResult[i].unseen_count = res.data.unseen_count;
+          //   }
+          // }
+          let unseenArr = this.$store.getters.getUnseenCount;
+          unseenArr[params.folder] = res.data.unseen_count;
+          this.$store.dispatch('setUnseenCountA',unseenArr)
+          for(let i=0;i<items.length;i++){
             items[i].flagged = (items[i].flags.join('').indexOf('Flagged')>=0);
-            console.log(items[i].flags)
             items[i].isread = (items[i].flags.join(' ').indexOf('Seen')>=0);
+            if(items[i].flagged){
+              if(items[i].flags.join('').indexOf('umail-yellow')>=0){
+                items[i].color = {'flag-yellow':true};
+              }else if(items[i].flags.join('').indexOf('umail-green')>=0){
+                items[i].color = {'flag-green':true};
+              }else if(items[i].flags.join('').indexOf('umail-orange')>=0){
+                items[i].color = {'flag-orange':true};
+              }else if(items[i].flags.join('').indexOf('umail-blue')>=0){
+                items[i].color = {'flag-blue':true};
+              }else if(items[i].flags.join('').indexOf('umail-pink')>=0){
+                items[i].color = {'flag-pink':true};
+              }else if(items[i].flags.join('').indexOf('umail-cyan')>=0){
+                items[i].color = {'flag-cyan':true};
+              }else if(items[i].flags.join('').indexOf('umail-purple')>=0){
+                items[i].color = {'flag-purple':true};
+              }else if(items[i].flags.join('').indexOf('umail-gray')>=0){
+                items[i].color = {'flag-gray':true};
+              }
+            }
             items[i].plain = '';
             items[i].checked = false;
+            if(this.$store.getters.getIsSwtime){
+              if(items[i].date){
+                let index = items[i].date.indexOf('T');
+                items[i].date = items[i].date.slice(0,index) + this.set_12_time(items[i].date.slice(index+1))
+              }else if(items[i].internaldate){
+                let index = items[i].internaldate.indexOf('T');
+                items[i].internaldate = items[i].internaldate.slice(0,index) + this.set_12_time(items[i].internaldate.slice(index+1))
+              }
+
+            }
+            let flagbg_class = '';
+            let flagStr = '已读';
+            if(!items[i].isread){
+              flagStr = '未读';
+              flagbg_class = 'unseen';
+            }
+            // if(items[i].flags.join('').indexOf('umail-deliver')>=0){
+            //   flagStr = '投递成功';
+            //   flagbg_class = 'sendsuc';
+            // }
+            if(items[i].flags.join('').indexOf('Answered')>=0 && items[i].flags.join('').indexOf('umail-forword')>= 0){
+              flagStr = '已回复并已转发';
+              flagbg_class = 'reandfw';
+            }
+            if(items[i].flags.join('').indexOf('umail-forword')>=0 && items[i].flags.join('').indexOf('Answered')==-1){
+              flagStr = '已转发';
+              flagbg_class = 'forward';
+            }
+            if(items[i].flags.join('').indexOf('Answered')>=0 && items[i].flags.join('').indexOf('umail-forword') == -1){
+              flagStr = '已回复';
+              flagbg_class = 'answered';
+            }
+            if(items[i].flags.join('').indexOf('umail-schedule')>=0){
+              flagStr = '定时邮件';
+              flagbg_class = 'schedule';
+            }
+            items[i].flagbg_class = flagbg_class
+            items[i].flagStr = flagStr
           }
           this.collapseItems[0].lists = items;
+
+          let result = [];
+          let result_new = [];
+          let today = {title:'今天 ',arr:[],show:true},yestoday = {title:'昨天 ',arr:[],show:true},beforeYesdoday = {title:'前天 ',arr:[],show:true},earlier = {title:'更早 ',arr:[],show:true};
+          items.forEach(val=>{
+            if(val.date){
+              let date = new Date(val.date.slice(0,10));
+              let now = new Date();
+              let count = now.getDate()-date.getDate()
+              if(count == 0){
+                today.arr.push(val)
+              }else if(count == 1){
+                yestoday.arr.push(val)
+              }else if(count == 1){
+                beforeYesdoday.arr.push(val)
+              }else{
+                earlier.arr.push(val)
+              }
+            }else if(val.internaldate){
+              let date = new Date(val.internaldate.slice(0,10));
+              let now = new Date();
+              let count = now.getDate()-date.getDate()
+              if(count == 0){
+                today.arr.push(val)
+              }else if(count == 1){
+                yestoday.arr.push(val)
+              }else if(count == 1){
+                beforeYesdoday.arr.push(val)
+              }else{
+                earlier.arr.push(val)
+              }
+            }
+          })
+          if(today.arr.length>0){
+            result.push(today)
+            let obj = [].concat(today.arr[0])
+            obj.title = '今天'
+            obj.count = today.arr.length
+            obj.is_header = true
+            result_new.push(obj)
+            result_new = result_new.concat(today.arr);
+          }
+          if(yestoday.arr.length>0){
+            result.push(yestoday)
+            let obj = [].concat(yestoday.arr[0])
+            obj.title = '昨天'
+            obj.count = yestoday.arr.length
+            obj.is_header = true
+            result_new.push(obj)
+            result_new = result_new.concat(yestoday.arr);
+          }
+          if(beforeYesdoday.arr.length>0){
+            result.push(beforeYesdoday)
+            let obj = [].concat(beforeYesdoday.arr[0])
+            obj.title = '前天'
+            obj.count = beforeYesdoday.arr.length
+            obj.is_header = true
+            result_new.push(obj)
+            result_new = result_new.concat(beforeYesdoday.arr);
+          }
+          if(earlier.arr.length>0){
+            result.push(earlier)
+            let obj = [].concat(earlier.arr[0])
+            obj.title = '更早'
+            obj.count = earlier.arr.length
+            obj.is_header = true
+            result_new.push(obj)
+            result_new = result_new.concat(earlier.arr);
+          }
+          this.listData = result;
+          this.listData_new = result_new;
+
+          this.loading = false;
         },(err)=>{
           console.log(err)
+          this.loading = false;
+        }).catch(err=>{
+          this.loading = false;
         })
+      },
+      set_12_time(time){
+        let theHour = time.slice(0,2);
+        let min_ss = time.slice(2);
+        let flag = ''
+        if(theHour>=12){
+          flag = " 下午 "
+        }else{
+          flag = ' 上午 '
+        }
+        if (theHour > 12) {
+           theHour = theHour-12
+        }
+        if (theHour == 0) {
+          theHour = 12;
+        }
+        return flag+theHour+min_ss
       },
       getFloderMsgById(param){
         getFloderMsg(param).then((suc)=>{
-          this.totalCount = suc.data.count;
+          this.totalAllCount = suc.data.count;
           this.unreadCount = suc.data.unseen_count;
         },(err)=>{
           console.log(err)
@@ -496,53 +1347,177 @@
           }
           return list;
       },
-      boxName:function(){
-        return this.$parent.activeMenubar.label
-      }
-    },
-    beforeMount(){
-      this.getMessageList();
-      this.getFloderMsgById(this.boxId)
-      getFloder().then((res)=>{
-        let folder = res.data
+      moveItems:function(){
+        let folder = this.floderResult;
         let arr = [];
         for(let i=0;i<folder.length;i++){
-          let obj={};
-          obj['text'] = folder[i]['name'];
-          obj['id'] = folder[i]['raw_name'];
-          obj['divided'] = false;
-          arr.push(obj);
+          if(folder[i]['raw_name']!='Drafts'&&folder[i]['raw_name']!=this.boxId){
+            let obj={};
+            obj['text'] = folder[i]['name'];
+            obj['id'] = folder[i]['raw_name'];
+            obj['divided'] = false;
+            arr.push(obj);
+          }
         }
-        this.moveItems = arr
-      },(err)=>{
-        console.log(err)
-      });
+        return arr;
+      },
+      unseen_count_new:function(){
+        return this.$store.getters.getUnseenCount[this.boxId]
+      },
+    },
+    created(){
+      this.boxId = this.$route.params.boxId || 'INBOX'
+      this.curr_folder = sessionStorage['checkNodeLabel'] || '收件箱'
 
-
+      this.getMessageList();
+    },
+    mounted(){
+      // $('.toolbar>div:eq(0)>button').trigger('click');
+      // $(".el-dropdown-menu .el-dropdown-menu__item")[1].click();
     },
     watch: {
         boxId(newValue, oldValue) {
           this.currentPage = 1;
+          this.search = '';
+          this.viewCheckIndex = ''
           this.multipleSelection = [];
-            this.getMessageList();
-            this.getFloderMsgById(this.boxId)
+          this.searchForm = {
+            from: '',
+            subject: '',
+            body: ''
+          };
+          this.getMessageList();
+          if(newValue == 'Drafts'){
+            this.viewItems = [
+              {id:'',text:'全部邮件',divided:false},
+              {id:'unseen',text:'未读邮件',divided:false},
+              {id:'seen',text:'已读邮件',divided:false},
+              {id:'flagged',text:'已标记邮件',divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
+              {id:'other',text:'其他标记',divided:false,children:[
+                  {id:'KEYWORD umail-green',text:'绿旗',classN:'flag-green'},
+                  {id:'KEYWORD umail-orange',text:'橙旗',classN:'flag-orange'},
+                  {id:'KEYWORD umail-blue',text:'蓝旗',classN:'flag-blue'},
+                  {id:'KEYWORD umail-pink',text:'粉旗',classN:'flag-pink'},
+                  {id:'KEYWORD umail-cyan',text:'青旗',classN:'flag-cyan'},
+                  {id:'KEYWORD umail-yellow',text:'黄旗',classN:'flag-yellow'},
+                  {id:'KEYWORD umail-purple',text:'紫旗',classN:'flag-purple'},
+                  {id:'KEYWORD umail-gray',text:'灰旗',classN:'flag-gray'}
+                ]},
+              {id:'unflagged',text:'未标记邮件',divided:false,classN:'iconfont icon-iconflat'}
+            ]
+          }else{
+            this.viewItems = [
+              {id:'',text:'全部邮件',divided:false},
+              {id:'unseen',text:'未读邮件',divided:false},
+              {id:'seen',text:'已读邮件',divided:false},
+              {id:'flagged',text:'已标记邮件',divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
+              {id:'other',text:'其他标记',divided:false,children:[
+                  {id:'KEYWORD umail-green',text:'绿旗',classN:'flag-green'},
+                  {id:'KEYWORD umail-orange',text:'橙旗',classN:'flag-orange'},
+                  {id:'KEYWORD umail-blue',text:'蓝旗',classN:'flag-blue'},
+                  {id:'KEYWORD umail-pink',text:'粉旗',classN:'flag-pink'},
+                  {id:'KEYWORD umail-cyan',text:'青旗',classN:'flag-cyan'},
+                  {id:'KEYWORD umail-yellow',text:'黄旗',classN:'flag-yellow'},
+                  {id:'KEYWORD umail-purple',text:'紫旗',classN:'flag-purple'},
+                  {id:'KEYWORD umail-gray',text:'灰旗',classN:'flag-gray'}
+                ]},
+              {id:'unflagged',text:'未标记邮件',divided:false,classN:'iconfont icon-iconflat'},
+              {id:'ANSWERED',text:'已回复',divided:true,classN:'iconfont icon-iconback greencolor'},
+              {id:'KEYWORD umail-forword',text:'已转发',divided:false,classN:'iconfont icon-Forward greencolor'},
+            ]
+          }
         },
       checkedMails(v){
-          // console.log(v)
-      }
-    }
+      },
+      $route(v,o){
+        this.boxId = this.$route.params.boxId;
+        this.curr_folder = sessionStorage['checkNodeLabel'] || '收件箱'
+      },
+
+    },
 
 }
 </script>
 
 <style>
-  .maillist.el-table td{
-    padding:18px 0;
+  .fromto.from{
+    color:#222;
   }
-  .mainMsg .icon-iconflat{
+  .fromto.unseen{
+    font-weight:700;
+  }
+  .is_red{
+    color:red;
+  }
+  .read_bg{
+    display:inline-block;
+    cursor: pointer;
+    height: 18px;
+    position:relative;
+    top:2px;
+    overflow: hidden;
+    width: 18px;
+    background:url(../../../assets/img/maillistbg.png) no-repeat scroll -48px -16px transparent
+  }
+  .read_bg.forward{
+    background:url("../../../assets/img/maillistbg.png") no-repeat scroll -48px -48px transparent;
+  }
+  .read_bg.answered{
+    background:url("../../../assets/img/maillistbg.png") no-repeat scroll -48px -32px transparent;
+  }
+  .read_bg.unseen{
+    background:url("../../../assets/img/maillistbg.png") no-repeat scroll -48px 0 transparent;
+  }
+  .read_bg.reandfw{
+    background:url("../../../assets/img/reandfw.jpg") no-repeat scroll transparent;
+  }
+  .read_bg.sendsuc{
+    background:url("../../../assets/img/sendsuc.jpg") no-repeat scroll transparent;
+  }
+  .read_bg.schedule{
+    background:url("../../../assets/img/schedule.jpg") no-repeat scroll transparent;
+  }
+  .greencolor{
+    color:rgb(46, 169, 98);
+  }
+  .redcolor,.redcolor .fromto.from{
+    color:#c00;
+  }
+  .flagged,.flagged.fromto.from{
+    color:#c00;
+  }
+  .flag-green,.flag-green .fromto{
+    color: #349B08!important;
+  }
+  .flag-orange,.flag-orange .fromto{
+    color: #ED501A!important;
+  }
+  .flag-yellow,.flag-yellow .fromto{
+    color: #C79C17!important;
+  }
+  .flag-blue,.flag-blue .fromto{
+    color: #1797DC!important;
+  }
+  .flag-pink,.flag-pink .fromto{
+    color: #E33D97!important;
+  }
+  .flag-cyan,.flag-cyan .fromto{
+    color: #0FB38E!important;
+  }
+  .flag-purple,.flag-purple .fromto{
+    color: #AD50D8!important;
+  }
+  .flag-gray,.flag-gray .fromto{
+    color: #818181!important;
+  }
+
+  .maillist.el-table td{
+    padding:8px 0;
+  }
+  .mainMsg .icon-iconflat,.mainMsg .el-icon-arrow-down{
   display:none;
 }
-.mainMsg.hoverStyle .icon-iconflat{
+.mainMsg.hoverStyle .icon-iconflat,.mainMsg.hoverStyle .el-icon-arrow-down{
   display:inline;
 }
 .dropdown_item.active{
@@ -570,6 +1545,9 @@
   }
   .fromto{
     color:#057ab8;
+  }
+  .subject_hover:hover{
+    cursor:pointer;
   }
 </style>
 

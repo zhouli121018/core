@@ -28,9 +28,6 @@ class MailboxPasswordChecker(object):
     Name = "Password"
 
     RuleTypeList = {
-    #是否限制密码长度，密码长度的值
-    #>=2.2.59 后 "passwd_size" 强制判断
-    "passwd_size2"      :   1,
     #续3位及以上数字不能连号
     "passwd_digital"    :   1,
     #连续3位及以上字母不能连号， 密码不能包含连续3个及以上相同字符
@@ -117,6 +114,11 @@ class MailboxPasswordChecker(object):
         for k,default in self.RuleTypeList.items():
             if not k in pwdValue:
                 pwdValue[k] = default
+            #老版本的关闭为 -1 ，我们在新版统一为 0, 兼容一下
+            if str(pwdValue[k]) == "-1":
+                pwdValue[k] = 0
+        #密码长度的默认值
+        pwdValue["passwd_size2"] = pwdValue.get("passwd_size2", 8)
         self.setting.update(pwdValue)
 
         value = self.loadDomainAttr(item='cf_pwd_forbid')
@@ -128,6 +130,9 @@ class MailboxPasswordChecker(object):
         for k, default in self.LimitTypeList.items():
             if not k in pwdDorbid:
                 pwdDorbid[k] = default
+            #老版本的关闭为 -1 ，我们在新版统一为 0, 兼容一下
+            if str(pwdDorbid[k]) == "-1":
+                pwdDorbid[k] = 0
         self.setting.update(pwdDorbid)
         self.debugLog(u">>> DomainSetting: %s"%(unicode(self.setting)))
 
@@ -151,6 +156,8 @@ class MailboxPasswordChecker(object):
         value = self.JsonLoads(groupSetting.value)
         #密码组成类型
         passwd_type = value.get("passwd_type", 2)
+        #密码长度
+        passwd_size2 = value.get("passwd_size2", 8)
         #其他密码规则
         passwd_other = value.get("passwd_other", {})
         #密码禁止规则
@@ -160,11 +167,13 @@ class MailboxPasswordChecker(object):
         for k,default in self.RuleTypeList.items():
             if k in passwd_other:
                 v = passwd_other[k]
-                #前面组权限存的值是passwd_digital : passwd_digital 格式的
                 if str(v) in ("1","-1", "0"):
                     setting[k] = 1 if str(v)=="1" else 0
-                else:
+                #前面组权限存的值是passwd_digital : passwd_digital 格式的
+                elif v == k:
                     setting[k] = 1
+                else:
+                    setting[k] = v
             else:
                 setting[k] = default
         for k, default in self.LimitTypeList.items():
@@ -180,6 +189,7 @@ class MailboxPasswordChecker(object):
 
         self.debugLog(u">>> MailboxSetting: %s"%(unicode(setting)))
         self.setting["passwd_type"] = int(passwd_type)
+        self.setting["passwd_size2"] = int(passwd_size2)
         self.setting.update(setting)
 
     #============================================ Password 外部调用函数==========================================
@@ -215,7 +225,7 @@ class MailboxPasswordChecker(object):
         if self.mailbox.lower() in password.lower():
             return False
         username = self.mailbox.split('@')[0]
-        if username.lower() in password.lower():
+        if username and username.lower() in password.lower():
             return False
         return True
 
@@ -374,7 +384,15 @@ class MailboxPasswordChecker(object):
             else:
                 if int(self.GetSettingValue("force_change", 0)) == 1:
                     force = 1
-        return ret, force, reason
+        return ret, force, self.GetRuleList(), reason
+
+    def GetRuleList(self):
+        lst = {}
+        for k in self.RuleTypeList.keys():
+            lst[k] = int(self.GetSettingValue(k, 0))
+        lst["passwd_type"] = self.GetSettingValue("passwd_type", 2)
+        lst["passwd_size2"] = self.GetSettingValue("passwd_size2", 8)
+        return lst
     #============================================ Password 外部调用函数完毕==========================================
 
 
@@ -390,11 +408,20 @@ def CheckMailboxPasswordLimit(domain_id=0, mailbox_id=0, mailbox=u"", realname=u
             mailbox=mailbox, realname=realname, password=password)
     return objGroup.CheckPasswordLimit()
 
+def GetMailboxPwdRules(domain_id=0, mailbox_id=0, mailbox=u"", realname=u"", password=u""):
+    objGroup = MailboxPasswordChecker(
+            domain_id=domain_id, mailbox_id=mailbox_id,
+            mailbox=mailbox, realname=realname, password=password)
+    return objGroup.GetRuleList()
+
 if __name__ == "__main__":
     mailbox_id = Mailbox.objects.filter(username='anshanshan@domain.com').first().id
-    ret = CheckMailboxPassword(domain_id=1, mailbox_id=mailbox_id, password=u"1QAZ2wsxqianzhongshu")
+    ret = CheckMailboxPassword(domain_id=1, mailbox_id=mailbox_id, password=u"1231QAZabc")
     print ret
-    result = CheckMailboxPasswordLimit(domain_id=1, mailbox_id=mailbox_id, password=u"1QAZ2wsxqianzhongshu")
+    result = CheckMailboxPasswordLimit(domain_id=1, mailbox_id=mailbox_id, password=u"1231QAZabc")
     #返回值，登陆是否需要修改密码，密码校验失败原因
-    ret, change_pwd, reason = result
+    ret, change_pwd, rules, reason = result
     print result
+
+    rules = GetMailboxPwdRules(domain_id=1, mailbox_id=mailbox_id)
+    print "GetRuleList:  ",rules

@@ -28,7 +28,7 @@ def display2(depts, level=0):
     lists = []
     for d in depts:
         lists.append([d, level])
-        children = Department.objects.filter(parent_id=d.id).order_by('order')
+        children = Department.objects.filter(parent_id=d.id).order_by('-order')
         if children:
             lists.extend(display2(children, level + 1))
     return lists

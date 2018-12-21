@@ -25,15 +25,6 @@ from app.utils.dept_session import (
 # post_save.connect(clear_cache_dept_signal, sender=Department)
 # post_delete.connect(clear_cache_dept_signal, sender=Department)
 
-def update_depart_order():
-    obj = DomainAttr.getAttrObj(item="sys:dept:order:initial")
-    if obj.value != '1':
-        cr = connection.cursor()
-        sql = "UPDATE co_department SET `showorder`=`id`;"
-        cr.execute(sql)
-        obj.value = "1"
-        obj.save()
-
 def get_cid(request):
     try:
         cid = int(request.GET.get('cid', '-1'))
@@ -43,6 +34,12 @@ def get_cid(request):
         # messages.add_message(request, messages.ERROR, _(u'你没有操作该部门的权限！'))
         cid = get_department_bysession(request)
     return cid
+
+def delete_dpt(dpt):
+    id = dpt.id
+    Department.objects.filter(id=id).delete()
+    CoDepartmentInfo.objects.filter(id=id).delete()
+    DepartmentMember.objects.filter(dept_id=id).delete()
 
 @login_required
 @department_required
@@ -64,31 +61,28 @@ def department(request):
                 messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
             else:
                 messages.add_message(request, messages.ERROR, _(u'不能删除拥有下级部门的部门！'))
-        if action == "down":
-            obj = Department.objects.filter(id=id).first()
-            if obj:
-                obj.move("down")
-            messages.add_message(request, messages.SUCCESS, _(u'部门顺序下移一位成功'))
-        if action == "up":
-            obj = Department.objects.filter(id=id).first()
-            if obj:
-                obj.move("up")
-            messages.add_message(request, messages.SUCCESS, _(u'部门顺序上移一位成功'))
-        if action == "top":
-            obj = Department.objects.filter(id=id).first()
-            if obj:
-                obj.top()
-            messages.add_message(request, messages.SUCCESS, _(u'部门顺序置顶成功'))
         return HttpResponseRedirect(uri)
     dept_list = get_user_child_departments(request, domain_id)
     dept = Department.objects.filter(domain_id=domain_id, id=cid).first()
-    lists = Department.objects.filter(domain_id=domain_id, parent_id=cid).order_by("order")
+    lists = Department.objects.filter(domain_id=domain_id, parent_id=cid).order_by("-order")
     return render(request, "dpt/dpt.html", {
         "cid": dept and dept.id or -1,
         "cdpt": dept and dept.title or _(u"U-Mail邮件服务器"),
         "dept_list": json.dumps(dept_list),
         "lists": lists,
     })
+
+@login_required
+@department_required
+def ajax_update_depart_order(request):
+    dpt_id = int(request.POST.get('dpt_id', '-1'))
+    obj = Department.objects.get(id=dpt_id)
+    if not obj:
+        return HttpResponse(json.dumps({'message': '不存在的部门 {}'.format(dpt_id), "status":"failure"}), content_type="application/json")
+    order = request.POST.get("order", 0)
+    obj.order = order
+    obj.save()
+    return HttpResponse(json.dumps({'message': '', "status":"OK"}), content_type="application/json")
 
 @login_required
 @department_required

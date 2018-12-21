@@ -163,22 +163,22 @@
                                 <div style="float:left;">
                                     <input type="radio" name="timeset" id="timeset2" {% if con_exec_date_week.disabled == -1 %}checked{% endif %} style="margin-right:10px;">
                                     <select name="week_start" id="week_start">
-                                        <option value="1" {% if value.day_start == 1 %}selected{% endif %}>星期一</option>
-                                        <option value="2" {% if value.day_start == 2 %}selected{% endif %}>星期二</option>
-                                        <option value="3" {% if value.day_start == 3 %}selected{% endif %}>星期三</option>
-                                        <option value="4" {% if value.day_start == 4 %}selected{% endif %}>星期四</option>
-                                        <option value="5" {% if value.day_start == 5 %}selected{% endif %}>星期五</option>
-                                        <option value="6" {% if value.day_start == 6 %}selected{% endif %}>星期六</option>
-                                        <option value="7" {% if value.day_start == 7 %}selected{% endif %}>星期日</option>
+                                        <option value="1" {% if value.day_start == '1' %}selected{% endif %}>星期一</option>
+                                        <option value="2" {% if value.day_start == '2' %}selected{% endif %}>星期二</option>
+                                        <option value="3" {% if value.day_start == '3' %}selected{% endif %}>星期三</option>
+                                        <option value="4" {% if value.day_start == '4' %}selected{% endif %}>星期四</option>
+                                        <option value="5" {% if value.day_start == '5' %}selected{% endif %}>星期五</option>
+                                        <option value="6" {% if value.day_start == '6' %}selected{% endif %}>星期六</option>
+                                        <option value="7" {% if value.day_start == '7' %}selected{% endif %}>星期日</option>
                                     </select> --
                                     <select name="week_end" id="week_end" style="margin-right:20px;" >
-                                        <option value="1" {% if value.day_end == 1 %}selected{% endif %}>星期一</option>
-                                        <option value="2" {% if value.day_end == 2 %}selected{% endif %}>星期二</option>
-                                        <option value="3" {% if value.day_end == 3 %}selected{% endif %}>星期三</option>
-                                        <option value="4" {% if value.day_end == 4 %}selected{% endif %}>星期四</option>
-                                        <option value="5" {% if value.day_end == 5 %}selected{% endif %}>星期五</option>
-                                        <option value="6" {% if value.day_end == 6 %}selected{% endif %}>星期六</option>
-                                        <option value="7" {% if value.day_end == 7 %}selected{% endif %}>星期日</option>
+                                        <option value="1" {% if value.day_end == '1' %}selected{% endif %}>星期一</option>
+                                        <option value="2" {% if value.day_end == '2' %}selected{% endif %}>星期二</option>
+                                        <option value="3" {% if value.day_end == '3' %}selected{% endif %}>星期三</option>
+                                        <option value="4" {% if value.day_end == '4' %}selected{% endif %}>星期四</option>
+                                        <option value="5" {% if value.day_end == '5' %}selected{% endif %}>星期五</option>
+                                        <option value="6" {% if value.day_end == '6' %}selected{% endif %}>星期六</option>
+                                        <option value="7" {% if value.day_end == '7' %}selected{% endif %}>星期日</option>
                                     </select>
                                 </div>
                                 <div class="input-group bootstrap-timepicker" style="width: 120px;float:left">

@@ -99,7 +99,7 @@
                                             <td class="">
                                                 <div class="col-sm-4 no-padding">
                                                     <select name="send_limit" class=" form-control limit_send_select" id="id_limit_send">
-                                                        <option value="-1">不限制邮件发送</option>
+                                                        <option value="0">不限制邮件发送</option>
                                                         <option value="1">禁止发送所有邮件</option>
                                                         <option value="2">只发送本地域邮件</option>
                                                         <option value="3">可发送指定外域邮件</option>
@@ -115,7 +115,7 @@
                                             <td class="">
                                                 <div class="col-sm-4 no-padding">
                                                     <select name="recv_limit" class=" form-control limit_send_select" id="id_limit_recv">
-                                                        <option value="-1">不限制邮件接收</option>
+                                                        <option value="0">不限制邮件接收</option>
                                                         <option value="1">禁止接收所有邮件</option>
                                                         <option value="2">只接收本地域邮件</option>
                                                         <option value="3">可接收指定外域邮件</option>
@@ -223,10 +223,10 @@
                                                     <!-- #section:custom/checkbox -->
                                                     <div class="checkbox">
                                                         <label>
-                                                            <input name="passwd_other_bak" value="passwd_size" type="checkbox" checked class="ace">
+                                                            <input name="passwd_other_bak" value="passwd_size2" type="checkbox" checked class="ace" disabled>
                                                             <span class="lbl">
                                                                     <span class="">密码长度为</span>
-                                                                    <select class="" name="passwd_size">
+                                                                    <select class="" name="passwd_size2">
                                                                         <option value="8" selected>8</option>
                                                                         <option value="9">9</option>
                                                                         <option value="10">10</option>
@@ -297,7 +297,7 @@
                                             <td>
                                                 <div class="checkbox">
                                                     <label style="margin-right:20px;">
-                                                        <input name="passwd_forbid_bak" value="forbid_send_in_weak" type="checkbox" checked class="ace">
+                                                        <input name="passwd_forbid_bak" value="forbid_send_in_weak" type="checkbox" checked class="ace" disabled>
                                                         <span class="lbl"> 禁止外发邮件 </span>
                                                     </label>
                                                     <label>
@@ -718,10 +718,7 @@
                                             <td class="row">
                                                 <div class="col-sm-4">
                                                     <select name="is_space_clean" class=" form-control  max-width-200">
-                                                        <option value="-1">关闭</option>
-
-                                                        <option value="0" selected="">与域名配置相同</option>
-
+                                                        <option value="0">关闭</option>
                                                         <option value="1">开启</option>
 
                                                     </select>
@@ -830,7 +827,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-sm-10 col-sm-offset-1">
                                 <div class="input-group margin-bottom-8">
@@ -862,7 +859,7 @@
             <div class="modal-body">
                 <div class="table-header">例外地址</div>
                 <div>
-                    
+
                         {% csrf_token %}
                         <div style="max-height: 300px;overflow: auto;border-bottom: 1px solid #ddd; margin-bottom: 20px;">
                             <table class="table table-bordered table-center">
@@ -884,7 +881,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-sm-10 col-sm-offset-1">
                                 <div class="input-group margin-bottom-8">
@@ -945,6 +942,8 @@
         var hashSend = [];
         var alrecvList = [];
         var hashRecv = [];
+        var al_limit_whitelist = [];
+
         function freshHtmlSend(){
             var setting_id = $('#basic>div>button').attr('data_id');
             $.ajax({
@@ -954,6 +953,7 @@
                 data:{setting_id:setting_id},
                 success:function(data){
                     data = JSON.parse(data)
+                    al_limit_whitelist = data;
                     var sendList = data.send||[];
                     alsendList = data.send||[];
                     hashSend = [];
@@ -979,7 +979,7 @@
                     alrecvList = data.recv||[];
                     hashRecv = [];
                     for(var i=0,html='';i<recvList.length;i++){
-                        hashSend[recvList[i]] = true;
+                        hashRecv[recvList[i]] = true;
                         html += '<tr><td>'+(i+1)+'</td><td>'+recvList[i]+'</td> <td> <button class="btn btn-xs btn-danger delete_recv_btn" data_email="'+recvList[i]+'" type="button">删除</button></td></tr>'
                     }
                     $('#recv_tbody').html(html);
@@ -1002,7 +1002,8 @@
                 async: false,
                 data:{setting_id:setting_id},
                 success:function(data){
-                    limit_whitelist = data;
+                    data = JSON.parse(data)
+                    al_limit_whitelist = data;
                 }
             })
         }
@@ -1048,17 +1049,15 @@
             }
         })
         function updateSend(sendList){
-            var str = {
-                value : sendList,
-                type: 'send',
-                setting_id: $('#basic>div>button').attr('data_id')
-            }
-            str = JSON.stringify(str)
             $.ajax({
                 // url:"{% url 'group_limit_whitelist_ajax' %}",
                 url:"{% url 'ajax_group_setting_white_mdf' %}",
                 type:"POST",
-                data:str,
+                data:{
+                    value : JSON.stringify(sendList),
+                    type: 'send',
+                    setting_id: $('#basic>div>button').attr('data_id')
+                },
                 success:function(data){
                     if(data.status=='OK'){
                         layer.msg("操作成功！");
@@ -1077,7 +1076,7 @@
                 layer.msg('请输入内容~');
                 return;
             }
-            if(hashSend[addval]){
+            if(hashRecv[addval]){
                 layer.msg('已经添加过了~');
                 return;
             }
@@ -1096,7 +1095,7 @@
         $('#recv_tbody').on('click',' .delete_recv_btn',function(){
             var a = $(this).attr('data_email');
             for(var i=0;i<alrecvList.length;i++){
-                if(alsendList[i]==a){
+                if(alrecvList[i]==a){
                     hashRecv[a] = false;
                     alrecvList.splice(i,1);
                     updateRecv(alrecvList);
@@ -1104,19 +1103,17 @@
                 }
             }
         })
-        
+
         function updateRecv(sendList){
-            var str = {
-                value : sendList,
-                type: 'recv',
-                setting_id: $('#basic>div>button').attr('data_id')
-            }
-            str = JSON.stringify(str)
             $.ajax({
                 // url:"{% url 'group_limit_whitelist_ajax' %}",
                 url:"{% url 'ajax_group_setting_white_mdf' %}",
                 type:"POST",
-                data:str,
+                data:{
+                    value : JSON.stringify(sendList) ,
+                    type: 'recv',
+                    setting_id: $('#basic>div>button').attr('data_id')
+                },
                 success:function(data){
                     if(data.status=='OK'){
                         layer.msg("操作成功！");
@@ -1338,7 +1335,6 @@
             type:"POST",
             data:{action:"dept_list"},
             success:function(data){
-                console.log(data);
                 deptArr = data.dept;
                 demoinitdept("#tree","#tree_box","#input_box",deptArr);
             }
@@ -1364,7 +1360,6 @@
                 data:{setting_id:$('#oab>div>button').attr('data_id')},
                 success:function(data){
                     data = JSON.parse(data)
-                    console.log(data)
                     alreadyDeptArr = [];
                     idArr = [];
                     hashId = [];
@@ -1420,7 +1415,7 @@
                 }
             }
         })
-        
+
         $("#spam [name='is_spam']").on('click', function(){
             if($(this).prop('checked')){
                 $('.sw_antivirus').show();
@@ -1431,7 +1426,6 @@
         var limit_whitelist = {};
         function init(isInit){
             if(isInit=='1'){
-                console.log('init')
                 $('#edit_email_tabs>ul>li').addClass('display-none');
                 $('#edit_email_tabs>div').hide();
             }
@@ -1447,15 +1441,16 @@
                         var type = res[key].type;
                         var id = res[key].id;
                         $('#edit_email_tabs [href="#'+type+'"]').parent().removeClass('display-none');
-                        if(isInit=='1'){
-                            let ctype = $('#edit_email_tabs>ul>li:not(".display-none"):eq(0)').find('>a').attr('href').slice(1)
-                            $('#edit_email_tabs>ul>li:not(".display-none"):eq(0)').find('>a').click();
-                            // $('#edit_email_tabs [href="#'+ctype+'"]').parent().addClass('ui-tabs-active');
-                            $('#edit_email_tabs>div#'+ctype).show();
-                        }
                         $('#'+type+'>div>button').attr('data_type',type);
                         $('#'+type+'>div>button').attr('data_id',id);
                         $('#edit_email_tabs [href="#'+type+'"]').attr('data_id',id)
+                        if(isInit=='1'){
+                            let ctype = $('#edit_email_tabs>ul>li:not(".display-none"):eq(0)').find('>a').attr('href').slice(1)
+                            $('#edit_email_tabs>ul>li:not(".display-none"):eq(0)').find('>a').click();
+                            console.log($('#edit_email_tabs>ul>li:not(".display-none"):eq(0)').find('>a'))
+                            // $('#edit_email_tabs [href="#'+ctype+'"]').parent().addClass('ui-tabs-active');
+                            $('#edit_email_tabs>div#'+ctype).show();
+                        }
                         hashArr[type] = true;
                     }
                     for(var i=0,html='';i<arr.length;i++){
@@ -1497,9 +1492,8 @@
                         mail_space:0,
                         net_space:0,
                         allow_out_size:0,
-                        send_limit:-1,
-                        recv_limit:-1,
-                        limit_whitelist:{},
+                        send_limit:0,
+                        recv_limit:0
                     }
                 }else if(type == 'login'){
                     value = {
@@ -1511,7 +1505,7 @@
                     value = {
                         "is_passwd": 1,
                         "passwd_day": 0,
-                        "passwd_size": 8,
+                        "passwd_size2": 8,
                         "passwd_type": 2,
                         "passwd_other":  {
                             "passwd_digital": 1,
@@ -1521,8 +1515,8 @@
                             "passwd_letter2": 1
                             },
                         "passwd_forbid": {
-                            "forbid_send": 1,
-                            "force_change": 1,
+                            "forbid_send": 0,
+                            "force_change": 0,
                             "force_change_in_weak": 1,
                             "forbid_send_in_weak": 1
                             }
@@ -1557,8 +1551,7 @@
                 }else if(type == 'oab'){
                     value = {
                         "oab_show_mod": 1,
-                        "oab_show_export": 0,
-                        "oab_dept_list": ""
+                        "oab_show_export": 0
                     }
 
                 }else if(type == 'space'){
@@ -1573,10 +1566,9 @@
             }else{
                 value = val;
             }
-            console.log(typeof JSON.stringify(value))
             $.ajax({
                 url:"{% url 'ajax_group_setting_mdf' %}",
-                method:'POST',
+                type:'POST',
                 data:{
                     group_id: "{{group_id}}",
                     setting_id  : setting_id,
@@ -1591,6 +1583,90 @@
                         $('#edit_email_tabs>div').hide();
                         $('#edit_email_tabs [href="#'+type+'"]').parent().removeClass('display-none');
                         $('#edit_email_tabs [href="#'+type+'"]').click();
+
+                        if(type == 'basic'){
+                            $('#basic [name="mail_space"]').val(0);
+                            $('#basic [name="net_space"]').val(0)
+                            $('#basic [name="allow_out_size"]').val(0)
+                            $('#basic [name="send_limit"]').val(0)
+                            $('#basic [name="recv_limit"]').val(0)
+                            $('#basic [name="send_limit"]').next().hide()
+                            $('#basic [name="recv_limit"]').next().hide()
+                        }else if(type == 'login'){
+                            $('#login [name="is_pop"]').prop('checked',true);
+                            $('#login [name="is_smtp"]').prop('checked',true);
+                            $('#login [name="is_imap"]').prop('checked',true);
+                        }else if(type == 'password'){
+                            $('#password [name="is_passwd"]').prop('checked',true)
+                            $('#password [name="passwd_day"]').val(0)
+                            $('#password [name="passwd_size2"]').val(8)
+                            $('#password [name="passwd_type"]').val(2)
+
+                            $('#password [name="passwd_other_bak"][value="passwd_digital"]').prop('checked',true)
+                            $('#password [name="passwd_other_bak"][value="passwd_name2"]').prop('checked',true)
+                            $('#password [name="passwd_other_bak"][value="passwd_name"]').prop('checked',true)
+                            $('#password [name="passwd_other_bak"][value="passwd_letter"]').prop('checked',true)
+                            $('#password [name="passwd_other_bak"][value="passwd_letter2"]').prop('checked',true)
+
+
+                            $('#password [name="passwd_forbid_bak"][value="forbid_send"]').prop('checked',false)
+                            $('#password [name="passwd_forbid_bak"][value="force_change"]').prop('checked',false)
+                            $('#password [name="passwd_forbid_bak"][value="force_change_in_weak"]').prop('checked',true)
+                            $('#password [name="passwd_forbid_bak"][value="forbid_send_in_weak"]').prop('checked',true)
+
+
+                        }else if(type == 'spam'){
+                            $('#spam [name="is_virus"]').prop('checked',true)
+                            $('#spam [name="is_spam"]').prop('checked',true)
+                            $('.sw_antivirus').show();
+                            $('#spam [name="check_attach_bak"][value="high"]').prop('checked',true)
+                            $('#spam [name="check_attach_bak"][value="low"]').prop('checked',false)
+
+                            $('#spam [name="match_black_bak"][value="content"]').prop('checked',true)
+                            $('#spam [name="match_black_bak"][value="sender"]').prop('checked',true)
+                            $('#spam [name="match_black_bak"][value="subject"]').prop('checked',true)
+
+                            $('#spam [name="check_spam_bak"][value="spamassassion"]').prop('checked',true)
+                            $('#spam [name="check_spam_bak"][value="dspam"]').prop('checked',true)
+
+                            $('#spam [name="is_formt"]').prop('checked',true)
+                            $('#spam [name="spam_folder"]').val('spam')
+                            $('#spam [name="spam_subject_flag"]').val('')
+                            $('#spam [name="isolate_day"]').val(15)
+                            $('#spam [name="is_send_isolate"]').prop('checked',false)
+                            $('#spam [name="send_isolate_name"]').val('')
+                            $('#spam [name="isolate_url"]').val('')
+                            $('#spam [name="check_object_bak"][value="outside"]').prop('checked',true)
+                            $('#spam [name="check_object_bak"][value="local"]').prop('checked',true)
+
+                            $('#spam [name="check_local_bak"][value="virus"]').prop('checked',true)
+                            $('#spam [name="check_local_bak"][value="spam"]').prop('checked',true)
+
+                            $('#spam [name="check_outside_bak"][value="virus"]').prop('checked',true)
+                            $('#spam [name="check_outside_bak"][value="spam"]').prop('checked',true)
+                        }else if(type == 'frequency'){
+                            $('#frequency [name="is_frequency"]').prop('checked',false)
+                            $('#frequency [name="frequency_minute"]').val(0)
+                            $('#frequency [name="frequency_minute_count"]').val(0)
+                            $('#frequency [name="frequency_hour_count"]').val(0)
+                            $('#frequency [name="frequency_day_count"]').val(0)
+                            $('#frequency [name="frequency_operate"]').val('block')
+
+                        }else if(type == 'oab'){
+                            $('#oab [name="oab_show_mod"]').prop('checked',false);
+                            $('#oab [name="oab_show_mod"][value="1"]').prop('checked',true)
+                            $('#oab [name="oab_show_export"]').prop('checked',false)
+
+                            $('.dept_list').removeClass('active')
+
+
+                        }else if(type == 'space'){
+                            $('#space [name="is_space_clean"]').val(0)
+                            $('#space [name="space_clean_normal"]').val(0)
+                            $('#space [name="space_clean_sent"]').val(0)
+                            $('#space [name="space_clean_spam"]').val(0)
+                            $('#space [name="space_clean_trash"]').val(0)
+                        }
                         $('#edit_email_tabs>div#'+type).show();
                     }
                     layer.msg(str);
@@ -1602,7 +1678,6 @@
                     if(setting_id == 0){
                         str = '添加配置失败！'
                     }
-                    console.log(str,err);
                     layer.msg(str);
                 }
             })
@@ -1614,15 +1689,16 @@
 
         //获取某个具体的组配置参数 {% url 'ajax_group_setting_info' %}
         $('#edit_email_tabs>ul>li>a').click(function(){
-            console.log(this);
             var type = $(this).attr('href').slice(1);
-            get_groups_new();
+            console.log(type)
+            if(type == 'oab'){
+                get_groups_new();
+            }
             $.ajax({
                 url:"{% url 'ajax_group_setting_info' %}",
                 type:'GET',
                 data:{setting_id:$(this).attr('data_id')},
                 success:function(data){
-                    console.log(data)
                     var res = data.data;
                     for(var key in res){
                         if(type == 'basic'){
@@ -1648,7 +1724,7 @@
                         }else if(type == 'password'){
                             $('#password [name="is_passwd"]').prop('checked',res['is_passwd'])
                             $('#password [name="passwd_day"]').val(res['passwd_day'])
-                            $('#password [name="passwd_size"]').val(res['passwd_size'])
+                            $('#password [name="passwd_size2"]').val(res['passwd_size2'])
                             $('#password [name="passwd_type"]').val(res['passwd_type'])
                             if(res['passwd_other']){
                                 $('#password [name="passwd_other_bak"][value="passwd_digital"]').prop('checked',res['passwd_other']['passwd_digital'])
@@ -1722,8 +1798,6 @@
                             }else{
                                 $('.dept_list').removeClass('active')
                             }
-
-
                         }else if(type == 'space'){
                             $('#space [name="is_space_clean"]').val(res['is_space_clean'])
                             $('#space [name="space_clean_normal"]').val(res['space_clean_normal'])
@@ -1745,14 +1819,12 @@
             let type = $(this).attr('data_type')
             let value = ''
             if(type == 'basic'){
-                get_limit_whitelist();
                 value = {
                     mail_space: $('#basic [name="mail_space"]').val(),
                     net_space: $('#basic [name="net_space"]').val(),
                     allow_out_size: $('#basic [name="allow_out_size"]').val(),
                     send_limit: $('#basic [name="send_limit"]').val(),
-                    recv_limit: $('#basic [name="recv_limit"]').val(),
-                    limit_whitelist: limit_whitelist,
+                    recv_limit: $('#basic [name="recv_limit"]').val()
                 }
             }else if(type == 'login'){
                 value = {
@@ -1764,7 +1836,7 @@
                 value = {
                     "is_passwd": $('#password [name="is_passwd"]').prop('checked')?1:0,
                     "passwd_day": $('#password [name="passwd_day"]').val(),
-                    "passwd_size": $('#password [name="passwd_size"]').val(),
+                    "passwd_size2": $('#password [name="passwd_size2"]').val(),
                     "passwd_type": $('#password [name="passwd_type"]').val(),
                     "passwd_other": {
                         "passwd_digital": $('#password [name="passwd_other_bak"][value="passwd_digital"]').prop('checked')?1:0,
@@ -1781,6 +1853,12 @@
                         }
                 }
             }else if(type == 'spam'){
+                if($('#spam [name="is_send_isolate"]').prop('checked')){
+                    if(!$('#spam [name="isolate_url"]').val() || $('#spam [name="isolate_url"]').val() == '' || $('#spam [name="isolate_url"]').val() == undefined ||$('#spam [name="isolate_url"]').val().length<=0){
+                        layer.msg('请输入隔离报告链接地址~');
+                        return;
+                    }
+                }
                 value = {
                     "is_virus": $('#spam [name="is_virus"]').prop('checked')?1:0,
                     "is_spam": $('#spam [name="is_spam"]').prop('checked')?1:0,
@@ -1798,7 +1876,7 @@
                         "dspam": $('#spam [name="check_spam_bak"][value="dspam"]').prop('checked')?1:0
                         },
                     "is_formt": $('#spam [name="is_formt"]').prop('checked')?1:0,
-                    "spam_folder": $('#spam [name="is_formt"]').val(),
+                    "spam_folder": $('#spam [name="spam_folder"]').val(),
                     "spam_subject_flag": $('#spam [name="spam_subject_flag"]').val(),
                     "isolate_day": $('#spam [name="isolate_day"]').val(),
                     "is_send_isolate": $('#spam [name="is_send_isolate"]').prop('checked')?1:0,
@@ -1829,8 +1907,7 @@
             }else if(type == 'oab'){
                 value = {
                     "oab_show_mod":  $('#oab [name="oab_show_mod"]:checked').val(),
-                    "oab_show_export": $('#oab [name="oab_show_export"]').prop('checked')?1:0,
-                    "oab_dept_list": ""
+                    "oab_show_export": $('#oab [name="oab_show_export"]').prop('checked')?1:0
                 }
 
             }else if(type == 'space'){
@@ -1852,7 +1929,6 @@
                 type:'POST',
                 data:{setting_id:$(this).attr('data_id')},
                 success:function(data){
-                    console.log(data)
                     layer.msg('删除配置成功！')
                     init(1);
                 }

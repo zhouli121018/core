@@ -149,7 +149,7 @@ SETTING_LOGIN_DEFAULT=(
 SETTING_PASSWORD=(
     (u"is_passwd", u"定期密码修改设置"),
     (u"passwd_day", u"密码有效期"),
-    (u"passwd_size", u"密码长度"),
+    (u"passwd_size2", u"密码长度"),
     (u"passwd_type", u"密码组成字符种类"),
     (u"passwd_other", u"其他密码规则设置"),
     (u"passwd_forbid", u"用户密码强度低于规则操作"),
@@ -158,15 +158,15 @@ SETTING_PASSWORD=(
 SETTING_PASSWORD_DEFAULT=(
     (u"is_passwd", 1),
     (u"passwd_day", 0),
-    (u"passwd_size", 8),    #取值8~16
+    (u"passwd_size2", 8),    #取值8~16
     (u"passwd_type", 2),    # 密码包含2、3、4种字符
-    (u"passwd_other", u""), #数据格式： {"passwd_digital": 1, "passwd_name2": 1, "passwd_name": 1, "passwd_letter": 1, "passwd_letter2": 1}
+    (u"passwd_other", {}), #数据格式： {"passwd_digital": 1, "passwd_name2": 1, "passwd_name": 1, "passwd_letter": 1, "passwd_letter2": 1}
                                # passwd_digital: 连续3位及以上数字不能连号
                                # passwd_name: 密码不能包含账号
                                # passwd_name2: 密码不能包含用户姓名大小写全拼
                                # passwd_letter: 连续3位及以上字母不能连号（
                                # passwd_letter2: 密码不能包含连续3个及以上相同字符
-    (u"passwd_forbid", u""),#数据格式：  {"forbid_send": 1, "force_change": 1, "force_change_in_weak": 1, "forbid_send_in_weak": 1}
+    (u"passwd_forbid", {"forbid_send": 0, "force_change": 0, "force_change_in_weak": 0, "forbid_send_in_weak": 1}),#数据格式：  {"forbid_send": 1, "force_change": 1, "force_change_in_weak": 1, "forbid_send_in_weak": 1}
                                # forbid_send: 用户不满足密码强度时禁止外发邮件
                                # force_change: 用户不满足密码强度时登录后强制修改密码
                                # forbid_send_in_weak: 用户处于弱密码库中时禁止外发邮件
@@ -194,28 +194,28 @@ SETTING_SPAM=(
 SETTING_SPAM_DEFAULT=(
     (u"is_virus", 1),
     (u"is_spam", 1),
-    (u"check_attach", u""), #数据格式：{"high": 1, "low": 0} high:高危附件,low:小危附件
-    (u"match_black", u""),  #数据格式：{"content": 1, "sender": 1, "subject": 1}
+    (u"check_attach", {}), #数据格式：{"high": 1, "low": 0} high:高危附件,low:小危附件
+    (u"match_black", {}),  #数据格式：{"content": 1, "sender": 1, "subject": 1}
                                # content：内容黑名单
                                # sender：发件人黑名单
                                # subject：主题黑名单
-    (u"check_spam", u""),   #数据格式：{"spamassassion": 1, "dspam": 1}
+    (u"check_spam", {}),   #数据格式：{"spamassassion": 1, "dspam": 1}
                                # spamassassion：Spamassassion
                                # dspam：Dspam
     (u"is_formt", 1),
     (u"spam_folder", u"spam"),
-    (u"spam_subject_flag", u""),  #字符串
+    (u"spam_subject_flag", u"[***SPAM***]"),  #字符串
     (u"isolate_day", 15),
     (u"is_send_isolate", 0),
-    (u"send_isolate_name", u""),  #字符串
+    (u"send_isolate_name", u"system"),  #字符串
     (u"isolate_url", u""),         #字符串
-    (u"check_object", u""),        #数据格式：{"outside": 1, "local": 1}
+    (u"check_object", {}),        #数据格式：{"outside": 1, "local": 1}
                                       # outside：外域进站邮件
                                       # local：本域进站邮件
-    (u"check_local", u""),         #数据格式：{"virus": 1, "spam": 1}
+    (u"check_local", {}),         #数据格式：{"virus": 1, "spam": 1}
                                       # virus： 开启反病毒
                                       # spam： 开启反垃圾
-    (u"check_outside", u""),      #数据格式：{"virus": 1, "spam": 1}
+    (u"check_outside", {}),      #数据格式：{"virus": 1, "spam": 1}
                                       # virus： 开启反病毒
                                       # spam： 开启反垃圾
 )
@@ -251,7 +251,7 @@ SETTING_OAB_DEFAULT=(
                                   # 4:显示指定部门
                                   # 当值==4时，显示“显示指定部门”输入设置
     (u"oab_show_export", 0),
-    (u"oab_dept_list", u""),    #数据格式：[734, 443] 数组内为部门ID
+    (u"oab_dept_list", []),    #数据格式：[734, 443] 数组内为部门ID
 )
 #邮箱空间设置
 SETTING_SPACE=(
@@ -285,7 +285,10 @@ class CoreGroupSettingForm(forms.Form):
         if not isinstance(v, str) and not isinstance(v, unicode):
             return v
         try:
-            return json.loads(v)
+            v = json.loads(v)
+            if type(v) != type(default):
+                raise Exception("value type error!")
+            return v
         except Exception,err:
             print err
             return default
@@ -295,12 +298,13 @@ class CoreGroupSettingForm(forms.Form):
             return False, u"对应的组配置不存在"
         if self.type != u"basic":
             return False, u"组配置'{}'不包含白名单".format(self.type)
-        print "self.post == ",self.post,type(self.post)
         t = self.post.get("type", "")
         v = self.post.get("value", [])
-        v = [] if not v else v
+        v = self.json_loads(v, [])
         if t in ("recv", "send"):
-            self.value.setdefault("limit_whitelist", {})
+            default = self.value.get("limit_whitelist", {})
+            if not default or not isinstance(default, dict):
+                self.value["limit_whitelist"] = {}
             self.value["limit_whitelist"][t] = v
             self.instance.value = json.dumps(self.value)
             self.instance.save()
@@ -326,18 +330,32 @@ class CoreGroupSettingForm(forms.Form):
             #新添加，就用默认值填充缺少的key
             if not self.instance:
                 for k,default in default_data:
-                    data[k] = value.get(k, default)
+                    v = value.get(k, default)
+                    #容错网页可能传进来的错误格式
+                    if isinstance(default, dict) or isinstance(default, list):
+                        if type(v) != type(default):
+                            v = default
+                    data[k] = v
             #更新，就用关闭来填充缺少的key
             else:
                 for k,default in default_data:
-                    data[k] = value.get(k, 0)
+                    #网页那边的提交不好写，更新时不会提交部门列表和白名单列表。 所以做下特殊处理
+                    if k in ("oab_dept_list","limit_whitelist"):
+                        data[k] = self.value.get(k, default)
+                        continue
+                    v = value.get(k, 0)
+                    #容错网页可能传进来的错误格式
+                    if isinstance(default, dict) or isinstance(default, list):
+                        if type(v) != type(default):
+                            v = default
+                    data[k] = v
             return data
         #end def
         data = {}
         value = self.post.get("value", None)
         setting_id = int(self.post.get("setting_id", 0))
         group_id = int(self.post.get("group_id", 0))
-        value = json.loads(value)
+        value = json.loads(value) if value else {}
         if self.type == u"basic":
             data = load_data(value, SETTING_BASIC_DEFAULT)
         elif self.type == u"login":

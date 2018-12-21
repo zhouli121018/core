@@ -56,14 +56,14 @@
               this.sFormLoading = true;
               let para = Object.assign({}, this.sForm);
               settingUsersSetCancel(para).then((res) => {
-                // console.log(res.data)
                 // this.$refs['sForm'].resetFields();
                 this.getSetting()
                 this.sFormLoading = false;
                 this.$message({message: '申请已提交，请等待审核', type: 'success'});
               }, (data)=>{
-                console.log(data)
+                this.sFormLoading = false;
               }).catch(function (error) {
+                this.sFormLoading = false;
                 console.log(error);
               });
             });

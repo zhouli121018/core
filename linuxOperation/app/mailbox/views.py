@@ -6,6 +6,7 @@ import time
 import datetime
 import urllib
 import base64
+
 from passlib.hash import md5_crypt
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.shortcuts import render
@@ -22,7 +23,7 @@ from app.core.models import Mailbox, Domain, MailboxUser, MailboxUserAttr, Depar
     MailboxSize, ExtReply, ExtCheckruleCondition, ExtCommonCheckrule, ExtForward, MailboxExtra, ProxyRedisLog, CoreWhitelist
 from app.utils.TaskQueue import TaskQueue
 from app.utils.MailboxLimitChecker import LICENCE_EXCLUDE_LIST, MailboxLimitChecker
-from app.utils.MailboxPasswordChecker import CheckMailboxPassword, CheckMailboxPasswordLimit
+from app.utils.MailboxPasswordChecker import CheckMailboxPassword, CheckMailboxPasswordLimit, GetMailboxPwdRules
 from app.utils.MailboxBasicChecker import CheckMailboxBasic
 from app.utils.regex import pure_digits_regex, pure_english_regex, pure_tel_regex, pure_digits_regex2, pure_lower_regex2, pure_upper_regex2
 from app.utils.response.excel_response import ExcelResponse
@@ -188,8 +189,8 @@ def account(request, template_name='mailbox/emailAccounts.html'):
     if export == '1':
         # list = [[_(u'用户名'), _(u'邮箱容量'), _(u'网盘容量'), _(u'真实姓名'), _(u'邮箱'), _(u'部门'), _(u'工号'), _(u'邮箱状态'),
         #          _(u'手机号码'), _(u'电话号码'), _(u'职位'), _(u'域名'), _(u'上次登录时间'), _(u'已用容量(MB)')]]
-        list = [[u'用户名', u'邮箱容量', u'网盘容量', u'真实姓名', u'邮箱', u'部门', u'工号', u'邮箱状态',
-                 u'手机号码', u'电话号码', u'职位', u'域名', u'上次登录时间', u'已用容量(MB)']]
+        list = [[u'用户名', u'邮箱', u'真实姓名', u'所属部门', u'职位', u'工号', u'手机号码', u'电话号码', u'邮箱容量', u'网盘容量',
+                 u'排序权重', u'QQ号码', u'出生日期', u'性别', u'邮箱状态', u'域名', u'上次登录时间', u'已用容量(MB)']]
 
         name = 'mailbox-list_{}'.format(time.strftime('%Y%m%d%H%M%S'))
         lists = get_mailbox_list(request)
@@ -199,7 +200,7 @@ def account(request, template_name='mailbox/emailAccounts.html'):
         all_data_depts = {}
         all_data_depts2 = {}
         # 不预先把所有值取出来的话，会非常，非常，非常卡
-        for d in MailboxUser.objects.all().values("mailbox_id","realname","eenumber","tel_mobile","tel_work","last_login"):
+        for d in MailboxUser.objects.all().values("mailbox_id","showorder","realname","eenumber","tel_mobile","tel_work","im_qq","birthday","gender","last_login"):
             all_data_user[d["mailbox_id"]] = d
         for d in MailboxSize.objects.all().values("mailbox_id","size"):
             all_data_size[d["mailbox_id"]] = d
@@ -216,20 +217,46 @@ def account(request, template_name='mailbox/emailAccounts.html'):
                 continue
             all_data_depts2[d["mailbox_id"]].append( all_data_depts.get(d["dept_id"], "") )
         for l in lists:
-            data_user = all_data_user[l.id]
-            status = '1' if l.disabled == '-1' else '-1'
-
+            if not l.id in all_data_user:
+                data_user = {
+                    u"realname" :   "",
+                    u"tel_mobile" :   "",
+                    u"tel_work" :   "",
+                    u"im_qq" :   "",
+                    u"birthday" :   "",
+                    u"gender" :   "",
+                    u"last_login" : "",
+                    u"eenumber" : "",
+                    u"showorder" : "",
+                }
+            else:
+                data_user = all_data_user[l.id]
             depts = u'-'.join(all_data_depts2.get(l.id, []))
             position = u'-'.join(all_data_position.get(l.id, []))
             if data_user["last_login"]:
                 last_login = data_user["last_login"].strftime("%Y-%m-%d %H:%M:%S")
             else:
                 last_login = ""
-            used = all_data_size[l.id]["size"]
+            used = all_data_size.get(l.id, {}).get("size", 0)
             used = int(used) if used else 0
+            realname = "" if not data_user["realname"] else data_user["realname"]
+            tel_mobile = "" if not data_user["tel_mobile"] else data_user["tel_mobile"]
+            tel_work = "" if not data_user["tel_work"] else data_user["tel_work"]
+            im_qq = "" if not data_user["im_qq"] else data_user["im_qq"]
+            birthday = "" if not data_user["birthday"] else data_user["birthday"]
+            gender = "" if not data_user["gender"] else data_user["gender"]
+            # None 竟然已经作为unicode 存在于数据库了！
+            tel_mobile = "" if tel_mobile=="None" else tel_mobile
+            tel_work = "" if tel_work=="None" else tel_work
+            im_qq = "" if im_qq=="None" else im_qq
+            birthday = "" if birthday=="None" else birthday
+            gender = "" if gender=="None" else gender
+            eenumber = "" if not data_user["eenumber"] else data_user["eenumber"]
+            showorder = "0" if not data_user["showorder"] else data_user["showorder"]
+            status = u"启用" if str(l.disabled)!="1" else u"禁用"
             list.append(
-                [l.name, l.quota_mailbox, l.quota_netdisk, data_user["realname"], l.username, depts, data_user["eenumber"], status,
-                 data_user["tel_mobile"], data_user["tel_work"], position, domain.domain, last_login, used])
+                [l.name, l.username, realname, depts, position, eenumber, tel_mobile, tel_work,
+                 l.quota_mailbox, l.quota_netdisk, showorder, im_qq, birthday, gender, status, domain.domain, last_login, used])
         return ExcelResponse(list, name, encoding='gbk')
 
     if request.method == 'POST':
@@ -437,6 +464,16 @@ def add_account(request, template_name='mailbox/add_account.html'):
     })
 
 
+def decode_upload_line(code, charset="gbk"):
+    if isinstance(code, unicode):
+        return code
+    try:
+        code = code.strip()
+        return code.decode(charset)
+    except Exception,err:
+        print 'decode_upload_line error: ',err
+        return code.decode("utf-8")
+
 @licence_required
 def batchadd_account(request, template_name='mailbox/batchadd_account.html'):
     domain_id = get_domainid_bysession(request)
@@ -456,16 +493,49 @@ def batchadd_account(request, template_name='mailbox/batchadd_account.html'):
         mb_quota = request.POST.get('quota_mailbox', mb_quota_def)
         nd_quota = request.POST.get('quota_netdisk', nd_quota_def)
         compatible_id = request.POST.get('compatible_id', )
-        dept_id = request.POST.get('dept_id', '')
-        data = request.POST.get('data', '')
+        dept_id = request.POST.get('option_value_dpt', '')
+        dept_id = -1 if not dept_id else int(dept_id)
         checker = MailboxLimitChecker()
-
-        for line in data.split('\n'):
-            line = line.strip()
-            if not line:
-                continue
-            buffer = line.split('\t')
-            # 用户名 密码 邮箱大小 网盘大小 真实名称 所属部门 工号 职位 手机号码 电话号码 QQ 出生日期
+        fobj = request.FILES.get("txtfile")
+        #print "request.files   ",fobj,type(fobj)
+        file_name = fobj.name
+        fext = file_name.split('.')[-1]
+        if fext not in ('xls', 'xlsx', 'csv', 'txt'):
+            messages.add_message(request, messages.ERROR, _(u"只支持excel、txt、csv文件导入。", ))
+            return render(request, template_name=template_name, context={
+                    'mb_quota_def': mb_quota_def,
+                    'nd_quota_def': nd_quota_def,
+                    'server_pass': server_pass,
+                    "dept_list": json.dumps(get_dept_list_sort(get_user_child_departments_kv(request, domain_id))),
+                })
+        lines = []
+        if fext == "txt":
+            #第一行是标题
+            fobj.readline()
+            for line in fobj.readlines():
+                line = decode_upload_line(line)
+                if not line:
+                    continue
+                elem = line.split('\t')
+                lines.append( elem )
+        elif fext == "csv":
+            import csv
+            lines = list(csv.reader(fobj))
+            #第一行是标题
+            if lines:
+                lines.pop(0)
+        elif fext in ('xls', 'xlsx'):
+            import xlrd
+            content = fobj.read()
+            workbook = xlrd.open_workbook(filename=None, file_contents=content)
+            table = workbook.sheets()[0]
+            for line in xrange(table.nrows):
+                #前x行跳过
+                if line in (0,):
+                    continue
+                lines.append( table.row_values(line) )
+        for elem in lines:
+            # 用户名 真实名称 所属部门 职位 工号 手机号码 电话号码 密码 邮箱容量 网盘容量 排序权重 QQ号码 出生日期 密码
             data = {'limit_send': '-1', 'limit_login': '-1', 'disabled': '-1',
                     'limit_recv': '-1', 'pwd_days': '365', 'change_pwd': '-1', 'enable_share': '-1', 'showorder': '0',
                     'gender': 'male', 'oabshow': '1'}
@@ -473,26 +543,38 @@ def batchadd_account(request, template_name='mailbox/batchadd_account.html'):
                 fields_list = ['name', '_tmp', 'password1', 'quota_mailbox', 'quota_netdisk', 'realname', 'dept',
                                'eenumber', 'position', 'tel_mobile', 'tel_work', 'im_qq', 'birthday']
             else:
-                fields_list = ['name', 'password1', 'quota_mailbox', 'quota_netdisk', 'realname', 'dept', 'eenumber',
-                               'position', 'tel_mobile', 'tel_work', 'im_qq', 'birthday']
+                fields_list = ['name', 'realname', 'dept', 'position', 'eenumber', 'tel_mobile', 'tel_work',
+                                'quota_mailbox', 'quota_netdisk', 'showorder', 'im_qq', 'birthday', 'password1']
             for i, k in enumerate(fields_list):
                 try:
-                    data[k] = buffer[i]
+                    v = elem[i]
+                    if isinstance(v, str) or isinstance(v, unicode):
+                        v = v.strip()
+                    else:
+                        v = v
+                    #excel保存日期为数字的
+                    if fext in ('xls', 'xlsx') and k == "birthday" and v:
+                        excel_date = int(v)
+                        dt = datetime.datetime.fromordinal(datetime.datetime(1900, 1, 1).toordinal() + excel_date - 2)
+                        v = dt.strftime('%Y-%m-%d')
+                    if k == "im_qq" and v:
+                        v = int(float(v))
+                    data[k] = v
                 except:
                     data[k] = ''
-
             data['password2'] = data['password1']
-
             form = MailboxForm(domain, data)
             user_form = MailboxUserForm(domain, data)
-
             if form.is_valid() and user_form.is_valid():
                 quota_mailbox = data.get('quota_mailbox', '')
-                if not quota_mailbox or not quota_mailbox.isdigit():
-                    quota_mailbox = mb_quota
-
                 quota_netdisk = data.get('quota_netdisk', '')
-                if not quota_netdisk or not quota_netdisk.isdigit():
+                try:
+                    quota_mailbox = int(quota_mailbox)
+                except:
+                    quota_mailbox = mb_quota
+                try:
+                    quota_netdisk = int(quota_netdisk)
+                except:
                     quota_netdisk = nd_quota
                 try:
                     checker.simple_check(domain_id, quota_mailbox, quota_netdisk)
@@ -513,7 +595,7 @@ def batchadd_account(request, template_name='mailbox/batchadd_account.html'):
                     else:
                         _dept_id = dept_id
 
-                    if _dept_id:
+                    if _dept_id > 0:
                         DepartmentMember.objects.create(domain=domain, dept_id=_dept_id, mailbox_id=obj.id,
                                                         position=data['position'])
                     success += 1
@@ -546,31 +628,69 @@ def batchedit_account(request, template_name='mailbox/batchedit_account.html'):
     failures = []
     success = 0
     if request.method == 'POST':
-        data = request.POST.get('data', '')
-
+        fobj = request.FILES.get("txtfile")
+        #print "request.files   ",fobj,type(fobj)
+        file_name = fobj.name
+        fext = file_name.split('.')[-1]
+        if fext not in ('xls', 'xlsx', 'csv', 'txt'):
+            messages.add_message(request, messages.ERROR, _(u"只支持excel、txt、csv文件导入。", ))
+            return render(request, template_name=template_name, context={
+                'domain': domain,
+                'failures': failures,
+                'success': success
+            })
         # 初始化邮箱限制检查器
         checker = MailboxLimitChecker()
 
-        for line in data.split('\n'):
-            line = line.strip()
-            if not line:
-                continue
-            # buffer = re.split(r'[\t]+', line)
-            buffer = line.split('\t')
-
-            # 用户名 密码 邮箱容量 网盘容量 真实姓名 部门 工号 邮箱状态 手机号码 电话号码 职位
-            fields_list = ['name', 'password1', 'quota_mailbox', 'quota_netdisk', 'realname', 'dept', 'eenumber',
-                           'status', 'tel_mobile', 'tel_work', 'position']
-
+        lines = []
+        if fext == "txt":
+            #第一行是标题
+            fobj.readline()
+            for line in fobj.readlines():
+                line = decode_upload_line(line)
+                if not line:
+                    continue
+                elem = line.split('\t')
+                lines.append( elem )
+        elif fext == "csv":
+            import csv
+            lines = list(csv.reader(fobj))
+            #第一行是标题
+            if lines:
+                lines.pop(0)
+        elif fext in ('xls', 'xlsx'):
+            import xlrd
+            content = fobj.read()
+            workbook = xlrd.open_workbook(filename=None, file_contents=content)
+            table = workbook.sheets()[0]
+            for line in xrange(table.nrows):
+                #前x行跳过
+                if line in (0,):
+                    continue
+                lines.append( table.row_values(line) )
+        for elem in lines:
+            # 用户名 真实名称 所属部门 职位 工号 手机号码 电话号码 密码 邮箱容量 网盘容量 排序权重 QQ号码 出生日期 密码
+            fields_list = ['name', 'realname', 'dept', 'position', 'eenumber', 'tel_mobile', 'tel_work',
+                        'quota_mailbox', 'quota_netdisk', 'showorder', 'im_qq', 'birthday', 'password1']
             data = {}
             for i, k in enumerate(fields_list):
                 try:
-                    d = buffer[i].strip()
-                    if d:
-                        data[k] = d
-                except:
-                    pass
-
+                    v = elem[i]
+                    if isinstance(v, str) or isinstance(v, unicode):
+                        v = v.strip()
+                    else:
+                        v = v
+                    #excel保存日期为数字的
+                    if fext in ('xls', 'xlsx') and k == "birthday" and v:
+                        excel_date = int(v)
+                        dt = datetime.datetime.fromordinal(datetime.datetime(1900, 1, 1).toordinal() + excel_date - 2)
+                        v = dt.strftime('%Y-%m-%d')
+                    if k == "im_qq" and v:
+                        v = int(float(v))
+                    data[k] = v
+                except Exception,err:
+                    print "err:  ",err
+                    data[k] = ''
             # 检测用户名是否存在
             name = data.get('name', '')
             try:
@@ -578,23 +698,34 @@ def batchedit_account(request, template_name='mailbox/batchedit_account.html'):
             except:
                 failures.append([_(u'用户不存在'), line])
                 continue
-
             try:
                 mailboxuser_obj = MailboxUser.objects.get(mailbox_id=mailbox_obj.id)
             except:
                 failures.append([_(u'用户帐号不存在'), line])
                 continue
+
+            mailbox_size_using = mailbox_obj.quota_mailbox
+            netdisk_size_using = mailbox_obj.quota_netdisk
+            quota_mailbox = data.get('quota_mailbox', '')
+            quota_netdisk = data.get('quota_netdisk', '')
+            try:
+                quota_mailbox = int(quota_mailbox)
+            except:
+                quota_mailbox = mailbox_obj.quota_mailbox
+            try:
+                quota_netdisk = int(quota_netdisk)
+            except:
+                quota_netdisk = mailbox_obj.quota_netdisk
+            data["quota_mailbox"] = quota_mailbox
+            data["quota_netdisk"] = quota_netdisk
+
             mailbox_data = mailbox_obj.__dict__
             mailbox_data.update(data)
             _v = mailbox_data.get('pwd_days_time', '')
             if isinstance(_v, six.integer_types):
                 mailbox_data['pwd_days_time'] = datetime.datetime.fromtimestamp(_v)
-
             mailboxuser_data = mailboxuser_obj.__dict__
             mailboxuser_data.update(data)
-
-            mailbox_size_using = mailbox_obj.quota_mailbox
-            netdisk_size_using = mailbox_obj.quota_netdisk
 
             form = MailboxForm(domain, mailbox_data, instance=mailbox_obj)
             user_form = MailboxUserForm(domain, mailboxuser_data, instance=mailboxuser_obj)
@@ -936,6 +1067,7 @@ def reply(request, id, template_name='mailbox/reply.html'):
     mailbox_obj = Mailbox.objects.get(id=id)
     reply_list = ExtReply.objects.filter(mailbox=mailbox_obj)
     return render(request, template_name=template_name, context={
+        'mailbox_id': mailbox_obj.id,
         'mailbox_obj': mailbox_obj,
         'lists': reply_list,
         'day_dict': DAY_DICT
@@ -1090,6 +1222,7 @@ def forward(request, id, template_name='mailbox/forward.html'):
     fv = MailboxExtra.objects.filter(mailbox_id=id, type='forward_visible').first()
     fc = MailboxExtra.objects.filter(mailbox_id=id, type='forward_local').first()
     return render(request, template_name=template_name, context={
+        'mailbox_id': mailbox_obj.id,
         'mailbox_obj': mailbox_obj,
         'lists': forward_list,
         'day_dict': DAY_DICT,
@@ -1265,10 +1398,10 @@ def api_check_password(request):
     obj = Mailbox.objects.filter(username=mailbox).first()
     if not obj:
         return HttpResponse(json.dumps({'message':"帐号不存在","result":-100}),content_type="application/json")
-    ret, force, reason = CheckMailboxPasswordLimit(domain_id=obj.domain_id, mailbox_id=obj.id, password=password)
+    ret, force, pwd_rules, reason = CheckMailboxPasswordLimit(domain_id=obj.domain_id, mailbox_id=obj.id, password=password)
     if isinstance(reason,unicode):
         reason = reason.encode("utf-8", "ignore")
-    return HttpResponse(json.dumps({'message':reason,"result":ret,"change_pwd":force}),content_type="application/json")
+    return HttpResponse(json.dumps({'message':reason,"result":ret,"change_pwd":force,"pwd_rules":pwd_rules}),content_type="application/json")
 
 def api_check_basic(request):
     mailbox = request.GET.get("mailbox","")
@@ -1276,4 +1409,5 @@ def api_check_basic(request):
     if not obj:
         return HttpResponse(json.dumps({'message':"帐号不存在","result":-100,"data":{}}),content_type="application/json")
     setting = CheckMailboxBasic(domain_id=obj.domain_id, mailbox_id=obj.id)
-    return HttpResponse(json.dumps({'message':"","result":0,"data":setting}),content_type="application/json")
+    pwd_rules = GetMailboxPwdRules(domain_id=obj.domain_id, mailbox_id=obj.id)
+    return HttpResponse(json.dumps({'message':"","result":0,"data":setting,"pwd_rules":pwd_rules}),content_type="application/json")

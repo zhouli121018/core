@@ -3,7 +3,7 @@
                 <div class="mlsidebar-bg"></div>
                 <div class="u-btns">
                     <button class="u-btn u-btn-default u-btn-large btn-compose j-mlsb" type="button" @click="goToCompose"><i class="iconfont icon-iconcreate"></i> <span class="title">写 信</span></button>
-                    <button class="u-btn u-btn-default u-btn-large btn-inbox j-mlsb" type="button" data-op="inbox"><i class="iconfont icon-iconinbox"></i></button>
+                    <button class="u-btn u-btn-default u-btn-large btn-inbox j-mlsb" type="button" @click="reloadMails"><i class="iconfont icon-iconinbox"></i></button>
                 </div>
 
                 <div class="wrapper u-scroll">
@@ -11,7 +11,7 @@
                       :data="folderList"
                       node-key="id"
                       :default-checked-keys="checkNodes"
-                      default-expand-all
+                      :highlight-current="true"
                       @node-click="handleNodeClick">
                       <span class="custom-tree-node" slot-scope="{ node, data }" :title="node.label">
 
@@ -22,12 +22,13 @@
                           <el-button
                             type="text"
                             size="mini"
-                            @click.stop.prevent="() => showDialog(data)" title="添加">
+                            @click.stop.prevent="() => showDialog(data)" title="新建文件夹">
                             <i class="el-icon-plus"></i>
                           </el-button>
                           <el-button
                             type="text"
                             size="mini"
+                            v-if="!data.is_default"
                             @click.stop="() => remove(node, data)" title="删除">
                             <i class="el-icon-delete"></i>
                           </el-button>
@@ -58,24 +59,13 @@
     name:'MailAside',
     data(){
       return{
+        floderResult:[],
         checkNodes:[],
-        folderList: [
-            {
-              id: 1,
-              url:'innerbox',
-              label: '收件箱',
 
-            },{
-              id:5,
-              label:'其他文件夹',
-              children:[
-                {id:6,label:'病毒文件夹'},
-              ]
-            }],
-          defaultProps: {
-            children: 'children',
-            label: 'label',
-          },
+        defaultProps: {
+          children: 'children',
+          label: 'label',
+        },
         dialogFormVisible: false,
         form: {
           title:'',
@@ -96,7 +86,6 @@
         function digui(arr){
           for(var i=0;i<arr.length;i++){
             result.push(arr[i]);
-            console.log(arr[i].children&&arr[i].children.length>0)
             if(arr[i].children&&arr[i].children.length>0){
               digui(arr[i].children);
             }
@@ -104,10 +93,25 @@
         }
         digui(this.folderList);
         return result;
+      },
+      folderList(){
+        let folder = this.$parent.floderResult;
+        let arr = [];
+        for(let i=0;i<folder.length;i++){
+          let obj={};
+          obj['label'] = folder[i]['name'];
+          obj['id'] = folder[i]['raw_name'];
+          obj['flags'] = folder[i]['flags'];
+          obj['unseen'] = folder[i]['unseen_count'];
+          obj['is_default'] = folder[i]['is_default'];
+          arr.push(obj);
+        }
+        return arr;
       }
     }
     ,
     methods:{
+
       showDialog(data) {
         this.dialogFormVisible = true;
         this.rootFloder = data;
@@ -139,7 +143,6 @@
 
             this.dialogFormVisible = false;
           } else {
-            console.log('error submit!!');
             return false;
           }
         });
@@ -179,39 +182,30 @@
       handleNodeClick(data) {
         this.$emit('getData', data);
         this.checkNodes=[data.id];
-        this.$router.push('/mailbox')
+        sessionStorage['checkNodes']=data.id;
+        this.$parent.editableTabs2[0].title = data.label;
+        // this.$router.push('/mailbox/innerbox')
       },
       goToCompose(){
-        this.$emit('getCompose', {activeTab:3});
-        this.$router.push('/mailbox')
+        // this.$emit('getCompose', {activeTab:3});
+        // this.$router.push('/mailbox/compose')
+        this.$parent.showTabIndex = 1;
+        this.$parent.addTab('compose','写信')
       },
-      getFloderfn(){
-        getFloder().then((res)=>{
-        let folder = res.data
-        let arr = [];
-        for(let i=0;i<folder.length;i++){
-          let obj={};
-          obj['label'] = folder[i]['name'];
-          obj['id'] = folder[i]['raw_name'];
-          obj['flags'] = folder[i]['flags'];
-          obj['unseen'] = folder[i]['unseen_count'];
-          arr.push(obj);
-        }
-        this.folderList = arr
-      },(err)=>{
-        console.log(err)
-      });
-      }
+      reloadMails(){
+        this.$parent.$refs.innerbox.getMessageList()
+      },
 
     },
 
-    beforeMount(){
-      this.getFloderfn();
 
+    mounted(){
+      if(sessionStorage['checkNodes']){
+        this.checkNodes = [];
+        this.checkNodes.push(this.checkNodes = [sessionStorage['checkNodes']])
+      }
+    },
 
-
-
-    }
 
   }
 </script>

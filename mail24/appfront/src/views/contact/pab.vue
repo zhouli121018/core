@@ -3,26 +3,26 @@
     <aside class="mlsidebar">
       <div class="wrapper u-scroll top0">
         <div class="el-row" style="background: #f2f2f2;border-bottom: 1px solid #dfe6ec;">
-          <div class="el-col el-col-24">
+          <div class="el-col el-col-12">
             <div class="pab-header">联系组</div>
+          </div>
+          <div class="el-col el-col-12">
+            <div style="text-align:right;">
+              <i class="el-icon-plus add_btn_style"  title="添加联系组"  @click="handlePabAdd"></i>
+            </div>
+
           </div>
         </div>
 
         <el-row>
-          <el-tree
-            :data="pab_groups"
-            :props="pab_defaultProps"
-            highlight-current
-            node-key="id"
-            :default-expanded-keys="default_expanded_keys"
-            :default-checked-keys="default_checked_keys"
-            @node-click="oab_handleNodeClick"
-            ref="treeForm">
-            <table class="custom-tree-node" slot-scope="{ node, data }" style="margin-left: -5px;">
+          <el-tree :data="pab_groups" :props="pab_defaultProps" highlight-current node-key="id"
+                   :default-expanded-keys="default_expanded_keys" :default-checked-keys="default_checked_keys" @node-click="f_TreeNodeClick" ref="treeForm">
+            <table class="custom-tree-node" slot-scope="{ node, data }" style="">
               <tr>
-                <td style="text-align: left;"><span class="text_slice" style="float: left" :title="node.label">{{ node.label }}</span></td>
-                <td style="text-align: left;width: 50px;">({{ data.count }})</td>
-                <td>
+                <td style="text-align: left;">
+                  <span class="text_slice" style="float: left" :title="node.label">{{ node.label }}</span></td>
+                <td style="">({{ data.count }})</td>
+                <td style="text-align:right;">
                   <span style="margin-left: 10px;" class="hide_btn" v-if="!data.is_sysname">
                     <el-button type="text" size="mini" @click.stop.prevent="() => handlePabEdit(data)" title="编辑"><i class="el-icon-edit"></i></el-button>
                     <el-button type="text" size="mini" @click.stop="() => handlePabDel(node, data)" title="删除" style="margin-left: 0px!important;"><i class="el-icon-delete"></i></el-button>
@@ -34,14 +34,15 @@
         </el-row>
 
         <el-row style="text-align: left; margin-left: 13px;">
-          <el-button type="button" class="el-button control-button el-tooltip el-button--text el-button--small" @click="handlePabAdd">添加联系组</el-button>
+
           <!--<el-button type="success" @click="handlePabAdd" size="mini">添加联系组</el-button>-->
         </el-row>
       </div>
     </aside>
 
     <article class="mlmain mltabview overflow_auto">
-      <div  class="j-module-content j-maillist mllist-list height100">
+      <div  class="j-module-content j-maillist mllist-list height100" v-loading="listLoading"
+      >
 
         <el-row>
           <el-col :span="24" class="breadcrumb-container">
@@ -82,25 +83,20 @@
           <el-row class="toolbar">
             <el-col :span="12" >
               <el-button type="success" @click="Oab_select_to_add" :disabled="this.sels.length===0" size="mini" v-if="pab_iscan_distribute">添加至组</el-button>
-              <el-button type="primary" @click="Oab_send_to_select" :disabled="this.sels.length===0" size="mini"> 选中发信</el-button>
-              <el-button type="success" @click="Oab_send_to_group" size="mini"> 发邮件给组 </el-button>
+              <el-button type="primary" @click="$parent.sendMail_net('more',sels)" :disabled="this.sels.length===0" size="mini"> 选中发信</el-button>
+              <el-button type="success" @click="Oab_send_to_group" size="mini" > 发邮件给组 </el-button>
               <el-button type="danger" @click="Oab_delete_select" :disabled="this.sels.length===0" size="mini"> 批量删除</el-button>
             </el-col>
             <el-col :span="12" >
-              <el-pagination layout="total, sizes, prev, pager, next, jumper"
-                             @size-change="Oab_handleSizeChange"
-                             @current-change="Oab_handleCurrentChange"
-                             :page-sizes="[15, 30, 50, 100]"
-                             :current-page="page"
-                             :page-size="page_size"
-                             :total="total" style="float: right">
+              <el-pagination layout="total, sizes, prev, pager, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange"
+                             :page-sizes="[10, 20, 50, 100]" :current-page="page" :page-size="page_size" :total="total" style="float: right">
               </el-pagination>
             </el-col>
           </el-row>
 
           <!--列表-->
-          <el-table :data="oab_tables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>
-            <!--<el-table :data="oab_tables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
+          <el-table :data="listTables" highlight-current-row width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
+            <!--<el-table :data="listTables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
             <el-table-column type="selection" width="60"></el-table-column>
             <el-table-column type="index" label="No." width="80"></el-table-column>
             <el-table-column prop="fullname" label="姓名"></el-table-column>
@@ -111,7 +107,8 @@
             <el-table-column label="操作" width="250">
               <template slot-scope="scope">
                 <el-button size="mini" @click="handlePabMemberEdit(scope.$index, scope.row)">修改</el-button>
-                <el-button type="danger" size="mini" @click="handlePabMemberDel(scope.$index, scope.row)">删除</el-button>
+                <el-button type="danger" size="mini" @click="handlePabMemberDel(scope.$index, scope.row, false)" v-if=" filters_options_show ">删除</el-button>
+                <el-button type="danger" size="mini" @click="handlePabMemberDel(scope.$index, scope.row, true)" v-if=" !filters_options_show ">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -401,7 +398,6 @@
 </template>
 
 <script>
-  import {MessageBox} from 'element-ui';
   import {
     contactPabGroupsCreate,
     contactPabGroupsDelete,
@@ -414,8 +410,9 @@
     contactPabMembersDistribute,
     contactPabMembersExport,
     contactPabMembersGet,
+    contactPabMembersImport,
     contactPabMembersUpdate,
-    contactPabMembersImport
+    getDeptMail
   } from '@/api/api'
 
   export default {
@@ -428,6 +425,7 @@
         }
       };
       return {
+        fullscreenLoading:false,
         filters: {
           search: '',
           search2: '',
@@ -475,10 +473,10 @@
          ************************/
         total: 0,
         page: 1,
-        page_size: 15,
+        page_size: 10,
         listLoading: false,
         sels: [],//列表选中列
-        oab_tables: [],
+        listTables: [],
 
         // groupname错误信息展示
         pab_groupname_error:'',
@@ -495,7 +493,7 @@
         editPabFormRules: {
           groupname: [
             { required: true, message: '请输入联系组名称', trigger: 'blur' },
-            { min: 3, max: 50, message: '长度在 3 到 50 个字符', trigger: 'blur' }
+            { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur' }
           ]
         },
         //编辑界面数据
@@ -510,7 +508,7 @@
         addPabFormRules: {
           groupname: [
             { required: true, message: '请输入联系组名称', trigger: 'blur' },
-            { min: 3, max: 50, message: '长度在 3 到 50 个字符', trigger: 'blur' }
+            { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur' }
           ]
         },
         //新增界面数据
@@ -609,7 +607,6 @@
       } else {
         this.filters_options_show = false;
       }
-      // console.log("子组件调用了'created'");
     },
     mounted: function(){
       this.$parent.activeIndex = "pab";
@@ -652,18 +649,22 @@
         if (this.pab_cid >0){
           contactPabMapsGet(param).then((res) => {
             this.total = res.data.count;
-            this.oab_tables = res.data.results;
+            this.listTables = res.data.results;
             this.pab_iscan_distribute = res.data.pab_iscan_distribute;
             this.listLoading = false;
             //NProgress.done();
+          }).catch(()=>{
+            this.listLoading = false;
           });
         } else {
           contactPabMembersGet(param).then((res) => {
             this.total = res.data.count;
-            this.oab_tables = res.data.results;
+            this.listTables = res.data.results;
             this.pab_iscan_distribute = res.data.pab_iscan_distribute;
             this.listLoading = false;
             //NProgress.done();
+          }).catch(()=>{
+            this.listLoading = false;
           });
         }
       },
@@ -680,23 +681,27 @@
         if (this.pab_cid >0){
           contactPabMapsGet(param).then((res) => {
             this.total = res.data.count;
-            this.oab_tables = res.data.results;
+            this.listTables = res.data.results;
             this.pab_iscan_distribute = res.data.pab_iscan_distribute;
             this.listLoading = false;
             //NProgress.done();
+          }).catch(err=>{
+            this.listLoading = false;
           });
         } else {
           contactPabMembersGet(param).then((res) => {
             this.total = res.data.count;
-            this.oab_tables = res.data.results;
+            this.listTables = res.data.results;
             this.pab_iscan_distribute = res.data.pab_iscan_distribute;
             this.listLoading = false;
             //NProgress.done();
+          }).catch(err=>{
+            this.listLoading = false;
           });
         }
       },
       // 右侧菜单 联系组改变
-      oab_handleNodeClick(data) {
+      f_TreeNodeClick(data) {
         this.page = 1;
         this.pab_cid = data.id;
         if ( data.id == 0 ){
@@ -709,17 +714,16 @@
         this.getPabMembers();
       },
       // 列表选中改变
-      Oab_selsChange: function (sels) {
+      f_TableSelsChange: function (sels) {
         this.sels = sels;
       },
       // 每页数目改变
-      Oab_handleSizeChange(val) {
+      f_TableSizeChange(val) {
         this.page_size = val;
         this.getPabMembers();
-        // console.log(`当前页: ${val}`);
       },
       // 翻页改变
-      Oab_handleCurrentChange(val) {
+      f_TableCurrentChange(val) {
         this.page = val;
         this.getPabMembers();
       },
@@ -737,17 +741,16 @@
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
               this.distributePabLoading = true;
               let para = Object.assign({ids: ids}, this.distributePabForm);
-              this.listLoading = true;
               contactPabMembersDistribute(para).then((res) => {
                 this.$refs['distributePabForm'].resetFields();
                 this.distributePabLoading = false;
                 this.$message({message: '提交成功', type: 'success'});
                 this.distributePabFormVisible = false;
-                this.listLoading = false;
                 this.getPabs();
               }, (data)=>{
                 this.distributePabLoading = false;
               }).catch(function (error) {
+                this.distributePabLoading = false;
                 console.log(error);
               });
             });
@@ -761,7 +764,6 @@
         this.$confirm('确认删除选中记录吗？', '提示', {
           type: 'warning'
         }).then(() => {
-            this.listLoading = true;
             //NProgress.start();
             let para = {ids: ids};
             // batchRemoveUser(para).then((res) => {
@@ -779,6 +781,8 @@
       },
       // 删除联系人
       Oab_delete_select: function(){
+
+        /*
         let that = this;
         // var ids = this.sels.map(item => item.contact_id).toString();
         var ids = this.sels.map(item => item.contact_id);
@@ -795,12 +799,118 @@
             this.getPabs();
           }).catch(function (error) {
             // this.listLoading = false;
-            console.log(error);
           });
         });
+        */
+
+        var ids = this.sels.map(item => item.contact_id);
+        if ( Number(this.pab_cid) == 0 ){
+          let para = {ids: ids};
+          this.$confirm('<p>确定从所有联系人组中彻底删除所选联系人？</p><p style="margin-bottom:20px;font-size: 12px;">该操作将把联系人从所有联系人组中删除。</p>', '系统提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            dangerouslyUseHTMLString: true,
+          }).then(() => {
+            this.fullscreenLoading = true;
+            contactPabMembersBatchDelete(para).then(res=>{
+              this.fullscreenLoading = false;
+              this.$message(
+                {type:'success',message:'删除成功！'}
+              )
+              if((this.page-1)*this.page_size >= (this.total-ids.length)){
+                this.page = 1;
+              }
+              this.getPabs();
+            }).catch(err=>{
+              this.fullscreenLoading = false;
+              this.getPabs();
+              let str = '';
+              if(err.detail){
+                str = err.detail;
+              }
+              this.$message(
+                {type:'error',message:'删除失败！'+str}
+              );
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            });
+          });
+        } else {
+          let para = {
+            ids: ids,
+            group_id: this.pab_cid,
+            ref_delete: true,
+          };
+          this.$confirm('<p>确定将选中的联系人移出？</p><div><input type="checkbox" id="is_delete" style="margin-top: 20px;"> 并从通讯录中彻底删除</div>', '系统提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            dangerouslyUseHTMLString: true,
+          }).then(() => {
+            this.fullscreenLoading = true;
+            if($('#is_delete').prop('checked')) {
+              para.is_delete = true;
+            } else {
+              para.is_delete = false;
+            }
+            contactPabMembersBatchDelete(para).then(res=>{
+              this.fullscreenLoading = false;
+              this.$message(
+                {type:'success',message:'删除成功！'}
+              )
+              if((this.page-1)*this.page_size >= (this.total-ids.length)){
+                this.page = 1;
+              }
+              this.getPabs();
+            }).catch(err=>{
+              this.fullscreenLoading = false;
+              this.getPabs();
+              let str = '';
+              if(err.detail){
+                str = err.detail;
+              }
+              this.$message(
+                {type:'error',message:'删除失败！'+str}
+              );
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            });
+          });
+        }
+
       },
       // 发邮件给联系组
-      Oab_send_to_group: function(){},
+      Oab_send_to_group: function(){
+        this.$confirm('发邮件给组?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          let param = {
+            "ctype":'pab',
+            "cid" : this.pab_cid
+          }
+          this.listLoading = true;
+          getDeptMail(param).then(res=>{
+            this.listLoading = false;
+            if(res.data && res.data.length==0){
+              this.$message({
+                type:'error',
+                message:'未找到邮箱！'
+              })
+              return;
+            }
+            this.$parent.sendMail_net(res.data)
+          }).catch(err=>{
+            this.listLoading = false;
+          })
+
+        }).catch(() => {
+        });
+      },
       // 导入联系人 编辑
       Oab_import_to_group: function(){
         this.fileList = [];
@@ -832,10 +942,13 @@
                 if("error" in data) {
                   this.fileUpload_error = data.error;
                 }
-              }).catch(function (error) {
+              }).catch(function (err) {
                 that.importPabLoading = false;
-                that.$message({ message: '导入失败，请重试',  type: 'error' });
-                console.log(error);
+                let str = '';
+                if(err.detail){
+                  str = err.detail;
+                }
+                that.$message({ message: '导入失败！'+str,  type: 'error' });
               });
 
             });
@@ -885,7 +998,6 @@
         }
 
         var size = fileSize / (1024*1024);
-        console.log(fileSize,size)
         if(size>(1024*1024*10)){
           // this.$alert('文件大小不能超过10M！', '提示：', {
           //   confirmButtonText: '确定',});
@@ -931,9 +1043,13 @@
             }
             that.$message({ message: '导出成功', type: 'success' });
             // this.getPabs();
-          }).catch(function (error) {
-            console.log(error)
-            that.$message({ message: '导出失败，请重试',  type: 'error' });
+          }).catch(function (err) {
+            this.listLoading = false;
+            let str = '';
+            if(err.detail){
+              str = err.detail;
+            }
+            that.$message({ message: '导出失败! '+str,  type: 'error' });
           });
         });
       },
@@ -962,9 +1078,13 @@
               this.getPabMembers();
             }
             that.$message({ message: '删除成功', type: 'success' });
-          }).catch(function (error) {
+          }).catch(function (err) {
             this.pab_cid = ppab_cid;
-            that.$message({ message: '删除失败',  type: 'error' });
+            let str = '';
+            if(err.detail){
+              str = err.detail;
+            }
+            that.$message({ message: '删除失败! '+str,  type: 'error' });
           });
         });
       },
@@ -994,6 +1114,8 @@
                 if("non_field_errors" in data) {
                   this.pab_groupname_error = data.non_field_errors[0];
                 }
+              }).catch(()=>{
+                this.editPabLoading = false;
               });
             }).catch(function (error) {
               console.log(error);
@@ -1029,6 +1151,7 @@
                   this.pab_groupname_error = data.non_field_errors[0];
                 }
               }).catch(function (error) {
+                this.addPabLoading = false;
                 console.log(error);
               });
             });
@@ -1044,7 +1167,8 @@
        ************************
        ************************/
       // 删除联系人
-      handlePabMemberDel: function(index, row) {
+      handlePabMemberDel: function(index, row, ref_delete) {
+        /*
         let that = this;
         this.$confirm('确认删除该联系人吗?', '提示', {
           type: 'warning'
@@ -1056,6 +1180,88 @@
             that.$message({ message: '删除失败',  type: 'error' });
           });
         });
+        */
+
+        var ids = [row.contact_id];
+        if ( Number(this.pab_cid) == 0 ){
+          let para = {ids: ids};
+          this.$confirm('<p>确定从所有联系人组中彻底删除所选联系人？</p><p style="margin-bottom:20px;font-size: 12px;">该操作将把联系人从所有联系人组中删除。</p>', '系统提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            dangerouslyUseHTMLString: true,
+          }).then(() => {
+            this.fullscreenLoading = true;
+            contactPabMembersBatchDelete(para).then(res=>{
+              this.fullscreenLoading = false;
+              this.$message(
+                {type:'success',message:'删除成功！'}
+              )
+              if((this.page-1)*this.page_size >= (this.total-ids.length)){
+                this.page = 1;
+              }
+              this.getPabs();
+            }).catch(err=>{
+              this.fullscreenLoading = false;
+              this.getPabs();
+              let str = '';
+              if(err.detail){
+                str = err.detail;
+              }
+              this.$message(
+                {type:'error',message:'删除失败！'+str}
+              );
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            });
+          });
+        } else {
+          let para = {
+            ids: ids,
+            group_id: this.pab_cid,
+            ref_delete: true,
+          };
+          this.$confirm('<p>确定将选中的联系人移出？</p><div><input type="checkbox" id="is_delete" style="margin-top: 20px;"> 并从通讯录中彻底删除</div>', '系统提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            dangerouslyUseHTMLString: true,
+          }).then(() => {
+            this.fullscreenLoading = true;
+            if($('#is_delete').prop('checked')) {
+              para.is_delete = true;
+            } else {
+              para.is_delete = false;
+            }
+            contactPabMembersBatchDelete(para).then(res=>{
+              this.fullscreenLoading = false;
+              this.$message(
+                {type:'success',message:'删除成功！'}
+              )
+              if((this.page-1)*this.page_size >= (this.total-ids.length)){
+                this.page = 1;
+              }
+              this.getPabs();
+            }).catch(err=>{
+              this.fullscreenLoading = false;
+              this.getPabs();
+              let str = '';
+              if(err.detail){
+                str = err.detail;
+              }
+              this.$message(
+                {type:'error',message:'删除失败！'+str}
+              );
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            });
+          });
+        }
+
       },
       // 显示修改联系人
       handlePabMemberEdit: function (index, row) {
@@ -1080,7 +1286,6 @@
                 this.pab_email_error = '';
                 this.getPabs();
               }, (data)=>{
-                console.log(data);
                 this.editPabMerberLoading = false;
                 if("non_field_errors" in data) {
                   this.pab_email_error = data.non_field_errors[0];
@@ -1088,6 +1293,8 @@
                 if("email" in data) {
                   this.pab_email_error = data.email[0];
                 }
+              }).catch(()=>{
+                this.editPabMerberLoading = false;
               });
             }).catch(function (error) {
               console.log(error);
@@ -1126,6 +1333,8 @@
                 if("email" in data) {
                   this.pab_email_error = data.email[0];
                 }
+              }).catch(()=>{
+                this.addPabMerberLoading = false;
               });
             }).catch(function (error) {
               console.log(error);
@@ -1145,5 +1354,11 @@
   }
   .disabled .el-upload--picture-card {
     display: none;
+  }
+  .add_btn_style:hover{
+    background:#e6e6e6;
+  }
+  .add_btn_style{
+    cursor:pointer;font-weight:bold;display:inline-block;border-left:1px solid #d9d9d9;height:28px;padding:0 10px;line-height:28px;
   }
 </style>

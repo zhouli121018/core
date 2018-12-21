@@ -5,18 +5,18 @@
         <el-breadcrumb separator="/"><el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item><el-breadcrumb-item><a href="#">设置中心</a></el-breadcrumb-item><el-breadcrumb-item>签名</el-breadcrumb-item></el-breadcrumb>
       </el-col>
     </el-row>
-    <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;">
+    <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;" v-loading="listLoading">
 
       <el-row class="toolbar">
         <el-col :span="12">
-          <el-button type="primary" @click="addSig" size="mini">添加签名</el-button>
+          <el-button type="primary" @click="createFormShow" size="mini">添加签名</el-button>
           <el-button type="success" @click="setDefaultSig" size="mini">设置默认签名</el-button>
         </el-col>
         <el-col :span="12">
         </el-col>
       </el-row>
 
-      <el-table :data="listTables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
+      <el-table :data="listTables" highlight-current-row width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
         <el-table-column type="selection" width="60"></el-table-column>
         <el-table-column type="index" label="No." width="80"></el-table-column>
         <el-table-column prop="caption" label="签名标题"></el-table-column>
@@ -34,8 +34,8 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="editSig(scope.$index, scope.row)">修改</el-button>
-            <el-button type="danger" size="mini" @click="delSig(scope.$index, scope.row)">删除</el-button>
+            <el-button size="mini" @click="updateFormShow(scope.$index, scope.row)">修改</el-button>
+            <el-button type="danger" size="mini" @click="deleteRow(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -43,14 +43,14 @@
       <el-col :span="24" class="toolbar"></el-col>
 
       <!-- 默认签名设置 -->
-      <el-dialog title="默认签名设置"  :visible.sync="defaultSigFormVisible" :close-on-click-modal="false" :append-to-body="true">
+      <el-dialog title="默认签名设置"  :visible.sync="defaultSigFormVisible"  :close-on-click-modal="false" :append-to-body="true">
         <el-form :model="defaultSigForm" label-width="100px" :rules="defaultSigFormRules" ref="defaultSigForm">
           <el-form-item label="新邮件">
             <el-select v-model="defaultSigForm.default" clearable  style="width: 100%" placeholder="默认不使用签名">
               <el-option v-for="item in listTables" :key="item.id" :label="item.caption" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="恢复/转发">
+          <el-form-item label="回复/转发">
             <el-select v-model="defaultSigForm.refw_default" clearable  style="width: 100%" placeholder="默认不使用签名">
               <el-option v-for="item in listTables" :key="item.id" :label="item.caption" :value="item.id"></el-option>
             </el-select>
@@ -58,26 +58,45 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="defaultSigFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="defaultSigSubmit()" :loading="defaultSigLoading">提交</el-button>
+          <el-button type="primary" @click.native="defaultSigSubmit()" >提交</el-button>
         </div>
       </el-dialog>
 
       <!--新增 签名-->
-      <el-dialog title="新增签名"  :visible.sync="addFormVisible" :close-on-click-modal="false" :append-to-body="true">
-        <el-form :model="addForm" label-width="100px" :rules="addFormRules" ref="addForm">
+      <el-dialog title="新增签名"  :visible.sync="createFormVisible"  :close-on-click-modal="false" :append-to-body="true">
+        <el-form :model="createForm" label-width="100px" :rules="createFormRules" ref="createForm">
           <el-form-item label="签名标题" prop="caption">
-            <el-input v-model.trim="addForm.caption" auto-complete="off"></el-input>
+            <el-input v-model.trim="createForm.caption" auto-complete="off"></el-input>
           </el-form-item>
 
           <el-form-item label="签名内容" prop="content">
-            <!--<el-input type="textarea" id="editor_id" v-model.trim="addForm.content"></el-input>-->
-            <editor id="editor_id" ref="editor_id" height="400px" maxWidth="100%" width="100%" :content="addForm.content"
-                    pluginsPath="/static/kindeditor/plugins/" :loadStyleMode="false" :items="toolbarItems" @on-content-change="onContentChange"></editor>
+            <!--<el-input type="textarea" id="editor_id" v-model.trim="createForm.content"></el-input>-->
+            <editor v-if="createFormVisible" id="editor_id" ref="editor_id" height="400px" maxWidth="100%" width="100%" :content="createForm.content"
+                    pluginsPath="/static/kindeditor/plugins/" :loadStyleMode="false" :uploadJson="uploadJson"  :items="toolbarItems" @on-content-change="createContentChange"></editor>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="addFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="addFormSubmit()" :loading="addFormLoading">提交</el-button>
+          <el-button @click.native="createFormVisible = false">取消</el-button>
+          <el-button type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">提交</el-button>
+        </div>
+      </el-dialog>
+
+
+      <!--更新 签名-->
+      <el-dialog title="修改签名"  :visible.sync="updateFormVisible" :close-on-click-modal="false" :append-to-body="true">
+        <el-form :model="updateForm" label-width="100px" :rules="updateFormRules" ref="updateForm">
+          <el-form-item label="签名标题" prop="caption">
+            <el-input v-model.trim="updateForm.caption" auto-complete="off"></el-input>
+          </el-form-item>
+
+          <el-form-item label="签名内容" prop="content">
+            <editor v-if="updateFormVisible" id="editor_id2" ref="editor_id2" height="400px" maxWidth="100%" width="100%" :content="updateForm.content"
+                    pluginsPath="/static/kindeditor/plugins/" :uploadJson="uploadJson"  :loadStyleMode="false" :items="toolbarItems" @on-content-change="editContentChange"></editor>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click.native="updateFormVisible = false">取消</el-button>
+          <el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">提交</el-button>
         </div>
       </el-dialog>
 
@@ -85,14 +104,14 @@
   </div>
 </template>
 <script>
+  import {MessageBox} from 'element-ui';
   import {settingSignatureGet, settingSignatureCreate,
     settingSignatureDelete, settingSignatureUpdate,
-    settingSignatureDefaultlSet} from '@/api/api'
+    settingSignatureDefaultlSet, settingSignatureGetSingle} from '@/api/api'
 
   export default {
     data() {
       return {
-        // content:'内容',
         toolbarItems:
           ['source', '|','formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
             'italic', 'underline',  'lineheight', '|',  'justifyleft', 'justifycenter', 'justifyright',
@@ -100,10 +119,9 @@
             'superscript', 'link', 'unlink','image',  'table','hr','|', 'undo', 'redo', 'preview',
             'fullscreen',
           ],
-        listLoading: false,
         total: 0,
         page: 1,
-        page_size: 15,
+        page_size: 20,
         listLoading: false,
         sels: [],//列表选中列
         listTables: [],
@@ -112,11 +130,20 @@
         defaultSigLoading: false,
         defaultSigForm: { default: '', refw_default: '' },
         defaultSigFormRules: {},
+        default_content: '',
 
-        addFormVisible: false,
-        addFormLoading: false,
-        addForm: {caption: '', content: ''},
-        addFormRules: {
+        createFormVisible: false,
+        createFormLoading: false,
+        createForm: {caption: '系统默认签名', content: ''},
+        createFormRules: {
+          caption: [{ required: true, message: '请填写签名标题', trigger: 'blur' }],
+          content: [{ required: true, message: '请填写签名内容', trigger: 'blur' }],
+        },
+
+        updateFormVisible: false,
+        updateFormLoading: false,
+        updateForm: {caption: '', content: ''},
+        updateFormRules: {
           caption: [{ required: true, message: '请填写签名标题', trigger: 'blur' }],
           content: [{ required: true, message: '请填写签名内容', trigger: 'blur' }],
         },
@@ -128,14 +155,22 @@
 
     },
     methods: {
-      onContentChange (val) {
-        this.addForm.content = val;
+      createContentChange (val) {
+        this.createForm.content = val;
+      },
+      editContentChange (val) {
+        this.updateForm.content = val;
       },
       getTables: function(){
+        this.listLoading = true;
         settingSignatureGet().then(res=>{
           this.total = res.data.total;
           this.listTables = res.data.results;
           this.defaultSigForm = res.data.defaults;
+          this.default_content = res.data.default_content;
+          this.listLoading = false;
+        }).catch(()=>{
+          this.listLoading = false;
         });
       },
       setDefaultSig: function(){
@@ -165,39 +200,111 @@
           }
         });
       },
-      addSig: function(){
-        this.addFormLoading = false;
-        this.addFormVisible = true;
-        this.addForm = Object.assign({}, this.addForm);
+      createFormShow: function(){
+        let form =this.createForm;
+        if (this.default_content != null){
+          form.content = this.htmlDecodeByRegExp(this.default_content);
+        }
+        this.createForm = Object.assign({}, form);
+        this.createFormLoading = false;
+        this.createFormVisible = true;
       },
-      addFormSubmit: function(){
-        this.$refs.addForm.validate((valid) => {
+      createFormSubmit: function(){
+        this.$refs.createForm.validate((valid) => {
           if (valid) {
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
-              this.addFormLoading = true;
-              let para = Object.assign({}, this.addForm);
-              settingSignatureCreate(para).then((res) => {
-                this.$message({message: '添加成功', type: 'success'});
-                this.$refs['addForm'].resetFields();
-                this.addFormLoading = false;
-                this.addFormVisible = false;
-                this.getTables();
-              }, (data)=>{
-                console.log(data)
-              }).catch(function (error) {
-                console.log(error);
-              });
+              this.createFormLoading = true;
+              let para = Object.assign({}, this.createForm);
+              settingSignatureCreate(para)
+                .then((res) => {
+                  this.$message({message: '添加成功', type: 'success'});
+                  this.$refs['createForm'].resetFields();
+                  this.createFormVisible = false;
+                  this.createFormLoading = false;
+                  this.getTables();
+                }, (data)=>{
+                  console.log(data);
+                  if ( "limited_error_message" in data ){
+                    // this.open(data);
+                    this.$message.error(data.limited_error_message);
+                    this.$refs['createForm'].resetFields();
+                    this.createFormVisible = false;
+                    this.createFormLoading = false;
+                  }
+                })
+                .catch(function (error) {
+                  console.log(error);
+                  this.createFormLoading = false;
+                });
+            });
+          }
+        });
+      },
+      /*3.用正则表达式实现html转码*/
+      htmlEncodeByRegExp:function (str){
+        var s = "";
+        if(str.length == 0) return "";
+        s = str.replace(/&/g,"&amp;");
+        s = s.replace(/</g,"&lt;");
+        s = s.replace(/>/g,"&gt;");
+        s = s.replace(/ /g,"&nbsp;");
+        s = s.replace(/\'/g,"&#39;");
+        s = s.replace(/\"/g,"&quot;");
+        return s;
+      },
+      /*4.用正则表达式实现html解码*/
+      htmlDecodeByRegExp:function (str){
+        var s = "";
+        if(str.length == 0) return "";
+        s = str.replace(/&amp;/g,"&");
+        s = s.replace(/&lt;/g,"<");
+        s = s.replace(/&gt;/g,">");
+        s = s.replace(/&nbsp;/g," ");
+        s = s.replace(/&#39;/g,"\'");
+        s = s.replace(/&quot;/g,"\"");
+        return s;
+      },
+      updateFormShow: function (index, row) {
+        this.listLoading = true;
+        settingSignatureGetSingle(row.id).then(res=>{
+          this.listLoading = false;
+          let form = Object.assign({}, res.data);
+          form.content = this.htmlDecodeByRegExp(form.content);
+          this.updateForm = form;
+          this.updateFormVisible = true;
+          this.updateFormLoading = false;
+        }).catch(()=>{
+          this.listLoading = false;
+        });
+      },
+      updateFormSubmit: function(){
+        this.$refs.updateForm.validate((valid) => {
+          if (valid) {
+            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+              this.updateFormLoading = true;
+              let para = Object.assign({}, this.updateForm);
+              settingSignatureUpdate(para.id, para)
+                .then((res) => {
+                  this.$refs['updateForm'].resetFields();
+                  this.updateFormLoading = false;
+                  this.updateFormVisible = false;
+                  this.$message({message: '提交成功', type: 'success'});
+                  this.getTables();
+                }, (data)=>{
+                  console.log(data);
+                  this.updateFormLoading = false;
+                })
+                .catch(function (error) {
+                  console.log(error);
+                  this.updateFormLoading = false;
+                });
             });
           }
         });
       },
 
-      editSig: function (index, row) {
-        // this.pab_show = false;
-        // this.editPabMerberFormVisible = true;
-        // this.editPabMerberForm = Object.assign({}, row);
-      },
-      delSig: function (index, row) {
+
+      deleteRow: function (index, row) {
         let that = this;
         this.$confirm('确认删除该签名吗?', '提示', {
           type: 'warning'
@@ -217,6 +324,11 @@
         this.sels = sels;
       },
 
+    },
+    computed:{
+      uploadJson:function(){
+        return this.$store.state.uploadJson;
+      }
     },
   }
 </script>

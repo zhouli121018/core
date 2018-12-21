@@ -57,12 +57,10 @@ urlpatterns = [
     url(r'^cfilter/add/$', views.cfilter_add, name='cfilter_add_set'),
     url(r'^cfilter/(?P<rule_id>\d+)/$', views.cfilter_modify, name='cfilter_modify_set'),
     url(r'^cfilter/v/(?P<rule_id>\d+)/$', views.cfilter_view, name='cfilter_view_set'),
-    #url(r'^cfilter/api/forward/list$', views.user_cfilter_forward_list, name='user_cfilter_forward_list'),
-    #url(r'^cfilter/api/forward/mdf$', views.user_cfilter_forward_mdf, name='user_cfilter_forward_mdf'),
-    #url(r'^cfilter/api/forward/del$', views.user_cfilter_forward_del, name='user_cfilter_forward_del'),
-    #url(r'^cfilter/api/reply/list$', views.user_cfilter_reply_list, name='user_cfilter_reply_list'),
-    #url(r'^cfilter/api/reply/mdf$', views.user_cfilter_reply_mdf, name='user_cfilter_reply_mdf'),
-    #url(r'^cfilter/api/reply/del$', views.user_cfilter_reply_del, name='user_cfilter_reply_del'),
+    url(r'^cfilter/api/list$', views.user_cfilter_list, name='user_cfilter_list'),
+    url(r'^cfilter/api/mdf$', views.user_cfilter_mdf, name='user_cfilter_mdf'),
+    url(r'^cfilter/api/mdf/batch$', views.user_cfilter_mdf_batch, name='user_cfilter_mdf_batch'),
+    url(r'^cfilter/api/del$', views.user_cfilter_del, name='user_cfilter_del'),
 
     #内网邮件代发
     url(r'^mail_transfer/$', views.mailTransfer, name='mail_transfer'),

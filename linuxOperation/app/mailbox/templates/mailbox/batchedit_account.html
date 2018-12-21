@@ -88,7 +88,7 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pane fade in active">
-                <form class="form-horizontal" action="" method="POST" >
+                <form class="form-horizontal" action="" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <table class="table  table-bordered  ">
                         <tbody>
@@ -102,38 +102,35 @@
                         </tr>
                         <tr>
                             <td class="text-right">格式说明：</td>
-                            <td>
+                            <td colspan="5">
+                                <p>用户名可以是字符、数字、上划线、下划线，但用户名的第一个字必须是数字或字母。
+                                    如果输入的用户名是大写字母，系统将自动转为小写！</p>
                                 <p><span class="red">注意：</span>每行的格式为
                                     <span class="blue">
-                    用户名 密码 邮箱大小 网盘大小 真实名称 所属部门 工号 职位 手机号码 电话号码 QQ 出生日期
+                    用户名 真实名称 所属部门 职位 工号 手机号码 电话号码 密码 邮箱容量 网盘容量 排序权重 QQ号码 出生日期 密码
                     </span> 之间用“TAB”符号隔开
-                                    “邮箱大小”和“网盘大小”的单位为“M”</p>
-                                <p>eg:</p>
-                                <p>tina	password1	500	100	张三	财务部	12345	on	13528775736	0755-89421857	员工</p>
-                                <p>gary	password2	100	100	李四	技术部	12346	on	13528775236	0755-89721857	员工</p>
-                                <p>tom	passwor3	200	50	王五	后勤部	12347	off	13527675736	0734-89421857	员工</p>
+                                    “邮箱容量”和“网盘容量”的单位为“M”</p>
+                                <p>文件内容举例:</p>
+                                <textarea   rows="4" class="form-control">用户名 真实名称 所属部门 职位 工号 手机号码 电话号码 邮箱容量 网盘容量 排序权重 QQ号码 出生日期 密码
+wangwu 王五 技术部 高级工程师 U0003 13600000000 13600000000 500 500 0 88776655 1985-01-01 password1
+lisi 李四 技术部 中级工程师 U0004 13600000001 13600000001 500 500 0 88776656 1988-01-01 password2</textarea>
                                 <div class="hr hr-18 dotted hr-double"></div>
-                                <p>另外:有相同的子部门时，所属部门用 - 隔开如：</p>
-                                <p>test1	password4	100	100	王五	大中华区-华南区-财务部	12347	on	13528775736	0755-89421857	员工</p>
-                                <p>test2	password5	100	100	赵六	大中华区-华北区-财务部	12348	on	13528775236	0755-89721857	员工</p>
-                                <div class="hr hr-18 dotted hr-double"></div>
-                                <p>注：如果某项留空，则不进行修改！</p>
+                                <p>标准操作步骤：</p>
                                 <ul>
-                                    <li>1、使用EXCEL先进行数据处理，处理成范例文件格式</li>
-                                    <li>2、txt数据导入和excel数据导入只能选择其中一种方式导入</li>
-                                    <li>3、点击表格下方的编辑进行批量修改用户。</li>
-                                    <li>4、eg:用户名为必填项</li>
-                                    <li>5、eg:邮箱大小或网盘大小为空，则默认为邮箱容量或网盘容量的设置值</li>
-                                    <li>6、eg:部门为空，但是填写了职位，则会修改所有的该用户所有的部门职位，建议修改职位指定部门</li>
+                                    <li>1、根据"格式说明"里的范例将用户数据保存为excel或者txt/csv格式的文件，分隔符为tab</li>
+                                    <li>2、点击表格下方的“导入文件”将文件提交</li>
+                                    <li>3、eg:显示名称 为空，则默认为选择列表"所属部门"的设置值</li>
+                                    <li>4、eg:邮箱大小或网盘大小为空，则默认为邮箱容量或网盘容量的设置值</li>
+                                    <li>5、eg:所属部门为空，则默认为选择列表"所属部门"的设置值</li>
+                                    <li>6、eg:从"帐号列表"--"导出excel"导出的文件，在删掉"邮箱地址"列后可直接导入</li>
+                                    <li>7、eg:请将要导入的文件内容保存为GBK编码</li>
                                 </ul>
                             </td>
                         </tr>
                         <tr>
-                            <td class="text-right" id="tip">数据导入：</td>
+                            <td class="text-right" style="width:100px;">导入文件：</td>
                             <td>
-                                <textarea name="data" rows="6" class="form-control">{% for f in failures %}
-{{ f.1 }}{% endfor %}
-                                </textarea>
+                            <input type="file" name="txtfile" required="" id="id_txtfile">
                             </td>
                         </tr>
                         <!--<tr>-->

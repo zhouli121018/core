@@ -101,7 +101,10 @@ class BanBlockListForm(forms.ModelForm):
         ip = ip.strip()
         if not ip:
             raise forms.ValidationError(_(u"请填写IP。",))
-        if not check_ip(ip):
+        try:
+            from IPy import IP
+            o = IP(ip)
+        except:
             raise forms.ValidationError(_(u"输入的IP不合法。", ))
         if Fail2BanBlock.objects.exclude(id=self.instance.id).filter(ip=ip).exists():
             raise forms.ValidationError(_(u"IP已存在。", ))
@@ -140,7 +143,10 @@ class Fail2BanTrustForm(forms.ModelForm):
         ip = ip.strip()
         if not ip:
             raise forms.ValidationError(_(u"请填写IP。",))
-        if not check_ip(ip):
+        try:
+            from IPy import IP
+            o = IP(ip)
+        except:
             raise forms.ValidationError(_(u"输入的IP不合法。", ))
         #白名单优先级应该要比屏蔽IP要高，所以不要判断
         #if Fail2BanBlock.objects.exclude(id=self.instance.id).filter(ip=ip).exists():

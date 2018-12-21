@@ -759,9 +759,6 @@
                         <label class="col-sm-4 control-label">附件存储目录：</label>
                         <div class="col-sm-8">
                             <label>
-                                <input type="radio" name="client_public" value="1" {% if form_client_attach.client_public == '1'  %} checked {% endif %}><span>系统公共目录</span>
-                            </label>
-                            <label>
                                 <input type="radio" name="client_public" value="-1" {% if form_client_attach.client_public != '1'  %} checked {% endif %}><span>发信人网络硬盘</span>
                             </label>
                         </div>
@@ -785,7 +782,6 @@
                         <p>4、若用户在自己的网络硬盘操作删除了该转存的附件，也会导致外部下载附件失败；</p>
                         <p>5、附件下载地址一般不需要自己修改，需要自定义外部访问域名的用户，需要考虑是否修改这里；</p>
                         <p>6、内网IP登录的用户，若地址栏显示的是诸如 '10.x.x.x' 、 '172.16.x.x至172.31.x.x' 、 '192.168.x.x' 这些地址，则必须换成外部能访问到的域名地址，如'mail.example.com'；</p>
-                        <p>6、“附件存储目录”当选择存储在“发信人网络硬盘”时，发信人可管理删除该附件，存储在“系统公共目录”时，附件永久存储且不会被任何人删除。</p>
                     </div>
                 </div>
             </div>

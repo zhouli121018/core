@@ -96,7 +96,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item>
-              <el-button type="primary" @click.native="onSubmit()" :loading="saveFormLoading" v-if="can_modify">{{need_review?'提交审核':'保存'}}</el-button>
+              <el-button type="primary" @click.native="onSubmit()" v-if="can_modify" :loading="saveFormLoading">{{need_review?'提交审核':'保存'}}</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -153,7 +153,7 @@
 
       }
     },
-    mounted: function(){
+    created: function(){
       this.getUserInfo();
     },
     methods: {
@@ -187,6 +187,7 @@
                 this.getUserInfo();
               }).catch(function (error) {
                 console.log(error);
+                this.saveFormLoading = false;
               });
             });
           }

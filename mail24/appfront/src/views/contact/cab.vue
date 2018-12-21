@@ -3,28 +3,15 @@
     <aside class="mlsidebar">
       <div class="mlsidebar-bg"></div>
       <div class="wrapper u-scroll top0">
-
         <input type="hidden" v-model="cab_cid"/>
-
-        <el-tree
-          class="filter-tree"
-          :data="cab_groups"
-          :props="cab_defaultProps"
-          render-after-expand
-          highlight-current
-          node-key="id"
-          :indent="13"
-          :default-expanded-keys="default_expanded_keys"
-          :default-checked-keys="default_checked_keys"
-          @node-click="oab_handleNodeClick"
-          ref="treeForm">
+        <el-tree class="filter-tree" :data="cab_groups" :props="cab_defaultProps" render-after-expand highlight-current node-key="id" :indent="13"
+                 :default-expanded-keys="default_expanded_keys" :default-checked-keys="default_checked_keys" @node-click="f_TreeNodeClick" ref="treeForm">
         </el-tree>
-
       </div>
     </aside>
 
     <article class="mlmain mltabview overflow_auto">
-      <div  class="j-module-content j-maillist mllist-list height100 ">
+      <div  class="j-module-content j-maillist mllist-list height100 " v-loading="listLoading">
 
         <el-row>
           <el-col :span="24" class="breadcrumb-container">
@@ -56,24 +43,19 @@
 
           <el-row class="toolbar">
             <el-col :span="12">
-              <el-button type="primary" @click="Oab_send_to_select" :disabled="this.sels.length===0" size="mini"> 发信给选择的人员</el-button>
-              <el-button type="success" @click="Oab_send_to_department" :disabled="this.sels.length===0" size="mini">发邮件给本机构人员</el-button>
+              <el-button type="primary" @click="$parent.sendMail_net('more',sels)" :disabled="this.sels.length===0" size="mini"> 发信给选择的人员</el-button>
+              <el-button type="success" @click="Oab_send_to_department" size="mini">发邮件给本机构人员</el-button>
               <el-button type="info" @click="Oab_to_pab" :disabled="this.sels.length===0" size="mini"> 添加至个人通讯录</el-button>
             </el-col>
             <el-col :span="12">
-              <el-pagination layout="total, sizes, prev, pager, next, jumper"
-                             @size-change="Oab_handleSizeChange"
-                             @current-change="Oab_handleCurrentChange"
-                             :page-sizes="[15, 30, 50, 100]"
-                             :page-size="page_size"
-                             :total="total" style="float: right">
+              <el-pagination layout="total, sizes, prev, pager, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange"
+                             :page-sizes="[10, 20, 50, 100]" :current-page="page" :page-size="page_size" :total="total" style="float: right">
               </el-pagination>
             </el-col>
           </el-row>
 
           <!--列表-->
-          <el-table :data="oab_tables" highlight-current-row v-loading="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>
-            <!--<el-table :data="oab_tables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="Oab_selsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
+          <el-table :data="listTables" highlight-current-row width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
             <el-table-column type="selection" width="50"></el-table-column>
             <el-table-column type="index" label="No." width="60"></el-table-column>
             <el-table-column prop="fullname" label="姓名" width="200"></el-table-column>
@@ -97,7 +79,7 @@
 </template>
 
 <script>
-  import { contactCabGroupsGet, contactCabMembersGet, contactPabMembersCabAdd } from '@/api/api'
+  import { contactCabGroupsGet, contactCabMembersGet, contactPabMembersCabAdd ,getDeptMail} from '@/api/api'
   export default {
     data() {
       return {
@@ -116,15 +98,14 @@
         },
         total: 0,
         page: 1,
-        page_size: 15,
+        page_size: 10,
         listLoading: false,
         sels: [],//列表选中列
-        oab_tables: [],
+        listTables: [],
       };
     },
     created: function() {
       this.cab_cid = window.sessionStorage['cab_cid'];
-      // console.log("子组件调用了'created'");
     },
     mounted: function(){
       this.$parent.activeIndex = "cab";
@@ -140,19 +121,18 @@
           this.cate_name = data.label;
         })
       },
-      oab_handleNodeClick(data) {
+      f_TreeNodeClick(data) {
         this.page = 1;
         this.cab_cid = data.id;
         this.cate_name = data.label;
         window.sessionStorage['cab_cid'] = data.id;
         this.getCabMembers();
       },
-      Oab_handleSizeChange(val) {
+      f_TableSizeChange(val) {
         this.page_size = val;
         this.getCabMembers();
-        // console.log(`当前页: ${val}`);
       },
-      Oab_handleCurrentChange(val) {
+      f_TableCurrentChange(val) {
         this.page = val;
         this.getCabMembers();
       },
@@ -179,9 +159,11 @@
         this.listLoading = true;
         contactCabMembersGet(param).then((res) => {
           this.total = res.data.count;
-          this.oab_tables = res.data.results;
+          this.listTables = res.data.results;
           this.listLoading = false;
           //NProgress.done();
+        }).catch(()=>{
+          this.listLoading = false;
         });
       },
       // 获取成员
@@ -199,24 +181,25 @@
         this.listLoading = true;
         contactCabMembersGet(param).then((res) => {
           this.total = res.data.count;
-          this.oab_tables = res.data.results;
+          this.listTables = res.data.results;
           this.listLoading = false;
           //NProgress.done();
+        }).catch(()=>{
+          this.listLoading = false;
         });
       },
-      Oab_selsChange: function (sels) {
+      f_TableSelsChange: function (sels) {
         this.sels = sels;
       },
       Oab_send_to_select: function () {
         // var ids = this.sels.map(item => item.id).toString();
         var ids = this.sels.map(item => item.id);
-        // console.log(ids);
         this.$confirm('确认删除选中记录吗？', '提示', {
           type: 'warning'
         }).then(() => {
-            this.listLoading = true;
+            // this.listLoading = true;
             //NProgress.start();
-            let para = {ids: ids};
+            // let para = {ids: ids};
             // batchRemoveUser(para).then((res) => {
             //   this.listLoading = false;
             //   //NProgress.done();
@@ -232,24 +215,29 @@
       },
       Oab_send_to_department: function () {
         // var ids = this.sels.map(item => item.id).toString();
-        var ids = this.sels.map(item => item.id);
-        this.$confirm('执行该操作后，“丽兹行集团”的全体成员均将作为该邮件的收件人，是否确认如此操作？', '提示', {
+        this.$confirm('发邮件给本机构人员？', '提示', {
           type: 'warning'
         }).then(() => {
-            this.listLoading = true;
-            //NProgress.start();
-            let para = {ids: ids};
-            // batchRemoveUser(para).then((res) => {
-            //   this.listLoading = false;
-            //   //NProgress.done();
-            //   this.$message({
-            //     message: '删除成功',
-            //     type: 'success'
-            //   });
-            //   this.getCabMembers();
-            // });
+          let param = {
+            "ctype":'cab',
+            "cid":this.cab_cid
           }
-        ).catch(() => {
+          this.listLoading = true;
+          getDeptMail(param).then(res=>{
+            this.listLoading = false;
+            if(res.data && res.data.length==0){
+              this.$message({
+                type:'error',
+                message:'未找到邮箱！'
+              })
+              return;
+            }
+            this.$parent.sendMail_net(res.data)
+          }).catch(err=>{
+            this.listLoading = false;
+            console.log('获取组邮箱错误！',err)
+          })
+        }).catch(() => {
         });
       },
       Oab_to_pab: function () {
@@ -267,7 +255,7 @@
             that.$message({ message: '已成功添加联系人到个人通讯录', type: 'success' });
           });
         }).catch((error) => {
-          // that.listLoading = false;
+          that.listLoading = false;
           console.log(error);
           // that.$message({ message: '操作失败，请重试',  type: 'error' });
         });

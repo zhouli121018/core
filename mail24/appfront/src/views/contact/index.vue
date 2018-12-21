@@ -4,7 +4,7 @@
              text-color="#fff"
              active-text-color="#ffd04b" >
       <el-menu-item index="pab">个人通讯录</el-menu-item>
-      <el-menu-item index="oab" v-if="webmail_oab_show">组织通讯录</el-menu-item>
+      <el-menu-item index="oab">组织通讯录</el-menu-item>
       <el-menu-item index="cab" v-if="webmail_cab_show">公共通讯录</el-menu-item>
       <el-menu-item index="soab" v-if="webmail_soab_show">其它域通讯录</el-menu-item>
     </el-menu>
@@ -20,13 +20,12 @@
     data() {
       return {
         activeIndex:'pab',
-        webmail_oab_show: false,
+        webmail_oab_show: true,
         webmail_cab_show: false,
         webmail_soab_show: false,
       };
     },
     created: function() {
-      // console.log("父组件调用了'created'");
       let pab_cid = window.sessionStorage['pab_cid'];
       if (pab_cid === undefined) {
         window.sessionStorage['pab_cid'] = 0;
@@ -61,10 +60,55 @@
           this.jumpTo('/contact/soab');
         }
       },
+      sendMail_net(row,sels){
+        if(this.$store.getters.getSharedStatus.shareuser_all || this.$store.getters.getSharedStatus.shareuser_post ||this.$store.getters.getSharedStatus.shareuser_send){
+
+        }else{
+          this.$message({
+            type:'error',
+            message:'对于您登陆的共享邮箱，没有权限做此操作。'
+          })
+          return
+        }
+        let _this = this;
+        let arr = [];
+        if(row == 'more'){
+          sels.forEach(val => {
+            let obj = {};
+            obj.id = val.id || val.contact_id;
+            if(val.email){
+              obj.email = val.email
+              obj.fullname = val.fullname
+              obj.name = val.fullname
+            }else{
+              obj.email = val.username|| val.pref_email;
+              obj.fullname = val.name || val.fullname
+              obj.name = val.name|| val.fullname
+            }
+
+            obj.status = true
+            arr.push(obj);
+          })
+
+        }else{
+          row.forEach(val => {
+            let obj = {};
+            obj.email = val[0];
+            obj.fullname = val[1];
+            obj.name = val[1]
+            obj.status = true;
+            arr.push(obj)
+          })
+
+        }
+        this.$store.dispatch('setTo',arr)
+        this.$store.dispatch('setContactJ',true)
+
+        this.$router.push('/mailbox/innerbox/INBOX')
+      },
     },
 
     mounted() {
-      // console.log("父组件调用了'mounted'");
       if (this.$route.path.indexOf('/pab') >= 0) {
         this.activeIndex = "pab";
       } else if (this.$route.path.indexOf('/oab') >= 0) {
@@ -174,15 +218,6 @@
   }
   .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
     z-index: 2;
-    /*color: #fff !important;*/
-    /*background-color: #428bca !important;*/
-    /*border-color: #428bca !important;*/
-
-    /*background-color: #e6e6e6!important;*/
-    /*border-color: #e6e6e6 !important;*/
-
-    /*background-color: rgb(160, 207, 255) !important;*/
-    /*border-color: rgb(160, 207, 255) !important;*/
 
     color: #67c23a;
     background: #f0f9eb;
@@ -191,17 +226,9 @@
   .el-tree-node:focus>.el-tree-node__content, .el-tree-node__content:hover{
     z-index: 2;
 
-    /*background-color: rgb(160, 207, 255) !important;*/
-    /*border-color: rgb(160, 207, 255) !important;*/
 
     background-color: #e6e6e6 !important;
     border-color: #e6e6e6 !important;
 
-    /*background-color: #f0f7ff !important;*/
-    /*border-color: #f0f7ff !important;*/
-
-    /*color: #fff !important;*/
-    /*background-color: #428bca !important;*/
-    /*border-color: #428bca !important;*/
   }
 </style>
