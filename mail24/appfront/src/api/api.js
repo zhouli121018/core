@@ -372,35 +372,35 @@ export const deletePerm= id => { return axios.delete(`${host}/netdisk/perm/${id}
 
 //日历
 //获取日程列表 /api/calendars/calendars/
-export const getCalendarsList = () => { return axios.get(`${host}/calendars/calendars/`)}
+export const getCalendarsList = () => { return axios.get(`${host}/schedule/calendars/`)}
 //获取具体某个日程信息 /api/calendars/calendars/{id}/
-export const getCalendarById = (id) => { return axios.get(`${host}/calendars/calendars/${id}/`)}
+export const getCalendarById = (id) => { return axios.get(`${host}/schedule/calendars/${id}/`)}
 //创建日程 /api/calendars/calendars/
-export const createCalendar = params => { return axios.post(`${host}/calendars/calendars/`, params) };
+export const createCalendar = params => { return axios.post(`${host}/schedule/calendars/`, params) };
 //删除日程 /api/calendars/calendars/{id}/    delete
-export const deleteCalendar = id => { return axios.delete(`${host}/calendars/calendars/${id}/`) }
+export const deleteCalendar = id => { return axios.delete(`${host}/schedule/calendars/${id}/`) }
 //删除共享给我的日程  /api/calendars/calendars/{id}/delete-invitor/
-export const deleteInvitorCalendar = id => { return axios.post(`${host}/calendars/calendars/${id}/delete-invitor/`) }
+export const deleteInvitorCalendar = id => { return axios.post(`${host}/schedule/calendars/${id}/delete-invitor/`) }
 //更新日程  /api/calendars/calendars/{id}/  put
-export const updateCalendar = (id,params) => { return axios.put(`${host}/calendars/calendars/${id}/`, params) };
+export const updateCalendar = (id,params) => { return axios.put(`${host}/schedule/calendars/${id}/`, params) };
 //显示或隐藏共享日程 /api/calendars/calendars/show/
-export const showCalendar = params => { return axios.post(`${host}/calendars/calendars/show/`, params) };
+export const showCalendar = params => { return axios.post(`${host}/schedule/calendars/show/`, params) };
 //获取事件列表 /api/calendars/events/
-export const getEvents = params => { return axios.get(`${host}/calendars/events/`, { params: params }) }
+export const getEvents = params => { return axios.get(`${host}/schedule/events/`, { params: params }) }
 //创建事件  /api/calendars/events/
-export const createEvent = params => { return axios.post(`${host}/calendars/events/`, params) };
+export const createEvent = params => { return axios.post(`${host}/schedule/events/`, params) };
 //获取某个事件 /api/calendars/events/{id}/ get
-export const getEventById = (id) => { return axios.get(`${host}/calendars/events/${id}/`)}
+export const getEventById = (id) => { return axios.get(`${host}/schedule/events/${id}/`)}
 //修改事件 PUT /api/calendars/events/{id}/
-export const updateEvent = (id,params) => { return axios.put(`${host}/calendars/events/${id}/`, params) };
+export const updateEvent = (id,params) => { return axios.put(`${host}/schedule/events/${id}/`, params) };
 //删除事件 /api/calendars/events/{id}/
-export const deleteEvent = id => { return axios.delete(`${host}/calendars/events/${id}/`) }
+export const deleteEvent = id => { return axios.delete(`${host}/schedule/events/${id}/`) }
 //取消邀请 /api/calendars/events/{id}/cancel-invitor/
-export const cancelInvitorEvent = id => { return axios.post(`${host}/calendars/events/${id}/cancel-invitor/`) }
+export const cancelInvitorEvent = id => { return axios.post(`${host}/schedule/events/${id}/cancel-invitor/`) }
 //修改参与者状态 /api/calendars/events/{id}/status/
-export const setStatus = (id,params) => { return axios.post(`${host}/calendars/events/${id}/status/`, {status:params}) };
+export const setStatus = (id,params) => { return axios.post(`${host}/schedule/events/${id}/status/`, {status:params}) };
 //根据邮箱获取用户ID，并验证是不是系统内邮箱 /api/calendars/calendars/target_id/
-export const getTargetId = params => { return axios.get(`${host}/calendars/calendars/target_id/`, { params: params }) }
+export const getTargetId = params => { return axios.get(`${host}/schedule/calendars/target_id/`, { params: params }) }
 
 
 //自助查询

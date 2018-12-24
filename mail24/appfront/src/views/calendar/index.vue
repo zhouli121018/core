@@ -125,9 +125,15 @@
   .fc-event{
     position:relative;
   }
+  /*.fc-event-container>a:hover{*/
+    /*background-color:#c9e9ff !important;*/
+    /*border-color:#c9e9ff !important;*/
+  /*}*/
+  .fc-event-container>a{
+    opacity: 0.85;
+  }
   .fc-event-container>a:hover{
-    background-color:#c9e9ff !important;
-    border-color:#c9e9ff !important;
+    opacity: 1;
   }
   /*.fc-event-container:hover{*/
     /*background-color:#c9e9ff !important;*/
