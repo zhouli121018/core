@@ -390,7 +390,7 @@ export const getEvents = params => { return axios.get(`${host}/schedule/events/`
 //创建事件  /api/calendars/events/
 export const createEvent = params => { return axios.post(`${host}/schedule/events/`, params) };
 //获取某个事件 /api/calendars/events/{id}/ get
-export const getEventById = (id) => { return axios.get(`${host}/schedule/events/${id}/`)}
+export const getEventById = (id,process_id) => { return axios.get(`${host}/schedule/events/${id}/`,{params:{process_id:process_id}})}
 //修改事件 PUT /api/calendars/events/{id}/
 export const updateEvent = (id,params) => { return axios.put(`${host}/schedule/events/${id}/`, params) };
 //删除事件 /api/calendars/events/{id}/

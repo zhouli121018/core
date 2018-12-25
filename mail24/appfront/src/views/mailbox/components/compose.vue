@@ -317,13 +317,20 @@
               <div class="form-edr compose_editor" ref="editor_box" style="min-height:280px;" :style="{height:editor_height+'px'}">
 
                 <!--<div v-html="content"></div>-->
+                <div>
+                  <textarea name="aa" :id="editor_id" :ref="editor_id"  rows="10" style="width:100%" :style="{height:editor_height+'px'}">{{content}}</textarea>
+                </div>
 
-                <editor :id="editor_id" :ref="editor_id" :height="editor_height+'px'" width="100%" :content="content" :filterMode="false"
-                    pluginsPath="/static/kindeditor/plugins/" :resizeType="0" indentChar=""
-                    :loadStyleMode="false" :items="toolbarItems" :uploadJson="uploadJson"
-                    @on-content-change="onContentChange"  :autoHeightMode="false" :afterCreate="afterChange" @afterFocus="editorfocus">
 
-                </editor>
+
+                <!--<editor :id="editor_id+'1'" :ref="editor_id" :height="editor_height+'px'" width="100%" :content="content" :filterMode="false"-->
+                    <!--pluginsPath="/static/kindeditor/plugins/" :resizeType="0" indentChar=""-->
+                    <!--:loadStyleMode="false" :items="toolbarItems" :uploadJson="uploadJson"-->
+                    <!--@on-content-change="onContentChange"  :autoHeightMode="false" :afterCreate="afterChange" @afterFocus="editorfocus">-->
+
+                <!--</editor>-->
+
+
 
               </div>
               <!-- form-toolbar compose_footer -->
@@ -774,6 +781,7 @@
       </el-dialog>
     </div>
 </template>
+
 <script>
   import axios from 'axios';
   import cookie from '@/assets/js/cookie';
@@ -840,6 +848,7 @@
       };
       let _this = this;
       return {
+        editoraaa:'',
         expand_soab:false,
         right_search:'',
         right_cpage:1,
@@ -1122,6 +1131,19 @@
       };
     },
     methods:{
+      createEditor(){
+        let options = {
+          items:this.toolbarItems,
+          uploadJson:this.uploadJson,
+          filterMode:false,
+          resizeType:0,
+          indentChar:"",
+          loadStyleMode:false,
+          autoHeightMode:false,
+          afterCreate:this.afterChange
+        }
+       this.editoraaa = KindEditor.create('#'+this.editor_id,options);
+      },
       afterChange:function(val){
         setTimeout(()=>{
           this.setEditorHeight();
@@ -1819,7 +1841,7 @@
       },
 
       selectTemplate(t){
-        if(this.content){
+        if(this.editoraaa.html()){
           this.$confirm('切换模板后, 已输入内容将清空,继续切换或者存草稿？', '系统信息', {
           distinguishCancelAndClose: true,
           confirmButtonText: '存草稿再切换',
@@ -1832,10 +1854,10 @@
             getTemplateById(t.id).then(res=>{
               this.content = res.data.content;
               if(this.ruleForm2.is_html){
-                this.$refs[this.editor_id].editor.html(this.content);
+                this.editoraaa.html(this.content);
               }else{
                 // $('#editor_id'+this.rid).html(this.content);
-                this.$refs[this.editor_id].editor.html(this.content);
+                this.editoraaa.html(this.content);
                 this.no_html();
               }
               this.setSubject(t.caption,'template')
@@ -1850,10 +1872,10 @@
             getTemplateById(t.id).then(res=>{
               this.content = res.data.content;
               if(this.ruleForm2.is_html){
-                this.$refs[this.editor_id].editor.html(this.content);
+                this.editoraaa.html(this.content);
               }else{
                 // $('#editor_id'+this.rid).html(this.content);
-                this.$refs[this.editor_id].editor.html(this.content);
+                this.editoraaa.html(this.content);
                 this.no_html();
               }
               this.setSubject(t.caption,'template')
@@ -1869,10 +1891,10 @@
             getTemplateById(t.id).then(res=>{
               this.content = res.data.content;
               if(this.ruleForm2.is_html){
-                this.$refs[this.editor_id].editor.html(this.content);
+                this.editoraaa.html(this.content);
               }else{
                 // $('#editor_id'+this.rid).html(this.content);
-                this.$refs[this.editor_id].editor.html(this.content);
+                this.editoraaa.html(this.content);
                 this.no_html();
               }
               this.setSubject(t.caption,'template')
@@ -1938,17 +1960,17 @@
 
       checkBgFn(m){
         if(this.ruleForm2.is_html){
-          let html = this.$refs[this.editor_id].editor.html();
+          let html = this.editoraaa.html();
           if($(html).find('#stationery').length>0){
             html = $(html).find('#stationery').html();
           }
           if(m == 'noBg'){
             this.checkBg = '';
-            this.$refs[this.editor_id].editor.html(html)
+            this.editoraaa.html(html)
           }else{
             this.checkBg = m.id;
             let newHtml = `<table style="width:99.8%;"><tr><td id="stationery"  style="background:${m.background};min-height: 550px;padding: 100px 55px 200px;">${html}</td></tr></table>`
-            this.$refs[this.editor_id].editor.html(newHtml)
+            this.editoraaa.html(newHtml)
           }
         }else{
           this.$message({
@@ -1971,7 +1993,8 @@
             let sign_content = res.data.content;
             sign_content = this.htmlDecodeByRegExp(sign_content)
             if(this.ruleForm2.is_html){
-              let html = this.$refs[this.editor_id].editor.html();
+              // let html = this.$refs[this.editor_id].editor.html();
+              let html = $('#'+this.editor_id).val();
               let hasSign = $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#sign').length>0;
               let hasBg = $(html).find('#stationery').length>0;
 
@@ -1981,15 +2004,20 @@
                 let ht = $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#stationery').html();
                 $("#compose"+this.rid +' .ke-edit-iframe').contents().find('#stationery').html(ht+'<p><br><br></p><div id="sign"><br><br>'+sign_content+'</div><br>')
               }else{
-                this.$refs[this.editor_id].editor.appendHtml('<p><br><br></p><div id="sign">'+'<br><br>'+sign_content+'</div><br>')
+                // this.$refs[this.editor_id].editor.appendHtml('<p><br><br></p><div id="sign">'+'<br><br>'+sign_content+'</div><br>')
+                this.editoraaa.appendHtml('<p><br><br></p><div id="sign">'+'<br><br>'+sign_content+'</div><br>')
               }
             }else{
               // 纯文本签名
-              let html = this.$refs[this.editor_id].editor.html();
-              this.$refs[this.editor_id].editor.html('<p>'+html+'</p>')
-              this.$refs[this.editor_id].editor.appendHtml('<p><br><br></p><div id="sign">'+'<br><br>'+sign_content+'</div>')
-              this.content = this.htmlToText(this.$refs[this.editor_id].editor.text());
-              this.$refs[this.editor_id].editor.text(this.content);
+              // let html = this.$refs[this.editor_id].editor.html();
+              let html = $('#'+this.editor_id).val();
+              // this.$refs[this.editor_id].editor.html('<p>'+html+'</p>')
+              this.editoraaa.html('<p>'+html+'</p>')
+              // this.$refs[this.editor_id].editor.appendHtml('<p><br><br></p><div id="sign">'+'<br><br>'+sign_content+'</div>')
+              this.editoraaa.appendHtml('<p><br><br></p><div id="sign">'+'<br><br>'+sign_content+'</div>')
+              // this.content = this.htmlToText(this.$refs[this.editor_id].editor.text());
+              this.content = this.htmlToText(this.editoraaa.text());
+              this.editoraaa.text(this.content);
               // this.$refs[this.editor_id].editor.text(this.content);
               // $('#editor_id'+this.rid).val(html)
 
@@ -2009,16 +2037,20 @@
             sign_content = this.htmlDecodeByRegExp(sign_content)
             if(this.ruleForm2.is_html){
               this.signCheck = res.data.defaults.default;
-              let html = this.$refs[this.editor_id].editor.html();
-              this.$refs[this.editor_id].editor.html('<p><br><br></p><div id="sign">'+'<br><br>'+ sign_content +'</div><br>' + html)
+              // let html = this.$refs[this.editor_id].editor.html();
+              let html = $('#'+this.editor_id).val();
+              // this.$refs[this.editor_id].editor.html('<p><br><br></p><div id="sign">'+'<br><br>'+ sign_content +'</div><br>' + html)
+              this.editoraaa.html('<p><br><br></p><div id="sign">'+'<br><br>'+ sign_content +'</div><br>' + html)
             }
           }else if(this.type == 'compose3 '||this.type == 'compose4 '|| this.type == 'compose5 '||this.type == 'compose6 '){
             let sign_content = res.data.defaults.refw_default_content;
             sign_content = this.htmlDecodeByRegExp(sign_content)
             if(this.ruleForm2.is_html){
               this.signCheck = res.data.defaults.refw_default;
-              let html = this.$refs[this.editor_id].editor.html();
-              this.$refs[this.editor_id].editor.html('<p><br><br></p><div id="sign">'+'<br><br>'+ sign_content +'</div><br>' + html)
+              // let html = this.$refs[this.editor_id].editor.html();
+              let html = $('#'+this.editor_id).val();
+              // this.$refs[this.editor_id].editor.html('<p><br><br></p><div id="sign">'+'<br><br>'+ sign_content +'</div><br>' + html)
+              this.editoraaa.html('<p><br><br></p><div id="sign">'+'<br><br>'+ sign_content +'</div><br>' + html)
             }
           }
         });
@@ -2071,15 +2103,18 @@
 
         // $('#compose'+this.rid+' .ke-toolbar').hide()
         this.signCheck = '';
-        this.content = this.htmlToText(this.$refs[this.editor_id].editor.text());
-        this.$refs[this.editor_id].editor.text(this.content);
+        // this.content = this.htmlToText(this.editoraaa.text());
+        this.content = this.htmlToText(this.editoraaa.text());
+        console.log(this.editoraaa)
+        console.log(this.editoraaa.html())
+        $('#'+this.editor_id).val(this.content);
         $('#compose'+this.rid+' .ke-container.ke-container-default').hide()
         $('#editor_id'+this.rid).show()
         this.ruleForm2.is_html = false;
       },
       changeIsHtml(){
         if(this.ruleForm2.is_html){
-          if(this.content){
+          if(this.editoraaa.html()){
             this.$confirm('切换到纯文本编辑方式将丢失当前文本的格式，确定？', '系统信息', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
@@ -2101,7 +2136,7 @@
           }
           // $('#compose'+this.rid+' .ke-toolbar').show()
           this.content = '<p>'+$('#editor_id'+this.rid).val()+'</p>';
-          this.$refs[this.editor_id].editor.html(this.content);
+          this.editoraaa.html(this.content);
           $('#compose'+this.rid+' .ke-container.ke-container-default').show()
           $('#editor_id'+this.rid).hide()
 
@@ -2772,7 +2807,7 @@
           str = str.slice(0,str.lastIndexOf('.'));
           this.ruleForm2.subject = str;
         }
-        let a = $('#editor_id'+this.rid).val()
+        let a = this.editoraaa.html();
         if(type=='sent' && !a){
           this.$alert('请填写邮件内容！');
           return;
@@ -3661,6 +3696,7 @@
       console.log(this.type)
        this.$nextTick(() => {
         // window.uploader = this.$refs.uploader.uploader
+
       })
       this.content = this.parent_content;
       this.maillist = this.parent_maillist;
@@ -3692,6 +3728,7 @@
       for(let i=0;i<this.maillist_bcc.length;i++){
         this.hashMail_bcc[this.maillist_bcc[i].email] = true;
       }
+      $('#editor_id'+this.rid).val(this.content);
 
        $('#editor_id'+this.rid).css({'width': '100%','border':'none','boxSizing':'border-box','padding':'10px 10px 0'})
       if(!this.ruleForm2.is_html){
@@ -3700,6 +3737,7 @@
         this.no_html();
         // this.onContentChange();
       }
+      this.createEditor();
       this.getParams();
       // sessionStorage['openGroup'] = 'pab';
       if(sessionStorage['curKey'] && sessionStorage['curKey'] == 'soab'){
@@ -3715,16 +3753,17 @@
        window.addEventListener("resize", function () {
             // 得到屏幕尺寸 (内部/外部宽度，内部/外部高度)
             _this.setEditorHeight();
+            _this.set_main_min_height();
        }, false);
 
       //   setTimeout(_this.setEditorHeight,50)
-
+      this.getSignatrue();
     },
     beforeMount() {
 
     },
     created(){
-      this.getSignatrue();
+
       this.getTemplateListfn();
       this.getPabGroups();
       this.getRightContact();

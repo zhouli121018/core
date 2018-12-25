@@ -21,16 +21,16 @@ Vue.use(FullCalendar)
 import './assets/style/skin.css'
 import './assets/style/main.css'
 import './assets/iconfont/iconfont.css'
-import VueKindEditor from 'vue-kindeditor'
-import 'kindeditor/kindeditor-all-min.js'
-import 'kindeditor/themes/default/default.css'
+// import VueKindEditor from 'vue-kindeditor'
+// import 'kindeditor/kindeditor-all-min.js'
+// import 'kindeditor/themes/default/default.css'
 import Contact from './components/Contact'
 import SparkMD5 from 'spark-md5'
 import uploader from 'vue-simple-uploader'
 
 Vue.use(uploader)
 
-Vue.use(VueKindEditor)
+// Vue.use(VueKindEditor)
 Vue.use(Vuex)
 
 Vue.config.productionTip = false
