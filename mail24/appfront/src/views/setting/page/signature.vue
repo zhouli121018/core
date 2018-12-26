@@ -71,8 +71,9 @@
 
           <el-form-item label="签名内容" prop="content">
             <!--<el-input type="textarea" id="editor_id" v-model.trim="createForm.content"></el-input>-->
-            <editor v-if="createFormVisible" id="editor_id" ref="editor_id" height="400px" maxWidth="100%" width="100%" :content="createForm.content"
-                    pluginsPath="/static/kindeditor/plugins/" :loadStyleMode="false" :uploadJson="uploadJson"  :items="toolbarItems" @on-content-change="createContentChange"></editor>
+            <!--<editor v-if="createFormVisible" id="editor_id" ref="editor_id" height="400px" maxWidth="100%" width="100%" :content="createForm.content"-->
+                    <!--pluginsPath="/static/kindeditor/plugins/" :loadStyleMode="false" :uploadJson="uploadJson"  :items="toolbarItems" @on-content-change="createContentChange"></editor>-->
+            <textarea  v-if="createFormVisible" id="createEditor" style="width:100%;height:400px;" v-model="createForm.content"></textarea>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -90,8 +91,9 @@
           </el-form-item>
 
           <el-form-item label="签名内容" prop="content">
-            <editor v-if="updateFormVisible" id="editor_id2" ref="editor_id2" height="400px" maxWidth="100%" width="100%" :content="updateForm.content"
-                    pluginsPath="/static/kindeditor/plugins/" :uploadJson="uploadJson"  :loadStyleMode="false" :items="toolbarItems" @on-content-change="editContentChange"></editor>
+            <!--<editor v-if="updateFormVisible" id="editor_id2" ref="editor_id2" height="400px" maxWidth="100%" width="100%" :content="updateForm.content"-->
+                    <!--pluginsPath="/static/kindeditor/plugins/" :uploadJson="uploadJson"  :loadStyleMode="false" :items="toolbarItems" @on-content-change="editContentChange"></editor>-->
+            <textarea  id="updateEditor"  style="width:100%;height:400px;"></textarea>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -112,6 +114,8 @@
   export default {
     data() {
       return {
+        createEditor:'',
+        updateEditor:'',
         toolbarItems:
           ['source', '|','formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
             'italic', 'underline',  'lineheight', '|',  'justifyleft', 'justifycenter', 'justifyright',
@@ -155,6 +159,32 @@
 
     },
     methods: {
+      createEditorFn(val){
+        let options = {
+          items:this.toolbarItems,
+          uploadJson:this.uploadJson,
+          filterMode:false,
+          resizeType:1,
+          indentChar:"",
+          loadStyleMode:false,
+          autoHeightMode:false
+        }
+       this.createEditor = KindEditor.create('#createEditor',options);
+       this.createEditor.html(val);
+      },
+      updateEditorFn(val){
+        let options = {
+          items:this.toolbarItems,
+          uploadJson:this.uploadJson,
+          filterMode:false,
+          resizeType:1,
+          indentChar:"",
+          loadStyleMode:false,
+          autoHeightMode:false
+        }
+        this.updateEditor = KindEditor.create('#updateEditor',options);
+        this.updateEditor.html(val)
+      },
       createContentChange (val) {
         this.createForm.content = val;
       },
@@ -208,8 +238,17 @@
         this.createForm = Object.assign({}, form);
         this.createFormLoading = false;
         this.createFormVisible = true;
+        $('#createEditor').val(this.createForm.content)
+        setTimeout(()=>{
+          if(this.createEditor){
+            this.createForm.content = this.createEditor.html();
+            this.createEditor.remove('#createEditor')
+          }
+          this.createEditorFn(this.createForm.content);
+        },10)
       },
       createFormSubmit: function(){
+        this.createForm.content = this.createEditor.html();
         this.$refs.createForm.validate((valid) => {
           if (valid) {
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
@@ -273,11 +312,19 @@
           this.updateForm = form;
           this.updateFormVisible = true;
           this.updateFormLoading = false;
+          setTimeout(()=>{
+            if(this.updateEditor){
+              KindEditor.remove('#updateEditor');
+            }
+            this.updateEditorFn(this.updateForm.content);
+          },10)
+
         }).catch(()=>{
           this.listLoading = false;
         });
       },
       updateFormSubmit: function(){
+        this.updateForm.content = this.updateEditor.html();
         this.$refs.updateForm.validate((valid) => {
           if (valid) {
             this.$confirm('确认提交吗？', '提示', {}).then(() => {

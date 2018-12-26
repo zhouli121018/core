@@ -20,7 +20,8 @@ from django.utils import six
 
 from app.utils.domain_session import get_domainid_bysession
 from app.core.models import Mailbox, Domain, MailboxUser, MailboxUserAttr, Department, DomainAttr, DepartmentMember, \
-    MailboxSize, ExtReply, ExtCheckruleCondition, ExtCommonCheckrule, ExtForward, MailboxExtra, ProxyRedisLog, CoreWhitelist
+    MailboxSize, ExtReply, ExtCheckruleCondition, ExtCommonCheckrule, ExtForward, MailboxExtra, ProxyRedisLog, CoreWhitelist, \
+    CoUserReg
 from app.utils.TaskQueue import TaskQueue
 from app.utils.MailboxLimitChecker import LICENCE_EXCLUDE_LIST, MailboxLimitChecker
 from app.utils.MailboxPasswordChecker import CheckMailboxPassword, CheckMailboxPasswordLimit, GetMailboxPwdRules
@@ -534,6 +535,14 @@ def batchadd_account(request, template_name='mailbox/batchadd_account.html'):
                 if line in (0,):
                     continue
                 lines.append( table.row_values(line) )
+        if len(lines)>500:
+            messages.add_message(request, messages.ERROR, _(u"单次只能导入500行数据，请分批次导入。", ))
+            return render(request, template_name=template_name, context={
+                    'mb_quota_def': mb_quota_def,
+                    'nd_quota_def': nd_quota_def,
+                    'server_pass': server_pass,
+                    "dept_list": json.dumps(get_dept_list_sort(get_user_child_departments_kv(request, domain_id))),
+                })
         for elem in lines:
             # 用户名 真实名称 所属部门 职位 工号 手机号码 电话号码 密码 邮箱容量 网盘容量 排序权重 QQ号码 出生日期 密码
             data = {'limit_send': '-1', 'limit_login': '-1', 'disabled': '-1',
@@ -668,6 +677,14 @@ def batchedit_account(request, template_name='mailbox/batchedit_account.html'):
                 if line in (0,):
                     continue
                 lines.append( table.row_values(line) )
+        idx = 0
+        if len(lines)>500:
+            messages.add_message(request, messages.ERROR, _(u"单次只能导入500行数据，请分批次导入。", ))
+            return render(request, template_name=template_name, context={
+                'domain': domain,
+                'failures': failures,
+                'success': success
+            })
         for elem in lines:
             # 用户名 真实名称 所属部门 职位 工号 手机号码 电话号码 密码 邮箱容量 网盘容量 排序权重 QQ号码 出生日期 密码
             fields_list = ['name', 'realname', 'dept', 'position', 'eenumber', 'tel_mobile', 'tel_work',
@@ -728,6 +745,8 @@ def batchedit_account(request, template_name='mailbox/batchedit_account.html'):
             mailboxuser_data.update(data)
 
             form = MailboxForm(domain, mailbox_data, instance=mailbox_obj)
+            #导入的不判断密码
+            form.is_check_passwd = False
             user_form = MailboxUserForm(domain, mailboxuser_data, instance=mailboxuser_obj)
             if form.is_valid() and user_form.is_valid():
                 mailbox_size = form.cleaned_data.get('quota_mailbox')
@@ -748,13 +767,21 @@ def batchedit_account(request, template_name='mailbox/batchedit_account.html'):
                     for d in dept.split('-'):
                         dept_obj, __ = Department.objects.get_or_create(domain=domain, parent_id=parent_id, title=d)
                         parent_id = dept_obj.id
-                    DepartmentMember.objects.filter(domain=domain, mailbox_id=mailbox_obj.id).update(dept_id=parent_id)
+                    if parent_id > 0:
+                        DepartmentMember.objects.filter(domain=domain, mailbox_id=mailbox_obj.id).delete()
+                        DepartmentMember.objects.create(
+                            domain_id=domain.id,
+                            mailbox_id=mailbox_obj.id,
+                            dept_id=parent_id,
+                            position=u"",
+                            )
                 position = data.get('position', '')
                 if position:
                     DepartmentMember.objects.filter(domain=domain, mailbox_id=mailbox_obj.id).update(position=position)
                 success += 1
             else:
                 failures.append([u'{}{}'.format(form.errors, user_form.errors), line])
+            idx += 1
 
     return render(request, template_name=template_name, context={
         'domain': domain,
@@ -1388,6 +1415,116 @@ def ajax_edit_forward(request):
         obj.save()
         msg = _(u'设置成功')
     return HttpResponse(json.dumps({'msg': msg.encode('utf-8'), 'status':'success'}), content_type="application/json")
+
+@licence_required
+def register_list(request):
+    show_status = "wait"
+    domain_id = get_domainid_bysession(request)
+    domain = Domain.objects.get(id=domain_id)
+    if request.method == "POST":
+        id = request.POST.get('id', "0")
+        status = request.POST.get('status', "")
+        show_status = request.POST.get('show_status', "wait")
+        if id and int(id)>0:
+            obj = CoUserReg.objects.filter(id=id).first()
+            if not obj:
+                messages.add_message(request, messages.SUCCESS, _(u'数据不存在'))
+            else:
+                if status == "reject":
+                    obj.status = u"reject"
+                    obj.save()
+                    messages.add_message(request, messages.SUCCESS, _(u'操作成功'))
+                elif status == "permit":
+                    mailbox_size = DomainAttr.getAttrObjValue(domain_id, 'system', 'cf_def_mailbox_size')
+                    netdisk_size = DomainAttr.getAttrObjValue(domain_id, 'system', 'cf_def_netdisk_size')
+                    data = {'limit_send': '-1', 'limit_login': '-1', 'disabled': '-1',
+                    'limit_recv': '-1', 'pwd_days': '365', 'change_pwd': '-1', 'enable_share': '-1', 'showorder': '0',
+                    'gender': 'male', 'oabshow': '1',
+                    'quota_mailbox' :   mailbox_size,
+                    'quota_netdisk' :   netdisk_size,
+                    'name'            :   obj.username,
+                    'realname'       :   obj.realname,
+                    'eenumber'       :   obj.eenumber,
+                    'engname'        :   obj.engname,
+                    'tel_mobile'    :   obj.mobile,
+                    'password1'     :   obj.password,
+                    'password2'     :   obj.password,
+                    }
+                    form = MailboxForm(domain, data)
+                    user_form = MailboxUserForm(domain, data)
+                    if form.is_valid() and user_form.is_valid():
+                        checker = MailboxLimitChecker()
+                        if form.cleaned_data['disabled'] == '-1':
+                            check_count = 1
+                        else:
+                            check_count = 0
+                        try:
+                            if False:
+                                checker.simple_check(domain_id, form.cleaned_data['quota_mailbox'], form.cleaned_data['quota_netdisk'],
+                                                     count=check_count)
+                        except Exception, e:
+                            msg = '{}{}'.format(_(u'添加失败。'), e.message)
+                            messages.add_message(request, messages.ERROR, msg)
+                        else:
+                            box = form.save()
+                            user_form.save(box.id)
+                            # 部门处理
+                            dept_id, position = obj.department, u""
+                            if dept_id > 0:
+                                if not DepartmentMember.objects.filter(domain=domain, dept_id=dept_id, mailbox_id=box.id).first():
+                                    DepartmentMember.objects.create(domain=domain, dept_id=dept_id, mailbox_id=box.id, position=position)
+                            CoUserReg.objects.filter(id=id).update(status=u"permit")
+                            messages.add_message(request, messages.SUCCESS, _(u'操作成功'))
+                    else:
+                        messages.add_message(request, messages.ERROR, _(u'添加帐号失败： {}-{}'.format(form.errors, user_form.errors)))
+    return render(request, "mailbox/register_list.html",context={"show_status":show_status,"domain":domain})
+
+@licence_required
+def ajax_register_list(request):
+    data = request.GET
+    order_column = data.get('order[0][column]', '')
+    order_dir = data.get('order[0][dir]', '')
+    search = data.get('search[value]', '')
+    colums = ['id', 'password']
+
+    domain_id = get_domainid_bysession(request)
+    show_status = data.get("show_status", "wait")
+    lists = CoUserReg.objects.filter(domain_id=domain_id, status=show_status).all()
+    if lists and order_column and int(order_column) < len(colums):
+        if order_dir == 'desc':
+            lists = lists.order_by('-%s' % colums[int(order_column)])
+        else:
+            lists = lists.order_by('%s' % colums[int(order_column)])
+    lists = lists[:10000]
+
+    try:
+        length = int(data.get('length', 1))
+    except ValueError:
+        length = 1
+    try:
+        start_num = int(data.get('start', '0'))
+        page = start_num / length + 1
+    except ValueError:
+        start_num = 0
+        page = 1
+
+    count = len(lists)
+    if start_num >= count:
+        page = 1
+    paginator = Paginator(lists, length)
+    try:
+        lists = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        lists = paginator.page(paginator.num_pages)
+    rs = {"sEcho": 0, "iTotalRecords": count, "iTotalDisplayRecords": count, "aaData": []}
+    re_str = '<td.*?>(.*?)</td>'
+    number = length * (page-1) + 1
+    for d in lists.object_list:
+        t = TemplateResponse(request, 'mailbox/ajax_register_list.html', {'d': d, 'number': number})
+        t.render()
+        rs["aaData"].append(re.findall(re_str, t.content, re.DOTALL))
+        number += 1
+    return HttpResponse(json.dumps(rs), content_type="application/json")
 
 #在2.2.59-60版本开放给PHP进行修改密码检查的API。>2.2.60后类似API可以被app的flask服务替代
 def api_check_password(request):

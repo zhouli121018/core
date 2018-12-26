@@ -453,3 +453,7 @@ export const loginAfter = () => { return axios.get(`${host}/core/login-after/`)}
 
 //获取单个用户签名 url?replace=1: 表示替换变量 GET /api/setting/signatures/{id}/
 export const singleSignatures = id => { return axios.get(`${host}/setting/signatures/${id}/`,{ params: {replace:1} }) }
+
+
+//日程转为ics文件 GET /api/schedule/events/{id}/ics/
+export const eventsIcs = id => { return axios.get(`${host}/schedule/events/${id}/ics`) }

@@ -4,17 +4,6 @@
         <h4 class="modal-title">自动回复设置 -> {{ mailbox_obj.username }} -> 新增
         </h4>
     </div>
-    <div class="widget-box widget-color-blue2 email_box_tree" id="tree_box" style="position:absolute;top:32px;z-index:10;min-width:60%;max-width:100%;left:0;">
-        <button type="button" class="btn btn-danger btn-sm pull-right close_btn" >&times;</button>
-        <div class="widget-body" style="padding-right:20px;">
-            <div style="padding:20px  6px 0;">
-                <input type="text" class="search_input form-control" placeholder="输入关键字搜索...">
-            </div>
-            <div class="widget-main padding-8" style="height:auto;max-height:360px;">
-                <ul id="tree"></ul>
-            </div>
-        </div>
-    </div>
     <div class="modal-body" style="overflow:auto;">
         <form id="form_autoreply" method="post" action="">
             <table class="table table-bordered">
@@ -30,65 +19,123 @@
                 <tr>
                     <td style="width:110px;">自动回复条件：</td>
                     <td>
-                        <div>
-                            <label class="radio-inline">
-                                <input type="radio" name="logic" value="all" checked> 符合以下所有选中的条件
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="logic" value="one"> 符合以下任意一个选中条件
-                            </label>
+                        <div >
+                            <span>父条件间关系：</span>
+                            <div class="radio inline">
+                                <label>
+                                    <input name="logic" type="radio" checked class="ace" value="all">
+                                    <span class="lbl">满足所有条件</span>
+                                </label>
+                            </div>
+                            <div class="radio inline">
+                                <label>
+                                    <input name="logic" type="radio" class="ace" value="one">
+                                    <span class="lbl middle"> 满足一条即可</span>
+                                </label>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-success add_condition" style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>新增条件</button>
                         </div>
-                        <div class="row list_item">
-                            <div class="col-sm-3">
-                                <select name="suboption" class="form-control suboption">
-                                    <option label="所有邮件" value="all_mail"></option>
-                                    <option label="有附件" value="has_attach"></option>
-                                    <option label="附件名" value="attachments"></option>
-                                    <option label="发信人" value="sender"></option>
-                                    <option label="抄送人" value="cc"></option>
-                                    <option label="收信人" value="recipient"></option>
-                                    <option label="发信人部门" value="sender_dept"></option>
-                                    <option label="抄送人部门" value="cc_dept"></option>
-                                    <option label="收信人部门" value="rcpt_dept"></option>
-                                    <option label="主题" value="subject"></option>
-                                    <option label="邮件内容" value="body"></option>
-                                    <option label="邮件大小(MB)" value="mail_size"></option>
-                                    <option label="邮件大小(Byte)" value="mail_size2"></option>
-                                    <option label="邮件正文大小(Byte)" value="content_size"></option>
-                                    <option label="执行时间" value="exec_date"></option>
-                                </select>
-                            </div>
-                            <div class="col-sm-3">
-                                <select name="action" class="form-control contains" v-if="c.suboption=='attachments'||c.suboption=='sender'||c.suboption=='cc'||c.suboption=='recipient'||c.suboption=='subject'||c.suboption=='body'||c.suboption=='header_received'" placeholder="请选择" style="width:100%">
-                                    <option label="包含" value="contains"></option>
-                                    <option label="不包含" value="not_contains"></option>
-                                    <option label="等于" value="=="></option>
-                                </select>
-                                <select name="action" class="form-control equals display-none" v-if="c.suboption=='mail_size'||c.suboption=='mail_size2'||c.suboption=='content_size'" placeholder="请选择" style="width:100%">
-                                    <option label="大于等于" value=">="></option>
-                                    <option label="小于等于" value="<="></option>
-                                </select>
-                                <select name="action" class="form-control belongs display-none" v-if="c.suboption=='sender_dept'||c.suboption=='cc_dept'||c.suboption=='rcpt_dept'" placeholder="请选择" style="width:100%">
-                                    <option label="属于" value="in"></option>
-                                    <option label="不属于" value="not_in"></option>
-                                </select>
-                                <select name="action" class="form-control date display-none" v-if="c.suboption=='exec_date'" placeholder="请选择" style="width:100%">
-                                    <option label="星期" value="week"></option>
-                                    <option label="天" value="date"></option>
-                                </select>
-                            </div>
-                            <div class="col-sm-6">
-                                <input  class="display-none" name="val" v-if="c.suboption=='attachments' || c.suboption=='sender' || c.suboption == 'cc'|| c.suboption == 'recipient'|| c.suboption=='subject'|| c.suboption=='body'" placeholder="请输入内容"  style="width:100%"></input>
-                                <input  class="display-none" name="val" v-if="c.suboption=='mail_size' || c.suboption=='mail_size2' || c.suboption == 'content_size'" placeholder="" type="number" style="width:100%"></input>
-                                
-                                <div id="id_rule_value_dpt0" class="display-none ">
-                                    <div class="input-group">
-                                        <div>
-                                            <input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">
-                                            <input type="hidden" class="id_dept_id" value="" name="option_value_dpt0">
-                                        </div>
+                        
+                        <div class="list_item">
+                            <div id="faq-list-3" class="panel-group accordion-style1 accordion-style2 condition_box">
+                                <div class="panel panel-default" id="id_option_0">
+                                    <div class="panel-heading" style="position:relative;">
+                                        <a href="#faq_0" data-toggle="collapse" class="accordion-toggle">
+                                            <i class="smaller-80 ace-icon fa fa-chevron-down" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;
+                                            <b>条件</b>
+                                        </a>
                                     </div>
+                                    <div class="panel-collapse collapse in" id="faq_0">
+                                        <div class="panel-body">
+                                            <div >
+                                                <span>子条件间关系：</span>
+                                                <div class="radio inline">
+                                                    <label>
+                                                        <input name="logic_0" type="radio" checked class="ace con_logic" value="all">
+                                                        <span class="lbl"> 满足所有</span>
+                                                    </label>
+                                                </div>
+                                                <div class="radio inline">
+                                                    <label>
+                                                        <input name="logic_0" type="radio" class="ace con_logic" value="one">
+                                                        <span class="lbl middle"> 满足任意</span>
+                                                    </label>
+                                                </div>
+                                                <button type="button" class="btn btn-xs btn-info add_sub_condition" dataindex="0" dataparentindex="0" style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>新增子条件</button>
+                                            </div>
+                                            <ul>
+                                                <li class="condition_item">
+                                                    <div class="hr"></div>
+                                                    <div class="row">
+                                                        <div class="col-sm-2 control-label">
+                                                            子条件：
+                                                        </div>
+                                                        <div class="col-sm-10">
+                                                            <div class="row">
+                                                                <div class="col-sm-2 no-padding">
+                                                                <select class="form-control" name="suboption" style="height: 34px;">
+                                                                    <option value="all_mail">所有邮件</option>
+                                                                    <option value="has_attach">有附件</option>
+                                                                    <option value="attachments">附件名</option>
+                                                                    <option value="sender">发信人</option>
+                                                                    <option value="cc">抄送人</option>
+                                                                    <option value="recipient">收信人</option>
+                                                                    <option value="sender_dept">发信人部门</option>
+                                                                    <option value="cc_dept">抄送人部门</option>
+                                                                    <option value="rcpt_dept">收信人部门</option>
+                                                                    <option value="subject">主题</option>
+                                                                    <option value="body">邮件内容</option>
+                                                                    <option value="mail_size">邮件大小(MB)</option>
+                                                                    <option value="mail_size2">邮件大小(Byte)</option>
+                                                                    <option value="content_size">邮件正文大小(Byte)</option>
+                                                                    <option value="exec_date">执行时间</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-sm-10 no-padding">
+                                                                <div class="col-sm-2 no-padding actions">
+                                                                    <select class="form-control"  name="action_contain" style="height: 34px;">
+                                                                        <option value="contains">包含</option>
+                                                                        <option value="not_contains">不包含</option>
+                                                                        <option value="==">等于</option>
+                                                                    </select>
+                                                                    <select class="form-control display-none" name="action_eq" style="height: 34px;">
+                                                                        <option value=">=">大于等于</option>
+                                                                        <option value="<=">小于等于</option>
+                                                                    </select>
+                                                                    <select class="form-control display-none" name="action_belong" style="height: 34px;">
+                                                                        <option value="in">属于</option>
+                                                                        <option value="not_in">不属于</option>
+                                                                    </select>
+                                                                    <select class="form-control display-none" name="action_date" style="height: 34px;">
+                                                                        <option value="in">星期</option>
+                                                                        <option value="not_in">天</option>
+                                                                    </select>
+                                                                </div>
+                                                                    <div class="col-sm-8 no-padding values">
+                                                                        <input type="text" name="rule_value_common" value="" maxlength="300" style="width: 100%;"/>
+                                                                        <input type="number" name="rule_value_size" value="" class="display-none"  style="width: 100%;"/>
+                                                                        <div id="id_rule_value_dpt0" class="col-xs-12 col-sm-12 no-padding  display-none dept_box">
+                                                                            <div class="input-group">
+                                                                                <div id="input_box0">
+                                                                                    <input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">
+                                                                                    <input type="hidden" class="id_dept_id" value="" name="option_value_dpt0">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+    
+                                                            </div>
+                                                        </div>
+    
+                                                    </div>
+    
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        </div>
                                 </div>
+    
                             </div>
                         </div>
                         
@@ -116,26 +163,452 @@
                         <input type="submit" value="y" id="submit_ok" style="display: none;">
                         <input type="hidden" name="action" value="add" id="reply_action_id">
 
-                        <button type="button" onclick="save_reply({{ mailbox_obj.id }})" class="btn btn-sm btn-primary">保存</button>
+                        <button type="button" onclick="" class="btn btn-sm btn-primary">保存</button>
                         <button type="button" id="id_return" class="btn btn-sm btn-danger cancel-btn" href="{% url 'mailbox_reply' mailbox_obj.id %}" data-target="#modal-reply" data-dismiss="modal" data-toggle="modal">返回</button>
                     </td>
                 </tr>
             </table>
         </form>
+        <div class="widget-box widget-color-blue2 email_box_tree" id="tree_box_demo" style="position:absolute;top:32px;z-index:10;min-width:60%;max-width:100%;left:0;">
+            <button type="button" class="btn btn-danger btn-sm pull-right close_btn" style="">&times;</button>
+            <div class="widget-body" style="padding-right:20px;">
+                <div style="padding:20px  6px 0;">
+                    <input type="text" class="search_input form-control" placeholder="输入关键字搜索...">
+                </div>
+                <div class="widget-main padding-8" style="height:auto;max-height:360px;">
+                    <ul id="tree_demo"></ul>
+                </div>
+            </div>
+        </div>
     </div>
+        
 </div>
 <style>
     .email_box_tree{display:none;}
     .email_box_tree.active{display:block;}
 </style>
+
 <script>
-    $('body').on('click','.department_choice',function(){
-        $(this).parent().append($('#tree_box'));
-        $('#tree_box').addClass('active')
+    var deptHtml = ''
+    var deptArr = [
+        {id:1,parent:0,name:"部门1",child:2},
+        {id:2,parent:1,name:"部门2",child:1},
+        {id:3,parent:2,name:"部门3",child:0},
+        {id:4,parent:1,name:"部门4",child:0},
+        {id:5,parent:2,name:"部门5",child:0},
+        {id:6,parent:0,name:"部门6",child:0}
+    ];
+
+    $('body').on('change','[name="suboption"]',function(){
+        var v = $(this).val()
+        $(this).parent().next().find('.actions>select').addClass('display-none');
+        $(this).parent().next().find('.values>input').addClass('display-none');
+        $(this).parent().next().find('.values>div').addClass('display-none');
+        if(v=='attachments'|| v=='sender'||v=='cc'||v=='recipient'||v=='subject'||v=='body'){
+            $(this).parent().next().find('.actions>select[name="action_contain"]').removeClass('display-none');
+            $(this).parent().next().find('.values>input[name="rule_value_common"]').removeClass('display-none');
+        }else if(v=='mail_size'||v=='mail_size2'||v=='content_size'){
+            $(this).parent().next().find('.actions>select[name="action_eq"]').removeClass('display-none');
+            $(this).parent().next().find('.values>input[name="rule_value_size"]').removeClass('display-none');
+        }else if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
+            $(this).parent().next().find('.actions>select[name="action_belong"]').removeClass('display-none');
+            $(this).parent().next().find('.values>div.dept_box').removeClass('display-none');
+        }else if(v=='exec_date'){
+            $(this).parent().next().find('.actions>select[name="action_date"]').removeClass('display-none');
+        }
     })
-    $('body').on('change','.suboption',function(v){
-        console.log(this)
-        console.log($(this).val())
-        console.log(v)
+
+    function demoinitdept(treeid,treeparentid,inputparentid,deptArr){
+        var treeEle;
+        $(treeid).removeData("fu.tree");
+        $(treeid).unbind('click.fu.tree');
+        function initdepttree(deptArr){
+            var sampleData = initiateDemoData(deptArr);
+            treeEle = $(treeid).ace_tree({
+                dataSource: sampleData['dataSource1'],
+                multiSelect: false,
+                loadingHTML: '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>',
+                'open-icon' : 'ace-icon tree-minus hide',
+                'close-icon' : 'ace-icon tree-plus hide',
+                'selectable' : true,
+                'selected-icon' : 'ace-icon fa fa-check',
+                'unselected-icon' : 'ace-icon fa fa-times',
+                'cacheItems': true,
+                'folderSelect': true,
+                'folder-open-icon' : 'ace-icon tree-plus',
+                'folder-close-icon' : 'ace-icon tree-minus'
+            });
+
+            $(treeid).tree('discloseAll');
+            $(treeid).tree('closeAll');
+
+            //默认选中节点
+            function test(ele){
+                if(ele.parent().parent().hasClass('tree-branch')){
+                    ele.parent().parent().find('>i').click();
+                    test(ele.parent().parent())
+                }
+            }
+
+            $(treeid).find('.tree-branch,.tree-item').each(function(i,dom){
+                //        if($(this).data().id == ccid){
+                //            $(this).addClass('active-header');
+                //            $(this).find('>i').click()
+                //            test($(this));
+                //        }
+            })
+        }
+        initdepttree(deptArr);
+        $(treeparentid+' .search_input').keyup(function(){
+            var keywords = $(this).val();
+            $(treeid).removeData("fu.tree");
+            $(treeid).unbind('click.fu.tree');
+            if(keywords.length>0){
+                var initArr = deptArr;
+                var reg = new RegExp(keywords, 'i');
+                var arr = [];
+                var textname = '';
+                function getp(id){
+                    for(var i=0;i<initArr.length;i++){
+                        var a = initArr[i]['id'];
+                        var pp = initArr[i]['parent'];
+                        var n = initArr[i]['name'];
+                        if(a == id){
+                            textname += " -- " + n;
+                            if(pp>0){
+                                getp(pp);
+                            }
+                        }
+                    }
+                }
+                for(var key in initArr){
+                    if(initArr[key]['name'].match(reg)){
+                        if(initArr[key]['parent']>0){
+                            textname += initArr[key]['name'];
+                            getp(initArr[key]['parent']);
+                            var obj = {child:0,parent:0,name:textname,id:initArr[key]['id']};
+                            textname = '';
+                        }else{
+                            var obj = {child:0,parent:0,name:initArr[key]['name'],id:initArr[key]['id']};
+                        }
+                        arr.push(obj);
+                    }
+                }
+                initdepttree(arr)
+            }else{
+                initdepttree(deptArr);
+            }
+        })
+
+        function initiateDemoData(deptArr){
+            var tree_data = {};
+            for(var i=0;i<deptArr.length;i++){
+                if(deptArr[i].parent<=0){
+                    if(deptArr[i].child&&deptArr[i].child>0){
+                        tree_data[deptArr[i].name] = {text:deptArr[i].name,type:"folder",id:deptArr[i].id};
+                        tree_data[deptArr[i].name]['additionalParameters']={"children":getSubDate(deptArr[i].id)};
+                    }else{
+                        tree_data[deptArr[i].name] = {text:deptArr[i].name,type:"item",id:deptArr[i].id};
+                    }
+                }
+            }
+
+            function getSubDate(pid){
+                var obj = {};
+                for(var i=0;i<deptArr.length;i++){
+                    if(deptArr[i]['parent'] == pid){
+                        if(deptArr[i].child&&deptArr[i].child>0){
+                            obj[deptArr[i].name] = {text:deptArr[i].name,type:"folder",id:deptArr[i].id,child:deptArr[i].child}
+                        }else{
+                            obj[deptArr[i].name] = {text:deptArr[i].name,type:"item",id:deptArr[i].id,child:deptArr[i].child}
+                        }
+
+                    }
+                }
+                return obj;
+            }
+            function getAdditionalParameters(arr){
+                for(var key in arr){
+                    if(arr[key]['type']=="folder"){
+                        arr[key]['additionalParameters']={"children":getSubDate(arr[key]['id'])};
+                        if(arr[key]['additionalParameters']["children"]){
+                            getAdditionalParameters(arr[key]['additionalParameters']["children"])
+                        }
+                    }
+                }
+            }
+            getAdditionalParameters(tree_data);
+            var dataSource1 = function(options, callback){
+                var $data = null
+                if(!("text" in options) && !("type" in options)){
+                    $data = tree_data;//the root tree
+                    callback({ data: $data });
+                    return;
+                }
+                else if("type" in options && options.type == "folder") {
+                    if("additionalParameters" in options && "children" in options.additionalParameters)
+                        $data = options.additionalParameters.children || {};
+                    else $data = {}//no data
+                }
+                if($data != null)//this setTimeout is only for mimicking some random delay
+                    callback({ data: $data });
+            }
+            return {'dataSource1': dataSource1}
+        }
+
+        $(treeid).on('click','.tree-item,.tree-branch-header',function(){
+            $(treeid+' .tree-selected').removeClass('tree-selected');
+            if($(this).hasClass('tree-branch-header')){
+                $(this).parent().addClass('tree-selected');
+            }else{
+                $(this).addClass('tree-selected');
+            }
+            $(treeparentid).removeClass('active');
+            var o = treeEle.tree('selectedItems')[0];
+            $(treeparentid).parent().find('.department_choice').val(o.text);
+            $(treeparentid).parent().find('.id_dept_id').val(o.id);
+        })
+        var showb = false;
+        $('body').click(function(e){
+            var $parents = $(e.target).parents(treeparentid);
+            if(!$(e.target).hasClass('department_choice') && $parents.length<1){
+                $(treeparentid).removeClass('active');
+            }
+        })
+        // $(inputparentid + ' .clear_dept').click(function(){
+        //     $(inputparentid + ' .department_choice').val('');
+        //     $(inputparentid + ' .id_dept_id').val('');
+        // })
+    }
+    // deptArr 为初始化获得的部门数据
+
+    // demoinitdept("#tree","#tree_box",'#aa',deptArr);
+
+    function initD(){
+        $.ajax({
+            url:"{% url 'choose_mailbox_list' %}",
+            type:"POST",
+            data:{action:"dept_list"},
+            success:function(data){
+                console.log(data);
+                deptArr = data.dept;
+                demoinitdept("#tree_demo","#tree_box_demo","#input_box",deptArr);
+                
+            }
+        })
+        $('.dateinput').datetimepicker({
+            format: 'yyyy-mm-dd hh:ii:00',
+            language: 'zh-CN',
+            weekStart: 1,
+            todayBtn: 1,
+            autoclose: 1,
+            // minView: 2,
+            pickerPosition: "top-right",
+        });
+    }
+    $(function(){
+        initD();
+    })
+
+    var index = 1;
+    function getConditionNew(index){
+        var con =  '<div class="panel panel-default" id="id_option_'+index+'">'+
+                                    '<div class="panel-heading" style="position:relative;">'+
+                                        '<a href="#faq_'+index+'" data-toggle="collapse" class="accordion-toggle">'+
+                                            '<i class="smaller-80 ace-icon fa fa-chevron-down" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;'+
+                                            '<b>条件</b>'+
+                                            '<button type="button" class="delete_condition btn btn-sm btn-danger pull-right" data-id="id_option_'+index+'" style="position:absolute;top:-0;right:0;">删除条件</button>'+
+                                        '</a>'+
+                                    '</div>'+
+                                    '<div class="panel-collapse collapse in" id="faq_'+index+'">'+
+                                        '<div class="panel-body">'+
+                                            '<div >'+
+                                                '<span>子条件间关系：</span>'+
+                                                '<div class="radio inline">'+
+                                                    '<label>'+
+                                                        '<input name="logic_'+index+'" type="radio" checked class="ace con_logic" value="all">'+
+                                                        '<span class="lbl"> 满足所有</span>'+
+                                                    '</label>'+
+                                                '</div>'+
+                                                '<div class="radio inline">'+
+                                                    '<label>'+
+                                                        '<input name="logic_'+index+'" type="radio" class="ace con_logic" value="one">'+
+                                                        '<span class="lbl middle"> 满足任意</span>'+
+                                                    '</label>'+
+                                                '</div>'+
+                                                '<button type="button" class="btn btn-xs btn-info add_sub_condition" dataindex="0" dataparentindex="'+index+'"  style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>新增子条件</button>'+
+                                            '</div>'+
+                                            '<ul>'+
+                                                '<li class="condition_item">'+
+                                                    '<div class="hr"></div>'+
+                                                    '<div class="row">'+
+                                                        '<div class="col-sm-2 control-label">'+
+                                                            '子条件：'+
+                                                        '</div>'+
+                                                        '<div class="col-sm-10">'+
+                                                            '<div class="row">'+
+                                                                '<div class="col-sm-2 no-padding">'+
+                                                                '<select class="form-control" name="suboption" style="height: 34px;">'+
+                                                                    '<option value="all_mail">所有邮件</option>'+
+                                                                    '<option value="has_attach">有附件</option>'+
+                                                                    '<option value="attachments">附件名</option>'+
+                                                                    '<option value="sender">发信人</option>'+
+                                                                    '<option value="cc">抄送人</option>'+
+                                                                    '<option value="recipient">收信人</option>'+
+                                                                    '<option value="sender_dept">发信人部门</option>'+
+                                                                    '<option value="cc_dept">抄送人部门</option>'+
+                                                                    '<option value="rcpt_dept">收信人部门</option>'+
+                                                                    '<option value="subject">主题</option>'+
+                                                                    '<option value="body">邮件内容</option>'+
+                                                                    '<option value="mail_size">邮件大小(MB)</option>'+
+                                                                    '<option value="mail_size2">邮件大小(Byte)</option>'+
+                                                                    '<option value="content_size">邮件正文大小(Byte)</option>'+
+                                                                    '<option value="exec_date">执行时间</option>'+
+                                                                '</select>'+
+                                                            '</div>'+
+                                                            '<div class="col-sm-10 no-padding">'+
+                                                                '<div class="col-sm-2 no-padding actions">'+
+                                                                    '<select class="form-control"  name="action_contain" style="height: 34px;">'+
+                                                                        '<option value="contains">包含</option>'+
+                                                                        '<option value="not_contains">不包含</option>'+
+                                                                        '<option value="==">等于</option>'+
+                                                                    '</select>'+
+                                                                    '<select class="form-control display-none" name="action_eq" style="height: 34px;">'+
+                                                                        '<option value=">=">大于等于</option>'+
+                                                                        '<option value="<=">小于等于</option>'+
+                                                                    '</select>'+
+                                                                    '<select class="form-control display-none" name="action_belong" style="height: 34px;">'+
+                                                                        '<option value="in">属于</option>'+
+                                                                        '<option value="not_in">不属于</option>'+
+                                                                    '</select>'+
+                                                                    '<select class="form-control display-none" name="action_date" style="height: 34px;">'+
+                                                                        '<option value="in">星期</option>'+
+                                                                        '<option value="not_in">天</option>'+
+                                                                    '</select>'+
+                                                                '</div>'+
+                                                                    '<div class="col-sm-8 no-padding values">'+
+                                                                        '<input type="text" name="rule_value_common" value="" maxlength="300" style="width: 100%;"/>'+
+                                                                        '<input type="number" name="rule_value_size" value="" class="display-none"  style="width: 100%;"/>'+
+                                                                        '<div  class="col-xs-12 col-sm-12 no-padding  display-none dept_box">'+
+                                                                            '<div class="input-group">'+
+                                                                                '<div id="input_box_'+index+'">'+
+                                                                                    '<input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">'+
+                                                                                    '<input type="hidden" class="id_dept_id" value="" name="option_value_dpt0">'+
+                                                                                '</div>'+
+                                                                            '</div>'+
+                                                                        '</div>'+
+                                                                    '</div>'+
+                                                                '</div>'+
+    
+                                                            '</div>'+
+                                                        '</div>'+
+    
+                                                    '</div>'+
+    
+                                                '</li>'+
+                                            '</ul>'+
+                                        '</div>'+
+                                        '</div>'+
+                                '</div>'
+          return con;
+    }
+    function getsubHtmlAdd(parent_index,index){
+        var html = '<li class="condition_item">'+
+                        '<div class="hr"></div>'+
+                        '<div class="row">'+
+                            '<div class="col-sm-2 control-label">'+
+                                '子条件：'+
+                            '</div>'+
+                            '<div class="col-sm-10">'+
+                                '<div class="row">'+
+                                    '<div class="col-sm-2 no-padding">'+
+                                    '<select class="form-control" name="suboption" style="height: 34px;">'+
+                                        '<option value="all_mail">所有邮件</option>'+
+                                        '<option value="has_attach">有附件</option>'+
+                                        '<option value="attachments">附件名</option>'+
+                                        '<option value="sender">发信人</option>'+
+                                        '<option value="cc">抄送人</option>'+
+                                        '<option value="recipient">收信人</option>'+
+                                        '<option value="sender_dept">发信人部门</option>'+
+                                        '<option value="cc_dept">抄送人部门</option>'+
+                                        '<option value="rcpt_dept">收信人部门</option>'+
+                                        '<option value="subject">主题</option>'+
+                                        '<option value="body">邮件内容</option>'+
+                                        '<option value="mail_size">邮件大小(MB)</option>'+
+                                        '<option value="mail_size2">邮件大小(Byte)</option>'+
+                                        '<option value="content_size">邮件正文大小(Byte)</option>'+
+                                        '<option value="exec_date">执行时间</option>'+
+                                    '</select>'+
+                                '</div>'+
+                                '<div class="col-sm-10 no-padding">'+
+                                    '<div class="col-sm-2 no-padding actions">'+
+                                        '<select class="form-control"  name="action_contain" style="height: 34px;">'+
+                                            '<option value="contains">包含</option>'+
+                                            '<option value="not_contains">不包含</option>'+
+                                            '<option value="==">等于</option>'+
+                                        '</select>'+
+                                        '<select class="form-control display-none" name="action_eq" style="height: 34px;">'+
+                                            '<option value=">=">大于等于</option>'+
+                                            '<option value="<=">小于等于</option>'+
+                                        '</select>'+
+                                        '<select class="form-control display-none" name="action_belong" style="height: 34px;">'+
+                                            '<option value="in">属于</option>'+
+                                            '<option value="not_in">不属于</option>'+
+                                        '</select>'+
+                                        '<select class="form-control display-none" name="action_date" style="height: 34px;">'+
+                                            '<option value="in">星期</option>'+
+                                            '<option value="not_in">天</option>'+
+                                        '</select>'+
+                                    '</div>'+
+                                        '<div class="col-sm-8 no-padding values">'+
+                                            '<input type="text" name="rule_value_common" value="" maxlength="300" style="width: 100%;"/>'+
+                                            '<input type="number" name="rule_value_size" value="" class="display-none"  style="width: 100%;"/>'+
+                                            '<div class="col-xs-12 col-sm-12 no-padding  display-none dept_box">'+
+                                                '<div class="input-group">'+
+                                                    '<div id="input_box_'+parent_index+'_'+index+'">'+
+                                                        '<input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">'+
+                                                        '<input type="hidden" class="id_dept_id" value="" name="option_value_dpt0">'+
+                                                    '</div>'+
+                                                '</div>'+
+                                            '</div>'+
+                                        '</div>'+
+                                        '<div class="col-sm-1"><button type="button" class="delete_sub_condition btn btn-xs btn-warning" title="删除此子条件"><i class="glyphicon glyphicon-trash"></i></button></div>'+
+                                    '</div>'+
+
+                                '</div>'+
+                            '</div>'+
+
+                        '</div>'+
+
+                    '</li>'
+        return html;
+    }
+    $('.add_condition').click(function(){
+        $(".condition_box").append(getConditionNew(index));
+        index++;
+        add_sub();
+    })
+    $('body').on('click','.delete_condition',function(){
+        $(this).parents('.panel.panel-default').remove();
+    })
+    function add_sub(){
+        $('.add_sub_condition').click(function(){
+            var dataindex = $(this).attr('dataindex');
+            var parent_index = $(this).attr('dataparentindex')
+            $(this).parent().next().append(getsubHtmlAdd(parent_index,dataindex));
+            dataindex++;
+            $(this).attr('dataindex',dataindex)
+        })
+    }
+    add_sub();
+    
+    $('body').on('click','.delete_sub_condition',function(){
+        $(this).parents('.condition_item').remove();
+    })
+
+    $('body').on('click','.department_choice',function(){
+        $(this).parent().append($('#tree_box_demo'));
+        $('#tree_box_demo').addClass('active')
     })
 </script>
+

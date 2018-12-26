@@ -91,5 +91,10 @@ new Vue({
 //         e.initEvent("click", true, true);　　//这里的click可以换成你想触发的行为
 //         document.querySelectorAll(".el-dropdown-menu .el-dropdown-menu__item")[1].dispatchEvent(e);　　　//这里的clickME可以换成你想触发行为的DOM结点
 //     }
-
+if (window["context"] == undefined) {
+            if (!window.location.origin) {
+                window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+            }
+            window["context"] = location.origin+"/V6.0";
+        }
 

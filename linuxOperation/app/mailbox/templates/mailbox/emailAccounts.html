@@ -85,6 +85,11 @@
                     {% trans "批量删除帐号" %}
                 </a>
             </li>
+            <li>
+                <a href="{% url 'register_list' %}">
+                    {% trans "帐号申请列表" %}
+                </a>
+            </li>
             <!--
             {% if request.user.is_superuser %}
                 <li>
@@ -494,6 +499,7 @@
             "iDisplayLength": 20,
             "lengthMenu": [10, 15, 20, 50, 100, 200],
             "aaSorting": [[0, "desc"]],
+            "bFilter" : false,
             "oLanguage": {
                 "sLengthMenu": "{% blocktrans %}显示 _MENU_ 每页{% endblocktrans %}",
                 "sZeroRecords": "{% blocktrans %}对不起! 信息筛选结果为空!{% endblocktrans %}",

@@ -98,11 +98,11 @@ class Licence(object):
 
         # 如果技术支持服务未过期，则返回所有扩展模块
         if self.service_out:
-            return self.licence_info['extra_module']
+            return self.licence_info['extra_module'].values()
 
         # 如技术支持已过期，则筛选出其已权限的扩展模块
         extra_module = []
-        for m in self.licence_info['extra_module']:
+        for m in self.licence_info['extra_module'].values():
             if m not in self.licence_info['limit_module']:
                 extra_module.append(m)
         return extra_module;
@@ -275,7 +275,7 @@ def licence_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, log
 
 if __name__ == "__main__":
     filepath = LICENCE_DEFAULT_FILE
-    #filepath = "/home/ubrabbit/licence.com.dat"
+    filepath = "/home/ubrabbit/test_mail/授权文件/licence_短信模块.dat"
     if len(sys.argv)>=2:
         filepath=sys.argv[1]
     print "licence path : ",filepath
@@ -292,4 +292,5 @@ if __name__ == "__main__":
             print "试用期结束时间  ：   ",info["expires_time"]
     print info
     print 'sms' in info.get('extra_module',{}).values()
+    print "get_available_module : ", licence.get_available_module()
     print "licence_validate == ",licence_validate()

@@ -28,4 +28,7 @@ urlpatterns = [
 
     url(r'^api/password/$', views.api_check_password, name='api_check_password'),
     url(r'^api/basic/$', views.api_check_basic, name='api_check_basic'),
+
+    url(r'^register/list/$', views.register_list, name='register_list'),
+    url(r'^register/list/ajax$', views.ajax_register_list, name='ajax_register_list'),
 ]

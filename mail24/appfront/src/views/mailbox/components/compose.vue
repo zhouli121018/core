@@ -318,7 +318,7 @@
 
                 <!--<div v-html="content"></div>-->
                 <div>
-                  <textarea name="aa" :id="editor_id" :ref="editor_id"  rows="10" style="width:100%" :style="{height:editor_height+'px'}">{{content}}</textarea>
+                  <textarea name="aa" v-model="content" :id="editor_id" :ref="editor_id"  rows="10" style="width:100%" :style="{height:editor_height+'px'}"></textarea>
                 </div>
 
 

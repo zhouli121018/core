@@ -9,7 +9,7 @@ from passlib.hash import md5_crypt
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from app.core.models import Mailbox, Domain, MailboxUser, DomainAttr, MailboxUserAttr, CoreWhitelist
+from app.core.models import Mailbox, Domain, MailboxUser, CoUserReg, DomainAttr, MailboxUserAttr, CoreWhitelist
 from bootstrapform.templatetags.bootstrap import add_input_classes
 from app.core import constants
 from app.utils.MailboxPasswordChecker import CheckMailboxPassword
@@ -53,7 +53,7 @@ class MailboxForm(forms.ModelForm):
         netdisk_size = DomainAttr.getAttrObjValue(self.domain.id, 'system', 'cf_def_netdisk_size')
         limit_send = DomainAttr.getAttrObjValue(self.domain.id, 'system', 'limit_send')
         limit_recv = DomainAttr.getAttrObjValue(self.domain.id, 'system', 'limit_recv')
-        self.server_pass = DomainAttr.getAttrObjValue(self.domain.id, 'webmail', 'sw_pass_severe_new')
+        self.is_check_passwd = True
 
         if mailbox_size:
             self.fields['quota_mailbox'].initial = mailbox_size
@@ -77,8 +77,6 @@ class MailboxForm(forms.ModelForm):
             self.fields['quota_mailbox'].widget.attrs.update({'addon': u'MB(已使用{}MB)'.format(size)})
             self.fields['quota_netdisk'].widget.attrs.update({'addon': u'MB(已使用{}MB)'.format(size)})
             self.fields['name'].widget.attrs.update({'readonly': 'readonly'})
-        if self.server_pass == '1':
-            self.fields['password1'].help_text = _(u'注：强密码检测，密码需要遵守 域名配置--域名功能设置--密码规则 里面所设定的规则！ ')
 
     def clean_domain(self):
         return self.domain
@@ -96,12 +94,12 @@ class MailboxForm(forms.ModelForm):
         if not pure_english_regex(name):
             raise forms.ValidationError(_(u"邮箱名称只能由字母、数字或下划线点横杠组成！", ))
         if Mailbox.objects.exclude(id=self.instance.id).filter(name=name, domain=self.domain):
-            raise forms.ValidationError(u"邮箱名称重复")
+            raise forms.ValidationError(u"邮箱名称'{}'重复".format(name))
         return name
 
     def clean_password1(self):
         password1 = self.cleaned_data.get('password1')
-        if password1 and self.server_pass == '1':
+        if password1 and self.is_check_passwd :
             ret, reason = 0, ""
             if self.instance.pk:
                 ret, reason = CheckMailboxPassword(domain_id=self.instance.domain_id, mailbox_id=self.instance.id, password=password1)
@@ -185,7 +183,7 @@ class MailboxUserForm(forms.ModelForm):
             if not pure_english_regex(data):
                 raise forms.ValidationError(_(u"工号只能由字母、数字或下划线点横杠组成！", ))
             if MailboxUser.objects.exclude(mailbox_id=self.instance.mailbox_id).filter(eenumber=data, domain=self.domain):
-                raise forms.ValidationError(u"工号重复")
+                raise forms.ValidationError(u"工号'{}'重复".format(data))
             if tel_mobile and tel_mobile == data:
                 raise forms.ValidationError(u"工号和手机号一样，不能保存！")
         return data
@@ -233,7 +231,7 @@ class BatchAddMailboxForm(forms.Form):
             if not pure_english_regex(data):
                 raise forms.ValidationError(_(u"工号只能由字母、数字或下划线点横杠组成！", ))
             if MailboxUser.objects.exclude(id=self.instance.id).filter(eenumber=data, domain=self.domain):
-                raise forms.ValidationError(u"工号重复")
+                raise forms.ValidationError(u"工号'{}'重复".format(data))
             if tel_mobile and tel_mobile == data:
                 raise forms.ValidationError(u"工号和手机号一样，不能保存！")
         return data
@@ -285,3 +283,6 @@ class MailboxSearchForm(forms.Form):
 
 class MailboxDetailSearchForm(forms.Form):
     size = forms.ChoiceField(label=u'空间')
+
+class MailboxRegisterForm(forms.Form):
+    pass

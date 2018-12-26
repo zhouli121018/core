@@ -93,21 +93,3 @@
 
     </div>
 </div>
-<script>
-    console.log(123)
-    console.log($)
-    function getList(){
-        $.ajax({
-            url:" {% url 'user_cfilter_list' %}",
-            type:'GET',
-            data:{
-                mailbox_id:"{{mailbox_id}}",
-                extype:'re'
-            },
-            success:function(data){
-                console.log(data)
-            }
-        })
-    }
-    getList();
-</script>

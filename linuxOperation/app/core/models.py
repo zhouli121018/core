@@ -508,6 +508,36 @@ class MailboxUserAttr(models.Model):
         db_table = 'co_user_attr'
         unique_together = (('mailbox', 'type', 'item'),)
 
+REGISTER_CHOICE=(
+    (u"wait", u"等待处理"),
+    (u"permit", u"批准"),
+    (u"reject", u"拒绝"),
+)
+class CoUserReg(models.Model):
+    domain_id = models.IntegerField()
+    username = models.CharField(max_length=35, blank=True, null=True)
+    password = models.CharField(max_length=40, blank=True, null=True)
+    realname = models.CharField(max_length=35, blank=True, null=True)
+    engname = models.CharField(max_length=35, blank=True, null=True)
+    eenumber = models.CharField(max_length=20, blank=True, null=True)
+    mobile = models.CharField(max_length=20, blank=True, null=True)
+    department = models.IntegerField()
+    remark = models.TextField(blank=True, null=True)
+    status = models.CharField(max_length=6, choices=REGISTER_CHOICE)
+    created = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'co_user_reg'
+        verbose_name = _(u'用户注册表')
+
+    @property
+    def get_created_time(self):
+        try:
+            return self.created.strftime("%Y-%m-%d %H:%M:%S")
+        except:
+            return u""
+
 class UserDomain(models.Model):
     user = models.ForeignKey(Mailbox, verbose_name=_(u"用户"))
     domain = models.ForeignKey(Domain, verbose_name=_(u"域名"))

@@ -358,7 +358,8 @@
           </el-form-item>
 
           <el-form-item label="回复内容" prop="content">
-            <editor v-if="createFormVisible" id="createEditor"  height="200px" maxWidth="100%" width="100%" :content="createForm.content"  pluginsPath="/static/kindeditor/plugins/" :loadStyleMode="false" :uploadJson="uploadJson"  :items="toolbarItems" @on-content-change="createContentChange"></editor>
+            <!--<editor v-if="createFormVisible" id="createEditor"  height="200px" maxWidth="100%" width="100%" :content="createForm.content"  pluginsPath="/static/kindeditor/plugins/" :loadStyleMode="false" :uploadJson="uploadJson"  :items="toolbarItems" @on-content-change="createContentChange"></editor>-->
+            <textarea  v-if="createFormVisible" id="createEditor" style="width:100%;height:200px;" v-model="createForm.content"></textarea>
           </el-form-item>
 
         </el-form>
@@ -657,7 +658,8 @@
           </el-form-item>
 
           <el-form-item label="回复内容" prop="content">
-            <editor v-if="updateFormVisible" id="updateEditor"  height="200px" maxWidth="100%" width="100%" :content="updateForm.content"  pluginsPath="/static/kindeditor/plugins/" :loadStyleMode="false" :uploadJson="uploadJson"  :items="toolbarItems" @on-content-change="updateContentChange"></editor>
+            <!--<editor v-if="updateFormVisible" id="updateEditor"  height="200px" maxWidth="100%" width="100%" :content="updateForm.content"  pluginsPath="/static/kindeditor/plugins/" :loadStyleMode="false" :uploadJson="uploadJson"  :items="toolbarItems" @on-content-change="updateContentChange"></editor>-->
+            <textarea  id="updateEditor"  style="width:100%;height:200px;"></textarea>
           </el-form-item>
 
         </el-form>
@@ -666,9 +668,6 @@
           <el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">提交</el-button>
         </div>
       </el-dialog>
-
-
-
     </section>
   </div>
 </template>
@@ -678,6 +677,8 @@
   export default {
     data() {
       return {
+        createEditor:'',
+        updateEditor:'',
         toolbarItems:
           ['source', '|','formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
             'italic', 'underline',  'lineheight', '|',  'justifyleft', 'justifycenter', 'justifyright',
@@ -708,7 +709,7 @@
           ],
         },
         createFormRules: {
-          content: [{ required: true, message: '请填写回复内容', trigger: 'blur' }],
+          // content: [{ required: true, message: '请填写回复内容', trigger: 'blur' }],
         },
         updateFormVisible:false,
         updateFormLoading:false,
@@ -722,11 +723,8 @@
           ],
         },
         updateFormRules:{
-          content: [{ required: true, message: '请填写回复内容', trigger: 'blur' }],
+          // content: [{ required: true, message: '请填写回复内容', trigger: 'blur' }],
         }
-
-
-
       }
     },
 
@@ -734,8 +732,38 @@
       this.getTables();
       this.getDeptOptions();
     },
+    mounted:function(){
+      // this.createEditorFn();
+      // this.updateEditorFn();
+    },
 
     methods: {
+      createEditorFn(val){
+        let options = {
+          items:this.toolbarItems,
+          uploadJson:this.uploadJson,
+          filterMode:false,
+          resizeType:1,
+          indentChar:"",
+          loadStyleMode:false,
+          autoHeightMode:false
+        }
+       this.createEditor = KindEditor.create('#createEditor',options);
+       this.createEditor.html(val);
+      },
+      updateEditorFn(val){
+        let options = {
+          items:this.toolbarItems,
+          uploadJson:this.uploadJson,
+          filterMode:false,
+          resizeType:1,
+          indentChar:"",
+          loadStyleMode:false,
+          autoHeightMode:false
+        }
+       this.updateEditor = KindEditor.create('#updateEditor',options);
+        this.updateEditor.html(val)
+      },
       showDeptChoice(c,k){
         $('#dept_choice_'+k).click();
       },
@@ -926,7 +954,13 @@
 
       createFormSubmit(){
         let _this = this;
-
+        if(!this.createEditor.html()){
+          this.$message({
+            type:'warning',
+            message:'请填写回复内容！'
+          })
+          return;
+        }
         this.$refs.createForm.validate((valid) => {
           if (valid) {
             if(!this.confirmation(this.createForm)){
@@ -934,7 +968,8 @@
             }
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
               this.createFormLoading = true;
-              this.createForm.body = this.createForm.content;
+              // this.createForm.body = this.createForm.content;
+              this.createForm.body = this.createEditor.html();
               let para = Object.assign({}, this.createForm);
               settingRefwCreate(para)
                 .then((res) => {
@@ -1015,8 +1050,24 @@
         this.createForm = Object.assign({}, this.createForm);
         this.createFormLoading = false;
         this.createFormVisible = true;
+        $('#createEditor').val(this.createForm.content)
+        setTimeout(()=>{
+          if(this.createEditor){
+            this.createForm.content = this.createEditor.html();
+            this.createEditor.remove('#createEditor')
+          }
+          this.createEditorFn(this.createForm.content);
+        },10)
+
       },
       updateFormSubmit(){
+        if(!this.updateEditor.html()){
+            this.$message({
+              type:'warning',
+              message:'请填写回复内容！'
+            })
+            return;
+          }
         this.$refs.updateForm.validate((valid) => {
           if (valid) {
             if(!this.confirmation(this.updateForm)){
@@ -1025,7 +1076,8 @@
             this.$confirm('确认提交吗？', '提示', {}).then(() => {
               this.updateFormLoading = true;
               let para = Object.assign({}, this.updateForm);
-              para.body = this.updateForm.content;
+              // para.body = this.updateForm.content;
+              para.body = this.updateEditor.html();
               settingRefwUpdate(para.id, para)
                 .then((res) => {
                   this.$refs['updateForm'].resetFields();
@@ -1076,6 +1128,14 @@
           this.updateForm.content = this.updateForm.action.body;
           this.updateFormVisible = true;
           this.updateFormLoading = false;
+          console.log(this.updateForm.action.body)
+          $('#updateEditor').val(this.updateForm.content)
+          setTimeout(()=>{
+            if(this.updateEditor){
+              KindEditor.remove('#updateEditor');
+            }
+            this.updateEditorFn(this.updateForm.content);
+          },10)
           this.getActiveNames();
         });
 
