@@ -52,18 +52,18 @@ axios.interceptors.request.use(
     }
     if(config.url.indexOf('login')==-1 &&!cookie.getCookie('token')){
       store.dispatch('setInfo');
-      if(router.currentRoute.path != '/login'){
-        if(!hasBox){
-          hasBox = true;
-          MessageBox.alert('会话已过期，请重新登录','系统信息',{
-            confirmButtonText: '确定',
-            callback: action => {
-              hasBox = false;
-              router.push('/')
-            }
-          })
-        }
-      }
+      // if(router.currentRoute.path != '/login'){
+      //   if(!hasBox){
+      //     hasBox = true;
+      //     MessageBox.alert('会话已过期，请重新登录','系统信息',{
+      //       confirmButtonText: '确定',
+      //       callback: action => {
+      //         hasBox = false;
+      //         router.push('/')
+      //       }
+      //     })
+      //   }
+      // }
 
 
       return;

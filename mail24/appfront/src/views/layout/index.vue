@@ -5,7 +5,7 @@
         <div class="u-lmask-content"><div class="u-lmask-loading"></div></div>
       </div>
 
-      <aside class="lysidebar j-layout-nav"  v-if="!change_password">
+      <aside class="lysidebar j-layout-nav" :class="skin_order"  v-if="!change_password">
         <div class="icon j-switch-mainpage"  title="主页" @click="goHome"><i class="iconfont icon-iconhome"></i></div>
         <div class="avatar">
           <el-popover
@@ -64,7 +64,7 @@
 
       <article class="lymain" v-if="!change_password">
         <section>
-          <header class="lyheader">
+          <header class="lyheader" :class="skin_order">
             <div class="logo">
               <a href="javascript:void(0);" class="u-img j-lylogo" data-trigger="mail.welcome">
                 <img :src="welcome_logo" alt="U-Mail" style=" height: 42px;">
@@ -76,11 +76,12 @@
                 <!--<a target="_blank" href="https://cloud.icoremail.net/icmcenter/expCenter/showEvaXT5?userid=1qfUTJjqUn7UT7jmUntU7UjgUexUfJjmUntUa7jWUerUr7UAU1fUrJULUnrUTJjl" style="color:red;font-weight: bold;" data-target="title" data-i18n="main.CommentAward">评价赢大奖</a>-->
               <!--</li>-->
               <li><a target="_blank" href="#" @click.prevent="goToAdmin" v-if="admin_is_active&&!isSharedUser">后台管理</a></li>
+
+              <li><a target="_blank" href="#" @click.prevent="goToSearch" >自助查询</a></li>
               <li><a href="#" class="skin-primary-hover-color f-dn lunkr-bandage f-pr">移动端</a></li>
               <li><a href="#" class="skin-primary-hover-color f-dn f-pr" >即时沟通</a></li>
               <li><a href="#" class="skin-primary-hover-color f-dn j-migrate-mbox" >马上搬家</a></li>
-              <li><a href="#" class="skin-primary-hover-color" @click.prevent.stop="lockscreen">锁屏</a></li>
-              <li class="hover_bg_box">
+              <li class="hover_bg_box" style="cursor:pointer">
                 <b v-if="sharedList.length==0&&!isSharedUser">{{this.$store.getters.userInfo.name}}</b>
                 <el-dropdown trigger="click" placement="bottom-start" @command="switchShared" v-if="sharedList.length>0||isSharedUser">
                   <b class="el-dropdown-link" title="切换邮箱账号">
@@ -93,6 +94,18 @@
                   </el-dropdown-menu>
                 </el-dropdown>
               </li>
+              <li class="hover_bg_box" style="cursor:pointer">
+                <el-dropdown trigger="click" placement="bottom-start" @command="goToSetting">
+                  <span class="el-dropdown-link" title="设置">
+                    设置<i class="el-icon-arrow-down el-icon--right"></i>
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="skin">换肤</el-dropdown-item>
+                    <el-dropdown-item  command="user">个人设置</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </li>
+              <li><a href="#" class="skin-primary-hover-color" @click.prevent.stop="lockscreen">锁屏</a></li>
               <li><a href="#" class="skin-primary-hover-color" @click.prevent="logout">退出</a></li>
               <li class="header-divider">
                 <a href="javascript:void(0);" class="skin-primary-hover-color history-notification-trigger j-history-notification-trigger unread">
@@ -112,7 +125,9 @@
             <div class="bg2"></div>
             <div class="bg3"></div>
             <div class="bg4"></div>
-            <div class="bg5"></div>
+            <div class="bg5" v-if="skin_order && (skin_order=='jingdianlan' || skin_order == '')"></div>
+            <div class="bg5" v-if="skin_order && skin_order!='jingdianlan'" style="background-size:cover;" :style="{'background-image':'url(/static/img/'+skin_order+'.jpg)'}"></div>
+
           </div>
           <div class="lycontent">
             <router-view></router-view>
@@ -300,6 +315,12 @@
       }
     },
     methods:{
+      goToSearch(){
+        this.$router.push('/search')
+      },
+      goToSetting(p){
+        this.$router.push('/setting/'+p)
+      },
       getPassword: function(){
         settingUsersGetpassword().then(res=>{
           this.passwordRules = res.data;
@@ -309,6 +330,9 @@
         loginAfter().then(res=>{
           console.log(res)
           this.$store.dispatch('setLoginAfterA',res.data);
+          if(res.data.skin_name){
+            this.$store.dispatch('setSkinOrderA',res.data.skin_name);
+          }
           let origin = window.location.origin  //  window.location.origin  'http://192.168.1.39:81'
           this.welcome_logo = origin + res.data.welcome_logo
           $('title').text(res.data.title)
@@ -525,6 +549,7 @@
           console.log(this.$store.getters.getLoginAfter)
           // router.push('/login')
           // return;
+
           if(this.$store.getters.getLoginAfter && this.$store.getters.getLoginAfter.logout_url ){
             // let href = window.location.origin+'/#/messageInfo/'+this.readId+'?folder='+encodeURIComponent(this.readFolderId)+'&view='+view;
             let href = this.$store.getters.getLoginAfter.logout_url;
@@ -533,7 +558,6 @@
             setTimeout(()=>{
               newWindow.location.href = href
             },500)
-
           }else{
             router.push('/login')
           }
@@ -701,7 +725,10 @@
       },
       reviewUnseen:function(){
           return this.$store.getters.getReviewCount;
-      }
+      },
+      skin_order:function(){
+        return this.$store.getters.getSkinOrder;
+      },
 
     }
   }
@@ -782,6 +809,84 @@
     background:url(../../assets/img/bg_right.jpg) no-repeat right bottom;
     background-size: contain;
   }
+  .lymain .lybg .bg5.chunzhihua{
+    background-image:url(/static/img/chunzhihua.jpg);
+  }
+  .lymain .lyheader{
+    /*background-color:#79C6F6;*/
+    /*background-color:#98B4EA;*/
+  }
+  .chunzhihua{
+    background-color:#9BC78A !important;
+  }
+  .lysidebar.chunzhihua .icon{
+    color:#326F2B;
+  }
+  .lysidebar.chunzhihua .icon:hover,.lysidebar.chunzhihua .icon.active{
+    background-color:#639D66;
+    color:#fff;
+  }
+  .yanyujiangnan{
+    background-color:#9ABDBC !important;
+  }
+  .lysidebar.yanyujiangnan .icon{
+    color:#fff;
+  }
+  .lysidebar.yanyujiangnan .icon:hover,.lysidebar.yanyujiangnan .icon.active{
+    background-color:#77AABC;
+    color:#fff;
+  }
+
+  .hetangyuese{
+    background-color:#947DAE !important;
+  }
+  .lysidebar.hetangyuese .icon{
+    color:#fff;
+  }
+  .lysidebar.hetangyuese .icon:hover,.lysidebar.hetangyuese .icon.active{
+    background-color:#4D2067;
+  }
+
+  .qingxinlu{
+    background-color:#6CAF7C !important;
+  }
+  .lysidebar.qingxinlu .icon{
+    color:#fff;
+  }
+  .lysidebar.qingxinlu .icon:hover,.lysidebar.qingxinlu .icon.active{
+    background-color:#25760B;
+  }
+
+  .haishuilan{
+    background-color:#74CAE4 !important;
+  }
+  .lysidebar.haishuilan .icon{
+    color:#fff;
+  }
+  .lysidebar.haishuilan .icon:hover,.lysidebar.haishuilan .icon.active{
+    background-color:#2A83A9;
+  }
+
+  .zhongguofeng{
+    background-color:#C5BEAA !important;
+  }
+  .lysidebar.zhongguofeng .icon{
+    color:#fff;
+  }
+  .lysidebar.zhongguofeng .icon:hover,.lysidebar.zhongguofeng .icon.active{
+    background-color:#0B0B0A;
+  }
+
+  .shiguangshalou{
+    background-color:#F5E519 !important;
+  }
+  .lysidebar.shiguangshalou .icon{
+    color:#222;
+  }
+  .lysidebar.shiguangshalou .icon:hover,.lysidebar.shiguangshalou .icon.active{
+    background-color:#fff;
+  }
+
   ul,li{
     padding:0;
     margin:0;

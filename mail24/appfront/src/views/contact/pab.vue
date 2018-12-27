@@ -1,6 +1,7 @@
 <template>
   <section class="m-mail absolute_height">
     <aside class="mlsidebar">
+      <div class="mlsidebar-bg"></div>
       <div class="wrapper u-scroll top0">
         <div class="el-row" style="background: #f2f2f2;border-bottom: 1px solid #dfe6ec;">
           <div class="el-col el-col-12">

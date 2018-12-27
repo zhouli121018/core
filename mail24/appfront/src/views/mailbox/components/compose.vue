@@ -2042,7 +2042,7 @@
               // this.$refs[this.editor_id].editor.html('<p><br><br></p><div id="sign">'+'<br><br>'+ sign_content +'</div><br>' + html)
               this.editoraaa.html('<p><br><br></p><div id="sign">'+'<br><br>'+ sign_content +'</div><br>' + html)
             }
-          }else if(this.type == 'compose3 '||this.type == 'compose4 '|| this.type == 'compose5 '||this.type == 'compose6 '){
+          }else if(this.type == 'compose3 '||this.type == 'compose4 '|| this.type == 'compose5 '||this.type == 'compose6 '||this.type == 'compose_net_atta_event'){
             let sign_content = res.data.defaults.refw_default_content;
             sign_content = this.htmlDecodeByRegExp(sign_content)
             if(this.ruleForm2.is_html){
@@ -3032,6 +3032,7 @@
                 _this.getSoabMembers();
               }
             }else{
+              sessionStorage['openGroup'] = 'pab'
               _this.getPabMembers();
             }
 

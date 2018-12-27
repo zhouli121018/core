@@ -92,6 +92,7 @@ export const rou = [
           {path:'param',component:_import('setting/page/param')},
           {path:'template',component:_import('setting/page/template')},
           {path:'signature',component:_import('setting/page/signature')},
+          {path:'skin',component:_import('setting/page/skin')},
           {path:'autoreply',component:_import('setting/page/autoreply')},
           {path:'autoforward',component:_import('setting/page/autoforward')},
           {path:'whitelist',component:_import('setting/page/whitelist')},

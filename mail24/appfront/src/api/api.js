@@ -457,3 +457,6 @@ export const singleSignatures = id => { return axios.get(`${host}/setting/signat
 
 //日程转为ics文件 GET /api/schedule/events/{id}/ics/
 export const eventsIcs = id => { return axios.get(`${host}/schedule/events/${id}/ics`) }
+
+//用户资料 换肤 POST /api/setting/users/set-skin/
+export const setSkin = params => { return axios.post(`${host}/setting/users/set-skin/`, params) };

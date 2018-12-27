@@ -3,9 +3,10 @@
 
     <section class="m-mail">
       <aside class="mlsidebar">
+        <div class="mlsidebar-bg"></div>
         <div class="wrapper u-scroll top0">
 
-          <el-menu :default-active="default_active_menu" class="el-menu-vertical-demo" mode="vertical" router>
+          <el-menu :default-active="default_active_menu" class="el-menu-vertical-demo" mode="vertical" router style="background-color:transparent;">
 
             <el-menu-item index="/setting/user" style="text-align: left">
               <img src="./img/op_userinfo.gif" style="width:20px;">
@@ -22,10 +23,18 @@
               <span slot="title" title="设置收发邮件时的一些显示参数">参数设置</span>
             </el-menu-item>
 
+            <el-menu-item index="/setting/skin" style="text-align: left">
+              <!--<img src="./img/op_signature.gif" style="width:20px;">-->
+              <i class="iconfont icon-icontie"></i>
+              <span slot="title" title="皮肤中心">皮肤中心</span>
+            </el-menu-item>
+
             <el-menu-item index="/setting/signature" style="text-align: left">
               <img src="./img/op_signature.gif" style="width:20px;">
               <span slot="title" title="检查或修改发件时的签名">签名</span>
             </el-menu-item>
+
+
 
             <el-menu-item index="/setting/template" style="text-align: left">
               <img src="./img/op_signature.gif" style="width:20px;">
@@ -157,6 +166,11 @@
       },
       setting_relatelist_show(){
         return  !this.$store.getters.getIsShared
+      },
+    },
+    watch:{
+      $route(nv,ov){
+        this.default_active_menu = this.$route.path
       },
     },
 

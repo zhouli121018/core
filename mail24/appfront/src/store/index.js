@@ -46,6 +46,8 @@ const store = new Vuex.Store({
       title:'',
       invitors:[]
     },
+    pfile_net_atta_event:[],
+    file_jump_event:false,
     file_jump:false,
     contact_jump:false,
     new_msg:{
@@ -60,9 +62,13 @@ const store = new Vuex.Store({
     unseen_count:[],
     is_swtime:false,
     filter_contact:[],
-    login_after:{}
+    login_after:{},
+    skin_order:''
   },
   getters:{
+    getSkinOrder(state){
+      return state.skin_order
+    },
     getLoginAfter(state){
       return state.login_after;
     },
@@ -105,6 +111,12 @@ const store = new Vuex.Store({
     getFileJump(state){
       return state.file_jump
     },
+    getPfileNetAttaEvent(state){
+      return state.pfile_net_atta_event
+    },
+    getFileJumpEvent(state){
+      return state.file_jump_event
+    },
     getContactJump(state){
       return state.contact_jump
     },
@@ -128,6 +140,9 @@ const store = new Vuex.Store({
     }
   },
   mutations:{
+    setSkinOrder(state,param){
+      state.skin_order = param
+    },
     setFilterContact(state,param){
       state.filter_contact = null;
       state.filter_contact = param
@@ -184,6 +199,12 @@ const store = new Vuex.Store({
     setFileJump(state,param){
       state.file_jump = param
     },
+    setPfileNetAttaEvent(state,param){
+      state.pfile_net_atta_event = param;
+    },
+    setFileJumpEvent(state,param){
+      state.file_jump_event = param
+    },
     setContactJump(state,param){
       state.contact_jump = param;
     },
@@ -208,6 +229,9 @@ const store = new Vuex.Store({
     }
   },
   actions: {
+    setSkinOrderA(store,param){
+      store.commit('setSkinOrder',param);
+    },
     setLoginAfterA(store,param){
       store.commit('setLoginAfter',param);
     },
@@ -252,6 +276,12 @@ const store = new Vuex.Store({
     },
     setFileJ(store,param){
       store.commit('setFileJump',param)
+    },
+    setPfileNetEvent(store,param){
+      store.commit('setPfileNetAttaEvent',param)
+    },
+    setFileJEvent(store,param){
+      store.commit('setFileJumpEvent',param)
     },
     setContactJ(store,param){
       store.commit('setContactJump',param);
