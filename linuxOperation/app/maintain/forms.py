@@ -5,7 +5,7 @@ import json
 import imaplib
 from django import forms
 from app.maintain import choices
-from app.core.models import CoreConfig, Mailbox
+from app.core.models import CoreConfig, Mailbox, DomainAttr
 from app.maintain.models import AccountTransfer, IMAPMoving, POP3Moving
 from django.utils.translation import ugettext_lazy as _
 from lib.tools import clear_redis_cache, create_task_trigger, add_task_to_queue
@@ -239,6 +239,24 @@ class IMAPMovingForm(forms.ModelForm):
         self.error_notify = u""
         lists = Mailbox.objects.values_list('id', 'username')
         self.fields['mailbox_id'].choices = lists
+        self.load_default()
+
+    def load_default(self):
+        #只在添加时赋值
+        if self.instance.pk:
+            return
+        instance = DomainAttr.objects.filter(domain_id=0,type="system",item=u'cf_moving_default').first()
+        value = {}
+        if instance:
+            try:
+                value = json.loads(instance.value)
+            except:
+                value = {}
+        if not isinstance(value, dict):
+            value = {}
+        self.default_src_server = value.get("src_server", "").strip()
+        self.default_ssl = str(value.get("ssl", "-1")).strip()
+        self.fields['src_server'].widget.attrs["value"] = self.default_src_server
 
     def clean_src_password(self):
         password = self.cleaned_data.get('src_password')
@@ -295,3 +313,48 @@ class IMAPMovingForm(forms.ModelForm):
             except Exception as e:
                 raise forms.ValidationError(u"连接服务器失败：{}".format(e))
         return ssl
+
+class IMAPMovingDefaultForm(forms.Form):
+
+    def __init__(self, post=None, *args, **kwargs):
+        super(IMAPMovingDefaultForm, self).__init__(*args, **kwargs)
+        self.error_notify = u""
+        self.post = post
+        self.value = {}
+        self.init()
+
+    def init(self):
+        instance = DomainAttr.objects.filter(domain_id=0,type="system",item=u'cf_moving_default').first()
+        value = {}
+        if instance:
+            try:
+                value = json.loads(instance.value)
+            except:
+                value = {}
+        if not isinstance(value, dict):
+            value = {}
+        if self.post:
+            value["src_server"] = self.post.get("src_server", "")
+            value["src_mailbox"] = self.post.get("src_mailbox", "")
+            value["src_password"] = self.post.get("src_password", "")
+            value["ssl"] = str(self.post.get("ssl", "-1"))
+
+        src_mailbox = value.get("src_mailbox", "{ACCOUNT}")
+        src_mailbox = "{ACCOUNT}" if not src_mailbox else src_mailbox
+        src_password = value.get("src_password", "{PASSWORD}")
+        src_password = "{PASSWORD}" if not src_password else src_password
+
+        self.value = value
+        self.src_server = BaseFied(value=value.get("src_server", ""), error=None)
+        self.src_mailbox = BaseFied(value=src_mailbox, error=None)
+        self.src_password = BaseFied(value=src_password, error=None)
+        self.ssl = BaseFied(value=value.get("ssl", "-1"), error=None)
+
+    def is_valid(self):
+        return True
+
+    def save(self):
+        instance = DomainAttr.getAttrObj(domain_id=0,type="system",item=u'cf_moving_default')
+        instance.value = json.dumps(self.value)
+        instance.save()
+        return instance

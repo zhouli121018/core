@@ -169,19 +169,18 @@
                 </tr>
             </table>
         </form>
-        <div class="widget-box widget-color-blue2 email_box_tree" id="tree_box_demo" style="position:absolute;top:32px;z-index:10;min-width:60%;max-width:100%;left:0;">
-            <button type="button" class="btn btn-danger btn-sm pull-right close_btn" style="">&times;</button>
+    </div>
+    <div class="widget-box widget-color-blue2 email_box_tree" id="tree_box" style="position:absolute;top:32px;z-index:10;min-width:60%;max-width:100%;left:0;">
+            <button type="button" class="btn btn-danger btn-sm pull-right close_btn">&times;</button>
             <div class="widget-body" style="padding-right:20px;">
                 <div style="padding:20px  6px 0;">
                     <input type="text" class="search_input form-control" placeholder="输入关键字搜索...">
                 </div>
                 <div class="widget-main padding-8" style="height:auto;max-height:360px;">
-                    <ul id="tree_demo"></ul>
+                    <ul id="tree"></ul>
                 </div>
             </div>
         </div>
-    </div>
-        
 </div>
 <style>
     .email_box_tree{display:none;}
@@ -189,7 +188,6 @@
 </style>
 
 <script>
-    var deptHtml = ''
     var deptArr = [
         {id:1,parent:0,name:"部门1",child:2},
         {id:2,parent:1,name:"部门2",child:1},
@@ -382,34 +380,7 @@
     }
     // deptArr 为初始化获得的部门数据
 
-    // demoinitdept("#tree","#tree_box",'#aa',deptArr);
-
-    function initD(){
-        $.ajax({
-            url:"{% url 'choose_mailbox_list' %}",
-            type:"POST",
-            data:{action:"dept_list"},
-            success:function(data){
-                console.log(data);
-                deptArr = data.dept;
-                demoinitdept("#tree_demo","#tree_box_demo","#input_box",deptArr);
-                
-            }
-        })
-        $('.dateinput').datetimepicker({
-            format: 'yyyy-mm-dd hh:ii:00',
-            language: 'zh-CN',
-            weekStart: 1,
-            todayBtn: 1,
-            autoclose: 1,
-            // minView: 2,
-            pickerPosition: "top-right",
-        });
-    }
-    $(function(){
-        initD();
-    })
-
+    demoinitdept("#tree","#tree_box",'#aa',deptArr);
     var index = 1;
     function getConditionNew(index){
         var con =  '<div class="panel panel-default" id="id_option_'+index+'">'+
@@ -586,29 +557,26 @@
     $('.add_condition').click(function(){
         $(".condition_box").append(getConditionNew(index));
         index++;
-        add_sub();
     })
     $('body').on('click','.delete_condition',function(){
         $(this).parents('.panel.panel-default').remove();
+
     })
-    function add_sub(){
-        $('.add_sub_condition').click(function(){
-            var dataindex = $(this).attr('dataindex');
-            var parent_index = $(this).attr('dataparentindex')
-            $(this).parent().next().append(getsubHtmlAdd(parent_index,dataindex));
-            dataindex++;
-            $(this).attr('dataindex',dataindex)
-        })
-    }
-    add_sub();
-    
+
+    $('body').on('click','.add_sub_condition',function(){
+        var dataindex = $(this).attr('dataindex');
+        var parent_index = $(this).attr('dataparentindex')
+        $(this).parent().next().append(getsubHtmlAdd(parent_index,dataindex));
+        dataindex++;
+        $(this).attr('dataindex',dataindex)
+    })
     $('body').on('click','.delete_sub_condition',function(){
         $(this).parents('.condition_item').remove();
     })
 
     $('body').on('click','.department_choice',function(){
-        $(this).parent().append($('#tree_box_demo'));
-        $('#tree_box_demo').addClass('active')
+        $(this).parent().append($('#tree_box'));
+        $('#tree_box').addClass('active')
     })
 </script>
 

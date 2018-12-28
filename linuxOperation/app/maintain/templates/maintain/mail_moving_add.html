@@ -25,7 +25,24 @@
                     <div class="panel-body">
                         {% csrf_token %}
 
-                        {{ form|bootstrap }}
+                        {{ form.mailbox_id|bootstrap }}
+                        {{ form.src_server|bootstrap }}
+                        {{ form.src_mailbox|bootstrap }}
+                        {{ form.src_password|bootstrap }}
+                        {% if form.instance.pk %}
+                            {{ form.ssl|bootstrap }}
+                        {% else %}
+                            <div class="form-group">
+                                <label class="control-label  " for="id_ssl">SSL访问</label>
+                                <div class=" ">
+                                    <select name="ssl" class=" form-control" id="id_ssl">
+                                      <option value="1" {% if form.default_ssl == "1" %} selected {% endif %}>启用</option>
+                                      <option value="-1" {% if form.default_ssl != "1" %} selected {% endif %}>不启用</option>
+                                    </select>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {{ form.disabled|bootstrap }}
 
                         <button type="submit" class="btn btn-primary btn-sm">{% trans "确认" %}</button>
                         <button class="btn btn-sm" type="reset">{% trans "重置" %}</button>

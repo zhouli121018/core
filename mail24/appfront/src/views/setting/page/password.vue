@@ -7,7 +7,7 @@
       </el-col>
     </el-row>
 
-    <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;">
+    <section class="content content-list height100" style="background: #fff;background: rgba(255,255,255,0.9);padding-bottom: 13px;">
       <el-form :model="passeordForm" label-width="100px" :rules="passeordFormRules" ref="passeordForm" size="mini" style="margin-left:13px;margin-right:13px;margin-top: 13px">
         <el-row>
           <el-col :span="24"><div class="demo-block-control"><p style="margin-bottom: 3px; margin-left: 13px"> 修改密码</p></div></el-col>

@@ -12,7 +12,7 @@
 
     <el-alert title="功能说明：假如您有一个邮箱“zhangsan@example.com”，您可以使用此功能自动将“zhangsan@example.com”中的所有邮件收取到当前邮箱中。 " type="success" :closable="false"></el-alert>
 
-    <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;" v-loading="listLoading">
+    <section class="content content-list height100" style="background-color: #fff;background: rgba(255,255,255,0.9);padding-bottom: 13px;" v-loading="listLoading">
 
       <el-row class="toolbar">
         <el-col :span="12">

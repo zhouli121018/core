@@ -99,4 +99,11 @@ urlpatterns = [
     url(r'^sys/$', views.systemSet, name='system_set'),
     url(r'^sys/debug$', views.systemSetDebug, name='system_set_debug'),
     url(r'^sys/debug/receiver$', views.systemSetDebugReceiver, name='system_set_debug_receiver'),
+
+    #中继设置
+    url(r'^relay/list/$', views.relay_list, name='relay_list'),
+    url(r'^relay/list/ajax/$', views.relay_list_ajax, name='relay_list_ajax'),
+    url(r'^relay/list/add/$', views.relay_list_add, name='relay_list_add'),
+    url(r'^relay/list/mdf(?P<mdf_id>\d+)$', views.relay_list_mdf, name='relay_list_mdf'),
+    url(r'^relay/setting/$', views.relay_setting, name='relay_setting'),
 ]

@@ -190,7 +190,7 @@
                     <div class="m-mllist-row mllist-list-row">
                       <div class="j-module-content j-maillist mllist-list u-scroll">
                         <div class="table_box" style="height:100%">
-                           <el-table  :show-header="true" ref="innerTable" height="100%" :data="listData_new" style="width: 100%;height:100%" class="vertical_align_top maillist" v-loading="loading"
+                           <el-table  :show-header="true" ref="innerTable" height="100%" :data="listData_new" style="width: 100%;height:100%;background:transparent" class="vertical_align_top maillist" v-loading="loading"
                               highlight-current-row  @cell-mouse-enter="hoverfn" @cell-mouse-leave="noHover" @row-click="rowClick" @cell-click="cellClick"
                                 @select-all="selectAllTable"    @selection-change="handleSelectionChange"  :header-cell-style="{background:'#f0f1f3'}"
                                 :span-method="arraySpanMethod"

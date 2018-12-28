@@ -237,6 +237,16 @@ MAIL_TRANSFER_DISABLE = (
     ('-1', u'激活'),
 )
 
+MAIL_RELAY_TYPE = (
+    ('1', u'直接中继'),
+    ('-1', u'失败中继'),
+)
+
+MAIL_RELAY_DISABLE = (
+    ('1', u'禁用'),
+    ('-1', u'激活'),
+)
+
 MAIL_TRANSFER_TYPE = (
     (u'in', u'接收邮件'),
     (u'out', u'发送邮件'),

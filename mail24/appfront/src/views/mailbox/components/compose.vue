@@ -1,8 +1,8 @@
 <template>
-    <div class="mltabview-content" :id="'compose'+rid">
+    <div class="mltabview-content compose_bgtpt" :id="'compose'+rid">
       <div class="mltabview-panel compose_style">
         <section class="m-mlcompose m_box_height" v-if="!send_suc" v-loading="sendLoading">
-          <div class="toolbar" style="background:#fff;">
+          <div class="toolbar" style="background: #fff">
             <div id="pagination" class="f-fr">
                 <div class="" @click="show_contact = !show_contact">
                     <el-button size="small">通讯录</el-button>
@@ -188,8 +188,49 @@
                           <!--</el-button>-->
                         <!--</el-popover>-->
 
-                        <div class="mailbox_s" v-if="!ruleForm2.is_partsend" :class="{error:!v.status}" v-for="(v,k) in maillist" :key="k" :title="v.email" @dblclick="dbEdit(v,'to',k)"><b>{{ v.fullname?(v.fullname+' <'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click.stop="deleteMailboxForKey(k,v)"></i></div>
-                        <div class="mailbox_s" v-if="ruleForm2.is_partsend" :class="{error:!v.status}" v-for="(v,k) in partSendList" :key="k" :title="v.email" @dblclick="dbEdit(v,'partsend',k)"><b>{{ v.fullname?(v.fullname+' <'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey(k,v,1)"></i></div>
+                        <div class="mailbox_s" v-if="!ruleForm2.is_partsend" :class="{error:!v.status}" v-for="(v,k) in maillist" :key="k" :title="v.email" @dblclick="dbEdit(v,'to',k)">
+                          <!--@dblclick="dbEdit(v,'to',k)"-->
+                          <el-popover
+                            placement="bottom"
+                            width="240"
+                            v-model="v.show">
+                            <div>
+                              <el-input placeholder="请输入邮箱" v-model="v.email">
+                                <template slot="prepend" style="padding:0"><span style="font-weight:bold;color:red;">*</span>邮箱</template>
+                              </el-input>
+                            </div>
+                            <div style="margin-top:8px;">
+                              <el-input placeholder="请输入姓名" v-model="v.fullname">
+                                <template slot="prepend"><span style="font-weight:bold;visibility: hidden">*</span>姓名</template>
+                              </el-input>
+                            </div>
+                            <el-button type="text" slot="reference" style="color:#222"><b>{{ v.fullname?(v.fullname+' <'+v.email+'>'):('<'+v.email+'>') }}</b></el-button>
+                          </el-popover>
+
+                          <i class="el-icon-close" @click.stop="deleteMailboxForKey(k,v)"></i>
+                        </div>
+
+                        <div class="mailbox_s" v-if="ruleForm2.is_partsend" :class="{error:!v.status}" v-for="(v,k) in partSendList" :key="k" :title="v.email" @dblclick="dbEdit(v,'partsend',k)">
+                          <el-popover
+                            placement="bottom"
+                            width="240"
+                            v-model="v.show">
+                            <div>
+                              <el-input placeholder="请输入邮箱" v-model="v.email">
+                                <template slot="prepend" style="padding:0"><span style="font-weight:bold;color:red;">*</span>邮箱</template>
+                              </el-input>
+                            </div>
+                            <div style="margin-top:8px;">
+                              <el-input placeholder="请输入姓名" v-model="v.fullname">
+                                <template slot="prepend"><span style="font-weight:bold;visibility: hidden">*</span>姓名</template>
+                              </el-input>
+                            </div>
+                            <el-button type="text" slot="reference" style="color:#222"><b>{{ v.fullname?(v.fullname+' <'+v.email+'>'):('<'+v.email+'>') }}</b></el-button>
+                          </el-popover>
+
+                          <i class="el-icon-close" @click="deleteMailboxForKey(k,v,1)"></i>
+                        </div>
+
                         <el-autocomplete  class="no_padding"  v-model.trim="state1" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox"
                         @blur="addMailbox" @focus="insertMailbox=1" placeholder="" @select="handleSelect" :trigger-on-focus="false" style="float:left">
 
@@ -208,7 +249,26 @@
                       </template>
                     </label>
                     <div class="padding_15">
-                      <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_copyer" :key="k" :title="v.email" @dblclick="dbEdit(v,'cc',k)" ><b>{{ v.fullname?(v.fullname+' <'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey_copyer(k,v)"></i></div>
+                      <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_copyer" :key="k" :title="v.email" @dblclick="dbEdit(v,'cc',k)" >
+                        <el-popover
+                          placement="bottom"
+                          width="240"
+                          v-model="v.show">
+                          <div>
+                            <el-input placeholder="请输入邮箱" v-model="v.email">
+                              <template slot="prepend" style="padding:0"><span style="font-weight:bold;color:red;">*</span>邮箱</template>
+                            </el-input>
+                          </div>
+                          <div style="margin-top:8px;">
+                            <el-input placeholder="请输入姓名" v-model="v.fullname">
+                              <template slot="prepend"><span style="font-weight:bold;visibility: hidden">*</span>姓名</template>
+                            </el-input>
+                          </div>
+                          <el-button type="text" slot="reference" style="color:#222"><b>{{ v.fullname?(v.fullname+' <'+v.email+'>'):('<'+v.email+'>') }}</b></el-button>
+                        </el-popover>
+
+                        <i class="el-icon-close" @click="deleteMailboxForKey_copyer(k,v)"></i>
+                      </div>
                       <el-autocomplete  class="no_padding" v-model.trim="state_copyer" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox_copyer"
                         @blur="addMailbox_copyer" @focus="insertMailbox=2" placeholder=""  @select="handleSelect_copyer" :trigger-on-focus="false" style="float:left"></el-autocomplete>
                     </div>
@@ -220,7 +280,26 @@
                       </template>
                     </label>
                     <div class="padding_15">
-                      <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_bcc" :key="k" :title="v.email" @dblclick="dbEdit(v,'bcc',k)" ><b>{{ v.fullname?(v.fullname+' <'+v.email+'>'):('<'+v.email+'>') }}</b><i class="el-icon-close" @click="deleteMailboxForKey_bcc(k,v)"></i></div>
+                      <div class="mailbox_s" :class="{error:!v.status}" v-for="(v,k) in maillist_bcc" :key="k" :title="v.email" @dblclick="dbEdit(v,'bcc',k)" >
+                        <el-popover
+                          placement="bottom"
+                          width="240"
+                          v-model="v.show">
+                          <div>
+                            <el-input placeholder="请输入邮箱" v-model="v.email">
+                              <template slot="prepend" style="padding:0"><span style="font-weight:bold;color:red;">*</span>邮箱</template>
+                            </el-input>
+                          </div>
+                          <div style="margin-top:8px;">
+                            <el-input placeholder="请输入姓名" v-model="v.fullname">
+                              <template slot="prepend"><span style="font-weight:bold;visibility: hidden">*</span>姓名</template>
+                            </el-input>
+                          </div>
+                          <el-button type="text" slot="reference" style="color:#222"><b>{{ v.fullname?(v.fullname+' <'+v.email+'>'):('<'+v.email+'>') }}</b></el-button>
+                        </el-popover>
+
+                        <i class="el-icon-close" @click="deleteMailboxForKey_bcc(k,v)"></i>
+                      </div>
                       <el-autocomplete  class="no_padding" v-model.trim="state_bcc" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox_bcc"
                         @blur="addMailbox_bcc" @focus="insertMailbox=3" placeholder=""  @select="handleSelect_bcc" :trigger-on-focus="false" style="float:left"></el-autocomplete>
                     </div>
@@ -1143,6 +1222,13 @@
           afterCreate:this.afterChange
         }
        this.editoraaa = KindEditor.create('#'+this.editor_id,options);
+        if(!this.ruleForm2.is_html){
+          // this.$refs[this.editor_id].editor.text(this.content)
+          $('#editor_id'+this.rid).val(this.content);
+          this.no_html();
+          // this.onContentChange();
+        }
+        this.getSignatrue();
       },
       afterChange:function(val){
         setTimeout(()=>{
@@ -2010,17 +2096,19 @@
             }else{
               // 纯文本签名
               // let html = this.$refs[this.editor_id].editor.html();
-              let html = $('#'+this.editor_id).val();
-              // this.$refs[this.editor_id].editor.html('<p>'+html+'</p>')
-              this.editoraaa.html('<p>'+html+'</p>')
-              // this.$refs[this.editor_id].editor.appendHtml('<p><br><br></p><div id="sign">'+'<br><br>'+sign_content+'</div>')
-              this.editoraaa.appendHtml('<p><br><br></p><div id="sign">'+'<br><br>'+sign_content+'</div>')
-              // this.content = this.htmlToText(this.$refs[this.editor_id].editor.text());
-              this.content = this.htmlToText(this.editoraaa.text());
-              this.editoraaa.text(this.content);
-              // this.$refs[this.editor_id].editor.text(this.content);
-              // $('#editor_id'+this.rid).val(html)
-
+              // sign_content = this.htmlToText(sign_content)
+              // let html = this.editoraaa.html();
+              // console.log(html)
+              // // this.$refs[this.editor_id].editor.html('<p>'+html+'</p>')
+              // // this.editoraaa.html('<p>'+html+'</p>')
+              // // this.editoraaa.appendHtml('<p><br><br></p><div id="sign">'+'<br><br>'+sign_content+'</div>')
+              // // this.editoraaa.appendHtml('123456')
+              // // this.content = this.htmlToText(this.$refs[this.editor_id].editor.text());
+              // // this.content = this.htmlToText(this.editoraaa.text());
+              // // this.editoraaa.text(this.content);
+              // // this.$refs[this.editor_id].editor.text(this.content);
+              // $('#editor_id'+this.rid).val(html+sign_content)
+              // this.editoraaa.html($('#editor_id'+this.rid).val())
             }
 
           }).catch(err=>{
@@ -2104,7 +2192,7 @@
         // $('#compose'+this.rid+' .ke-toolbar').hide()
         this.signCheck = '';
         // this.content = this.htmlToText(this.editoraaa.text());
-        this.content = this.htmlToText(this.editoraaa.text());
+        this.content = this.htmlDecodeByRegExp(this.htmlToText(this.editoraaa.text()));
         console.log(this.editoraaa)
         console.log(this.editoraaa.html())
         $('#'+this.editor_id).val(this.content);
@@ -3732,12 +3820,7 @@
       $('#editor_id'+this.rid).val(this.content);
 
        $('#editor_id'+this.rid).css({'width': '100%','border':'none','boxSizing':'border-box','padding':'10px 10px 0'})
-      if(!this.ruleForm2.is_html){
-        // this.$refs[this.editor_id].editor.text(this.content)
-        $('#editor_id'+this.rid).val(this.content);
-        this.no_html();
-        // this.onContentChange();
-      }
+
       this.createEditor();
       this.getParams();
       // sessionStorage['openGroup'] = 'pab';
@@ -3758,7 +3841,7 @@
        }, false);
 
       //   setTimeout(_this.setEditorHeight,50)
-      this.getSignatrue();
+
     },
     beforeMount() {
 
@@ -3917,6 +4000,9 @@
   }
 </script>
 <style>
+  .compose_bgtpt .el-input__inner{
+    background:transparent;
+  }
   .blue_color{
     background-color: #ecf5ff;
     color: #66b1ff;

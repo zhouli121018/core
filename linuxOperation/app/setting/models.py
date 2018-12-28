@@ -308,9 +308,22 @@ class CoreInfo(models.Model):
         db_table = 'core_info'
         verbose_name = _(u'基础信息')
 
+class CoreRelay(models.Model):
+    domain_id = models.IntegerField()
+    type = models.CharField(_(u'类型'), max_length=2, choices=constants.MAIL_RELAY_TYPE, null=False, blank=False, default="1")
+    src_domain = models.CharField(_(u'源邮件域'),max_length=80, blank=True, null=True)
+    dst_domain = models.CharField(_(u'目标邮件域'),max_length=80, blank=True, null=True)
+    server = models.CharField(_(u'中继服务器'),max_length=80, blank=True, null=True)
+    disabled = models.CharField(_(u'状态'),max_length=2, choices=constants.MAIL_RELAY_DISABLE, null=False, blank=False, default="-1")
+
+    class Meta:
+        managed = False
+        db_table = 'core_relay'
+        verbose_name = _(u'中继设置')
 
 from auditlog.registry import auditlog
 auditlog.register(ExtTranslateHeader, exclude_fields=[])
 auditlog.register(ADSync, exclude_fields=[])
 auditlog.register(ExtCfilterRuleNew, exclude_fields=[])
 auditlog.register(CoreInfo, exclude_fields=[])
+auditlog.register(CoreRelay, exclude_fields=[])

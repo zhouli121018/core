@@ -146,6 +146,19 @@
                         </div>
                     </td>
                 </tr>
+                <tr>
+                    <td class="text-right">登录IP限制：</td>
+                    <td class="row no-padding-left">
+                        <div class="col-sm-4 ">
+                            <div class="input-group" >
+                                <input type="text" name="cf_ip_limit" value="{{ form_security.cf_ip_limit.value }}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-sm-8 no-padding">
+                            <span>注：支持192.168.1.1、192.168.1.1-255、192.168.1.2|3|4|5这几种格式，多个IP规则用','分隔</span>
+                        </div>
+                    </td>
+                </tr>
             </table>
             <div class=" ">
             <input type="hidden" value="{{ domain.id }}" name="domain_id" id="domain_id" />

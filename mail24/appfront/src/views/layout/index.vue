@@ -100,7 +100,24 @@
                     设置<i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="skin">换肤</el-dropdown-item>
+                    <el-dropdown-item command="skin">
+                      <el-dropdown @command="changeSkin"  placement="right-start">
+                        <span class="el-dropdown-link">
+                          <b><i class="iconfont icon-icontie"></i> </b>
+                        换肤 <i class="el-icon-arrow-right el-icon--right"></i>
+                        </span>
+                          <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item  v-for="(s,k) in skins" :key="k" class="dropdown_item" :command="s" :class="{activeitem:s.url == $store.getters.getSkinOrder}">
+                              <img :src="'/static/img/'+s.url+'_small.jpg'" style="width:40px;vertical-align: middle" alt=""> {{ s.title}}
+                            </el-dropdown-item>
+                            <el-dropdown-item class="dropdown_item" command="more">
+                              更多皮肤...
+                            </el-dropdown-item>
+
+                          </el-dropdown-menu>
+
+                      </el-dropdown>
+                    </el-dropdown-item>
                     <el-dropdown-item  command="user">个人设置</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -237,7 +254,7 @@
   import store from '@/store'
   import router from '@/router'
   import cookie from '@/assets/js/cookie';
-  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome,settingUsersGet,settingUsersSetpassword,reviewShow,loginAfter,settingUsersGetpassword } from '@/api/api'
+  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome,settingUsersGet,settingUsersSetpassword,reviewShow,loginAfter,settingUsersGetpassword,setSkin } from '@/api/api'
   export default {
     data:function(){
       var validatePass = (rule, value, callback) => {
@@ -263,6 +280,15 @@
         }
       };
       return {
+        skins:[
+          {url:'jingdianlan',title:'经典蓝（默认）'},
+          {url:'chunzhihua',title:'春之花'},
+          {url:'yanyujiangnan',title:'烟雨江南'},
+          {url:'hetangyuese',title:'荷塘月色'},
+          {url:'qingxinlu',title:'清新绿'},
+          {url:'haishuilan',title:'海水蓝'},
+          {url:'zhongguofeng',title:'中国风'}
+        ],
         welcome_logo:'',
         passwordRules:{
           "passwd_type": 2,
@@ -315,6 +341,22 @@
       }
     },
     methods:{
+      changeSkin(m){
+        if(m=='more'){
+          this.$router.push('/setting/skin')
+        }else{
+          let param = {skin_name:m.url};
+          setSkin(param).then(res=>{
+            this.$store.dispatch('setSkinOrderA',m.url)
+            this.$message({
+              type:'success',
+              message:'邮箱皮肤设置成功！'
+            })
+          }).catch(err=>{
+            console.log(err)
+          })
+        }
+      },
       goToSearch(){
         this.$router.push('/search')
       },
@@ -735,6 +777,10 @@
 </script>
 
 <style>
+  .activeitem{
+    background-color: #ecf5ff;
+    color: #66b1ff;
+  }
   .test.has_newMsg{
     bottom:202px;
   }
@@ -877,15 +923,15 @@
     background-color:#0B0B0A;
   }
 
-  .shiguangshalou{
-    background-color:#F5E519 !important;
-  }
-  .lysidebar.shiguangshalou .icon{
-    color:#222;
-  }
-  .lysidebar.shiguangshalou .icon:hover,.lysidebar.shiguangshalou .icon.active{
-    background-color:#fff;
-  }
+  /*.shiguangshalou{*/
+    /*background-color:#F5E519 !important;*/
+  /*}*/
+  /*.lysidebar.shiguangshalou .icon{*/
+    /*color:#222;*/
+  /*}*/
+  /*.lysidebar.shiguangshalou .icon:hover,.lysidebar.shiguangshalou .icon.active{*/
+    /*background-color:#fff;*/
+  /*}*/
 
   ul,li{
     padding:0;

@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^mail/moving/$', views.mail_moving, name='mail_moving'),
     url(r'^mail/moving/ajax$', views.mail_moving_ajax, name='mail_moving_ajax'),
     url(r'^mail/moving/add$', views.mail_moving_add, name='mail_moving_add'),
+    url(r'^mail/moving/default$', views.mail_moving_default, name='mail_moving_default'),
     url(r'^mail/moving/import$', views.mail_moving_import, name='mail_moving_import'),
     url(r'^mail/moving/(?P<move_id>\d+)/$', views.mail_moving_modify, name='mail_moving_mdf'),
 

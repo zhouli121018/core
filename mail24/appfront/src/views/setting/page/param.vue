@@ -5,7 +5,7 @@
         <el-breadcrumb separator="/"><el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item><el-breadcrumb-item><a href="#">设置中心</a></el-breadcrumb-item><el-breadcrumb-item>参数设置</el-breadcrumb-item></el-breadcrumb>
       </el-col>
     </el-row>
-    <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;">
+    <section class="content content-list height100" style="background: #fff;background: rgba(255,255,255,0.9);padding-bottom: 13px;">
       <el-form :model="sForm" label-width="180px" :rules="sFormRules" ref="sForm" size="mini" style="margin-left:13px;margin-right:13px;margin-top: 13px" :inline="true">
         <el-row><el-col :span="24"><div class="demo-block-control"><p style="margin-bottom: 3px; margin-left: 13px"> 参数设置</p></div></el-col></el-row>
         <!--<el-row><el-form-item label="邮件显示格式" prop="read_type"><el-select v-model="sForm.read_type" style="width: 200px"><el-option v-for="item in read_types" :key="item.value" :label="item.label" :value="item.value"></el-option></el-select></el-form-item></el-row>-->

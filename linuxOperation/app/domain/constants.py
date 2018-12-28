@@ -121,16 +121,19 @@ DOMAIN_SYS_RECV_TYPE = (
 DOMAIN_SYS_SECURITY_PARAMS = (
     (u"sw_def_login_limit_mail", u"开启修改密码通知信"),
     (u"cf_def_safe_login", u"安全登录限制"),
+    (u"cf_ip_limit", u"登陆IP限制"),
 )
 
 DOMAIN_SYS_SECURITY_VALUE = (
     (u"sw_def_login_limit_mail", u"1"),
     (u"cf_def_safe_login", u""),
+    (u"cf_ip_limit", u""),
 )
 
 DOMAIN_SYS_SECURITY_TYPE = (
     (u"sw_def_login_limit_mail", u"system"),
     (u"cf_def_safe_login", u"webmail"),
+    (u"cf_ip_limit", u"webmail"),
 )
 
 DOMAIN_SYS_SECURITY_PWD_PARAMS = (

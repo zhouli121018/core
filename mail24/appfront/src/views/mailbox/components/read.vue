@@ -3,7 +3,7 @@
     <div class="mltabview-content">
       <div class="mltabview-panel">
         <section class="m-read" v-show="!notFond" v-loading="loading">
-          <div class="toolbar" style="background:#fff;"
+          <div class="toolbar" style="background:#fff"
                element-loading-text="请稍等..."
                element-loading-spinner="el-icon-loading"
                element-loading-background="rgba(0, 0, 0, 0.6)"
@@ -91,7 +91,7 @@
 
           </div>
 
-          <div class="mail" ref="iframe_height" :id="'mail_'+readId+'_'+readFolderId" >
+          <div class="mail" :class="{is_reply:replying}" ref="iframe_height" :id="'mail_'+readId+'_'+readFolderId" >
             <div class="j-read-alert f-pr"></div>
             <div class="mail-top j-mail-top f-pr">
                 <div class="top-bar">
@@ -336,7 +336,7 @@
               <el-collapse v-model="activeNames" v-if="attachments.length>0" class="attach_box">
                 <el-collapse-item :title="'附件 ('+attachments.length+' 个)'" name="1">
 
-                  <div v-for="(a,k) in attachments" :key="k">
+                  <div v-for="(a,k) in attachments" :key="k" >
                     <el-popover
                       placement="top-start"
                       width="160"
@@ -359,7 +359,7 @@
                         </el-row>
                       </div>
 
-                      <el-button   class="attach_item" slot="reference" style="padding-bottom:20px;border-radius:0;">
+                      <el-button   class="attach_item" slot="reference" style="padding-bottom:20px;border-radius:0;background:transparent;">
                         <div class="attach_type">
                           <span class="file-big-icon" :class="a.classObject"></span>
                         </div>
@@ -382,14 +382,16 @@
 
             <form class="quick-reply-form quick-reply-item j-reply-form tran" v-show="replying">
               <!--<textarea name="replyContent" class="reply-textarea" rows="6" v-model="content"></textarea>-->
-              <editor v-if="replying" :id="'editor_id_fast_'+readId+readFolderId" :ref="'editor_id_fast_'+readId+readFolderId" height="200px" width="100%" :content="content" :filterMode="false"
-                  pluginsPath="/static/kindeditor/plugins/" :resizeType="0" indentChar=""
-                  :loadStyleMode="false" :items="toolbarItems" :uploadJson="uploadJson"
-                  @on-content-change="onContentChange"  :autoHeightMode="false" :afterChange="onContentChange">
+              <!--<editor v-if="replying" :id="'editor_id_fast_'+readId+readFolderId" :ref="'editor_id_fast_'+readId+readFolderId" height="200px" width="100%" :content="content" :filterMode="false"-->
+                  <!--pluginsPath="/static/kindeditor/plugins/" :resizeType="0" indentChar=""-->
+                  <!--:loadStyleMode="false" :items="toolbarItems" :uploadJson="uploadJson"-->
+                  <!--@on-content-change="onContentChange"  :autoHeightMode="false" :afterChange="onContentChange">-->
 
-              </editor>
-              <span class="u-btn u-btn-primary" @click="reply">发送</span>
-              <span class="u-btn u-btn-default" @click="cancel_reply">取消</span>
+              <!--</editor>-->
+              <textarea  v-if="replying":id="'editor_id_fast_'+readId+readFolderId" :ref="'editor_id_fast_'+readId+readFolderId" style="width:100%;height:200px;" v-model="content"></textarea>
+              <div style="height:4px"></div>
+              <span class="u-btn u-btn-primary" @click="reply" >发送</span>
+              <span class="u-btn u-btn-default" @click="cancel_reply" >取消</span>
               <span class="f-fr"><a href="javascript:void(0)" @click="actionView(4)">切换到完整写信模式</a></span>
             </form>
 
@@ -438,6 +440,7 @@
     },
     data(){
       return {
+        createEditor:'',
         reviewCount:0,
         sequesterCount:0,
         passwordType:'text',
@@ -531,6 +534,19 @@
       }
     },
     methods:{
+      createEditorFn(val){
+        let options = {
+          items:this.toolbarItems,
+          uploadJson:this.uploadJson,
+          filterMode:false,
+          resizeType:1,
+          indentChar:"",
+          loadStyleMode:false,
+          autoHeightMode:false
+        }
+       this.createEditor = KindEditor.create('#editor_id_fast_'+this.readId+this.readFolderId,options);
+       this.createEditor.html(val);
+      },
       recall_single(row){
         this.$confirm('<p>确定召回此邮件吗？</p>', '召回邮件', {
           confirmButtonText: '确定',
@@ -671,6 +687,14 @@
         this.before_replying = false;
         this.center_replying = false;
         this.replying=true;
+        $('#createEditor').val(this.content)
+        setTimeout(()=>{
+          if(this.createEditor){
+            this.content = this.createEditor.html();
+            this.createEditor.remove('#editor_id_fast_'+this.readId+this.readFolderId)
+          }
+          this.createEditorFn(this.content);
+        },10)
       },
       cancel_reply(){
         this.replying=false;
@@ -678,6 +702,7 @@
         this.before_replying = true;
       },
       reply(){
+        this.content = this.createEditor.html();
         if(!this.content){
           this.$message({
             type:'error',
@@ -699,6 +724,8 @@
           })
           this.center_replying = false;
           this.before_replying = true;
+          this.content = '';
+          this.createEditor.html('')
         }).catch(err=>{
           let str = '';
           if(err.detail){
@@ -1527,6 +1554,12 @@
   }
 </script>
 <style>
+  .attach_box .el-collapse-item__header,.attach_box .el-collapse-item__wrap{
+    background:transparent;
+  }
+  .m-read .mail.is_reply{
+    bottom:268px;
+  }
   .red{
     color:red;
   }

@@ -25,7 +25,7 @@ from app.core.models import CoreConfig, DomainAttr, Mailbox
 from app.maintain.tools import BackupFormat, generateRedisTaskID
 from app.maintain.choices import ISOLATE_STATUS_R
 from app.maintain.models import ExtSquesterMail, AccountTransfer, IMAPMoving
-from app.maintain.forms import BackupSetForm, MailSearchForm, AccountTransferForm, IMAPMovingForm, QueueSearchForm
+from app.maintain.forms import BackupSetForm, MailSearchForm, AccountTransferForm, IMAPMovingForm, IMAPMovingDefaultForm, QueueSearchForm
 from lib.tools import create_task_trigger, add_task_to_queue, clear_redis_cache, recursion_make_dir,\
                            get_system_user_id, get_system_group_id
 from lib.licence import licence_required
@@ -361,6 +361,18 @@ def mail_moving_add(request):
             return HttpResponseRedirect(reverse('mail_moving'))
     return render(request, "maintain/mail_moving_add.html", context={
         "form": form, 'obj': None })
+
+@licence_required
+def mail_moving_default(request):
+    form = IMAPMovingDefaultForm()
+    if request.method == "POST":
+        form = IMAPMovingDefaultForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request, messages.SUCCESS, u'修改数据成功')
+            return HttpResponseRedirect(reverse('mail_moving'))
+    return render(request, "maintain/mail_moving_default.html", context={
+        "form": form})
 
 @licence_required
 def mail_moving_modify(request, move_id):

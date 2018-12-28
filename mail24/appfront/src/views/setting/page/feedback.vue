@@ -8,7 +8,7 @@
 
     <el-alert title="非常感谢您一直以来对我们服务的肯定与支持，您的热心反馈是我们不断改良服务的源泉，希望占用您几分钟时间，对我们的服务进行反馈。" type="success" :closable="false"></el-alert>
 
-    <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;">
+    <section class="content content-list height100" style="background-color: #fff;background: rgba(255,255,255,0.9);padding-bottom: 13px;">
 
       <el-form :model="createForm" :rules="createFormRules" ref="createForm" label-width="120px" style="margin-left:13px;margin-right:13px;margin-top: 13px" size="mini">
 

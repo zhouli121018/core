@@ -19,13 +19,13 @@ from wsgiref.util import FileWrapper
 from app.core.models import CoreTrustIP, CoreMonitor, CoreAlias, CoreBlacklist, \
     CoreWhitelist, DomainAttr, Domain, CoreConfig, Mailbox
 from app.setting.models import PostTransfer, ExtTranslateHeader, ADSync
-from app.setting.models import ExtCfilterRuleNew, ExtCfilterNewCond, ExtCfilterNewAction
+from app.setting.models import ExtCfilterRuleNew, ExtCfilterNewCond, ExtCfilterNewAction, CoreRelay
 from app.setting import sslopts
 from app.utils.domain_session import get_domainid_bysession, get_session_domain
 from app.setting.forms import SystemSetForm, CoreAliasForm, ExtCfilterRuleNewForm, \
     ExtCfilterConfigForm, ExtUserCfilterForm, PostTransferForm,  MailTransferSenderForm, \
     MailboxAliasForm, MailboxMonitorForm, HeaderTransForm, \
-    LdapFormAD, LdapFormLDAP, LdapFormADObj
+    LdapFormAD, LdapFormLDAP, LdapFormADObj, RelayForm, RelayPublicForm
 from lib import validators
 from lib.tools import create_task_trigger, add_task_to_queue, clear_redis_cache, generate_task_id
 from lib.licence import licence_required
@@ -1830,3 +1830,113 @@ def user_cfilter_del(request):
     ExtCfilterRuleNew.objects.filter(id=rule_id).delete()
     data = {"status":"OK","message":u"删除成功！"}
     return HttpResponse(json.dumps(data), content_type="application/json")
+
+@licence_required
+def relay_list(request):
+    if request.method == "POST":
+        id = request.POST.get('id', "")
+        status = request.POST.get('status', "")
+        if status == "delete":
+            CoreRelay.objects.filter(pk=id).delete()
+            clear_redis_cache()
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
+        return HttpResponseRedirect(reverse('relay_list'))
+    return render(request, "setting/relay.html",context={})
+
+@licence_required
+def relay_list_ajax(request):
+    domain_id = get_domainid_bysession(request)
+
+    data = request.GET
+    order_column = data.get('order[0][column]', '')
+    order_dir = data.get('order[0][dir]', '')
+    search = data.get('search[value]', '')
+    colums = ['id', 'type', 'src_domain', 'dst_domain', 'server', 'disabled']
+    lists = CoreRelay.objects.filter(domain_id=domain_id).all()
+    if lists and order_column and int(order_column) < len(colums):
+        if order_dir == 'desc':
+            lists = lists.order_by('-%s' % colums[int(order_column)])
+        else:
+            lists = lists.order_by('%s' % colums[int(order_column)])
+    try:
+        length = int(data.get('length', 1))
+    except ValueError:
+        length = 1
+    try:
+        start_num = int(data.get('start', '0'))
+        page = start_num / length + 1
+    except ValueError:
+        start_num = 0
+        page = 1
+
+    count = len(lists)
+    if start_num >= count:
+        page = 1
+    paginator = Paginator(lists, length)
+    try:
+        lists = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        lists = paginator.page(paginator.num_pages)
+    rs = {"sEcho": 0, "iTotalRecords": count, "iTotalDisplayRecords": count, "aaData": []}
+    re_str = '<td.*?>(.*?)</td>'
+    number = length * (page-1) + 1
+    for d in lists.object_list:
+        t = TemplateResponse(request, 'setting/relay_ajax.html', {'d': d, 'number': number})
+        t.render()
+        rs["aaData"].append(re.findall(re_str, t.content, re.DOTALL))
+        number += 1
+    return HttpResponse(json.dumps(rs), content_type="application/json")
+
+@licence_required
+def relay_list_add(request):
+    domain_id = get_domainid_bysession(request)
+    domain = get_session_domain(domain_id)
+    if not domain:
+        return HttpResponseRedirect(reverse('relay_list'))
+    form = RelayForm(domain_id, domain)
+    if request.method == "POST":
+        form = RelayForm(domain_id, domain, request.POST)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request, messages.SUCCESS, u'添加成功')
+            return HttpResponseRedirect(reverse('relay_list'))
+    return render(request, "setting/relay_mdf.html", context={
+        "form"           : form,
+        "domain"        :   domain,
+    })
+
+@licence_required
+def relay_list_mdf(request, mdf_id):
+    domain_id = get_domainid_bysession(request)
+    domain = get_session_domain(domain_id)
+    if not domain:
+        return HttpResponseRedirect(reverse('relay_list'))
+    obj = CoreRelay.objects.filter(id=mdf_id).first()
+    if not obj:
+        messages.add_message(request, messages.SUCCESS, u'试图修改的数据不存在')
+        return HttpResponseRedirect(reverse('relay_list'))
+    form = RelayForm(domain_id, domain, instance=obj)
+    if request.method == "POST":
+        form = RelayForm(domain_id, domain, request.POST, instance=obj)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request, messages.SUCCESS, u'修改设置成功')
+            return HttpResponseRedirect(reverse('relay_list'))
+    return render(request, "setting/relay_mdf.html", context={
+        "form"          :   form,
+        "domain"        :   domain,
+    })
+
+@licence_required
+def relay_setting(request):
+    domain_id = get_domainid_bysession(request)
+    form = RelayPublicForm(domain_id)
+    if request.method == "POST":
+        form = RelayPublicForm(domain_id, request.POST)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request, messages.SUCCESS, u'修改数据成功')
+            return HttpResponseRedirect(reverse('relay_list'))
+    return render(request, "setting/relay_setting.html", context={
+        "form": form})
+

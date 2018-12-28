@@ -112,7 +112,7 @@ def get_mailbox_list(request):
             lists = lists.filter(Q(is_active=is_active) | Q(is_superuser=is_active))
         else:
             lists = lists.exclude(is_active=True).exclude(is_superuser=True)
-    search_term = {'1': '__gte', '-1': '__lte'}
+    search_term = {'1': '__gt', '-1': '__lt'}
     if quota_mailbox:
         lists = lists.filter(**{'quota_mailbox{}'.format(search_term.get(quota_mailbox_term, '')): quota_mailbox})
 

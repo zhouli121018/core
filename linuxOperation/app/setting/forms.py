@@ -9,7 +9,7 @@ from lib.forms import BaseFied, BaseFieldFormatExt, DotDict, BaseCfilterActionFi
 
 from app.core.models import Domain, Mailbox, CoreMonitor, CoreAlias, DomainAttr, Department, CoreConfig
 from app.setting.models import ExtCfilterRuleNew, ExtCfilterNewCond, ExtCfilterNewAction
-from app.setting.models import PostTransfer, ExtTranslateHeader, ADSync
+from app.setting.models import PostTransfer, ExtTranslateHeader, ADSync, CoreRelay
 from app.setting import constants
 from lib import sms_interface
 from lib import validators
@@ -1816,3 +1816,62 @@ class LdapFormADObj(DotDict):
 
     def getCreateDeptSelection(self):
         return constants.AD_ACCOUNT_CREATE_DEPT
+
+class RelayForm(forms.ModelForm):
+
+    domain_id = forms.IntegerField(label=_(u'域名'), required=False, widget=forms.HiddenInput())
+
+    def __init__(self, domain_id, domain, *args, **kwargs):
+        super(RelayForm, self).__init__(*args, **kwargs)
+        self.domain_id = domain_id
+        self.domain = domain
+        self.error_notify = u''
+
+    class Meta:
+        model = CoreRelay
+        exclude = []
+        error_messages = {
+        }
+
+    def clean_domain_id(self):
+        return self.domain_id
+
+    def clean_src_domain(self):
+        return self.domain
+
+class RelayPublicForm(forms.Form):
+
+    def __init__(self, domain_id, post=None, *args, **kwargs):
+        super(RelayPublicForm, self).__init__(*args, **kwargs)
+        self.domain_id = domain_id
+        self.error_notify = u""
+        self.post = post
+        self.value = {}
+        self.init()
+
+    def init(self):
+        instance = DomainAttr.objects.filter(domain_id=self.domain_id,type="system",item=u'cf_smtp_relay').first()
+        value = {}
+        if instance:
+            try:
+                value = json.loads(instance.value)
+            except:
+                value = {}
+        if not isinstance(value, dict):
+            value = {}
+        if self.post:
+            value["mode"] = self.post.get("mode", "disable")
+            value["server"] = self.post.get("server", "relay.comingchina.com")
+
+        self.value = value
+        self.mode = BaseFied(value=value.get("mode", "disable"), error=None)
+        self.server = BaseFied(value=value.get("server", "relay.comingchina.com"), error=None)
+
+    def is_valid(self):
+        return True
+
+    def save(self):
+        instance = DomainAttr.getAttrObj(domain_id=self.domain_id,type="system",item=u'cf_smtp_relay')
+        instance.value = json.dumps(self.value)
+        instance.save()
+        return instance

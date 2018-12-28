@@ -162,11 +162,9 @@
                                         <!-- 部门下拉选择 -->
                                         <select class="col-xs-12 col-sm-12 {% if d.suboption not in form.G_COND_OPTION_IN  %} display-none {% endif %}"
                                                 name="option_value_dpt{{ d.id }}--{{ d.parent_id }}" id="option_value_dpt{{ d.id }}--{{ d.parent_id }}" style="height: 34px;">
-                                            {% if d.suboption in form.G_COND_OPTION_IN  %}
-                                                {% for dpt in form.DepartMent %}
-                                                    <option value="{{ dpt.id }}" {% if dpt.id == d.int_value %} selected {% endif %}>{{ dpt.title }}</option>
-                                                {% endfor %}
-                                            {% endif %}
+                                            {% for dpt in form.DepartMent %}
+                                                <option value="{{ dpt.id }}"  {% if dpt.id == d.value %} selected {% endif %}>{{ dpt.title }}</option>
+                                            {% endfor %}
                                         </select>
 
                                         <!-- 邮件大小 -->
@@ -255,11 +253,9 @@
                                                     <!-- 部门下拉选择 -->
                                                     <select class="col-xs-12 col-sm-12 {% if dd.suboption not in form.G_COND_OPTION_IN  %} display-none {% endif %}"
                                                             name="option_value_dpt{{ dd.id }}--{{ dd.parent_id }}" id="option_value_dpt{{ dd.id }}--{{ dd.parent_id }}" style="height: 34px;">
-                                                        {% if dd.suboption in form.G_COND_OPTION_IN  %}
-                                                            {% for dpt in form.DepartMent %}
-                                                                <option value="{{ dpt.id }}"  {% if dpt.id == dd.int_value %} selected {% endif %}>{{ dpt.title }}</option>
-                                                            {% endfor %}
-                                                        {% endif %}
+                                                        {% for dpt in form.DepartMent %}
+                                                            <option value="{{ dpt.id }}"  {% if dpt.id == dd.value %} selected {% endif %}>{{ dpt.title }}</option>
+                                                        {% endfor %}
                                                     </select>
 
                                                     <!-- 邮件大小 -->

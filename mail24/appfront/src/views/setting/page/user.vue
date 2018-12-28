@@ -13,7 +13,7 @@
 
     <el-alert title="提示：修改申请已提交，请等待审核" type="warning" :closable="false" v-if="need_alert"></el-alert>
 
-    <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;">
+    <section class="content content-list height100" style="background: #fff;background: rgba(255,255,255,0.9);padding-bottom: 13px;">
       <el-form :model="editform" :rules="formRules" ref="editform" label-width="100px" style="margin-left:13px;margin-right:13px;margin-top: 13px" size="mini">
 
         <el-row>

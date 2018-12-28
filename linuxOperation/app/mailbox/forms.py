@@ -75,7 +75,6 @@ class MailboxForm(forms.ModelForm):
             s = self.instance.size
             size = s.size if s else 0
             self.fields['quota_mailbox'].widget.attrs.update({'addon': u'MB(已使用{}MB)'.format(size)})
-            self.fields['quota_netdisk'].widget.attrs.update({'addon': u'MB(已使用{}MB)'.format(size)})
             self.fields['name'].widget.attrs.update({'readonly': 'readonly'})
 
     def clean_domain(self):

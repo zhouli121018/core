@@ -8,7 +8,7 @@
 
     <el-alert title="功能说明：系统自动拒收黑名单的来信。黑名单可以是一个邮箱地址或者是一个域，例如：zhangsan@example.com 或 @example.com。" type="success" :closable="false"></el-alert>
 
-    <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;" v-loading="listLoading">
+    <section class="content content-list height100" style="background-color: #fff;background: rgba(255,255,255,0.9);padding-bottom: 13px;" v-loading="listLoading">
 
       <el-row class="toolbar">
         <el-col :span="12">

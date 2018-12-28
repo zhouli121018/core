@@ -71,7 +71,7 @@ axios.interceptors.request.use(
     if(config.url.indexOf('?')>-1){
       config.url += "×tamp="+new Date().getTime();
     }else{
-      config.url += "?timestamp="+new Date().getTime();
+      config.url += "?t="+new Date().getTime();
     }
     if(config.url.indexOf('/netdisk/upload/')<0&&config.url.indexOf('/contact/pab/members')<0){
       // showFullScreenLoading()

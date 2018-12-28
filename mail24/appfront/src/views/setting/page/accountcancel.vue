@@ -8,7 +8,7 @@
 
     <el-alert title="提示：注销申请已提交，请耐心等待审核" type="warning" :closable="false" v-if="sForm.status=='wait'"></el-alert>
 
-    <section class="content content-list height100" style="background-color: #fff;padding-bottom: 13px;">
+    <section class="content content-list height100" style="background-color: #fff;background: rgba(255,255,255,0.9);padding-bottom: 13px;">
       <el-form :model="sForm" label-width="120px" :rules="sFormRules" ref="sForm" size="mini" style="margin-left:13px;margin-right:13px;margin-top: 13px">
         <el-row><el-col :span="24"><div class="demo-block-control"><p style="margin-bottom: 3px; margin-left: 13px"> 申请注销</p></div></el-col></el-row>
         <el-row><el-col :span="16"><el-form-item label="申请注销原因：" prop="remark"><el-input type="textarea" v-model.trim="sForm.remark" :disabled="sForm.status=='wait'"></el-input></el-form-item></el-col></el-row>

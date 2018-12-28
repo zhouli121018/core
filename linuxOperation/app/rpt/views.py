@@ -300,7 +300,7 @@ def maillog_user_search(request):
     #-------------------------- 筛选 部门 ----------------------------
     lists = MailLog.objects.filter(domain_id=domain_id)
     if department and int(department)>0:
-        id_dept = DepartmentMember.objects.filter(domain_id=domain_id, dept_id=dept_id).values_list('mailbox_id',flat=True)
+        id_dept = DepartmentMember.objects.filter(domain_id=domain_id, dept_id=department).values_list('mailbox_id',flat=True)
         lists = lists.filter(mailbox_id__in=id_dept)
     #-------------------------- 筛选 部门 完毕 ------------------------
 
