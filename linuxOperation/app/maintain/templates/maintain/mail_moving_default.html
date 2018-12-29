@@ -1,0 +1,100 @@
+{% extends 'base_site.html' %}
+{% load i18n %}
+{% load static %}
+{% load bootstrap %}
+{% block title %}{% if obj %} {% trans "设置默认参数" %}  {% else %} {% trans "设置默认参数" %} {% endif %}{% endblock %}
+{% block breadcrumb %}
+    <li> <a href="#">{% trans "邮件数据导入" %}</a> </li>
+    <li class="active">{% if obj %} {% trans "设置默认参数" %}  {% else %} {% trans "设置默认参数" %} {% endif %}</li>
+{% endblock %}
+
+{% block page-content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">
+                {% if obj %} {% trans "设置默认参数" %}  {% else %} {% trans "设置默认参数" %} {% endif %}
+            </h1>
+        </div>
+    </div>
+
+    <form role="form" action="" method="post">
+        {% csrf_token %}
+        <table class="table table-bordered">
+            <tr>
+                <td class="text-right">远程服务器：</td>
+                <td class="row">
+                    <div class="col-sm-3 no-padding">
+                        <input type="text" class="form-control" name="src_server" value="{{ form.src_server.value }}" class="col-xs-10 col-sm-5">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">远程登陆帐号：</td>
+                <td class="row">
+                    <div class="col-sm-3 no-padding">
+                        <input type="text" class="form-control" name="src_mailbox" value="{{ form.src_mailbox.value }}" >
+                    </div>
+                    <div class="col-sm-9 green">
+                        备注：可输入以下变量： "{ACCOUNT}":用户登陆帐号,"{NAME}":帐号名称，如"xx@test.com"中的"xx","{DOMAIN}":帐号域名，如"@test.com"
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">远程登陆密码：</td>
+                <td class="row">
+                    <div class="col-sm-3 no-padding">
+                        <input type="text" class="form-control" name="src_password" value="{{ form.src_password.value }}" class="col-xs-10 col-sm-5">
+                    </div>
+                    <div class="col-sm-9 green">
+                        备注：当值为变量"{PASSWORD}"时，表明用户输入的“远程登陆密码”和登陆umail所用的帐号密码相同。
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">SSL访问：</td>
+                <td class="row">
+                    <div class="col-sm-3 no-padding">
+                        <select name="ssl" class="form-control">
+                            <option value="-1" {% if form.ssl.value != '1' %} selected {% endif %} > 不启用 </option>
+                            <option value="1" {% if form.ssl.value == '1' %} selected {% endif %} > 启用 </option>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div class="clearfix form-actions">
+            <div class="text-center">
+                <button class="btn btn-info" type="submit">
+                    <i class="ace-icon fa fa-check bigger-110"></i>
+                    保存
+                </button>
+                <button class="btn" type="reset">
+                    <i class="ace-icon fa fa-undo bigger-110"></i>
+                    重置
+                </button>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
+
+{% block css_block %}
+{% endblock %}
+
+{% block my_jsblock %}
+    <script src="{% static 'assets/js/select2.js' %}"></script>
+    <script>
+        $(function(){
+            var path = "{% url 'mail_moving' %}";
+            $('#sidebar').find('[href="'+path+'"]').parent().first().addClass('active');
+
+            $("#{{ form.mailbox_id.auto_id }}").select2({
+                language: { noResults: function (params) {
+                        return "{% trans "暂无数据" %}";
+                    }
+                }
+            });
+
+        });
+    </script>
+{% endblock %}

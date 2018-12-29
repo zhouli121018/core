@@ -1,0 +1,62 @@
+{% extends 'base_site.html' %}
+{% load i18n %}
+{% load static %}
+{% load bootstrap %}
+{% block title %}{% if obj %} {% trans "设置全局中继" %}  {% else %} {% trans "设置全局中继" %} {% endif %}{% endblock %}
+{% block breadcrumb %}
+    <li> <a href="#">{% trans "设置全局中继" %}</a> </li>
+    <li class="active">{% if obj %} {% trans "设置全局中继" %}  {% else %} {% trans "设置全局中继" %} {% endif %}</li>
+{% endblock %}
+
+{% block page-content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">
+                {% if obj %} {% trans "设置全局中继" %}  {% else %} {% trans "设置全局中继" %} {% endif %}
+            </h1>
+        </div>
+    </div>
+
+    <form role="form" action="" method="post">
+        {% csrf_token %}
+        <table class="table table-bordered">
+            <tr>
+                <td class="text-right">中继工作模式：</td>
+                <td class="row">
+                    <div class="col-sm-3 no-padding">
+                        <select name="mode" class="form-control">
+                            <option value="failure" {% if form.mode.value == 'failure' %} selected {% endif %} > {% trans " 先直接发送所有邮件，如果有问题再使用中继服务器发送" %}  </option>
+                            <option value="disable" {% if form.mode.value == 'disable' %} selected {% endif %} > {% trans " 将所有出站邮件直接发送到收件人的邮件服务器" %} </option>
+                            <option value="direct" {% if form.mode.value == 'direct' %} selected {% endif %} > {% trans " 将所有出站邮件发送到中继服务器 " %}  </option>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-right">服务器地址：</td>
+                <td class="row">
+                    <div class="col-sm-3 no-padding">
+                        <input type="text" class="form-control" name="server" value="{{ form.server.value }}" class="col-xs-10 col-sm-5">
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div class="clearfix form-actions">
+            <div class="text-center">
+                <button class="btn btn-info" type="submit">
+                    <i class="ace-icon fa fa-check bigger-110"></i>
+                    保存
+                </button>
+                <button class="btn" type="reset">
+                    <i class="ace-icon fa fa-undo bigger-110"></i>
+                    重置
+                </button>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
+
+{% block css_block %}
+{% endblock %}
+

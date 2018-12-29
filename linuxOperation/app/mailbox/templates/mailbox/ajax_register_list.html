@@ -1,0 +1,15 @@
+<td>{{ number }}</td>
+<td>{{ d.username|default_if_none:'' }}</td>
+<td>{{ d.realname|default_if_none:'' }}</td>
+<td>{{ d.eenumber|default_if_none:'' }}</td>
+<td>{{ d.department|default_if_none:'' }}</td>
+<td>{{ d.mobile|default_if_none:'' }}</td>
+<td>{{ d.get_status_display }}</td>
+<td>{{ d.remark|default_if_none:'' }}</td>
+<td>{{ d.get_created_time }}</td>
+<td>
+    {% if d.status == 'wait' %}
+        <a type="button" class="btn btn-minier btn-primary" href="Javascript: setStatus({{ d.id }}, 'permit')">批准</a>
+        <a type="button" class="btn btn-minier btn-primary" href="Javascript: setStatus({{ d.id }}, 'reject')">拒绝</a>
+    {% endif %}
+</td>
