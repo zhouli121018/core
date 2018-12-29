@@ -72,7 +72,7 @@
                         </ul>
                     </li>
                     <li class=" blue">
-                        
+
                     </li>
                     -->
                     <li>
@@ -364,6 +364,9 @@
             var base_url = window.location.pathname;
             $("#id_base_site_remark_button_save").hide();
             $("#id_base_site_remark_div").hide();
+            if ( base_url == "/operation/domain/" ){
+                base_url = base_url + $("#id_remark_flag").val();
+            }
             $.get("{% url 'ajax_get_remark' %}", {'base_url': base_url}, function(data){
                 editor_remark_base.html(data.remark);
                 $("#id_base_site_remark").html(data.remark);
@@ -376,9 +379,25 @@
             $("#id_base_site_remark_label_div").hide();
             $("#id_base_site_remark_div").show();
         };
+        function get_remark_base(){
+            var base_url = window.location.pathname;
+            $("#id_base_site_remark_button_save").hide();
+            $("#id_base_site_remark_div").hide();
+            if ( base_url == "/operation/domain/" ){
+                base_url = base_url + $("#id_remark_flag").val();
+            }
+            $.get("{% url 'ajax_get_remark' %}", {'base_url': base_url}, function(data){
+                editor_remark_base.html(data.remark);
+                $("#id_base_site_remark").html(data.remark);
+                $("#id_base_site_remark_label").html(data.remark);
+            })
+        };
         function save_remark_base(){
             var remark = $("#id_base_site_remark").val();
             var base_url = window.location.pathname;
+            if ( base_url == "/operation/domain/" ){
+                base_url = base_url + $("#id_remark_flag").val();
+            }
             var kwargs = {'base_url': base_url, 'remark': remark}
             $('#id_base_site_remark_button_save').hide();
             $('#id_base_site_remark_button_edit').show();

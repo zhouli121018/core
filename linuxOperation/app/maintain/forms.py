@@ -229,7 +229,7 @@ class IMAPMovingForm(forms.ModelForm):
         strip=False,
         required=True,
         max_length=200,
-        widget=forms.PasswordInput(render_value=True),
+        widget=forms.TextInput(),
     )
 
     def __init__(self, is_import, *args, **kwargs):
@@ -255,8 +255,10 @@ class IMAPMovingForm(forms.ModelForm):
         if not isinstance(value, dict):
             value = {}
         self.default_src_server = value.get("src_server", "").strip()
+        self.default_src_password = value.get("src_password", "").strip()
         self.default_ssl = str(value.get("ssl", "-1")).strip()
         self.fields['src_server'].widget.attrs["value"] = self.default_src_server
+        self.fields['src_password'].widget.attrs["value"] = self.default_src_password
 
     def clean_src_password(self):
         password = self.cleaned_data.get('src_password')
@@ -302,17 +304,29 @@ class IMAPMovingForm(forms.ModelForm):
             account = self.cleaned_data.get('src_mailbox')
             password = self.cleaned_data.get('src_password')
             port = imaplib.IMAP4_SSL_PORT if ssl == 1 else imaplib.IMAP4_PORT
-            try:
-                client = imaplib.IMAP4_SSL(server, port) if ssl==1 else imaplib.IMAP4(server, port)
-                client.login(account, password)
-                try:
-                    if not client.logout():
-                        client.shutdown()
-                except:
-                    pass
-            except Exception as e:
-                raise forms.ValidationError(u"连接服务器失败：{}".format(e))
+            #不去连接验证了
+            #if password.strip() != "{PASSWORD}":
+            #    try:
+            #        client = imaplib.IMAP4_SSL(server, port) if ssl==1 else imaplib.IMAP4(server, port)
+            #        client.login(account, password)
+            #        try:
+            #            if not client.logout():
+            #                client.shutdown()
+            #        except:
+            #            pass
+            #    except Exception as e:
+            #        raise forms.ValidationError(u"连接服务器失败：{}".format(e))
         return ssl
+
+    def save(self, commit=True):
+        o = super(IMAPMovingForm, self).save(commit)
+        if o.src_password.strip() == u"{PASSWORD}":
+            mailbox_id = o.mailbox_id
+            box = Mailbox.objects.filter(id=o.mailbox_id).first()
+            if box:
+                o.src_password = box.get_origin_password()
+                o.save()
+        return o
 
 class IMAPMovingDefaultForm(forms.Form):
 

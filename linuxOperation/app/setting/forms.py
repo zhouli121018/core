@@ -1850,7 +1850,8 @@ class RelayPublicForm(forms.Form):
         self.init()
 
     def init(self):
-        instance = DomainAttr.objects.filter(domain_id=self.domain_id,type="system",item=u'cf_smtp_relay').first()
+        #cf_smtp_relay保存为domain_id=1，但是是全局的。以前的SB程序员搞的鬼---lpx
+        instance = DomainAttr.objects.filter(domain_id=1,type="system",item=u'cf_smtp_relay').first()
         value = {}
         if instance:
             try:
@@ -1871,7 +1872,7 @@ class RelayPublicForm(forms.Form):
         return True
 
     def save(self):
-        instance = DomainAttr.getAttrObj(domain_id=self.domain_id,type="system",item=u'cf_smtp_relay')
+        instance = DomainAttr.getAttrObj(domain_id=1,type="system",item=u'cf_smtp_relay')
         instance.value = json.dumps(self.value)
         instance.save()
         return instance

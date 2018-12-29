@@ -477,6 +477,49 @@
                             </label>
                         </td>
                     </tr>
+                    <tr>
+                        <td class="text-right" >短信帐号设置：</td>
+                        <td class="row">
+                            <div class="col-sm-4 no-padding-left">
+                                <div class="input-group">
+                                    <span class="input-group-addon">短信服务商：</span>
+                                    <select name="sms_type" class="form-control">
+                                        {% for k,v in form_others.get_sms_list %}
+                                            <option value="{{ k }}" {% if k == form_others.sms_type %} selected {% endif %} > {{ v }} </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="input-group">
+                                    <span class="input-group-addon">用户ID：</span>
+                                    <input type="text" name="sms_account" value="{{ form_others.sms_account }}" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="input-group">
+                                    <span class="input-group-addon">帐号密码：</span>
+                                    <input type="password" name="sms_password" value="{{ form_others.sms_password }}" class="form-control">
+                                </div>
+                            </div>
+                            {% if form_others.sms_type == 'zhutong' %}
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">签名：</span>
+                                        <input type="text" name="sms_sign" value="{{ form_others.sms_sign }}" class="form-control">
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div class="col-sm-2">
+                                <div class="input-group">
+                                    {% if not form_others.sms_cost is None %}
+                                        <span class="input-group-addon">剩余短信：</span>
+                                        <input type="text" name="sms_cost" value="{{ form_others.sms_cost }}" class="form-control" readonly="">
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
                 {% endif %}
             </table>
             <div class=" ">

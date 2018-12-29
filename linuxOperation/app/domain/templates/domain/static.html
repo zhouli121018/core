@@ -34,6 +34,8 @@
     <h3 class="header smaller lighter blue">{% trans "域名配置" %}
     </h3>
     <div class="box" >
+        <input type="hidden" value="" name="id_remark_flag" id="id_remark_flag" />
+        <input type="hidden" value="" name="id_remark_flag2" id="id_remark_flag2" />
         <div id="tab2">
             <ul>
                 <li>
@@ -149,24 +151,34 @@
         var href = $(this).attr('href');
         //console.log(href);
         //console.log($(href))
+        var page = "";
         if(href == "#domain_basic"){
             url = "{% url 'domain_basic' %}";
+            page = "basic";
         }else if(href == "#domain_reg_login"){
             url = "{% url 'domain_reg_login' %}";
+            page = "login";
         }else if(href == "#domain_sys"){
             url = "{% url 'domain_sys' %}";
+            page = "sys";
         }else if(href == "#domain_webmail"){
             url = "{% url 'domain_webmail' %}";
+            page = "webmail";
         }else if(href == "#domain_sign"){
             url = "{% url 'domain_sign' %}";
+            page = "sign";
         }else if(href == "#domain_module"){
             url = "{% url 'domain_module' %}";
+            page = "module";
         }else if(href == "#domain_public"){
             url = "{% url 'domain_public' %}";
+            page = "public";
         }else if(href == "#domain_secret"){
             url = "{% url 'domain_secret' %}";
+            page = "secret";
         }else if(href == "#domain_public"){
             url = "{% url 'domain_public' %}";
+            page = "public";
         }
 
         $.ajax(
@@ -174,9 +186,12 @@
             url: url,
             success: function(html){
                 $(href).html(html);
+                $("#id_remark_flag").val(page);
+                get_remark_base();
             }
         }
         );
-    })
+    });
+
 </script>
 {% endblock %}

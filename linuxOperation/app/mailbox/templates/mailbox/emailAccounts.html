@@ -153,6 +153,7 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <input type="hidden" name="show_more_search" id="show_more_search" />
                                     <button type="submit" class="btn btn-primary btn-sm">查询</button>
                                     <a type="button" class="btn btn-primary btn-sm" onclick="Export()">导出excel</a>
                                     <a href="Javascript:MoreSearch(this)">更多搜索</a>
@@ -193,9 +194,7 @@
                                             <input name="used" value="{{ request.GET.used}}" type="number" min="0">
                                             <span class="input-group-addon">MB</span>
                                             </span>
-
                                     </div>
-                                    <br/>
                                     <div class="form-group show_hide">
                                         <label class="control-label">邮箱空间状态:</label>
                                         <select name="size_status" class=" form-control form-control-flag" id="id_size_status">
@@ -204,6 +203,41 @@
                                             <option {% if request.GET.size_status == '2' %}selected{% endif %} value="2">满-红色</option>
                                         </select>
                                     </div>
+                                    <br/>
+                                    <div class="form-group show_hide">
+                                        <label class="control-label">发信权限:</label>
+                                        <span class="input-group">
+                                            <select name="limit_send" class="input-group-addon" style="position: relative;top:-2px;height:34px;">
+                                              <option value="">--</option>
+                                              <option value="-1" {% if request.GET.limit_send == '-1' %} selected {% endif %}>不限制邮件发送</option>
+                                              <option value="1" {% if request.GET.limit_send == '1' %} selected {% endif %}>禁止发送所有邮件</option>
+                                              <option value="2" {% if request.GET.limit_send == '2' %} selected {% endif %}>只发送本地域邮件</option>
+                                              <option value="3" {% if request.GET.limit_send == '3' %} selected {% endif %}>可发送指定外域邮件</option>
+                                              <option value="4" {% if request.GET.limit_send == '4' %} selected {% endif %}>可发送本地所有域邮件</option>
+                                            </select>
+                                        </span>
+                                    </div>
+                                    <div class="form-group show_hide">
+                                        <label class="control-label">收信权限:</label>
+                                        <span class="input-group">
+                                            <select name="limit_recv" class="input-group-addon" style="position: relative;top:-2px;height:34px;">
+                                              <option value="">--</option>
+                                              <option value="-1" {% if request.GET.limit_recv == '-1' %} selected {% endif %}>不限制邮件接收</option>
+                                              <option value="1" {% if request.GET.limit_recv == '1' %} selected {% endif %}>禁止接收所有邮件</option>
+                                              <option value="2" {% if request.GET.limit_recv == '2' %} selected {% endif %}>只接收本地域邮件</option>
+                                              <option value="3" {% if request.GET.limit_recv == '3' %} selected {% endif %}>可接收指定外域邮件</option>
+                                              <option value="4" {% if request.GET.limit_recv == '4' %} selected {% endif %}>可接收本地所有域邮件</option>
+                                            </select>
+                                        </span>
+                                    </div>
+                                    <div class="form-group show_hide">
+                                        <label class="control-label">距离上一次登陆>=:</label>
+                                        <span class="input-group">
+                                            <input name="from_last_login" value="{{ request.GET.from_last_login}}" type="number" min="0">
+                                            <span class="input-group-addon">天</span>
+                                            </span>
+                                    </div>
+                                    <br/>
                                 </div>
 
                             </form>
@@ -250,6 +284,7 @@
                             </th>
                             <th class="" tabindex="0">邮箱/网盘 容量</th>
                             <th class="sorting">已用容量</th>
+                            <th>收发权限</th>
                             <th>只允许登录IP</th>
                             <th class="sorting">账号状态</th>
                             <th class="sorting">管理员</th>
@@ -500,6 +535,11 @@
             "lengthMenu": [10, 15, 20, 50, 100, 200],
             "aaSorting": [[0, "desc"]],
             "bFilter" : false,
+            "aoColumns": [
+                null,null,null,null,null,null,null,
+                { "bSortable": false },
+                null,null,null,null,null
+            ],
             "oLanguage": {
                 "sLengthMenu": "{% blocktrans %}显示 _MENU_ 每页{% endblocktrans %}",
                 "sZeroRecords": "{% blocktrans %}对不起! 信息筛选结果为空!{% endblocktrans %}",
@@ -733,10 +773,16 @@
     function MoreSearch(o){
         if($('#search_form .show_hide').hasClass('active')){
             $('#search_form .show_hide').removeClass('active');
+            $('#show_more_search').val(0);
         }else{
             $('#search_form .show_hide').addClass('active');
+            $('#show_more_search').val(1);
         }
     }
+    {% if show_more_search == '1' %}
+        $('#search_form .show_hide').addClass('active');
+    {% endif %}
+
     $("#search_form .department_choice").focus(function(){
         $('#email_dept_choice').addClass('active');
     })

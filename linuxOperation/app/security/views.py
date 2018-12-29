@@ -56,7 +56,7 @@ def fail2ban_rulelist_ajax(request):
     if search:
         lists = lists.filter( Q(name__icontains=search) | Q(proto__icontains=search) )
 
-    if lists and order_column and int(order_column) < len(colums):
+    if lists.exists() and order_column and int(order_column) < len(colums):
         if order_dir == 'desc':
             lists = lists.order_by('-%s' % colums[int(order_column)])
         else:
@@ -143,7 +143,7 @@ def fail2ban_blocklist_ajax(request):
     if search:
         lists = lists.filter( Q(name__icontains=search) | Q(ip__icontains=search) )
 
-    if lists and order_column and int(order_column) < len(colums):
+    if lists.exists() and order_column and int(order_column) < len(colums):
         if order_dir == 'desc':
             lists = lists.order_by('-%s' % colums[int(order_column)])
         else:
@@ -255,7 +255,7 @@ def fail2ban_whitelist_ajax(request):
     if search:
         lists = lists.filter( Q(name__icontains=search) | Q(ip__icontains=search) )
 
-    if lists and order_column and int(order_column) < len(colums):
+    if lists.exists() and order_column and int(order_column) < len(colums):
         if order_dir == 'desc':
             lists = lists.order_by('-%s' % colums[int(order_column)])
         else:
@@ -361,7 +361,7 @@ def password_weaklist_ajax(request):
         lists = PasswordWeakList.objects.filter( Q(password__contains=search) )
     else:
         lists = PasswordWeakList.objects.all()
-    if lists and order_column and int(order_column) < len(colums):
+    if lists.exists() and order_column and int(order_column) < len(colums):
         if order_dir == 'desc':
             lists = lists.order_by('-%s' % colums[int(order_column)])
         else:
@@ -379,7 +379,7 @@ def password_weaklist_ajax(request):
         start_num = 0
         page = 1
 
-    count = len(lists)
+    count = lists.count()
     if start_num >= count:
         page = 1
     paginator = Paginator(lists, length)

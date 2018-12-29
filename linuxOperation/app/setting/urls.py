@@ -6,6 +6,9 @@ from app.review import views as review_views
 from app.distribute import views as distribute_views
 
 urlpatterns = [
+    url(r'^sysinfo/$', views.sysinfo, name='system_sysinfo'),
+    url(r'^changlog/$', views.changlog, name='system_changelog'),
+
     #邮件域别名
     url(r'^alias/domain/$', views.alias_domain, name='alias_domain'),
     url(r'^alias/domain/add$', views.alias_domain_add, name='alias_domain_add'),

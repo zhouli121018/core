@@ -88,7 +88,10 @@ class MailboxBasicChecker(object):
             self.limit_whitelist["recv"].append(email)
 
         self.quota_mailbox, self.quota_netdisk = 0, 0
-        self.limit_send, self.limit_recv = "-1","-1"
+        self.limit_send = self.loadDomainAttr(itemType="system",item='limit_send')
+        self.limit_recv = self.loadDomainAttr(itemType="system",item='limit_recv')
+        self.limit_send = "-1" if not self.limit_send else self.limit_send
+        self.limit_recv = "-1" if not self.limit_recv else self.limit_recv
         if self.mailbox_id:
             Box = Mailbox.objects.filter(id=self.mailbox_id).first()
         else:
@@ -130,8 +133,10 @@ class MailboxBasicChecker(object):
         self.limit_email_size = int(value.get("allow_out_size",0))
         #发信功能限制
         self.limit_send = int(value.get("send_limit", -1))
+        self.limit_send = -1 if self.limit_send==0 else self.limit_send
         #recv_limit
         self.limit_recv = int(value.get("recv_limit", -1))
+        self.limit_recv = -1 if self.limit_recv==0 else self.limit_recv
         self.limit_whitelist = value.get("limit_whitelist", {})
     #============================================ Basic 外部调用函数=============================================
 
@@ -146,10 +151,14 @@ class MailboxBasicChecker(object):
         return self.setting.get(key, default)
 
     def loadDomainAttr(self, item, itemType=""):
+        key = "tmp_{}".format(item)
+        if hasattr(self, key):
+            return getattr(self, key)
         if itemType:
             value = DomainAttr.getAttrObjValue(domain_id=self.domain_id,type=itemType,item=item)
         else:
             value = DomainAttr.getAttrObjValue(domain_id=self.domain_id,item=item)
+        setattr(self, key, value)
         return value
 
 def CheckMailboxBasic(domain_id=0, mailbox_id=0, mailbox=u""):

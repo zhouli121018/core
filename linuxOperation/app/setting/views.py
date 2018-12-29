@@ -3,8 +3,10 @@ from __future__ import unicode_literals
 
 import re
 import json
+import os.path
 import time
 import StringIO
+import subprocess
 from django.shortcuts import render
 from django.contrib import messages
 from django.template.response import TemplateResponse
@@ -13,6 +15,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
+from django.db import connection
 from django_redis import get_redis_connection
 from wsgiref.util import FileWrapper
 
@@ -33,6 +36,71 @@ import constants
 from django.utils.translation import ugettext as _
 
 #########################################
+
+def _get_version_info(version_file):
+    """
+    获取版本信息
+    :param version_file:
+    :return:
+    """
+    if not os.path.exists(version_file):
+        return "Unknown", "Unknown"
+    mtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(os.stat(version_file).st_mtime))
+    content = open(version_file, 'r').read()
+    return content, mtime
+
+@licence_required
+def sysinfo(request):
+    """
+    系统信息
+    :param request:
+    :return:
+    """
+    domain_count = Domain.objects.count()
+    mailbox_count = Mailbox.objects.count()
+    version_info_dict = {
+        'webmail': {'version_file': '/usr/local/u-mail/data/www/webmail/version'},
+        'app': {'version_file': '/usr/local/u-mail/app/version'},
+        'spam': {'version_file': '/usr/local/u-mail/spam-filter/version'},
+    }
+    for k, v in version_info_dict.iteritems():
+        v['content'], v['mtime'] = _get_version_info(v['version_file'])
+
+    # php_version
+    cmd = '/usr/local/u-mail/service/php/bin/php -v'
+    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    php_version = p.stdout.read().split('\n')[0]
+
+    # mysql version
+    with connection.cursor() as cursor:
+        cursor.execute("select version() as version")
+        mysql_version = cursor.fetchone()[0]
+
+    return render(request, template_name='setting/sysinfo.html', context={
+        'domain_count': domain_count,
+        'mailbox_count': mailbox_count,
+        'version_info': version_info_dict,
+        'php_version': php_version,
+        'mysql_version': mysql_version
+    })
+
+@licence_required
+def changlog(request):
+    log = request.GET.get('log', '')
+    if log == 'webmail':
+        log_file = '/usr/local/u-mail/data/www/webmail/CHANGELOG'
+        changelog = open(log_file, 'r').read()
+        return render(request, template_name='setting/changelog.html', context={
+            'changelog': changelog,
+        })
+    elif log == 'app':
+        log_file = '/usr/local/u-mail/app/CHANGELOG'
+        changelog = open(log_file, 'r').read()
+        return render(request, template_name='setting/changelog.html', context={
+            'changelog': changelog,
+        })
+    raise Http404
+
 # 设置
 @licence_required
 def systemSet(request):
@@ -623,7 +691,7 @@ def monitor_mailbox_ajax(request):
     if select_type:
         lists = lists.filter( listen_type=select_type )
 
-    if lists and order_column and int(order_column) < len(colums):
+    if lists.exists() and order_column and int(order_column) < len(colums):
         if order_dir == 'desc':
             lists = lists.order_by('-%s' % colums[int(order_column)])
         else:
@@ -967,7 +1035,7 @@ def ajax_mail_transfer(request):
     if search:
         lists = lists.filter( Q(mailbox__icontains=search) | Q(account__icontains=search) | Q(recipient__icontains=search) | Q(server__icontains=search) )
 
-    if lists and order_column and int(order_column) < len(colums):
+    if lists.exists() and order_column and int(order_column) < len(colums):
         if order_dir == 'desc':
             lists = lists.order_by('-%s' % colums[int(order_column)])
         else:
@@ -1142,7 +1210,7 @@ def header_trans_ajax(request):
     if search:
         lists = lists.filter( Q(rule__icontains=search) | Q(trans_value__icontains=search) )
 
-    if lists and order_column and int(order_column) < len(colums):
+    if lists.exists() and order_column and int(order_column) < len(colums):
         if order_dir == 'desc':
             lists = lists.order_by('-%s' % colums[int(order_column)])
         else:
@@ -1359,7 +1427,7 @@ def ldap_adlist_ajax(request):
     if search:
         lists = lists.filter( Q(server_domain__icontains=search) | Q(account__icontains=search) )
 
-    if lists and order_column and int(order_column) < len(colums):
+    if lists.exists() and order_column and int(order_column) < len(colums):
         if order_dir == 'desc':
             lists = lists.order_by('-%s' % colums[int(order_column)])
         else:
@@ -1743,7 +1811,7 @@ def user_cfilter_list(request):
     if not extype in ("re", "fw", "ot"):
         result = {"status":"failure","message":u"错误类型: '{}'".format(extype)}
         return HttpResponse(json.dumps(result), content_type="application/json")
-    data = {}
+    data = []
     for obj in ExtCfilterRuleNew.objects.filter(mailbox_id=mailbox_id, extype=extype):
         rule_data = {
             "id"            :    obj.id,
@@ -1778,7 +1846,7 @@ def user_cfilter_list(request):
                 "value"         :   act.value,
             }
             rule_data["action"].append(act_data)
-        data[obj.id] = rule_data
+        data.append(rule_data)
     result = {"status":"OK", "message":u"", "data":data}
     return HttpResponse(json.dumps(result), content_type="application/json")
 
@@ -1853,7 +1921,7 @@ def relay_list_ajax(request):
     search = data.get('search[value]', '')
     colums = ['id', 'type', 'src_domain', 'dst_domain', 'server', 'disabled']
     lists = CoreRelay.objects.filter(domain_id=domain_id).all()
-    if lists and order_column and int(order_column) < len(colums):
+    if lists.exists() and order_column and int(order_column) < len(colums):
         if order_dir == 'desc':
             lists = lists.order_by('-%s' % colums[int(order_column)])
         else:

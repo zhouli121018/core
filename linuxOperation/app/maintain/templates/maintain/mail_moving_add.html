@@ -28,7 +28,21 @@
                         {{ form.mailbox_id|bootstrap }}
                         {{ form.src_server|bootstrap }}
                         {{ form.src_mailbox|bootstrap }}
-                        {{ form.src_password|bootstrap }}
+                        {% if form.instance.pk %}
+                            <div class="form-group">
+                                <label class="control-label  " for="id_ssl">密码（保存值为'{PASSWORD}'时，会取本地帐号的登陆密码）</label>
+                                <div class=" ">
+                                    <input type="password" class="form-control" name="src_password" value="{{ form.src_password.value }}" class="col-xs-10 col-sm-5">
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="form-group">
+                                <label class="control-label  " for="id_ssl">密码（保存值为'{PASSWORD}'时，会取本地帐号的登陆密码）</label>
+                                <div class=" ">
+                                    <input type="text" class="form-control" name="src_password" value="{{ form.default_src_password }}" class="col-xs-10 col-sm-5">
+                                </div>
+                            </div>
+                        {% endif %}
                         {% if form.instance.pk %}
                             {{ form.ssl|bootstrap }}
                         {% else %}

@@ -567,8 +567,50 @@ class DomainSysOthersForm(DomainForm):
     PARAM_LIST = dict(constants.DOMAIN_SYS_OTHERS_VALUE)
     PARAM_TYPE = dict(constants.DOMAIN_SYS_OTHERS_TYPE)
 
+    SMSServiceList = (
+        (u'jiutian',      u'短信通道一（九天）'),
+        (u'zhutong',      u'短信通道二（助通）'),
+    )
+
+    @property
+    def get_sms_list(self):
+        return self.SMSServiceList
+
     def initPostParams(self):
         self.initPostParamsDefaultDisable()
+        data = self.post if self.post else self.get
+        #短信服务器配置
+        confSms = DomainAttr.objects.filter(domain_id=self.domain_id.value,type="system",item="cf_sms_conf").first()
+        dataSms = "{}" if not confSms else confSms.value
+        try:
+            jsonSms = json.loads(dataSms)
+            jsonSms = {} if not isinstance(jsonSms, dict) else jsonSms
+        except:
+            jsonSms = {}
+        self.sms_type = jsonSms.get(u"type", u"")
+        self.sms_account = jsonSms.get(u"account", u"")
+        self.sms_password = jsonSms.get(u"password", u"")
+        self.sms_sign = jsonSms.get(u"sign", u"")
+        if "sms_type" in data:
+            self.sms_type = data["sms_type"]
+        if "sms_account" in data:
+            self.sms_account = data["sms_account"]
+        if "sms_password" in data:
+            self.sms_password = data["sms_password"]
+        if "sms_sign" in data:
+            self.sms_sign = data["sms_sign"]
+        jsonSms["type"] = self.sms_type
+        jsonSms["account"] = self.sms_account
+        jsonSms["password"] = self.sms_password
+        jsonSms["sign"] = self.sms_sign
+        self.cf_sms_conf = BaseFied(value=json.dumps(jsonSms), error=None)
+        self.sms_cost = None
+        try:
+            if self.request.user.licence_validsms and (self.sms_account and self.sms_password):
+                from lib import sms_interface
+                self.sms_cost = sms_interface.query_sms_cost(self.sms_type, self.sms_account, self.sms_password)
+        except Exception,err:
+            print err
 
     def save(self):
         super(DomainSysOthersForm, self).save()

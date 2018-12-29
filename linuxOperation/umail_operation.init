@@ -16,6 +16,7 @@ SUPERVISOR_PID="/usr/local/u-mail/operation/supervisord/supervisord.pid"
 start_supervisor() {
     echo "$PYTHON_BIN $SUPERVISOR_SERVER --configuration $SUPERVISOR_CONFIG"
     $PYTHON_BIN $SUPERVISOR_SERVER --configuration $SUPERVISOR_CONFIG
+    echo "operation start success"
     return $?
 }
 

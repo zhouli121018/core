@@ -28,6 +28,7 @@ from app.utils.MailboxPasswordChecker import CheckMailboxPassword, CheckMailboxP
 from app.utils.MailboxBasicChecker import CheckMailboxBasic
 from app.utils.regex import pure_digits_regex, pure_english_regex, pure_tel_regex, pure_digits_regex2, pure_lower_regex2, pure_upper_regex2
 from app.utils.response.excel_response import ExcelResponse
+from app.utils import MailboxSearch
 from app.group.models import CoreGroupMember, CoreGroup
 from app.maillist.models import ExtListMember, ExtList, WmRelateEmail
 from forms import MailboxForm, MailboxUserForm, BatchAddMailboxForm, MailboxSearchForm, MailboxDetailSearchForm
@@ -68,6 +69,9 @@ def get_mailbox_list(request):
     used = data.get('used', '')
     used_term = data.get('used_term', '')
     size_status = data.get('size_status', '')
+    from_last_login = data.get('from_last_login', '')
+    limit_send = data.get('limit_send', '')
+    limit_recv = data.get('limit_recv', '')
     id = data.get('id', '')
     dept_ids = get_user_department_ids(request, domain_id)
     if dept_ids:
@@ -106,6 +110,23 @@ def get_mailbox_list(request):
     #默认情况下只显示不删除的帐号
     else:
         lists = lists.filter(is_delete=-1)
+
+    #收发信过滤
+    if limit_send or limit_recv:
+        box_list = []
+        if limit_send:
+            box_list = MailboxSearch.search_send_recv_limit(domain_id=domain_id,type="send",limit=limit_send)
+        if limit_recv:
+            box_list2 = MailboxSearch.search_send_recv_limit(domain_id=domain_id,type="recv",limit=limit_recv)
+            if limit_send and limit_recv:
+                box_list = list(set(box_list)&set(box_list2))
+            else:
+                box_list = box_list2
+        lists = lists.filter(id__in=box_list)
+    #距离上次登陆天数
+    if from_last_login:
+        box_list = MailboxSearch.search_from_last_login(domain_id=domain_id, days=from_last_login)
+        lists = lists.filter(id__in=box_list)
 
     if is_active:
         if is_active == '1':
@@ -187,11 +208,12 @@ def account(request, template_name='mailbox/emailAccounts.html'):
     domain = Domain.objects.get(id=domain_id)
     data = request.GET
     export = data.get('export', '')
+    show_more_search = data.get('show_more_search', 0)
     if export == '1':
         # list = [[_(u'用户名'), _(u'邮箱容量'), _(u'网盘容量'), _(u'真实姓名'), _(u'邮箱'), _(u'部门'), _(u'工号'), _(u'邮箱状态'),
         #          _(u'手机号码'), _(u'电话号码'), _(u'职位'), _(u'域名'), _(u'上次登录时间'), _(u'已用容量(MB)')]]
         list = [[u'用户名', u'邮箱', u'真实姓名', u'所属部门', u'职位', u'工号', u'手机号码', u'电话号码', u'邮箱容量', u'网盘容量',
-                 u'排序权重', u'QQ号码', u'出生日期', u'性别', u'邮箱状态', u'域名', u'上次登录时间', u'已用容量(MB)']]
+                 u'排序权重', u'QQ号码', u'出生日期', u'性别', u'邮箱状态', u'域名', u'上次登录时间', u'已用容量(MB)', u'密码']]
 
         name = 'mailbox-list_{}'.format(time.strftime('%Y%m%d%H%M%S'))
         lists = get_mailbox_list(request)
@@ -200,23 +222,25 @@ def account(request, template_name='mailbox/emailAccounts.html'):
         all_data_position = {}
         all_data_depts = {}
         all_data_depts2 = {}
+        all_data_depts_parent = {}
         # 不预先把所有值取出来的话，会非常，非常，非常卡
         for d in MailboxUser.objects.all().values("mailbox_id","showorder","realname","eenumber","tel_mobile","tel_work","im_qq","birthday","gender","last_login"):
             all_data_user[d["mailbox_id"]] = d
         for d in MailboxSize.objects.all().values("mailbox_id","size"):
             all_data_size[d["mailbox_id"]] = d
-        for d in DepartmentMember.objects.values("mailbox_id","position"):
-            mailbox_id = d["mailbox_id"]
-            all_data_position.setdefault(mailbox_id, [])
-            if d["position"]:
-                all_data_position[mailbox_id].append( unicode(d["position"]) )
-        for d in Department.objects.values("id","title"):
+        for d in Department.objects.values("id","parent_id","title"):
             all_data_depts[d["id"]] = d["title"] if d["title"] else u""
-        for d in DepartmentMember.objects.values("dept_id","mailbox_id"):
-            all_data_depts2.setdefault(d["mailbox_id"], [])
+            all_data_depts_parent[d["id"]] = d["parent_id"]
+        for d in DepartmentMember.objects.values("mailbox_id","dept_id","position"):
+            mailbox_id = d["mailbox_id"]
+            all_data_depts2.setdefault(mailbox_id, [])
+            all_data_position.setdefault(mailbox_id, {})
+            if d["position"]:
+                all_data_position[mailbox_id][d["dept_id"]] = unicode(d["position"])
             if not d["dept_id"] in all_data_depts:
                 continue
-            all_data_depts2[d["mailbox_id"]].append( all_data_depts.get(d["dept_id"], "") )
+            dept_name = all_data_depts.get(d["dept_id"], "")
+            all_data_depts2[d["mailbox_id"]].append( (dept_name,d["dept_id"]) )
         for l in lists:
             if not l.id in all_data_user:
                 data_user = {
@@ -232,8 +256,22 @@ def account(request, template_name='mailbox/emailAccounts.html'):
                 }
             else:
                 data_user = all_data_user[l.id]
-            depts = u'-'.join(all_data_depts2.get(l.id, []))
-            position = u'-'.join(all_data_position.get(l.id, []))
+            #获取部门名称， 用'-'分隔
+            dept_id_lst = all_data_depts2.get(l.id, [])
+            dept_name_lst = []
+            if dept_id_lst:
+                parent_id = int(dept_id_lst[0][1])
+                position = all_data_position.get(l.id, {}).get(parent_id, "")
+                while parent_id > 0:
+                    if not parent_id in all_data_depts:
+                        break
+                    title = all_data_depts[parent_id]
+                    dept_name_lst.append( u'{}'.format(title) )
+                    parent_id = int(all_data_depts_parent[parent_id])
+            dept_name_lst.reverse()
+            depts = u'-'.join(dept_name_lst)
+            #获取部门名称 完毕
+
             if data_user["last_login"]:
                 last_login = data_user["last_login"].strftime("%Y-%m-%d %H:%M:%S")
             else:
@@ -257,7 +295,7 @@ def account(request, template_name='mailbox/emailAccounts.html'):
             status = u"启用" if str(l.disabled)!="1" else u"禁用"
             list.append(
                 [l.name, l.username, realname, depts, position, eenumber, tel_mobile, tel_work,
-                 l.quota_mailbox, l.quota_netdisk, showorder, im_qq, birthday, gender, status, domain.domain, last_login, used])
+                 l.quota_mailbox, l.quota_netdisk, showorder, im_qq, birthday, gender, status, domain.domain, last_login, used, u''])
         return ExcelResponse(list, name, encoding='gbk')
 
     if request.method == 'POST':
@@ -339,7 +377,98 @@ def account(request, template_name='mailbox/emailAccounts.html'):
         'form': form,
         'detail_form': detail_form,
         "dept_list": json.dumps(get_dept_list_sort(get_user_child_departments_kv(request, domain_id))),
+        'show_more_search': str(show_more_search),
     })
+
+@licence_required
+def mailbox_export_batch_example(request):
+    # list = [[_(u'用户名'), _(u'邮箱容量'), _(u'网盘容量'), _(u'真实姓名'), _(u'邮箱'), _(u'部门'), _(u'工号'), _(u'邮箱状态'),
+    #          _(u'手机号码'), _(u'电话号码'), _(u'职位'), _(u'域名'), _(u'上次登录时间'), _(u'已用容量(MB)')]]
+    list = [[u'用户名', u'真实姓名', u'所属部门', u'职位', u'工号', u'手机号码', u'电话号码', u'邮箱容量', u'网盘容量',
+             u'排序权重', u'QQ号码', u'出生日期', u'密码']]
+
+    name = 'mailbox-list_{}'.format(time.strftime('%Y%m%d%H%M%S'))
+    lists = get_mailbox_list(request)
+    all_data_size = {}
+    all_data_user = {}
+    all_data_position = {}
+    all_data_depts = {}
+    all_data_depts2 = {}
+    all_data_depts_parent = {}
+    # 不预先把所有值取出来的话，会非常，非常，非常卡
+    for d in MailboxUser.objects.all().values("mailbox_id","showorder","realname","eenumber","tel_mobile","tel_work","im_qq","birthday","gender","last_login"):
+        all_data_user[d["mailbox_id"]] = d
+    for d in MailboxSize.objects.all().values("mailbox_id","size"):
+        all_data_size[d["mailbox_id"]] = d
+    for d in Department.objects.values("id","parent_id","title"):
+        all_data_depts[d["id"]] = d["title"] if d["title"] else u""
+        all_data_depts_parent[d["id"]] = d["parent_id"]
+    for d in DepartmentMember.objects.values("mailbox_id","dept_id","position"):
+        mailbox_id = d["mailbox_id"]
+        all_data_depts2.setdefault(mailbox_id, [])
+        all_data_position.setdefault(mailbox_id, {})
+        if d["position"]:
+            all_data_position[mailbox_id][d["dept_id"]] = unicode(d["position"])
+        if not d["dept_id"] in all_data_depts:
+            continue
+        dept_name = all_data_depts.get(d["dept_id"], "")
+        all_data_depts2[d["mailbox_id"]].append( (dept_name,d["dept_id"]) )
+    for l in lists:
+        if not l.id in all_data_user:
+            data_user = {
+                u"realname" :   "",
+                u"tel_mobile" :   "",
+                u"tel_work" :   "",
+                u"im_qq" :   "",
+                u"birthday" :   "",
+                u"gender" :   "",
+                u"last_login" : "",
+                u"eenumber" : "",
+                u"showorder" : "",
+            }
+        else:
+            data_user = all_data_user[l.id]
+        #获取部门名称， 用'-'分隔
+        dept_id_lst = all_data_depts2.get(l.id, [])
+        dept_name_lst = []
+        if dept_id_lst:
+            parent_id = int(dept_id_lst[0][1])
+            position = all_data_position.get(l.id, {}).get(parent_id, "")
+            while parent_id > 0:
+                if not parent_id in all_data_depts:
+                    break
+                title = all_data_depts[parent_id]
+                dept_name_lst.append( u'{}'.format(title) )
+                parent_id = int(all_data_depts_parent[parent_id])
+        dept_name_lst.reverse()
+        depts = u'-'.join(dept_name_lst)
+        #获取部门名称 完毕
+
+        if data_user["last_login"]:
+            last_login = data_user["last_login"].strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            last_login = ""
+        used = all_data_size.get(l.id, {}).get("size", 0)
+        used = int(used) if used else 0
+        realname = "" if not data_user["realname"] else data_user["realname"]
+        tel_mobile = "" if not data_user["tel_mobile"] else data_user["tel_mobile"]
+        tel_work = "" if not data_user["tel_work"] else data_user["tel_work"]
+        im_qq = "" if not data_user["im_qq"] else data_user["im_qq"]
+        birthday = "" if not data_user["birthday"] else data_user["birthday"]
+        gender = "" if not data_user["gender"] else data_user["gender"]
+        # None 竟然已经作为unicode 存在于数据库了！
+        tel_mobile = "" if tel_mobile=="None" else tel_mobile
+        tel_work = "" if tel_work=="None" else tel_work
+        im_qq = "" if im_qq=="None" else im_qq
+        birthday = "" if birthday=="None" else birthday
+        gender = "" if gender=="None" else gender
+        eenumber = "" if not data_user["eenumber"] else data_user["eenumber"]
+        showorder = "0" if not data_user["showorder"] else data_user["showorder"]
+        status = u"启用" if str(l.disabled)!="1" else u"禁用"
+        list.append(
+            [l.name, realname, depts, position, eenumber, tel_mobile, tel_work,
+             l.quota_mailbox, l.quota_netdisk, showorder, im_qq, birthday, u""])
+    return ExcelResponse(list, name, encoding='gbk')
 
 @licence_required
 def mailbox_reset_pwd(request):
@@ -740,7 +869,7 @@ def batchedit_account(request, template_name='mailbox/batchedit_account.html'):
             mailbox_data.update(data)
             _v = mailbox_data.get('pwd_days_time', '')
             if isinstance(_v, six.integer_types):
-                mailbox_data['pwd_days_time'] = datetime.datetime.fromtimestamp(_v)
+                mailbox_data['pwd_days_time'] = int(time.time())
             mailboxuser_data = mailboxuser_obj.__dict__
             mailboxuser_data.update(data)
 
@@ -867,6 +996,7 @@ def edit_account(request, id, template_name='mailbox/edit_account.html'):
         'maillist_member': maillist_member,
         'relate_email': relate_email,
         'domains': domains,
+        "mailbox_id": obj.id,
     })
 
 
@@ -1106,6 +1236,7 @@ def add_reply(request, id, template_name='mailbox/add_reply.html'):
     obj = Mailbox.objects.get(id=id)
     return render(request, template_name=template_name, context={
         'mailbox_obj': obj,
+        'mailbox_id': mailbox_obj.id,
     })
 
 
@@ -1132,11 +1263,12 @@ def edit_reply(request, id, template_name='mailbox/edit_reply.html'):
     return render(request, template_name=template_name, context={
         'obj': obj,
         'mailbox_obj': mailbox_obj,
+        'mailbox_id': mailbox_obj.id,
         'rule_obj': rule_obj,
         'con': con,
         'con_mail_size': conditions.filter(option='mail_size', parent_id=0).first(),
         'con_exec_date_week': conditions.filter(option='exec_date', value__icontains='week').first(),
-        'con_exec_date_date': conditions.filter(option='exec_date', value__icontains='date').first()
+        'con_exec_date_date': conditions.filter(option='exec_date', value__icontains='date').first(),
     })
 
 
@@ -1263,6 +1395,7 @@ def add_forward(request, id, template_name='mailbox/add_forward.html'):
     obj = Mailbox.objects.get(id=id)
     return render(request, template_name=template_name, context={
         'mailbox_obj': obj,
+        'mailbox_id': obj.id,
     })
 
 
@@ -1289,6 +1422,7 @@ def edit_forward(request, id, template_name='mailbox/edit_forward.html'):
     return render(request, template_name=template_name, context={
         'obj': obj,
         'mailbox_obj': mailbox_obj,
+        'mailbox_id': mailbox_obj.id,
         'rule_obj': rule_obj,
         'con': con,
         'con_mail_size': conditions.filter(option='mail_size', parent_id=0).first(),
@@ -1490,7 +1624,7 @@ def ajax_register_list(request):
     domain_id = get_domainid_bysession(request)
     show_status = data.get("show_status", "wait")
     lists = CoUserReg.objects.filter(domain_id=domain_id, status=show_status).all()
-    if lists and order_column and int(order_column) < len(colums):
+    if lists.exists() and order_column and int(order_column) < len(colums):
         if order_dir == 'desc':
             lists = lists.order_by('-%s' % colums[int(order_column)])
         else:

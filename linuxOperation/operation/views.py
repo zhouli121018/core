@@ -119,11 +119,9 @@ def licence(request):
         # 扩展模块信息
         try:
             extra_module = lic.get_available_module()
-            print "extra_module 111111111 ",extra_module
         except:
             extra_module = ''
 
-    print "extra_module 22222222222222   ",extra_module
     if isinstance(extra_module, list):
         licence_mod = {
             'all': '所有模块',
@@ -132,7 +130,6 @@ def licence(request):
             'ctasd_outbound': '高级出站垃圾邮件检测',
         }
         extra_module = ','.join(map(lambda l: licence_mod.get(l, ''), extra_module))
-        print "extra_module 3333333333333   ",extra_module
 
     return render(request, template_name='licence.html', context={
         'info': info,

@@ -20,6 +20,7 @@ from django.utils import timezone
 from app.rpt.models import MailLog, LogReport, LogActive
 from app.utils.domain_session import get_domainid_bysession, get_session_domain
 from app.utils.response.excel_response import ExcelResponse
+from app.utils import MailboxSearch
 from lib.licence import licence_required
 from .utils import add_condition, get_date_offset, get_day, get_mail_stat_data, get_save_days
 from app.rpt.constants import MAILLOG_SEND_PERMIT, MAILLOG_RECV_PERMIT
@@ -121,9 +122,11 @@ def maillog_mailbox_search(request):
     if username:
         condition_mailbox = add_condition(condition_mailbox, Q(name__icontains=username))
     if send_permit and send_permit!="0":
-        condition_mailbox = add_condition(condition_mailbox, Q(limit_send=send_permit))
+        box_list = MailboxSearch.search_send_recv_limit(domain_id=domain_id,type="send",limit=send_permit)
+        condition_mailbox = add_condition(condition_mailbox, Q(id__in=box_list))
     if recv_permit and recv_permit!="0":
-        condition_mailbox = add_condition(condition_mailbox, Q(limit_recv=recv_permit))
+        box_list = MailboxSearch.search_send_recv_limit(domain_id=domain_id,type="recv",limit=recv_permit)
+        condition_mailbox = add_condition(condition_mailbox, Q(id__in=box_list))
     if quota:
         condition_mailbox = add_condition(condition_mailbox, Q(quota_mailbox=quota))
     if netdisk_quota:
@@ -177,8 +180,8 @@ def cal_mailboxstat(number, d):
     worknumber = ""
     disabled = "-1"
 
-    sendpermit = get_send_permit(d.limit_send)
-    recvpermit = get_recv_permit(d.limit_recv)
+    sendpermit = get_send_permit(d.getSendLimit)
+    recvpermit = get_recv_permit(d.getRecvLimit)
     quotamailbox = d.quota_mailbox
     quotanetdisk = d.quota_netdisk
     disabled = str(d.disabled)
@@ -362,7 +365,7 @@ def maillog_user_search(request):
 
 def maillog_user_single(flag, lists, d, condition, lists_in_data=None, lists_out_success_data=None, lists_spam_data=None):
     MB=1024*1024.0
-    count = len(lists)
+    count = lists.count()
     mailbox_id = d["mailbox_id"]
     total_count = d["size__count"]
     total_flow = round(int(d["size__sum"])/MB,2)
@@ -463,7 +466,7 @@ def maillog_user_ajax(request):
     flag, lists, condition, start_num, page, length, showmax = maillog_user_search(request)
 
     MB=1024*1024.0
-    count = len(lists)
+    count = lists.count()
     if showmax >0 and count > showmax:
         count = showmax
     if start_num >= count:
@@ -774,7 +777,7 @@ def maillog_list_ajax(request):
         start_num = 0
         page = 1
 
-    count = len(lists)
+    count = lists.count()
     if start_num >= count:
         page = 1
     paginator = Paginator(lists, length)
@@ -887,7 +890,7 @@ def user_log_ajax(request):
         start_num = 0
         page = 1
 
-    count = len(lists)
+    count = lists.count()
     if start_num >= count:
         page = 1
     paginator = Paginator(lists, length)

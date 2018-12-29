@@ -211,7 +211,7 @@ class Mailbox(AbstractUser):
     #first_change_pwd已经去掉
     #first_change_pwd = models.IntegerField(u'首次登录强制修改密码：', default=-1, choices=constants.MAILBOX_ENABLE)
     pwd_days = models.IntegerField(u'密码有效天数：', default=365, help_text=u'0代表永远有效，大于0代表多少天密码过期后会强制用户修改密码,新增用户默认是365天')
-    pwd_days_time = models.IntegerField(u'密码有效开始时间：', default=time.time(), help_text=u'不能大于当前时间')
+    pwd_days_time = models.IntegerField(u'密码有效开始时间：', default=int(time.time()), help_text=u'不能大于当前时间')
 
     # 用户表 设置
     username = models.CharField(u'账号全名：', max_length=200, null=False, blank=False, unique=True, db_column="mailbox")
@@ -433,6 +433,43 @@ class Mailbox(AbstractUser):
         delete_value = (self.delete_time + datetime.timedelta(days=int(delay_setting))).strftime('%Y-%m-%d %H:%M:%S')
         return u"将于<{}>后执行删除".format(delete_value)
 
+    #新版函数
+    @property
+    def getSendLimit(self):
+        if hasattr(self, "tmp_limit_send"):
+            return self.tmp_limit_send
+        from app.utils.MailboxBasicChecker import MailboxBasicChecker
+        group = MailboxBasicChecker(domain_id=self.domain_id, mailbox_id=self.id, mailbox=self.username)
+        value = str(group.limit_send)
+        value = "-1" if (not value or str(value)=="0") else str(value)
+        self.tmp_limit_send = value
+        return self.tmp_limit_send
+
+    #新版函数
+    @property
+    def getRecvLimit(self):
+        if hasattr(self, "tmp_limit_recv"):
+            return self.tmp_limit_recv
+        from app.utils.MailboxBasicChecker import MailboxBasicChecker
+        group = MailboxBasicChecker(domain_id=self.domain_id, mailbox_id=self.id, mailbox=self.username)
+        value = str(group.limit_recv)
+        value = "-1" if (not value or str(value)=="0") else str(value)
+        self.tmp_limit_recv = value
+        return self.tmp_limit_recv
+
+    @property
+    def display_limit_send(self):
+        value = self.getSendLimit
+        value = "-1" if (not value or str(value)=="0") else str(value)
+        return dict(constants.MAILBOX_SEND_PERMIT)[value]
+
+    @property
+    def display_limit_recv(self):
+        value = self.getRecvLimit
+        value = "-1" if (not value or str(value)=="0") else str(value)
+        return dict(constants.MAILBOX_RECV_PERMIT)[value]
+
+    #老版函数，新的已经不用，留作兼容的
     @property
     def getSendLimitWhiteList(self):
         lists = CoreWhitelist.objects.filter(type="fix_send", domain_id=self.domain_id, mailbox_id=self.id).all()
@@ -441,6 +478,7 @@ class Mailbox(AbstractUser):
             yield num, d.id, d.email, str(d.disabled)
             num += 1
 
+    #老版函数，新的已经不用，留作兼容的
     @property
     def getRecvLimitWhiteList(self):
         lists = CoreWhitelist.objects.filter(type="fix_recv", domain_id=self.domain_id, mailbox_id=self.id).all()
@@ -454,6 +492,22 @@ class Mailbox(AbstractUser):
         if hasattr(settings,"OLD_WEBMAIL_VERSION") and settings.OLD_WEBMAIL_VERSION:
             return True
         return False
+
+    def get_origin_password(self):
+        import base64
+        password = ""
+        obj = MailboxUserAttr.objects.filter(mailbox_id=self.id, type=u'system', item=u'password').first()
+        if obj:
+            password = obj.value
+            #webmail对原始密码做了简单加密 key1xxxkey2
+            serial_key_1 = "hHFdxF43et:::"
+            serial_len_1 = len(serial_key_1)
+            serial_key_2 = ":::hHFdxF43et"
+            serial_len_2 = len(serial_key_2)
+
+            password = base64.decodestring( password )
+            password = password[ serial_len_1: -serial_len_2 ]
+        return password
 
 class MailboxUser(models.Model):
     """

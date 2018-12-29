@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^ajax_edit_account$', views.ajax_edit_account, name='mailbox_ajax_edit_account'),
     url(r'^batchadd_account$', views.batchadd_account, name='mailbox_batchadd_account'),
     url(r'^batchedit_account$', views.batchedit_account, name='mailbox_batchedit_account'),
+    url(r'^batch/example$', views.mailbox_export_batch_example, name='mailbox_export_batch_example'),
     url(r'^delete_account$', views.delete_account, name='mailbox_delete_account'),
     url(r'^backup_account$', views.backup_account, name='mailbox_backup_account'),
     url(r'^ajax_get_account$', views.ajax_get_account, name='mailbox_ajax_get_account'),

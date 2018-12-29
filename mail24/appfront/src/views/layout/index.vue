@@ -54,9 +54,9 @@
             <span></span>
           </div>
         </div>
-        <!--<div class="icon icon-help j-to-helpcenter " data-i18n="common/nav_help" i18n-target="title" title="帮助中心">-->
-          <!--<i class="iconfont icon-iconhelp1"></i>-->
-        <!--</div>-->
+        <div class="icon icon-help j-to-helpcenter "  title="帮助中心" @click="goToHelp">
+          <i class="iconfont icon-iconhelp1"></i>
+        </div>
         <div class="icon icon-bottom" :class="{active:activeTab==5}" data-trigger="setting" role="toggle" data-i18n="common/nav_setting" i18n-target="title" title="设置" @click="changeTab(5)">
           <i class="iconfont icon-iconsetupcenter"></i>
         </div>
@@ -151,7 +151,7 @@
           </div>
 
         </section>
-        <form v-show="false" id="id_ssl_form" :action="this.$store.getters.getLoginUrl" method="post" target="_blank">
+        <form v-show="false" id="id_ssl_form" :action="admin_login_url" method="post" target="_blank">
           <input v-model="token" name="token"  type="hidden">
         </form>
       </article>
@@ -280,6 +280,7 @@
         }
       };
       return {
+        admin_login_url:'',
         skins:[
           {url:'jingdianlan',title:'经典蓝（默认）'},
           {url:'chunzhihua',title:'春之花'},
@@ -341,6 +342,11 @@
       }
     },
     methods:{
+      goToHelp(){
+        let href = window.location.origin+'/webmail/zh_hans/index.html'; //window.location.origin  'http://192.168.1.39:81'
+        console.log(href)
+        window.open(href)
+      },
       changeSkin(m){
         if(m=='more'){
           this.$router.push('/setting/skin')
@@ -727,6 +733,9 @@
         }else if(this.$route.path.indexOf('/search')==0){
           this.activeTab = 6;
         }
+    },
+    mounted(){
+      this.admin_login_url = window.location.origin + '/operation/ZmE2MmIxYzMwM2Fm'
     },
     watch:{
       $route(nv,ov){

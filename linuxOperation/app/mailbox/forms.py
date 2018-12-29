@@ -53,6 +53,9 @@ class MailboxForm(forms.ModelForm):
         netdisk_size = DomainAttr.getAttrObjValue(self.domain.id, 'system', 'cf_def_netdisk_size')
         limit_send = DomainAttr.getAttrObjValue(self.domain.id, 'system', 'limit_send')
         limit_recv = DomainAttr.getAttrObjValue(self.domain.id, 'system', 'limit_recv')
+        if self.instance.pk:
+            limit_send = self.instance.getSendLimit
+            limit_recv = self.instance.getRecvLimit
         self.is_check_passwd = True
 
         if mailbox_size:

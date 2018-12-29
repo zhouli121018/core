@@ -163,7 +163,7 @@
                         <input type="submit" value="y" id="submit_ok" style="display: none;">
                         <input type="hidden" name="action" value="add" id="reply_action_id">
 
-                        <button type="button" onclick="" class="btn btn-sm btn-primary">保存</button>
+                        <button type="button" onclick="" class="btn btn-sm btn-primary add_btn">保存</button>
                         <button type="button" id="id_return" class="btn btn-sm btn-danger cancel-btn" href="{% url 'mailbox_reply' mailbox_obj.id %}" data-target="#modal-reply" data-dismiss="modal" data-toggle="modal">返回</button>
                     </td>
                 </tr>
@@ -188,6 +188,30 @@
 </style>
 
 <script>
+    $('.add_btn').click(function(){
+        var obj={
+            action:[{value:{value:'body内容'},action:'reply'}],
+            disabled:-1,
+            logic:'all',
+            condition:[
+                {logic:'one',suboption:'subject',action:'contains',value:'abc',subs:[{suboption:'subject',action:'contains',value:'123456士大夫的'}]}
+            ]
+        }
+            
+        $.ajax({
+            url:" {% url 'user_cfilter_mdf' %}",
+            type:'POST',
+            data:{
+                rule_id:0,
+                mailbox_id:"{{ mailbox_id }}",
+                extype:'re',
+                value:JSON.stringify(obj)
+            },
+            success:function(data){
+                console.log(data);
+            }
+        })
+    })
     var deptArr = [
         {id:1,parent:0,name:"部门1",child:2},
         {id:2,parent:1,name:"部门2",child:1},
@@ -380,7 +404,7 @@
     }
     // deptArr 为初始化获得的部门数据
 
-    demoinitdept("#tree","#tree_box",'#aa',deptArr);
+    // demoinitdept("#tree","#tree_box",'#aa',deptArr);
     var index = 1;
     function getConditionNew(index){
         var con =  '<div class="panel panel-default" id="id_option_'+index+'">'+
@@ -575,8 +599,9 @@
     })
 
     $('body').on('click','.department_choice',function(){
-        $(this).parent().append($('#tree_box'));
-        $('#tree_box').addClass('active')
+        var html = $('#email_dept_choice').html();
+        // $(this).parent().append($(html));
+        // $('#tree_box').addClass('active')
     })
 </script>
 
