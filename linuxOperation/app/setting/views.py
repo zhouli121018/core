@@ -1824,6 +1824,7 @@ def user_cfilter_list(request):
         }
         for cond in ExtCfilterNewCond.objects.filter(rule_id=obj.id, parent_id=0):
             cond_data = {
+                "id"            :   cond.id,
                 "parent_id"    :   0,
                 "logic"         :   cond.logic,
                 "suboption"    :   cond.suboption,
@@ -1833,10 +1834,11 @@ def user_cfilter_list(request):
             }
             for sub in ExtCfilterNewCond.objects.filter(parent_id=cond.id):
                 cond_data2 = {
-                    "parent_id"    :   cond.id,
-                    "suboption"    :   cond.suboption,
-                    "action"        :   cond.action,
-                    "value"         :   cond.value,
+                    "id"            :   cond.id,
+                    "parent_id"    :   sub.id,
+                    "suboption"    :   sub.suboption,
+                    "action"        :   sub.action,
+                    "value"         :   sub.value,
                 }
                 cond_data["subs"].append(cond_data2)
             rule_data["condition"].append(cond_data)

@@ -140,8 +140,50 @@
           </div>
         </el-dialog>
 
+        <el-dialog title="二次验证登录" :visible.sync="twofactor_login"  :append-to-body="true" :close-on-click-modal="false">
+          <div>
+            <el-tabs v-if="twofactor_login" v-model="activeTwoType" type="card" @tab-click="" class="safe_box" style="max-width:900px">
+              <el-tab-pane label="谷歌验证登录" name="google" class="two_box">
+                <el-form  :model="goggleForm" :rules="goggleRules"  label-width="100px" size="small">
+                  <el-form-item label="谷歌验证码" prop="code">
+                    <el-input v-model="goggleForm.code" style="width:300px;" placeholder="请输入谷歌验证码"></el-input>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button type="primary" @click="googleLogin(goggleForm.code)">登 录</el-button>
+                  </el-form-item>
+                </el-form>
+              </el-tab-pane>
+              <el-tab-pane label="手机短信登录" name="phone" class="two_box">
+                <el-form :model="phoneForm" :rules="phoneRules"  label-width="100px" size="small"  style="max-width:900px">
+
+                  <el-form-item label="短信验证码" prop="code">
+                    <el-input v-model="phoneForm.code" style="width:300px;"></el-input>
+                    <el-button  @click="getLoginCode"> 获取验证码 </el-button>
+                  </el-form-item>
+                  <el-form-item label="" >
+                    <el-button  @click="googleLogin(phoneForm.code)" type="primary"> 登 录 </el-button>
+                  </el-form-item>
+                </el-form>
+              </el-tab-pane>
+              <el-tab-pane label="备份密钥登录" name="backup" class="two_box">
+                <el-form :model="backupForm" :rules="backupRules"  label-width="100px" size="small"  style="max-width:900px">
+
+                  <el-form-item label="备份密钥" prop="code">
+                    <el-input v-model="backupForm.code" style="width:300px;"></el-input>
+                  </el-form-item>
+                  <el-form-item label="" >
+                    <el-button  @click="googleLogin(backupForm.code)" type="primary"> 登 录 </el-button>
+                  </el-form-item>
+                </el-form>
+              </el-tab-pane>
+
+            </el-tabs>
+          </div>
+        </el-dialog>
+
 
       </div>
+
 
     </div>
 
@@ -152,7 +194,7 @@
 </template>
 <script>
   import cookie from '@/assets/js/cookie';
-  import {login,resetSecret1,resetSecret2,resetSecret3,loginBefore} from '@/api/api'
+  import {login,resetSecret1,resetSecret2,resetSecret3,loginBefore,twofactorLogin,loginSms} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   import router from '@/router'
   import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
@@ -178,6 +220,21 @@
         }
       };
       return {
+        phoneForm:{code:''},
+        phoneRules:{
+          code:[{ required: true, message: '请输入谷歌验证码~', trigger: 'blur' }],
+        },
+        backupForm:{code:''},
+        backupRules:{
+          code:[{ required: true, message: '请输入谷歌验证码~', trigger: 'blur' }],
+        },
+        activeTwoType:'google',
+        goggleForm:{code:''},
+        goggleRules:{
+          code:[{ required: true, message: '请输入谷歌验证码~', trigger: 'blur' }],
+        },
+        twofactor_login:false,
+        twofactorList:{"has_totp":true,"uuid_string":"08483291a0f3d11e9881e005056a7d9881411","has_phone":true},
         bgIndex:0,
         passwordRules:{},
         loginBeforeData:{
@@ -261,6 +318,37 @@
       };
     },
     methods: {
+      getLoginCode(){
+        let param = {
+          uuid_string:this.twofactorList.uuid_string
+        }
+        loginSms(param).then(res=>{
+          console.log(res)
+        }).catch(err=>{
+          console.log(err);
+        })
+      },
+      googleLogin(aa){
+        let param = {
+          uuid_string:this.twofactorList.uuid_string,
+          login_mode:this.activeTwoType,
+          verification_code:aa
+        }
+        console.log(param);
+        twofactorLogin(param).then(response=>{
+          if(response.data.token){
+            cookie.setCookie('name', this.formLabelAlign.username, 7);
+            cookie.setCookie('token', response.data.token, 7);
+            cookie.delCookie('locked')
+            // 设置联系人的初始值
+            window.sessionStorage.clear();
+            this.$store.dispatch('setInfo');
+            this.$router.push('/mailbox')
+          }
+        }).catch(err=>{
+          console.log(err)
+        })
+      },
       changeDomain(val){
         console.log(val)
         let param = {
@@ -407,32 +495,22 @@
             if(!emailReg.test(this.formLabelAlign.username)){
               str +='@'+ this.loginBeforeData.domain;
             }
-
             login({"username": str, "password": this.formLabelAlign.password})
             .then((response) => {
-              // var token = response.data.token;
-              //本地存储用户信息
-              cookie.setCookie('name', str, 7);
-              cookie.setCookie('token', response.data.token, 7);
-              cookie.delCookie('locked')
-              //去掉记住用户名和密码
-              // if (this.rememberUserInfo) {
-              //   cookie.setCookie('rememberName', this.formLabelAlign.username, 7);
-              //   cookie.setCookie('rememberPwd', this.formLabelAlign.password, 7);
-              // } else {
-              //   cookie.setCookie('rememberName', '');
-              //   cookie.setCookie('rememberPwd', '');
-              // }
+              if(response.data.token){
+                cookie.setCookie('name', str, 7);
+                cookie.setCookie('token', response.data.token, 7);
+                cookie.delCookie('locked')
+                // 设置联系人的初始值
+                window.sessionStorage.clear();
+                that.$store.dispatch('setInfo');
+                that.$router.push('/mailbox')
+              }
+              if(response.data.uuid_string){
+                this.twofactor_login = true;
+                this.twofactorList = response.data;
+              }
 
-              // 设置联系人的初始值
-              window.sessionStorage.clear();
-              // window.sessionStorage['pab_cid'] = 0;
-              // window.sessionStorage['oab_cid'] = 0;
-              // window.sessionStorage['cab_cid'] = 0;
-
-              that.$store.dispatch('setInfo');
-              that.$router.push('/mailbox')
-              // this.$store.commit('changeUser', this.formLabelAlign.username,this.formLabelAlign.password)
             }).catch(err=>{
               let str = '';
               if(err.non_field_errors){
@@ -515,6 +593,14 @@
   }
 </script>
 <style>
+  .two_box {
+    padding-top:15px;
+    color: #666;
+    font-size: 14px;
+    /*min-height: 360px;*/
+    border: 1px solid #e6e6e6;
+    margin-top: -1px;
+  }
   #login_bg>.main{
     position: absolute;
     width: 100%;

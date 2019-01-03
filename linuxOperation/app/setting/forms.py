@@ -983,11 +983,13 @@ class ExtUserCfilterForm(object):
                 )
         action_list = value.get("action", [])
         for act in action_list:
+            value = act.get("value", {})
+            value = json.dumps(value)
             obj_act = ExtCfilterNewAction.objects.create(
                 rule_id = int(obj_rule.id),
                 sequence = act.get("sequence", 999),
                 action = act.get("action", ""),
-                value = act.get("value", ""),
+                value = u"{}".format(value),
             )
 
 class MailTransferSenderForm(DotDict):

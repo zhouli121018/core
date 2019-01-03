@@ -460,3 +460,26 @@ export const eventsIcs = id => { return axios.get(`${host}/schedule/events/${id}
 
 //用户资料 换肤 POST /api/setting/users/set-skin/
 export const setSkin = params => { return axios.post(`${host}/setting/users/set-skin/`, params) };
+
+//获取用户是否开通了谷歌验证、手机短信等两步验证 GET /api/twofactor/show/
+export const twofactorShow = () => { return axios.get(`${host}/twofactor/show/`)}
+//获取二维码key，以及用作备份密码登录 GET /api/twofactor/google/secret/
+export const googleSecret = () => { return axios.get(`${host}/twofactor/google/secret/`)}
+//生成动态身份验证二维码 GET /api/twofactor/google/qrcode/
+export const googleQrcode = (params) => { return axios.get(`${host}/twofactor/google/qrcode/`,{ params: params })}
+//验证扫码二维码是否通过 POST /api/twofactor/google/verify/
+export const googleVerify = params => { return axios.post(`${host}/twofactor/google/verify/`, params) };
+//解除谷歌验证 POST /api/twofactor/google/release/
+export const googleRelease = params => { return axios.post(`${host}/twofactor/google/release/`, params) };
+//绑定手机发送短信 POST /api/twofactor/phone/sms/
+export const phoneSms = params => { return axios.post(`${host}/twofactor/phone/sms/`, params) };
+//绑定手机验证 POST /api/twofactor/phone/verify/
+export const phoneVerify = params => { return axios.post(`${host}/twofactor/phone/verify/`, params) };
+//解除手机验证 POST /api/twofactor/phone/release/
+export const phoneRelease = params => { return axios.post(`${host}/twofactor/phone/release/`, params) };
+//解除手机验证发送短信 POST /api/twofactor/phone/release-sms/
+export const releaseSms = params => { return axios.post(`${host}/twofactor/phone/release-sms/`, params) };
+//用户谷歌验证、手机短信等两步验证 POST /api/twofactor/login/
+export const twofactorLogin = params => { return axios.post(`${host}/twofactor/login/`, params) };
+//手机短信验证发送验证码 POST /api/twofactor/login/sms/
+export const loginSms = params => { return axios.post(`${host}/twofactor/login/sms/`, params) };

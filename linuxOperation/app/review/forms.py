@@ -266,7 +266,7 @@ class ReviewRuleForm(object):
             value = cond.get("value","")
             succ, resaon = self.__check_condition_valid(option, action, value)
             if not succ:
-                self.__fail_resaon.append( _(u"%s : %s"%(option, resaon)) )
+                self.__fail_resaon.append( u"%s : %s"%(option, resaon) )
                 self.__valid = False
 
             for sub in cond.get("sub",[]):
@@ -275,7 +275,7 @@ class ReviewRuleForm(object):
                 sub_value = sub.get("value","")
                 succ, resaon = self.__check_condition_valid(sub_option, sub_action, sub_value)
                 if not succ:
-                    self.__fail_resaon.append( _(u"%s : %s"%(sub_option, resaon)) )
+                    self.__fail_resaon.append( u"%s : %s"%(sub_option, resaon) )
                     self.__valid = False
 
     def save(self):

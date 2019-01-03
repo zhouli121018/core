@@ -27,7 +27,6 @@
 
             <div class="well" style="background:#fff;margin-top:12px;">
                 <p>通过本功能您可以根据您设置的条件规则来进行自动回复</p>
-
                 <p>操作方法:</p>
                 <ul>
                     <li>确定自动回复规则标题，并将规则启用，即选中“使用本规则”。</li>
@@ -59,124 +58,7 @@
                     <tr>
                         <td style="width:110px;">自动回复条件：</td>
                         <td id="reply_condition_box">
-                            <div class="logic_con">
-                                <span>父条件间关系：</span>
-                                <div class="radio inline">
-                                    <label>
-                                        <input name="logic" type="radio" checked class="ace" value="all">
-                                        <span class="lbl">满足所有条件</span>
-                                    </label>
-                                </div>
-                                <div class="radio inline">
-                                    <label>
-                                        <input name="logic" type="radio" class="ace" value="one">
-                                        <span class="lbl middle"> 满足一条即可</span>
-                                    </label>
-                                </div>
-                                <button type="button" class="btn btn-sm btn-success add_condition" style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>新增条件</button>
-                            </div>
-                            <div class="list_item">
-                                <div id="faq-list-3" class="panel-group accordion-style1 accordion-style2 condition_box">
-                                    <div class="panel panel-default" id="id_option_0">
-                                        <div class="panel-heading" style="position:relative;">
-                                            <a href="#faq_0" data-toggle="collapse" class="accordion-toggle">
-                                                <i class="smaller-80 ace-icon fa fa-chevron-down" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;
-                                                <b>条件</b>
-                                            </a>
-                                        </div>
-                                        <div class="panel-collapse collapse in" id="faq_0">
-                                            <div class="panel-body">
-                                                <div >
-                                                    <span>子条件间关系：</span>
-                                                    <div class="radio inline">
-                                                        <label>
-                                                            <input name="logic_0" type="radio" checked class="ace con_logic" value="all">
-                                                            <span class="lbl"> 满足所有</span>
-                                                        </label>
-                                                    </div>
-                                                    <div class="radio inline">
-                                                        <label>
-                                                            <input name="logic_0" type="radio" class="ace con_logic" value="one">
-                                                            <span class="lbl middle"> 满足任意</span>
-                                                        </label>
-                                                    </div>
-                                                    <button type="button" class="btn btn-xs btn-info add_sub_condition" dataindex="0" dataparentindex="0" style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>新增子条件</button>
-                                                </div>
-                                                <ul>
-                                                    <li class="condition_item">
-                                                        <div class="hr"></div>
-                                                        <div class="row">
-                                                            <div class="col-sm-2 control-label">
-                                                                子条件：
-                                                            </div>
-                                                            <div class="col-sm-10">
-                                                                <div class="row">
-                                                                    <div class="col-sm-2 no-padding">
-                                                                    <select class="form-control" name="suboption" style="height: 34px;">
-                                                                        <option value="all_mail">所有邮件</option>
-                                                                        <option value="has_attach">有附件</option>
-                                                                        <option value="attachments">附件名</option>
-                                                                        <option value="sender">发信人</option>
-                                                                        <option value="cc">抄送人</option>
-                                                                        <option value="recipient">收信人</option>
-                                                                        <option value="sender_dept">发信人部门</option>
-                                                                        <option value="cc_dept">抄送人部门</option>
-                                                                        <option value="rcpt_dept">收信人部门</option>
-                                                                        <option value="subject">主题</option>
-                                                                        <option value="body">邮件内容</option>
-                                                                        <option value="mail_size">邮件大小(MB)</option>
-                                                                        <option value="mail_size2">邮件大小(Byte)</option>
-                                                                        <option value="content_size">邮件正文大小(Byte)</option>
-                                                                        <option value="exec_date">执行时间</option>
-                                                                    </select>
-                                                                </div>
-                                                                <div class="col-sm-10 no-padding">
-                                                                    <div class="col-sm-2 no-padding actions">
-                                                                        <select class="form-control"  name="action_contain" style="height: 34px;">
-                                                                            <option value="contains">包含</option>
-                                                                            <option value="not_contains">不包含</option>
-                                                                            <option value="==">等于</option>
-                                                                        </select>
-                                                                        <select class="form-control display-none" name="action_eq" style="height: 34px;">
-                                                                            <option value=">=">大于等于</option>
-                                                                            <option value="<=">小于等于</option>
-                                                                        </select>
-                                                                        <select class="form-control display-none" name="action_belong" style="height: 34px;">
-                                                                            <option value="in">属于</option>
-                                                                            <option value="not_in">不属于</option>
-                                                                        </select>
-                                                                        <select class="form-control display-none" name="action_date" style="height: 34px;">
-                                                                            <option value="in">星期</option>
-                                                                            <option value="not_in">天</option>
-                                                                        </select>
-                                                                    </div>
-                                                                        <div class="col-sm-8 no-padding values">
-                                                                            <input type="text" name="rule_value_common" value="" maxlength="300" style="width: 100%;"/>
-                                                                            <input type="number" name="rule_value_size" value="" class="display-none"  style="width: 100%;"/>
-                                                                            <div id="id_rule_value_dpt0" class="col-xs-12 col-sm-12 no-padding  display-none dept_box">
-                                                                                <div class="input-group">
-                                                                                    <div id="input_box0">
-                                                                                        <input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">
-                                                                                        <input type="hidden" class="id_dept_id" value="" name="option_value_dpt0">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-        
-                                                                </div>
-                                                            </div>
-        
-                                                        </div>
-        
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            </div>
-                                    </div>
-        
-                                </div>
-                            </div>
+                           
                             
                         </td>
                     </tr>
@@ -188,28 +70,16 @@
                     </tr>
                     <tr>
                         <td colspan="2" class="center">
-                            <input type="hidden" name="id" value="0">
-                            <input type="hidden" name="rule_id" value="" id="rule_id">
-                            <input type="hidden" name="copy_addr_con" value="" id="copy_addr_con">
-                            <input type="hidden" name="subject_con" value="" id="subject_con">
-                            <input type="hidden" name="sender_original_con" value="" id="sender_original_con">
-                            <input type="hidden" name="sender_con" value="" id="sender_con">
-                            <input type="hidden" name="recipient_con" value="" id="recipient_con">
-                            <input type="hidden" name="recipient_original_con" value="" id="recipient_original_con">
-                            <input type="hidden" name="exec_date_con" value="" id="exec_date_con">
-                            <input type="hidden" name="exec_week_con" value="" id="exec_week_con">
-                            <input type="hidden" name="mailsize_con" value="" id="mailsize_con">
-                            <input type="submit" value="y" id="submit_ok" style="display: none;">
-                            <input type="hidden" name="action" value="add" id="reply_action_id">
+                           
     
-                            <button type="button" onclick="" class="btn btn-sm btn-primary add_btn">保存</button>
+                            <button type="button" onclick="" class="btn btn-sm btn-primary add_btn" type_id="0">保存</button>
                             <button type="button" class="btn btn-sm btn-danger hide_box_btn" >返回</button>
                         </td>
                     </tr>
                 </table>
             </form>
         </div>
-        <div >
+        <div class="tree_div_box">
             <div class="display-none">
                 <div id="input_box_reply" class="input-group">
                     <input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">
@@ -237,6 +107,7 @@
     .email_box_tree.active{display:block;}
 </style>
 <script>
+    var dataHash = [];
     function getInitHtml(){
         var initHtml = '<div class="logic_con">'+
             '<span>父条件间关系：</span>'+
@@ -311,7 +182,7 @@
                                             '</div>'+
                                             '<div class="col-sm-10 no-padding">'+
                                                 '<div class="col-sm-2 no-padding actions">'+
-                                                    '<select class="form-control"  name="action_contain" style="height: 34px;">'+
+                                                    '<select class="form-control display-none"  name="action_contain" style="height: 34px;">'+
                                                         '<option value="contains">包含</option>'+
                                                         '<option value="not_contains">不包含</option>'+
                                                         '<option value="==">等于</option>'+
@@ -325,12 +196,12 @@
                                                         '<option value="not_in">不属于</option>'+
                                                     '</select>'+
                                                     '<select class="form-control display-none" name="action_date" style="height: 34px;">'+
-                                                        '<option value="in">星期</option>'+
-                                                        '<option value="not_in">天</option>'+
+                                                        '<option value="week">星期</option>'+
+                                                        '<option value="date">天</option>'+
                                                     '</select>'+
                                                 '</div>'+
                                                     '<div class="col-sm-8 no-padding values">'+
-                                                        '<input type="text" name="rule_value_common" value="" maxlength="300" style="width: 100%;"/>'+
+                                                        '<input type="text" name="rule_value_common" value="" class="display-none" maxlength="300" style="width: 100%;"/>'+
                                                         '<input type="number" name="rule_value_size" value="" class="display-none"  style="width: 100%;"/>'+
                                                         '<div id="id_rule_value_dpt0" class="col-xs-12 col-sm-12 no-padding  display-none dept_box">'+
                                                             '<div class="input-group">'+
@@ -340,6 +211,46 @@
                                                                 '</div>'+
                                                             '</div>'+
                                                         '</div>'+
+                                                        '<div class="col-xs-12 col-sm-12 no-padding  display-none date_box clear">'+
+                                                            '<input type="datetime" class="datetime start_time"> --'+
+                                                            '<input type="datetime" class="datetime end_time">'+
+                                                        '</div>'+
+                                                        '<div class="col-xs-12 col-sm-12 no-padding  display-none week_box clear">'+
+                                                            '<div style="float:left;">'+
+                                                                '<select name="day_start">'+
+                                                                    '<option value="1" selected>星期一</option>'+
+                                                                    '<option value="2">星期二</option>'+
+                                                                    '<option value="3">星期三</option>'+
+                                                                    '<option value="4">星期四</option>'+
+                                                                    '<option value="5">星期五</option>'+
+                                                                    '<option value="6">星期六</option>'+
+                                                                    '<option value="7">星期日</option>'+
+                                                                '</select> --'+
+                                                                '<select name="day_end"  style="margin-right:20px;" >'+
+                                                                    '<option value="1">星期一</option>'+
+                                                                    '<option value="2">星期二</option>'+
+                                                                    '<option value="3">星期三</option>'+
+                                                                    '<option value="4">星期四</option>'+
+                                                                    '<option value="5">星期五</option>'+
+                                                                    '<option value="6">星期六</option>'+
+                                                                    '<option value="7" selected>星期日</option>'+
+                                                                '</select>'+
+                                                            '</div>'+
+                                                            '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
+                                                                '<input name="start" type="text" class="form-control" value="00:00:00" />'+
+                                                                '<span class="input-group-addon">'+
+                                                                    '<i class="fa fa-clock-o bigger-110"></i>'+
+                                                                '</span>'+
+                                                            '</div>'+
+                                                            '<div style="float:left;line-height:34px;padding:0 4px;"> -- </div>'+
+                                                            '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
+                                                                '<input name="end" type="text" class="form-control" value="23:59:59" />'+
+                                                                '<span class="input-group-addon">'+
+                                                                    '<i class="fa fa-clock-o bigger-110"></i>'+
+                                                                '</span>'+
+                                                            '</div>'
+                                                        '</div>'+
+                                                        
                                                     '</div>'+
                                                 '</div>'+
 
@@ -359,204 +270,592 @@
         return initHtml;
     }
     function initAddHtml(){
+        $('#status_checkbox').prop('checked',true)
+        $('#reply_body').val('')
+        $('.add_btn').attr('type_id',0)
         $('#reply_condition_box').html(getInitHtml);
+        dateInit();
+        add_condition_init()
+        addsub();
     }
     $(function(){
+        
         initAddHtml();
     })
-
-    $('.box_show_btn').click(function(){
-        $(this).parent().parent().addClass('display-none').siblings().removeClass('display-none')
-    })
-    $('.hide_box_btn').click(function(){
-        $(this).parents('.reply_box').addClass('display-none').siblings().removeClass('display-none')
-    })
-    
-    function getList(){
-        $.ajax({
-            url:" {% url 'user_cfilter_list' %}",
-            type:'GET',
-            data:{
-                mailbox_id:"{{ mailbox_id }}",
-                extype:'re'
-            },
-            success:function(data){
-                var data = data.data;
-                console.log(data);
-                for(var i=0,html='';i<data.length;i++){
-                    var logicstr = '',statusstr = '',constr = '';
-                    logicstr = data[i].logic=='all'?'满足所有':'满足任一';
-                    statusstr = data[i].disabled==1?'禁用':'启用';
-                    for(var k=0;k<data[i].condition.length;k++){
-                        var c = data[i].condition[k];
-                        var optionstr = c.suboption=="all_mail"?'所有邮件':c.suboption=="has_attach"?'有附件':c.suboption=="attachments"?'附件名':c.suboption=="sender"?'发信人':c.suboption=="cc"?'抄送人':c.suboption=="recipient"?'收信人':c.suboption=="sender_dept"?'发信人部门':c.suboption=="cc_dept"?'抄送人部门':c.suboption=="rcpt_dept"?'收信人部门':c.suboption=="subject"?'主题':c.suboption=="body"?'邮件内容':c.suboption=="mail_size"?'邮件大小(MB)':c.suboption=="mail_size2"?'邮件大小(Byte)':c.suboption=="exec_date"?'执行时间':'邮件正文大小(Byte)'
-                        var actionstr = c.action=='contains'?'包含':c.action=='not_contains'?'不包含':c.action=='=='?'等于':c.action=='>='?'大于等于':c.action=='<='?'小于等于':c.action=='in'?'属于':c.action=='week'?'':c.action=='date'?'':'不属于'
-                        if(k>0){constr += '<br/>'}
-                        constr += '<span>'+(k+1)+'、</span><span>【'+ optionstr + '】</span><span>'+actionstr+'</span>'
-                        if(c.action!='date'&&c.action!='week'&&(c.value2||c.value)){
-                            var vv = c.value2||c.value
-                            constr += '<span> “ '+ vv +' ” </span> '
-                        }
-                        for(var j=0;j<c.subs.length;j++){
-                            var logiccc = c.logic=='all'?'并':'或';
-                            var cc = c.subs[j];
-                            var suboptionstr = cc.suboption=="all_mail"?'所有邮件':cc.suboption=="has_attach"?'有附件':cc.suboption=="attachments"?'附件名':cc.suboption=="sender"?'发信人':cc.suboption=="cc"?'抄送人':cc.suboption=="recipient"?'收信人':cc.suboption=="sender_dept"?'发信人部门':cc.suboption=="cc_dept"?'抄送人部门':cc.suboption=="rcpt_dept"?'收信人部门':cc.suboption=="subject"?'主题':cc.suboption=="body"?'邮件内容':cc.suboption=="mail_size"?'邮件大小(MB)':cc.suboption=="mail_size2"?'邮件大小(Byte)':cc.suboption=="exec_date"?'执行时间':'邮件正文大小(Byte)'
-                            var subactionstr = cc.action=='contains'?'包含':cc.action=='not_contains'?'不包含':cc.action=='=='?'等于':cc.action=='>='?'大于等于':cc.action=='<='?'小于等于':cc.action=='in'?'属于':cc.action=='week'?'':cc.action=='date'?'':'不属于'
-                            constr += '<button type="button" class="btn btn-xs btn-success">'+logiccc+'</button><span>【'+suboptionstr+'】</span><span>'+subactionstr+'</span>'
-
-                            if(cc.action!='date'&&cc.action!='week'&&(cc.value2||cc.value)){
-                                var subvv = cc.value2||cc.value
-                                constr += '<span> “ '+ subvv +' ” </span>'
-                            }
-                        }
-                    }
-                    html+='<tr><td>'+(i+1)+'</td><td>'+logicstr+'</td><td>'+constr+'</td><td>'+statusstr+'</td><td>'+
-                    '<button type="button" class="btn btn-xs btn-primary edit_con_btn" data_id="'+data[i].id+'" style="margin-right:10px;">修改</button>'+
-                    '<button type="button" class="btn btn-xs btn-danger delete_con_btn" data_id="'+data[i].id+'">删除</button>'+
-                    '</td></tr>'
-                }
-                $('#reply_tbody').html(html)
-            }
-        })
+    function init_tree_box(){
+        var treehtml = '<div class="display-none">'+
+                '<div id="input_box_reply" class="input-group">'+
+                    '<input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">'+
+                    '<input type="hidden" class="id_dept_id" value="" name="target_dept">'+
+                    '<span class="input-group-addon clear_dept" style="cursor:pointer;background:#a0a0a0;color:#fff;">清空</span>'+
+                '</div>'+
+                '<div class="widget-box widget-color-blue2 email_box_tree" id="tree_box_reply" style="position:absolute;top:32px;z-index:10;min-width:60%;max-width:100%;left:0;">'+
+                    '<button type="button" class="btn btn-danger btn-sm pull-right close_btn" style="">&times;</button>'+
+                    '<div class="widget-body" style="padding-right:20px;">'+
+                        '<div style="padding:20px  6px 0;">'+
+                            '<input type="text" class="search_input form-control" placeholder="输入关键字搜索...">'+
+                        '</div>'+
+                        '<div class="widget-main padding-8" style="height:auto;max-height:360px;">'+
+                            '<ul id="tree_reply"></ul>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'+
+            '</div>'
+        $('.tree_div_box').html(treehtml);
+        demoinitdept("#tree_reply","#tree_box_reply","#input_box_reply",deptArr);
     }
-    getList();
-
-    //新增规则
-    $('.add_btn').click(function(){
-        if(!$('#reply_body').val() || $('#reply_body').val() == ''){
-            layer.msg('请填写回复内容~')
-            return;
-        }
-        var arr = [];
-        for(var i=0;i<$('.list_item .panel.panel-default').length;i++){
-            var $list_item = $('.list_item .panel.panel-default:eq('+i+')');
-
-            for(var j=0;j<$list_item.find('.condition_item').length;j++){
-                for(var g=0;g<$list_item.find('.condition_item:eq('+j+') .values>input').length;g++){
-                    if($list_item.find('.condition_item:eq('+j+') .values>input:eq('+g+')') && !$list_item.find('.condition_item:eq('+j+') .values>input:eq('+g+')').hasClass('display-none')){
-                        if(!$list_item.find('.condition_item:eq('+j+') .values>input:eq('+g+')').val() || $list_item.find('.condition_item:eq('+j+') .values>input:eq('+g+')').val()==''){
-                            layer.msg('请填写条件内容~')
-                            return;
-                        }
+    function getInitEditHtml(rule_data){
+        var logic_all = rule_data.logic == 'all'?true:false ;
+        var logic_one = rule_data.logic == 'one'?true:false ;
+        var action_value = JSON.parse(rule_data.action[0].value).value;
+        console.log(action_value)
+        $('#reply_body').val(action_value);
+        var disabled_status = rule_data.disabled =='-1'?true:false;
+        $('#status_checkbox').prop('checked',disabled_status)
+        var initHtml = '<div class="logic_con">'+
+            '<span>父条件间关系：</span>'+
+            '<div class="radio inline">'+
+                '<label>'+
+                    '<input name="logic" type="radio" '
+                    if(logic_all){
+                        initHtml += 'checked'
                     }
-                }
-            }
-
-            var obj = {};
-            obj.logic = $list_item.find('.con_logic:checked').val();
-            obj.suboption = $list_item.find('.condition_item:eq(0) [name="suboption"]').val();
-            for(var k=0;k<$list_item.find('.condition_item:eq(0) .actions>select').length;k++){
-                if($list_item.find('.condition_item:eq(0) .actions>select:eq('+k+')') && !$list_item.find('.condition_item:eq(0) .actions>select:eq('+k+')').hasClass('display-none')){
-                    obj.action = $list_item.find('.condition_item:eq(0) .actions>select:eq('+k+')').val();
-                }
-            }
-            for(var k=0;k<$list_item.find('.condition_item:eq(0) .values>input').length;k++){
-                if($list_item.find('.condition_item:eq(0) .values>input:eq('+k+')') && !$list_item.find('.condition_item:eq(0) .values>input:eq('+k+')').hasClass('display-none')){
-                    obj.value = $list_item.find('.condition_item:eq(0) .values>input:eq('+k+')').val();
-                }
-            }
-            obj.subs = [];
-            for(var j=1;j<$list_item.find('.condition_item').length;j++){
-                var sub_obj = {}
-                sub_obj.suboption = $list_item.find('.condition_item:eq('+j+') [name="suboption"]').val();
-                for(var g=0;g<$list_item.find('.condition_item:eq('+j+') .actions>select').length;g++){
-                    if($list_item.find('.condition_item:eq('+j+') .actions>select:eq('+g+')') && !$list_item.find('.condition_item:eq('+j+') .actions>select:eq('+g+')').hasClass('display-none')){
-                        sub_obj.action = $list_item.find('.condition_item:eq('+j+') .actions>select:eq('+g+')').val();
+                    initHtml += ' class="ace" value="all">'+
+                    '<span class="lbl">满足所有条件</span>'+
+                '</label>'+
+            '</div>'+
+            '<div class="radio inline">'+
+                '<label>'+
+                    '<input name="logic" type="radio" '
+                    if(logic_one){
+                        initHtml += 'checked'
                     }
-                }
-                for(var g=0;g<$list_item.find('.condition_item:eq('+j+') .values>input').length;g++){
-                    if($list_item.find('.condition_item:eq('+j+') .values>input:eq('+g+')') && !$list_item.find('.condition_item:eq('+j+') .values>input:eq('+g+')').hasClass('display-none')){
-                        sub_obj.value = $list_item.find('.condition_item:eq('+j+') .values>input:eq('+g+')').val();
-                    }
-                }
-                obj.subs.push(sub_obj);
-            }
-            arr.push(obj);
-        }
-        var obj={
-            action:[{
-                value:{value:$('#reply_body').val()},
-                action:'reply'
-            }],
-            disabled:$('#status_checkbox').prop('checked')==true?'-1':'1',
-            logic:$('.logic_con [name="logic"]:checked').val(),
-            condition: arr
-        }
+                    initHtml += ' class="ace" value="one">'+
+                    '<span class="lbl middle"> 满足一条即可</span>'+
+                '</label>'+
+            '</div>'+
+            '<button type="button" class="btn btn-sm btn-success add_condition" style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>新增条件</button>'+
+        '</div>'+
+        '<div class="list_item">'+
+            '<div id="faq-list-3" class="panel-group accordion-style1 accordion-style2 condition_box">'
             
-        $.ajax({
-            url:" {% url 'user_cfilter_mdf' %}",
-            type:'POST',
-            data:{
-                rule_id:0,
-                mailbox_id:"{{ mailbox_id }}",
-                extype:'re',
-                value:JSON.stringify(obj)
-            },
-            success:function(data){
-                console.log(data);
-                if(data.status == 'OK'){
-                    layer.msg('添加成功！')
-                    getList();
-                    $('.reply_list').removeClass('display-none').siblings().addClass('display-none');
-                    initAddHtml()
-                    $('#reply_body').val('')
-                    $('.add_condition').click(function(){
-                        $(".condition_box").append(getConditionNew(index));
-                        index++;
-                        addsub();
-                    })
-    
-                }else{
-                    layer.msg(data.message || '')
-                }
-                
-            }
-        })
-    })
-    
-    //删除规则
-    $('body').on('click','.delete_con_btn',function(){
-        $.ajax({
-            url:"{% url 'user_cfilter_del' %}",
-            type:'POST',
-            data:{
-                rule_id :$(this).attr('data_id')
-            },
-            success:function(data){
-                layer.msg(data.message || '')
-                getList();
-                
-            }
-        })
-    })
-    
-    var deptArr = [
-        {id:1,parent:0,name:"部门1",child:2},
-        {id:2,parent:1,name:"部门2",child:1},
-        {id:3,parent:2,name:"部门3",child:0},
-        {id:4,parent:1,name:"部门4",child:0},
-        {id:5,parent:2,name:"部门5",child:0},
-        {id:6,parent:0,name:"部门6",child:0}
-    ];
+            for(var i=0;i<rule_data.condition.length;i++){
+                var logic_all_sub = rule_data.condition[i].logic == 'all'?true:false ;
+                var logic_one_sub = rule_data.condition[i].logic == 'one'?true:false ;
+                initHtml += '<div class="panel panel-default" id="id_option_'+i+'">'+
+                    '<div class="panel-heading" style="position:relative;">'+
+                        '<a href="#faq_'+i+'" data-toggle="collapse" class="accordion-toggle">'+
+                            '<i class="smaller-80 ace-icon fa fa-chevron-down" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;'+
+                            '<b>条件</b>'
+                            if(i>0){
+                                initHtml += '<button type="button" class="delete_condition btn btn-sm btn-danger pull-right" data-id="id_option_'+i+'" style="position:absolute;top:-0;right:0;">删除条件</button>'
+                            }
+                        initHtml += '</a>'+
+                    '</div>'+
+                    '<div class="panel-collapse collapse in" id="faq_'+i+'">'+
+                        '<div class="panel-body">'+
+                            '<div >'+
+                                '<span>子条件间关系：</span>'+
+                                '<div class="radio inline">'+
+                                    '<label>'+
+                                        '<input name="logic_'+i+'" type="radio" '
+                                        if(logic_all_sub){
+                                            initHtml += ' checked'
+                                        }
+                                        initHtml += ' class="ace con_logic" value="all">'+
+                                        '<span class="lbl"> 满足所有</span>'+
+                                    '</label>'+
+                                '</div>'+
+                                '<div class="radio inline">'+
+                                    '<label>'+
+                                        '<input name="logic_'+i+'" type="radio"'
+                                        if(logic_one_sub){
+                                            initHtml += ' checked'
+                                        }
+                                        initHtml +=' class="ace con_logic" value="one">'+
+                                        '<span class="lbl middle"> 满足任意</span>'+
+                                    '</label>'+
+                                '</div>'+
+                                '<button type="button" class="btn btn-xs btn-info add_sub_condition" dataindex="0" dataparentindex="0" style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>新增子条件</button>'+
+                            '</div>'+
+                            '<ul>'+
+                                '<li class="condition_item">'+
+                                    '<div class="hr"></div>'+
+                                    '<div class="row">'+
+                                        '<div class="col-sm-2 control-label">'+
+                                            '子条件：'+
+                                        '</div>'+
+                                        '<div class="col-sm-10">'+
+                                            '<div class="row">'+
+                                                '<div class="col-sm-2 no-padding">'+
+                                                '<select class="form-control" name="suboption" style="height: 34px;">'+
+                                                    '<option value="all_mail" ' 
+                                                    var subo = rule_data.condition[i].suboption;
+                                                    if(subo == "all_mail"){ initHtml += ' selected '}
+                                                      initHtml +='>所有邮件</option>'+
+                                                    '<option value="has_attach" '
+                                                    if(subo == "has_attach"){ initHtml += ' selected '}
+                                                      initHtml +='>有附件</option>'+
+                                                    '<option value="attachments"'
+                                                    if(subo == "attachments"){ initHtml += ' selected '}
+                                                      initHtml +='>附件名</option>'+
+                                                    '<option value="sender"'
+                                                    if(subo == "sender"){ initHtml += ' selected '}
+                                                      initHtml +='>发信人</option>'+
+                                                    '<option value="cc"'
+                                                    if(subo == "cc"){ initHtml += ' selected '}
+                                                      initHtml +='>抄送人</option>'+
+                                                    '<option value="recipient"'
+                                                    if(subo == "recipient"){ initHtml += ' selected '}
+                                                      initHtml +='>收信人</option>'+
+                                                    '<option value="sender_dept"'
+                                                    if(subo == "sender_dept"){ initHtml += ' selected '}
+                                                      initHtml +='>发信人部门</option>'+
+                                                    '<option value="cc_dept"'
+                                                    if(subo == "cc_dept"){ initHtml += ' selected '}
+                                                      initHtml +='>抄送人部门</option>'+
+                                                    '<option value="rcpt_dept"'
+                                                    if(subo == "rcpt_dept"){ initHtml += ' selected '}
+                                                      initHtml +='>收信人部门</option>'+
+                                                    '<option value="subject"'
+                                                    if(subo == "subject"){ initHtml += ' selected '}
+                                                      initHtml +='>主题</option>'+
+                                                    '<option value="body"'
+                                                    if(subo == "body"){ initHtml += ' selected '}
+                                                      initHtml +='>邮件内容</option>'+
+                                                    '<option value="mail_size"'
+                                                    if(subo == "mail_size"){ initHtml += ' selected '}
+                                                      initHtml +='>邮件大小(MB)</option>'+
+                                                    '<option value="mail_size2"'
+                                                    if(subo == "mail_size2"){ initHtml += ' selected '}
+                                                      initHtml +='>邮件大小(Byte)</option>'+
+                                                    '<option value="content_size"'
+                                                    if(subo == "content_size"){ initHtml += ' selected '}
+                                                      initHtml +='>邮件正文大小(Byte)</option>'+
+                                                    '<option value="exec_date"'
+                                                    if(subo == "exec_date"){ initHtml += ' selected '}
+                                                      initHtml +='>执行时间</option>'+
+                                                '</select>'+
+                                            '</div>'+
+                                            '<div class="col-sm-10 no-padding">'+
+                                                '<div class="col-sm-2 no-padding actions">'+
+                                                    '<select class="form-control '
+                                                    var v = subo;
+                                                    var action = rule_data.condition[i].action;
+                                                    if(v=='attachments'|| v=='sender'||v=='cc'||v=='recipient'||v=='subject'||v=='body'){
 
-    $('body').on('change','[name="suboption"]',function(){
-        var v = $(this).val()
-        $(this).parent().next().find('.actions>select').addClass('display-none');
-        $(this).parent().next().find('.values>input').addClass('display-none');
-        $(this).parent().next().find('.values>div').addClass('display-none');
-        if(v=='attachments'|| v=='sender'||v=='cc'||v=='recipient'||v=='subject'||v=='body'){
-            $(this).parent().next().find('.actions>select[name="action_contain"]').removeClass('display-none');
-            $(this).parent().next().find('.values>input[name="rule_value_common"]').removeClass('display-none');
-        }else if(v=='mail_size'||v=='mail_size2'||v=='content_size'){
-            $(this).parent().next().find('.actions>select[name="action_eq"]').removeClass('display-none');
-            $(this).parent().next().find('.values>input[name="rule_value_size"]').removeClass('display-none');
-        }else if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
-            $(this).parent().next().find('.actions>select[name="action_belong"]').removeClass('display-none');
-            $(this).parent().next().find('.values>div.dept_box').removeClass('display-none');
-        }else if(v=='exec_date'){
-            $(this).parent().next().find('.actions>select[name="action_date"]').removeClass('display-none');
-        }
-    })
+                                                    }else{
+                                                        initHtml += ' display-none'
+                                                    }
+                                                    initHtml += '"  name="action_contain" style="height: 34px;">'+
+                                                        '<option value="contains" ' 
+                                                        if(action == "contains"){initHtml += ' selected'}
+                                                        initHtml += '>包含</option>'+
+                                                        '<option value="not_contains" ' 
+                                                        if(action == "not_contains"){initHtml += ' selected'}
+                                                        initHtml += '>不包含</option>'+
+                                                        '<option value="==" ' 
+                                                        if(action == "=="){initHtml += ' selected'}
+                                                        initHtml += '>等于</option>'+
+                                                    '</select>'+
+                                                    '<select class="form-control '
+                                                    if(v=='mail_size'||v=='mail_size2'||v=='content_size'){
+
+                                                    }else{
+                                                        initHtml += ' display-none'
+                                                    }
+                                                    initHtml += '" name="action_eq" style="height: 34px;">'+
+                                                        '<option value=">=" ' 
+                                                        if(action == ">="){initHtml += ' selected'}
+                                                        initHtml += '>大于等于</option>'+
+                                                        '<option value="<=" ' 
+                                                        if(action == "<=>"){initHtml += ' selected'}
+                                                        initHtml += '>小于等于</option>'+
+                                                    '</select>'+
+                                                    '<select class="form-control  '
+                                                    if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
+
+                                                    }else{
+                                                        initHtml += ' display-none'
+                                                    }
+                                                    initHtml += '" name="action_belong" style="height: 34px;">'+
+                                                        '<option value="in" ' 
+                                                        if(action == "in"){initHtml += ' selected'}
+                                                        initHtml += '>属于</option>'+
+                                                        '<option value="not_in" ' 
+                                                        if(action == "not_in"){initHtml += ' selected'}
+                                                        initHtml += '>不属于</option>'+
+                                                    '</select>'+
+                                                    '<select class="form-control display-none" name="action_date" style="height: 34px;">'+
+                                                        '<option value="week">星期</option>'+
+                                                        '<option value="date">天</option>'+
+                                                    '</select>'+
+                                                '</div>'+
+                                                    '<div class="col-sm-8 no-padding values">'+
+                                                        '<input type="text" name="rule_value_common" '
+                                                        if(v=='attachments'|| v=='sender'||v=='cc'||v=='recipient'||v=='subject'||v=='body'){
+                                                            initHtml += ' value="'+rule_data.condition[i].value+'"'
+                                                        }else{
+                                                            initHtml += ' class="display-none" ';
+                                                        }
+                                                        initHtml += '  maxlength="300" style="width: 100%;"/>'+
+                                                        '<input type="number" name="rule_value_size"'
+                                                        if(v=='mail_size'||v=='mail_size2'||v=='content_size'){
+                                                            initHtml += ' value="'+rule_data.condition[i].value+'"'
+                                                        }else{
+                                                            initHtml += ' class="display-none" ';
+                                                        }
+                                                        initHtml += '   style="width: 100%;"/>'+
+                                                        '<div id="id_rule_value_dpt0" class="col-xs-12 col-sm-12 no-padding dept_box '
+                                                        if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
+                                                            
+                                                        }else{
+                                                            initHtml += ' display-none" ';
+                                                        }
+                                                        initHtml += ' ">'+
+                                                            '<div class="input-group">'+
+                                                                '<div id="input_box0">'+
+                                                                    '<input type="text" value="'
+                                                                    if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
+                                                                        initHtml += hashdept['dept_'+rule_data.condition[i].value]
+                                                                    }
+                                                                    initHtml += '" readonly placeholder="点击选择部门" class="form-control department_choice">'+
+                                                                    '<input type="hidden" class="id_dept_id" '
+                                                                    if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
+                                                                        initHtml += ' value="'+rule_data.condition[i].value+'"'
+                                                                    }
+                                                                    initHtml += ' name="option_value_dpt0">'+
+                                                                '</div>'+
+                                                            '</div>'+
+                                                        '</div>'+
+
+                                                        '<div class="col-xs-12 col-sm-12 no-padding '
+                                                        if(v=='exec_date' && action == 'date'){
+
+                                                        }else{
+                                                            initHtml += 'display-none'
+                                                        }
+                                                        initHtml += ' date_box clear">'+
+                                                            '<input type="datetime" class="datetime start_time"> --'+
+                                                            '<input type="datetime" class="datetime end_time">'+
+                                                        '</div>'+
+                                                        '<div class="col-xs-12 col-sm-12 no-padding '  
+                                                        if(v=='exec_date' && action == 'week'){
+
+                                                        }else{
+                                                            initHtml += 'display-none'
+                                                        }
+                                                        initHtml += ' week_box clear">'+
+                                                            '<div style="float:left;">'+
+                                                                '<select name="day_start">'+
+                                                                    '<option value="1" selected>星期一</option>'+
+                                                                    '<option value="2">星期二</option>'+
+                                                                    '<option value="3">星期三</option>'+
+                                                                    '<option value="4">星期四</option>'+
+                                                                    '<option value="5">星期五</option>'+
+                                                                    '<option value="6">星期六</option>'+
+                                                                    '<option value="7">星期日</option>'+
+                                                                '</select> --'+
+                                                                '<select name="day_end"  style="margin-right:20px;" >'+
+                                                                    '<option value="1">星期一</option>'+
+                                                                    '<option value="2">星期二</option>'+
+                                                                    '<option value="3">星期三</option>'+
+                                                                    '<option value="4">星期四</option>'+
+                                                                    '<option value="5">星期五</option>'+
+                                                                    '<option value="6">星期六</option>'+
+                                                                    '<option value="7" selected>星期日</option>'+
+                                                                '</select>'+
+                                                            '</div>'+
+                                                            '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
+                                                                '<input name="start" type="text" class="form-control" value="00:00:00" />'+
+                                                                '<span class="input-group-addon">'+
+                                                                    '<i class="fa fa-clock-o bigger-110"></i>'+
+                                                                '</span>'+
+                                                            '</div>'+
+                                                            '<div style="float:left;line-height:34px;padding:0 4px;"> -- </div>'+
+                                                            '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
+                                                                '<input name="end" type="text" class="form-control" value="23:59:59" />'+
+                                                                '<span class="input-group-addon">'+
+                                                                    '<i class="fa fa-clock-o bigger-110"></i>'+
+                                                                '</span>'+
+                                                            '</div>'
+                                                        '</div>'+
+
+
+                                                    '</div>'+
+                                                '</div>'+
+
+                                            '</div>'+
+                                        '</div>'+
+
+                                    '</div>'+
+
+                                '</li>'
+
+                                for(var j=0;j<rule_data.condition[i].subs.length;j++){
+                                    initHtml += '<li class="condition_item">'+
+                                    '<div class="hr"></div>'+
+                                    '<div class="row">'+
+                                        '<div class="col-sm-2 control-label">'+
+                                            '子条件：'+
+                                        '</div>'+
+                                        '<div class="col-sm-10">'+
+                                            '<div class="row">'+
+                                                '<div class="col-sm-2 no-padding">'+
+                                                '<select class="form-control" name="suboption" style="height: 34px;">'+
+                                                    '<option value="all_mail"' 
+                                                    var subo_sub = rule_data.condition[i].subs[j].suboption;
+                                                    if(subo_sub == "all_mail"){ initHtml += ' selected '}
+                                                      initHtml +='>所有邮件</option>'+
+                                                    '<option value="has_attach"'
+                                                    if(subo_sub == "has_attach"){ initHtml += ' selected '}
+                                                      initHtml +='>有附件</option>'+
+                                                    '<option value="attachments"'
+                                                    if(subo_sub == "attachments"){ initHtml += ' selected '}
+                                                      initHtml +='>附件名</option>'+
+                                                    '<option value="sender"'
+                                                    if(subo_sub == "sender"){ initHtml += ' selected '}
+                                                      initHtml +='>发信人</option>'+
+                                                    '<option value="cc"'
+                                                    if(subo_sub == "cc"){ initHtml += ' selected '}
+                                                      initHtml +='>抄送人</option>'+
+                                                    '<option value="recipient"'
+                                                    if(subo_sub == "recipient"){ initHtml += ' selected '}
+                                                      initHtml +='>收信人</option>'+
+                                                    '<option value="sender_dept"'
+                                                    if(subo_sub == "sender_dept"){ initHtml += ' selected '}
+                                                      initHtml +='>发信人部门</option>'+
+                                                    '<option value="cc_dept"'
+                                                    if(subo_sub == "cc_dept"){ initHtml += ' selected '}
+                                                      initHtml +='>抄送人部门</option>'+
+                                                    '<option value="rcpt_dept"'
+                                                    if(subo_sub == "rcpt_dept"){ initHtml += ' selected '}
+                                                      initHtml +='>收信人部门</option>'+
+                                                    '<option value="subject"'
+                                                    if(subo_sub == "subject"){ initHtml += ' selected '}
+                                                      initHtml +='>主题</option>'+
+                                                    '<option value="body"'
+                                                    if(subo_sub == "body"){ initHtml += ' selected '}
+                                                      initHtml +='>邮件内容</option>'+
+                                                    '<option value="mail_size"'
+                                                    if(subo_sub == "mail_size"){ initHtml += ' selected '}
+                                                      initHtml +='>邮件大小(MB)</option>'+
+                                                    '<option value="mail_size2"'
+                                                    if(subo_sub == "mail_size2"){ initHtml += ' selected '}
+                                                      initHtml +='>邮件大小(Byte)</option>'+
+                                                    '<option value="content_size"'
+                                                    if(subo_sub == "content_size"){ initHtml += ' selected '}
+                                                      initHtml +='>邮件正文大小(Byte)</option>'+
+                                                    '<option value="exec_date"'
+                                                    if(subo_sub == "exec_date"){ initHtml += ' selected '}
+                                                      initHtml +='>执行时间</option>'+
+                                                '</select>'+
+                                            '</div>'+
+                                            '<div class="col-sm-10 no-padding">'+
+                                                '<div class="col-sm-2 no-padding actions">'+
+                                                        '<select class="form-control '
+                                                    var v = subo_sub;
+                                                    var action = rule_data.condition[i].subs[j].action;
+                                                    if(v=='attachments'|| v=='sender'||v=='cc'||v=='recipient'||v=='subject'||v=='body'){
+
+                                                    }else{
+                                                        initHtml += ' display-none'
+                                                    }
+                                                    initHtml += '"  name="action_contain" style="height: 34px;">'+
+                                                        '<option value="contains" ' 
+                                                        if(action == "contains"){initHtml += ' selected'}
+                                                        initHtml += '>包含</option>'+
+                                                        '<option value="not_contains" ' 
+                                                        if(action == "not_contains"){initHtml += ' selected'}
+                                                        initHtml += '>不包含</option>'+
+                                                        '<option value="==" ' 
+                                                        if(action == "=="){initHtml += ' selected'}
+                                                        initHtml += '>等于</option>'+
+                                                    '</select>'+
+                                                    '<select class="form-control '
+                                                    if(v=='mail_size'||v=='mail_size2'||v=='content_size'){
+
+                                                    }else{
+                                                        initHtml += ' display-none'
+                                                    }
+                                                    initHtml += '" name="action_eq" style="height: 34px;">'+
+                                                        '<option value=">=" ' 
+                                                        if(action == ">="){initHtml += ' selected'}
+                                                        initHtml += '>大于等于</option>'+
+                                                        '<option value="<=" ' 
+                                                        if(action == "<=>"){initHtml += ' selected'}
+                                                        initHtml += '>小于等于</option>'+
+                                                    '</select>'+
+                                                    '<select class="form-control  '
+                                                    if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
+
+                                                    }else{
+                                                        initHtml += ' display-none'
+                                                    }
+                                                    initHtml += '" name="action_belong" style="height: 34px;">'+
+                                                        '<option value="in" ' 
+                                                        if(action == "in"){initHtml += ' selected'}
+                                                        initHtml += '>属于</option>'+
+                                                        '<option value="not_in" ' 
+                                                        if(action == "not_in"){initHtml += ' selected'}
+                                                        initHtml += '>不属于</option>'+
+                                                    '</select>'+
+                                                    '<select class="form-control display-none" name="action_date" style="height: 34px;">'+
+                                                        '<option value="week">星期</option>'+
+                                                        '<option value="date">天</option>'+
+                                                    '</select>'+
+                                                '</div>'+
+                                                    '<div class="col-sm-8 no-padding values">'+
+                                                            '<input type="text" name="rule_value_common" '
+                                                        if(v=='attachments'|| v=='sender'||v=='cc'||v=='recipient'||v=='subject'||v=='body'){
+                                                            initHtml += ' value="'+rule_data.condition[i].subs[j].value+'"'
+                                                        }else{
+                                                            initHtml += ' class="display-none" ';
+                                                        }
+                                                        initHtml += '  maxlength="300" style="width: 100%;"/>'+
+                                                        '<input type="number" name="rule_value_size"'
+                                                        if(v=='mail_size'||v=='mail_size2'||v=='content_size'){
+                                                            initHtml += ' value="'+rule_data.condition[i].subs[j].value+'"'
+                                                        }else{
+                                                            initHtml += ' class="display-none" ';
+                                                        }
+                                                        initHtml += '   style="width: 100%;"/>'+
+                                                        '<div id="id_rule_value_dpt0" class="col-xs-12 col-sm-12 no-padding dept_box '
+                                                        if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
+                                                            
+                                                        }else{
+                                                            initHtml += ' display-none" ';
+                                                        }
+                                                        initHtml += ' ">'+
+                                                            '<div class="input-group">'+
+                                                                '<div id="input_box0">'+
+                                                                    '<input type="text" value="'
+                                                                    if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
+                                                                        initHtml += hashdept['dept_'+rule_data.condition[i].subs[j].value]
+                                                                    }
+                                                                    initHtml += '" readonly placeholder="点击选择部门" class="form-control department_choice">'+
+                                                                    '<input type="hidden" class="id_dept_id" '
+                                                                    if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
+                                                                        initHtml += ' value="'+rule_data.condition[i].subs[j].value+'"'
+                                                                    }
+                                                                    initHtml += ' name="option_value_dpt0">'+
+                                                                '</div>'+
+                                                            '</div>'+
+                                                        '</div>'+
+
+                                                        '<div class="col-xs-12 col-sm-12 no-padding '
+                                                        if(v=='exec_date' && action == 'date'){
+
+                                                        }else{
+                                                            initHtml += 'display-none'
+                                                        }
+                                                        initHtml += ' date_box clear">'+
+                                                            '<input type="datetime" class="datetime start_time"> --'+
+                                                            '<input type="datetime" class="datetime end_time">'+
+                                                        '</div>'+
+                                                        '<div class="col-xs-12 col-sm-12 no-padding '  
+                                                        if(v=='exec_date' && action == 'week'){
+
+                                                        }else{
+                                                            initHtml += 'display-none'
+                                                        }
+                                                        initHtml += ' week_box clear">'+
+                                                            '<div style="float:left;">'+
+                                                                '<select name="day_start">'+
+                                                                    '<option value="1" selected>星期一</option>'+
+                                                                    '<option value="2">星期二</option>'+
+                                                                    '<option value="3">星期三</option>'+
+                                                                    '<option value="4">星期四</option>'+
+                                                                    '<option value="5">星期五</option>'+
+                                                                    '<option value="6">星期六</option>'+
+                                                                    '<option value="7">星期日</option>'+
+                                                                '</select> --'+
+                                                                '<select name="day_end"  style="margin-right:20px;" >'+
+                                                                    '<option value="1">星期一</option>'+
+                                                                    '<option value="2">星期二</option>'+
+                                                                    '<option value="3">星期三</option>'+
+                                                                    '<option value="4">星期四</option>'+
+                                                                    '<option value="5">星期五</option>'+
+                                                                    '<option value="6">星期六</option>'+
+                                                                    '<option value="7" selected>星期日</option>'+
+                                                                '</select>'+
+                                                            '</div>'+
+                                                            '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
+                                                                '<input name="start" type="text" class="form-control" value="00:00:00" />'+
+                                                                '<span class="input-group-addon">'+
+                                                                    '<i class="fa fa-clock-o bigger-110"></i>'+
+                                                                '</span>'+
+                                                            '</div>'+
+                                                            '<div style="float:left;line-height:34px;padding:0 4px;"> -- </div>'+
+                                                            '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
+                                                                '<input name="end" type="text" class="form-control" value="23:59:59" />'+
+                                                                '<span class="input-group-addon">'+
+                                                                    '<i class="fa fa-clock-o bigger-110"></i>'+
+                                                                '</span>'+
+                                                            '</div>'
+                                                        '</div>'+
+
+
+
+
+                                                    '</div>'+
+                                                    '<div class="col-sm-1"><button type="button" class="delete_sub_condition btn btn-xs btn-warning" title="删除此子条件"><i class="glyphicon glyphicon-trash"></i></button></div>'+
+                                                '</div>'+
+
+                                            '</div>'+
+                                        '</div>'+
+
+                                    '</div>'+
+
+                                '</li>'
+                                }
+
+                initHtml += '</ul>'+
+                        '</div>'+
+                        '</div>'+
+                '</div>'
+            }
+
+        initHtml +='</div>'+
+        '</div>'
+        $('#reply_condition_box').html(initHtml);
+        $('.add_btn').attr('type_id',rule_data.id)
+        dateInit();
+        addsub();
+    }
+    
+    function dateInit(){
+        $('[name="start"]').timepicker({
+            minuteStep: 1,
+            showSeconds: true,
+            showMeridian: false,
+            disableFocus: true
+        }).on('focus', function() {
+            $(this).timepicker('showWidget');
+        }).next().on(ace.click_event, function(){
+            $(this).prev().focus();
+        });
+        $('[name="end"]').timepicker({
+            minuteStep: 1,
+            showSeconds: true,
+            showMeridian: false,
+            disableFocus: true
+        }).on('focus', function() {
+            $(this).timepicker('showWidget');
+        }).next().on(ace.click_event, function(){
+            $(this).prev().focus();
+        });
+        $('.datetime').datetimepicker({
+            format: 'yyyy-mm-dd hh:ii:00',
+            language: 'zh-CN',
+            weekStart: 1,
+            todayBtn: 1,
+            autoclose: 1,
+            // minView: 2,
+            pickerPosition: "bottom-right",
+        });
+    }
+    
 
     function demoinitdept(treeid,treeparentid,inputparentid,deptArr){
         var treeEle;
@@ -715,14 +1014,274 @@
                 $(treeparentid).removeClass('active');
             }
         })
-        // $(inputparentid + ' .clear_dept').click(function(){
-        //     $(inputparentid + ' .department_choice').val('');
-        //     $(inputparentid + ' .id_dept_id').val('');
-        // })
+        $(inputparentid + ' .clear_dept').click(function(){
+            $(inputparentid + ' .department_choice').val('');
+            $(inputparentid + ' .id_dept_id').val('');
+        })
     }
     // deptArr 为初始化获得的部门数据
+    var deptArr = [
+        // {id:1,parent:0,name:"部门1",child:2},
+        // {id:2,parent:1,name:"部门2",child:1},
+        // {id:3,parent:2,name:"部门3",child:0},
+        // {id:4,parent:1,name:"部门4",child:0},
+        // {id:5,parent:2,name:"部门5",child:0},
+        // {id:6,parent:0,name:"部门6",child:0}
+    ];
+    demoinitdept("#tree_reply","#tree_box_reply","#input_box_reply",deptArr);
+    var hashdept = [];
+    function initdept(){
+        $.ajax({
+            url:"{% url 'choose_mailbox_list' %}",
+            type:"POST",
+            data:{action:"dept_list"},
+            success:function(data){
+                console.log(data);
+                deptArr = data.dept;
+                hashdept = []
+                for(var i=0;i<deptArr.length;i++){
+                    hashdept['dept_'+deptArr[i].id] = deptArr[i].name;
+                }
+            }
+        })
+    }
+    function inittree_new(){
+        $.ajax({
+            url:"{% url 'choose_mailbox_list' %}",
+            type:"POST",
+            data:{action:"dept_list"},
+            success:function(data){
+                deptArr = data.dept;
+                demoinitdept("#tree_reply","#tree_box_reply","#input_box_reply",deptArr);
+            }
+        })
+    }
+    inittree_new();
 
-    demoinitdept("#tree_replay","#tree_box_reply",'#input_box_reply',deptArr);
+    $('.box_show_btn').click(function(){
+        $('.add_btn').attr('type_id',0)
+        initAddHtml();
+        $(this).parent().parent().addClass('display-none').siblings().removeClass('display-none')
+    })
+    $('.hide_box_btn').click(function(){
+        $(this).parents('.reply_box').addClass('display-none').siblings().removeClass('display-none')
+    })
+    
+    function getList(){
+        initdept();
+        $.ajax({
+            url:" {% url 'user_cfilter_list' %}",
+            type:'GET',
+            data:{
+                mailbox_id:"{{ mailbox_id }}",
+                extype:'re'
+            },
+            success:function(data){
+                var data = data.data;
+                console.log(data);
+                dataHash = [];
+                for(var i=0,html='';i<data.length;i++){
+                    var logicstr = '',statusstr = '',constr = '';
+                    logicstr = data[i].logic=='all'?'满足所有':'满足任一';
+                    statusstr = data[i].disabled==1?'禁用':'启用';
+                    dataHash['rule_'+data[i].id] = data[i]
+                    for(var k=0;k<data[i].condition.length;k++){
+                        var c = data[i].condition[k];
+                        var optionstr = c.suboption=="all_mail"?'所有邮件':c.suboption=="has_attach"?'有附件':c.suboption=="attachments"?'附件名':c.suboption=="sender"?'发信人':c.suboption=="cc"?'抄送人':c.suboption=="recipient"?'收信人':c.suboption=="sender_dept"?'发信人部门':c.suboption=="cc_dept"?'抄送人部门':c.suboption=="rcpt_dept"?'收信人部门':c.suboption=="subject"?'主题':c.suboption=="body"?'邮件内容':c.suboption=="mail_size"?'邮件大小(MB)':c.suboption=="mail_size2"?'邮件大小(Byte)':c.suboption=="exec_date"?'执行时间':'邮件正文大小(Byte)'
+                        var actionstr = c.action=='contains'?'包含':c.action=='not_contains'?'不包含':c.action=='=='?'等于':c.action=='>='?'大于等于':c.action=='<='?'小于等于':c.action=='in'?'属于':c.action=='not_in'?'不属于':c.action=='week'?'':c.action=='date'?'':''
+                        if(k>0){constr += '<br/>'}
+                        constr += '<span>'+(k+1)+'、</span><span>【'+ optionstr + '】</span><span>'+actionstr+'</span>'
+                        if(c.action!='date'&&c.action!='week'&&(c.value2||c.value)){
+                            var vv = c.value2||c.value
+                            if(c.suboption=="sender_dept" || c.suboption=="cc_dept" || c.suboption=="rcpt_dept"){
+                                vv = hashdept['dept_'+vv]
+                            }
+                            constr += '<span> “ '+ vv +' ” </span> '
+                        }
+                        for(var j=0;j<c.subs.length;j++){
+                            var logiccc = c.logic=='all'?'并':'或';
+                            var cc = c.subs[j];
+                            var suboptionstr = cc.suboption=="all_mail"?'所有邮件':cc.suboption=="has_attach"?'有附件':cc.suboption=="attachments"?'附件名':cc.suboption=="sender"?'发信人':cc.suboption=="cc"?'抄送人':cc.suboption=="recipient"?'收信人':cc.suboption=="sender_dept"?'发信人部门':cc.suboption=="cc_dept"?'抄送人部门':cc.suboption=="rcpt_dept"?'收信人部门':cc.suboption=="subject"?'主题':cc.suboption=="body"?'邮件内容':cc.suboption=="mail_size"?'邮件大小(MB)':cc.suboption=="mail_size2"?'邮件大小(Byte)':cc.suboption=="exec_date"?'执行时间':'邮件正文大小(Byte)'
+                            var subactionstr = cc.action=='contains'?'包含':cc.action=='not_contains'?'不包含':cc.action=='=='?'等于':cc.action=='>='?'大于等于':cc.action=='<='?'小于等于':cc.action=='in'?'属于':cc.action=='not_in'?'不属于':cc.action=='week'?'':cc.action=='date'?'':''
+                            constr += '<button type="button" class="btn btn-xs btn-success">'+logiccc+'</button><span>【'+suboptionstr+'】</span><span>'+subactionstr+'</span>'
+
+                            if(cc.action!='date'&&cc.action!='week'&&(cc.value2||cc.value)){
+                                var subvv = cc.value2||cc.value
+                                if(cc.suboption=="sender_dept" || cc.suboption=="cc_dept" || cc.suboption=="rcpt_dept"){
+                                    subvv = hashdept['dept_'+subvv]
+                                }
+                                constr += '<span> “ '+ subvv +' ” </span>'
+                            }
+                        }
+                    }
+                    html+='<tr><td>'+(i+1)+'</td><td>'+logicstr+'</td><td>'+constr+'</td><td>'+statusstr+'</td><td>'+
+                    '<button type="button" class="btn btn-xs btn-primary edit_con_btn" data_id="'+data[i].id+'" style="margin-right:10px;">修改</button>'+
+                    '<button type="button" class="btn btn-xs btn-danger delete_con_btn" data_id="'+data[i].id+'">删除</button>'+
+                    '</td></tr>'
+                }
+                $('#reply_tbody').html(html)
+
+                $('.edit_con_btn').click(function(){
+                    getInitEditHtml(dataHash['rule_'+$(this).attr('data_id')]);
+                    $('.reply_list').addClass('display-none').siblings().removeClass('display-none')
+                    add_condition_init();
+                })
+                
+            }
+        })
+    }
+    getList();
+
+    //新增规则
+    $('.add_btn').click(function(){
+        var rule_id = $(this).attr('type_id');
+        if(!$('#reply_body').val() || $('#reply_body').val() == ''){
+            layer.msg('请填写回复内容~')
+            return;
+        }
+        var arr = [];
+        for(var i=0;i<$('.list_item .panel.panel-default').length;i++){
+            var $list_item = $('.list_item .panel.panel-default:eq('+i+')');
+
+            for(var j=0;j<$list_item.find('.condition_item').length;j++){
+                for(var g=0;g<$list_item.find('.condition_item:eq('+j+') .values>input').length;g++){
+                    if($list_item.find('.condition_item:eq('+j+') .values>input:eq('+g+')') && !$list_item.find('.condition_item:eq('+j+') .values>input:eq('+g+')').hasClass('display-none')){
+                        if(!$list_item.find('.condition_item:eq('+j+') .values>input:eq('+g+')').val() || $list_item.find('.condition_item:eq('+j+') .values>input:eq('+g+')').val()==''){
+                            layer.msg('请填写条件内容~')
+                            return;
+                        }
+                    }
+                }
+            }
+
+            var obj = {};
+            obj.logic = $list_item.find('.con_logic:checked').val();
+            obj.suboption = $list_item.find('.condition_item:eq(0) [name="suboption"]').val();
+            for(var k=0;k<$list_item.find('.condition_item:eq(0) .actions>select').length;k++){
+                if($list_item.find('.condition_item:eq(0) .actions>select:eq('+k+')') && !$list_item.find('.condition_item:eq(0) .actions>select:eq('+k+')').hasClass('display-none')){
+                    obj.action = $list_item.find('.condition_item:eq(0) .actions>select:eq('+k+')').val();
+                }
+            }
+            for(var k=0;k<$list_item.find('.condition_item:eq(0) .values>input').length;k++){
+                if($list_item.find('.condition_item:eq(0) .values>input:eq('+k+')') && !$list_item.find('.condition_item:eq(0) .values>input:eq('+k+')').hasClass('display-none')){
+                    obj.value = $list_item.find('.condition_item:eq(0) .values>input:eq('+k+')').val();
+                }
+            }
+            if(!$list_item.find('.condition_item:eq(0) .values>.dept_box').hasClass('display-none')){
+                obj.value = $list_item.find('.condition_item:eq(0) .values>.dept_box .id_dept_id').val();
+            }
+            obj.subs = [];
+            for(var j=1;j<$list_item.find('.condition_item').length;j++){
+                var sub_obj = {}
+                sub_obj.suboption = $list_item.find('.condition_item:eq('+j+') [name="suboption"]').val();
+                for(var g=0;g<$list_item.find('.condition_item:eq('+j+') .actions>select').length;g++){
+                    if($list_item.find('.condition_item:eq('+j+') .actions>select:eq('+g+')') && !$list_item.find('.condition_item:eq('+j+') .actions>select:eq('+g+')').hasClass('display-none')){
+                        sub_obj.action = $list_item.find('.condition_item:eq('+j+') .actions>select:eq('+g+')').val();
+                    }
+                }
+                for(var g=0;g<$list_item.find('.condition_item:eq('+j+') .values>input').length;g++){
+                    if($list_item.find('.condition_item:eq('+j+') .values>input:eq('+g+')') && !$list_item.find('.condition_item:eq('+j+') .values>input:eq('+g+')').hasClass('display-none')){
+                        sub_obj.value = $list_item.find('.condition_item:eq('+j+') .values>input:eq('+g+')').val();
+                    }
+                }
+                if(!$list_item.find('.condition_item:eq('+j+') .values>.dept_box').hasClass('display-none')){
+                    sub_obj.value = $list_item.find('.condition_item:eq('+j+') .values>.dept_box .id_dept_id').val();
+                }
+                obj.subs.push(sub_obj);
+            }
+            arr.push(obj);
+        }
+        var obj={
+            action:[{
+                value:{value:$('#reply_body').val()},
+                action:'reply'
+            }],
+            disabled:$('#status_checkbox').prop('checked')==true?'-1':'1',
+            logic:$('.logic_con [name="logic"]:checked').val(),
+            condition: arr
+        }
+            
+        $.ajax({
+            url:" {% url 'user_cfilter_mdf' %}",
+            type:'POST',
+            data:{
+                rule_id:rule_id,
+                mailbox_id:"{{ mailbox_id }}",
+                extype:'re',
+                value:JSON.stringify(obj)
+            },
+            success:function(data){
+                console.log(data);
+                if(data.status == 'OK'){
+                    layer.msg(data.message)
+                    getList();
+                    $('.reply_list').removeClass('display-none').siblings().addClass('display-none');
+                    initAddHtml()
+                    $('#reply_body').val('')
+                    add_condition_init();
+    
+                }else{
+                    layer.msg(data.message || '')
+                }
+                
+            }
+        })
+    })
+    
+    //删除规则
+    $('body').on('click','.delete_con_btn',function(){
+        $.ajax({
+            url:"{% url 'user_cfilter_del' %}",
+            type:'POST',
+            data:{
+                rule_id :$(this).attr('data_id')
+            },
+            success:function(data){
+                layer.msg(data.message || '')
+                getList();
+            }
+        })
+    })
+    
+    var deptArr = [
+        {id:1,parent:0,name:"部门1",child:2},
+        {id:2,parent:1,name:"部门2",child:1},
+        {id:3,parent:2,name:"部门3",child:0},
+        {id:4,parent:1,name:"部门4",child:0},
+        {id:5,parent:2,name:"部门5",child:0},
+        {id:6,parent:0,name:"部门6",child:0}
+    ];
+
+    $('body').on('change','[name="suboption"]',function(){
+        var v = $(this).val()
+        $(this).parent().next().find('.actions>select').addClass('display-none');
+        $(this).parent().next().find('.values>input').addClass('display-none');
+        $(this).parent().next().find('.values>div').addClass('display-none');
+        if(v=='attachments'|| v=='sender'||v=='cc'||v=='recipient'||v=='subject'||v=='body'){
+            $(this).parent().next().find('.actions>select[name="action_contain"]').removeClass('display-none');
+            $(this).parent().next().find('.values>input[name="rule_value_common"]').removeClass('display-none');
+        }else if(v=='mail_size'||v=='mail_size2'||v=='content_size'){
+            $(this).parent().next().find('.actions>select[name="action_eq"]').removeClass('display-none');
+            $(this).parent().next().find('.values>input[name="rule_value_size"]').removeClass('display-none');
+        }else if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
+            $(this).parent().next().find('.actions>select[name="action_belong"]').removeClass('display-none');
+            $(this).parent().next().find('.values>div.dept_box').removeClass('display-none');
+        }else if(v=='exec_date'){
+            $(this).parent().next().find('.actions>select[name="action_date"]').removeClass('display-none');
+            $(this).parent().next().find('.values>div.week_box').removeClass('display-none');
+        }
+    })
+    $('body').on('change','[name="action_date"]',function(){
+        var v = $(this).val();
+        console.log(v)
+        $(this).parent().next().find('>div').addClass('display-none');
+        if(v == 'week'){
+            $(this).parent().next().find('>div.week_box').removeClass('display-none');
+        }else if(v == 'date'){
+            $(this).parent().next().find('>div.date_box').removeClass('display-none');
+        }
+    })
+
     var index = 1;
     function getConditionNew(index){
         var con =  '<div class="panel panel-default" id="id_option_'+index+'">'+
@@ -781,7 +1340,7 @@
                                                             '</div>'+
                                                             '<div class="col-sm-10 no-padding">'+
                                                                 '<div class="col-sm-2 no-padding actions">'+
-                                                                    '<select class="form-control"  name="action_contain" style="height: 34px;">'+
+                                                                    '<select class="form-control display-none"  name="action_contain" style="height: 34px;">'+
                                                                         '<option value="contains">包含</option>'+
                                                                         '<option value="not_contains">不包含</option>'+
                                                                         '<option value="==">等于</option>'+
@@ -795,12 +1354,12 @@
                                                                         '<option value="not_in">不属于</option>'+
                                                                     '</select>'+
                                                                     '<select class="form-control display-none" name="action_date" style="height: 34px;">'+
-                                                                        '<option value="in">星期</option>'+
-                                                                        '<option value="not_in">天</option>'+
+                                                                        '<option value="week">星期</option>'+
+                                                                        '<option value="date">天</option>'+
                                                                     '</select>'+
                                                                 '</div>'+
                                                                     '<div class="col-sm-8 no-padding values">'+
-                                                                        '<input type="text" name="rule_value_common" value="" maxlength="300" style="width: 100%;"/>'+
+                                                                        '<input type="text" name="rule_value_common" value="" class="display-none" maxlength="300" style="width: 100%;"/>'+
                                                                         '<input type="number" name="rule_value_size" value="" class="display-none"  style="width: 100%;"/>'+
                                                                         '<div  class="col-xs-12 col-sm-12 no-padding  display-none dept_box">'+
                                                                             '<div class="input-group">'+
@@ -810,6 +1369,47 @@
                                                                                 '</div>'+
                                                                             '</div>'+
                                                                         '</div>'+
+
+                                                                        '<div class="col-xs-12 col-sm-12 no-padding  display-none date_box clear">'+
+                                                                            '<input type="datetime" class="datetime start_time"> --'+
+                                                                            '<input type="datetime" class="datetime end_time">'+
+                                                                        '</div>'+
+                                                                        '<div class="col-xs-12 col-sm-12 no-padding  display-none week_box clear">'+
+                                                                            '<div style="float:left;">'+
+                                                                                '<select name="day_start">'+
+                                                                                    '<option value="1" selected>星期一</option>'+
+                                                                                    '<option value="2">星期二</option>'+
+                                                                                    '<option value="3">星期三</option>'+
+                                                                                    '<option value="4">星期四</option>'+
+                                                                                    '<option value="5">星期五</option>'+
+                                                                                    '<option value="6">星期六</option>'+
+                                                                                    '<option value="7">星期日</option>'+
+                                                                                '</select> --'+
+                                                                                '<select name="day_end"  style="margin-right:20px;" >'+
+                                                                                    '<option value="1">星期一</option>'+
+                                                                                    '<option value="2">星期二</option>'+
+                                                                                    '<option value="3">星期三</option>'+
+                                                                                    '<option value="4">星期四</option>'+
+                                                                                    '<option value="5">星期五</option>'+
+                                                                                    '<option value="6">星期六</option>'+
+                                                                                    '<option value="7" selected>星期日</option>'+
+                                                                                '</select>'+
+                                                                            '</div>'+
+                                                                            '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
+                                                                                '<input name="start" type="text" class="form-control" value="00:00:00" />'+
+                                                                                '<span class="input-group-addon">'+
+                                                                                    '<i class="fa fa-clock-o bigger-110"></i>'+
+                                                                                '</span>'+
+                                                                            '</div>'+
+                                                                            '<div style="float:left;line-height:34px;padding:0 4px;"> -- </div>'+
+                                                                            '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
+                                                                                '<input name="end" type="text" class="form-control" value="23:59:59" />'+
+                                                                                '<span class="input-group-addon">'+
+                                                                                    '<i class="fa fa-clock-o bigger-110"></i>'+
+                                                                                '</span>'+
+                                                                            '</div>'
+                                                                        '</div>'+
+
                                                                     '</div>'+
                                                                 '</div>'+
     
@@ -855,7 +1455,7 @@
                                     '</div>'+
                                     '<div class="col-sm-10 no-padding">'+
                                         '<div class="col-sm-2 no-padding actions">'+
-                                            '<select class="form-control"  name="action_contain" style="height: 34px;">'+
+                                            '<select class="form-control display-none"  name="action_contain" style="height: 34px;">'+
                                                 '<option value="contains">包含</option>'+
                                                 '<option value="not_contains">不包含</option>'+
                                                 '<option value="==">等于</option>'+
@@ -869,12 +1469,12 @@
                                                 '<option value="not_in">不属于</option>'+
                                             '</select>'+
                                             '<select class="form-control display-none" name="action_date" style="height: 34px;">'+
-                                                '<option value="in">星期</option>'+
-                                                '<option value="not_in">天</option>'+
+                                                '<option value="week">星期</option>'+
+                                                '<option value="date">天</option>'+
                                             '</select>'+
                                         '</div>'+
                                             '<div class="col-sm-8 no-padding values">'+
-                                                '<input type="text" name="rule_value_common" value="" maxlength="300" style="width: 100%;"/>'+
+                                                '<input type="text" name="rule_value_common" value="" class="display-none" maxlength="300" style="width: 100%;"/>'+
                                                 '<input type="number" name="rule_value_size" value="" class="display-none"  style="width: 100%;"/>'+
                                                 '<div class="col-xs-12 col-sm-12 no-padding  display-none dept_box">'+
                                                     '<div class="input-group">'+
@@ -884,6 +1484,48 @@
                                                         '</div>'+
                                                     '</div>'+
                                                 '</div>'+
+
+                                                '<div class="col-xs-12 col-sm-12 no-padding  display-none date_box clear">'+
+                                                    '<input type="datetime" class="datetime start_time"> --'+
+                                                    '<input type="datetime" class="datetime end_time">'+
+                                                '</div>'+
+                                                '<div class="col-xs-12 col-sm-12 no-padding  display-none week_box clear">'+
+                                                    '<div style="float:left;">'+
+                                                        '<select name="day_start">'+
+                                                            '<option value="1" selected>星期一</option>'+
+                                                            '<option value="2">星期二</option>'+
+                                                            '<option value="3">星期三</option>'+
+                                                            '<option value="4">星期四</option>'+
+                                                            '<option value="5">星期五</option>'+
+                                                            '<option value="6">星期六</option>'+
+                                                            '<option value="7">星期日</option>'+
+                                                        '</select> --'+
+                                                        '<select name="day_end"  style="margin-right:20px;" >'+
+                                                            '<option value="1">星期一</option>'+
+                                                            '<option value="2">星期二</option>'+
+                                                            '<option value="3">星期三</option>'+
+                                                            '<option value="4">星期四</option>'+
+                                                            '<option value="5">星期五</option>'+
+                                                            '<option value="6">星期六</option>'+
+                                                            '<option value="7" selected>星期日</option>'+
+                                                        '</select>'+
+                                                    '</div>'+
+                                                    '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
+                                                        '<input name="start" type="text" class="form-control" value="00:00:00" />'+
+                                                        '<span class="input-group-addon">'+
+                                                            '<i class="fa fa-clock-o bigger-110"></i>'+
+                                                        '</span>'+
+                                                    '</div>'+
+                                                    '<div style="float:left;line-height:34px;padding:0 4px;"> -- </div>'+
+                                                    '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
+                                                        '<input name="end" type="text" class="form-control" value="23:59:59" />'+
+                                                        '<span class="input-group-addon">'+
+                                                            '<i class="fa fa-clock-o bigger-110"></i>'+
+                                                        '</span>'+
+                                                    '</div>'
+                                                '</div>'+
+
+
                                             '</div>'+
                                             '<div class="col-sm-1"><button type="button" class="delete_sub_condition btn btn-xs btn-warning" title="删除此子条件"><i class="glyphicon glyphicon-trash"></i></button></div>'+
                                         '</div>'+
@@ -897,14 +1539,17 @@
             return html;
         }
     
-    $('.add_condition').click(function(){
-        $(".condition_box").append(getConditionNew(index));
-        index++;
-        addsub();
-    })
+    function add_condition_init(){
+        $('.add_condition').click(function(){
+            $(".condition_box").append(getConditionNew(index));
+            index++;
+            dateInit();
+            addsub();
+        })
+    }
+    add_condition_init();
     $('body').on('click','.delete_condition',function(){
         $(this).parents('.panel.panel-default').remove();
-
     })
     
     function addsub(){
@@ -914,6 +1559,7 @@
             var parent_index = $(this).attr('dataparentindex')
             $(this).parent().next().append(getsubHtmlAdd(parent_index,dataindex));
             dataindex++;
+            dateInit();
             $(this).attr('dataindex',dataindex)
         })
     }
@@ -924,8 +1570,13 @@
     })
 
     $('body').on('click','.department_choice',function(){
-        var html = $('#email_dept_choice').html();
+        if($('#tree_box_reply').length == 0){
+            init_tree_box();
+        }
         $(this).parent().append($('#tree_box_reply'));
         $('#tree_box_reply').addClass('active')
+    })
+    $('body').on('click','.close_btn',function(){
+        $(this).parent().removeClass('active');
     })
 </script>

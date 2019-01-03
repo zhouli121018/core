@@ -133,7 +133,7 @@ class ZhuTong(object):
         """
         username, password, tkey = self.get_account()
         #内容末尾需要加签名，不然发送会被拦截
-        content += "【umail】"
+        content += "【{}】".format(self.sign)
         productid = self.get_product_id()
         url_data = {
             "username"      :   username,

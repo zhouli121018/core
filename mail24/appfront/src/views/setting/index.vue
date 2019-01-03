@@ -18,6 +18,11 @@
               <span slot="title" title="重新设定邮箱密码">密码</span>
             </el-menu-item>
 
+            <el-menu-item index="/setting/twofactor" style="text-align: left" >
+              <img src="./img/op_password.gif" style="width:20px;">
+              <span slot="title" title="安全设置">安全中心</span>
+            </el-menu-item>
+
             <el-menu-item index="/setting/param" style="text-align: left">
               <img src="./img/op_prefs.gif" style="width:20px;">
               <span slot="title" title="设置收发邮件时的一些显示参数">参数设置</span>

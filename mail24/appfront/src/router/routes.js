@@ -7,6 +7,7 @@ Vue.use(Router)
 
 export const rou = [
   {path:'/',redirect:'/login'},
+  {path:'/welcome',redirect:'/mailbox/welcome'},
   {path:'/messageInfo/:uid',component:_import('mailbox/components/messageInfo')},
   {path:'/preview',component:_import('preview')},
   {path:'/lockscreen',component:_import('lockscreen/index')},
@@ -93,6 +94,7 @@ export const rou = [
           {path:'template',component:_import('setting/page/template')},
           {path:'signature',component:_import('setting/page/signature')},
           {path:'skin',component:_import('setting/page/skin')},
+          {path:'twofactor',component:_import('setting/page/twofactor')},
           {path:'autoreply',component:_import('setting/page/autoreply')},
           {path:'autoforward',component:_import('setting/page/autoforward')},
           {path:'whitelist',component:_import('setting/page/whitelist')},

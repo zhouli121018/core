@@ -18,6 +18,9 @@
   *{
     /*box-sizing:border-box;*/
   }
+  .safe_box .el-tabs__header{
+    margin:0;
+  }
   .clear:after{
     content:"";
     display:block;
@@ -30,6 +33,10 @@
     -moz-osx-font-smoothing: grayscale;
     width:100%;
     height:100%;
+  }
+  .svg_box svg{
+    width:126px;
+    height:122px;
   }
   body,html{
     padding:0;
