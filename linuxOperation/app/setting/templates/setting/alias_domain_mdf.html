@@ -27,7 +27,7 @@
                 {% csrf_token %}
 
                 <div class="form-group {% if form.source.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_source"> 虚拟邮件域 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_source"> {% trans "虚拟邮件域 " %}</label>
                     <div class="col-sm-9">
                         <div class="col-sm-12">
                             <label class="control-label pull-left">@</label>
@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="form-group {% if form.target.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_target"> 真实邮件域 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_target"> {% trans "真实邮件域 " %}</label>
                     <div class="col-sm-9">
                         <div class="col-sm-12">
                             <label class="control-label pull-left">@</label>
@@ -61,14 +61,14 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_greylist"> 状态 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_greylist"> {% trans "状态 " %}</label>
                     <div class="col-sm-9">
                         <label class="radio radio-inline padding-top-0 margin-top-0 form-inline">
                             <label>
-                                <input type="radio" name="disabled" value="-1" {% if form.disabled.value == '-1'  %} checked="" {% endif %}><span>启用</span>
+                                <input type="radio" name="disabled" value="-1" {% if form.disabled.value == '-1'  %} checked="" {% endif %}><span>{% trans "启用" %}</span>
                             </label>
                             <label>
-                                <input type="radio" name="disabled" value="1" {% if form.disabled.value != '-1'  %} checked="" {% endif %}><span>禁用</span>
+                                <input type="radio" name="disabled" value="1" {% if form.disabled.value != '-1'  %} checked="" {% endif %}><span>{% trans "禁用" %}</span>
                             </label>
                         </label>
                     </div>
@@ -78,14 +78,14 @@
                     <div class="col-md-offset-3 col-md-9">
                         <button class="btn btn-info" type="submit">
                             <i class="ace-icon fa fa-check bigger-110"></i>
-                            保存
+                            {% trans "保存" %}
                         </button>
                         <button class="btn" type="reset">
                             <i class="ace-icon fa fa-undo bigger-110"></i>
-                            重置
+                            {% trans "重置" %}
                         </button>
 
-                        <a type="button" class="btn btn-link" href="{% url 'alias_domain' %}">取消</a>
+                        <a type="button" class="btn btn-link" href="{% url 'alias_domain' %}">{% trans "取消" %}</a>
 
                     </div>
                 </div>

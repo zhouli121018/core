@@ -10,18 +10,18 @@
                 <label class="col-sm-2 control-label no-padding-right"></label>
                 <div class="col-md-offset-2 col-md-10">
                     <div class="page-header"  style="padding-bottom: 7px;padding-top: 0px;">
-                        <h3><span class="badge" style="font-size:22px;font-weight:bold;padding:6px;">3</span>{% trans " 设置证书" %}</h3>
+                        <h3><span class="badge" style="font-size:22px;font-weight:bold;padding:6px;">3</span>{% trans "设置证书" %}</h3>
                     </div>
                 </div>
             </div>
 
             <div class="form-group" >
-                <label class="col-sm-3 control-label no-padding-right"> 当前证书信息 </label>
+                <label class="col-sm-3 control-label no-padding-right"> {% trans "当前证书信息 " %}</label>
                 <div class="col-sm-9">
                     {% if is_ca %}
                     {% else %}
                     <p style="margin-bottom: 16px;margin-top: 8px;">
-                        <span class="" style="color: red">没有生成签名请求</span>
+                        <span class="" style="color: red">{% trans "没有生成签名请求" %}</span>
                     </p>
                     {% endif %}
 
@@ -32,57 +32,57 @@
                         <tbody>
                         <tr>
                             <td colspan="2" style="padding-left: 35px;border-right: 1px solid #CFCFCF">
-                                <strong>*主题信息*</strong>
+                                <strong>*{% trans "主题信息" %}*</strong>
                             </td>
                             <td colspan="2" style="padding-left: 25px;">
-                                <strong>*签发者信息*</strong>
+                                <strong>*{% trans "签发者信息" %}*</strong>
                             </td>
                         </tr>
                         <tr>
-                            <th>域名：</th>
+                            <th>{% trans "域名：" %}</th>
                             <td width="130" style="border-right: 1px solid #CFCFCF"><strong class="c_red">{{ cert_subject.sig_domain }}</strong></td>
-                            <th>常用名：</th>
+                            <th>{% trans "常用名：" %}</th>
                             <td><strong class="c_red">{{ sert_issuer.sig_domain }}</strong></td>
                         </tr>
                         <tr>
-                            <th>单位/组织：</th>
+                            <th>{% trans "单位/组织：" %}</th>
                             <td style="border-right: 1px solid #CFCFCF"><strong>{{ cert_subject.sig_organization }}</strong></td>
 
-                            <th>单位/组织：</th>
+                            <th>{% trans "单位/组织：" %}</th>
                             <td><strong>{{ sert_issuer.sig_organization }}</strong></td>
                         </tr>
                         <tr>
-                            <th>部门：</th>
+                            <th>{% trans "部门：" %}</th>
                             <td style="border-right: 1px solid #CFCFCF">{{ cert_subject.sig_depart }}</td>
 
-                            <th>部门：</th>
+                            <th>{% trans "部门：" %}</th>
                             <td>{{ sert_issuer.sig_depart }}</td>
                         </tr>
                         <tr>
-                            <th>国家/地区：</th>
+                            <th>{% trans "国家/地区：" %}</th>
                             <td style="border-right: 1px solid #CFCFCF">{{ cert_subject.sig_contry }}</td>
 
-                            <th>国家/地区：</th>
+                            <th>{% trans "国家/地区：" %}</th>
                             <td>{{ sert_issuer.sig_contry }}</td>
                         </tr>
                         <tr>
-                            <th>省/市/自治区：</th>
+                            <th>{% trans "省/市/自治区：" %}</th>
                             <td style="border-right: 1px solid #CFCFCF">{{ cert_subject.sig_province }}</td>
 
-                            <th>省/市/自治区：</th>
+                            <th>{% trans "省/市/自治区：" %}</th>
                             <td>{{ sert_issuer.sig_province }}</td>
                         </tr>
                         <tr>
-                            <th>所在地：</th>
+                            <th>{% trans "所在地：" %}</th>
                             <td style="border-right: 1px solid #CFCFCF">{{ cert_subject.sig_locale }}</td>
-                            <th>所在地：</th>
+                            <th>{% trans "所在地：" %}</th>
                             <td>{{ sert_issuer.sig_locale }}</td>
                         </tr>
                         <tr >
                             <td colspan="4">
                                 <div style="padding-left: 35px;">
-                                    <button type="button" class="btn btn-primary btn-minier" onclick="sslPrivatekey('cert-export')">导出证书</button>
-                                    <button type="button" class="btn btn-danger btn-minier" onclick="sslPrivatekey('cert-clear')">清除证书</button>
+                                    <button type="button" class="btn btn-primary btn-minier" onclick="sslPrivatekey('cert-export')">{% trans "导出证书" %}</button>
+                                    <button type="button" class="btn btn-danger btn-minier" onclick="sslPrivatekey('cert-clear')">{% trans "清除证书" %}</button>
                                 </div>
                             </td>
                         </tr>
@@ -93,11 +93,11 @@
                     <div class="form-group sig-div-bottom">
                         <div class="col-md-12">
                                 <span class="block">
-                                    <span class="control-label pull-left "> <strong><span style="color: red">*</span>选择证书：</strong></span>
+                                    <span class="control-label pull-left "> <strong><span style="color: red">*</span>{% trans "选择证书：" %}</strong></span>
                                     <input type="file" name="certfile" value="" style="float: left">
                                 </span>
                                 <span class="block">
-                                    <button type="submit" class="btn btn-primary btn-minier">导入</button>
+                                    <button type="submit" class="btn btn-primary btn-minier">{% trans "导入" %}</button>
                                 </span>
                         </div>
                     </div>

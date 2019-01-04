@@ -431,6 +431,7 @@ def mailbox_export_batch_example(request):
         #获取部门名称， 用'-'分隔
         dept_id_lst = all_data_depts2.get(l.id, [])
         dept_name_lst = []
+        position = ""
         if dept_id_lst:
             parent_id = int(dept_id_lst[0][1])
             position = all_data_position.get(l.id, {}).get(parent_id, "")
@@ -717,7 +718,7 @@ def batchadd_account(request, template_name='mailbox/batchadd_account.html'):
                 try:
                     checker.simple_check(domain_id, quota_mailbox, quota_netdisk)
                 except Exception, e:
-                    failures.append([e.message, line])
+                    failures.append([e.message, elem])
                 else:
                     obj = form.save()
                     user_form.save(obj.id)
@@ -738,7 +739,7 @@ def batchadd_account(request, template_name='mailbox/batchadd_account.html'):
                                                         position=data['position'])
                     success += 1
             else:
-                failures.append([u'{}{}'.format(form.errors, user_form.errors), line])
+                failures.append([u'{}{}'.format(form.errors, user_form.errors), elem])
 
     return render(request, template_name=template_name, context={
         'mb_quota_def': mb_quota_def,
@@ -884,7 +885,7 @@ def batchedit_account(request, template_name='mailbox/batchedit_account.html'):
                     checker.simple_check(domain_id, mailbox_size, netdisk_size, mailbox_size_using=mailbox_size_using,
                                          netdisk_size_using=netdisk_size_using, count=0)
                 except Exception, e:
-                    failures.append([e.message, line])
+                    failures.append([e.message, elem])
                 else:
                     obj = form.save()
                     user_form.save(obj.id)
@@ -909,7 +910,7 @@ def batchedit_account(request, template_name='mailbox/batchedit_account.html'):
                     DepartmentMember.objects.filter(domain=domain, mailbox_id=mailbox_obj.id).update(position=position)
                 success += 1
             else:
-                failures.append([u'{}{}'.format(form.errors, user_form.errors), line])
+                failures.append([u'{}{}'.format(form.errors, user_form.errors), elem])
             idx += 1
 
     return render(request, template_name=template_name, context={

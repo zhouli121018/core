@@ -17,7 +17,7 @@
         </thead>
         <tbody>
         <tr>
-            <td> SMTP邮件(收信) </td>
+            <td> {% trans "SMTP邮件(收信) " %}</td>
             <td> {{ smtp_in.stat_total }} </td>
             <td> {{ smtp_in.stat_week }} </td>
             <td> {{ smtp_in.stat_today }} </td>
@@ -29,7 +29,7 @@
             <td> {{ smtp_in.stat_6 }} </td>
         </tr>
         <tr>
-            <td> SMTP邮件(发信) </td>
+            <td> {% trans "SMTP邮件(发信) " %}</td>
             <td> {{ smtp_out.stat_total }} </td>
             <td> {{ smtp_out.stat_week }} </td>
             <td> {{ smtp_out.stat_today }} </td>
@@ -41,7 +41,7 @@
             <td> {{ smtp_out.stat_6 }} </td>
         </tr>
         <tr>
-            <td> IMAP会话 </td>
+            <td> {% trans "IMAP会话 " %}</td>
             <td> {{ imap_session.stat_total }} </td>
             <td> {{ imap_session.stat_week }} </td>
             <td> {{ imap_session.stat_today }} </td>
@@ -53,7 +53,7 @@
             <td> {{ imap_session.stat_6 }} </td>
         </tr>
         <tr>
-            <td> POP3会话 </td>
+            <td> {% trans "POP3会话 " %}</td>
             <td> {{ pop3_session.stat_total }} </td>
             <td> {{ pop3_session.stat_week }} </td>
             <td> {{ pop3_session.stat_today }} </td>
@@ -86,7 +86,7 @@
         </thead>
         <tbody>
         <tr>
-            <td> 已接收的垃圾邮件 </td>
+            <td> {% trans "已接收的垃圾邮件 " %}</td>
             <td> {{ spam_receive.stat_total }} </td>
             <td> {{ spam_receive.stat_week }} </td>
             <td> {{ spam_receive.stat_today }} </td>
@@ -98,7 +98,7 @@
             <td> {{ spam_receive.stat_6 }} </td>
         </tr>
         <tr>
-            <td> 已拒绝的垃圾邮件 </td>
+            <td> {% trans "已拒绝的垃圾邮件 " %}</td>
             <td> {{ spam_reject.stat_total }} </td>
             <td> {{ spam_reject.stat_week }} </td>
             <td> {{ spam_reject.stat_today }} </td>
@@ -110,7 +110,7 @@
             <td> {{ spam_reject.stat_6 }} </td>
         </tr>
         <tr>
-            <td> 已拒绝的病毒邮件 </td>
+            <td> {% trans "已拒绝的病毒邮件 " %}</td>
             <td> {{ spam_virus.stat_total }} </td>
             <td> {{ spam_virus.stat_week }} </td>
             <td> {{ spam_virus.stat_today }} </td>

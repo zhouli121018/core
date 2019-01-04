@@ -248,7 +248,7 @@
                                                                 '<span class="input-group-addon">'+
                                                                     '<i class="fa fa-clock-o bigger-110"></i>'+
                                                                 '</span>'+
-                                                            '</div>'
+                                                            '</div>'+
                                                         '</div>'+
                                                         
                                                     '</div>'+
@@ -307,7 +307,7 @@
     function getInitEditHtml(rule_data){
         var logic_all = rule_data.logic == 'all'?true:false ;
         var logic_one = rule_data.logic == 'one'?true:false ;
-        var action_value = JSON.parse(rule_data.action[0].value).value;
+        var action_value = rule_data.action[0].value.value;
         console.log(action_value)
         $('#reply_body').val(action_value);
         var disabled_status = rule_data.disabled =='-1'?true:false;
@@ -486,9 +486,21 @@
                                                         if(action == "not_in"){initHtml += ' selected'}
                                                         initHtml += '>不属于</option>'+
                                                     '</select>'+
-                                                    '<select class="form-control display-none" name="action_date" style="height: 34px;">'+
-                                                        '<option value="week">星期</option>'+
-                                                        '<option value="date">天</option>'+
+                                                    '<select class="form-control '
+                                                    if(v != 'exec_date'){
+                                                        initHtml += 'display-none'
+                                                    }
+                                                    initHtml += '" name="action_date" style="height: 34px;">'+
+                                                        '<option value="week" '
+                                                        if(action == 'week'){
+                                                            initHtml += 'selected'
+                                                        }
+                                                        initHtml += '>星期</option>'+
+                                                        '<option value="date" '
+                                                        if(action == 'date'){
+                                                            initHtml += 'selected'
+                                                        }
+                                                        initHtml += '>天</option>'+
                                                     '</select>'+
                                                 '</div>'+
                                                     '<div class="col-sm-8 no-padding values">'+
@@ -536,8 +548,17 @@
                                                             initHtml += 'display-none'
                                                         }
                                                         initHtml += ' date_box clear">'+
-                                                            '<input type="datetime" class="datetime start_time"> --'+
-                                                            '<input type="datetime" class="datetime end_time">'+
+                                                            '<input type="datetime" class="datetime start_time" '
+                                                            var vv = rule_data.condition[i].value;
+                                                            if(vv.start){
+                                                                initHtml += 'value="'+vv.start+'"'
+                                                            }
+                                                            initHtml += '> --'+
+                                                            '<input type="datetime" class="datetime end_time" '
+                                                            if(vv.end){
+                                                                initHtml += 'value="'+vv.end+'"'
+                                                            }
+                                                            initHtml += '>'+
                                                         '</div>'+
                                                         '<div class="col-xs-12 col-sm-12 no-padding '  
                                                         if(v=='exec_date' && action == 'week'){
@@ -548,37 +569,102 @@
                                                         initHtml += ' week_box clear">'+
                                                             '<div style="float:left;">'+
                                                                 '<select name="day_start">'+
-                                                                    '<option value="1" selected>星期一</option>'+
-                                                                    '<option value="2">星期二</option>'+
-                                                                    '<option value="3">星期三</option>'+
-                                                                    '<option value="4">星期四</option>'+
-                                                                    '<option value="5">星期五</option>'+
-                                                                    '<option value="6">星期六</option>'+
-                                                                    '<option value="7">星期日</option>'+
+                                                                    '<option value="1" '
+                                                                    
+                                                                    if(vv.day_start && vv.day_start == '1'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期一</option>'+
+                                                                    '<option value="2" '
+                                                                    if(vv.day_start && vv.day_start == '2'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期二</option>'+
+                                                                    '<option value="3" '
+                                                                    if(vv.day_start && vv.day_start == '3'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期三</option>'+
+                                                                    '<option value="4" '
+                                                                    if(vv.day_start && vv.day_start == '4'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期四</option>'+
+                                                                    '<option value="5" '
+                                                                    if(vv.day_start && vv.day_start == '5'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期五</option>'+
+                                                                    '<option value="6" '
+                                                                    if(vv.day_start && vv.day_start == '5'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期六</option>'+
+                                                                    '<option value="7" '
+                                                                    if(vv.day_start && vv.day_start == '7'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期日</option>'+
                                                                 '</select> --'+
                                                                 '<select name="day_end"  style="margin-right:20px;" >'+
-                                                                    '<option value="1">星期一</option>'+
-                                                                    '<option value="2">星期二</option>'+
-                                                                    '<option value="3">星期三</option>'+
-                                                                    '<option value="4">星期四</option>'+
-                                                                    '<option value="5">星期五</option>'+
-                                                                    '<option value="6">星期六</option>'+
-                                                                    '<option value="7" selected>星期日</option>'+
+                                                                    '<option value="1" '
+                                                                    if(vv.day_end && vv.day_end == '1'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期一</option>'+
+                                                                    '<option value="2" '
+                                                                    if(vv.day_end && vv.day_end == '2'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期二</option>'+
+                                                                    '<option value="3" '
+                                                                    if(vv.day_end && vv.day_end == '3'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期三</option>'+
+                                                                    '<option value="4" '
+                                                                    if(vv.day_end && vv.day_end == '4'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期四</option>'+
+                                                                    '<option value="5" '
+                                                                    if(vv.day_end && vv.day_end == '5'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期五</option>'+
+                                                                    '<option value="6" '
+                                                                    if(vv.day_end && vv.day_end == '5'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期六</option>'+
+                                                                    '<option value="7" '
+                                                                    if(vv.day_end && vv.day_end == '7'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期日</option>'+
                                                                 '</select>'+
                                                             '</div>'+
                                                             '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
-                                                                '<input name="start" type="text" class="form-control" value="00:00:00" />'+
+                                                                '<input name="start" type="text" class="form-control" value="'
+                                                                if(vv.start){
+                                                                    initHtml += vv.start
+                                                                }
+                                                                initHtml += '" />'+
                                                                 '<span class="input-group-addon">'+
                                                                     '<i class="fa fa-clock-o bigger-110"></i>'+
                                                                 '</span>'+
                                                             '</div>'+
                                                             '<div style="float:left;line-height:34px;padding:0 4px;"> -- </div>'+
                                                             '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
-                                                                '<input name="end" type="text" class="form-control" value="23:59:59" />'+
+                                                                '<input name="end" type="text" class="form-control" value="'
+                                                                if(vv.end){
+                                                                    initHtml += vv.end
+                                                                }
+                                                                initHtml += '" />'+
                                                                 '<span class="input-group-addon">'+
                                                                     '<i class="fa fa-clock-o bigger-110"></i>'+
                                                                 '</span>'+
-                                                            '</div>'
+                                                            '</div>'+
                                                         '</div>'+
 
 
@@ -700,9 +786,21 @@
                                                         if(action == "not_in"){initHtml += ' selected'}
                                                         initHtml += '>不属于</option>'+
                                                     '</select>'+
-                                                    '<select class="form-control display-none" name="action_date" style="height: 34px;">'+
-                                                        '<option value="week">星期</option>'+
-                                                        '<option value="date">天</option>'+
+                                                    '<select class="form-control '
+                                                    if(v != 'exec_date'){
+                                                        initHtml += 'display-none'
+                                                    }
+                                                    initHtml += '" name="action_date" style="height: 34px;">'+
+                                                        '<option value="week" '
+                                                        if(action == 'week'){
+                                                            initHtml += 'selected'
+                                                        }
+                                                        initHtml += '>星期</option>'+
+                                                        '<option value="date" '
+                                                        if(action == 'date'){
+                                                            initHtml += 'selected'
+                                                        }
+                                                        initHtml += '>天</option>'+
                                                     '</select>'+
                                                 '</div>'+
                                                     '<div class="col-sm-8 no-padding values">'+
@@ -750,8 +848,17 @@
                                                             initHtml += 'display-none'
                                                         }
                                                         initHtml += ' date_box clear">'+
-                                                            '<input type="datetime" class="datetime start_time"> --'+
-                                                            '<input type="datetime" class="datetime end_time">'+
+                                                            '<input type="datetime" class="datetime start_time" value="'
+                                                            var vv = rule_data.condition[i].subs[j].value;
+                                                            if(vv.start){
+                                                                initHtml += vv.start
+                                                            }
+                                                            initHtml += '"> --'+
+                                                            '<input type="datetime" class="datetime end_time" value="'
+                                                            if(vv.end){
+                                                                initHtml += vv.end
+                                                            }
+                                                            initHtml += '">'+
                                                         '</div>'+
                                                         '<div class="col-xs-12 col-sm-12 no-padding '  
                                                         if(v=='exec_date' && action == 'week'){
@@ -762,37 +869,102 @@
                                                         initHtml += ' week_box clear">'+
                                                             '<div style="float:left;">'+
                                                                 '<select name="day_start">'+
-                                                                    '<option value="1" selected>星期一</option>'+
-                                                                    '<option value="2">星期二</option>'+
-                                                                    '<option value="3">星期三</option>'+
-                                                                    '<option value="4">星期四</option>'+
-                                                                    '<option value="5">星期五</option>'+
-                                                                    '<option value="6">星期六</option>'+
-                                                                    '<option value="7">星期日</option>'+
+                                                                    '<option value="1" '
+                                                                    
+                                                                    if(vv.day_start && vv.day_start == '1'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期一</option>'+
+                                                                    '<option value="2" '
+                                                                    if(vv.day_start && vv.day_start == '2'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期二</option>'+
+                                                                    '<option value="3" '
+                                                                    if(vv.day_start && vv.day_start == '3'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期三</option>'+
+                                                                    '<option value="4" '
+                                                                    if(vv.day_start && vv.day_start == '4'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期四</option>'+
+                                                                    '<option value="5" '
+                                                                    if(vv.day_start && vv.day_start == '5'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期五</option>'+
+                                                                    '<option value="6" '
+                                                                    if(vv.day_start && vv.day_start == '5'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期六</option>'+
+                                                                    '<option value="7" '
+                                                                    if(vv.day_start && vv.day_start == '7'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期日</option>'+
                                                                 '</select> --'+
                                                                 '<select name="day_end"  style="margin-right:20px;" >'+
-                                                                    '<option value="1">星期一</option>'+
-                                                                    '<option value="2">星期二</option>'+
-                                                                    '<option value="3">星期三</option>'+
-                                                                    '<option value="4">星期四</option>'+
-                                                                    '<option value="5">星期五</option>'+
-                                                                    '<option value="6">星期六</option>'+
-                                                                    '<option value="7" selected>星期日</option>'+
+                                                                    '<option value="1" '
+                                                                    if(vv.day_end && vv.day_end == '1'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期一</option>'+
+                                                                    '<option value="2" '
+                                                                    if(vv.day_end && vv.day_end == '2'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期二</option>'+
+                                                                    '<option value="3" '
+                                                                    if(vv.day_end && vv.day_end == '3'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期三</option>'+
+                                                                    '<option value="4" '
+                                                                    if(vv.day_end && vv.day_end == '4'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期四</option>'+
+                                                                    '<option value="5" '
+                                                                    if(vv.day_end && vv.day_end == '5'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期五</option>'+
+                                                                    '<option value="6" '
+                                                                    if(vv.day_end && vv.day_end == '5'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期六</option>'+
+                                                                    '<option value="7" '
+                                                                    if(vv.day_end && vv.day_end == '7'){
+                                                                        initHtml += 'selected'
+                                                                    }
+                                                                    initHtml += '>星期日</option>'+
                                                                 '</select>'+
                                                             '</div>'+
                                                             '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
-                                                                '<input name="start" type="text" class="form-control" value="00:00:00" />'+
+                                                                '<input name="start" type="text" class="form-control" value="'
+                                                                if(vv.start){
+                                                                    initHtml += vv.start
+                                                                }
+                                                                initHtml += '" />'+
                                                                 '<span class="input-group-addon">'+
                                                                     '<i class="fa fa-clock-o bigger-110"></i>'+
                                                                 '</span>'+
                                                             '</div>'+
                                                             '<div style="float:left;line-height:34px;padding:0 4px;"> -- </div>'+
                                                             '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
-                                                                '<input name="end" type="text" class="form-control" value="23:59:59" />'+
+                                                                '<input name="end" type="text" class="form-control" value="'
+                                                                if(vv.end){
+                                                                    initHtml += vv.end
+                                                                }
+                                                                initHtml += '" />'+
                                                                 '<span class="input-group-addon">'+
                                                                     '<i class="fa fa-clock-o bigger-110"></i>'+
                                                                 '</span>'+
-                                                            '</div>'
+                                                            '</div>'+
                                                         '</div>'+
 
 
@@ -1098,6 +1270,16 @@
                             }
                             constr += '<span> “ '+ vv +' ” </span> '
                         }
+                        if(c.action=="date"){
+                            var vv = c.value
+                            constr += '<span> '+ vv.start +' 到 '+ vv.end +'  </span> '
+                        }
+                        if(c.action=="week"){
+                            var vv = c.value2||c.value
+                            var start_str = vv.day_start=='1'?'星期一':vv.day_start=='2'?'星期二':vv.day_start=='3'?'星期三':vv.day_start=='4'?'星期四':vv.day_start=='5'?'星期五':vv.day_start=='6'?'星期六':'星期日'
+                            var end_str = vv.day_end=='1'?'星期一':vv.day_end=='2'?'星期二':vv.day_end=='3'?'星期三':vv.day_end=='4'?'星期四':vv.day_end=='5'?'星期五':vv.day_end=='6'?'星期六':'星期日'
+                            constr += '<span> '+ start_str + ' ' + vv.start +' 到 '+ end_str + ' '+ vv.end + '  </span> ' 
+                        }
                         for(var j=0;j<c.subs.length;j++){
                             var logiccc = c.logic=='all'?'并':'或';
                             var cc = c.subs[j];
@@ -1111,6 +1293,16 @@
                                     subvv = hashdept['dept_'+subvv]
                                 }
                                 constr += '<span> “ '+ subvv +' ” </span>'
+                            }
+                            if(cc.action=="date"){
+                                var subvv = cc.value2||cc.value
+                                constr += '<span> '+ subvv.start +' 到 '+ subvv.end +'  </span> '
+                            }
+                            if(cc.action=="week"){
+                                var subvv = cc.value2||cc.value
+                                var start_str = subvv.day_start=='1'?'星期一':subvv.day_start=='2'?'星期二':subvv.day_start=='3'?'星期三':subvv.day_start=='4'?'星期四':subvv.day_start=='5'?'星期五':subvv.day_start=='6'?'星期六':'星期日'
+                                var end_str = subvv.day_end=='1'?'星期一':subvv.day_end=='2'?'星期二':subvv.day_end=='3'?'星期三':subvv.day_end=='4'?'星期四':subvv.day_end=='5'?'星期五':subvv.day_end=='6'?'星期六':'星期日'
+                                constr += '<span> '+ start_str +' '+ subvv.start +' 到 '+ end_str  + ' '+ subvv.end + '  </span> ' 
                             }
                         }
                     }
@@ -1132,7 +1324,7 @@
     }
     getList();
 
-    //新增规则
+    //新增规则 更新规则
     $('.add_btn').click(function(){
         var rule_id = $(this).attr('type_id');
         if(!$('#reply_body').val() || $('#reply_body').val() == ''){
@@ -1140,8 +1332,8 @@
             return;
         }
         var arr = [];
-        for(var i=0;i<$('.list_item .panel.panel-default').length;i++){
-            var $list_item = $('.list_item .panel.panel-default:eq('+i+')');
+        for(var i=0;i<$('.reply_box .list_item .panel.panel-default').length;i++){
+            var $list_item = $('.reply_box .list_item .panel.panel-default:eq('+i+')');
 
             for(var j=0;j<$list_item.find('.condition_item').length;j++){
                 for(var g=0;g<$list_item.find('.condition_item:eq('+j+') .values>input').length;g++){
@@ -1150,6 +1342,47 @@
                             layer.msg('请填写条件内容~')
                             return;
                         }
+                    }
+                }
+                if($list_item.find('.condition_item:eq('+j+') .values>.dept_box') && !$list_item.find('.condition_item:eq('+j+') .values>.dept_box').hasClass('display-none')){
+                    if(!$list_item.find('.condition_item:eq('+j+') .values>.dept_box .id_dept_id').val() || $list_item.find('.condition_item:eq('+j+') .values>.dept_box .id_dept_id').val()==''){
+                        layer.msg('请选择部门~')
+                        return;
+                    }
+                }
+                if($list_item.find('.condition_item:eq('+j+') .values>.week_box') && !$list_item.find('.condition_item:eq('+j+') .values>.week_box').hasClass('display-none')){
+                    if(!$list_item.find('.condition_item:eq('+j+') .values>.week_box [name="start"]').val() || $list_item.find('.condition_item:eq('+j+') .values>.week_box [name="start"]').val()==''){
+                        layer.msg('请选择执行开始时间~')
+                        return;
+                    }
+                    if(!$list_item.find('.condition_item:eq('+j+') .values>.week_box [name="end"]').val() || $list_item.find('.condition_item:eq('+j+') .values>.week_box [name="end"]').val()==''){
+                        layer.msg('请选择执行截止时间~')
+                        return;
+                    }
+                    if($list_item.find('.condition_item:eq('+j+') .values>.week_box [name="day_start"]').val() > $list_item.find('.condition_item:eq('+j+') .values>.week_box [name="day_end"]').val() ){
+                        layer.msg('开始星期不能大于结束星期~')
+                        return;
+                    }
+                    if($list_item.find('.condition_item:eq('+j+') .values>.week_box [name="day_start"]').val() == $list_item.find('.condition_item:eq('+j+') .values>.week_box [name="day_end"]').val() ){
+                        if($list_item.find('.condition_item:eq('+j+') .values>.week_box [name="start"]').val() >= $list_item.find('.condition_item:eq('+j+') .values>.week_box [name="end"]').val() ){
+                            layer.msg('开始时间不能大于等于结束时间~')
+                            return;
+                        }
+                        
+                    }
+                }
+                if($list_item.find('.condition_item:eq('+j+') .values>.date_box') && !$list_item.find('.condition_item:eq('+j+') .values>.date_box').hasClass('display-none')){
+                    if(!$list_item.find('.condition_item:eq('+j+') .values>.date_box .start_time').val() || $list_item.find('.condition_item:eq('+j+') .values>.date_box .start_time').val()==''){
+                        layer.msg('请选择执行开始时间~')
+                        return;
+                    }
+                    if(!$list_item.find('.condition_item:eq('+j+') .values>.date_box .end_time').val() || $list_item.find('.condition_item:eq('+j+') .values>.date_box .end_time').val()==''){
+                        layer.msg('请选择执行截止时间~')
+                        return;
+                    }
+                    if($list_item.find('.condition_item:eq('+j+') .values>.date_box .start_time').val() >= $list_item.find('.condition_item:eq('+j+') .values>.date_box .end_time').val() ){
+                        layer.msg('开始时间不能大于等于结束时间~')
+                        return;
                     }
                 }
             }
@@ -1170,6 +1403,18 @@
             if(!$list_item.find('.condition_item:eq(0) .values>.dept_box').hasClass('display-none')){
                 obj.value = $list_item.find('.condition_item:eq(0) .values>.dept_box .id_dept_id').val();
             }
+            if(!$list_item.find('.condition_item:eq(0) .values>.week_box').hasClass('display-none')){
+                obj.value = {}
+                obj.value.day_start = $list_item.find('.condition_item:eq(0) .values>.week_box [name="day_start"]').val();
+                obj.value.day_end = $list_item.find('.condition_item:eq(0) .values>.week_box [name="day_end"]').val();
+                obj.value.start = $list_item.find('.condition_item:eq(0) .values>.week_box [name="start"]').val();
+                obj.value.end = $list_item.find('.condition_item:eq(0) .values>.week_box [name="end"]').val();
+            }
+            if(!$list_item.find('.condition_item:eq(0) .values>.date_box').hasClass('display-none')){
+                obj.value = {}
+                obj.value.start = $list_item.find('.condition_item:eq(0) .values>.date_box .start_time').val();
+                obj.value.end = $list_item.find('.condition_item:eq(0) .values>.date_box .end_time').val();
+            }
             obj.subs = [];
             for(var j=1;j<$list_item.find('.condition_item').length;j++){
                 var sub_obj = {}
@@ -1186,6 +1431,18 @@
                 }
                 if(!$list_item.find('.condition_item:eq('+j+') .values>.dept_box').hasClass('display-none')){
                     sub_obj.value = $list_item.find('.condition_item:eq('+j+') .values>.dept_box .id_dept_id').val();
+                }
+                if(!$list_item.find('.condition_item:eq('+j+') .values>.week_box').hasClass('display-none')){
+                    sub_obj.value = {}
+                    sub_obj.value.day_start = $list_item.find('.condition_item:eq('+j+') .values>.dept_box [name="day_start"]').val();
+                    sub_obj.value.day_end = $list_item.find('.condition_item:eq('+j+') .values>.week_box [name="day_end"]').val();
+                    sub_obj.value.start = $list_item.find('.condition_item:eq('+j+') .values>.week_box [name="start"]').val();
+                    sub_obj.value.end = $list_item.find('.condition_item:eq('+j+') .values>.week_box [name="end"]').val();
+                }
+                if(!$list_item.find('.condition_item:eq('+j+') .values>.date_box').hasClass('display-none')){
+                    sub_obj.value = {}
+                    sub_obj.value.start = $list_item.find('.condition_item:eq('+j+') .values>.date_box .start_time').val();
+                    sub_obj.value.end = $list_item.find('.condition_item:eq('+j+') .values>.date_box .end_time').val();
                 }
                 obj.subs.push(sub_obj);
             }
@@ -1407,7 +1664,7 @@
                                                                                 '<span class="input-group-addon">'+
                                                                                     '<i class="fa fa-clock-o bigger-110"></i>'+
                                                                                 '</span>'+
-                                                                            '</div>'
+                                                                            '</div>'+
                                                                         '</div>'+
 
                                                                     '</div>'+
@@ -1484,12 +1741,11 @@
                                                         '</div>'+
                                                     '</div>'+
                                                 '</div>'+
-
-                                                '<div class="col-xs-12 col-sm-12 no-padding  display-none date_box clear">'+
+                                                '<div class="display-none date_box">'+
                                                     '<input type="datetime" class="datetime start_time"> --'+
                                                     '<input type="datetime" class="datetime end_time">'+
                                                 '</div>'+
-                                                '<div class="col-xs-12 col-sm-12 no-padding  display-none week_box clear">'+
+                                                '<div class="display-none week_box">'+
                                                     '<div style="float:left;">'+
                                                         '<select name="day_start">'+
                                                             '<option value="1" selected>星期一</option>'+
@@ -1522,7 +1778,7 @@
                                                         '<span class="input-group-addon">'+
                                                             '<i class="fa fa-clock-o bigger-110"></i>'+
                                                         '</span>'+
-                                                    '</div>'
+                                                    '</div>'+
                                                 '</div>'+
 
 

@@ -27,7 +27,7 @@
                 {% csrf_token %}
 
                 <div class="form-group {% if form.rule.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_rule"> 被翻译值 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_rule"> {% trans "被翻译值 " %}</label>
                     <div class="col-sm-9">
                         <div class="col-sm-12">
                             <input type="text" maxlength="200" id="id_rule" name="rule" value="{{ form.rule.value }}" class="col-xs-10 col-sm-5" required/>
@@ -36,13 +36,13 @@
                             <div style="clear: both"><p class="errornote txt-color-red" style="margin-left: 25px;">{{ form.rule.error }}</p></div>
                         {% endif %}
                         <div style="clear: both">
-                        <span class="middle text-success "><strong style="color: red">注：</strong> 目前只会匹配邮件头中From、Sender、Subject字段所对应的内容。</span>
+                        <span class="middle text-success "><strong style="color: red">{% trans "注：" %}</strong> {% trans "目前只会匹配邮件头中From、Sender、Subject字段所对应的内容。" %}</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group {% if form.trans_value.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_target"> 翻译目标值 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_target"> {% trans "翻译目标值 " %}</label>
                     <div class="col-sm-9">
                         <div class="col-sm-12">
                             <input type="text" maxlength="200" id="id_target" name="trans_value" value="{{ form.trans_value.value }}" class="col-xs-10 col-sm-5" required/>
@@ -54,14 +54,14 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_status"> 状态 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_status"> {% trans "状态 " %}</label>
                     <div class="col-sm-9">
                         <label class="radio radio-inline padding-top-0 margin-top-0 form-inline">
                             <label>
-                                <input type="radio" name="disabled" value="-1" {% if form.disabled.value == '-1'  %} checked="" {% endif %}><span>启用</span>
+                                <input type="radio" name="disabled" value="-1" {% if form.disabled.value == '-1'  %} checked="" {% endif %}><span>{% trans "启用" %}</span>
                             </label>
                             <label>
-                                <input type="radio" name="disabled" value="1" {% if form.disabled.value != '-1'  %} checked="" {% endif %}><span>禁用</span>
+                                <input type="radio" name="disabled" value="1" {% if form.disabled.value != '-1'  %} checked="" {% endif %}><span>{% trans "禁用" %}</span>
                             </label>
                         </label>
                     </div>
@@ -71,14 +71,14 @@
                     <div class="col-md-offset-3 col-md-9">
                         <button class="btn btn-info" type="submit">
                             <i class="ace-icon fa fa-check bigger-110"></i>
-                            保存
+                            {% trans "保存" %}
                         </button>
                         <button class="btn" type="reset">
                             <i class="ace-icon fa fa-undo bigger-110"></i>
-                            重置
+                            {% trans "重置" %}
                         </button>
 
-                        <a type="button" class="btn btn-link" href="{% url 'header_trans' %}">取消</a>
+                        <a type="button" class="btn btn-link" href="{% url 'header_trans' %}">{% trans "取消" %}</a>
 
                     </div>
                 </div>

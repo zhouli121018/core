@@ -16,16 +16,16 @@
             {% csrf_token %}
             <table class="table table-bordered table-striped">
                 <tr>
-                    <td><label class="control-label no-padding-right" for="id_srvtype" > 服务器类型 </label></td>
+                    <td><label class="control-label no-padding-right" for="id_srvtype" > {% trans "服务器类型 " %}</label></td>
                     <td>
                         <select class="col-xs-10 col-sm-4" id="id_srvtype" name="srvtype" onchange="onchangeTypeOptions(this.value)">
-                            <option value="ad" {% if form.srvtype.value == "ad" %} selected {% endif %} > Microsoft Active Directory同步(LDAP服务器配置) </option>
-                            <option value="ldap" {% if form.srvtype.value == "ldap" %} selected {% endif %} > LDAP 服务器同步 </option>
+                            <option value="ad" {% if form.srvtype.value == "ad" %} selected {% endif %} > Microsoft Active {% trans "Directory同步(LDAP服务器配置) " %}</option>
+                            <option value="ldap" {% if form.srvtype.value == "ldap" %} selected {% endif %} > LDAP {% trans "服务器同步 " %}</option>
                         </select>
                     </td>
                 </tr>
                 <tr>
-                    <td><label class="control-label no-padding-right" for="id_address" id="id_address" > 服务器地址 </label></td>
+                    <td><label class="control-label no-padding-right" for="id_address" id="id_address" > {% trans "服务器地址 " %}</label></td>
                     <td>
                         <input type="text" name="address" id="id_address"
                                value="{{ form.address.value }}" class="col-xs-10 col-sm-4"/>
@@ -35,7 +35,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><label class="control-label no-padding-right" for="id_port" id="id_port" > 端口 </label></td>
+                    <td><label class="control-label no-padding-right" for="id_port" id="id_port" > {% trans "端口 " %}</label></td>
                     <td>
                         <input type="number" name="port" id="id_port"
                                value="{{ form.port.value }}" class="col-xs-10 col-sm-4"/>
@@ -45,7 +45,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><label class="control-label no-padding-right" for="id_username" id="id_username" > 登录帐号 </label></td>
+                    <td><label class="control-label no-padding-right" for="id_username" id="id_username" > {% trans "登录帐号 " %}</label></td>
                     <td>
                         <input type="text" name="username" id="id_username"
                                value="{{ form.username.value }}" class="col-xs-10 col-sm-4"/>
@@ -55,7 +55,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><label class="control-label no-padding-right" for="id_password" id="id_password" > 登录密码 </label></td>
+                    <td><label class="control-label no-padding-right" for="id_password" id="id_password" > {% trans "登录密码 " %}</label></td>
                     <td>
                         <input type="password" name="password" id="id_password"
                                value="{{ form.password.value }}" class="col-xs-10 col-sm-4"/>
@@ -65,7 +65,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><label class="control-label no-padding-right" for="id_basedn" id="id_basedn" > 搜索路径 </label></td>
+                    <td><label class="control-label no-padding-right" for="id_basedn" id="id_basedn" > {% trans "搜索路径 " %}</label></td>
                     <td>
                         <input type="text" name="basedn" id="id_basedn"
                                value="{{ form.basedn.value }}" class="col-xs-10 col-sm-4"/>
@@ -75,7 +75,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><label class="control-label no-padding-right" for="id_ou" id="id_ou" > 部门规则 </label></td>
+                    <td><label class="control-label no-padding-right" for="id_ou" id="id_ou" > {% trans "部门规则 " %}</label></td>
                     <td>
                         <input type="text" name="ou" id="id_ou"
                                value="{{ form.ou.value }}" class="col-xs-10 col-sm-4"/>
@@ -85,14 +85,14 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><label class="control-label no-padding-right" for="id_auto_sync" id="id_auto_sync" > 开启定期自动同步 </label></td>
+                    <td><label class="control-label no-padding-right" for="id_auto_sync" id="id_auto_sync" > {% trans "开启定期自动同步 " %}</label></td>
                     <td>
                         <label class="radio radio-inline padding-top-0 margin-top-0 form-inline">
                             <label>
-                                <input type="radio" name="sw_ldap" value="1" {% if form.sw_ldap.value == '1'  %} checked="" {% endif %}><span>开启</span>
+                                <input type="radio" name="sw_ldap" value="1" {% if form.sw_ldap.value == '1'  %} checked="" {% endif %}><span>{% trans "开启" %}</span>
                             </label>
                             <label>
-                                <input type="radio" name="sw_ldap" value="-1" {% if form.sw_ldap.value != '1'  %} checked="" {% endif %}><span>关闭</span>
+                                <input type="radio" name="sw_ldap" value="-1" {% if form.sw_ldap.value != '1'  %} checked="" {% endif %}><span>{% trans "关闭" %}</span>
                             </label>
                             {% if form.sw_ldap.error %}
                             <div style="clear: both"><p class="errornote txt-color-red">{{ form.sw_ldap.error }}</p></div>
@@ -109,15 +109,15 @@
                 <div class="col-md-offset-3 col-md-9">
                     <button class="btn btn-info" type="submit">
                         <i class="ace-icon fa fa-check bigger-110"></i>
-                        保存
+                        {% trans "保存" %}
                     </button>
                     <button class="btn btn-info" type="button" onclick="onclickTaskButton()">
                         <i class="ace-icon fa fa-check bigger-110"></i>
-                        手动同步帐号
+                        {% trans "手动同步帐号" %}
                     </button>
                     <button class="btn" type="reset">
                         <i class="ace-icon fa fa-undo bigger-110"></i>
-                        重置
+                        {% trans "重置" %}
                     </button>
 
                 </div>
@@ -126,4 +126,3 @@
 
     </div><!-- /.span -->
 </div><!-- /.row -->
-

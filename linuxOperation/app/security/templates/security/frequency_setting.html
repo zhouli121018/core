@@ -23,27 +23,27 @@
 
 {% block page-content %}
 <div id="dynamic-div">
-    <h3 class="header smaller lighter blue"><span class="red">发信频率设置</span></h3>
+    <h3 class="header smaller lighter blue"><span class="red">{% trans "发信频率设置" %}</span></h3>
 
-    <div class="table-header">发信频率设置</div>
+    <div class="table-header">{% trans "发信频率设置" %}</div>
     <div>
         <form class="form-horizontal" role="form" name="form_select" action="" method="POST">
             {% csrf_token %}
         <table class="table table-bordered table-striped">
             <tbody>
             <tr>
-                <td class="text-right">速率：</td>
+                <td class="text-right">{% trans "速率：" %}</td>
                 <td class="row">
                     <div class="col-sm-12">
-                        每
+                        {% trans "每" %}
                         <input type="number" name="minute" value="{{ form.minute.value }}" id="id_minute" style="max-width:50px;">
-                        分钟发信数量
+                        {% trans "分钟发信数量" %}
                         <input type="number" name="count" value="{{ form.count.value }}" id="id_minute_count" >
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="text-right"> 每小时发信数量：</td>
+                <td class="text-right"> {% trans "每小时发信数量：" %}</td>
                 <td class="row">
                     <div class="col-sm-4">
                         <input type="number" name="hour_count" id="id_hour_count" value="{{ form.hour_count.value }}" class=" form-control max-width-200">
@@ -51,14 +51,14 @@
                     </div>
                     <div class="col-sm-8">
                         <div style="clear: both">
-                            <span class="middle text-success "><strong style="color: red">注：</strong> 输入&lt;=0的值代表不限制 </span>
+                            <span class="middle text-success "><strong style="color: red">{% trans "注：" %}</strong> {% trans "输入" %}&lt;={% trans "0的值代表不限制 " %}</span>
                         </div>
                     </div>
 
                 </td>
             </tr>
             <tr>
-                <td class="text-right"> 每天发信数量：</td>
+                <td class="text-right"> {% trans "每天发信数量：" %}</td>
                 <td class="row">
                     <div class="col-sm-4">
                         <input type="number" name="day_count" id="id_day_count" value="{{ form.day_count.value }}" class="form-control max-width-200">
@@ -66,29 +66,29 @@
                     </div>
                     <div class="col-sm-8">
                         <div style="clear: both">
-                            <span class="middle text-success "><strong style="color: red">注：</strong> 输入&lt;=0的值代表不限制 </span>
+                            <span class="middle text-success "><strong style="color: red">{% trans "注：" %}</strong> {% trans "输入" %}&lt;={% trans "0的值代表不限制 " %}</span>
                         </div>
                     </div>
 
                 </td>
             </tr>
             <tr>
-                <td class="text-right">超限操作：</td>
+                <td class="text-right">{% trans "超限操作：" %}</td>
                 <td>
                     <label class="radio radio-inline padding-top-0 margin-top-0 form-inline">
                         <label>
-                            <input type="radio" name="operate" value="block" {% if form.operate.value == 'block'  %} checked="" {% endif %}><span>只可发送本地邮件</span>
+                            <input type="radio" name="operate" value="block" {% if form.operate.value == 'block'  %} checked="" {% endif %}><span>{% trans "只可发送本地邮件" %}</span>
                         </label>
-                        <!-- 去掉与组权限冲突的选项
+                        <!-- {% trans "去掉与组权限冲突的选项" %}
                         <label>
-                            <input type="radio" name="operate" value="disable" {% if form.operate.value != 'block'  %} checked="" {% endif %}><span>永久禁用外发</span>
+                            <input type="radio" name="operate" value="disable" {% if form.operate.value != 'block'  %} checked="" {% endif %}><span>{% trans "永久禁用外发" %}</span>
                         </label>
                         -->
                     </label>
                 </td>
             </tr>
             <tr>
-                <td class="text-right">警告邮件接收地址：</td>
+                <td class="text-right">{% trans "警告邮件接收地址：" %}</td>
                 <td class="row">
                     <div class="col-sm-4" style="margin-top:20px;">
                         <input type="text" name="alert_address" id="id_alert_address" value="{{ form.alert_address.value }}" class="form-control max-width-200">
@@ -97,23 +97,23 @@
                     <div class="col-sm-8">
                         <ul class="middle text-success ">
                             <li>
-                                <b class="red">注：</b>达到上限的帐号会触发一次警告，此栏不填表明不需要接收系统的警告邮件；
+                                <b class="red">{% trans "注：" %}</b>{% trans "达到上限的帐号会触发一次警告，此栏不填表明不需要接收系统的警告邮件" %}；
                             </li>
                             <li>
-                                多个帐号之间用','分隔，可输入外域邮箱；
+                                {% trans "多个帐号之间用','分隔，可输入外域邮箱" %}；
                             </li>
                             <li>
-                                同一个帐号每小时只会触发一次邮件警告；
+                                {% trans "同一个帐号每小时只会触发一次邮件警告" %}；
                             </li>
                             <li>
-                                保存"域名功能设置"下的任意页面，都可以重置警告邮件的发送CD。
+                                {% trans "保存'域名功能设置'下的任意页面，都可以重置警告邮件的发送CD。" %}
                             </li>
                         </ul>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="text-right">发信频率限制：</td>
+                <td class="text-right">{% trans "发信频率限制：" %}</td>
                 <td class="row">
                     <div class="col-sm-4" style="margin-top: 16px;">
                         <label class="inline" >
@@ -124,13 +124,13 @@
                     <div class="col-sm-8">
                         <ul class="middle text-success " style=" list-style:none;padding:0;margin:0;">
                             <li>
-                                <strong style="color: red">注：</strong> 此功能开启并做适当设置可以防范账户密码泄露造成的系统性风险；
+                                <strong style="color: red">{% trans "注：" %}</strong> {% trans "此功能开启并做适当设置可以防范账户密码泄露造成的系统性风险" %}；
                             </li>
                             <li style="text-indent: 2.2em;">
-                                此功能开启并做适当设置可以防止用户对外大量群发邮件；
+                                {% trans "此功能开启并做适当设置可以防止用户对外大量群发邮件" %}；
                             </li>
                             <li style="text-indent: 2.2em;">
-                                本功能只对发往外域（非本服务器）的邮件进行计数。
+                                {% trans "本功能只对发往外域（非本服务器）的邮件进行计数。" %}
                             </li>
                         </ul>
                     </div>
@@ -146,11 +146,11 @@
                 <div class=" text-center">
                     <button class="btn btn-info" type="submit">
                         <i class="ace-icon fa fa-check bigger-110"></i>
-                        保存
+                        {% trans "保存" %}
                     </button>
                     <button class="btn" type="reset">
                         <i class="ace-icon fa fa-undo bigger-110"></i>
-                        重置
+                        {% trans "重置" %}
                     </button>
 
                 </div>
@@ -160,5 +160,4 @@
     </div>
 </div>
 {% endblock %}
-
 

@@ -2,7 +2,7 @@
 {% load bootstrap %}
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h4 class="modal-title" id="myModalLabel" style="font-weight: 600">模板字段列表</h4>
+    <h4 class="modal-title" id="myModalLabel" style="font-weight: 600">{% trans "模板字段列表" %}</h4>
 </div>
 <form action="" method="post" role="form" class="">
     {% csrf_token %}
@@ -16,7 +16,7 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-2 col-lg-2 " for="id_passwd_other_bak"> </label>
                                 <div class=" col-sm-10 col-lg-10 ">
-                                    <button type="button" class="btn btn-primary btn-xs" onclick="SaveField();">添加</button>
+                                    <button type="button" class="btn btn-primary btn-xs" onclick="SaveField();">{% trans "添加" %}</button>
                                 </div>
                             </div>
                         </div>
@@ -40,7 +40,7 @@
                         <td>{{ d.field_name }}</td>
                         <td>{{ d.field_val }}</td>
                         <td>
-                            <button type="button" class="btn btn-danger btn-minier" onclick="DeleteField('{{ d.id }}');">删除</button>
+                            <button type="button" class="btn btn-danger btn-minier" onclick="DeleteField('{{ d.id }}');">{% trans "删除" %}</button>
                         </td>
                     </tr>
                 {% endfor %}
@@ -51,8 +51,8 @@
         </div>
     </div>
     <div class="modal-footer">
-        <!--<button type="submit" class="btn btn-primary">保存</button>-->
-        <button id="modal_close" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <!--<button type="submit" class="btn btn-primary">{% trans "保存" %}</button>-->
+        <button id="modal_close" type="button" class="btn btn-default" data-dismiss="modal">{% trans "关闭" %}</button>
     </div>
 </form>
 

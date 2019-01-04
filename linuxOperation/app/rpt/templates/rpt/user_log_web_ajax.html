@@ -1,3 +1,4 @@
+{% load i18n %}
 <td>{{ number }}</td>
 <td>{{ l.mailbox.name }}</td>
 <td>{{ l.mailbox }}</td>
@@ -8,8 +9,8 @@
 <td>{{ l.clientip }}</td>
 <td>
     {% if is_login %}
-        <span class="text-success">在线</span>
+        <span class="text-success">{% trans "在线" %}</span>
     {% else %}
-        <span class="text-danger">离线</span>
+        <span class="text-danger">{% trans "离线" %}</span>
     {% endif %}
 </td>

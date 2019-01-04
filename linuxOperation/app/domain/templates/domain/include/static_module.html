@@ -2,10 +2,10 @@
     <div id="module_made_tabs">
         <ul>
             <li>
-                <a href="#send_mail_block">发邮件区</a>
+                <a href="#send_mail_block" onclick="clickSubTab('')">发邮件区</a>
             </li>
             <li >
-                <a href="#setting_block">设置区</a>
+                <a href="#setting_block" onclick="clickSubTab('set')">设置区</a>
             </li>
         </ul>
 
@@ -255,6 +255,13 @@
                                 },100)
             }
         })
+    }
+
+    function clickSubTab(key){
+        console.log("clickSubTab   "+key);
+        $("#id_remark_flag").val('module');
+        $("#id_remark_flag2").val(key);
+        get_remark_base();
     }
 
 </script>

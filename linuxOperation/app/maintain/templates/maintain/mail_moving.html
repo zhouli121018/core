@@ -246,7 +246,7 @@
         }
 
         function Delete(id, name){
-            var str = '确定要删除发件人 "%s"？';
+            var str = '{% trans "确定要删除发件人 " %}"%s"？';
             str = str.replace(/%s/, name);
             if(confirm(str)) {
                 $('#id').val(id);

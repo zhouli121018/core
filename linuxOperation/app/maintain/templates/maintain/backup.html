@@ -28,10 +28,10 @@
         <div class="row">
             <div class="col-xs-12">
                 <p>
-                    <strong style="color: red">任务状态：</strong>
-                    <span>当前正在执行</span>
+                    <strong style="color: red">{% trans "任务状态：" %}</strong>
+                    <span>{% trans "当前正在执行" %}</span>
                     <span style="color: blue;" class="margin-left-5 margin-right-5">{{ backupstatus }}</span>
-                    <span>操作</span>
+                    <span>{% trans "操作" %}</span>
                 </p>
             </div>
         </div>
@@ -100,9 +100,9 @@
         function setStatus(name, status){
             var str = "确认此操作？"
             if ( status == "delete" ){
-                str = "确定要删除备份数据“" +name+ "”吗？\n被删除的数据将无法恢复"
+                str = "确定要删除备份数据“" +name+ "”{% trans "吗？\n被删除的数据将无法恢复" %}"
             } else if ( status == "restore" ){
-                str = "确定要恢复数据“" +name+ "”吗？"
+                str = "确定要恢复数据“" +name+ "”{% trans "吗？" %}"
             } else if ( status == "backup" ){
                 str = "确定要立即备份吗？"
             }

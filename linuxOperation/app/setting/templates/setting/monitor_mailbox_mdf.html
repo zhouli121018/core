@@ -26,7 +26,7 @@
             <form class="form-horizontal" role="form" action="" method="POST">
                 {% csrf_token %}
                 <div class="form-group {% if form.listen_type.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_listen_type"> 选择监控类型 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_listen_type"> {% trans "选择监控类型 " %}</label>
                     <div class="col-sm-9">
                         <div class="col-sm-12">
                             <select class="col-xs-10 col-sm-5" id="id_listen_type" name="listen_type" onchange="onchangeListenType(this.value)">
@@ -42,7 +42,7 @@
                 </div>
 
                 <div class="form-group {% if form.target_type.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_target_type"> 选择监控通道 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_target_type"> {% trans "选择监控通道 " %}</label>
                     <div class="col-sm-9">
                         <div class="col-sm-12">
                             <select class="col-xs-10 col-sm-5" id="id_target_type" name="target_type">
@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="form-group {% if form.target.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_target"> 监控邮箱 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_target"> {% trans "监控邮箱 " %}</label>
                     <div class="col-sm-9">
                         <div class="col-sm-12">
                             <input type="text" maxlength="200" id="id_target" name="target" value="{{ form.target.value }}" class="col-xs-10 col-sm-5"/>
@@ -70,7 +70,7 @@
                 </div>
 
                 <div class="form-group {% if form.target_dept.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_target_dept"> 监控部门 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_target_dept"> {% trans "监控部门 " %}</label>
                     <div class="col-sm-9">
                         <div class="col-sm-12">
                             <input type="hidden" value="{{ form.target_dept.value }}" id="id_target_dept" name="target_dept">
@@ -79,9 +79,9 @@
                                 <span class="input-group-btn col-xs-10 col-sm-5 no-padding-left">
                                     <a data-toggle="modal" data-target="#MyReviwModal" data-whatever=""
                                        href="#" class="btn btn-sm btn-default" type="button" title="选择部门" id="id_department_model">
-                                        <i class="ace-icon fa fa-users bigger-110 green"></i>选择
+                                        <i class="ace-icon fa fa-users bigger-110 green"></i>{% trans "选择" %}
                                     </a>
-                                     <a class="btn btn-sm btn-grey" type="button" title="清空部门" href="Javascript: clearDepart()">清空</a>
+                                     <a class="btn btn-sm btn-grey" type="button" title="{% trans "清空" %}部门" href="Javascript: clearDepart()">{% trans "清空" %}</a>
                                 </span>
                                 {% if form.target_dept.error %}
                                     <div style="clear: both"><p class="errornote txt-color-red" style="margin-left: 25px;">{{ form.target_dept.error }}</p></div>
@@ -91,10 +91,10 @@
                         <div style="clear: both">
                             <span class="middle text-success ">
                             <li>
-                            “监控邮箱”、“监控部门”两者为“或”的逻辑关系；
+                            {% trans "“监控邮箱”、“监控部门”两者为“或”的逻辑关系" %}；
                             </li>
                             <li>
-                            若想监控整个部门，则“监控邮箱”可以为空。反之“监控部门”可为空。
+                            {% trans "若想监控整个部门，则“监控邮箱”可以为空。反之“监控部门”可为空。" %}
                             </li>
                             </span>
                         </div>
@@ -102,7 +102,7 @@
                 </div>
 
                 <div class="form-group {% if form.forward.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_forward"> 接收邮箱 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_forward"> {% trans "接收邮箱 " %}</label>
                     <div class="col-sm-9">
                         <div class="col-sm-12">
                             <input type="text" maxlength="200" id="id_forward" name="forward" value="{{ form.forward.value }}" class="col-xs-10 col-sm-5" required/>
@@ -114,28 +114,28 @@
                 </div>
 
                 <div class="form-group {% if form.listen_type.value != 'recipient'  %} display-none {% endif %}" id="id_monit_move_input">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_monit_move"> 邮件搬家(IMAP/POP3) </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_monit_move"> {% trans "邮件搬家(IMAP/POP3) " %}</label>
                     <div class="col-sm-9">
                         <label class="radio radio-inline padding-top-0 margin-top-0 form-inline">
                             <label>
-                                <input type="radio" name="monit_move" value="-1" {% if form.monit_move.value == '-1' %} checked="" {% endif %}><span>不监控</span>
+                                <input type="radio" name="monit_move" value="-1" {% if form.monit_move.value == '-1' %} checked="" {% endif %}><span>{% trans "不监控" %}</span>
                             </label>
                             <label>
-                                <input type="radio" name="monit_move" value="1" {% if form.monit_move.value != '-1' %} checked="" {% endif %}><span>监控</span>
+                                <input type="radio" name="monit_move" value="1" {% if form.monit_move.value != '-1' %} checked="" {% endif %}><span>{% trans "监控" %}</span>
                             </label>
                         </label>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_status"> 状态 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_status"> {% trans "状态 " %}</label>
                     <div class="col-sm-9">
                         <label class="radio radio-inline padding-top-0 margin-top-0 form-inline">
                             <label>
-                                <input type="radio" name="disabled" value="-1" {% if form.disabled.value == '-1'  %} checked="" {% endif %}><span>启用</span>
+                                <input type="radio" name="disabled" value="-1" {% if form.disabled.value == '-1'  %} checked="" {% endif %}><span>{% trans "启用" %}</span>
                             </label>
                             <label>
-                                <input type="radio" name="disabled" value="1" {% if form.disabled.value != '-1'  %} checked="" {% endif %}><span>禁用</span>
+                                <input type="radio" name="disabled" value="1" {% if form.disabled.value != '-1'  %} checked="" {% endif %}><span>{% trans "禁用" %}</span>
                             </label>
                         </label>
                     </div>
@@ -145,14 +145,14 @@
                     <div class="col-md-offset-3 col-md-9">
                         <button class="btn btn-info" type="submit">
                             <i class="ace-icon fa fa-check bigger-110"></i>
-                            保存
+                            {% trans "保存" %}
                         </button>
                         <button class="btn" type="reset">
                             <i class="ace-icon fa fa-undo bigger-110"></i>
-                            重置
+                            {% trans "重置" %}
                         </button>
 
-                        <a type="button" class="btn btn-link" href="{% url 'monitor_mailbox' %}">取消</a>
+                        <a type="button" class="btn btn-link" href="{% url 'monitor_mailbox' %}">{% trans "取消" %}</a>
 
                     </div>
                 </div>
@@ -165,13 +165,13 @@
         <div class="modal-dialog" style="margin:120px auto; width: 1000px;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel">加载中</h4>
+                    <h4 class="modal-title" id="myModalLabel">{% trans "加载中" %}</h4>
                 </div>
                 <div class="modal-body">
-                    页面加载中
+                    {% trans "页面加载中" %}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">关闭</button>
+                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">{% trans "关闭" %}</button>
                 </div>
             </div>
         </div>

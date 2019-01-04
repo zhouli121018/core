@@ -13,42 +13,42 @@
 
 <h4 class="pink">
     <i class="ace-icon fa fa-hand-o-right green"></i>
-    <a href="#modal-form" role="button" class="blue" data-toggle="modal"> 邮件系统使用统计 </a>
+    <a href="#modal-form" role="button" class="blue" data-toggle="modal"> {% trans "邮件系统使用统计 " %}</a>
 </h4>
 <div class="hr hr-18 dotted hr-double"></div>
 <div class="row">
     <div class="col-xs-12 form-horizontal">
         <div class="form-group">
-            <label class="col-sm-2 control-label no-padding-right"> 域名数： </label>
+            <label class="col-sm-2 control-label no-padding-right"> {% trans "域名数： " %}</label>
             <div class="col-sm-4" style="border-bottom:1px solid #E5E5E5">
-                <label class="control-label">邮件系统当前分配了 <span class="text-danger">{{ domain_count }}</span> 个域名</label>
+                <label class="control-label">{% trans "邮件系统当前分配了 " %}<span class="text-danger">{{ domain_count }}</span> {% trans "个域名" %}</label>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label no-padding-right"> 用户总数： </label>
+            <label class="col-sm-2 control-label no-padding-right"> {% trans "用户总数： " %}</label>
             <div class="col-sm-4" style="border-bottom:1px solid #E5E5E5">
-                <label class="control-label">域名数 <span class="text-danger">{{ mailbox_count }}</span> 个邮箱</label>
+                <label class="control-label">{% trans "域名数 " %}<span class="text-danger">{{ mailbox_count }}</span> {% trans "个邮箱" %}</label>
             </div>
         </div>
     </div>
 </div>
 <h4 class="pink">
     <i class="ace-icon fa fa-hand-o-right green"></i>
-    <a href="#modal-form" role="button" class="blue" data-toggle="modal"> Webmail程序版本信息 </a>
+    <a href="#modal-form" role="button" class="blue" data-toggle="modal"> {% trans "Webmail程序版本信息 " %}</a>
 </h4>
 <div class="hr hr-18 dotted hr-double"></div>
 <div class="row">
     <div class="col-xs-12 form-horizontal">
         <div class="form-group">
-            <label class="col-sm-2 control-label no-padding-right"> 版本编号： </label>
+            <label class="col-sm-2 control-label no-padding-right"> {% trans "版本编号： " %}</label>
             <div class="col-sm-4" style="border-bottom:1px solid #E5E5E5">
                 <label class="control-label">{{ version_info.webmail.content }}</label>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label no-padding-right"> 更新时间： </label>
+            <label class="col-sm-2 control-label no-padding-right"> {% trans "更新时间： " %}</label>
             <div class="col-sm-4" style="border-bottom:1px solid #E5E5E5">
-                <label class="control-label">{{ version_info.webmail.mtime }} <a target="_blank" href="{% url 'system_changelog' %}?log=webmail">更新日志</a></label>
+                <label class="control-label">{{ version_info.webmail.mtime }} <a target="_blank" href="{% url 'system_changelog' %}?log=webmail">{% trans "更新日志" %}</a></label>
             </div>
         </div>
     </div>
@@ -56,40 +56,40 @@
 
 <h4 class="pink">
     <i class="ace-icon fa fa-hand-o-right green"></i>
-    <a href="#modal-form" role="button" class="blue" data-toggle="modal"> 底层服务程序版本信息 </a>
+    <a href="#modal-form" role="button" class="blue" data-toggle="modal"> {% trans "底层服务程序版本信息 " %}</a>
 </h4>
 <div class="hr hr-18 dotted hr-double"></div>
 <div class="row">
     <div class="col-xs-12 form-horizontal">
         <div class="form-group">
-            <label class="col-sm-2 control-label no-padding-right"> 版本编号： </label>
+            <label class="col-sm-2 control-label no-padding-right"> {% trans "版本编号： " %}</label>
             <div class="col-sm-4" style="border-bottom:1px solid #E5E5E5">
                 <label class="control-label">{{ version_info.app.content }}</label>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label no-padding-right"> 更新时间： </label>
+            <label class="col-sm-2 control-label no-padding-right"> {% trans "更新时间： " %}</label>
             <div class="col-sm-4" style="border-bottom:1px solid #E5E5E5">
-                <label class="control-label">{{ version_info.app.mtime }} <a target="_blank" href="{% url 'system_changelog' %}?log=app">更新日志</a></label>
+                <label class="control-label">{{ version_info.app.mtime }} <a target="_blank" href="{% url 'system_changelog' %}?log=app">{% trans "更新日志" %}</a></label>
             </div>
         </div>
     </div>
 </div>
 <h4 class="pink">
     <i class="ace-icon fa fa-hand-o-right green"></i>
-    <a href="#modal-form" role="button" class="blue" data-toggle="modal"> PHP、MySQL版本信息 </a>
+    <a href="#modal-form" role="button" class="blue" data-toggle="modal"> PHP、{% trans "MySQL版本信息 " %}</a>
 </h4>
 <div class="hr hr-18 dotted hr-double"></div>
 <div class="row">
     <div class="col-xs-12 form-horizontal">
         <div class="form-group">
-            <label class="col-sm-2 control-label no-padding-right"> PHP版本： </label>
+            <label class="col-sm-2 control-label no-padding-right"> {% trans "PHP版本： " %}</label>
             <div class="col-sm-4" style="border-bottom:1px solid #E5E5E5">
                 <label class="control-label">{{ php_version }}</label>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label no-padding-right"> MySQL版本： </label>
+            <label class="col-sm-2 control-label no-padding-right"> {% trans "MySQL版本： " %}</label>
             <div class="col-sm-4" style="border-bottom:1px solid #E5E5E5">
                 <label class="control-label">{{ mysql_version }}</label>
             </div>
@@ -98,19 +98,19 @@
 </div>
 <h4 class="pink">
     <i class="ace-icon fa fa-hand-o-right green"></i>
-    <a href="#modal-form" role="button" class="blue" data-toggle="modal"> 病毒、反垃圾程序版本信息 </a>
+    <a href="#modal-form" role="button" class="blue" data-toggle="modal"> {% trans "病毒、反垃圾程序版本信息 " %}</a>
 </h4>
 <div class="hr hr-18 dotted hr-double"></div>
 <div class="row">
     <div class="col-xs-12 form-horizontal">
         <div class="form-group">
-            <label class="col-sm-2 control-label no-padding-right"> 版本编号： </label>
+            <label class="col-sm-2 control-label no-padding-right"> {% trans "版本编号： " %}</label>
             <div class="col-sm-4" style="border-bottom:1px solid #E5E5E5">
                 <label class="control-label">{{ version_info.spam.content }}</label>
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label no-padding-right"> 更新时间： </label>
+            <label class="col-sm-2 control-label no-padding-right"> {% trans "更新时间： " %}</label>
             <div class="col-sm-4" style="border-bottom:1px solid #E5E5E5">
                 <label class="control-label">{{ version_info.spam.mtime }}</label>
             </div>
@@ -119,4 +119,3 @@
 </div>
 
 {% endblock %}
-

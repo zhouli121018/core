@@ -681,7 +681,7 @@ def queues_list_ajax(request, name, action=''):
         return del_count
     colums = ['key', 'sender', 'recipients', 'senderip', 'create_time']
 
-    if lists.exists() and order_column and int(order_column) < len(colums):
+    if lists and order_column and int(order_column) < len(colums):
         if order_dir == 'desc':
             lists = sorted(lists, key=lambda l: l[colums[int(order_column)]], reverse=True)
         else:

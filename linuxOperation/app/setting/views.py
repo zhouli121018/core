@@ -1803,6 +1803,11 @@ def user_cfilter_list(request):
         }
     }
     """
+    def json_loads(v):
+        try:
+            return json.loads(v)
+        except:
+            return v
     mailbox_id = request.GET.get("mailbox_id", 0)
     if int(mailbox_id) <= 0:
         result = {"status":"failure","message":u"不存在的邮箱帐号！"}
@@ -1829,7 +1834,7 @@ def user_cfilter_list(request):
                 "logic"         :   cond.logic,
                 "suboption"    :   cond.suboption,
                 "action"        :   cond.action,
-                "value"         :   cond.value,
+                "value"         :   json_loads(cond.value),
                 "subs"          :   [],
             }
             for sub in ExtCfilterNewCond.objects.filter(parent_id=cond.id):
@@ -1838,14 +1843,14 @@ def user_cfilter_list(request):
                     "parent_id"    :   sub.id,
                     "suboption"    :   sub.suboption,
                     "action"        :   sub.action,
-                    "value"         :   sub.value,
+                    "value"         :   json_loads(sub.value),
                 }
                 cond_data["subs"].append(cond_data2)
             rule_data["condition"].append(cond_data)
         for act in ExtCfilterNewAction.objects.filter(rule_id=obj.id):
             act_data = {
                 "sequence"     :   act.sequence,
-                "value"         :   act.value,
+                "value"         :   json_loads(act.value),
             }
             rule_data["action"].append(act_data)
         data.append(rule_data)

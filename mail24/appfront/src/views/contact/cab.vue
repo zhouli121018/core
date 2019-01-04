@@ -1,6 +1,6 @@
 <template>
   <section class="m-mail absolute_height">
-    <aside class="mlsidebar">
+    <aside class="mlsidebar" :style="{width:asideWith+'px'}">
       <div class="mlsidebar-bg"></div>
       <div class="wrapper u-scroll top0">
         <input type="hidden" v-model="cab_cid"/>
@@ -8,9 +8,13 @@
                  :default-expanded-keys="default_expanded_keys" :default-checked-keys="default_checked_keys" @node-click="f_TreeNodeClick" ref="treeForm">
         </el-tree>
       </div>
+      <div class="navbar-expand contact_sidebar" @click="toggleWidth">
+        <i v-if="asideWith==199" class="el-icon-arrow-right"></i>
+        <i v-if="asideWith==399" class="el-icon-arrow-left"></i>
+      </div>
     </aside>
 
-    <article class="mlmain mltabview overflow_auto">
+    <article class="mlmain mltabview overflow_auto" :style="{left:(asideWith+1)+'px'}">
       <div  class="j-module-content j-maillist mllist-list height100 " v-loading="listLoading">
 
         <el-row>
@@ -58,10 +62,10 @@
           <el-table :data="listTables" highlight-current-row width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
             <el-table-column type="selection" width="50"></el-table-column>
             <el-table-column type="index" label="No." width="60"></el-table-column>
-            <el-table-column prop="fullname" label="姓名" width="200"></el-table-column>
+            <el-table-column prop="fullname" label="姓名" ></el-table-column>
             <el-table-column prop="pref_email" label="邮箱" width="250"></el-table-column>
-            <el-table-column prop="gender" label="性别" width="150"></el-table-column>
-            <el-table-column prop="birthday" label="生日" width="200"></el-table-column>
+            <el-table-column prop="gender" label="性别" width="80"></el-table-column>
+            <el-table-column prop="birthday" label="生日" width="160"></el-table-column>
             <el-table-column prop="pref_tel" label="移动号码" ></el-table-column>
             <el-table-column prop="work_tel" label="工作号码" width="200"></el-table-column>
             <el-table-column prop="home_tel" label="住宅电话" width="150"></el-table-column>
@@ -83,6 +87,7 @@
   export default {
     data() {
       return {
+        asideWith:199,
         cab_cid: "",
         cate_name: "",
         cab_groups: [],
@@ -114,6 +119,13 @@
     },
 
     methods: {
+      toggleWidth(){
+        if(this.asideWith == 199){
+          this.asideWith = 399
+        }else if(this.asideWith == 399){
+          this.asideWith = 199
+        }
+      },
       setCurrentKey() {
         this.$nextTick(() =>{
           this.$refs.treeForm.setCurrentKey(Number(this.cab_cid));

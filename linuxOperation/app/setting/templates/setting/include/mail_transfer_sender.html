@@ -7,32 +7,32 @@
             {% csrf_token %}
 
             <div class="form-group {% if form.account.error %} has-error {% endif %}">
-                <label class="col-sm-3 control-label no-padding-right" for="id_account"> 远程帐号 </label>
+                <label class="col-sm-3 control-label no-padding-right" for="id_account"> {% trans "远程帐号 " %}</label>
                 <div class="col-sm-9">
                 <input type="text" name="account" id="id_account" value="{{ form.account.value }}" maxlength="200" class="col-xs-10 col-sm-5" />
                 </div>
             </div>
 
             <div class="form-group {% if form.server.error %} has-error {% endif %}">
-                <label class="col-sm-3 control-label no-padding-right" for="id_server"> 远程服务器 </label>
+                <label class="col-sm-3 control-label no-padding-right" for="id_server"> {% trans "远程服务器 " %}</label>
                 <div class="col-sm-9">
                 <input type="text" name="server" id="id_server" value="{{ form.server.value }}" maxlength="200" class="col-xs-10 col-sm-5" />
                 </div>
             </div>
 
             <div class="form-group {% if form.password.error %} has-error {% endif %}">
-                <label class="col-sm-3 control-label no-padding-right" for="id_password"> 密码 </label>
+                <label class="col-sm-3 control-label no-padding-right" for="id_password"> {% trans "密码 " %}</label>
                 <div class="col-sm-9">
                 <input type="password" name="password" id="id_password" value="{{ form.password.value }}" maxlength="200" class="col-xs-10 col-sm-5" />
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label no-padding-right" for="id_for_ssl" > SSL登录 </label>
+                <label class="col-sm-3 control-label no-padding-right" for="id_for_ssl" > {% trans "SSL登录 " %}</label>
                 <div class="col-sm-9">
                     <select class="col-xs-10 col-sm-5" id="id_ssl" name="ssl" ">
-                        <option value="1" {% if form.ssl.value == '1' %} selected {% endif %} > 是 </option>
-                        <option value="-1" {% if form.ssl.value != '1' %} selected {% endif %} > 否 </option>
+                        <option value="1" {% if form.ssl.value == '1' %} selected {% endif %} > {% trans "是 " %}</option>
+                        <option value="-1" {% if form.ssl.value != '1' %} selected {% endif %} > {% trans "否 " %}</option>
                     </select>
                     {% if form.ssl.error %}
                         <div style="clear: both"><p class="errornote txt-color-red">{{ form.ssl.error }}</p></div>
@@ -41,11 +41,11 @@
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label no-padding-right" for="id_for_auth" > 需要验证 </label>
+                <label class="col-sm-3 control-label no-padding-right" for="id_for_auth" > {% trans "需要验证 " %}</label>
                 <div class="col-sm-9">
                     <select class="col-xs-10 col-sm-5" id="id_auth" name="auth"">
-                        <option value="-1" {% if form.auth.value == -1 %} selected {% endif %} > 否 </option>
-                        <option value="1" {% if form.auth.value != -1 %} selected {% endif %} > 是 </option>
+                        <option value="-1" {% if form.auth.value == -1 %} selected {% endif %} > {% trans "否 " %}</option>
+                        <option value="1" {% if form.auth.value != -1 %} selected {% endif %} > {% trans "是 " %}</option>
                     </select>
                     {% if form.auth.error %}
                         <div style="clear: both"><p class="errornote txt-color-red">{{ form.auth.error }}</p></div>
@@ -54,11 +54,11 @@
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label no-padding-right" for="id_disabled" > 状态 </label>
+                <label class="col-sm-3 control-label no-padding-right" for="id_disabled" > {% trans "状态 " %}</label>
                 <div class="col-sm-9">
                     <select class="col-xs-10 col-sm-5" id="id_disabled" name="disabled"">
-                        <option value="-1" {% if form.disabled.value != '1' %} selected {% endif %} > 启用 </option>
-                        <option value="1" {% if form.disabled.value == '1' %} selected {% endif %} > 禁用 </option>
+                        <option value="-1" {% if form.disabled.value != '1' %} selected {% endif %} > {% trans "启用 " %}</option>
+                        <option value="1" {% if form.disabled.value == '1' %} selected {% endif %} > {% trans "禁用 " %}</option>
                     </select>
                     {% if form.disabled.error %}
                         <div style="clear: both"><p class="errornote txt-color-red">{{ form.disabled.error }}</p></div>
@@ -74,10 +74,10 @@
                     </button>
 
                     <button class="btn" type="reset">
-                        <i class="ace-icon fa fa-undo bigger-110"></i>重置
+                        <i class="ace-icon fa fa-undo bigger-110"></i>{% trans "重置" %}
                     </button>
 
-                    <a type="button" class="btn btn-link" href="{% url 'mail_transfer' %}">取消</a>
+                    <a type="button" class="btn btn-link" href="{% url 'mail_transfer' %}">{% trans "取消" %}</a>
                 </div>
             </div>
         </form>

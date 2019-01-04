@@ -20,16 +20,16 @@
         </div>
     </div>
 
-    <!-- SSL加密功能开关 -->
+    <!-- {% trans "SSL加密功能开关 --" %}>
     {% include 'setting/include/sslen.html' %}
 
-    <!-- 步骤1：设置私钥 -->
+    <!-- {% trans "步骤1：设置私钥 --" %}>
     {% include 'setting/include/sslkey.html' %}
 
-    <!-- 步骤2：生成证书签名请求 -->
+    <!-- {% trans "步骤2：生成证书签名请求 --" %}>
     {% include 'setting/include/sslsig.html' %}
 
-    <!-- 步骤3：设置证书 -->
+    <!-- {% trans "步骤3：设置证书 --" %}>
     {% include 'setting/include/sslcert.html' %}
 
 
@@ -166,19 +166,19 @@
             var form = document.getElementById('id_sigForm');
             //参数检测
             if (form.sig_domain.value == '') {
-                alert('请填写“域名”！');
+                alert('{% trans "请填写" %}“{% trans "域名" %}”！');
                 return false;
             }
             if (form.sig_organization.value == '') {
-                alert('请填写“单位/组织”！');
+                alert('{% trans "请填写" %}“{% trans "单位/组织" %}”！');
                 return false;
             }
             if (form.sig_province.value == '') {
-                alert('请填写“省/市/自治区”！');
+                alert('{% trans "请填写" %}“{% trans "省/市/自治区" %}”！');
                 return false;
             }
             if (form.sig_locale.value == '') {
-                alert('请填写“所在地”！');
+                alert('{% trans "请填写" %}“{% trans "所在地" %}”！');
                 return false;
             }
             form.submit();

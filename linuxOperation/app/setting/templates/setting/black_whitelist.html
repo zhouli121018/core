@@ -1,4 +1,4 @@
-{% extends 'base_site.html' %}
+{% extends 'base_site.html' %}{% trans "当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“@域名”，eg:“@test.com”。%}
 {% load i18n %}
 {% load static %}
 
@@ -99,17 +99,17 @@
                     <div class="form-horizontal">
 
                         <div class="form-group">
-                            <label class="control-label  " for="id_eamil_bak">地址</label>
+                            <label class="control-label  " for="id_eamil_bak">{% trans "地址" %}</label>
                             <div class=" ">
                                 <input type="text" maxlength="60" id="id_eamil_bak" name="eamil_bak" value="" class=" form-control"/>
                                 <p class="help-block">
-                                    当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“@域名”，eg:“@test.com”。
+                                    {% trans "当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“@域名”，eg:“@test.com”。%}
                                 </p>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label  " for="id_remark_bak">备注</label>
+                            <label class="control-label  " for="id_remark_bak">{% trans "备注" %}</label>
                             <div class=" ">
                                 <input type="text" maxlength="60" id="id_remark_bak" name="remark_bak" value="" class=" form-control"/>
                             </div>
@@ -118,8 +118,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-primary" onclick="Javascript: addStatus()">添加</button>
-                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-sm btn-primary" onclick="Javascript: addStatus()">{% trans "添加" %}</button>
+                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">{% trans "关闭" %}</button>
                 </div>
             </div>
         </div>
@@ -137,18 +137,18 @@
                     <div class="form-horizontal">
 
                         <div class="form-group">
-                            <label class="control-label  " for="id_eamil_bak2">地址</label>
+                            <label class="control-label  " for="id_eamil_bak2">{% trans "地址" %}</label>
                             <div class=" ">
                                 <textarea id="id_eamil_bak2" name="eamil_bak2" value="" class=" form-control" rows="5" cols="5"></textarea>
                                 <p class="help-block">
-                                    一行一条数据<br>
-                                    当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“@域名”，eg:“@test.com”。
+                                    {% trans "一行一条数据" %}<br>
+                                    {% trans "当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“@域名”，eg:“@test.com”。%}
                                 </p>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label  " for="id_remark_bak2">备注</label>
+                            <label class="control-label  " for="id_remark_bak2">{% trans "备注" %}</label>
                             <div class=" ">
                                 <input type="text" maxlength="60" id="id_remark_bak2" name="remark_bak2" value="" class=" form-control"/>
                             </div>
@@ -157,8 +157,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-primary" onclick="Javascript: addStatus2()">添加</button>
-                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-sm btn-primary" onclick="Javascript: addStatus2()">{% trans "添加" %}</button>
+                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">{% trans "关闭" %}</button>
                 </div>
             </div>
         </div>

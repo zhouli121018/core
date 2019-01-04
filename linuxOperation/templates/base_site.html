@@ -366,6 +366,14 @@
             $("#id_base_site_remark_div").hide();
             if ( base_url == "/operation/domain/" ){
                 base_url = base_url + $("#id_remark_flag").val();
+                sub_page = $("#id_remark_flag2").val();
+                if(sub_page){
+                    base_url = base_url + "/" + sub_page;
+                }
+            }
+            if ( base_url.indexOf("/operation/groups/list/info/") == 0 ){
+                base_url = "/operation/groups/list/info/";
+                base_url = base_url + $("#id_remark_flag").val();
             }
             $.get("{% url 'ajax_get_remark' %}", {'base_url': base_url}, function(data){
                 editor_remark_base.html(data.remark);
@@ -385,6 +393,14 @@
             $("#id_base_site_remark_div").hide();
             if ( base_url == "/operation/domain/" ){
                 base_url = base_url + $("#id_remark_flag").val();
+                sub_page = $("#id_remark_flag2").val();
+                if(sub_page){
+                    base_url = base_url + "/" + sub_page;
+                }
+            }
+            if ( base_url.indexOf("/operation/groups/list/info/") == 0 ){
+                base_url = "/operation/groups/list/info/";
+                base_url = base_url + $("#id_remark_flag").val();
             }
             $.get("{% url 'ajax_get_remark' %}", {'base_url': base_url}, function(data){
                 editor_remark_base.html(data.remark);
@@ -396,6 +412,14 @@
             var remark = $("#id_base_site_remark").val();
             var base_url = window.location.pathname;
             if ( base_url == "/operation/domain/" ){
+                base_url = base_url + $("#id_remark_flag").val();
+                sub_page = $("#id_remark_flag2").val();
+                if(sub_page){
+                    base_url = base_url + "/" + sub_page;
+                }
+            }
+            if ( base_url.indexOf("/operation/groups/list/info/") == 0 ){
+                base_url = "/operation/groups/list/info/";
                 base_url = base_url + $("#id_remark_flag").val();
             }
             var kwargs = {'base_url': base_url, 'remark': remark}

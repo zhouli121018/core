@@ -30,14 +30,14 @@
                         {{ form.src_mailbox|bootstrap }}
                         {% if form.instance.pk %}
                             <div class="form-group">
-                                <label class="control-label  " for="id_ssl">密码（保存值为'{PASSWORD}'时，会取本地帐号的登陆密码）</label>
+                                <label class="control-label  " for="id_ssl">{% trans "密码（保存值为'{PASSWORD}'时，会取本地帐号的登陆密码）" %}</label>
                                 <div class=" ">
                                     <input type="password" class="form-control" name="src_password" value="{{ form.src_password.value }}" class="col-xs-10 col-sm-5">
                                 </div>
                             </div>
                         {% else %}
                             <div class="form-group">
-                                <label class="control-label  " for="id_ssl">密码（保存值为'{PASSWORD}'时，会取本地帐号的登陆密码）</label>
+                                <label class="control-label  " for="id_ssl">{% trans "密码（保存值为'{PASSWORD}'时，会取本地帐号的登陆密码）" %}</label>
                                 <div class=" ">
                                     <input type="text" class="form-control" name="src_password" value="{{ form.default_src_password }}" class="col-xs-10 col-sm-5">
                                 </div>
@@ -47,11 +47,11 @@
                             {{ form.ssl|bootstrap }}
                         {% else %}
                             <div class="form-group">
-                                <label class="control-label  " for="id_ssl">SSL访问</label>
+                                <label class="control-label  " for="id_ssl">{% trans "SSL访问" %}</label>
                                 <div class=" ">
                                     <select name="ssl" class=" form-control" id="id_ssl">
-                                      <option value="1" {% if form.default_ssl == "1" %} selected {% endif %}>启用</option>
-                                      <option value="-1" {% if form.default_ssl != "1" %} selected {% endif %}>不启用</option>
+                                      <option value="1" {% if form.default_ssl == "1" %} selected {% endif %}>{% trans "启用" %}</option>
+                                      <option value="-1" {% if form.default_ssl != "1" %} selected {% endif %}>{% trans "不启用" %}</option>
                                     </select>
                                 </div>
                             </div>

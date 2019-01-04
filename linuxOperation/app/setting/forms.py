@@ -936,6 +936,11 @@ class ExtUserCfilterForm(object):
         return True, ""
 
     def save(self):
+        def json_dumps(v):
+            try:
+                return json.dumps(v)
+            except:
+                return v
         rule_id = int(self.rule_id)
         value = json.loads(self.post)
         #修改逻辑，删除旧的数据重新插入
@@ -962,34 +967,44 @@ class ExtUserCfilterForm(object):
             )
         cond_list = value.get("condition", [])
         for cond in cond_list:
+            suboption = cond.get("suboption", "")
+            action = cond.get("action", "")
+            cond_value = cond.get("value", "")
+            if suboption in ("exec_date",):
+                cond_value = json_dumps(cond_value)
             obj_cond = ExtCfilterNewCond.objects.create(
                 parent_id = 0,
                 rule_id = int(obj_rule.id),
                 logic = cond.get("logic", "all"),
                 option = u"header",
-                suboption = cond.get("suboption", ""),
-                action = cond.get("action", ""),
-                value = cond.get("value", ""),
+                suboption = u"{}".format(suboption),
+                action = u"{}".format(action),
+                value = u"{}".format(cond_value),
             )
             for sub in cond.get("subs", []):
+                suboption = sub.get("suboption", "")
+                action = sub.get("action", "")
+                cond_value = sub.get("value", "")
+                if suboption in ("exec_date",):
+                    cond_value = json_dumps(cond_value)
                 obj_cond2 = ExtCfilterNewCond.objects.create(
                     parent_id = obj_cond.id,
                     rule_id = int(obj_rule.id),
                     logic = sub.get("logic", "all"),
                     option = u"header",
-                    suboption = sub.get("suboption", ""),
-                    action = sub.get("action", ""),
-                    value = sub.get("value", ""),
+                    suboption = u"{}".format(suboption),
+                    action = u"{}".format(action),
+                    value = u"{}".format(cond_value),
                 )
         action_list = value.get("action", [])
         for act in action_list:
-            value = act.get("value", {})
-            value = json.dumps(value)
+            act_value = act.get("value", {})
+            act_value = json.dumps(act_value)
             obj_act = ExtCfilterNewAction.objects.create(
                 rule_id = int(obj_rule.id),
                 sequence = act.get("sequence", 999),
                 action = act.get("action", ""),
-                value = u"{}".format(value),
+                value = u"{}".format(act_value),
             )
 
 class MailTransferSenderForm(DotDict):

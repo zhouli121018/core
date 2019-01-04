@@ -1,3 +1,4 @@
+{% load i18n %}
 <td>{{ number }}</td>
 <td>{{ d.name|default_if_none:'' }}</td>
 <td>{{ d.ip|default_if_none:'' }}</td>
@@ -9,6 +10,6 @@
     </span>
 </td>
 <td>
-    <a type="button" class="btn btn-minier btn-primary" href="{% url 'fail2ban_block_modify' d.id %}">修改</a>
-    <a type="button" class="btn btn-minier btn-danger" href="Javascript: setStatus({{ d.id }}, 'delete')">删除</a>
+    <a type="button" class="btn btn-minier btn-primary" href="{% url 'fail2ban_block_modify' d.id %}">{% trans "修改" %}</a>
+    <a type="button" class="btn btn-minier btn-danger" href="Javascript: setStatus({{ d.id }}, 'delete')">{% trans "删除" %}</a>
 </td>

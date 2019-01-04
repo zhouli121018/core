@@ -11,6 +11,7 @@
     </div>
     <form role="form" action="" method="post" class="form-horizontal">
         <div class="row">
+            <input type="hidden" value="basic" name="id_remark_flag" id="id_remark_flag" />
             <div class="col-sm-12 ">
                 <div class="panel panel-default" style="margin-bottom: 0px!important;">
                     <div class="panel-heading">{% trans "组配置信息" %}</div>
@@ -32,25 +33,25 @@
                         <div id="edit_email_tabs" style="margin-bottom: 13px">
                             <ul>
                                 <li class="basic">
-                                    <a href="#basic">{% trans '常规设置' %}</a>
+                                    <a href="#basic" onclick="clickSubTab('basic')">{% trans '常规设置' %}</a>
                                 </li>
                                 <li class="login">
-                                    <a href="#login">{% trans '登录方式限制' %}</a>
+                                    <a href="#login" onclick="clickSubTab('login')">{% trans '登录方式限制' %}</a>
                                 </li>
                                 <li class="password">
-                                    <a href="#password">{% trans '密码规则' %}</a>
+                                    <a href="#password" onclick="clickSubTab('password')">{% trans '密码规则' %}</a>
                                 </li>
                                 <li class="spam">
-                                    <a href="#spam">{% trans '反垃圾/反病毒' %}</a>
+                                    <a href="#spam" onclick="clickSubTab('spam')">{% trans '反垃圾/反病毒' %}</a>
                                 </li>
                                 <li class="frequency">
-                                    <a href="#frequency">{% trans '发信频率设置' %}</a>
+                                    <a href="#frequency" onclick="clickSubTab('frequency')">{% trans '发信频率设置' %}</a>
                                 </li>
                                 <li class="oab">
-                                    <a href="#oab">{% trans '企业通讯录设置' %}</a>
+                                    <a href="#oab" onclick="clickSubTab('oab')">{% trans '企业通讯录设置' %}</a>
                                 </li>
                                 <li>
-                                    <a href="#space">{% trans '邮箱空间清理设置' %}</a>
+                                    <a href="#space" onclick="clickSubTab('space')">{% trans '邮箱空间清理设置' %}</a>
                                 </li>
                             </ul>
 
@@ -1948,8 +1949,13 @@
                 }
             })
         }
-
         //更新某个组配置的“指定外域收发权限白名单”    {% url 'ajax_group_setting_white_mdf' %}    请求方式：   POST
+
+        function clickSubTab(key){
+            console.log("clickSubTab   "+key);
+            $("#id_remark_flag").val(key);
+            get_remark_base();
+        }
 
     </script>
 

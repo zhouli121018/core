@@ -31,7 +31,7 @@
                 {% csrf_token %}
 
                 <div class="form-group {% if form.name.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_name"> 审核名称 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_name"> {% trans "审核名称 " %}</label>
                     <div class="col-sm-9">
                         <input type="text" name="name" id="id_name" value="{{ form.name.value }}" maxlength="250" class="col-xs-10 col-sm-5" required/>
                         {% if form.name.error %}
@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_review_id"> 选择下一级审核 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_review_id"> {% trans "选择下一级审核 " %}</label>
 
                     {% if form.instance %}
                         <div class="col-sm-9">
@@ -64,9 +64,9 @@
 							<span class="input-group-btn">
                                 <a data-toggle="modal" data-target="#MyReviwModal" data-whatever=""
                                    href="#" class="btn btn-sm btn-default" type="button" title="选择审核人" id="id_review_model">
-                                    <i class="ace-icon fa fa-users bigger-110 green"></i>选择
+                                    <i class="ace-icon fa fa-users bigger-110 green"></i>{% trans "选择" %}
                                 </a>
-                                <a class="btn btn-sm btn-grey" type="button" title="清空审核人" href="Javascript: clearReview()">清空</a>
+                                <a class="btn btn-sm btn-grey" type="button" title="{% trans "清空审核人" %} href="Javascript: clearReview()">{% trans "清空" %}</a>
                             </span>
                             </div>
                         </div>
@@ -75,7 +75,7 @@
                 </div>
 
                 <div class="form-group {% if form.master_review_id.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_master_review_id"> 主审 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_master_review_id"> {% trans "主审 " %}</label>
                     <div class="col-sm-9">
                         <select class="select2 col-xs-10 col-sm-5" id="id_master_review_id" name="master_review_id">
                             <option value="0">------</option>
@@ -92,7 +92,7 @@
                 </div>
 
                 <div class="form-group {% if form.assist_review_id.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_assist_review_id"> 副审 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_assist_review_id"> {% trans "副审 " %}</label>
                     <div class="col-sm-9">
                         <select class="select2 col-xs-10 col-sm-5" id="id_assist_review_id" name="assist_review_id">
                             <option value="0">------</option>
@@ -110,7 +110,7 @@
 
 
                 <div class="form-group {% if form.wait_next_time.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_wait_next_time"> 自动转换等待时间 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_wait_next_time"> {% trans "自动转换等待时间 " %}</label>
                     <div class="col-sm-9">
                         <input type="number" id="id_wait_next_time" name="wait_next_time" value="{{ form.wait_next_time.value }}" class="col-xs-10 col-sm-5" required/>
                         {% if form.wait_next_time.error %}
@@ -122,7 +122,7 @@
                     <div class="">
                         <label class="col-sm-3 control-label no-padding-right"></label>
                         <span class="help-inline col-xs-9 col-sm-7">
-                            <span class="middle text-success">自动把副审转换为审核人的等待时间，单位为分钟，若为0则永不转移</span>
+                            <span class="middle text-success">{% trans "自动把副审转换为审核人的等待时间，单位为分钟，若为0则永不转移" %}</span>
                         </span>
                     </div>
                 </div>
@@ -135,10 +135,10 @@
                         </button>
 
                         <button class="btn" type="reset">
-                            <i class="ace-icon fa fa-undo bigger-110"></i>重置
+                            <i class="ace-icon fa fa-undo bigger-110"></i>{% trans "重置" %}
                         </button>
 
-                        <a type="button" class="btn btn-link" href="{% url 'review_list' %}">取消</a>
+                        <a type="button" class="btn btn-link" href="{% url 'review_list' %}">{% trans "取消" %}</a>
                     </div>
                 </div>
             </form>
@@ -152,13 +152,13 @@
         <div class="modal-dialog" style="margin:120px auto; width: 1000px;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel">加载中</h4>
+                    <h4 class="modal-title" id="myModalLabel">{% trans "加载中" %}</h4>
                 </div>
                 <div class="modal-body">
-                    页面加载中
+                    {% trans "页面加载中" %}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">关闭</button>
+                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">{% trans "关闭" %}</button>
                 </div>
             </div>
         </div>

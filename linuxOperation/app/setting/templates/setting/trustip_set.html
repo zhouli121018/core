@@ -56,19 +56,19 @@
                     <div class="form-horizontal">
 
                         <div class="form-group">
-                            <label class="control-label  " for="id_trust_ip">IP地址</label>
+                            <label class="control-label  " for="id_trust_ip">{% trans "IP地址" %}</label>
                             <div class=" ">
                                 <input type="text" maxlength="48" id="id_trust_ip" name="trust_ip" value="" class=" form-control"/>
                                 <p class="help-block">
-                                    信任IP可以为单个IP地址或一个IP段，eg：“123.123.123.123”、“192.168.1.0/32”。
+                                    {% trans "信任IP可以为单个IP地址或一个IP段，eg：“123.123.123.123”、“192.168.1.0/32”。" %}
                                 </p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-primary" onclick="Javascript: addStatus()">添加</button>
-                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-sm btn-primary" onclick="Javascript: addStatus()">{% trans "添加" %}</button>
+                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">{% trans "关闭" %}</button>
                 </div>
             </div>
         </div>

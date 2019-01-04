@@ -1,3 +1,4 @@
+{% load i18n %}
 <td>{{ number }}</td>
 <td>{{ d.id }}</td>
 <td>{{ d.name|default_if_none:'' }}</td>
@@ -7,7 +8,7 @@
     {% if d.pre_action %}
         {{ d.get_pre_action_display }}
     {% else %}
-        人工
+        {% trans "人工" %}
     {% endif %}
 </td>
 <td>{{ d.get_cond_logic_display }}</td>
@@ -29,11 +30,11 @@
     {% endif %}
 </td>
 <td>
-    <a type="button" class="btn btn-minier btn-primary" href="{% url 'reviewrule_modify' d.id %}">修改</a>
+    <a type="button" class="btn btn-minier btn-primary" href="{% url 'reviewrule_modify' d.id %}">{% trans "修改" %}</a>
     {% if d.disabled == 1 %}
-        <a type="button" class="btn btn-minier btn-info" href="Javascript: setStatus({{ d.id }}, 'active')">启用</a>
+        <a type="button" class="btn btn-minier btn-info" href="Javascript: setStatus({{ d.id }}, 'active')">{% trans "启用" %}</a>
     {% elif d.disabled == -1 %}
-        <a type="button" class="btn btn-minier btn-grey" href="Javascript: setStatus({{ d.id }}, 'disabled')">禁用</a>
+        <a type="button" class="btn btn-minier btn-grey" href="Javascript: setStatus({{ d.id }}, 'disabled')">{% trans "禁用" %}</a>
     {% endif %}
-    <a type="button" class="btn btn-minier btn-danger" href="Javascript: setStatus({{ d.id }}, 'delete')">删除</a>
+    <a type="button" class="btn btn-minier btn-danger" href="Javascript: setStatus({{ d.id }}, 'delete')">{% trans "删除" %}</a>
 </td>

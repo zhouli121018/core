@@ -60,11 +60,11 @@
                             <div class=" ">
                                 <div class="control-group">
                                     <label>
-                                        <label id="id_month_lable">{{ form.month }}月</label>
-                                        <label id="id_date_lable">{{ form.date }}日</label>
-                                        <label id="id_week_lable">周{{ form.week }}</label>
-                                        <label id="id_hour_lable">{{ form.hour }}点</label>
-                                        <label id="id_hour_lable">{{ form.minute }}分</label>
+                                        <label id="id_month_lable">{{ form.month }}{% trans "月" %}</label>
+                                        <label id="id_date_lable">{{ form.date }}{% trans "日" %}</label>
+                                        <label id="id_week_lable">{% trans "周" %}{{ form.week }}</label>
+                                        <label id="id_hour_lable">{{ form.hour }}{% trans "点" %}</label>
+                                        <label id="id_hour_lable">{{ form.minute }}{% trans "分" %}</label>
                                     </label>
 
                                 </div>
@@ -84,8 +84,8 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="col-md-10">
-                <p><strong><span style="color:#FF0000;"><strong><span style="color:#FF0000;">备注:</span></strong><br></span></strong></p>
-                <p>备份数据的保存路径需要先建立好，并且给予<span class="c_blue">umail</span>用户写权限（设置目录权限为777或将目录属主设为umail）</p>
+                <p><strong><span style="color:#FF0000;"><strong><span style="color:#FF0000;">{% trans "备注:" %}</span></strong><br></span></strong></p>
+                <p>{% trans "备份数据的保存路径需要先建立好，并且给予" %}<span class="c_blue">umail</span>{% trans "用户写权限（设置目录权限为777或将目录属主设为umail）" %}</p>
             </div>
         </div>
     </div>

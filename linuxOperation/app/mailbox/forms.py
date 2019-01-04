@@ -173,6 +173,7 @@ class MailboxUserForm(forms.ModelForm):
         super(MailboxUserForm, self).__init__(*args, **kwargs)
         self.domain = domain
         self.fields['domain'].required = False
+        self.fields['showorder'].required = False
         self.fields['birthday'].widget.attrs.update({'addon': u'date', 'class': u'date', 'readonly': 'readonly'})
 
     def clean_domain(self):
@@ -198,6 +199,12 @@ class MailboxUserForm(forms.ModelForm):
             if MailboxUser.objects.exclude(mailbox_id=self.instance.mailbox_id).filter(tel_mobile=data, domain=self.domain):
                 raise forms.ValidationError(u"手机号码重复")
         return data
+
+    def clean_showorder(self):
+        showorder = self.cleaned_data.get('showorder', '')
+        if not showorder:
+            return 0
+        return showorder
 
     def save(self, id, commit=True):
         mem = super(MailboxUserForm, self).save(commit=False)

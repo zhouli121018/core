@@ -1,6 +1,7 @@
+{% load i18n %}
 <td>{{ number }}</td>
 <td>{{ d.nickname }}</td>
-<td> <a href="{{ d.img }}" target="_blank">查看头像</a></td>
+<td> <a href="{{ d.img }}" target="_blank">{% trans "查看头像" %}</a></td>
 <td>{{ d.province|default_if_none:'' }}</td>
 <td>{{ d.city|default_if_none:'' }}</td>
 <td>{{ d.email|default_if_none:'' }}</td>

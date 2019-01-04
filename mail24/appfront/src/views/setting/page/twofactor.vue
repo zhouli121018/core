@@ -162,8 +162,8 @@
                   <el-input v-model="phoneForm.tel" style="width:204px;" v-if="!showList.has_phone"></el-input>
                   <el-input v-model="showList.phone" style="width:204px;" v-if="showList.has_phone" disabled></el-input>
 
-                  <el-button @click="sentSms" :disabled="getcodeDisabled" v-if="!showList.has_phone"> 获取验证码 </el-button>
-                  <el-button @click="releaseSmsFn" :disabled="getcodeDisabled" v-if="showList.has_phone"> 获取验证码 </el-button>
+                  <el-button @click="sentSms" :disabled="getcodeDisabled" v-if="!showList.has_phone"> 获取验证码 <span v-if="getcodeDisabled">({{ss}} 秒)</span> </el-button>
+                  <el-button @click="releaseSmsFn" :disabled="getcodeDisabled" v-if="showList.has_phone"> 获取验证码 <span v-if="getcodeDisabled">({{ss}} 秒)</span></el-button>
                 </el-form-item>
                 <el-form-item label="短信验证码" prop="code">
                   <el-input v-model="phoneForm.code" style="width:300px;"></el-input>
@@ -189,7 +189,6 @@
   import {
     twofactorShow,googleSecret,googleQrcode,googleVerify,googleRelease,phoneSms,phoneVerify,phoneRelease,releaseSms
   } from '@/api/api'
-
   export default {
     data() {
       return {
@@ -232,36 +231,94 @@
         }
         googleRelease(param).then(res=>{
           console.log(res)
+          this.show_google_set = false
+          this.getTwofactorShow();
+          let str = '';
+          this.$message({
+            type:'success',
+            message:'操作成功！'+str
+          })
         }).catch(err=>{
-          console.log(err);
+          let str = '';
+          if(err.non_field_errors){
+            str = err.non_field_errors[0]
+          }
+          this.$message({
+            type:'error',
+            message:'验证失败！'+str
+          })
         })
       },
       releaseSmsFn(){
+        this.getcodeDisabled = true;
+
         releaseSms().then(res=>{
-          console.log(res)
+          if(this.timer){
+            clearInterval(timer)
+          }
+          this.timer = setInterval(()=>{
+            this.ss --;
+            if(this.ss <=0){
+              this.getcodeDisabled = false;
+              this.ss = 60;
+              clearInterval(this.timer)
+            }
+          },1000)
         }).catch(err=>{
-          console.log(err);
+          this.getcodeDisabled = false;
+          this.ss = 60;
+          let str = '';
+          if(err.non_field_errors){
+            str = err.non_field_errors[0]
+          }
+          if(err.phone){
+            str = err.phone[0]
+          }
+          if(err.detail){
+            str = err.detail;
+          }
+          this.$message({
+            type:'error',
+            message:'操作失败！'+str
+          })
         })
       },
       sentSms(){
-        this.getcodeDisabled = true;
-        if(this.timer){
-          clearInterval(timer)
+        if(!this.phoneForm.tel || this.phoneForm.tel ==''){
+          this.$message({
+            type:'error',
+            message:'请输入手机号码！'
+          })
+          return ;
+        }
+        if(!(/^1[345678]\d{9}$/).test(this.phoneForm.tel)){
+          this.$message({
+            type:'error',
+            message:'请输入正确的手机号码！'
+          })
+          return ;
         }
 
+        this.getcodeDisabled = true;
         let param = {
           phone:this.phoneForm.tel
         }
         phoneSms(param).then(res=>{
           console.log(res)
+          if(this.timer){
+            clearInterval(this.timer)
+          }
           this.timer = setInterval(()=>{
             this.ss --;
             if(this.ss <=0){
               this.getcodeDisabled = false;
+              this.ss = 60;
+              clearInterval(timer)
             }
-          },60000)
+          },1000)
         }).catch(err=>{
           this.getcodeDisabled = false;
+          this.ss = 60;
           let str = '';
           if(err.non_field_errors){
             str = err.non_field_errors[0]
@@ -296,6 +353,9 @@
           this.phoneForm.tel = ''
           this.phoneForm.code = ''
           this.getTwofactorShow();
+          this.show_phone_set = false;
+          this.getcodeDisabled = false;
+          this.ss = 60;
         }).catch(err=>{
           let str = '';
           if(err.non_field_errors){
@@ -332,6 +392,9 @@
           this.phoneForm.tel = ''
           this.phoneForm.code = ''
           this.getTwofactorShow();
+          this.show_phone_set = false;
+          this.getcodeDisabled = false;
+          this.ss = 60;
         }).catch(err=>{
           let str = '';
           if(err.non_field_errors){
@@ -390,6 +453,13 @@
         }
         googleVerify(param).then(res=>{
           console.log(res)
+          this.show_google_set = false;
+          this.getTwofactorShow();
+          let str = '';
+          this.$message({
+            type:'success',
+            message:'操作成功！'+str
+          })
         }).catch(err=>{
           console.log(err)
           let str = '';

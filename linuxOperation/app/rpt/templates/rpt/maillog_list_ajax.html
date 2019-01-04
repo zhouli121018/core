@@ -1,3 +1,4 @@
+{% load i18n %}
 <td>{{ number }}</td>
 <td>{{ d.get_time|default_if_none:'' }}</td>
 <td>{{ d.get_username|default_if_none:'' }}</td>
@@ -25,8 +26,8 @@
 {% endif %}
 <td> {{ d.folder|default_if_none:'' }} </td>
 {% if d.get_result == '1' %}
-    <td> <strong style="color: green"> 成功 </strong> </td>
+    <td> <strong style="color: green"> {% trans "成功 " %}</strong> </td>
 {% else %}
-    <td> <strong style="color: red"> 失败 </strong> </td>
+    <td> <strong style="color: red"> {% trans "失败 " %}</strong> </td>
 {% endif %}
 <td> <strong style="color: red"> {{ d.remark|default_if_none:'' }} </strong> </td>

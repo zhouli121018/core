@@ -1,15 +1,16 @@
+{% load i18n %}
 <td>{{ number }}</td>
 <td>{{ domain_name|default_if_none:'' }}</td>
 <td>{{ d.rule|default_if_none:'' }}</td>
 <td>{{ d.trans_value|default_if_none:'' }}</td>
 <td>
     {% if d.disabled == '1' %}
-        <span class="label label-xlg label-light arrowed-in arrowed-in-right"> 禁用 </span>
+        <span class="label label-xlg label-light arrowed-in arrowed-in-right"> {% trans "禁用 " %}</span>
     {% else %}
-        <span class="label label-xlg label-yellow arrowed-in arrowed-in-right"> 启用 </span>
+        <span class="label label-xlg label-yellow arrowed-in arrowed-in-right"> {% trans "启用 " %}</span>
     {% endif %}
 </td>
 <td>
-    <a type="button" class="btn btn-minier btn-primary" href="{% url 'header_trans_mdf' d.id %}">修改</a>
-    <a type="button" class="btn btn-minier btn-danger" href="Javascript: setStatus({{ d.id }}, 'delete')">删除</a>
+    <a type="button" class="btn btn-minier btn-primary" href="{% url 'header_trans_mdf' d.id %}">{% trans "修改" %}</a>
+    <a type="button" class="btn btn-minier btn-danger" href="Javascript: setStatus({{ d.id }}, 'delete')">{% trans "删除" %}</a>
 </td>

@@ -124,6 +124,25 @@
 </script>
 
 <style>
+  .mlsidebar{
+    transition: width 0.6s;
+  }
+  .mltabview{
+    transition: left 0.6s;
+  }
+  .contact_sidebar.navbar-expand {
+    position: absolute;
+    height: 66px;
+    width: 12px;
+    background-color: #e8e8e8;
+    border-radius: 4px 0 0 4px;
+    right: 0;
+    top: 45%;
+    z-index: 99;
+    vertical-align: middle;
+    line-height: 66px;
+    cursor: pointer;
+  }
   /*.mltabview-content{*/
   /*top:0!important;*/
   /*}*/

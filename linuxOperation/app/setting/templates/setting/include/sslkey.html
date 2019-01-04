@@ -11,22 +11,22 @@
                 <label class="col-sm-2 control-label no-padding-right"></label>
                 <div class="col-md-offset-2 col-md-10">
                     <div class="page-header"  style="padding-bottom: 7px;padding-top: 0px;">
-                        <h3><span class="badge" style="font-size:22px;font-weight:bold;padding:6px;">1</span>{% trans " 设置私钥" %}</h3>
+                        <h3><span class="badge" style="font-size:22px;font-weight:bold;padding:6px;">1</span>{% trans "设置私钥" %}</h3>
                     </div>
                 </div>
             </div>
             <div class="form-group" >
-                <label class="col-sm-3 control-label no-padding-right"> 当前私钥信息 </label>
+                <label class="col-sm-3 control-label no-padding-right"> {% trans "当前私钥信息 " %}</label>
                 <div class="col-sm-9">
                     <p style="margin-bottom: 4px;margin-top: 9px;">
                         {% if keyValue %}
-                            密钥长度：<span style="color: red;margin-right: 15px;">{{ keyValue }}</span>
-                            <button type="button" class="btn btn-primary btn-minier" onclick="sslPrivatekey('export')">导出私钥</button>
-                            <button type="button" class="btn btn-danger btn-minier" onclick="sslPrivatekey('clear')">清除私钥</button>
+                            {% trans "密钥长度：" %}<span style="color: red;margin-right: 15px;">{{ keyValue }}</span>
+                            <button type="button" class="btn btn-primary btn-minier" onclick="sslPrivatekey('export')">{% trans "导出私钥" %}</button>
+                            <button type="button" class="btn btn-danger btn-minier" onclick="sslPrivatekey('clear')">{% trans "清除私钥" %}</button>
                         {% else %}
-                            <span style="color: red; margin-right: 15px;" >没有设置私钥</span>
-                            <button type="button" class="btn btn-primary btn-minier" onclick="sslPrivatekey('generate')">生成新私钥</button>
-                            <button type="button" class="btn btn-primary btn-minier" onclick="sslPrivatekey('import')">导入私钥</button>
+                            <span style="color: red; margin-right: 15px;" >{% trans "没有设置私钥" %}</span>
+                            <button type="button" class="btn btn-primary btn-minier" onclick="sslPrivatekey('generate')">{% trans "生成新私钥" %}</button>
+                            <button type="button" class="btn btn-primary btn-minier" onclick="sslPrivatekey('import')">{% trans "导入私钥" %}</button>
                         {% endif %}
                     </p>
                 </div>
@@ -36,10 +36,10 @@
                     <label class="col-sm-3 control-label no-padding-right" for="id_ssl_privatekey">  </label>
                     <div class="col-sm-9">
                         <span class="block">
-                            <span class="control-label pull-left"> <strong>保护密码：</strong></span>
+                            <span class="control-label pull-left"> <strong>{% trans "保护密码：" %}</strong></span>
                             <input type="password" name="sslkey_passwd_export" value="" id="id_sslkey_passwd_export">
-                            <button type="button" class="btn btn-primary btn-xs" onclick="sslkeySubmit('export')">导出</button>
-                            <button type="button" class="btn btn-link btn-xs" onclick="sslPrivatekey('export-cancel')">取消</button>
+                            <button type="button" class="btn btn-primary btn-xs" onclick="sslkeySubmit('export')">{% trans "导出" %}</button>
+                            <button type="button" class="btn btn-link btn-xs" onclick="sslPrivatekey('export-cancel')">{% trans "取消" %}</button>
                         </span>
                     </div>
                 </div>
@@ -48,15 +48,15 @@
                     <label class="col-sm-3 control-label no-padding-right" for="id_ssl_privatekey">  </label>
                     <div class="col-sm-9">
                         <span class="block">
-                            <span class="control-label pull-left"> <strong>选择私钥：</strong></span>
+                            <span class="control-label pull-left"> <strong>{% trans "选择私钥：" %}</strong></span>
                             <input type="file" name="sslkeyfile" value="">
                         </span>
                         <div style="clear: both; margin:5px;"> </div>
                         <span class="block">
-                            <span class="control-label pull-left"> <strong>保护密码：</strong></span>
+                            <span class="control-label pull-left"> <strong>{% trans "保护密码：" %}</strong></span>
                             <input type="password" name="sslkey_passwd_import" value="" id="id_sslkey_passwd_import">
-                            <button type="button" class="btn btn-primary btn-xs" onclick="sslkeySubmit('import')">导入</button>
-                            <button type="button" class="btn btn-link btn-xs" onclick="sslPrivatekey('import-cancel')">取消</button>
+                            <button type="button" class="btn btn-primary btn-xs" onclick="sslkeySubmit('import')">{% trans "导入" %}</button>
+                            <button type="button" class="btn btn-link btn-xs" onclick="sslPrivatekey('import-cancel')">{% trans "取消" %}</button>
                         </span>
                     </div>
                 </div>

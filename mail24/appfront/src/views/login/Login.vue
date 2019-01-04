@@ -1,194 +1,202 @@
 <template>
-  <div id="login_bg" ref="login_bg" :class="'bg'+bgIndex">
-    <div class="main-bottom main-bottom-0"></div>
-    <div class="main-middle main-middle-0"></div>
+  <div style="width:100%;height:100%">
+     <div v-if="!twofactor_login" id="login_bg" ref="login_bg" :class="'bg'+bgIndex">
+      <div class="main-bottom main-bottom-0"></div>
+      <div class="main-middle main-middle-0"></div>
 
 
-    <div class="main">
-      <div class="content">
-        <div>
-          <a href="#" class="login_logo"  v-if="loginBeforeData.login_logo">
-            <img :src="loginBeforeData.login_logo" alt="U-Mail">
-          </a>
+      <div class="main">
+        <div class="content">
+          <div>
+            <a href="#" class="login_logo"  v-if="loginBeforeData.login_logo">
+              <img :src="loginBeforeData.login_logo" alt="U-Mail">
+            </a>
 
+
+          </div>
+          <div class="version" style="width:60%;min-height:200px;margin:0 auto;">
+
+            <el-carousel trigger="click" indicator-position="outside">
+              <el-carousel-item v-for="(item,k) in loginBeforeData.login_ads" :key="k" v-if="loginBeforeData.login_ads">
+                <a :href="item.link" target="_blank" v-if="item.link">
+                  <img :src="item.image" style="width:100%;max-width:100%;">
+                </a>
+                <img :src="item.image" style="width:100%;max-width:100%;" v-if="!item.link">
+              </el-carousel-item>
+            </el-carousel>
+
+          </div>
+          <!--<div style="width:300px;padding-left:20px;margin-top:30px;">-->
+            <!--<a :href="loginBeforeData.login_ads[0].link" target="_blank" >-->
+              <!--<img :src="loginBeforeData.login_ads[0].image" style="width:100%;max-width:100%;">-->
+            <!--</a>-->
+          <!--</div>-->
+          <div class="copyright">
+            <label>
+              Copyright © <span>{{loginBeforeData.name}}</span>
+              <span v-if="loginBeforeData.is_icp">
+                <a :href="loginBeforeData.icp_link" v-if="loginBeforeData.icp_link"  target="_blank" style="color:#fff;text-decoration:none;"> | {{loginBeforeData.icp_no}}</a>
+                <span v-if="!loginBeforeData.icp_link"> | {{loginBeforeData.icp_no}}</span>
+              </span>
+            </label>
+          </div>
+        </div>
+        <div class="aside-blur" style="min-width: 330px;z-index:10;">
 
         </div>
-        <div class="version" style="width:60%;min-height:200px;margin:0 auto;">
-
-          <el-carousel trigger="click" indicator-position="outside">
-            <el-carousel-item v-for="(item,k) in loginBeforeData.login_ads" :key="k" v-if="loginBeforeData.login_ads">
-              <a :href="item.link" target="_blank" v-if="item.link">
-                <img :src="item.image" style="width:100%;max-width:100%;">
-              </a>
-              <img :src="item.image" style="width:100%;max-width:100%;" v-if="!item.link">
-            </el-carousel-item>
-          </el-carousel>
-
-        </div>
-        <!--<div style="width:300px;padding-left:20px;margin-top:30px;">-->
-          <!--<a :href="loginBeforeData.login_ads[0].link" target="_blank" >-->
-            <!--<img :src="loginBeforeData.login_ads[0].image" style="width:100%;max-width:100%;">-->
-          <!--</a>-->
-        <!--</div>-->
-        <div class="copyright">
-          <label>
-            Copyright © <span>{{loginBeforeData.name}}</span>
-            <span v-if="loginBeforeData.is_icp">
-              <a :href="loginBeforeData.icp_link" v-if="loginBeforeData.icp_link"  target="_blank" style="color:#fff;text-decoration:none;"> | {{loginBeforeData.icp_no}}</a>
-              <span v-if="!loginBeforeData.icp_link"> | {{loginBeforeData.icp_no}}</span>
-            </span>
-          </label>
-        </div>
-      </div>
-      <div class="aside-blur" style="min-width: 330px;z-index:10;">
-
-      </div>
-      <div class="aside" style="min-width: 330px;z-index:11;" ref="aside">
-        <div class="loginArea normalForm" curtype="normalForm">
-          <div id="login_box" style="min-width:260px;width: 54%;margin:0 auto;">
+        <div class="aside" style="min-width: 330px;z-index:11;" ref="aside">
+          <div class="loginArea normalForm" curtype="normalForm">
+            <div id="login_box" style="min-width:260px;width: 54%;margin:0 auto;">
 
 
-            <!-- <el-radio-group v-model="labelPosition" size="small">
-            <el-radio-button label="left">左对齐</el-radio-button>
-            <el-radio-button label="right">右对齐</el-radio-button>
-            <el-radio-button label="top">顶部对齐</el-radio-button>
-            </el-radio-group> -->
-            <h2 class="text-center">用户登录</h2>
-            <el-form :label-position="labelPosition" class="loginForm" ref="loginForm" :rules="rules" label-width="80px" :model="formLabelAlign">
-              <el-form-item label="用户名" prop="username">
-                <!--<el-input v-model.trim="formLabelAlign.username"></el-input>-->
-                <el-input placeholder="请输入用户名" v-model.trim="formLabelAlign.username" class="input-with-select" name="username">
-                  <template slot="append">@
-                  <el-select v-model="loginBeforeData.domain"  placeholder="请选择"  style="width:120px" @change="changeDomain">
-                    <el-option v-for="(d,k) in loginBeforeData.domains" :key="k" :label="d[1]" :value="d[1]"></el-option>
-                  </el-select>
-                  </template>
+              <!-- <el-radio-group v-model="labelPosition" size="small">
+              <el-radio-button label="left">左对齐</el-radio-button>
+              <el-radio-button label="right">右对齐</el-radio-button>
+              <el-radio-button label="top">顶部对齐</el-radio-button>
+              </el-radio-group> -->
+              <h2 class="text-center">用户登录</h2>
+              <el-form :label-position="labelPosition" class="loginForm" ref="loginForm" :rules="rules" label-width="80px" :model="formLabelAlign">
+                <el-form-item label="用户名" prop="username">
+                  <!--<el-input v-model.trim="formLabelAlign.username"></el-input>-->
+                  <el-input placeholder="请输入用户名" v-model.trim="formLabelAlign.username" class="input-with-select" name="username">
+                    <template slot="append">@
+                    <el-select v-model="loginBeforeData.domain"  placeholder="请选择"  style="width:120px" @change="changeDomain">
+                      <el-option v-for="(d,k) in loginBeforeData.domains" :key="k" :label="d[1]" :value="d[1]"></el-option>
+                    </el-select>
+                    </template>
 
-                </el-input>
+                  </el-input>
+                </el-form-item>
+                <el-form-item label="密码" prop="password">
+                  <el-input type="password" name="password" v-model="formLabelAlign.password"></el-input>
+                </el-form-item>
+                <div style="height:30px;">
+                  <!--<el-checkbox style="float:left;" v-model="rememberUserInfo" :class="{'is-checked el-checkbox__input':rememberUserInfo}">记住用户名和密码</el-checkbox>-->
+                  <el-button type="text" style="float:right;padding:0;color:#e6a23c;" @click="forget">忘记密码？</el-button>
+                </div>
+
+              </el-form>
+              <div class="text-center">
+                <el-button type="primary" @click="login" style="width:50%">登录</el-button>
+              </div>
+
+            </div>
+          </div>
+
+          <el-dialog title="重置密码" :visible.sync="formVisible" width="400px" :append-to-body="true" :close-on-click-modal="false">
+            <el-form :model="form" size="small" :rules="formRule" ref="reset2Form">
+              <el-input v-model="form.carbled" type="hidden" style="display:none;"></el-input>
+              <el-form-item :label="'请输入验证码: '+form.code_label" prop="code">
+                <el-input v-model="form.code" auto-complete="off"></el-input>
               </el-form-item>
-              <el-form-item label="密码" prop="password">
-                <el-input type="password" name="password" v-model="formLabelAlign.password"></el-input>
+              <el-form-item :label="form.label_q1" prop="q1">
+                <el-input v-model="form.q1" auto-complete="off"></el-input>
               </el-form-item>
-              <div style="height:30px;">
-                <!--<el-checkbox style="float:left;" v-model="rememberUserInfo" :class="{'is-checked el-checkbox__input':rememberUserInfo}">记住用户名和密码</el-checkbox>-->
-                <el-button type="text" style="float:right;padding:0;color:#e6a23c;" @click="forget">忘记密码？</el-button>
+              <el-form-item :label="form.label_q2" prop="q2">
+                <el-input v-model="form.q2" auto-complete="off"></el-input>
+              </el-form-item>
+              <el-form-item :label="form.label_q3" prop="q3">
+                <el-input v-model="form.q3" auto-complete="off"></el-input>
+              </el-form-item>
+
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="formVisible = false">取 消</el-button>
+              <el-button type="primary" @click="reset2_submit">确 定</el-button>
+            </div>
+          </el-dialog>
+
+          <el-dialog title="重置密码" :visible.sync="form3Visible" width="400px" :append-to-body="true" :close-on-click-modal="false">
+            <el-form :model="form3" size="small" :rules="form3Rule" ref="reset3Form">
+              <el-input v-model="form3.carbled" type="hidden" style="display:none;"></el-input>
+              <el-input v-model="form3.new_carbled" type="hidden" style="display:none;"></el-input>
+
+              <el-form-item label="新密码" prop="new_password">
+                <el-input v-model="form3.new_password" type="password" auto-complete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="确认密码" prop="confirm_password">
+                <el-input v-model="form3.confirm_password" type="password" auto-complete="off"></el-input>
+              </el-form-item>
+              <div>
+                <div>
+                  <strong style="color: red">密码必须满足以下条件：</strong>
+                  <ul style="margin-left: 26px;">
+                    <li style="list-style-type:circle;">密码长度为{{passwordRules.passwd_size2}}至16位；</li>
+                    <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;">必须包含两种字符（数字、大写字母、小写字母、特殊字符）；</li>
+                    <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">必须包含三种字符（数字、大写字母、小写字母、特殊字符）；</li>
+                    <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">必须包含四种字符（数字、大写字母、小写字母、特殊字符）；</li>
+                    <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">连续3位及以上数字不能连号（例如：123、654）；</li>
+                    <li v-if="passwordRules.passwd_name" style="list-style-type:circle;">密码不能包含账号；</li>
+                    <li v-if="passwordRules.passwd_name2" style="list-style-type:circle;">密码不能包含用户姓名大小写全拼；</li>
+                    <li v-if="passwordRules.passwd_letter" style="list-style-type:circle;">连续3位及以上字母不能连号（例如：abc、cba）；</li>
+                    <li v-if="passwordRules.passwd_letter2" style="list-style-type:circle;">密码不能包含连续3个及以上相同字符（例如：aaa、rrr）；</li>
+                  </ul>
+                </div>
               </div>
 
             </el-form>
-            <div class="text-center">
-              <el-button type="primary" @click="login" style="width:50%">登录</el-button>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="form3Visible = false">取 消</el-button>
+              <el-button type="primary" @click="reset3_submit">确 定</el-button>
             </div>
+          </el-dialog>
 
-          </div>
+
         </div>
-
-        <el-dialog title="重置密码" :visible.sync="formVisible" width="400px" :append-to-body="true" :close-on-click-modal="false">
-          <el-form :model="form" size="small" :rules="formRule" ref="reset2Form">
-            <el-input v-model="form.carbled" type="hidden" style="display:none;"></el-input>
-            <el-form-item :label="'请输入验证码: '+form.code_label" prop="code">
-              <el-input v-model="form.code" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item :label="form.label_q1" prop="q1">
-              <el-input v-model="form.q1" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item :label="form.label_q2" prop="q2">
-              <el-input v-model="form.q2" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item :label="form.label_q3" prop="q3">
-              <el-input v-model="form.q3" auto-complete="off"></el-input>
-            </el-form-item>
-
-          </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="formVisible = false">取 消</el-button>
-            <el-button type="primary" @click="reset2_submit">确 定</el-button>
-          </div>
-        </el-dialog>
-
-        <el-dialog title="重置密码" :visible.sync="form3Visible" width="400px" :append-to-body="true" :close-on-click-modal="false">
-          <el-form :model="form3" size="small" :rules="form3Rule" ref="reset3Form">
-            <el-input v-model="form3.carbled" type="hidden" style="display:none;"></el-input>
-            <el-input v-model="form3.new_carbled" type="hidden" style="display:none;"></el-input>
-
-            <el-form-item label="新密码" prop="new_password">
-              <el-input v-model="form3.new_password" type="password" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="确认密码" prop="confirm_password">
-              <el-input v-model="form3.confirm_password" type="password" auto-complete="off"></el-input>
-            </el-form-item>
-            <div>
-              <div>
-                <strong style="color: red">密码必须满足以下条件：</strong>
-                <ul style="margin-left: 26px;">
-                  <li style="list-style-type:circle;">密码长度为{{passwordRules.passwd_size2}}至16位；</li>
-                  <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;">必须包含两种字符（数字、大写字母、小写字母、特殊字符）；</li>
-                  <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">必须包含三种字符（数字、大写字母、小写字母、特殊字符）；</li>
-                  <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">必须包含四种字符（数字、大写字母、小写字母、特殊字符）；</li>
-                  <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">连续3位及以上数字不能连号（例如：123、654）；</li>
-                  <li v-if="passwordRules.passwd_name" style="list-style-type:circle;">密码不能包含账号；</li>
-                  <li v-if="passwordRules.passwd_name2" style="list-style-type:circle;">密码不能包含用户姓名大小写全拼；</li>
-                  <li v-if="passwordRules.passwd_letter" style="list-style-type:circle;">连续3位及以上字母不能连号（例如：abc、cba）；</li>
-                  <li v-if="passwordRules.passwd_letter2" style="list-style-type:circle;">密码不能包含连续3个及以上相同字符（例如：aaa、rrr）；</li>
-                </ul>
-              </div>
-            </div>
-
-          </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="form3Visible = false">取 消</el-button>
-            <el-button type="primary" @click="reset3_submit">确 定</el-button>
-          </div>
-        </el-dialog>
-
-        <el-dialog title="二次验证登录" :visible.sync="twofactor_login"  :append-to-body="true" :close-on-click-modal="false">
-          <div>
-            <el-tabs v-if="twofactor_login" v-model="activeTwoType" type="card" @tab-click="" class="safe_box" style="max-width:900px">
-              <el-tab-pane label="谷歌验证登录" name="google" class="two_box">
-                <el-form  :model="goggleForm" :rules="goggleRules"  label-width="100px" size="small">
-                  <el-form-item label="谷歌验证码" prop="code">
-                    <el-input v-model="goggleForm.code" style="width:300px;" placeholder="请输入谷歌验证码"></el-input>
-                  </el-form-item>
-                  <el-form-item>
-                    <el-button type="primary" @click="googleLogin(goggleForm.code)">登 录</el-button>
-                  </el-form-item>
-                </el-form>
-              </el-tab-pane>
-              <el-tab-pane label="手机短信登录" name="phone" class="two_box">
-                <el-form :model="phoneForm" :rules="phoneRules"  label-width="100px" size="small"  style="max-width:900px">
-
-                  <el-form-item label="短信验证码" prop="code">
-                    <el-input v-model="phoneForm.code" style="width:300px;"></el-input>
-                    <el-button  @click="getLoginCode"> 获取验证码 </el-button>
-                  </el-form-item>
-                  <el-form-item label="" >
-                    <el-button  @click="googleLogin(phoneForm.code)" type="primary"> 登 录 </el-button>
-                  </el-form-item>
-                </el-form>
-              </el-tab-pane>
-              <el-tab-pane label="备份密钥登录" name="backup" class="two_box">
-                <el-form :model="backupForm" :rules="backupRules"  label-width="100px" size="small"  style="max-width:900px">
-
-                  <el-form-item label="备份密钥" prop="code">
-                    <el-input v-model="backupForm.code" style="width:300px;"></el-input>
-                  </el-form-item>
-                  <el-form-item label="" >
-                    <el-button  @click="googleLogin(backupForm.code)" type="primary"> 登 录 </el-button>
-                  </el-form-item>
-                </el-form>
-              </el-tab-pane>
-
-            </el-tabs>
-          </div>
-        </el-dialog>
 
 
       </div>
 
+      <!--弹窗-->
 
     </div>
+    <div v-if="twofactor_login" class="verifyLayout">
+      <div class="two_main">
+        <h3>U-Mail 二次验证</h3>
+        <el-alert title="请任意选择一种验证方式登录" type="warning" style="margin:20px 0;" show-icon :closable="false">
 
-    <!--弹窗-->
+        </el-alert>
+        <el-tabs v-if="twofactor_login" v-model="activeTwoType" type="card" @tab-click="" class="safe_box" style="max-width:900px;text-align:left">
+                <el-tab-pane label="谷歌验证登录" name="google" class="two_box">
+                  <el-form  :model="goggleForm" :rules="goggleRules"  label-width="100px" size="small">
+                    <el-form-item label="谷歌验证码" prop="code">
+                      <el-input v-model="goggleForm.code" style="width:300px;" placeholder="请输入谷歌验证码"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                      <el-button type="primary" @click="googleLogin(goggleForm.code)">登 录</el-button>
+                    </el-form-item>
+                  </el-form>
+                </el-tab-pane>
+                <el-tab-pane label="手机短信登录" name="phone" class="two_box">
+                  <el-form :model="phoneForm" :rules="phoneRules"  label-width="100px" size="small"  style="max-width:900px">
 
+                    <el-form-item label="短信验证码" prop="code">
+                      <el-input v-model="phoneForm.code" style="width:300px;"></el-input>
+                      <el-button  @click="getLoginCode"> 获取验证码 </el-button>
+                    </el-form-item>
+                    <el-form-item label="" >
+                      <el-button  @click="googleLogin(phoneForm.code)" type="primary"> 登 录 </el-button>
+                    </el-form-item>
+                  </el-form>
+                </el-tab-pane>
+                <el-tab-pane label="备份密钥登录" name="backup" class="two_box">
+                  <el-form :model="backupForm" :rules="backupRules"  label-width="100px" size="small"  style="max-width:900px">
+
+                    <el-form-item label="备份密钥" prop="code">
+                      <el-input v-model="backupForm.code" style="width:300px;"></el-input>
+                    </el-form-item>
+                    <el-form-item label="" >
+                      <el-button  @click="googleLogin(backupForm.code)" type="primary"> 登 录 </el-button>
+                    </el-form-item>
+                  </el-form>
+                </el-tab-pane>
+
+              </el-tabs>
+      </div>
+      <div class="verifyBottom">
+        <div class="item">© 2018 - 2019 U-Mail</div>
+      </div>
+    </div>
   </div>
 
 </template>
@@ -222,11 +230,11 @@
       return {
         phoneForm:{code:''},
         phoneRules:{
-          code:[{ required: true, message: '请输入谷歌验证码~', trigger: 'blur' }],
+          code:[{ required: true, message: '请输入短信验证码~', trigger: 'blur' }],
         },
         backupForm:{code:''},
         backupRules:{
-          code:[{ required: true, message: '请输入谷歌验证码~', trigger: 'blur' }],
+          code:[{ required: true, message: '请输入备份密钥~', trigger: 'blur' }],
         },
         activeTwoType:'google',
         goggleForm:{code:''},
@@ -326,6 +334,14 @@
           console.log(res)
         }).catch(err=>{
           console.log(err);
+          let str = '';
+          if(err.non_field_errors){
+            str = err.non_field_errors[0]
+          }
+          this.$message({
+            type:'error',
+            message:''+str
+          })
         })
       },
       googleLogin(aa){
@@ -347,6 +363,17 @@
           }
         }).catch(err=>{
           console.log(err)
+          let str = '';
+          if(err.non_field_errors){
+            str = err.non_field_errors[0]
+          }
+          if(err.verification_code){
+            str = err.verification_code[0]
+          }
+          this.$message({
+            type:'error',
+            message:''+str
+          })
         })
       },
       changeDomain(val){
@@ -593,6 +620,44 @@
   }
 </script>
 <style>
+  .verifyLayout {
+    box-sizing: border-box;
+    height: 100%;
+    min-height: 608px;
+    min-width: 870px;
+    background: #f7f7f7;
+    padding-bottom: 82px;
+    position: relative;
+  }
+  .verifyBottom {
+    padding: 15px 0;
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background: #f7f7f7;
+  }
+  .verifyBottom .item {
+    font-size: 14px;
+    color: #999;
+    margin-bottom: 10px;
+  }
+  .verifyLayout .two_main {
+    width: 518px;
+    padding: 30px 30px 40px;
+    background: #fff;
+    position: absolute;
+    left: 50%;
+    top: 55%;
+    text-align: center;
+    -webkit-transform: translate(-50%,-50%);
+    -moz-transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    -o-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%,0);
+    margin-top: -41px;
+  }
   .two_box {
     padding-top:15px;
     color: #666;

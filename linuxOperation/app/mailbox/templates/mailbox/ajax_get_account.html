@@ -37,7 +37,7 @@
   {% endif %}
 </td>
  <td>{% if l.is_active or l.is_superuser %}<span class="text-success">是</span>{% else %}<span class="text-danger">否</span>{% endif %}</td>
- <td>{{ l.user.last_login|date:"Y-m-d H:i:s" }}</td>
+ <td>{{ l.last_login|date:"Y-m-d H:i:s" }}</td>
  <td>
   <a class="green btn btn-white btn-primary btn-xs" data-toggle="modal" href="{% url 'mailbox_reply' l.id %}" data-target="#modal-reply">自动回复</a>
   <a class="green btn btn-white btn-primary btn-xs" data-toggle="modal" href="{% url 'mailbox_forward' l.id %}" data-target="#modal-lg">自动转发</a>

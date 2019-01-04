@@ -2,19 +2,19 @@
     <div id="sub_sys_tabs">
         <ul>
             <li>
-                <a href="#sub_sys_limit">收发限制</a>
+                <a href="#sub_sys_limit" onclick="clickSubTab('')">收发限制</a>
             </li>
             <li>
-                <a href="#sub_sys_safe">安全类设置</a>
+                <a href="#sub_sys_safe" onclick="clickSubTab('safe')">安全类设置</a>
             </li>
             <li>
-                <a href="#pwd_rule">密码规则</a>
+                <a href="#pwd_rule" onclick="clickSubTab('pwd')">密码规则</a>
             </li>
             <li>
-                <a href="#sub_sys_third">第三方对接</a>
+                <a href="#sub_sys_third" onclick="clickSubTab('third')">第三方对接</a>
             </li>
             <li>
-                <a href="#sub_sys_other">杂项设置</a>
+                <a href="#sub_sys_other" onclick="clickSubTab('other')">杂项设置</a>
             </li>
         </ul>
         <div id="sub_sys_limit">
@@ -492,13 +492,13 @@
                             </div>
                             <div class="col-sm-2">
                                 <div class="input-group">
-                                    <span class="input-group-addon">用户ID：</span>
+                                    <span class="input-group-addon">帐号：</span>
                                     <input type="text" name="sms_account" value="{{ form_others.sms_account }}" class="form-control">
                                 </div>
                             </div>
                             <div class="col-sm-2">
                                 <div class="input-group">
-                                    <span class="input-group-addon">帐号密码：</span>
+                                    <span class="input-group-addon">密码：</span>
                                     <input type="password" name="sms_password" value="{{ form_others.sms_password }}" class="form-control">
                                 </div>
                             </div>
@@ -1612,5 +1612,12 @@
             }
         })
     })
+
+    function clickSubTab(key){
+        console.log("clickSubTab   "+key);
+        $("#id_remark_flag").val('sys');
+        $("#id_remark_flag2").val(key);
+        get_remark_base();
+    }
 
 </script>

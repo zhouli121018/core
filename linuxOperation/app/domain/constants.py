@@ -286,6 +286,7 @@ DOMAIN_SYS_OTHERS_PARAMS = (
     (u"sw_agreement", u"新用户欢迎信功能"),
     (u"sw_recvsms",               u"短信通知接收邮件"),
     (u"sw_sendsms",               u"短信通知发送邮件"),
+    (u"cf_sms_conf",              u"短信模块设置"),
 )
 
 DOMAIN_SYS_OTHERS_VALUE = (
@@ -299,6 +300,7 @@ DOMAIN_SYS_OTHERS_VALUE = (
     (u"sw_agreement",         "1"),
     (u"sw_recvsms",             u"-1"),
     (u"sw_sendsms",             u"-1"),
+    (u"cf_sms_conf",             u""),
 )
 
 DOMAIN_SYS_OTHERS_TYPE = (
@@ -312,6 +314,7 @@ DOMAIN_SYS_OTHERS_TYPE = (
     (u"sw_agreement",            "webmail"),
     (u"sw_recvsms",               u"webmail"),
     (u"sw_sendsms",               u"webmail"),
+    (u"cf_sms_conf",             u"system"),
 )
 
 DOMAIN_SYS_OTHERS_SPACE_PARAMS = (

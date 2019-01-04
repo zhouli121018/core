@@ -1,0 +1,6417 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-01-04 14:16+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: app/core/constants.py:67
+msgid "普通用户"
+msgstr ""
+
+#: app/core/constants.py:68
+msgid "管理员"
+msgstr ""
+
+#: app/core/constants.py:72
+msgid "接收"
+msgstr ""
+
+#: app/core/constants.py:73 app/maillist/models.py:34
+msgid "发送"
+msgstr ""
+
+#: app/core/models.py:43
+msgid "域名组合情况"
+msgstr ""
+
+#: app/core/models.py:44
+msgid "所有域企业通讯录组合显示别名"
+msgstr ""
+
+#: app/core/models.py:50
+msgid "域名表"
+msgstr ""
+
+#: app/core/models.py:61 app/core/models.py:100 app/core/models.py:163
+#: app/core/models.py:597 app/core/models.py:627 app/dpt/forms.py:26
+#: app/dpt/forms.py:143 app/dpt/forms.py:167
+#: app/dpt/templates/dpt/domain_group.html:27
+#: app/dpt/templates/dpt/domain_share.html:27
+#: app/dpt/templates/dpt/domain_share_view.html:39 app/group/forms.py:14
+#: app/maillist/forms.py:10 app/perm/forms.py:210 app/rpt/forms.py:131
+#: app/rpt/templates/rpt/admin_log.html:43 app/setting/forms.py:1824
+#: app/setting/templates/setting/header_trans.html:39
+#: app/setting/templates/setting/monitor_mailbox.html:40
+#: templates/upgrade_record.html:13
+msgid "域名"
+msgstr ""
+
+#: app/core/models.py:62
+msgid "关联共享域名"
+msgstr ""
+
+#: app/core/models.py:63
+msgid "默认显示"
+msgstr ""
+
+#: app/core/models.py:64 app/domain/models.py:56 app/review/models.py:232
+msgid "创建时间"
+msgstr ""
+
+#: app/core/models.py:69
+msgid "企业通讯录共享域"
+msgstr ""
+
+#: app/core/models.py:90
+msgid "公司信息表"
+msgstr ""
+
+#: app/core/models.py:101 app/setting/models.py:98
+msgid "父ID"
+msgstr ""
+
+#: app/core/models.py:102 app/dpt/templates/dpt/dpt.html:46
+#: app/dpt/templates/dpt/dpt.html:84
+msgid "部门名称"
+msgstr ""
+
+#: app/core/models.py:103 app/dpt/forms.py:36 app/maillist/models.py:51
+msgid "显示顺序"
+msgstr ""
+
+#: app/core/models.py:104
+msgid "部门权限"
+msgstr ""
+
+#: app/core/models.py:109
+msgid "部门表"
+msgstr ""
+
+#: app/core/models.py:162 app/core/models.py:628
+msgid "部门ID"
+msgstr ""
+
+#: app/core/models.py:164 app/dpt/forms.py:30
+msgid "部门领导"
+msgstr ""
+
+#: app/core/models.py:165 app/dpt/forms.py:31
+msgid "联系人"
+msgstr ""
+
+#: app/core/models.py:166 app/dpt/forms.py:32
+msgid "电话"
+msgstr ""
+
+#: app/core/models.py:167 app/dpt/forms.py:33
+msgid "传真"
+msgstr ""
+
+#: app/core/models.py:168 app/dpt/forms.py:34
+msgid "E-Mail"
+msgstr ""
+
+#: app/core/models.py:169 app/dpt/forms.py:35
+#: app/setting/templates/setting/black_whitelist.html:71
+#: app/setting/templates/setting/whitelist.html:50
+msgid "地址"
+msgstr ""
+
+#: app/core/models.py:174
+msgid "部门信息表"
+msgstr ""
+
+#: app/core/models.py:201
+msgid "删除开始时间"
+msgstr ""
+
+#: app/core/models.py:220
+msgid "最后登录时间"
+msgstr ""
+
+#: app/core/models.py:221
+msgid "first name"
+msgstr ""
+
+#: app/core/models.py:222
+msgid "last name"
+msgstr ""
+
+#: app/core/models.py:223
+msgid "date joined"
+msgstr ""
+
+#: app/core/models.py:226
+msgid "管理员："
+msgstr ""
+
+#: app/core/models.py:229
+msgid "超级管理员："
+msgstr ""
+
+#: app/core/models.py:244
+msgid "groups"
+msgstr ""
+
+#: app/core/models.py:247
+msgid ""
+"The groups this user belongs to. A user will get all permissions granted to "
+"each of their groups."
+msgstr ""
+
+#: app/core/models.py:280
+msgid "邮箱用户表"
+msgstr ""
+
+#: app/core/models.py:551
+msgid "用户信息表"
+msgstr ""
+
+#: app/core/models.py:556 app/core/models.py:794 app/core/models.py:814
+#: app/core/models.py:841 app/core/models.py:1137 app/core/models.py:1150
+#: app/domain/models.py:21
+#: app/maintain/templates/maintain/include/wechat_sms.html:11
+#: app/maintain/wechat_models.py:152 app/review/models.py:247
+#: app/rpt/forms.py:132 app/rpt/templates/rpt/include/maillog_list.html:22
+#: app/setting/models.py:15 app/setting/models.py:55 app/setting/models.py:313
+#: app/setting/templates/setting/black_whitelist.html:69
+#: app/setting/templates/setting/cfilter.html:38
+#: app/setting/templates/setting/relay.html:57
+#: app/setting/templates/setting/whitelist.html:48
+msgid "类型"
+msgstr ""
+
+#: app/core/models.py:557
+msgid "变量"
+msgstr ""
+
+#: app/core/models.py:558 app/core/models.py:1138 app/core/models.py:1175
+#: app/review/models.py:249 app/setting/models.py:104 app/setting/models.py:191
+msgid "值"
+msgstr ""
+
+#: app/core/models.py:586
+msgid "用户注册表"
+msgstr ""
+
+#: app/core/models.py:596 app/core/models.py:610 app/core/models.py:743
+#: app/core/models.py:754
+msgid "用户"
+msgstr ""
+
+#: app/core/models.py:603
+msgid "用户域名关联"
+msgstr ""
+
+#: app/core/models.py:611 app/dpt/forms.py:168
+#: app/dpt/templates/dpt/dpt_mem.html:8 app/dpt/templates/dpt/dpt_mem.html:14
+#: app/mailbox/templates/mailbox/register_list.html:74
+#: app/rpt/templates/rpt/include/maillog.html:22
+msgid "部门"
+msgstr ""
+
+#: app/core/models.py:617
+msgid "用户部门关联"
+msgstr ""
+
+#: app/core/models.py:629 app/core/models.py:793 app/core/models.py:817
+#: app/core/models.py:845 app/domain/models.py:19 app/domain/models.py:35
+#: app/setting/models.py:52
+msgid "邮箱ID"
+msgstr ""
+
+#: app/core/models.py:630 app/rpt/templates/rpt/include/maillog.html:23
+msgid "职位"
+msgstr ""
+
+#: app/core/models.py:639
+msgid "部门成员表"
+msgstr ""
+
+#: app/core/models.py:744 app/perm/templates/perm/perm_modify.html:5
+#: app/perm/templates/perm/perm_modify.html:8
+msgid "权限"
+msgstr ""
+
+#: app/core/models.py:750
+msgid "用户权限表"
+msgstr ""
+
+#: app/core/models.py:755
+msgid "用户组"
+msgstr ""
+
+#: app/core/models.py:761
+msgid "用户权限组表"
+msgstr ""
+
+#: app/core/models.py:777 app/setting/templates/setting/trustip_set.html:5
+#: app/setting/templates/setting/trustip_set.html:9
+msgid "信任IP"
+msgstr ""
+
+#: app/core/models.py:778 app/core/models.py:798 app/core/models.py:819
+#: app/core/models.py:847
+#: app/distribute/templates/distribute/include/home.html:51
+#: app/distribute/templates/distribute/include/move.html:52
+#: app/distribute/templates/distribute/include/status.html:10
+#: app/domain/models.py:34 app/dpt/templates/dpt/domain_group.html:28
+#: app/mailbox/templates/mailbox/register_list.html:76
+#: app/maillist/models.py:50 app/maintain/models.py:61
+#: app/maintain/models.py:78
+#: app/maintain/templates/maintain/account_transfer.html:33
+#: app/maintain/templates/maintain/i.html:105
+#: app/maintain/templates/maintain/include/isolate.html:67
+#: app/maintain/templates/maintain/include/wechat_apilog.html:24
+#: app/maintain/templates/maintain/include/wechat_conf.html:13
+#: app/maintain/templates/maintain/include/wechat_news.html:24
+#: app/maintain/wechat_forms.py:16 app/maintain/wechat_forms.py:25
+#: app/maintain/wechat_models.py:127 app/maintain/wechat_models.py:142
+#: app/perm/models.py:72 app/review/models.py:112
+#: app/review/templates/review/include/rule.html:35
+#: app/security/templates/security/fail2ban_blocklist.html:70
+#: app/security/templates/security/fail2ban_rulelist.html:73
+#: app/security/templates/security/fail2ban_whitelist.html:68
+#: app/setting/models.py:18 app/setting/models.py:43 app/setting/models.py:65
+#: app/setting/models.py:317 app/setting/templates/setting/alias_domain.html:41
+#: app/setting/templates/setting/alias_mailbox.html:44
+#: app/setting/templates/setting/black_whitelist.html:72
+#: app/setting/templates/setting/cfilter.html:43
+#: app/setting/templates/setting/header_trans.html:42
+#: app/setting/templates/setting/include/ldap_adlist.html:31
+#: app/setting/templates/setting/monitor_mailbox.html:47
+#: app/setting/templates/setting/relay.html:61
+#: app/setting/templates/setting/trustip_set.html:38
+#: app/setting/templates/setting/whitelist.html:51
+msgid "状态"
+msgstr ""
+
+#: app/core/models.py:784
+msgid "信任IP表"
+msgstr ""
+
+#: app/core/models.py:792 app/core/models.py:816 app/core/models.py:844
+#: app/domain/models.py:18 app/domain/models.py:66 app/domain/models.py:77
+#: app/review/models.py:246 app/rpt/models.py:38 app/setting/models.py:14
+#: app/setting/models.py:29
+msgid "域名ID"
+msgstr ""
+
+#: app/core/models.py:796 app/setting/templates/setting/alias_domain.html:39
+msgid "虚拟邮件域"
+msgstr ""
+
+#: app/core/models.py:797 app/setting/templates/setting/alias_domain.html:40
+msgid "真实邮件域"
+msgstr ""
+
+#: app/core/models.py:804
+msgid "别名表"
+msgstr ""
+
+#: app/core/models.py:812 app/core/models.py:839
+msgid "用户类型"
+msgstr ""
+
+#: app/core/models.py:818 app/core/models.py:846 app/core/models.py:1135
+#: app/core/models.py:1204
+msgid "邮箱"
+msgstr ""
+
+#: app/core/models.py:821 app/core/models.py:849 app/group/models.py:161
+#: app/setting/templates/setting/black_whitelist.html:74
+#: app/setting/templates/setting/whitelist.html:53
+msgid "添加时间"
+msgstr ""
+
+#: app/core/models.py:822 app/core/models.py:850 app/domain/models.py:55
+#: app/group/models.py:160 app/mailbox/templates/mailbox/register_list.html:77
+#: app/maintain/templates/maintain/include/wechat_sms.html:15
+#: app/maintain/wechat_models.py:156 app/security/models.py:48
+#: app/security/templates/security/fail2ban_whitelist.html:67
+#: app/setting/models.py:42
+#: app/setting/templates/setting/black_whitelist.html:73
+#: app/setting/templates/setting/include/ldap_adlist.html:30
+#: app/setting/templates/setting/whitelist.html:52
+msgid "备注"
+msgstr ""
+
+#: app/core/models.py:827
+msgid "黑名单列表"
+msgstr ""
+
+#: app/core/models.py:855
+msgid "白名单列表"
+msgstr ""
+
+#: app/core/models.py:877
+msgid "域名设置表"
+msgstr ""
+
+#: app/core/models.py:947 auditlog/models.py:27 templates/licence.html:5
+#: templates/licence.html:8 templates/licence.html:18
+msgid "系统设置"
+msgstr ""
+
+#: app/core/models.py:1065
+msgid "邮箱监控表"
+msgstr ""
+
+#: app/core/models.py:1091
+msgid "用户访问log"
+msgstr ""
+
+#: app/core/models.py:1108
+msgid "用户验证log"
+msgstr ""
+
+#: app/core/models.py:1136 app/maintain/templates/maintain/backup.html:56
+#: app/maintain/templates/maintain/i.html:104
+#: app/maintain/templates/maintain/include/isolate.html:66
+#: app/maintain/templates/maintain/log.html:36
+#: app/rpt/templates/rpt/sys_log.html:35
+msgid "大小"
+msgstr ""
+
+#: app/core/models.py:1145
+msgid "用户信息表2"
+msgstr ""
+
+#: app/core/models.py:1151 app/core/models.py:1169
+msgid "逻辑"
+msgstr ""
+
+#: app/core/models.py:1164
+msgid "规则"
+msgstr ""
+
+#: app/core/models.py:1171 app/core/models.py:1198 app/review/models.py:200
+#: app/review/templates/review/include/rule.html:33
+#: app/setting/templates/setting/cfilter.html:40
+msgid "条件"
+msgstr ""
+
+#: app/core/models.py:1173 app/rpt/templates/rpt/admin_log.html:39
+#: app/setting/models.py:103 app/setting/models.py:190
+#: app/setting/templates/setting/cfilter.html:41
+msgid "动作"
+msgstr ""
+
+#: app/core/models.py:1206 app/core/models.py:1224 app/domain/models.py:69
+#: app/dpt/templates/dpt/dpt.html:85
+msgid "排序"
+msgstr ""
+
+#: app/core/models.py:1207
+msgid "回复内容"
+msgstr ""
+
+#: app/core/models.py:1216
+msgid "自动回复"
+msgstr ""
+
+#: app/core/models.py:1226
+msgid "用户可否设置"
+msgstr ""
+
+#: app/core/models.py:1227
+msgid "同时将信件保存在本邮箱内"
+msgstr ""
+
+#: app/core/models.py:1229
+msgid "仅转发本地邮箱"
+msgstr ""
+
+#: app/core/tasks.py:167
+msgid "今日TCP连接情况"
+msgstr ""
+
+#: app/core/tasks.py:169
+msgid "昨日TCP连接情况"
+msgstr ""
+
+#: app/core/tasks.py:195
+msgid "连接数"
+msgstr ""
+
+#: app/core/tasks.py:196 app/core/tasks.py:387 app/rpt/models.py:40
+#: app/rpt/templates/rpt/include/maillog_list.html:20
+#: app/rpt/templates/rpt/include/user_log.html:20
+msgid "时间"
+msgstr ""
+
+#: app/core/tasks.py:324 app/rpt/templates/rpt/include/maillog_stat.html:9
+#: app/rpt/templates/rpt/include/maillog_stat.html:78
+msgid "今日"
+msgstr ""
+
+#: app/core/tasks.py:324 app/rpt/templates/rpt/include/maillog_stat.html:10
+#: app/rpt/templates/rpt/include/maillog_stat.html:79
+msgid "昨日"
+msgstr ""
+
+#: app/core/tasks.py:324
+msgid "前日"
+msgstr ""
+
+#: app/core/tasks.py:361
+#, python-format
+msgid "%(name)s网卡%(day)s流量监控"
+msgstr ""
+
+#: app/core/tasks.py:386
+msgid "流量"
+msgstr ""
+
+#: app/custom/forms.py:64 app/custom/forms.py:143
+msgid "无效的服务器参数"
+msgstr ""
+
+#: app/custom/forms.py:68
+msgid "无效的帐号参数"
+msgstr ""
+
+#: app/custom/forms.py:72
+msgid "无效的密码参数"
+msgstr ""
+
+#: app/custom/forms.py:76 app/custom/forms.py:155
+msgid "无效的邮件查看地址"
+msgstr ""
+
+#: app/custom/forms.py:147
+msgid "无效的corp参数"
+msgstr ""
+
+#: app/custom/forms.py:151
+msgid "无效的receiver参数"
+msgstr ""
+
+#: app/custom/templates/custom/kkserver_settings.html:5
+#: app/custom/templates/custom/kkserver_settings.html:21
+#: app/custom/templates/custom/kkserver_settings.html:30
+#: app/custom/templates/custom/kkserver_settings_old.html:5
+#: app/custom/templates/custom/kkserver_settings_old.html:21
+#: app/custom/templates/custom/kkserver_settings_old.html:30
+#: app/custom/templates/custom/kkserver_system.html:5
+msgid "KKServer推送配置"
+msgstr ""
+
+#: app/custom/templates/custom/kkserver_sms.html:5
+#: app/custom/templates/custom/kkserver_sms.html:21
+msgid "金湾短信接口设置"
+msgstr ""
+
+#: app/custom/templates/custom/kkserver_system.html:21
+#: app/custom/templates/custom/kkserver_system.html:30
+msgid "KKServer登录配置"
+msgstr ""
+
+#: app/distribute/forms.py:52
+msgid "授权密码长度不能少于8位或者大于20位！"
+msgstr ""
+
+#: app/distribute/forms.py:56
+msgid "授权密码必须同时包含大小写字符和数字！"
+msgstr ""
+
+#: app/distribute/forms.py:105
+msgid "请填写服务器名称！"
+msgstr ""
+
+#: app/distribute/forms.py:109
+msgid "请输入合法的服务器IP！"
+msgstr ""
+
+#: app/distribute/forms.py:169
+msgid "请选择邮箱！"
+msgstr ""
+
+#: app/distribute/forms.py:172
+msgid "邮箱已不存在, 请重新选择！"
+msgstr ""
+
+#: app/distribute/forms.py:175
+msgid "迁移邮箱已存在, 请重新选择！"
+msgstr ""
+
+#: app/distribute/forms.py:179
+msgid "目标服务器不存在，请重新选择！"
+msgstr ""
+
+#: app/distribute/templates/distribute/config.html:6
+#: app/distribute/templates/distribute/config.html:10
+msgid "分布式服务器开关"
+msgstr ""
+
+#: app/distribute/templates/distribute/config.html:9
+#: app/distribute/templates/distribute/config.html:17
+#: app/distribute/templates/distribute/distribute.html:5
+#: app/distribute/templates/distribute/distribute.html:8
+#: app/distribute/templates/distribute/distribute.html:18
+#: app/distribute/templates/distribute/move.html:5
+#: app/distribute/templates/distribute/move.html:8
+#: app/distribute/templates/distribute/status.html:5
+#: app/distribute/templates/distribute/status.html:8
+#: app/distribute/templates/distribute/status.html:15
+msgid "分布式系统"
+msgstr ""
+
+#: app/distribute/templates/distribute/config.html:20
+#: app/distribute/templates/distribute/config.html:35
+#: app/distribute/templates/distribute/distribute.html:45
+#: app/distribute/templates/distribute/move.html:39
+#: app/distribute/templates/distribute/status.html:35
+msgid "分布式开关"
+msgstr ""
+
+#: app/distribute/templates/distribute/config.html:31
+#: app/distribute/templates/distribute/distribute.html:9
+#: app/distribute/templates/distribute/distribute.html:21
+#: app/distribute/templates/distribute/distribute.html:40
+#: app/distribute/templates/distribute/move.html:34
+#: app/distribute/templates/distribute/status.html:30
+msgid "分布式主机列表"
+msgstr ""
+
+#: app/distribute/templates/distribute/config.html:39
+#: app/distribute/templates/distribute/distribute.html:50
+#: app/distribute/templates/distribute/move.html:44
+#: app/distribute/templates/distribute/status.html:9
+#: app/distribute/templates/distribute/status.html:18
+#: app/distribute/templates/distribute/status.html:40
+msgid "服务器连接状态"
+msgstr ""
+
+#: app/distribute/templates/distribute/config.html:43
+#: app/distribute/templates/distribute/distribute.html:55
+#: app/distribute/templates/distribute/move.html:49
+#: app/distribute/templates/distribute/status.html:45
+msgid "账号迁移进程"
+msgstr ""
+
+#: app/distribute/templates/distribute/distribute.html:28
+#: app/distribute/templates/distribute/distribute_modify.html:6
+#: app/distribute/templates/distribute/distribute_modify.html:10
+#: app/distribute/templates/distribute/distribute_modify.html:18
+msgid "添加服务器"
+msgstr ""
+
+#: app/distribute/templates/distribute/distribute.html:89
+#: app/distribute/templates/distribute/move.html:80
+#: app/mailbox/templates/mailbox/register_list.html:115
+#: app/maintain/templates/maintain/account_transfer.html:66
+#: app/maintain/templates/maintain/i.html:150
+#: app/maintain/templates/maintain/isolate.html:157
+#: app/maintain/templates/maintain/mail_moving.html:85
+#: app/maintain/templates/maintain/mail_moving.html:95
+#: app/maintain/templates/maintain/wechat_template.html:116
+#: app/maintain/templates/maintain/wechat_users.html:85
+#: app/review/templates/review/review.html:71
+#: app/review/templates/review/reviewrule.html:77
+#: app/security/templates/security/fail2ban_blocklist.html:110
+#: app/security/templates/security/fail2ban_rulelist.html:114
+#: app/security/templates/security/fail2ban_whitelist.html:108
+#: app/security/templates/security/password_weak_list.html:95
+#: app/setting/templates/setting/alias_domain.html:63
+#: app/setting/templates/setting/alias_mailbox.html:66
+#: app/setting/templates/setting/black_whitelist.html:217
+#: app/setting/templates/setting/cfilter.html:91
+#: app/setting/templates/setting/header_trans.html:64
+#: app/setting/templates/setting/ldap_adlist.html:73
+#: app/setting/templates/setting/mail_transfer.html:66
+#: app/setting/templates/setting/mail_transfer_import.html:67
+#: app/setting/templates/setting/mail_transfer_sender.html:69
+#: app/setting/templates/setting/monitor_mailbox.html:69
+#: app/setting/templates/setting/relay.html:102
+#: app/setting/templates/setting/trustip_set.html:103
+#: app/setting/templates/setting/whitelist.html:184
+msgid "是否确认此操作？"
+msgstr ""
+
+#: app/distribute/templates/distribute/distribute.html:147
+#: app/distribute/templates/distribute/move.html:104
+#: app/distribute/templates/distribute/status.html:82
+#: app/domain/templates/domain/domain_list.html:146
+#: app/domain/templates/domain/include/static_public_list.html:131
+#: app/domain/templates/domain/include/static_public_type.html:128
+#: app/domain/templates/domain/include/static_webmail_letter.html:116
+#: app/dpt/templates/dpt/domain_group.html:120
+#: app/dpt/templates/dpt/domain_share.html:87
+#: app/dpt/templates/dpt/domain_share_view.html:145
+#: app/dpt/templates/dpt/dpt.html:322 app/dpt/templates/dpt/dpt.html:363
+#: app/dpt/templates/dpt/dpt_mem.html:181
+#: app/dpt/templates/dpt/dpt_mem_add.html:98
+#: app/group/templates/group/groups.html:103
+#: app/group/templates/group/groups_mem.html:138
+#: app/group/templates/group/groups_mem_add.html:87
+#: app/mailbox/templates/mailbox/emailAccounts.html:544
+#: app/mailbox/templates/mailbox/register_list.html:160
+#: app/maillist/templates/maillist/maillist_list.html:108
+#: app/maillist/templates/maillist/maillist_maintain.html:224
+#: app/maillist/templates/maillist/maillist_maintain_select.html:87
+#: app/maillist/templates/maillist/maillist_maintain_select_everyone.html:88
+#: app/maintain/templates/maintain/account_transfer.html:110
+#: app/maintain/templates/maintain/backup.html:133
+#: app/maintain/templates/maintain/i.html:185
+#: app/maintain/templates/maintain/isolate.html:193
+#: app/maintain/templates/maintain/isolate.html:278
+#: app/maintain/templates/maintain/log.html:80
+#: app/maintain/templates/maintain/mail_moving.html:187
+#: app/maintain/templates/maintain/queues_list.html:141
+#: app/maintain/templates/maintain/wechat_apilog.html:129
+#: app/maintain/templates/maintain/wechat_conf.html:106
+#: app/maintain/templates/maintain/wechat_news.html:130
+#: app/maintain/templates/maintain/wechat_sms.html:103
+#: app/maintain/templates/maintain/wechat_template.html:143
+#: app/maintain/templates/maintain/wechat_users.html:111
+#: app/perm/templates/perm/group_list.html:90
+#: app/perm/templates/perm/user_list.html:170
+#: app/perm/templates/perm/webmail_admin_list.html:95
+#: app/review/templates/review/reviewrule.html:102
+#: app/rpt/templates/rpt/admin_log.html:110
+#: app/rpt/templates/rpt/maillog.html:124
+#: app/rpt/templates/rpt/maillog_list.html:116
+#: app/rpt/templates/rpt/maillog_user.html:122
+#: app/rpt/templates/rpt/sys_log.html:80
+#: app/rpt/templates/rpt/user_log.html:130
+#: app/rpt/templates/rpt/user_log_client.html:119
+#: app/rpt/templates/rpt/user_log_web.html:128
+#: app/security/templates/security/fail2ban_blocklist.html:146
+#: app/security/templates/security/fail2ban_rulelist.html:150
+#: app/security/templates/security/fail2ban_whitelist.html:144
+#: app/security/templates/security/password_weak_list.html:131
+#: app/setting/templates/setting/alias_domain.html:87
+#: app/setting/templates/setting/alias_mailbox.html:90
+#: app/setting/templates/setting/black_whitelist.html:247
+#: app/setting/templates/setting/cfilter.html:115
+#: app/setting/templates/setting/header_trans.html:88
+#: app/setting/templates/setting/ldap_adlist.html:101
+#: app/setting/templates/setting/mail_transfer.html:90
+#: app/setting/templates/setting/monitor_mailbox.html:93
+#: app/setting/templates/setting/relay.html:139
+#: app/setting/templates/setting/trustip_set.html:127
+#: app/setting/templates/setting/whitelist.html:214 templates/home.html:701
+#: templates/queue.html:130
+msgid "显示 _MENU_ 每页"
+msgstr ""
+
+#: app/distribute/templates/distribute/distribute.html:148
+#: app/distribute/templates/distribute/move.html:105
+#: app/distribute/templates/distribute/status.html:83
+#: app/domain/templates/domain/domain_list.html:147
+#: app/domain/templates/domain/include/static_public_list.html:132
+#: app/domain/templates/domain/include/static_public_type.html:129
+#: app/domain/templates/domain/include/static_webmail_letter.html:117
+#: app/dpt/templates/dpt/domain_group.html:121
+#: app/dpt/templates/dpt/domain_share.html:88
+#: app/dpt/templates/dpt/domain_share_view.html:146
+#: app/dpt/templates/dpt/dpt_mem.html:182
+#: app/dpt/templates/dpt/dpt_mem_add.html:99
+#: app/group/templates/group/groups.html:104
+#: app/group/templates/group/groups_mem.html:139
+#: app/group/templates/group/groups_mem_add.html:88
+#: app/mailbox/templates/mailbox/emailAccounts.html:545
+#: app/mailbox/templates/mailbox/register_list.html:161
+#: app/maillist/templates/maillist/maillist_list.html:109
+#: app/maillist/templates/maillist/maillist_maintain.html:225
+#: app/maillist/templates/maillist/maillist_maintain_select.html:88
+#: app/maillist/templates/maillist/maillist_maintain_select_everyone.html:89
+#: app/maintain/templates/maintain/account_transfer.html:111
+#: app/maintain/templates/maintain/backup.html:134
+#: app/maintain/templates/maintain/i.html:186
+#: app/maintain/templates/maintain/isolate.html:194
+#: app/maintain/templates/maintain/isolate.html:279
+#: app/maintain/templates/maintain/log.html:81
+#: app/maintain/templates/maintain/mail_moving.html:188
+#: app/maintain/templates/maintain/queues_list.html:142
+#: app/maintain/templates/maintain/wechat_apilog.html:130
+#: app/maintain/templates/maintain/wechat_conf.html:107
+#: app/maintain/templates/maintain/wechat_news.html:131
+#: app/maintain/templates/maintain/wechat_sms.html:104
+#: app/maintain/templates/maintain/wechat_template.html:144
+#: app/maintain/templates/maintain/wechat_users.html:112
+#: app/perm/templates/perm/group_list.html:91
+#: app/perm/templates/perm/user_list.html:171
+#: app/perm/templates/perm/webmail_admin_list.html:96
+#: app/review/templates/review/reviewrule.html:103
+#: app/rpt/templates/rpt/admin_log.html:111
+#: app/rpt/templates/rpt/maillog.html:125
+#: app/rpt/templates/rpt/maillog_list.html:117
+#: app/rpt/templates/rpt/maillog_user.html:123
+#: app/rpt/templates/rpt/sys_log.html:81
+#: app/rpt/templates/rpt/user_log.html:131
+#: app/rpt/templates/rpt/user_log_client.html:120
+#: app/rpt/templates/rpt/user_log_web.html:129
+#: app/security/templates/security/fail2ban_blocklist.html:147
+#: app/security/templates/security/fail2ban_rulelist.html:151
+#: app/security/templates/security/fail2ban_whitelist.html:145
+#: app/security/templates/security/password_weak_list.html:132
+#: app/setting/templates/setting/alias_domain.html:88
+#: app/setting/templates/setting/alias_mailbox.html:91
+#: app/setting/templates/setting/black_whitelist.html:248
+#: app/setting/templates/setting/cfilter.html:116
+#: app/setting/templates/setting/header_trans.html:89
+#: app/setting/templates/setting/ldap_adlist.html:102
+#: app/setting/templates/setting/mail_transfer.html:91
+#: app/setting/templates/setting/monitor_mailbox.html:94
+#: app/setting/templates/setting/relay.html:140
+#: app/setting/templates/setting/trustip_set.html:128
+#: app/setting/templates/setting/whitelist.html:215 templates/home.html:702
+#: templates/queue.html:131
+msgid "对不起! 信息筛选结果为空!"
+msgstr ""
+
+#: app/distribute/templates/distribute/distribute.html:149
+#: app/distribute/templates/distribute/move.html:106
+#: app/distribute/templates/distribute/status.html:84
+#: app/domain/templates/domain/domain_list.html:148
+#: app/domain/templates/domain/include/static_public_list.html:133
+#: app/domain/templates/domain/include/static_public_type.html:130
+#: app/domain/templates/domain/include/static_webmail_letter.html:118
+#: app/dpt/templates/dpt/domain_group.html:122
+#: app/dpt/templates/dpt/domain_share.html:89
+#: app/dpt/templates/dpt/domain_share_view.html:147
+#: app/dpt/templates/dpt/dpt.html:324 app/dpt/templates/dpt/dpt.html:365
+#: app/dpt/templates/dpt/dpt_mem.html:183
+#: app/dpt/templates/dpt/dpt_mem_add.html:100
+#: app/group/templates/group/groups.html:105
+#: app/group/templates/group/groups_mem.html:140
+#: app/group/templates/group/groups_mem_add.html:89
+#: app/mailbox/templates/mailbox/emailAccounts.html:546
+#: app/mailbox/templates/mailbox/register_list.html:162
+#: app/maillist/templates/maillist/maillist_list.html:110
+#: app/maillist/templates/maillist/maillist_maintain.html:226
+#: app/maillist/templates/maillist/maillist_maintain_select.html:89
+#: app/maillist/templates/maillist/maillist_maintain_select_everyone.html:90
+#: app/maintain/templates/maintain/account_transfer.html:112
+#: app/maintain/templates/maintain/backup.html:135
+#: app/maintain/templates/maintain/i.html:187
+#: app/maintain/templates/maintain/isolate.html:195
+#: app/maintain/templates/maintain/isolate.html:280
+#: app/maintain/templates/maintain/log.html:82
+#: app/maintain/templates/maintain/mail_moving.html:189
+#: app/maintain/templates/maintain/queues_list.html:143
+#: app/maintain/templates/maintain/wechat_apilog.html:131
+#: app/maintain/templates/maintain/wechat_conf.html:108
+#: app/maintain/templates/maintain/wechat_news.html:132
+#: app/maintain/templates/maintain/wechat_sms.html:105
+#: app/maintain/templates/maintain/wechat_template.html:145
+#: app/maintain/templates/maintain/wechat_users.html:113
+#: app/perm/templates/perm/group_list.html:92
+#: app/perm/templates/perm/user_list.html:172
+#: app/perm/templates/perm/webmail_admin_list.html:97
+#: app/review/templates/review/reviewrule.html:104
+#: app/rpt/templates/rpt/admin_log.html:112
+#: app/rpt/templates/rpt/maillog.html:126
+#: app/rpt/templates/rpt/maillog_list.html:118
+#: app/rpt/templates/rpt/maillog_user.html:124
+#: app/rpt/templates/rpt/sys_log.html:82
+#: app/rpt/templates/rpt/user_log.html:132
+#: app/rpt/templates/rpt/user_log_client.html:121
+#: app/rpt/templates/rpt/user_log_web.html:130
+#: app/security/templates/security/fail2ban_blocklist.html:148
+#: app/security/templates/security/fail2ban_rulelist.html:152
+#: app/security/templates/security/fail2ban_whitelist.html:146
+#: app/security/templates/security/password_weak_list.html:133
+#: app/setting/templates/setting/alias_domain.html:89
+#: app/setting/templates/setting/alias_mailbox.html:92
+#: app/setting/templates/setting/black_whitelist.html:249
+#: app/setting/templates/setting/cfilter.html:117
+#: app/setting/templates/setting/header_trans.html:90
+#: app/setting/templates/setting/ldap_adlist.html:103
+#: app/setting/templates/setting/mail_transfer.html:92
+#: app/setting/templates/setting/monitor_mailbox.html:95
+#: app/setting/templates/setting/relay.html:141
+#: app/setting/templates/setting/trustip_set.html:129
+#: app/setting/templates/setting/whitelist.html:216 templates/home.html:703
+#: templates/queue.html:132
+msgid "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录"
+msgstr ""
+
+#: app/distribute/templates/distribute/distribute.html:150
+#: app/distribute/templates/distribute/move.html:107
+#: app/distribute/templates/distribute/status.html:85
+#: app/domain/templates/domain/domain_list.html:149
+#: app/domain/templates/domain/include/static_public_list.html:134
+#: app/domain/templates/domain/include/static_public_type.html:131
+#: app/domain/templates/domain/include/static_webmail_letter.html:119
+#: app/dpt/templates/dpt/domain_group.html:123
+#: app/dpt/templates/dpt/domain_share.html:90
+#: app/dpt/templates/dpt/domain_share_view.html:148
+#: app/dpt/templates/dpt/dpt.html:325 app/dpt/templates/dpt/dpt.html:366
+#: app/dpt/templates/dpt/dpt_mem.html:184
+#: app/dpt/templates/dpt/dpt_mem_add.html:101
+#: app/group/templates/group/groups.html:106
+#: app/group/templates/group/groups_mem.html:141
+#: app/group/templates/group/groups_mem_add.html:90
+#: app/mailbox/templates/mailbox/emailAccounts.html:547
+#: app/mailbox/templates/mailbox/register_list.html:163
+#: app/maillist/templates/maillist/maillist_list.html:111
+#: app/maillist/templates/maillist/maillist_maintain.html:227
+#: app/maillist/templates/maillist/maillist_maintain_select.html:90
+#: app/maillist/templates/maillist/maillist_maintain_select_everyone.html:91
+#: app/maintain/templates/maintain/account_transfer.html:113
+#: app/maintain/templates/maintain/backup.html:136
+#: app/maintain/templates/maintain/i.html:188
+#: app/maintain/templates/maintain/isolate.html:196
+#: app/maintain/templates/maintain/isolate.html:281
+#: app/maintain/templates/maintain/log.html:83
+#: app/maintain/templates/maintain/mail_moving.html:190
+#: app/maintain/templates/maintain/queues_list.html:144
+#: app/maintain/templates/maintain/wechat_apilog.html:132
+#: app/maintain/templates/maintain/wechat_conf.html:109
+#: app/maintain/templates/maintain/wechat_news.html:133
+#: app/maintain/templates/maintain/wechat_sms.html:106
+#: app/maintain/templates/maintain/wechat_template.html:146
+#: app/maintain/templates/maintain/wechat_users.html:114
+#: app/perm/templates/perm/group_list.html:93
+#: app/perm/templates/perm/user_list.html:173
+#: app/perm/templates/perm/webmail_admin_list.html:98
+#: app/review/templates/review/reviewrule.html:105
+#: app/rpt/templates/rpt/admin_log.html:113
+#: app/rpt/templates/rpt/maillog.html:127
+#: app/rpt/templates/rpt/maillog_list.html:119
+#: app/rpt/templates/rpt/maillog_user.html:125
+#: app/rpt/templates/rpt/sys_log.html:83
+#: app/rpt/templates/rpt/user_log.html:133
+#: app/rpt/templates/rpt/user_log_client.html:122
+#: app/rpt/templates/rpt/user_log_web.html:131
+#: app/security/templates/security/fail2ban_blocklist.html:149
+#: app/security/templates/security/fail2ban_rulelist.html:153
+#: app/security/templates/security/fail2ban_whitelist.html:147
+#: app/security/templates/security/password_weak_list.html:134
+#: app/setting/templates/setting/alias_domain.html:90
+#: app/setting/templates/setting/alias_mailbox.html:93
+#: app/setting/templates/setting/black_whitelist.html:250
+#: app/setting/templates/setting/cfilter.html:118
+#: app/setting/templates/setting/header_trans.html:91
+#: app/setting/templates/setting/ldap_adlist.html:104
+#: app/setting/templates/setting/mail_transfer.html:93
+#: app/setting/templates/setting/monitor_mailbox.html:96
+#: app/setting/templates/setting/relay.html:142
+#: app/setting/templates/setting/trustip_set.html:130
+#: app/setting/templates/setting/whitelist.html:217 templates/home.html:704
+#: templates/queue.html:133
+msgid "总计: 0 条记录"
+msgstr ""
+
+#: app/distribute/templates/distribute/distribute.html:151
+#: app/distribute/templates/distribute/move.html:108
+#: app/distribute/templates/distribute/status.html:86
+#: app/domain/templates/domain/domain_list.html:150
+#: app/domain/templates/domain/include/static_public_list.html:135
+#: app/domain/templates/domain/include/static_public_type.html:132
+#: app/domain/templates/domain/include/static_webmail_letter.html:120
+#: app/dpt/templates/dpt/domain_group.html:124
+#: app/dpt/templates/dpt/domain_share.html:91
+#: app/dpt/templates/dpt/domain_share_view.html:149
+#: app/dpt/templates/dpt/dpt.html:326 app/dpt/templates/dpt/dpt.html:367
+#: app/dpt/templates/dpt/dpt_mem.html:185
+#: app/dpt/templates/dpt/dpt_mem_add.html:102
+#: app/group/templates/group/groups.html:107
+#: app/group/templates/group/groups_mem.html:142
+#: app/group/templates/group/groups_mem_add.html:91
+#: app/mailbox/templates/mailbox/emailAccounts.html:548
+#: app/mailbox/templates/mailbox/register_list.html:164
+#: app/maillist/templates/maillist/maillist_list.html:112
+#: app/maillist/templates/maillist/maillist_maintain.html:228
+#: app/maillist/templates/maillist/maillist_maintain_select.html:91
+#: app/maillist/templates/maillist/maillist_maintain_select_everyone.html:92
+#: app/maintain/templates/maintain/account_transfer.html:114
+#: app/maintain/templates/maintain/backup.html:137
+#: app/maintain/templates/maintain/i.html:189
+#: app/maintain/templates/maintain/isolate.html:197
+#: app/maintain/templates/maintain/isolate.html:282
+#: app/maintain/templates/maintain/log.html:84
+#: app/maintain/templates/maintain/mail_moving.html:191
+#: app/maintain/templates/maintain/queues_list.html:145
+#: app/maintain/templates/maintain/wechat_apilog.html:133
+#: app/maintain/templates/maintain/wechat_conf.html:110
+#: app/maintain/templates/maintain/wechat_news.html:134
+#: app/maintain/templates/maintain/wechat_sms.html:107
+#: app/maintain/templates/maintain/wechat_template.html:147
+#: app/maintain/templates/maintain/wechat_users.html:115
+#: app/perm/templates/perm/group_list.html:94
+#: app/perm/templates/perm/user_list.html:174
+#: app/perm/templates/perm/webmail_admin_list.html:99
+#: app/review/templates/review/reviewrule.html:106
+#: app/rpt/templates/rpt/admin_log.html:114
+#: app/rpt/templates/rpt/maillog.html:128
+#: app/rpt/templates/rpt/maillog_list.html:120
+#: app/rpt/templates/rpt/maillog_user.html:126
+#: app/rpt/templates/rpt/sys_log.html:84
+#: app/rpt/templates/rpt/user_log.html:134
+#: app/rpt/templates/rpt/user_log_client.html:123
+#: app/rpt/templates/rpt/user_log_web.html:132
+#: app/security/templates/security/fail2ban_blocklist.html:150
+#: app/security/templates/security/fail2ban_rulelist.html:154
+#: app/security/templates/security/fail2ban_whitelist.html:148
+#: app/security/templates/security/password_weak_list.html:135
+#: app/setting/templates/setting/alias_domain.html:91
+#: app/setting/templates/setting/alias_mailbox.html:94
+#: app/setting/templates/setting/black_whitelist.html:251
+#: app/setting/templates/setting/cfilter.html:119
+#: app/setting/templates/setting/header_trans.html:92
+#: app/setting/templates/setting/ldap_adlist.html:105
+#: app/setting/templates/setting/mail_transfer.html:94
+#: app/setting/templates/setting/monitor_mailbox.html:97
+#: app/setting/templates/setting/relay.html:143
+#: app/setting/templates/setting/trustip_set.html:131
+#: app/setting/templates/setting/whitelist.html:218 templates/home.html:705
+#: templates/queue.html:134
+msgid "(从 _MAX_ 条记录筛选出)"
+msgstr ""
+
+#: app/distribute/templates/distribute/distribute.html:152
+#: app/distribute/templates/distribute/move.html:109
+#: app/distribute/templates/distribute/status.html:87
+#: app/domain/templates/domain/domain_list.html:151
+#: app/domain/templates/domain/include/static_public_list.html:136
+#: app/domain/templates/domain/include/static_public_type.html:133
+#: app/domain/templates/domain/include/static_webmail_letter.html:121
+#: app/dpt/templates/dpt/domain_group.html:125
+#: app/dpt/templates/dpt/domain_share.html:92
+#: app/dpt/templates/dpt/domain_share_view.html:150
+#: app/dpt/templates/dpt/dpt.html:327 app/dpt/templates/dpt/dpt.html:368
+#: app/dpt/templates/dpt/dpt_mem.html:186
+#: app/group/templates/group/groups.html:108
+#: app/group/templates/group/groups_mem.html:143
+#: app/mailbox/templates/mailbox/emailAccounts.html:549
+#: app/mailbox/templates/mailbox/register_list.html:165
+#: app/maillist/templates/maillist/maillist_list.html:113
+#: app/maillist/templates/maillist/maillist_maintain.html:229
+#: app/maintain/templates/maintain/account_transfer.html:115
+#: app/maintain/templates/maintain/backup.html:138
+#: app/maintain/templates/maintain/i.html:190
+#: app/maintain/templates/maintain/isolate.html:198
+#: app/maintain/templates/maintain/isolate.html:283
+#: app/maintain/templates/maintain/log.html:85
+#: app/maintain/templates/maintain/mail_moving.html:192
+#: app/maintain/templates/maintain/queues_list.html:146
+#: app/maintain/templates/maintain/wechat_apilog.html:134
+#: app/maintain/templates/maintain/wechat_conf.html:111
+#: app/maintain/templates/maintain/wechat_news.html:135
+#: app/maintain/templates/maintain/wechat_sms.html:108
+#: app/maintain/templates/maintain/wechat_template.html:148
+#: app/maintain/templates/maintain/wechat_users.html:116
+#: app/perm/templates/perm/group_list.html:95
+#: app/perm/templates/perm/user_list.html:175
+#: app/perm/templates/perm/webmail_admin_list.html:100
+#: app/review/templates/review/reviewrule.html:107
+#: app/rpt/templates/rpt/admin_log.html:115
+#: app/rpt/templates/rpt/maillog.html:129
+#: app/rpt/templates/rpt/maillog_list.html:121
+#: app/rpt/templates/rpt/maillog_user.html:127
+#: app/rpt/templates/rpt/sys_log.html:85
+#: app/rpt/templates/rpt/user_log.html:135
+#: app/rpt/templates/rpt/user_log_client.html:124
+#: app/rpt/templates/rpt/user_log_web.html:133
+#: app/security/templates/security/fail2ban_blocklist.html:151
+#: app/security/templates/security/fail2ban_rulelist.html:155
+#: app/security/templates/security/fail2ban_whitelist.html:149
+#: app/security/templates/security/password_weak_list.html:136
+#: app/setting/templates/setting/alias_domain.html:92
+#: app/setting/templates/setting/alias_mailbox.html:95
+#: app/setting/templates/setting/black_whitelist.html:252
+#: app/setting/templates/setting/cfilter.html:120
+#: app/setting/templates/setting/header_trans.html:93
+#: app/setting/templates/setting/ldap_adlist.html:106
+#: app/setting/templates/setting/mail_transfer.html:95
+#: app/setting/templates/setting/monitor_mailbox.html:98
+#: app/setting/templates/setting/relay.html:144
+#: app/setting/templates/setting/trustip_set.html:132
+#: app/setting/templates/setting/whitelist.html:219 templates/home.html:706
+#: templates/queue.html:135
+msgid "搜索: "
+msgstr ""
+
+#: app/distribute/templates/distribute/distribute.html:154
+#: app/distribute/templates/distribute/move.html:111
+#: app/distribute/templates/distribute/status.html:89
+#: app/domain/templates/domain/domain_list.html:153
+#: app/domain/templates/domain/include/static_public_list.html:138
+#: app/domain/templates/domain/include/static_public_type.html:135
+#: app/domain/templates/domain/include/static_webmail_letter.html:123
+#: app/dpt/templates/dpt/domain_group.html:127
+#: app/dpt/templates/dpt/domain_share.html:94
+#: app/dpt/templates/dpt/domain_share_view.html:152
+#: app/dpt/templates/dpt/dpt.html:329 app/dpt/templates/dpt/dpt.html:370
+#: app/dpt/templates/dpt/dpt_mem.html:188
+#: app/dpt/templates/dpt/dpt_mem_add.html:105
+#: app/group/templates/group/groups.html:110
+#: app/group/templates/group/groups_mem.html:145
+#: app/group/templates/group/groups_mem_add.html:94
+#: app/mailbox/templates/mailbox/emailAccounts.html:551
+#: app/mailbox/templates/mailbox/register_list.html:167
+#: app/maillist/templates/maillist/maillist_list.html:115
+#: app/maillist/templates/maillist/maillist_maintain.html:231
+#: app/maillist/templates/maillist/maillist_maintain_select.html:94
+#: app/maillist/templates/maillist/maillist_maintain_select_everyone.html:95
+#: app/maintain/templates/maintain/account_transfer.html:117
+#: app/maintain/templates/maintain/backup.html:140
+#: app/maintain/templates/maintain/i.html:192
+#: app/maintain/templates/maintain/isolate.html:200
+#: app/maintain/templates/maintain/isolate.html:285
+#: app/maintain/templates/maintain/log.html:87
+#: app/maintain/templates/maintain/mail_moving.html:194
+#: app/maintain/templates/maintain/queues_list.html:148
+#: app/maintain/templates/maintain/wechat_apilog.html:136
+#: app/maintain/templates/maintain/wechat_conf.html:113
+#: app/maintain/templates/maintain/wechat_news.html:137
+#: app/maintain/templates/maintain/wechat_sms.html:110
+#: app/maintain/templates/maintain/wechat_template.html:150
+#: app/maintain/templates/maintain/wechat_users.html:118
+#: app/perm/templates/perm/group_list.html:97
+#: app/perm/templates/perm/user_list.html:177
+#: app/perm/templates/perm/webmail_admin_list.html:102
+#: app/review/templates/review/reviewrule.html:109
+#: app/rpt/templates/rpt/admin_log.html:117
+#: app/rpt/templates/rpt/maillog.html:131
+#: app/rpt/templates/rpt/maillog_list.html:123
+#: app/rpt/templates/rpt/maillog_user.html:129
+#: app/rpt/templates/rpt/sys_log.html:87
+#: app/rpt/templates/rpt/user_log.html:137
+#: app/rpt/templates/rpt/user_log_client.html:126
+#: app/rpt/templates/rpt/user_log_web.html:135
+#: app/security/templates/security/fail2ban_blocklist.html:153
+#: app/security/templates/security/fail2ban_rulelist.html:157
+#: app/security/templates/security/fail2ban_whitelist.html:151
+#: app/security/templates/security/password_weak_list.html:138
+#: app/setting/templates/setting/alias_domain.html:94
+#: app/setting/templates/setting/alias_mailbox.html:97
+#: app/setting/templates/setting/black_whitelist.html:254
+#: app/setting/templates/setting/cfilter.html:122
+#: app/setting/templates/setting/header_trans.html:95
+#: app/setting/templates/setting/ldap_adlist.html:108
+#: app/setting/templates/setting/mail_transfer.html:97
+#: app/setting/templates/setting/monitor_mailbox.html:100
+#: app/setting/templates/setting/relay.html:146
+#: app/setting/templates/setting/trustip_set.html:134
+#: app/setting/templates/setting/whitelist.html:221 templates/home.html:708
+#: templates/queue.html:137
+msgid "第一页"
+msgstr ""
+
+#: app/distribute/templates/distribute/distribute.html:155
+#: app/distribute/templates/distribute/move.html:112
+#: app/domain/templates/domain/domain_list.html:154
+#: app/domain/templates/domain/include/static_public_list.html:139
+#: app/domain/templates/domain/include/static_public_type.html:136
+#: app/domain/templates/domain/include/static_webmail_letter.html:124
+#: app/dpt/templates/dpt/domain_group.html:128
+#: app/dpt/templates/dpt/domain_share.html:95
+#: app/dpt/templates/dpt/domain_share_view.html:153
+#: app/dpt/templates/dpt/dpt.html:330 app/dpt/templates/dpt/dpt.html:371
+#: app/dpt/templates/dpt/dpt_mem.html:189
+#: app/dpt/templates/dpt/dpt_mem_add.html:106
+#: app/group/templates/group/groups.html:111
+#: app/group/templates/group/groups_mem.html:146
+#: app/group/templates/group/groups_mem_add.html:95
+#: app/mailbox/templates/mailbox/emailAccounts.html:552
+#: app/mailbox/templates/mailbox/register_list.html:168
+#: app/maillist/templates/maillist/maillist_list.html:116
+#: app/maillist/templates/maillist/maillist_maintain.html:232
+#: app/maillist/templates/maillist/maillist_maintain_select.html:95
+#: app/maillist/templates/maillist/maillist_maintain_select_everyone.html:96
+#: app/maintain/templates/maintain/account_transfer.html:118
+#: app/maintain/templates/maintain/backup.html:141
+#: app/maintain/templates/maintain/i.html:193
+#: app/maintain/templates/maintain/isolate.html:201
+#: app/maintain/templates/maintain/isolate.html:286
+#: app/maintain/templates/maintain/log.html:88
+#: app/maintain/templates/maintain/mail_moving.html:195
+#: app/maintain/templates/maintain/wechat_apilog.html:137
+#: app/maintain/templates/maintain/wechat_conf.html:114
+#: app/maintain/templates/maintain/wechat_news.html:138
+#: app/maintain/templates/maintain/wechat_sms.html:111
+#: app/maintain/templates/maintain/wechat_template.html:151
+#: app/maintain/templates/maintain/wechat_users.html:119
+#: app/perm/templates/perm/group_list.html:98
+#: app/perm/templates/perm/user_list.html:178
+#: app/perm/templates/perm/webmail_admin_list.html:103
+#: app/review/templates/review/reviewrule.html:110
+#: app/rpt/templates/rpt/admin_log.html:118
+#: app/rpt/templates/rpt/maillog.html:132
+#: app/rpt/templates/rpt/maillog_list.html:124
+#: app/rpt/templates/rpt/maillog_user.html:130
+#: app/rpt/templates/rpt/sys_log.html:88
+#: app/rpt/templates/rpt/user_log.html:138
+#: app/rpt/templates/rpt/user_log_client.html:127
+#: app/rpt/templates/rpt/user_log_web.html:136
+#: app/security/templates/security/fail2ban_blocklist.html:154
+#: app/security/templates/security/fail2ban_rulelist.html:158
+#: app/security/templates/security/fail2ban_whitelist.html:152
+#: app/security/templates/security/password_weak_list.html:139
+#: app/setting/templates/setting/alias_domain.html:95
+#: app/setting/templates/setting/alias_mailbox.html:98
+#: app/setting/templates/setting/black_whitelist.html:255
+#: app/setting/templates/setting/cfilter.html:123
+#: app/setting/templates/setting/header_trans.html:96
+#: app/setting/templates/setting/ldap_adlist.html:109
+#: app/setting/templates/setting/mail_transfer.html:98
+#: app/setting/templates/setting/monitor_mailbox.html:101
+#: app/setting/templates/setting/relay.html:147
+#: app/setting/templates/setting/trustip_set.html:135
+#: app/setting/templates/setting/whitelist.html:222
+msgid "上一页"
+msgstr ""
+
+#: app/distribute/templates/distribute/distribute.html:156
+#: app/distribute/templates/distribute/move.html:113
+#: app/domain/templates/domain/domain_list.html:155
+#: app/domain/templates/domain/include/static_public_list.html:140
+#: app/domain/templates/domain/include/static_public_type.html:137
+#: app/domain/templates/domain/include/static_webmail_letter.html:125
+#: app/dpt/templates/dpt/domain_group.html:129
+#: app/dpt/templates/dpt/domain_share.html:96
+#: app/dpt/templates/dpt/domain_share_view.html:154
+#: app/dpt/templates/dpt/dpt.html:331 app/dpt/templates/dpt/dpt.html:372
+#: app/dpt/templates/dpt/dpt_mem.html:190
+#: app/dpt/templates/dpt/dpt_mem_add.html:107
+#: app/group/templates/group/groups.html:112
+#: app/group/templates/group/groups_mem.html:147
+#: app/group/templates/group/groups_mem_add.html:96
+#: app/mailbox/templates/mailbox/emailAccounts.html:553
+#: app/mailbox/templates/mailbox/register_list.html:169
+#: app/maillist/templates/maillist/maillist_list.html:117
+#: app/maillist/templates/maillist/maillist_maintain.html:233
+#: app/maillist/templates/maillist/maillist_maintain_select.html:96
+#: app/maillist/templates/maillist/maillist_maintain_select_everyone.html:97
+#: app/maintain/templates/maintain/account_transfer.html:119
+#: app/maintain/templates/maintain/backup.html:142
+#: app/maintain/templates/maintain/i.html:194
+#: app/maintain/templates/maintain/isolate.html:202
+#: app/maintain/templates/maintain/isolate.html:287
+#: app/maintain/templates/maintain/log.html:89
+#: app/maintain/templates/maintain/mail_moving.html:196
+#: app/maintain/templates/maintain/wechat_apilog.html:138
+#: app/maintain/templates/maintain/wechat_conf.html:115
+#: app/maintain/templates/maintain/wechat_news.html:139
+#: app/maintain/templates/maintain/wechat_sms.html:112
+#: app/maintain/templates/maintain/wechat_template.html:152
+#: app/maintain/templates/maintain/wechat_users.html:120
+#: app/perm/templates/perm/group_list.html:99
+#: app/perm/templates/perm/user_list.html:179
+#: app/perm/templates/perm/webmail_admin_list.html:104
+#: app/review/templates/review/reviewrule.html:111
+#: app/rpt/templates/rpt/admin_log.html:119
+#: app/rpt/templates/rpt/maillog.html:133
+#: app/rpt/templates/rpt/maillog_list.html:125
+#: app/rpt/templates/rpt/maillog_user.html:131
+#: app/rpt/templates/rpt/sys_log.html:89
+#: app/rpt/templates/rpt/user_log.html:139
+#: app/rpt/templates/rpt/user_log_client.html:128
+#: app/rpt/templates/rpt/user_log_web.html:137
+#: app/security/templates/security/fail2ban_blocklist.html:155
+#: app/security/templates/security/fail2ban_rulelist.html:159
+#: app/security/templates/security/fail2ban_whitelist.html:153
+#: app/security/templates/security/password_weak_list.html:140
+#: app/setting/templates/setting/alias_domain.html:96
+#: app/setting/templates/setting/alias_mailbox.html:99
+#: app/setting/templates/setting/black_whitelist.html:256
+#: app/setting/templates/setting/cfilter.html:124
+#: app/setting/templates/setting/header_trans.html:97
+#: app/setting/templates/setting/ldap_adlist.html:110
+#: app/setting/templates/setting/mail_transfer.html:99
+#: app/setting/templates/setting/monitor_mailbox.html:102
+#: app/setting/templates/setting/relay.html:148
+#: app/setting/templates/setting/trustip_set.html:136
+#: app/setting/templates/setting/whitelist.html:223
+msgid "下一页"
+msgstr ""
+
+#: app/distribute/templates/distribute/distribute.html:157
+#: app/distribute/templates/distribute/move.html:114
+#: app/domain/templates/domain/domain_list.html:156
+#: app/domain/templates/domain/include/static_public_list.html:141
+#: app/domain/templates/domain/include/static_public_type.html:138
+#: app/domain/templates/domain/include/static_webmail_letter.html:126
+#: app/dpt/templates/dpt/domain_group.html:130
+#: app/dpt/templates/dpt/domain_share.html:97
+#: app/dpt/templates/dpt/domain_share_view.html:155
+#: app/dpt/templates/dpt/dpt.html:332 app/dpt/templates/dpt/dpt.html:373
+#: app/dpt/templates/dpt/dpt_mem.html:191
+#: app/dpt/templates/dpt/dpt_mem_add.html:108
+#: app/group/templates/group/groups.html:113
+#: app/group/templates/group/groups_mem.html:148
+#: app/group/templates/group/groups_mem_add.html:97
+#: app/mailbox/templates/mailbox/emailAccounts.html:554
+#: app/mailbox/templates/mailbox/register_list.html:170
+#: app/maillist/templates/maillist/maillist_list.html:118
+#: app/maillist/templates/maillist/maillist_maintain.html:234
+#: app/maillist/templates/maillist/maillist_maintain_select.html:97
+#: app/maillist/templates/maillist/maillist_maintain_select_everyone.html:98
+#: app/maintain/templates/maintain/account_transfer.html:120
+#: app/maintain/templates/maintain/backup.html:143
+#: app/maintain/templates/maintain/i.html:195
+#: app/maintain/templates/maintain/isolate.html:203
+#: app/maintain/templates/maintain/isolate.html:288
+#: app/maintain/templates/maintain/log.html:90
+#: app/maintain/templates/maintain/mail_moving.html:197
+#: app/maintain/templates/maintain/wechat_apilog.html:139
+#: app/maintain/templates/maintain/wechat_conf.html:116
+#: app/maintain/templates/maintain/wechat_news.html:140
+#: app/maintain/templates/maintain/wechat_sms.html:113
+#: app/maintain/templates/maintain/wechat_template.html:153
+#: app/maintain/templates/maintain/wechat_users.html:121
+#: app/perm/templates/perm/group_list.html:100
+#: app/perm/templates/perm/user_list.html:180
+#: app/perm/templates/perm/webmail_admin_list.html:105
+#: app/review/templates/review/reviewrule.html:112
+#: app/rpt/templates/rpt/admin_log.html:120
+#: app/rpt/templates/rpt/maillog.html:134
+#: app/rpt/templates/rpt/maillog_list.html:126
+#: app/rpt/templates/rpt/maillog_user.html:132
+#: app/rpt/templates/rpt/sys_log.html:90
+#: app/rpt/templates/rpt/user_log.html:140
+#: app/rpt/templates/rpt/user_log_client.html:129
+#: app/rpt/templates/rpt/user_log_web.html:138
+#: app/security/templates/security/fail2ban_blocklist.html:156
+#: app/security/templates/security/fail2ban_rulelist.html:160
+#: app/security/templates/security/fail2ban_whitelist.html:154
+#: app/security/templates/security/password_weak_list.html:141
+#: app/setting/templates/setting/alias_domain.html:97
+#: app/setting/templates/setting/alias_mailbox.html:100
+#: app/setting/templates/setting/black_whitelist.html:257
+#: app/setting/templates/setting/cfilter.html:125
+#: app/setting/templates/setting/header_trans.html:98
+#: app/setting/templates/setting/ldap_adlist.html:111
+#: app/setting/templates/setting/mail_transfer.html:100
+#: app/setting/templates/setting/monitor_mailbox.html:103
+#: app/setting/templates/setting/relay.html:149
+#: app/setting/templates/setting/trustip_set.html:137
+#: app/setting/templates/setting/whitelist.html:224
+msgid "最后一页"
+msgstr ""
+
+#: app/distribute/templates/distribute/distribute_modify.html:6
+#: app/distribute/templates/distribute/distribute_modify.html:10
+#: app/distribute/templates/distribute/distribute_modify.html:18
+msgid "修改服务器"
+msgstr ""
+
+#: app/distribute/templates/distribute/distribute_modify.html:9
+#: app/distribute/templates/distribute/move_add.html:8
+msgid "分布式管理"
+msgstr ""
+
+#: app/distribute/templates/distribute/distribute_modify.html:62
+#: app/distribute/templates/distribute/include/home.html:29
+#: app/distribute/templates/distribute/include/set.html:43
+#: app/distribute/templates/distribute/move_add.html:100
+#: app/review/templates/review/include/set.html:57
+#: app/review/templates/review/review_modify.html:134
+#: app/review/templates/review/reviewrule_modify.html:302
+#: app/setting/templates/setting/cfilter_config.html:47
+#: app/setting/templates/setting/include/mail_transfer_post_set.html:210
+#: app/setting/templates/setting/include/mail_transfer_sender.html:73
+msgid "保存"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/home.html:25
+#: app/dpt/templates/dpt/dpt.html:59 app/dpt/templates/dpt/dpt.html:101
+#: app/maillist/models.py:33
+#: app/maintain/templates/maintain/include/wechat_conf.html:26
+#: app/maintain/templates/maintain/include/wechat_template.html:32
+#: app/maintain/templates/maintain/mail_moving_add.html:5
+#: app/maintain/templates/maintain/mail_moving_add.html:8
+#: app/maintain/templates/maintain/mail_moving_add.html:15
+#: app/maintain/templates/maintain/mail_moving_add.html:24
+#: app/maintain/templates/maintain/wechat_conf_add.html:5
+#: app/maintain/templates/maintain/wechat_conf_add.html:25
+#: app/maintain/templates/maintain/wechat_template_add.html:5
+#: app/setting/templates/setting/include/mail_transfer_post_set.html:5
+#: app/setting/templates/setting/include/mail_transfer_post_set.html:9
+#: app/setting/templates/setting/include/mail_transfer_post_set.html:17
+msgid "修改"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/home.html:27
+msgid "设置"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/home.html:30
+#: app/domain/templates/domain/include/static_public_list.html:29
+#: app/domain/templates/domain/include/static_public_type.html:25
+#: app/domain/templates/domain/include/static_webmail_letter.html:24
+#: app/dpt/templates/dpt/dpt.html:34 app/dpt/templates/dpt/dpt_add.html:85
+#: app/dpt/templates/dpt/dpt_mem.html:32
+#: app/dpt/templates/dpt/dpt_mem_add.html:20
+#: app/group/templates/group/groups_add.html:39
+#: app/group/templates/group/groups_mem.html:29
+#: app/group/templates/group/groups_mem_add.html:20
+#: app/group/templates/group/groups_mem_import.html:37
+#: app/maillist/templates/maillist/maillist_add.html:30
+#: app/maillist/templates/maillist/maillist_import.html:41
+#: app/maillist/templates/maillist/maillist_maintain.html:37
+#: app/maillist/templates/maillist/maillist_maintain_add.html:36
+#: app/maillist/templates/maillist/maillist_maintain_batchadd.html:62
+#: app/maillist/templates/maillist/maillist_maintain_select.html:20
+#: app/maillist/templates/maillist/maillist_maintain_select_everyone.html:20
+#: app/maintain/templates/maintain/account_transfer_add.html:40
+#: app/maintain/templates/maintain/backupset.html:75
+#: app/maintain/templates/maintain/i.html:66
+#: app/maintain/templates/maintain/include/isolate.html:28
+#: app/maintain/templates/maintain/mail_moving.html:33
+#: app/maintain/templates/maintain/mail_moving_add.html:63
+#: app/maintain/templates/maintain/mail_moving_badd.html:44
+#: app/maintain/templates/maintain/queues_list.html:44
+#: app/maintain/templates/maintain/wechat_conf_add.html:31
+#: app/maintain/templates/maintain/wechat_template_add.html:31
+#: app/perm/templates/perm/group_modify.html:29
+#: app/perm/templates/perm/perm_grant.html:43
+#: app/perm/templates/perm/perm_modify.html:26
+#: app/perm/templates/perm/user_add.html:26
+#: app/perm/templates/perm/user_passwd_change.html:26
+#: app/perm/templates/perm/webmail_admin_mdf.html:29
+#: app/security/templates/security/fail2ban_block_add.html:25
+#: app/security/templates/security/fail2ban_rule_add.html:46
+#: app/security/templates/security/fail2ban_whitelist_add.html:25
+#: app/security/templates/security/password_weak_import.html:32
+#: app/setting/templates/setting/include/mail_transfer_import.html:33
+#: app/setting/templates/setting/relay_mdf.html:35
+msgid "取消"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/home.html:47
+#: app/distribute/templates/distribute/include/move.html:46
+#: app/distribute/templates/distribute/include/status.html:6
+#: app/dpt/templates/dpt/domain_group.html:26
+#: app/dpt/templates/dpt/domain_share.html:26
+#: app/dpt/templates/dpt/domain_share_view.html:38
+#: app/dpt/templates/dpt/dpt.html:45 app/dpt/templates/dpt/dpt.html:82
+#: app/group/templates/group/groups.html:27
+#: app/mailbox/templates/mailbox/register_list.html:70
+#: app/maintain/templates/maintain/account_transfer.html:30
+#: app/maintain/templates/maintain/backup.html:53
+#: app/maintain/templates/maintain/i.html:97
+#: app/maintain/templates/maintain/include/isolate.html:59
+#: app/maintain/templates/maintain/include/queues.html:13
+#: app/maintain/templates/maintain/include/wechat_apilog.html:17
+#: app/maintain/templates/maintain/include/wechat_conf.html:7
+#: app/maintain/templates/maintain/include/wechat_news.html:17
+#: app/maintain/templates/maintain/include/wechat_sms.html:7
+#: app/maintain/templates/maintain/include/wechat_template.html:14
+#: app/maintain/templates/maintain/include/wechat_users.html:7
+#: app/maintain/templates/maintain/log.html:33
+#: app/maintain/templates/maintain/mail_moving.html:44
+#: app/maintain/templates/maintain/wechat_template_field.html:30
+#: app/perm/templates/perm/user_dept.html:55
+#: app/review/templates/review/include/rule.html:26
+#: app/rpt/templates/rpt/include/maillog.html:19
+#: app/rpt/templates/rpt/include/maillog_list.html:19
+#: app/rpt/templates/rpt/include/maillog_user.html:19
+#: app/rpt/templates/rpt/include/user_log.html:19
+#: app/rpt/templates/rpt/include/user_log_client.html:17
+#: app/rpt/templates/rpt/include/user_log_web.html:17
+#: app/rpt/templates/rpt/sys_log.html:32
+#: app/security/templates/security/fail2ban_blocklist.html:65
+#: app/security/templates/security/fail2ban_rulelist.html:65
+#: app/security/templates/security/fail2ban_whitelist.html:65
+#: app/security/templates/security/password_weak_list.html:53
+#: app/setting/templates/setting/alias_domain.html:38
+#: app/setting/templates/setting/alias_mailbox.html:41
+#: app/setting/templates/setting/black_whitelist.html:68
+#: app/setting/templates/setting/cfilter.html:36
+#: app/setting/templates/setting/header_trans.html:38
+#: app/setting/templates/setting/include/ldap_adlist.html:21
+#: app/setting/templates/setting/include/mail_transfer_post.html:23
+#: app/setting/templates/setting/monitor_mailbox.html:39
+#: app/setting/templates/setting/relay.html:56
+#: app/setting/templates/setting/trustip_set.html:36
+#: app/setting/templates/setting/whitelist.html:47
+#: templates/upgrade_record.html:11
+msgid "序号"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/home.html:48
+#: app/distribute/templates/distribute/include/status.html:7
+msgid "服务器名称"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/home.html:49
+#: app/distribute/templates/distribute/include/status.html:8
+#: app/setting/templates/setting/trustip_set.html:37
+msgid "IP地址"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/home.html:50
+#: app/distribute/templates/distribute/include/status.html:9
+msgid "是否主服务器"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/home.html:52
+#: app/distribute/templates/distribute/include/move.html:56
+#: app/dpt/templates/dpt/domain_group.html:29
+#: app/dpt/templates/dpt/domain_share.html:29
+#: app/dpt/templates/dpt/domain_share_view.html:41
+#: app/dpt/templates/dpt/dpt.html:47 app/dpt/templates/dpt/dpt.html:86
+#: app/group/templates/group/groups.html:31
+#: app/mailbox/templates/mailbox/register_list.html:79
+#: app/maintain/templates/maintain/account_transfer.html:38
+#: app/maintain/templates/maintain/backup.html:58
+#: app/maintain/templates/maintain/include/wechat_conf.html:14
+#: app/maintain/templates/maintain/include/wechat_template.html:19
+#: app/maintain/templates/maintain/log.html:37
+#: app/maintain/templates/maintain/mail_moving.html:54
+#: app/maintain/templates/maintain/wechat_template_field.html:33
+#: app/perm/templates/perm/user_dept.html:57
+#: app/review/templates/review/include/rule.html:36
+#: app/rpt/templates/rpt/sys_log.html:36
+#: app/security/templates/security/fail2ban_blocklist.html:71
+#: app/security/templates/security/fail2ban_rulelist.html:74
+#: app/security/templates/security/fail2ban_whitelist.html:69
+#: app/security/templates/security/password_weak_list.html:55
+#: app/setting/templates/setting/alias_domain.html:42
+#: app/setting/templates/setting/alias_mailbox.html:45
+#: app/setting/templates/setting/black_whitelist.html:75
+#: app/setting/templates/setting/cfilter.html:44
+#: app/setting/templates/setting/header_trans.html:43
+#: app/setting/templates/setting/include/ldap_adlist.html:32
+#: app/setting/templates/setting/include/mail_transfer_post.html:33
+#: app/setting/templates/setting/monitor_mailbox.html:48
+#: app/setting/templates/setting/relay.html:62
+#: app/setting/templates/setting/trustip_set.html:39
+#: app/setting/templates/setting/whitelist.html:54
+msgid "操作"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/move.html:9
+#: app/distribute/templates/distribute/include/move.html:18
+msgid "全部"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/move.html:47
+msgid "源服务器"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/move.html:48
+msgid "目标服务器"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/move.html:49
+msgid "新账号"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/move.html:50
+msgid "老账号"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/move.html:51
+msgid "移动方式"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/move.html:53
+#: app/maintain/models.py:59 app/maintain/models.py:79
+#: app/maintain/templates/maintain/account_transfer.html:34
+msgid "状态描述"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/move.html:54
+msgid "是否同步邮件"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/move.html:55
+#: app/distribute/templates/distribute/include/status.html:14
+#: app/domain/models.py:57 app/maillist/forms.py:80 app/review/models.py:233
+#: app/security/models.py:29 app/security/models.py:64
+#: app/security/templates/security/fail2ban_blocklist.html:69
+#: app/security/templates/security/fail2ban_rulelist.html:72
+#: templates/upgrade_record.html:20
+msgid "更新时间"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/status.html:11
+msgid "本服发起状态"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/status.html:12
+msgid "本服接收状态"
+msgstr ""
+
+#: app/distribute/templates/distribute/include/status.html:13
+msgid "拒绝原因"
+msgstr ""
+
+#: app/distribute/templates/distribute/move.html:9
+#: app/distribute/templates/distribute/move.html:17
+msgid "帐号迁移进程"
+msgstr ""
+
+#: app/distribute/templates/distribute/move.html:22
+#: app/distribute/templates/distribute/move_add.html:5
+#: app/distribute/templates/distribute/move_add.html:9
+#: app/distribute/templates/distribute/move_add.html:17
+#: app/maintain/templates/maintain/account_transfer.html:18
+#: app/maintain/templates/maintain/account_transfer_add.html:5
+#: app/maintain/templates/maintain/account_transfer_add.html:9
+#: app/maintain/templates/maintain/account_transfer_add.html:16
+#: app/maintain/templates/maintain/account_transfer_add.html:25
+msgid "添加迁移"
+msgstr ""
+
+#: app/distribute/templates/distribute/move_add.html:5
+#: app/distribute/templates/distribute/move_add.html:9
+#: app/distribute/templates/distribute/move_add.html:17
+#: app/maintain/templates/maintain/account_transfer_add.html:5
+#: app/maintain/templates/maintain/account_transfer_add.html:9
+#: app/maintain/templates/maintain/account_transfer_add.html:16
+#: app/maintain/templates/maintain/account_transfer_add.html:25
+msgid "修改迁移"
+msgstr ""
+
+#: app/distribute/templates/distribute/status.html:90
+#: app/maintain/templates/maintain/queues_list.html:149 templates/home.html:709
+#: templates/queue.html:138
+msgid "上一页 "
+msgstr ""
+
+#: app/distribute/templates/distribute/status.html:91
+#: app/maintain/templates/maintain/queues_list.html:150 templates/home.html:710
+#: templates/queue.html:139
+msgid "下一页 "
+msgstr ""
+
+#: app/distribute/templates/distribute/status.html:92
+#: app/maintain/templates/maintain/queues_list.html:151 templates/home.html:711
+#: templates/queue.html:140
+msgid "最后一页 "
+msgstr ""
+
+#: app/domain/forms.py:132 app/domain/forms.py:363
+msgid "无效的域名"
+msgstr ""
+
+#: app/domain/forms.py:268
+msgid "无效的发信权限"
+msgstr ""
+
+#: app/domain/forms.py:272
+msgid "无效的收信权限"
+msgstr ""
+
+#: app/domain/models.py:22
+msgid "标题"
+msgstr ""
+
+#: app/domain/models.py:23 app/domain/models.py:80
+msgid "内容"
+msgstr ""
+
+#: app/domain/models.py:24
+msgid "新邮件默认"
+msgstr ""
+
+#: app/domain/models.py:25
+msgid "回复转发时的默认签名"
+msgstr ""
+
+#: app/domain/models.py:30
+msgid "域签名"
+msgstr ""
+
+#: app/domain/models.py:40
+msgid "邮件密级"
+msgstr ""
+
+#: app/domain/models.py:45 app/domain/models.py:65
+msgid "类型ID"
+msgstr ""
+
+#: app/domain/models.py:46 app/mailbox/templates/mailbox/register_list.html:72
+#: app/rpt/templates/rpt/include/maillog.html:21
+msgid "姓名"
+msgstr ""
+
+#: app/domain/models.py:47
+msgid "性别"
+msgstr ""
+
+#: app/domain/models.py:48
+msgid "生日"
+msgstr ""
+
+#: app/domain/models.py:49
+#: app/rpt/templates/rpt/include/user_log_client.html:18
+#: app/rpt/templates/rpt/include/user_log_web.html:19
+msgid "邮箱地址"
+msgstr ""
+
+#: app/domain/models.py:50
+msgid "移动号码"
+msgstr ""
+
+#: app/domain/models.py:51
+msgid "QQ"
+msgstr ""
+
+#: app/domain/models.py:52
+msgid "MSN"
+msgstr ""
+
+#: app/domain/models.py:53
+msgid "家庭电话"
+msgstr ""
+
+#: app/domain/models.py:54
+msgid "工作电话"
+msgstr ""
+
+#: app/domain/models.py:62
+#: app/domain/templates/domain/include/static_public_list.html:8
+#: app/domain/templates/domain/static.html:62
+msgid "公共通讯录"
+msgstr ""
+
+#: app/domain/models.py:67 app/domain/models.py:78
+#: app/maintain/templates/maintain/backup.html:54 app/security/models.py:22
+#: app/security/models.py:62
+#: app/security/templates/security/fail2ban_blocklist.html:66
+#: app/security/templates/security/fail2ban_rulelist.html:66
+msgid "名称"
+msgstr ""
+
+#: app/domain/models.py:68
+msgid "父类型ID"
+msgstr ""
+
+#: app/domain/models.py:74
+msgid "公共通讯录类型"
+msgstr ""
+
+#: app/domain/models.py:79
+msgid "预览图片"
+msgstr ""
+
+#: app/domain/models.py:85
+msgid "信纸"
+msgstr ""
+
+#: app/domain/templates/domain/domain_list.html:4
+#: app/domain/templates/domain/domain_list.html:5
+#: app/domain/templates/domain/domain_list.html:11
+msgid "域名管理"
+msgstr ""
+
+#: app/domain/templates/domain/domain_list.html:16
+msgid "添加域名"
+msgstr ""
+
+#: app/domain/templates/domain/include/static_public_list.html:13
+msgid "添加客户"
+msgstr ""
+
+#: app/domain/templates/domain/include/static_public_list.html:14
+msgid "批量导入"
+msgstr ""
+
+#: app/domain/templates/domain/include/static_public_list.html:15
+msgid "批量导出"
+msgstr ""
+
+#: app/domain/templates/domain/include/static_public_list.html:16
+msgid "批量删除"
+msgstr ""
+
+#: app/domain/templates/domain/include/static_public_list.html:25
+#: app/domain/templates/domain/include/static_public_type.html:21
+#: app/domain/templates/domain/include/static_webmail_letter.html:20
+#: app/maillist/models.py:82
+#: app/maillist/templates/maillist/maillist_maintain.html:4
+#: app/maillist/templates/maillist/maillist_maintain.html:5
+#: app/maillist/templates/maillist/maillist_maintain.html:33
+msgid "邮件列表"
+msgstr ""
+
+#: app/domain/templates/domain/include/static_public_list.html:28
+#: app/domain/templates/domain/include/static_public_type.html:24
+#: app/domain/templates/domain/include/static_webmail_letter.html:23
+#: app/dpt/templates/dpt/dpt.html:33 app/dpt/templates/dpt/dpt_mem.html:31
+#: app/dpt/templates/dpt/dpt_mem_add.html:19
+#: app/group/templates/group/groups_mem.html:28
+#: app/group/templates/group/groups_mem_add.html:19
+#: app/maillist/templates/maillist/maillist_maintain.html:36
+#: app/maillist/templates/maillist/maillist_maintain_select.html:19
+#: app/maillist/templates/maillist/maillist_maintain_select_everyone.html:19
+#: app/maintain/templates/maintain/i.html:65
+#: app/maintain/templates/maintain/include/isolate.html:27
+#: app/maintain/templates/maintain/mail_moving.html:32
+#: app/maintain/templates/maintain/queues_list.html:43
+msgid "全选"
+msgstr ""
+
+#: app/domain/templates/domain/include/static_public_list.html:30
+#: app/domain/templates/domain/include/static_public_type.html:26
+#: app/maillist/templates/maillist/maillist_maintain.html:39
+msgid "删除所选地址"
+msgstr ""
+
+#: app/domain/templates/domain/include/static_public_list.html:293
+msgid "请选择要处理的地址！"
+msgstr ""
+
+#: app/domain/templates/domain/include/static_public_list.html:297
+#: app/domain/templates/domain/include/static_public_type.html:243
+#: app/dpt/templates/dpt/dpt_mem.html:137
+#: app/group/templates/group/groups_mem.html:218
+#: app/maillist/templates/maillist/maillist_maintain.html:191
+#: app/maintain/templates/maintain/mail_moving.html:110
+msgid "您确定要删除"
+msgstr ""
+
+#: app/domain/templates/domain/include/static_public_list.html:297
+msgid "个地址？"
+msgstr ""
+
+#: app/domain/templates/domain/include/static_public_type.html:8
+msgid "公共通讯录-客户分类"
+msgstr ""
+
+#: app/domain/templates/domain/include/static_public_type.html:239
+#: app/group/templates/group/groups_mem.html:214
+#: app/maillist/templates/maillist/maillist_maintain.html:150
+#: app/maillist/templates/maillist/maillist_maintain.html:187
+msgid "请选择要处理的发件人！"
+msgstr ""
+
+#: app/domain/templates/domain/include/static_public_type.html:243
+#: app/group/templates/group/groups_mem.html:218
+#: app/maillist/templates/maillist/maillist_maintain.html:191
+msgid "个发件人？"
+msgstr ""
+
+#: app/domain/templates/domain/include/static_webmail.html:174
+#: app/domain/templates/domain/include/static_webmail.html:217
+#: app/domain/templates/domain/include/static_webmail.html:319
+#: app/domain/templates/domain/include/static_webmail.html:351
+#: app/domain/templates/domain/include/static_webmail.html:389
+#: app/dpt/templates/dpt/dpt_add.html:83
+#: app/group/templates/group/groups_add.html:37
+#: app/group/templates/group/groups_mem_import.html:35
+#: app/maillist/templates/maillist/maillist_add.html:28
+#: app/maillist/templates/maillist/maillist_import.html:39
+#: app/maillist/templates/maillist/maillist_maintain_add.html:34
+#: app/maillist/templates/maillist/maillist_maintain_batchadd.html:60
+#: app/maintain/templates/maintain/account_transfer_add.html:38
+#: app/maintain/templates/maintain/backupset.html:73
+#: app/maintain/templates/maintain/mail_moving_add.html:61
+#: app/maintain/templates/maintain/mail_moving_badd.html:42
+#: app/maintain/templates/maintain/wechat_conf_add.html:29
+#: app/maintain/templates/maintain/wechat_template_add.html:29
+#: app/perm/templates/perm/group_modify.html:27
+#: app/perm/templates/perm/perm_modify.html:24
+#: app/perm/templates/perm/user_add.html:24
+#: app/perm/templates/perm/user_passwd_change.html:24
+#: app/perm/templates/perm/webmail_admin_mdf.html:27
+#: app/security/templates/security/fail2ban_block_add.html:23
+#: app/security/templates/security/fail2ban_rule_add.html:44
+#: app/security/templates/security/fail2ban_whitelist_add.html:23
+#: app/security/templates/security/password_weak_import.html:30
+#: app/setting/templates/setting/include/mail_transfer_import.html:31
+#: app/setting/templates/setting/relay_mdf.html:33
+msgid "确认"
+msgstr ""
+
+#: app/domain/templates/domain/include/static_webmail.html:175
+#: app/domain/templates/domain/include/static_webmail.html:218
+#: app/domain/templates/domain/include/static_webmail.html:320
+#: app/domain/templates/domain/include/static_webmail.html:352
+#: app/domain/templates/domain/include/static_webmail.html:390
+#: app/dpt/templates/dpt/dpt.html:62 app/dpt/templates/dpt/dpt.html:103
+#: app/group/templates/group/groups.html:49
+#: app/mailbox/templates/mailbox/emailAccounts.html:259
+#: app/maintain/templates/maintain/backup.html:71
+#: app/maintain/templates/maintain/include/wechat_template.html:33
+#: auditlog/models.py:186
+msgid "删除"
+msgstr ""
+
+#: app/domain/templates/domain/include/static_webmail.html:176
+#: app/domain/templates/domain/include/static_webmail.html:219
+#: app/domain/templates/domain/include/static_webmail.html:321
+#: app/domain/templates/domain/include/static_webmail.html:353
+#: app/domain/templates/domain/include/static_webmail.html:391
+#: app/dpt/templates/dpt/dpt_add.html:84
+#: app/group/templates/group/groups_add.html:38
+#: app/group/templates/group/groups_info.html:134
+#: app/group/templates/group/groups_info.html:173
+#: app/group/templates/group/groups_info.html:316
+#: app/group/templates/group/groups_info.html:538
+#: app/group/templates/group/groups_info.html:624
+#: app/group/templates/group/groups_info.html:708
+#: app/group/templates/group/groups_info.html:788
+#: app/group/templates/group/groups_mem_import.html:36
+#: app/maillist/templates/maillist/maillist_add.html:29
+#: app/maillist/templates/maillist/maillist_import.html:40
+#: app/maillist/templates/maillist/maillist_maintain_add.html:35
+#: app/maillist/templates/maillist/maillist_maintain_batchadd.html:61
+#: app/maintain/templates/maintain/account_transfer_add.html:39
+#: app/maintain/templates/maintain/backupset.html:74
+#: app/maintain/templates/maintain/mail_moving_add.html:62
+#: app/maintain/templates/maintain/mail_moving_badd.html:43
+#: app/maintain/templates/maintain/wechat_conf_add.html:30
+#: app/maintain/templates/maintain/wechat_template_add.html:30
+#: app/perm/templates/perm/group_modify.html:28
+#: app/perm/templates/perm/perm_modify.html:25
+#: app/perm/templates/perm/user_add.html:25
+#: app/perm/templates/perm/user_passwd_change.html:25
+#: app/perm/templates/perm/webmail_admin_mdf.html:28
+#: app/security/templates/security/fail2ban_block_add.html:24
+#: app/security/templates/security/fail2ban_rule_add.html:45
+#: app/security/templates/security/fail2ban_whitelist_add.html:24
+#: app/security/templates/security/password_weak_import.html:31
+#: app/setting/templates/setting/include/mail_transfer_import.html:32
+#: app/setting/templates/setting/relay_mdf.html:34
+msgid "重置"
+msgstr ""
+
+#: app/domain/templates/domain/include/static_webmail_letter.html:7
+msgid "信纸管理"
+msgstr ""
+
+#: app/domain/templates/domain/static.html:34
+msgid "域名配置"
+msgstr ""
+
+#: app/domain/templates/domain/static.html:42
+msgid "邮件域基本信息"
+msgstr ""
+
+#: app/domain/templates/domain/static.html:46
+msgid "用户注册"
+msgstr ""
+
+#: app/domain/templates/domain/static.html:50
+msgid "域名功能设置"
+msgstr ""
+
+#: app/domain/templates/domain/static.html:53
+msgid "Webmail 页面定制"
+msgstr ""
+
+#: app/domain/templates/domain/static.html:56
+msgid "签名"
+msgstr ""
+
+#: app/domain/templates/domain/static.html:59
+msgid "前台模块管理"
+msgstr ""
+
+#: app/domain/templates/domain/static.html:66
+msgid "密级管理"
+msgstr ""
+
+#: app/domain/views.py:467
+msgid "ERROR：上传的图片不能大于50KB"
+msgstr ""
+
+#: app/domain/views.py:472
+msgid "ERROR：上传的非图片，请选择图片上传"
+msgstr ""
+
+#: app/dpt/forms.py:16
+msgid "请选择"
+msgstr ""
+
+#: app/dpt/forms.py:27 app/dpt/templates/dpt/dpt_add.html:31
+msgid "上级部门"
+msgstr ""
+
+#: app/dpt/forms.py:47
+msgid "请填写部门名称"
+msgstr ""
+
+#: app/dpt/forms.py:76
+msgid "请选择部门。"
+msgstr ""
+
+#: app/dpt/forms.py:84
+msgid "输入的E-Mail不合法。"
+msgstr ""
+
+#: app/dpt/forms.py:189
+msgid "邮箱ID不正确"
+msgstr ""
+
+#: app/dpt/forms.py:191 app/mailbox/views.py:1166
+msgid "邮箱不存在"
+msgstr ""
+
+#: app/dpt/forms.py:194
+msgid "邮箱已存在部门成员中"
+msgstr ""
+
+#: app/dpt/forms.py:200
+msgid "员工"
+msgstr ""
+
+#: app/dpt/templates/dpt/domain_group.html:4
+#: app/dpt/templates/dpt/domain_group.html:7
+#: app/dpt/templates/dpt/domain_group.html:14
+msgid "所有域企业通讯录组合管理"
+msgstr ""
+
+#: app/dpt/templates/dpt/domain_group.html:6
+#: app/dpt/templates/dpt/domain_share.html:6
+#: app/dpt/templates/dpt/domain_share_view.html:7
+#: app/dpt/templates/dpt/dpt.html:6 app/dpt/templates/dpt/dpt_add.html:7
+#: app/dpt/templates/dpt/dpt_mem.html:6
+msgid "部门机构管理"
+msgstr ""
+
+#: app/dpt/templates/dpt/domain_group_add.html:50
+msgid "确定"
+msgstr ""
+
+#: app/dpt/templates/dpt/domain_share.html:4
+#: app/dpt/templates/dpt/domain_share.html:7
+#: app/dpt/templates/dpt/domain_share.html:14
+#: app/dpt/templates/dpt/domain_share_view.html:5
+msgid "其他域通讯录共享管理"
+msgstr ""
+
+#: app/dpt/templates/dpt/domain_share.html:28
+msgid "可查看企业通讯录数量"
+msgstr ""
+
+#: app/dpt/templates/dpt/domain_share_view.html:8
+#: app/dpt/templates/dpt/domain_share_view.html:15
+msgid "邮件域"
+msgstr ""
+
+#: app/dpt/templates/dpt/domain_share_view.html:8
+#: app/dpt/templates/dpt/domain_share_view.html:15
+msgid "可查看的企业通讯录共享域"
+msgstr ""
+
+#: app/dpt/templates/dpt/domain_share_view.html:26
+#: app/maillist/templates/maillist/maillist_maintain.html:25
+msgid "返回列表"
+msgstr ""
+
+#: app/dpt/templates/dpt/domain_share_view.html:40
+msgid "是否默认显示"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt.html:4 app/dpt/templates/dpt/dpt.html:7
+#: app/dpt/templates/dpt/dpt.html:14 app/dpt/templates/dpt/dpt_add.html:8
+msgid "部门列表"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt.html:15 app/dpt/templates/dpt/dpt.html:76
+msgid "当前部门"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt.html:21 app/dpt/templates/dpt/dpt_add.html:5
+#: app/dpt/templates/dpt/dpt_add.html:9 app/dpt/templates/dpt/dpt_add.html:15
+#: app/dpt/templates/dpt/dpt_add.html:23
+msgid "添加部门"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt.html:22
+msgid "导出为Foxmail格式联系人"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt.html:23
+msgid "导出为Outlook格式联系人"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt.html:39
+msgid "当前用户管理的部门"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt.html:60
+msgid "查看子部门"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt.html:61 app/dpt/templates/dpt/dpt.html:102
+msgid "添加部门成员"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt.html:76
+msgid "的子部门"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt.html:83
+#: app/review/templates/review/include/rule.html:27
+#: app/rpt/templates/rpt/admin_log.html:36
+msgid "ID"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt.html:119 app/dpt/views.py:70
+msgid "U-Mail邮件服务器"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt.html:323 app/dpt/templates/dpt/dpt.html:364
+msgid "对不起! 当前部门没有下级部门!"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt.html:427
+msgid "请选择要导出的部门！"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt_add.html:5 app/dpt/templates/dpt/dpt_add.html:9
+#: app/dpt/templates/dpt/dpt_add.html:15 app/dpt/templates/dpt/dpt_add.html:23
+msgid "修改部门信息"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt_add.html:34
+msgid "点击选择上级部门"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt_add.html:65
+msgid "部门权限设置"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt_add.html:70
+msgid "禁止网络硬盘"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt_add.html:73
+msgid "禁止企业通讯录"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt_add.html:76
+msgid "将权限设置应用到下级部门"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt_mem.html:4
+msgid "部门成员"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt_mem.html:7
+msgid "部门成员管理"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt_mem.html:14
+#: app/group/templates/group/groups.html:47
+msgid "成员管理"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt_mem.html:20
+#: app/group/templates/group/groups_mem.html:16
+msgid "批量添加组成员"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt_mem.html:21
+msgid "返回部门列表"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt_mem.html:33
+#: app/group/templates/group/groups_mem.html:30
+msgid "删除所选成员"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt_mem.html:133
+msgid "请选择要处理的部门成员！"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt_mem.html:137
+msgid "个部门成员？"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt_mem_add.html:57
+#: app/group/templates/group/groups_mem_add.html:47
+#: app/maillist/templates/maillist/maillist_maintain_select.html:47
+#: app/maillist/templates/maillist/maillist_maintain_select_everyone.html:47
+#: app/maillist/templates/maillist/maillist_maintain_select_everyone.html:48
+msgid "确定选中的地址"
+msgstr ""
+
+#: app/dpt/templates/dpt/dpt_mem_add.html:103
+#: app/group/templates/group/groups_mem_add.html:92
+#: app/maillist/templates/maillist/maillist_maintain_select.html:92
+#: app/maillist/templates/maillist/maillist_maintain_select_everyone.html:93
+msgid "搜索部门或者邮箱: "
+msgstr ""
+
+#: app/dpt/views.py:54
+msgid "对不起您没有权限操作该列表！"
+msgstr ""
+
+#: app/dpt/views.py:61 app/dpt/views.py:261 app/mailbox/views.py:1093
+#: app/mailbox/views.py:1106 app/mailbox/views.py:1128
+#: app/mailbox/views.py:1150 app/mailbox/views.py:1359
+#: app/mailbox/views.py:1528 app/security/views.py:43 app/security/views.py:348
+#: app/setting/views.py:1912
+msgid "删除成功"
+msgstr ""
+
+#: app/dpt/views.py:63
+msgid "不能删除拥有下级部门的部门！"
+msgstr ""
+
+#: app/dpt/views.py:106
+msgid "部门添加成功"
+msgstr ""
+
+#: app/dpt/views.py:133
+msgid "部门修改成功"
+msgstr ""
+
+#: app/dpt/views.py:184 app/group/views.py:99 app/group/views.py:197
+#: app/maillist/views.py:168 app/maillist/views.py:258
+#: app/maillist/views.py:389 app/maintain/views.py:433
+#: app/security/views.py:445 app/setting/views.py:339 app/setting/views.py:1129
+#, python-format
+msgid "批量添加成功%(success)s个, 失败%(fail)s个"
+msgstr ""
+
+#: app/dpt/views.py:265
+msgid "设置默认成功"
+msgstr ""
+
+#: app/dpt/views.py:268 app/mailbox/views.py:582 app/mailbox/views.py:1101
+#: app/mailbox/views.py:1112 app/mailbox/views.py:1144
+#: app/mailbox/views.py:1159 app/mailbox/views.py:1307
+#: app/mailbox/views.py:1478
+msgid "添加成功"
+msgstr ""
+
+#: app/group/forms.py:26
+msgid "请填写组名称"
+msgstr ""
+
+#: app/group/forms.py:37 app/security/forms.py:44
+msgid "请填写组名称。"
+msgstr ""
+
+#: app/group/forms.py:40
+msgid "组名称存在。"
+msgstr ""
+
+#: app/group/forms.py:51
+msgid "组"
+msgstr ""
+
+#: app/group/forms.py:72
+#, python-format
+msgid "邮箱已存在于其他组'%s'中"
+msgstr ""
+
+#: app/group/forms.py:98 app/mailbox/forms.py:260 app/maillist/forms.py:155
+#: app/security/forms.py:486
+msgid "请选择文件。"
+msgstr ""
+
+#: app/group/forms.py:102 app/mailbox/forms.py:264 app/mailbox/views.py:635
+#: app/mailbox/views.py:775 app/maillist/forms.py:159 app/security/forms.py:490
+msgid "只支持excel、txt、csv文件导入。"
+msgstr ""
+
+#: app/group/forms.py:374
+#, python-format
+msgid "保存的类型不匹配 '%s'"
+msgstr ""
+
+#: app/group/forms.py:379
+#, python-format
+msgid "已存在类型 '%s'"
+msgstr ""
+
+#: app/group/forms.py:383
+#, python-format
+msgid "不能保存为其他类型 '%s'"
+msgstr ""
+
+#: app/group/models.py:9
+msgid "不限制邮件发送"
+msgstr ""
+
+#: app/group/models.py:10
+msgid "禁止发送所有邮件"
+msgstr ""
+
+#: app/group/models.py:11
+msgid "只发送本地域邮件"
+msgstr ""
+
+#: app/group/models.py:12
+msgid "可发送指定外域邮件"
+msgstr ""
+
+#: app/group/models.py:13
+msgid "可发送本地所有域邮件"
+msgstr ""
+
+#: app/group/models.py:16
+msgid "不限制邮件接收"
+msgstr ""
+
+#: app/group/models.py:17
+msgid "禁此接收所有邮件"
+msgstr ""
+
+#: app/group/models.py:18
+msgid "只接收本地域邮件"
+msgstr ""
+
+#: app/group/models.py:19
+msgid "可接收指定外域邮件"
+msgstr ""
+
+#: app/group/models.py:20
+msgid "可接收本地所有域邮件"
+msgstr ""
+
+#: app/group/models.py:23
+msgid "必须包含两种字符"
+msgstr ""
+
+#: app/group/models.py:24
+msgid "必须包含三种字符"
+msgstr ""
+
+#: app/group/models.py:25
+msgid "必须包含四种字符"
+msgstr ""
+
+#: app/group/models.py:29
+msgid "密码不能包含账号"
+msgstr ""
+
+#: app/group/models.py:30
+msgid "连续3位及以上数字不能连号（例如：123、654）"
+msgstr ""
+
+#: app/group/models.py:31
+msgid "连续3位及以上字母不能连号（例如：abc、cba）"
+msgstr ""
+
+#: app/group/models.py:32
+msgid "密码不能包含连续3个及以上相同字符（例如：aaa、rrr）"
+msgstr ""
+
+#: app/group/models.py:33
+msgid "密码不能包含用户姓名大小写全拼"
+msgstr ""
+
+#: app/group/models.py:36 app/group/models.py:39
+msgid "禁止外发邮件"
+msgstr ""
+
+#: app/group/models.py:37 app/group/models.py:40
+msgid "登录后强制修改密码"
+msgstr ""
+
+#: app/group/models.py:43
+msgid "小危附件"
+msgstr ""
+
+#: app/group/models.py:44
+msgid "高危附件"
+msgstr ""
+
+#: app/group/models.py:47 app/setting/templates/setting/black_whitelist.html:42
+msgid "发件人黑名单"
+msgstr ""
+
+#: app/group/models.py:48
+msgid "主题黑名单"
+msgstr ""
+
+#: app/group/models.py:49
+msgid "内容黑名单"
+msgstr ""
+
+#: app/group/models.py:50
+msgid "附件黑名单"
+msgstr ""
+
+#: app/group/models.py:59
+msgid "垃圾箱"
+msgstr ""
+
+#: app/group/models.py:60
+msgid "隔离队列"
+msgstr ""
+
+#: app/group/models.py:61
+msgid "收件箱"
+msgstr ""
+
+#: app/group/models.py:64
+msgid "本域进站邮件"
+msgstr ""
+
+#: app/group/models.py:65
+msgid "外域进站邮件"
+msgstr ""
+
+#: app/group/models.py:68 app/group/models.py:72
+msgid "开启反垃圾"
+msgstr ""
+
+#: app/group/models.py:69 app/group/models.py:73
+msgid "开启反病毒"
+msgstr ""
+
+#: app/group/models.py:77
+msgid "显示所有部门"
+msgstr ""
+
+#: app/group/models.py:78
+msgid "仅显示本部门"
+msgstr ""
+
+#: app/group/models.py:79
+msgid "显示本部门和子部门"
+msgstr ""
+
+#: app/group/models.py:80
+msgid "显示指定部门"
+msgstr ""
+
+#: app/group/models.py:84
+msgid "秘密"
+msgstr ""
+
+#: app/group/models.py:85
+msgid "机密"
+msgstr ""
+
+#: app/group/models.py:86
+msgid "绝密"
+msgstr ""
+
+#: app/group/models.py:95
+msgid "关闭"
+msgstr ""
+
+#: app/group/models.py:96
+msgid "与域名配置相同"
+msgstr ""
+
+#: app/group/models.py:97
+msgid "开启"
+msgstr ""
+
+#: app/group/models.py:102 app/group/templates/group/groups.html:28
+msgid "组名称"
+msgstr ""
+
+#: app/group/models.py:103
+msgid "组描述"
+msgstr ""
+
+#: app/group/models.py:108 app/group/models.py:109
+msgid "组权限"
+msgstr ""
+
+#: app/group/models.py:137 app/group/models.py:158
+#: app/group/templates/group/groups.html:4
+#: app/group/templates/group/groups.html:5
+#: app/group/templates/group/groups.html:10
+#: app/group/templates/group/groups_mem.html:5
+msgid "组权限管理"
+msgstr ""
+
+#: app/group/models.py:144 app/group/models.py:145
+msgid "组权限设置"
+msgstr ""
+
+#: app/group/models.py:159
+msgid "邮箱管理"
+msgstr ""
+
+#: app/group/models.py:166 app/group/models.py:167
+msgid "组权限成员表"
+msgstr ""
+
+#: app/group/templates/group/groups.html:15
+msgid "添加组"
+msgstr ""
+
+#: app/group/templates/group/groups.html:29 app/maillist/models.py:52
+msgid "说明信息"
+msgstr ""
+
+#: app/group/templates/group/groups.html:30
+msgid "成员数"
+msgstr ""
+
+#: app/group/templates/group/groups.html:45
+msgid "修改组信息"
+msgstr ""
+
+#: app/group/templates/group/groups.html:46
+msgid "修改组配置"
+msgstr ""
+
+#: app/group/templates/group/groups_add.html:5
+#: app/group/templates/group/groups_add.html:6
+#: app/group/templates/group/groups_info.html:5
+#: app/group/templates/group/groups_info.html:6
+msgid "组配置"
+msgstr ""
+
+#: app/group/templates/group/groups_add.html:6
+#: app/group/templates/group/groups_add.html:10
+#: app/group/templates/group/groups_add.html:16
+#: app/group/templates/group/groups_info.html:6
+#: app/group/templates/group/groups_info.html:10
+#: app/group/templates/group/groups_info.html:17
+msgid "组配置信息"
+msgstr ""
+
+#: app/group/templates/group/groups_add.html:22
+msgid "组信息"
+msgstr ""
+
+#: app/group/templates/group/groups_info.html:36
+msgid "常规设置"
+msgstr ""
+
+#: app/group/templates/group/groups_info.html:39
+msgid "登录方式限制"
+msgstr ""
+
+#: app/group/templates/group/groups_info.html:42
+msgid "密码规则"
+msgstr ""
+
+#: app/group/templates/group/groups_info.html:45
+msgid "反垃圾/反病毒"
+msgstr ""
+
+#: app/group/templates/group/groups_info.html:48
+msgid "发信频率设置"
+msgstr ""
+
+#: app/group/templates/group/groups_info.html:51
+msgid "企业通讯录设置"
+msgstr ""
+
+#: app/group/templates/group/groups_info.html:54
+msgid "邮箱空间清理设置"
+msgstr ""
+
+#: app/group/templates/group/groups_mem.html:4
+#: app/group/templates/group/groups_mem.html:5
+#: app/group/templates/group/groups_mem.html:10
+msgid "组成员列表"
+msgstr ""
+
+#: app/group/templates/group/groups_mem.html:17
+#: app/maillist/templates/maillist/maillist_list.html:20
+msgid "导入Txt或Excel"
+msgstr ""
+
+#: app/group/templates/group/groups_mem.html:18
+msgid "返回组权限管理"
+msgstr ""
+
+#: app/group/templates/group/groups_mem_import.html:5
+#: app/group/templates/group/groups_mem_import.html:9
+#: app/group/templates/group/groups_mem_import.html:20
+msgid "组成员导入"
+msgstr ""
+
+#: app/group/templates/group/groups_mem_import.html:7
+msgid " 组权限管理 "
+msgstr ""
+
+#: app/group/templates/group/groups_mem_import.html:8
+msgid " 组成员列表 "
+msgstr ""
+
+#: app/group/templates/group/groups_mem_import.html:13
+msgid "的组成员导入"
+msgstr ""
+
+#: app/group/views.py:89 app/group/views.py:138 app/group/views.py:160
+#: app/group/views.py:187 app/maillist/views.py:245
+msgid "邮箱不存在于该域名下"
+msgstr ""
+
+#: app/group/views.py:101 app/group/views.py:199
+#, python-format
+msgid "失败详情 : %(fail)s"
+msgstr ""
+
+#: app/group/views.py:133 app/group/views.py:155 app/group/views.py:182
+msgid "格式不正确"
+msgstr ""
+
+#: app/mailbox/forms.py:24 app/perm/forms.py:78 app/perm/forms.py:135
+msgid "两次输入的密码不一致."
+msgstr ""
+
+#: app/mailbox/forms.py:38
+msgid "邮箱名称"
+msgstr ""
+
+#: app/mailbox/forms.py:97
+msgid "邮箱名称只能由字母、数字或下划线点横杠组成！"
+msgstr ""
+
+#: app/mailbox/forms.py:187 app/mailbox/forms.py:241
+msgid "工号只能由字母、数字或下划线点横杠组成！"
+msgstr ""
+
+#: app/mailbox/forms.py:198 app/mailbox/forms.py:252
+msgid "手机号码格式不对"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/add_account.html:5
+#: app/mailbox/templates/mailbox/add_account.html:7
+#: app/mailbox/templates/mailbox/add_account.html:15
+#: app/mailbox/templates/mailbox/backup_account.html:6
+#: app/mailbox/templates/mailbox/backup_account.html:8
+#: app/mailbox/templates/mailbox/backup_account.html:16
+#: app/mailbox/templates/mailbox/batchadd_account.html:6
+#: app/mailbox/templates/mailbox/batchadd_account.html:8
+#: app/mailbox/templates/mailbox/batchadd_account.html:41
+#: app/mailbox/templates/mailbox/batchedit_account.html:5
+#: app/mailbox/templates/mailbox/batchedit_account.html:7
+#: app/mailbox/templates/mailbox/batchedit_account.html:40
+#: app/mailbox/templates/mailbox/delete_account.html:5
+#: app/mailbox/templates/mailbox/delete_account.html:7
+#: app/mailbox/templates/mailbox/delete_account.html:38
+#: app/mailbox/templates/mailbox/emailAccounts.html:5
+#: app/mailbox/templates/mailbox/emailAccounts.html:44
+#: app/mailbox/templates/mailbox/emailAccounts.html:52
+msgid "邮箱帐号管理"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/add_account.html:8
+#: app/mailbox/templates/mailbox/add_account.html:16
+#: app/mailbox/templates/mailbox/add_account.html:33
+#: app/mailbox/templates/mailbox/backup_account.html:34
+#: app/mailbox/templates/mailbox/batchadd_account.html:59
+#: app/mailbox/templates/mailbox/emailAccounts.html:69
+#: app/mailbox/templates/mailbox/register_list.html:20
+#: app/setting/templates/setting/include/ldap_adlist.html:6
+msgid "添加帐号"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/add_account.html:27
+#: app/mailbox/templates/mailbox/backup_account.html:28
+#: app/mailbox/templates/mailbox/batchadd_account.html:53
+#: app/mailbox/templates/mailbox/batchedit_account.html:51
+#: app/mailbox/templates/mailbox/delete_account.html:49
+#: app/mailbox/templates/mailbox/emailAccounts.html:45
+#: app/mailbox/templates/mailbox/emailAccounts.html:53
+#: app/mailbox/templates/mailbox/emailAccounts.html:64
+#: app/mailbox/templates/mailbox/register_list.html:14
+msgid "帐号列表"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/add_account.html:39
+#: app/mailbox/templates/mailbox/backup_account.html:40
+#: app/mailbox/templates/mailbox/batchadd_account.html:9
+#: app/mailbox/templates/mailbox/batchadd_account.html:42
+#: app/mailbox/templates/mailbox/batchadd_account.html:65
+#: app/mailbox/templates/mailbox/batchedit_account.html:63
+#: app/mailbox/templates/mailbox/delete_account.html:61
+#: app/mailbox/templates/mailbox/emailAccounts.html:74
+#: app/mailbox/templates/mailbox/register_list.html:26
+#: app/setting/templates/setting/mail_transfer.html:38
+#: app/setting/templates/setting/mail_transfer_import.html:37
+#: app/setting/templates/setting/mail_transfer_sender.html:38
+msgid "批量添加帐号"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/add_account.html:45
+#: app/mailbox/templates/mailbox/backup_account.html:46
+#: app/mailbox/templates/mailbox/batchadd_account.html:71
+#: app/mailbox/templates/mailbox/batchedit_account.html:8
+#: app/mailbox/templates/mailbox/batchedit_account.html:41
+#: app/mailbox/templates/mailbox/batchedit_account.html:69
+#: app/mailbox/templates/mailbox/delete_account.html:67
+#: app/mailbox/templates/mailbox/emailAccounts.html:80
+#: app/mailbox/templates/mailbox/register_list.html:32
+msgid "批量修改帐号"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/add_account.html:50
+#: app/mailbox/templates/mailbox/backup_account.html:51
+#: app/mailbox/templates/mailbox/batchadd_account.html:76
+#: app/mailbox/templates/mailbox/batchedit_account.html:74
+#: app/mailbox/templates/mailbox/delete_account.html:8
+#: app/mailbox/templates/mailbox/delete_account.html:39
+#: app/mailbox/templates/mailbox/delete_account.html:72
+#: app/mailbox/templates/mailbox/emailAccounts.html:85
+#: app/mailbox/templates/mailbox/register_list.html:37
+msgid "批量删除帐号"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/add_account.html:55
+#: app/mailbox/templates/mailbox/batchadd_account.html:81
+#: app/mailbox/templates/mailbox/batchedit_account.html:79
+#: app/mailbox/templates/mailbox/delete_account.html:77
+#: app/mailbox/templates/mailbox/emailAccounts.html:90
+#: app/mailbox/templates/mailbox/register_list.html:42
+msgid "帐号申请列表"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/add_account.html:62
+#: app/mailbox/templates/mailbox/backup_account.html:9
+#: app/mailbox/templates/mailbox/backup_account.html:17
+#: app/mailbox/templates/mailbox/backup_account.html:58
+#: app/mailbox/templates/mailbox/batchadd_account.html:88
+#: app/mailbox/templates/mailbox/batchadd_account.html:96
+#: app/mailbox/templates/mailbox/batchedit_account.html:86
+#: app/mailbox/templates/mailbox/delete_account.html:84
+#: app/mailbox/templates/mailbox/emailAccounts.html:97
+msgid "导入导出帐号"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/add_account.html:158
+#: app/mailbox/templates/mailbox/emailAccounts.html:113
+#: app/perm/templates/perm/user_dept.html:23
+msgid "点击选择部门"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/ajax_get_account.html:21
+msgid "最后更新于："
+msgstr ""
+
+#: app/mailbox/templates/mailbox/batchadd_account.html:227
+msgid "默认邮箱容量格式错误，无法提交数据！"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/batchadd_account.html:231
+msgid "默认网盘容量格式错误，无法提交数据！"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/batchedit_account.html:57
+#: app/mailbox/templates/mailbox/delete_account.html:55
+msgid "修改帐号"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/edit_account.html:795
+#: app/mailbox/templates/mailbox/edit_account.html:808
+msgid "确认删除组信息？"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/edit_account.html:820
+#: app/mailbox/templates/mailbox/edit_account.html:847
+msgid "确认删除部门信息？"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/edit_account.html:895
+#: app/mailbox/templates/mailbox/edit_account.html:908
+msgid "确认删除邮件列表信息？"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/edit_account.html:933
+#: app/mailbox/templates/mailbox/edit_account.html:946
+msgid "确认删除关联共享邮箱"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/emailAccounts.html:133
+msgid "邮箱地址/姓名/电话"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/emailAccounts.html:134
+msgid "邮箱地址/姓名/工号/电话"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/emailAccounts.html:260
+#: app/maillist/models.py:22 app/perm/models.py:58
+msgid "禁用"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/emailAccounts.html:261
+msgid "启用"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/emailAccounts.html:263
+msgid "取消设置管理员"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/emailAccounts.html:264
+msgid "设置管理员"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/emailAccounts.html:266
+msgid "提示密码"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/emailAccounts.html:804
+msgid "请选择要处理的邮箱帐号！"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/emailAccounts.html:808
+msgid "您确定要"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/emailAccounts.html:808
+msgid "个邮箱帐号？"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/emailAccounts.html:818
+msgid "您确定要提示所有邮箱修改密码？"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/forward.html:59
+msgid "到"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/register_list.html:71
+msgid "帐号名称"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/register_list.html:73
+msgid "员工代码（工号，警号等等）"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/register_list.html:75
+#: app/rpt/templates/rpt/include/user_log.html:24
+msgid "手机号码"
+msgstr ""
+
+#: app/mailbox/templates/mailbox/register_list.html:78
+msgid "申请日期"
+msgstr ""
+
+#: app/mailbox/views.py:43
+msgid "星期一"
+msgstr ""
+
+#: app/mailbox/views.py:44
+msgid "星期二"
+msgstr ""
+
+#: app/mailbox/views.py:45
+msgid "星期三"
+msgstr ""
+
+#: app/mailbox/views.py:46
+msgid "星期四"
+msgstr ""
+
+#: app/mailbox/views.py:47
+msgid "星期五"
+msgstr ""
+
+#: app/mailbox/views.py:48
+msgid "星期六"
+msgstr ""
+
+#: app/mailbox/views.py:49
+msgid "星期日"
+msgstr ""
+
+#: app/mailbox/views.py:316
+#, python-format
+msgid "已提交删除 %s 个帐号的任务，系统稍后会自动删除！"
+msgstr ""
+
+#: app/mailbox/views.py:324
+#, python-format
+msgid "成功禁用 %s 个帐号"
+msgstr ""
+
+#: app/mailbox/views.py:333
+msgid "启用失败。"
+msgstr ""
+
+#: app/mailbox/views.py:337
+#, python-format
+msgid "成功启用 %s 个帐号"
+msgstr ""
+
+#: app/mailbox/views.py:342
+#, python-format
+msgid "成功提示 %s 个帐号修改密码"
+msgstr ""
+
+#: app/mailbox/views.py:345
+msgid "成功提示所有邮箱修改密码"
+msgstr ""
+
+#: app/mailbox/views.py:351
+#, python-format
+msgid "成功设置 %s 个帐号为管理员"
+msgstr ""
+
+#: app/mailbox/views.py:360
+#, python-format
+msgid "成功取消 %s 个管理员帐号"
+msgstr ""
+
+#: app/mailbox/views.py:362
+msgid "没有管理员帐号被取消"
+msgstr ""
+
+#: app/mailbox/views.py:560 app/mailbox/views.py:1601
+msgid "添加失败。"
+msgstr ""
+
+#: app/mailbox/views.py:585
+msgid "添加失败： {}-{}"
+msgstr ""
+
+#: app/mailbox/views.py:669 app/mailbox/views.py:812
+msgid "单次只能导入500行数据，请分批次导入。"
+msgstr ""
+
+#: app/mailbox/views.py:846
+msgid "用户不存在"
+msgstr ""
+
+#: app/mailbox/views.py:851
+msgid "用户帐号不存在"
+msgstr ""
+
+#: app/mailbox/views.py:950
+msgid "已成功删除邮箱："
+msgstr ""
+
+#: app/mailbox/views.py:1096
+msgid "邮箱已存在于其他组"
+msgstr ""
+
+#: app/mailbox/views.py:1101 app/mailbox/views.py:1116
+#: app/mailbox/views.py:1138 app/mailbox/views.py:1161
+msgid "重复添加"
+msgstr ""
+
+#: app/mailbox/views.py:1125
+msgid "修改成功"
+msgstr ""
+
+#: app/mailbox/views.py:1201
+msgid "修改失败。"
+msgstr ""
+
+#: app/mailbox/views.py:1206
+#, python-format
+msgid "邮箱(%s)修改成功"
+msgstr ""
+
+#: app/mailbox/views.py:1293 app/mailbox/views.py:1466
+msgid "编辑成功"
+msgstr ""
+
+#: app/mailbox/views.py:1367 app/mailbox/views.py:1536
+msgid "禁用成功"
+msgstr ""
+
+#: app/mailbox/views.py:1369 app/mailbox/views.py:1538
+msgid " 启用成功"
+msgstr ""
+
+#: app/mailbox/views.py:1551
+msgid "设置成功"
+msgstr ""
+
+#: app/mailbox/views.py:1566
+msgid "数据不存在"
+msgstr ""
+
+#: app/mailbox/views.py:1571 app/mailbox/views.py:1612
+msgid "操作成功"
+msgstr ""
+
+#: app/mailbox/views.py:1614
+msgid "添加帐号失败： {}-{}"
+msgstr ""
+
+#: app/maillist/forms.py:37
+msgid "请填写邮件邮件列表名称。"
+msgstr ""
+
+#: app/maillist/forms.py:79
+msgid "列表"
+msgstr ""
+
+#: app/maillist/forms.py:104
+msgid "请填写邮件地址。"
+msgstr ""
+
+#: app/maillist/forms.py:109
+msgid "输入的邮件地址不合法"
+msgstr ""
+
+#: app/maillist/forms.py:113
+msgid "邮件地址已存在列表中"
+msgstr ""
+
+#: app/maillist/forms.py:117
+msgid "邮件地址不在邮件账号中"
+msgstr ""
+
+#: app/maillist/models.py:9
+msgid "普通邮件列表"
+msgstr ""
+
+#: app/maillist/models.py:10
+msgid "部门邮件列表"
+msgstr ""
+
+#: app/maillist/models.py:11
+msgid "系统邮件列表"
+msgstr ""
+
+#: app/maillist/models.py:14
+msgid "公开列表"
+msgstr ""
+
+#: app/maillist/models.py:15
+msgid "私有列表"
+msgstr ""
+
+#: app/maillist/models.py:16
+msgid "本地域名公共列表"
+msgstr ""
+
+#: app/maillist/models.py:17
+msgid "同域名公共列表"
+msgstr ""
+
+#: app/maillist/models.py:21 app/perm/models.py:57
+msgid "正常"
+msgstr ""
+
+#: app/maillist/models.py:26
+msgid "收发"
+msgstr ""
+
+#: app/maillist/models.py:27
+msgid "只发"
+msgstr ""
+
+#: app/maillist/models.py:28
+msgid "只收"
+msgstr ""
+
+#: app/maillist/models.py:32
+msgid "读"
+msgstr ""
+
+#: app/maillist/models.py:35
+msgid "完全控制"
+msgstr ""
+
+#: app/maillist/models.py:39
+msgid "邮件列表名称"
+msgstr ""
+
+#: app/maillist/models.py:40
+msgid "邮件列表地址"
+msgstr ""
+
+#: app/maillist/models.py:41
+msgid "邮件列表类型"
+msgstr ""
+
+#: app/maillist/models.py:44
+msgid "权限类型"
+msgstr ""
+
+#: app/maillist/models.py:60 app/maillist/models.py:61
+#: app/maillist/templates/maillist/maillist_add.html:7
+#: app/maillist/templates/maillist/maillist_import.html:7
+#: app/maillist/templates/maillist/maillist_list.html:4
+#: app/maillist/templates/maillist/maillist_list.html:5
+#: app/maillist/templates/maillist/maillist_list.html:11
+#: app/maillist/templates/maillist/maillist_maintain.html:5
+#: app/maillist/templates/maillist/maillist_maintain_add.html:7
+#: app/maillist/templates/maillist/maillist_maintain_batchadd.html:6
+msgid "邮件列表管理"
+msgstr ""
+
+#: app/maillist/models.py:83
+msgid "邮件地址"
+msgstr ""
+
+#: app/maillist/models.py:84
+msgid "地址权限"
+msgstr ""
+
+#: app/maillist/models.py:85
+msgid "成员名称"
+msgstr ""
+
+#: app/maillist/models.py:86
+msgid "修改时间"
+msgstr ""
+
+#: app/maillist/models.py:91 app/maillist/models.py:92
+msgid "邮件列表成员表"
+msgstr ""
+
+#: app/maillist/models.py:117 app/maillist/models.py:118
+msgid "关联共享邮箱列表"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_add.html:5
+#: app/maillist/templates/maillist/maillist_add.html:8
+#: app/maillist/templates/maillist/maillist_add.html:12
+#: app/maillist/templates/maillist/maillist_add.html:18
+#: app/maillist/templates/maillist/maillist_maintain_add.html:8
+#: app/maillist/templates/maillist/maillist_maintain_add.html:14
+#: app/maillist/templates/maillist/maillist_maintain_add.html:22
+msgid "修改邮件列表"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_add.html:5
+#: app/maillist/templates/maillist/maillist_add.html:8
+#: app/maillist/templates/maillist/maillist_add.html:12
+#: app/maillist/templates/maillist/maillist_add.html:18
+#: app/maillist/templates/maillist/maillist_maintain_add.html:8
+#: app/maillist/templates/maillist/maillist_maintain_add.html:14
+#: app/maillist/templates/maillist/maillist_maintain_add.html:23
+msgid "添加邮件列表"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_import.html:5
+msgid "地址文件导入"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_import.html:8
+#: app/maillist/templates/maillist/maillist_import.html:12
+#: app/maillist/templates/maillist/maillist_import.html:19
+msgid "邮件列表文件导入"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_list.html:21
+#: app/maillist/templates/maillist/maillist_maintain.html:19
+#: app/maillist/templates/maillist/maillist_maintain.html:23
+msgid "导出Excel"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_maintain.html:11
+msgid "邮件列表“"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_maintain.html:11
+msgid "”发件人列表"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_maintain.html:21
+msgid "批量添加邮箱"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_maintain.html:42
+msgid "批量设置收发"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_maintain.html:43
+msgid "批量设置只发"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_maintain.html:44
+msgid "批量设置只收"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_maintain.html:155
+#: app/maillist/templates/maillist/maillist_maintain.html:157
+#: app/maillist/templates/maillist/maillist_maintain.html:159
+msgid "您确定要将"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_maintain.html:155
+msgid "个发件人权限设置为 收发？"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_maintain.html:157
+msgid "个发件人权限设置为 只发？"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_maintain.html:159
+msgid "个发件人权限设置为 只收？"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_maintain_add.html:5
+#: app/maillist/templates/maillist/maillist_maintain_batchadd.html:4
+msgid "邮件列表成员"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_maintain_add.html:8
+#: app/maillist/templates/maillist/maillist_maintain_add.html:14
+#: app/maillist/templates/maillist/maillist_maintain_add.html:22
+msgid "成员权限"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_maintain_add.html:8
+#: app/maillist/templates/maillist/maillist_maintain_add.html:14
+#: app/maillist/templates/maillist/maillist_maintain_add.html:23
+#: app/maillist/templates/maillist/maillist_maintain_batchadd.html:7
+#: app/maillist/templates/maillist/maillist_maintain_batchadd.html:11
+#: app/maillist/templates/maillist/maillist_maintain_batchadd.html:17
+msgid "成员"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_maintain_batchadd.html:7
+#: app/maillist/templates/maillist/maillist_maintain_batchadd.html:11
+#: app/maillist/templates/maillist/maillist_maintain_batchadd.html:17
+msgid "批量添加邮件列表"
+msgstr ""
+
+#: app/maillist/templates/maillist/maillist_maintain_batchadd.html:39
+#: app/maintain/templates/maintain/mail_moving_badd.html:23
+msgid "添加数据"
+msgstr ""
+
+#: app/maillist/views.py:166 app/maillist/views.py:256
+#: app/maillist/views.py:387 app/maintain/views.py:435
+#: app/security/views.py:443 app/setting/views.py:1131
+#, python-format
+msgid "批量添加失败 : %(fail)s"
+msgstr ""
+
+#: app/maintain/forms.py:52 app/maintain/forms.py:75
+msgid "请填写保存路径"
+msgstr ""
+
+#: app/maintain/forms.py:82
+msgid "备份数量必须大于等于1"
+msgstr ""
+
+#: app/maintain/forms.py:89
+msgid "备份周期必须大于等于1"
+msgstr ""
+
+#: app/maintain/forms.py:117 app/maintain/forms.py:121
+#: app/maintain/forms.py:217 app/maintain/models.py:53
+msgid "禁用账号"
+msgstr ""
+
+#: app/maintain/forms.py:118 app/maintain/forms.py:131
+#: app/maintain/models.py:54
+msgid "目标帐号"
+msgstr ""
+
+#: app/maintain/forms.py:125 app/maintain/forms.py:135
+#: app/maintain/forms.py:223
+msgid "请选择邮箱"
+msgstr ""
+
+#: app/maintain/forms.py:140
+msgid "迁移邮件数据"
+msgstr ""
+
+#: app/maintain/forms.py:141
+msgid "迁移迁移网盘数据"
+msgstr ""
+
+#: app/maintain/forms.py:142
+msgid "迁移个人通讯录"
+msgstr ""
+
+#: app/maintain/forms.py:174
+msgid "目标账号不能和禁用账号相同。"
+msgstr ""
+
+#: app/maintain/forms.py:181
+msgid "必须先禁用帐号才能迁移"
+msgstr ""
+
+#: app/maintain/forms.py:210
+msgid "请填写 远程服务器"
+msgstr ""
+
+#: app/maintain/forms.py:213
+msgid "请填写 远程帐号"
+msgstr ""
+
+#: app/maintain/forms.py:219 app/maintain/models.py:71
+#: app/maintain/templates/maintain/mail_moving.html:45
+#: app/setting/models.py:279
+#: app/setting/templates/setting/include/mail_transfer_post.html:25
+msgid "本地帐号"
+msgstr ""
+
+#: app/maintain/forms.py:228 app/maintain/models.py:76 app/perm/forms.py:81
+#: app/perm/forms.py:211 app/perm/models.py:70
+#: app/security/templates/security/password_weak_list.html:54
+#: app/setting/models.py:36 app/setting/models.py:285 templates/login.html:58
+msgid "密码"
+msgstr ""
+
+#: app/maintain/models.py:52
+msgid "禁用账号ID"
+msgstr ""
+
+#: app/maintain/models.py:55
+msgid "迁移模式"
+msgstr ""
+
+#: app/maintain/models.py:56
+#: app/maintain/templates/maintain/account_transfer.html:36
+msgid "迁移后删除帐号"
+msgstr ""
+
+#: app/maintain/models.py:58
+msgid "激活任务"
+msgstr ""
+
+#: app/maintain/models.py:60 app/maintain/models.py:80
+#: app/maintain/templates/maintain/account_transfer.html:35
+msgid "状态更新时间"
+msgstr ""
+
+#: app/maintain/models.py:66
+#: app/maintain/templates/maintain/account_transfer.html:4
+#: app/maintain/templates/maintain/account_transfer.html:8
+msgid "账号间数据迁移"
+msgstr ""
+
+#: app/maintain/models.py:70
+msgid "本地账号ID"
+msgstr ""
+
+#: app/maintain/models.py:72
+#: app/maintain/templates/maintain/mail_moving.html:46
+#: app/setting/models.py:283
+msgid "远程帐号"
+msgstr ""
+
+#: app/maintain/models.py:73
+#: app/maintain/templates/maintain/mail_moving.html:47
+#: app/setting/models.py:282
+#: app/setting/templates/setting/include/mail_transfer_post.html:28
+msgid "远程服务器"
+msgstr ""
+
+#: app/maintain/models.py:74
+msgid "SSL访问"
+msgstr ""
+
+#: app/maintain/models.py:75
+msgid "迁移目录"
+msgstr ""
+
+#: app/maintain/models.py:77
+#: app/setting/templates/setting/black_whitelist.html:70
+#: app/setting/templates/setting/whitelist.html:49
+msgid "来源"
+msgstr ""
+
+#: app/maintain/models.py:81
+#: app/maintain/templates/maintain/mail_moving.html:53
+#: app/security/models.py:28 app/security/models.py:49
+#: app/security/models.py:63 app/setting/models.py:289
+#: app/setting/templates/setting/include/mail_transfer_post.html:32
+msgid "激活状态"
+msgstr ""
+
+#: app/maintain/models.py:86
+msgid "外域邮件数据导入"
+msgstr ""
+
+#: app/maintain/templates/maintain/account_transfer.html:7
+#: app/maintain/templates/maintain/backup.html:6
+#: app/maintain/templates/maintain/backupset.html:7
+#: app/maintain/templates/maintain/i.html:8
+#: app/maintain/templates/maintain/isolate.html:8
+#: app/maintain/templates/maintain/log.html:8
+#: app/maintain/templates/maintain/queues_list.html:8
+#: app/maintain/templates/maintain/wechat_apilog.html:6
+#: app/maintain/templates/maintain/wechat_conf.html:6
+#: app/maintain/templates/maintain/wechat_conf_add.html:7
+#: app/maintain/templates/maintain/wechat_news.html:6
+#: app/maintain/templates/maintain/wechat_sms.html:6
+#: app/maintain/templates/maintain/wechat_template.html:6
+#: app/maintain/templates/maintain/wechat_template_add.html:7
+#: app/maintain/templates/maintain/wechat_users.html:6
+#: app/setting/templates/setting/ssl.html:8
+msgid "系统维护"
+msgstr ""
+
+#: app/maintain/templates/maintain/account_transfer.html:15
+msgid "账号间数据迁移列表"
+msgstr ""
+
+#: app/maintain/templates/maintain/account_transfer.html:31
+msgid "被迁移账号"
+msgstr ""
+
+#: app/maintain/templates/maintain/account_transfer.html:32
+msgid "目标账号"
+msgstr ""
+
+#: app/maintain/templates/maintain/account_transfer.html:37
+msgid "开始迁移"
+msgstr ""
+
+#: app/maintain/templates/maintain/account_transfer_add.html:8
+msgid "禁用帐号管理"
+msgstr ""
+
+#: app/maintain/templates/maintain/account_transfer_add.html:60
+#: app/maintain/templates/maintain/account_transfer_add.html:67
+#: app/maintain/templates/maintain/mail_moving_add.html:85
+#: app/maintain/templates/maintain/mail_moving_default.html:93
+msgid "暂无数据"
+msgstr ""
+
+#: app/maintain/templates/maintain/backup.html:4
+#: app/maintain/templates/maintain/backup.html:7
+#: app/maintain/templates/maintain/backupset.html:8
+msgid "备份数据"
+msgstr ""
+
+#: app/maintain/templates/maintain/backup.html:14
+msgid "备份数据列表"
+msgstr ""
+
+#: app/maintain/templates/maintain/backup.html:17
+msgid "设置备份参数"
+msgstr ""
+
+#: app/maintain/templates/maintain/backup.html:18
+msgid "立即备份"
+msgstr ""
+
+#: app/maintain/templates/maintain/backup.html:20
+msgid "关闭自动备份"
+msgstr ""
+
+#: app/maintain/templates/maintain/backup.html:22
+msgid "开启自动备份"
+msgstr ""
+
+#: app/maintain/templates/maintain/backup.html:55
+msgid "备份项目"
+msgstr ""
+
+#: app/maintain/templates/maintain/backup.html:57
+#: app/maintain/templates/maintain/backupset.html:59
+msgid "备份时间"
+msgstr ""
+
+#: app/maintain/templates/maintain/backup.html:70
+msgid "恢复"
+msgstr ""
+
+#: app/maintain/templates/maintain/backupset.html:5
+#: app/maintain/templates/maintain/backupset.html:9
+#: app/maintain/templates/maintain/backupset.html:16
+#: app/maintain/templates/maintain/backupset.html:24
+msgid "备份参数设置"
+msgstr ""
+
+#: app/maintain/templates/maintain/backupset.html:53
+msgid "每隔"
+msgstr ""
+
+#: app/maintain/templates/maintain/backupset.html:53
+msgid "备份一次"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:5
+#: app/maintain/templates/maintain/isolate.html:5
+#: app/maintain/templates/maintain/isolate.html:9
+#: app/maintain/templates/maintain/isolate.html:32
+#: app/maintain/templates/maintain/queues_list.html:9
+msgid "邮件队列"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:11
+#: app/maintain/templates/maintain/isolate.html:13
+#: app/maintain/templates/maintain/isolate.html:36
+#: app/maintain/templates/maintain/isolate.html:73
+msgid "隔离邮件"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:13
+#: app/maintain/templates/maintain/isolate.html:15
+#: app/maintain/templates/maintain/isolate.html:38
+msgid "确认隔离邮件"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:15
+#: app/maintain/templates/maintain/isolate.html:17
+#: app/maintain/templates/maintain/isolate.html:40
+msgid "确认放行邮件"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:28
+msgid "隔离邮件列表"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:30
+#: app/maintain/templates/maintain/i.html:76
+#: app/maintain/templates/maintain/i.html:85
+#: app/maintain/templates/maintain/include/isolate.html:38
+#: app/maintain/templates/maintain/include/isolate.html:47
+msgid "确认隔离邮件列表"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:32
+#: app/maintain/templates/maintain/i.html:77
+#: app/maintain/templates/maintain/include/isolate.html:39
+msgid "确认放行邮件列表"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:69
+#: app/maintain/templates/maintain/include/isolate.html:31
+msgid "邮件放行"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:70
+#: app/maintain/templates/maintain/include/isolate.html:32
+msgid "把地址加入白名单并放行"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:71
+#: app/maintain/templates/maintain/include/isolate.html:33
+msgid "把域名加入白名单并放行"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:72
+#: app/maintain/templates/maintain/include/isolate.html:34
+msgid "邮件确认隔离"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:80
+#: app/maintain/templates/maintain/i.html:84
+#: app/maintain/templates/maintain/include/isolate.html:42
+#: app/maintain/templates/maintain/include/isolate.html:46
+msgid "等待处理邮件列表"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:81
+#: app/maintain/templates/maintain/include/isolate.html:43
+msgid "放行邮件列表"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:98
+#: app/maintain/templates/maintain/include/isolate.html:60
+#: app/maintain/templates/maintain/isolate_read.html:45
+msgid "隔离时间"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:99
+#: app/maintain/templates/maintain/include/isolate.html:61
+#: app/maintain/templates/maintain/isolate_read.html:34
+#: templates/mail_read.html:36
+msgid "发件人"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:100
+#: app/maintain/templates/maintain/include/isolate.html:62
+#: app/maintain/templates/maintain/isolate_read.html:41
+#: templates/mail_read.html:48
+msgid "收件人"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:101
+#: app/maintain/templates/maintain/include/isolate.html:63
+msgid "主题"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:102
+#: app/maintain/templates/maintain/include/isolate.html:64
+msgid "隔离原因"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:103
+#: app/maintain/templates/maintain/include/isolate.html:65
+msgid "隔离详情"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:146
+#: app/maintain/templates/maintain/isolate.html:153
+msgid "请选择要处理的邮件！"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:152
+#: app/maintain/templates/maintain/isolate.html:159
+msgid "您确定要放行"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:152
+#: app/maintain/templates/maintain/i.html:158
+#: app/maintain/templates/maintain/isolate.html:159
+#: app/maintain/templates/maintain/isolate.html:165
+msgid "个邮件？"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:154
+#: app/maintain/templates/maintain/isolate.html:161
+msgid "您确定放行通过所选邮件并将发信地址加入白名单吗？"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:156
+#: app/maintain/templates/maintain/isolate.html:163
+msgid "您确定放行通过所选邮件并将发信域名加入白名单吗？"
+msgstr ""
+
+#: app/maintain/templates/maintain/i.html:158
+#: app/maintain/templates/maintain/isolate.html:165
+msgid "c确认隔离"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_apilog.html:18
+#: app/maintain/wechat_models.py:136
+msgid "调用方法"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_apilog.html:19
+#: app/maintain/templates/maintain/include/wechat_news.html:20
+#: app/maintain/wechat_models.py:123 app/maintain/wechat_models.py:137
+msgid "模板数据"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_apilog.html:20
+#: app/maintain/wechat_models.py:138
+msgid "返回消息"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_apilog.html:21
+msgid "调用时间"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_apilog.html:22
+#: app/maintain/templates/maintain/include/wechat_news.html:25
+#: app/maintain/wechat_models.py:128 app/maintain/wechat_models.py:140
+msgid "调用者ip"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_apilog.html:23
+#: app/maintain/wechat_models.py:141
+msgid "服务器ip"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_conf.html:8
+#: app/maintain/wechat_models.py:8
+msgid "服务号/企业号名称"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_conf.html:9
+#: app/maintain/wechat_models.py:9
+msgid "服务号token"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_conf.html:10
+msgid "AppId/CorpID"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_conf.html:11
+#: app/maintain/wechat_models.py:11
+msgid "agentid"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_conf.html:12
+msgid "appsecret/secret"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_news.html:18
+#: app/maintain/wechat_models.py:121
+msgid "openid/UserId"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_news.html:19
+#: app/maintain/templates/maintain/include/wechat_template.html:16
+#: app/maintain/wechat_forms.py:109 app/maintain/wechat_models.py:32
+#: app/maintain/wechat_models.py:46 app/maintain/wechat_models.py:122
+msgid "微信模板ID"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_news.html:21
+#: app/maintain/wechat_models.py:124
+msgid "返回地址"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_news.html:22
+msgid "接口调用时间"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_news.html:23
+msgid "微信发送时间"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_sms.html:8
+msgid "手机号"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_sms.html:9
+msgid "发送验证码"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_sms.html:10
+#: app/maintain/wechat_models.py:151
+msgid "是否验证手机号"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_sms.html:12
+msgid "验证码发送时间"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_sms.html:13
+msgid "验证码验证时间"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_sms.html:14
+#: app/maintain/wechat_models.py:155
+msgid "ip"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_template.html:15
+#: app/maintain/wechat_models.py:31
+msgid "模板名称"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_template.html:17
+msgid "code"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_template.html:18
+msgid "字段"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_users.html:8
+#: app/maintain/wechat_models.py:86
+msgid "微信昵称（企业号为成员名）"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_users.html:9
+#: app/rpt/templates/rpt/include/user_log.html:26
+msgid "头像"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_users.html:10
+#: app/maintain/wechat_models.py:88
+msgid "省份"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_users.html:11
+#: app/maintain/wechat_models.py:89
+msgid "城市"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_users.html:12
+#: app/maintain/wechat_models.py:90
+msgid "绑定的邮箱账号"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_users.html:13
+#: app/maintain/wechat_models.py:54
+msgid "账号添加时间"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_users.html:14
+#: app/maintain/wechat_models.py:69
+msgid "最近更新时间"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_users.html:15
+msgid "是否关注公众号（是否为企业号成员）"
+msgstr ""
+
+#: app/maintain/templates/maintain/include/wechat_users.html:16
+#: app/maintain/wechat_models.py:94
+msgid "关注公众号时间"
+msgstr ""
+
+#: app/maintain/templates/maintain/isolate.html:20
+#: app/maintain/templates/maintain/isolate.html:43
+#: app/maintain/templates/maintain/isolate.html:66
+msgid "入站队列"
+msgstr ""
+
+#: app/maintain/templates/maintain/isolate.html:22
+#: app/maintain/templates/maintain/isolate.html:45
+#: app/maintain/templates/maintain/isolate.html:59
+msgid "出站队列"
+msgstr ""
+
+#: app/maintain/templates/maintain/isolate_read.html:16
+#: templates/mail_read.html:14
+msgid "查看邮件头"
+msgstr ""
+
+#: app/maintain/templates/maintain/isolate_read.html:17
+#: templates/mail_read.html:15
+msgid "下载邮件"
+msgstr ""
+
+#: app/maintain/templates/maintain/isolate_read.html:52
+#: app/maintain/templates/maintain/isolate_read.html:78
+#: templates/mail_read.html:54 templates/mail_read.html:80
+msgid "附&nbsp;&nbsp;&nbsp;件"
+msgstr ""
+
+#: app/maintain/templates/maintain/isolate_read.html:55
+#: app/maintain/templates/maintain/isolate_read.html:78
+#: templates/mail_read.html:57 templates/mail_read.html:80
+msgid "个"
+msgstr ""
+
+#: app/maintain/templates/maintain/isolate_read.html:63
+#: templates/mail_read.html:65
+msgid "查看全部附件"
+msgstr ""
+
+#: app/maintain/templates/maintain/isolate_read.html:82
+#: templates/mail_read.html:84
+msgid "普通附件"
+msgstr ""
+
+#: app/maintain/templates/maintain/isolate_read.html:100
+#: templates/mail_read.html:102
+msgid "下载附件"
+msgstr ""
+
+#: app/maintain/templates/maintain/isolate_read.html:102
+#: templates/mail_read.html:104
+msgid "预览"
+msgstr ""
+
+#: app/maintain/templates/maintain/log.html:5
+msgid "程序日志"
+msgstr ""
+
+#: app/maintain/templates/maintain/log.html:9
+#: app/maintain/templates/maintain/log.html:17
+#: app/rpt/templates/rpt/sys_log.html:16
+msgid "查看底层程序日志"
+msgstr ""
+
+#: app/maintain/templates/maintain/log.html:34
+#: app/rpt/templates/rpt/sys_log.html:33
+msgid "日志文件"
+msgstr ""
+
+#: app/maintain/templates/maintain/log.html:35
+#: app/rpt/templates/rpt/sys_log.html:34
+msgid "说明"
+msgstr ""
+
+#: app/maintain/templates/maintain/log.html:44
+#: app/maintain/templates/maintain/log.html:47
+#: app/rpt/templates/rpt/sys_log.html:43 app/rpt/templates/rpt/sys_log.html:46
+msgid "下载程序日志"
+msgstr ""
+
+#: app/maintain/templates/maintain/log.html:47
+#: app/rpt/templates/rpt/sys_log.html:46
+msgid "下载"
+msgstr ""
+
+#: app/maintain/templates/maintain/log.html:98
+#: app/rpt/templates/rpt/sys_log.html:98
+msgid "确认导出程序日志？"
+msgstr ""
+
+#: app/maintain/templates/maintain/mail_moving.html:4
+#: app/maintain/templates/maintain/mail_moving.html:6
+#: app/maintain/templates/maintain/mail_moving.html:7
+#: app/maintain/templates/maintain/mail_moving.html:15
+#: app/maintain/templates/maintain/mail_moving_add.html:7
+#: app/maintain/templates/maintain/mail_moving_badd.html:7
+#: app/maintain/templates/maintain/mail_moving_default.html:7
+msgid "邮件数据导入"
+msgstr ""
+
+#: app/maintain/templates/maintain/mail_moving.html:20
+#: app/maintain/templates/maintain/mail_moving_add.html:5
+#: app/maintain/templates/maintain/mail_moving_add.html:8
+#: app/maintain/templates/maintain/mail_moving_add.html:15
+#: app/maintain/templates/maintain/mail_moving_add.html:24
+#: app/maintain/templates/maintain/wechat_conf_add.html:5
+#: app/maintain/templates/maintain/wechat_conf_add.html:25
+#: app/maintain/templates/maintain/wechat_template_add.html:5
+#: app/setting/templates/setting/include/mail_transfer_post.html:7
+#: app/setting/templates/setting/include/mail_transfer_post_set.html:5
+#: app/setting/templates/setting/include/mail_transfer_post_set.html:9
+#: app/setting/templates/setting/include/mail_transfer_post_set.html:17
+#: auditlog/models.py:184
+msgid "添加"
+msgstr ""
+
+#: app/maintain/templates/maintain/mail_moving.html:21
+#: app/maintain/templates/maintain/mail_moving_default.html:5
+#: app/maintain/templates/maintain/mail_moving_default.html:8
+#: app/maintain/templates/maintain/mail_moving_default.html:15
+msgid "设置默认参数"
+msgstr ""
+
+#: app/maintain/templates/maintain/mail_moving.html:22
+#: app/maintain/templates/maintain/mail_moving_badd.html:5
+#: app/maintain/templates/maintain/mail_moving_badd.html:8
+#: app/maintain/templates/maintain/mail_moving_badd.html:12
+#: app/maintain/templates/maintain/mail_moving_badd.html:18
+#: app/setting/templates/setting/include/mail_transfer_import.html:6
+msgid "批量添加"
+msgstr ""
+
+#: app/maintain/templates/maintain/mail_moving.html:34
+msgid "删除所选"
+msgstr ""
+
+#: app/maintain/templates/maintain/mail_moving.html:35
+msgid "禁用所选"
+msgstr ""
+
+#: app/maintain/templates/maintain/mail_moving.html:36
+msgid "启用所选"
+msgstr ""
+
+#: app/maintain/templates/maintain/mail_moving.html:48
+#: app/setting/templates/setting/include/mail_transfer_post.html:29
+msgid "SSL登录"
+msgstr ""
+
+#: app/maintain/templates/maintain/mail_moving.html:49
+msgid "任务状态"
+msgstr ""
+
+#: app/maintain/templates/maintain/mail_moving.html:50
+msgid "任务描述"
+msgstr ""
+
+#: app/maintain/templates/maintain/mail_moving.html:51
+msgid "任务来源"
+msgstr ""
+
+#: app/maintain/templates/maintain/mail_moving.html:52
+msgid "最近更新"
+msgstr ""
+
+#: app/maintain/templates/maintain/mail_moving.html:107
+#: app/maintain/templates/maintain/mail_moving.html:123
+#: app/maintain/templates/maintain/mail_moving.html:139
+msgid "请选择要处理的行！"
+msgstr ""
+
+#: app/maintain/templates/maintain/mail_moving.html:110
+#: app/maintain/templates/maintain/mail_moving.html:126
+#: app/maintain/templates/maintain/mail_moving.html:142
+msgid "行？"
+msgstr ""
+
+#: app/maintain/templates/maintain/mail_moving.html:126
+msgid "您确定要禁用"
+msgstr ""
+
+#: app/maintain/templates/maintain/mail_moving.html:142
+msgid "您确定要启用"
+msgstr ""
+
+#: app/maintain/templates/maintain/queues_list.html:5
+#: app/maintain/templates/maintain/queues_list.html:19 templates/queue.html:5
+#: templates/queue.html:17
+msgid "队列信息"
+msgstr ""
+
+#: app/maintain/templates/maintain/queues_list.html:10 templates/queue.html:8
+msgid "查看队列信息"
+msgstr ""
+
+#: app/maintain/templates/maintain/wechat_apilog.html:4
+#: app/maintain/templates/maintain/wechat_apilog.html:8
+#: app/maintain/templates/maintain/wechat_apilog.html:16
+#: app/maintain/templates/maintain/wechat_apilog.html:51
+#: app/maintain/templates/maintain/wechat_conf.html:51
+#: app/maintain/templates/maintain/wechat_news.html:50
+#: app/maintain/templates/maintain/wechat_sms.html:50
+#: app/maintain/templates/maintain/wechat_template.html:54
+#: app/maintain/templates/maintain/wechat_users.html:48
+msgid "微信API调用日志"
+msgstr ""
+
+#: app/maintain/templates/maintain/wechat_apilog.html:7
+#: app/maintain/templates/maintain/wechat_apilog.html:15
+#: app/maintain/templates/maintain/wechat_conf.html:7
+#: app/maintain/templates/maintain/wechat_conf.html:15
+#: app/maintain/templates/maintain/wechat_conf_add.html:8
+#: app/maintain/templates/maintain/wechat_news.html:7
+#: app/maintain/templates/maintain/wechat_news.html:15
+#: app/maintain/templates/maintain/wechat_sms.html:7
+#: app/maintain/templates/maintain/wechat_sms.html:15
+#: app/maintain/templates/maintain/wechat_template.html:7
+#: app/maintain/templates/maintain/wechat_template.html:16
+#: app/maintain/templates/maintain/wechat_template_add.html:8
+#: app/maintain/templates/maintain/wechat_users.html:7
+#: app/maintain/templates/maintain/wechat_users.html:15
+msgid "微信版管理"
+msgstr ""
+
+#: app/maintain/templates/maintain/wechat_apilog.html:27
+#: app/maintain/templates/maintain/wechat_conf.html:4
+#: app/maintain/templates/maintain/wechat_conf.html:8
+#: app/maintain/templates/maintain/wechat_conf.html:16
+#: app/maintain/templates/maintain/wechat_conf.html:34
+#: app/maintain/templates/maintain/wechat_news.html:27
+#: app/maintain/templates/maintain/wechat_sms.html:27
+#: app/maintain/templates/maintain/wechat_template.html:35
+#: app/maintain/templates/maintain/wechat_users.html:27
+#: app/maintain/wechat_models.py:22
+msgid "微信公众号配置"
+msgstr ""
+
+#: app/maintain/templates/maintain/wechat_apilog.html:33
+#: app/maintain/templates/maintain/wechat_conf.html:39
+#: app/maintain/templates/maintain/wechat_news.html:33
+#: app/maintain/templates/maintain/wechat_sms.html:33
+#: app/maintain/templates/maintain/wechat_template.html:4
+#: app/maintain/templates/maintain/wechat_template.html:8
+#: app/maintain/templates/maintain/wechat_template.html:17
+#: app/maintain/templates/maintain/wechat_template.html:41
+#: app/maintain/templates/maintain/wechat_users.html:33
+#: app/maintain/wechat_models.py:40
+msgid "微信消息模板管理"
+msgstr ""
+
+#: app/maintain/templates/maintain/wechat_apilog.html:39
+#: app/maintain/templates/maintain/wechat_conf.html:43
+#: app/maintain/templates/maintain/wechat_news.html:39
+#: app/maintain/templates/maintain/wechat_sms.html:39
+#: app/maintain/templates/maintain/wechat_template.html:46
+#: app/maintain/templates/maintain/wechat_users.html:4
+#: app/maintain/templates/maintain/wechat_users.html:8
+#: app/maintain/templates/maintain/wechat_users.html:16
+#: app/maintain/templates/maintain/wechat_users.html:39
+msgid "微信用户管理"
+msgstr ""
+
+#: app/maintain/templates/maintain/wechat_apilog.html:45
+#: app/maintain/templates/maintain/wechat_conf.html:47
+#: app/maintain/templates/maintain/wechat_news.html:4
+#: app/maintain/templates/maintain/wechat_news.html:8
+#: app/maintain/templates/maintain/wechat_news.html:16
+#: app/maintain/templates/maintain/wechat_news.html:45
+#: app/maintain/templates/maintain/wechat_sms.html:45
+#: app/maintain/templates/maintain/wechat_template.html:50
+#: app/maintain/templates/maintain/wechat_users.html:44
+msgid "微信通知消息管理"
+msgstr ""
+
+#: app/maintain/templates/maintain/wechat_apilog.html:56
+#: app/maintain/templates/maintain/wechat_conf.html:55
+#: app/maintain/templates/maintain/wechat_news.html:54
+#: app/maintain/templates/maintain/wechat_sms.html:4
+#: app/maintain/templates/maintain/wechat_sms.html:8
+#: app/maintain/templates/maintain/wechat_sms.html:16
+#: app/maintain/templates/maintain/wechat_sms.html:55
+#: app/maintain/templates/maintain/wechat_template.html:58
+#: app/maintain/templates/maintain/wechat_users.html:52
+msgid "短信发送记录"
+msgstr ""
+
+#: app/maintain/templates/maintain/wechat_conf.html:22
+msgid "添加配置"
+msgstr ""
+
+#: app/maintain/templates/maintain/wechat_conf_add.html:9
+#: app/maintain/templates/maintain/wechat_conf_add.html:16
+msgid "微信公众号配置修改"
+msgstr ""
+
+#: app/maintain/templates/maintain/wechat_conf_add.html:9
+#: app/maintain/templates/maintain/wechat_conf_add.html:16
+msgid "微信公众号配置添加"
+msgstr ""
+
+#: app/maintain/templates/maintain/wechat_template.html:23
+msgid "添加模板"
+msgstr ""
+
+#: app/maintain/templates/maintain/wechat_template_add.html:9
+#: app/maintain/templates/maintain/wechat_template_add.html:16
+#: app/maintain/templates/maintain/wechat_template_add.html:25
+msgid "微信消息模板修改"
+msgstr ""
+
+#: app/maintain/templates/maintain/wechat_template_add.html:9
+#: app/maintain/templates/maintain/wechat_template_add.html:16
+#: app/maintain/templates/maintain/wechat_template_add.html:25
+msgid "微信消息模板添加"
+msgstr ""
+
+#: app/maintain/templates/maintain/wechat_template_field.html:31
+#: app/maintain/wechat_models.py:44
+msgid "字段名称"
+msgstr ""
+
+#: app/maintain/templates/maintain/wechat_template_field.html:32
+#: app/maintain/wechat_models.py:45
+msgid "字段值"
+msgstr ""
+
+#: app/maintain/wechat_forms.py:16 app/maintain/wechat_forms.py:25
+#: app/rpt/forms.py:140 app/rpt/forms.py:153 app/security/models.py:7
+msgid "所有"
+msgstr ""
+
+#: app/maintain/wechat_forms.py:16 app/maintain/wechat_forms.py:25
+#: app/maintain/wechat_models.py:127 app/maintain/wechat_models.py:142
+msgid "失败"
+msgstr ""
+
+#: app/maintain/wechat_forms.py:16 app/maintain/wechat_forms.py:25
+#: app/maintain/wechat_models.py:127 app/maintain/wechat_models.py:142
+msgid "成功"
+msgstr ""
+
+#: app/maintain/wechat_forms.py:41
+msgid "请填写 服务号/企业号名称"
+msgstr ""
+
+#: app/maintain/wechat_forms.py:44
+msgid "请填写 服务号token"
+msgstr ""
+
+#: app/maintain/wechat_forms.py:47
+msgid "请填写 Appid/CorpID"
+msgstr ""
+
+#: app/maintain/wechat_forms.py:50
+msgid "请填写 Agentid，默认为0"
+msgstr ""
+
+#: app/maintain/wechat_forms.py:53
+msgid "请填写 Appsecret(secret)"
+msgstr ""
+
+#: app/maintain/wechat_forms.py:59 app/maintain/wechat_models.py:34
+msgid "模板类型"
+msgstr ""
+
+#: app/maintain/wechat_forms.py:70
+msgid "请填写 模板名称"
+msgstr ""
+
+#: app/maintain/wechat_forms.py:73
+msgid "请填写 微信模板ID"
+msgstr ""
+
+#: app/maintain/wechat_forms.py:76
+msgid "请填写 调用方法标识code"
+msgstr ""
+
+#: app/maintain/wechat_forms.py:91
+msgid "调用方法标识code已存在。"
+msgstr ""
+
+#: app/maintain/wechat_forms.py:126
+msgid "字段名必须字母或下划线组合。"
+msgstr ""
+
+#: app/maintain/wechat_forms.py:129
+msgid "字段名称已存在，添加失败。"
+msgstr ""
+
+#: app/maintain/wechat_models.py:10
+msgid "appid/CorpID"
+msgstr ""
+
+#: app/maintain/wechat_models.py:11
+msgid "企业号填写，服务号请务必填写0"
+msgstr ""
+
+#: app/maintain/wechat_models.py:12
+msgid "appsecret(secret)"
+msgstr ""
+
+#: app/maintain/wechat_models.py:27
+msgid "待验证"
+msgstr ""
+
+#: app/maintain/wechat_models.py:28
+msgid "已验证通过"
+msgstr ""
+
+#: app/maintain/wechat_models.py:33
+msgid "调用方法标识code"
+msgstr ""
+
+#: app/maintain/wechat_models.py:34
+msgid "客户自己的模板"
+msgstr ""
+
+#: app/maintain/wechat_models.py:34
+msgid "umail"
+msgstr ""
+
+#: app/maintain/wechat_models.py:44
+msgid "字段名必须字母下划线组合."
+msgstr ""
+
+#: app/maintain/wechat_models.py:87
+msgid "头像链接"
+msgstr ""
+
+#: app/maintain/wechat_models.py:93
+msgid "是否关注公众号"
+msgstr ""
+
+#: app/maintain/wechat_models.py:93
+msgid "未关注"
+msgstr ""
+
+#: app/maintain/wechat_models.py:93
+msgid "已关注"
+msgstr ""
+
+#: app/maintain/wechat_models.py:129
+msgid "错误详情"
+msgstr ""
+
+#: app/maintain/wechat_models.py:149
+msgid "手机"
+msgstr ""
+
+#: app/maintain/wechat_models.py:150
+msgid "验证码"
+msgstr ""
+
+#: app/maintain/wechat_models.py:151
+msgid "未验证"
+msgstr ""
+
+#: app/maintain/wechat_models.py:151
+msgid "已验证"
+msgstr ""
+
+#: app/maintain/wechat_models.py:152
+msgid "绑定账号发送手机验证码"
+msgstr ""
+
+#: app/maintain/wechat_views.py:120
+msgid "未知错误，请重试。"
+msgstr ""
+
+#: app/perm/forms.py:15 app/perm/models.py:15
+msgid "权限名称"
+msgstr ""
+
+#: app/perm/forms.py:20 app/perm/forms.py:57
+msgid "请填写"
+msgstr ""
+
+#: app/perm/forms.py:21 app/perm/forms.py:58 app/perm/forms.py:66
+msgid "请输入组名"
+msgstr ""
+
+#: app/perm/forms.py:22
+msgid "不能超过50个字符"
+msgstr ""
+
+#: app/perm/forms.py:24
+msgid "请使用英文名称，建议使用链接的前面部分，比如perms为管理员管理"
+msgstr ""
+
+#: app/perm/forms.py:30
+msgid "请输入权限名"
+msgstr ""
+
+#: app/perm/forms.py:42
+msgid "请填写 导航名称"
+msgstr ""
+
+#: app/perm/forms.py:52
+msgid "组名"
+msgstr ""
+
+#: app/perm/forms.py:59
+msgid "不能超过80个字符"
+msgstr ""
+
+#: app/perm/forms.py:86
+msgid "确认密码"
+msgstr ""
+
+#: app/perm/forms.py:89
+msgid "再次输入密码以进行验证。"
+msgstr ""
+
+#: app/perm/forms.py:105 app/perm/forms.py:156
+msgid "您的密码必须至少包含8个字符。"
+msgstr ""
+
+#: app/perm/forms.py:107 app/perm/forms.py:158
+msgid "您的密码不能完全是数字。"
+msgstr ""
+
+#: app/perm/forms.py:138
+msgid "新密码"
+msgstr ""
+
+#: app/perm/forms.py:144
+msgid "确认新密码"
+msgstr ""
+
+#: app/perm/forms.py:186
+msgid "您的旧密码输入不正确。 请重新输入。"
+msgstr ""
+
+#: app/perm/forms.py:189
+msgid "旧密码"
+msgstr ""
+
+#: app/perm/forms.py:232
+msgid "用户名不能为空。"
+msgstr ""
+
+#: app/perm/forms.py:236
+msgid "用户名已存在。"
+msgstr ""
+
+#: app/perm/forms.py:243
+msgid "密码不能为空。"
+msgstr ""
+
+#: app/perm/models.py:16
+msgid "是否为导航"
+msgstr ""
+
+#: app/perm/models.py:17
+msgid "导航名称"
+msgstr ""
+
+#: app/perm/models.py:18
+msgid "目录url"
+msgstr ""
+
+#: app/perm/models.py:19
+msgid "是否为默认权限"
+msgstr ""
+
+#: app/perm/models.py:20
+msgid "导航顺序"
+msgstr ""
+
+#: app/perm/models.py:54 app/perm/templates/perm/perm_list.html:5
+#: app/perm/templates/perm/perm_list.html:6
+msgid "权限管理"
+msgstr ""
+
+#: app/perm/models.py:61
+msgid "系统管理员"
+msgstr ""
+
+#: app/perm/models.py:62
+msgid "超域管理员"
+msgstr ""
+
+#: app/perm/models.py:63
+msgid "域名管理员"
+msgstr ""
+
+#: app/perm/models.py:64
+msgid "部门管理员"
+msgstr ""
+
+#: app/perm/models.py:69 app/rpt/templates/rpt/include/maillog_list.html:21
+#: app/rpt/templates/rpt/include/user_log.html:21
+#: app/rpt/templates/rpt/include/user_log_web.html:18 templates/login.html:50
+msgid "用户名"
+msgstr ""
+
+#: app/perm/models.py:71
+msgid "管理员类型"
+msgstr ""
+
+#: app/perm/templates/perm/group_list.html:4
+#: app/perm/templates/perm/group_list.html:10
+#: app/perm/templates/perm/group_modify.html:5
+msgid "管理员组"
+msgstr ""
+
+#: app/perm/templates/perm/group_list.html:5
+#: app/perm/templates/perm/group_modify.html:7
+#: app/perm/templates/perm/perm_grant.html:6
+#: app/perm/templates/perm/perm_list.html:6
+#: app/perm/templates/perm/perm_modify.html:7
+#: app/perm/templates/perm/user_add.html:7
+#: app/perm/templates/perm/user_list.html:5
+#: app/perm/templates/perm/user_passwd_change.html:7
+msgid "管理员管理"
+msgstr ""
+
+#: app/perm/templates/perm/group_list.html:5
+#: app/perm/templates/perm/group_modify.html:8
+msgid "管理员组管理"
+msgstr ""
+
+#: app/perm/templates/perm/group_list.html:18
+#: app/perm/templates/perm/user_list.html:9
+msgid "用户列表"
+msgstr ""
+
+#: app/perm/templates/perm/group_modify.html:14
+msgid "更新管理员组"
+msgstr ""
+
+#: app/perm/templates/perm/group_modify.html:22
+#: app/perm/templates/perm/perm_modify.html:19
+msgid "管理员组信息"
+msgstr ""
+
+#: app/perm/templates/perm/perm_404.html:1
+msgid "返回"
+msgstr ""
+
+#: app/perm/templates/perm/perm_404.html:1
+msgid "首页"
+msgstr ""
+
+#: app/perm/templates/perm/perm_grant.html:5
+#: app/perm/templates/perm/perm_grant.html:6
+msgid "授权"
+msgstr ""
+
+#: app/perm/templates/perm/perm_list.html:11
+msgid "权限列表"
+msgstr ""
+
+#: app/perm/templates/perm/perm_list.html:17
+msgid "添加权限"
+msgstr ""
+
+#: app/perm/templates/perm/perm_modify.html:12
+msgid "更新权限信息"
+msgstr ""
+
+#: app/perm/templates/perm/user_add.html:5
+#: app/perm/templates/perm/user_add.html:8
+msgid "添加用户"
+msgstr ""
+
+#: app/perm/templates/perm/user_add.html:12
+#: app/perm/templates/perm/user_add.html:19
+msgid "添加用户信息"
+msgstr ""
+
+#: app/perm/templates/perm/user_dept.html:19
+msgid "选择管理部门"
+msgstr ""
+
+#: app/perm/templates/perm/user_dept.html:56
+msgid "管理部门"
+msgstr ""
+
+#: app/perm/templates/perm/user_list.html:4
+#: app/perm/templates/perm/user_list.html:5
+msgid "用户管理"
+msgstr ""
+
+#: app/perm/templates/perm/user_passwd_change.html:5
+#: app/perm/templates/perm/user_passwd_change.html:8
+#: app/perm/templates/perm/user_passwd_change.html:12
+#: app/perm/templates/perm/user_passwd_change.html:19 app/rpt/models.py:19
+msgid "修改密码"
+msgstr ""
+
+#: app/perm/templates/perm/webmail_admin_list.html:4
+#: app/perm/templates/perm/webmail_admin_list.html:5
+#: app/perm/templates/perm/webmail_admin_list.html:11
+#: app/perm/templates/perm/webmail_admin_mdf.html:7
+msgid "Webmail管理员管理"
+msgstr ""
+
+#: app/perm/templates/perm/webmail_admin_mdf.html:5
+#: app/perm/templates/perm/webmail_admin_mdf.html:8
+#: app/perm/templates/perm/webmail_admin_mdf.html:12
+#: app/perm/templates/perm/webmail_admin_mdf.html:18
+msgid "修改Webmail管理员"
+msgstr ""
+
+#: app/perm/templates/perm/webmail_admin_mdf.html:5
+#: app/perm/templates/perm/webmail_admin_mdf.html:8
+#: app/perm/templates/perm/webmail_admin_mdf.html:12
+#: app/perm/templates/perm/webmail_admin_mdf.html:18
+msgid "添加Webmail管理员"
+msgstr ""
+
+#: app/review/forms.py:49
+msgid "请输入审核名称！"
+msgstr ""
+
+#: app/review/forms.py:53
+msgid "请选择主审！"
+msgstr ""
+
+#: app/review/forms.py:57
+msgid "主审副审不能选择相同的！"
+msgstr ""
+
+#: app/review/forms.py:61
+msgid "等待时间不能小于0！"
+msgstr ""
+
+#: app/review/forms.py:253
+msgid "请填写规则名称！"
+msgstr ""
+
+#: app/review/forms.py:258
+msgid "请选择审核人！"
+msgstr ""
+
+#: app/review/forms.py:427 app/setting/forms.py:887
+msgid "需要输入值"
+msgstr ""
+
+#: app/review/forms.py:431 app/review/forms.py:435
+msgid "需要输入正确的值"
+msgstr ""
+
+#: app/review/models.py:16 app/review/models.py:104
+#: app/review/templates/review/include/rule.html:29
+#: app/review/templates/review/review.html:9
+#: app/review/templates/review/review.html:19
+#: app/review/templates/review/review.html:31
+#: app/review/templates/review/review_config.html:31
+#: app/review/templates/review/reviewrule.html:39
+msgid "审核人"
+msgstr ""
+
+#: app/review/models.py:18
+msgid "下一级审核"
+msgstr ""
+
+#: app/review/models.py:20
+msgid "主审"
+msgstr ""
+
+#: app/review/models.py:21
+msgid "副审"
+msgstr ""
+
+#: app/review/models.py:22
+msgid "自动转换等待时间"
+msgstr ""
+
+#: app/review/models.py:30
+msgid "审核人列表"
+msgstr ""
+
+#: app/review/models.py:105 app/review/templates/review/include/rule.html:28
+#: app/setting/models.py:54 app/setting/templates/setting/cfilter.html:37
+msgid "规则名称"
+msgstr ""
+
+#: app/review/models.py:106 app/review/templates/review/include/rule.html:30
+msgid "审核类型"
+msgstr ""
+
+#: app/review/models.py:107
+msgid "逻辑条件"
+msgstr ""
+
+#: app/review/models.py:108 app/review/templates/review/include/rule.html:31
+msgid "审核预设"
+msgstr ""
+
+#: app/review/models.py:110
+msgid "发信人部门"
+msgstr ""
+
+#: app/review/models.py:111 app/review/templates/review/include/rule.html:34
+msgid "权重"
+msgstr ""
+
+#: app/review/models.py:120 app/review/models.py:197
+#: app/review/templates/review/include/rule.html:5
+#: app/review/templates/review/review.html:36
+#: app/review/templates/review/review_config.html:35
+#: app/review/templates/review/reviewrule.html:9
+#: app/review/templates/review/reviewrule.html:21
+#: app/review/templates/review/reviewrule.html:43
+#: app/review/templates/review/reviewrule_modify.html:8
+msgid "审核规则"
+msgstr ""
+
+#: app/review/models.py:198
+msgid "审核父条件"
+msgstr ""
+
+#: app/review/models.py:201
+msgid "匹配动作"
+msgstr ""
+
+#: app/review/models.py:202
+msgid "参数"
+msgstr ""
+
+#: app/review/models.py:207 auditlog/models.py:29
+msgid "审核条件"
+msgstr ""
+
+#: app/review/models.py:221
+msgid "审核邮件列表"
+msgstr ""
+
+#: app/review/models.py:239
+msgid "审核进度"
+msgstr ""
+
+#: app/review/models.py:248
+msgid "键"
+msgstr ""
+
+#: app/review/models.py:257
+msgid "审核配置"
+msgstr ""
+
+#: app/review/templates/review/include/rule.html:10
+#: app/review/templates/review/reviewrule.html:28
+#: app/security/templates/security/fail2ban_rulelist.html:22
+#: app/setting/templates/setting/cfilter.html:20
+msgid "添加规则"
+msgstr ""
+
+#: app/review/templates/review/include/rule.html:32 app/setting/models.py:56
+#: app/setting/templates/setting/cfilter.html:39
+msgid "条件关系"
+msgstr ""
+
+#: app/review/templates/review/review.html:5
+#: app/review/templates/review/review.html:8
+#: app/review/templates/review/review.html:16
+#: app/review/templates/review/review_config.html:9
+#: app/review/templates/review/review_config.html:17
+#: app/review/templates/review/review_modify.html:9
+#: app/review/templates/review/reviewrule.html:5
+#: app/review/templates/review/reviewrule.html:8
+#: app/review/templates/review/reviewrule.html:18
+msgid "审核管理"
+msgstr ""
+
+#: app/review/templates/review/review.html:40
+#: app/review/templates/review/review_config.html:6
+#: app/review/templates/review/review_config.html:10
+#: app/review/templates/review/review_config.html:20
+#: app/review/templates/review/review_config.html:39
+#: app/review/templates/review/reviewrule.html:47
+msgid "功能开关"
+msgstr ""
+
+#: app/review/templates/review/review_modify.html:6
+#: app/review/templates/review/review_modify.html:10
+#: app/review/templates/review/review_modify.html:18
+msgid "修改审核人"
+msgstr ""
+
+#: app/review/templates/review/review_modify.html:6
+#: app/review/templates/review/review_modify.html:10
+#: app/review/templates/review/review_modify.html:18
+msgid "添加审核人"
+msgstr ""
+
+#: app/review/templates/review/reviewrule_modify.html:5
+#: app/review/templates/review/reviewrule_modify.html:9
+#: app/review/templates/review/reviewrule_modify.html:17
+msgid "修改审核规则"
+msgstr ""
+
+#: app/review/templates/review/reviewrule_modify.html:5
+#: app/review/templates/review/reviewrule_modify.html:9
+#: app/review/templates/review/reviewrule_modify.html:17
+msgid "添加审核规则"
+msgstr ""
+
+#: app/rpt/forms.py:120
+msgid "是"
+msgstr ""
+
+#: app/rpt/forms.py:120
+msgid "否"
+msgstr ""
+
+#: app/rpt/forms.py:129
+msgid "开始时间"
+msgstr ""
+
+#: app/rpt/forms.py:130
+msgid "结束时间"
+msgstr ""
+
+#: app/rpt/models.py:14
+msgid "----"
+msgstr ""
+
+#: app/rpt/models.py:15
+msgid "邮箱帐号操作"
+msgstr ""
+
+#: app/rpt/models.py:16
+msgid "邮件操作"
+msgstr ""
+
+#: app/rpt/models.py:17
+msgid "登录系统"
+msgstr ""
+
+#: app/rpt/models.py:18
+msgid "登出系统"
+msgstr ""
+
+#: app/rpt/models.py:21
+msgid "微信版登录系统"
+msgstr ""
+
+#: app/rpt/models.py:22
+msgid "微信版登出系统"
+msgstr ""
+
+#: app/rpt/models.py:23
+msgid "微信版重置密码"
+msgstr ""
+
+#: app/rpt/models.py:24
+msgid "微信新邮件通知"
+msgstr ""
+
+#: app/rpt/models.py:26
+msgid "参数设置"
+msgstr ""
+
+#: app/rpt/models.py:27
+msgid "签名操作"
+msgstr ""
+
+#: app/rpt/models.py:31
+msgid "白名单设置"
+msgstr ""
+
+#: app/rpt/models.py:32
+msgid "黑名单设置"
+msgstr ""
+
+#: app/rpt/models.py:33
+msgid "邮件搬家操作"
+msgstr ""
+
+#: app/rpt/models.py:34
+msgid "邮件过滤操作"
+msgstr ""
+
+#: app/rpt/models.py:41 app/rpt/templates/rpt/include/user_log.html:27
+msgid "操作类型"
+msgstr ""
+
+#: app/rpt/models.py:42 app/rpt/templates/rpt/include/user_log.html:28
+msgid "模块动作"
+msgstr ""
+
+#: app/rpt/models.py:43 app/rpt/templates/rpt/include/maillog_list.html:31
+#: app/rpt/templates/rpt/include/user_log.html:29
+msgid "结果"
+msgstr ""
+
+#: app/rpt/models.py:44 app/rpt/templates/rpt/include/user_log.html:30
+msgid "详情"
+msgstr ""
+
+#: app/rpt/models.py:45 app/rpt/templates/rpt/include/user_log.html:31
+#: app/rpt/templates/rpt/include/user_log_web.html:24
+msgid "客户端IP"
+msgstr ""
+
+#: app/rpt/models.py:46
+msgid "注册ID"
+msgstr ""
+
+#: app/rpt/templates/rpt/admin_log.html:6
+#: app/rpt/templates/rpt/admin_log.html:10
+#: app/rpt/templates/rpt/admin_log.html:17
+msgid "管理员操作日志"
+msgstr ""
+
+#: app/rpt/templates/rpt/admin_log.html:9 app/rpt/templates/rpt/maillog.html:6
+#: app/rpt/templates/rpt/maillog_list.html:6
+#: app/rpt/templates/rpt/maillog_stat.html:6
+#: app/rpt/templates/rpt/maillog_user.html:6
+#: app/rpt/templates/rpt/sys_log.html:8 app/rpt/templates/rpt/user_log.html:6
+#: app/rpt/templates/rpt/user_log_client.html:6
+#: app/rpt/templates/rpt/user_log_web.html:6
+msgid "日志/报告"
+msgstr ""
+
+#: app/rpt/templates/rpt/admin_log.html:37
+msgid "操作人"
+msgstr ""
+
+#: app/rpt/templates/rpt/admin_log.html:38
+msgid "操作对象"
+msgstr ""
+
+#: app/rpt/templates/rpt/admin_log.html:40
+msgid "操作内容"
+msgstr ""
+
+#: app/rpt/templates/rpt/admin_log.html:41
+msgid "操作IP"
+msgstr ""
+
+#: app/rpt/templates/rpt/admin_log.html:42
+msgid "操作时间"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog.html:20
+msgid "帐号名"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog.html:24
+msgid "工号"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog.html:25
+msgid "发送权限"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog.html:26
+msgid "接收权限"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog.html:27
+msgid "邮箱容量"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog.html:28
+msgid "网络硬盘容量"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog.html:29
+msgid "已用邮箱容量"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog.html:30
+msgid "邮箱状态"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog.html:31
+msgid "网页最后登录时间"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog.html:32
+msgid "客户端最后登录时间"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_list.html:23
+msgid "发件邮箱"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_list.html:24
+msgid "收件邮箱"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_list.html:25
+msgid "发件服务器"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_list.html:26
+msgid "收件服务器"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_list.html:27
+msgid "邮件标题"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_list.html:28
+msgid "附件名称"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_list.html:29
+msgid "附件大小"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_list.html:30
+msgid "投递位置"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_list.html:32
+msgid "投递提示"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_stat.html:6
+msgid "SMTP/IMAP/POP"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_stat.html:7
+#: app/rpt/templates/rpt/include/maillog_stat.html:76
+msgid "天总计"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_stat.html:8
+#: app/rpt/templates/rpt/include/maillog_stat.html:77
+msgid "7天总计"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_stat.html:11
+#: app/rpt/templates/rpt/include/maillog_stat.html:80
+msgid "2日之前"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_stat.html:12
+#: app/rpt/templates/rpt/include/maillog_stat.html:81
+msgid "3日之前"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_stat.html:13
+#: app/rpt/templates/rpt/include/maillog_stat.html:82
+msgid "4日之前"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_stat.html:14
+#: app/rpt/templates/rpt/include/maillog_stat.html:83
+msgid "5日之前"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_stat.html:15
+#: app/rpt/templates/rpt/include/maillog_stat.html:84
+msgid "6日之前"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_stat.html:75
+msgid "垃圾/病毒邮件"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_user.html:20
+msgid "用户名称"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_user.html:21
+msgid "邮件数量"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_user.html:22
+msgid "总流量"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_user.html:23
+msgid "入站数量"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_user.html:24
+msgid "入站流量"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_user.html:25
+msgid "垃圾过滤数量"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_user.html:26
+msgid "垃圾过滤流量"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_user.html:27
+msgid "出站数量"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_user.html:28
+msgid "出站流量"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_user.html:29
+msgid "成功数量"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_user.html:30
+msgid "成功流量"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_user.html:31
+msgid "失败数量"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_user.html:32
+msgid "失败流量"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_user.html:33
+msgid "垃圾率"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/maillog_user.html:34
+msgid "出站成功率"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/user_log.html:22
+msgid "真实姓名"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/user_log.html:23
+msgid "邮箱账号"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/user_log.html:25
+msgid "微信昵称"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/user_log_client.html:19
+msgid "访问类型"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/user_log_client.html:20
+msgid "访问时间"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/user_log_client.html:21
+msgid "访问IP"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/user_log_client.html:22
+msgid "是否认证成功"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/user_log_web.html:20
+msgid "登录时间"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/user_log_web.html:21
+msgid "最后操作时间"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/user_log_web.html:22
+msgid "在线时长"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/user_log_web.html:23
+msgid "登录方式（浏览器/操作系统）"
+msgstr ""
+
+#: app/rpt/templates/rpt/include/user_log_web.html:25
+msgid "是否在线"
+msgstr ""
+
+#: app/rpt/templates/rpt/maillog.html:4 app/rpt/templates/rpt/maillog.html:8
+#: app/rpt/templates/rpt/maillog.html:16 app/rpt/templates/rpt/maillog.html:27
+#: app/rpt/templates/rpt/maillog_stat.html:35
+#: app/rpt/templates/rpt/maillog_user.html:27
+msgid "按邮箱统计"
+msgstr ""
+
+#: app/rpt/templates/rpt/maillog.html:7 app/rpt/templates/rpt/maillog.html:15
+#: app/rpt/templates/rpt/maillog.html:39
+#: app/rpt/templates/rpt/maillog_list.html:7
+#: app/rpt/templates/rpt/maillog_list.html:16
+#: app/rpt/templates/rpt/maillog_stat.html:4
+#: app/rpt/templates/rpt/maillog_stat.html:7
+#: app/rpt/templates/rpt/maillog_stat.html:8
+#: app/rpt/templates/rpt/maillog_stat.html:16
+#: app/rpt/templates/rpt/maillog_stat.html:17
+#: app/rpt/templates/rpt/maillog_stat.html:47
+#: app/rpt/templates/rpt/maillog_user.html:7
+#: app/rpt/templates/rpt/maillog_user.html:15
+#: app/rpt/templates/rpt/maillog_user.html:39
+msgid "邮件统计报告"
+msgstr ""
+
+#: app/rpt/templates/rpt/maillog.html:33
+#: app/rpt/templates/rpt/maillog_stat.html:41
+#: app/rpt/templates/rpt/maillog_user.html:4
+#: app/rpt/templates/rpt/maillog_user.html:8
+#: app/rpt/templates/rpt/maillog_user.html:16
+#: app/rpt/templates/rpt/maillog_user.html:33
+msgid "邮件收发统计"
+msgstr ""
+
+#: app/rpt/templates/rpt/maillog.html:45
+#: app/rpt/templates/rpt/maillog_list.html:4
+#: app/rpt/templates/rpt/maillog_list.html:8
+#: app/rpt/templates/rpt/maillog_list.html:15
+#: app/rpt/templates/rpt/maillog_list.html:17
+#: app/rpt/templates/rpt/maillog_stat.html:53
+#: app/rpt/templates/rpt/maillog_user.html:45
+msgid "邮件日志查询"
+msgstr ""
+
+#: app/rpt/templates/rpt/sys_log.html:5 app/rpt/templates/rpt/sys_log.html:9
+msgid "底层程序日志"
+msgstr ""
+
+#: app/rpt/templates/rpt/user_log.html:4 app/rpt/templates/rpt/user_log.html:7
+#: app/rpt/templates/rpt/user_log.html:14
+#: app/rpt/templates/rpt/user_log.html:15
+#: app/rpt/templates/rpt/user_log.html:26
+#: app/rpt/templates/rpt/user_log_client.html:14
+#: app/rpt/templates/rpt/user_log_client.html:26
+#: app/rpt/templates/rpt/user_log_web.html:14
+#: app/rpt/templates/rpt/user_log_web.html:26
+msgid "用户操作日志"
+msgstr ""
+
+#: app/rpt/templates/rpt/user_log.html:32
+#: app/rpt/templates/rpt/user_log_client.html:32
+#: app/rpt/templates/rpt/user_log_web.html:32
+msgid "WEB访问记录 "
+msgstr ""
+
+#: app/rpt/templates/rpt/user_log.html:38
+#: app/rpt/templates/rpt/user_log_client.html:4
+#: app/rpt/templates/rpt/user_log_client.html:7
+#: app/rpt/templates/rpt/user_log_client.html:15
+#: app/rpt/templates/rpt/user_log_client.html:38
+#: app/rpt/templates/rpt/user_log_web.html:38
+msgid "客户端访问记录"
+msgstr ""
+
+#: app/rpt/templates/rpt/user_log_web.html:4
+#: app/rpt/templates/rpt/user_log_web.html:7
+#: app/rpt/templates/rpt/user_log_web.html:15
+msgid "WEB访问记录"
+msgstr ""
+
+#: app/rpt/views.py:1180
+msgid "日志文件不存在"
+msgstr ""
+
+#: app/security/forms.py:19 app/security/models.py:23
+#: app/security/templates/security/fail2ban_rulelist.html:67
+msgid "协议"
+msgstr ""
+
+#: app/security/forms.py:26
+msgid "请填写规则名称"
+msgstr ""
+
+#: app/security/forms.py:37 app/security/forms.py:38
+msgid "分钟"
+msgstr ""
+
+#: app/security/forms.py:46
+msgid "名称已存在。"
+msgstr ""
+
+#: app/security/forms.py:57
+msgid "时间间隔必须为大于0的整数，单位为分钟"
+msgstr ""
+
+#: app/security/forms.py:63
+msgid "禁用时间必须为大于0的整数，单位为分钟"
+msgstr ""
+
+#: app/security/forms.py:84 app/security/models.py:61
+#: app/security/templates/security/fail2ban_blocklist.html:68
+msgid "过期时间"
+msgstr ""
+
+#: app/security/forms.py:103 app/security/forms.py:145
+msgid "请填写IP。"
+msgstr ""
+
+#: app/security/forms.py:108 app/security/forms.py:150
+msgid "输入的IP不合法。"
+msgstr ""
+
+#: app/security/forms.py:110
+msgid "IP已存在。"
+msgstr ""
+
+#: app/security/forms.py:117
+msgid "请选择过期时间。"
+msgstr ""
+
+#: app/security/forms.py:121
+msgid "必须选择一个未来时间。"
+msgstr ""
+
+#: app/security/forms.py:123
+msgid "选择的过期时间不合法。"
+msgstr ""
+
+#: app/security/forms.py:285
+msgid "报告链接地址必须填写域名或IP地址"
+msgstr ""
+
+#: app/security/forms.py:289
+msgid "隔离邮件保存天数必须为一个大于0的整数"
+msgstr ""
+
+#: app/security/forms.py:294
+msgid "无效的邮件保存目录"
+msgstr ""
+
+#: app/security/forms.py:299
+msgid "邮件保存目录为收件箱时，需要邮件头标记"
+msgstr ""
+
+#: app/security/forms.py:402
+msgid "发信数量必须为一个整数"
+msgstr ""
+
+#: app/security/forms.py:407
+msgid "发信频率必须为一个整数"
+msgstr ""
+
+#: app/security/forms.py:412
+msgid "每小时发信数量必须为一个整数"
+msgstr ""
+
+#: app/security/forms.py:416
+msgid "每天发信数量必须为一个整数"
+msgstr ""
+
+#: app/security/forms.py:421
+msgid "至少需要设置分钟、小时、天其中的一栏"
+msgstr ""
+
+#: app/security/forms.py:426
+msgid "无效的限制操作"
+msgstr ""
+
+#: app/security/forms.py:429 app/setting/forms.py:1595
+#: app/setting/forms.py:1646
+msgid "无效的域名设置"
+msgstr ""
+
+#: app/security/forms.py:466
+msgid "请填写密码。"
+msgstr ""
+
+#: app/security/forms.py:469 app/security/forms.py:519
+msgid "密码过长。"
+msgstr ""
+
+#: app/security/forms.py:516
+msgid "密码为空。"
+msgstr ""
+
+#: app/security/models.py:8
+msgid "SMTP"
+msgstr ""
+
+#: app/security/models.py:10
+msgid "IMAP"
+msgstr ""
+
+#: app/security/models.py:12
+msgid "POP3"
+msgstr ""
+
+#: app/security/models.py:24
+#: app/security/templates/security/fail2ban_rulelist.html:68
+msgid "验证失败次数"
+msgstr ""
+
+#: app/security/models.py:25
+#: app/security/templates/security/fail2ban_rulelist.html:69
+msgid "验证不存在帐号次数"
+msgstr ""
+
+#: app/security/models.py:26
+msgid "检测间隔"
+msgstr ""
+
+#: app/security/models.py:27
+msgid "禁用时间"
+msgstr ""
+
+#: app/security/models.py:34
+msgid "动态屏蔽规则"
+msgstr ""
+
+#: app/security/models.py:47 app/security/models.py:60
+#: app/security/templates/security/fail2ban_blocklist.html:67
+#: app/security/templates/security/fail2ban_whitelist.html:66
+msgid "IP"
+msgstr ""
+
+#: app/security/models.py:54
+msgid "动态屏蔽信任列表"
+msgstr ""
+
+#: app/security/models.py:69
+msgid "动态屏蔽已屏蔽列表"
+msgstr ""
+
+#: app/security/models.py:90
+msgid "弱密码"
+msgstr ""
+
+#: app/security/models.py:95
+#: app/security/templates/security/password_weak_list.html:4
+#: app/security/templates/security/password_weak_list.html:6
+#: app/security/templates/security/password_weak_list.html:7
+#: app/security/templates/security/password_weak_list.html:14
+msgid "弱密码列表"
+msgstr ""
+
+#: app/security/templates/security/antispam.html:5
+msgid "综合功能设置"
+msgstr ""
+
+#: app/security/templates/security/antispam.html:21
+msgid "反垃圾/反病毒设置"
+msgstr ""
+
+#: app/security/templates/security/fail2ban_block_add.html:5
+#: app/security/templates/security/fail2ban_block_add.html:8
+#: app/security/templates/security/fail2ban_blocklist.html:4
+#: app/security/templates/security/fail2ban_blocklist.html:7
+msgid "屏蔽IP"
+msgstr ""
+
+#: app/security/templates/security/fail2ban_block_add.html:7
+#: app/security/templates/security/fail2ban_blocklist.html:6
+#: app/security/templates/security/fail2ban_blocklist.html:14
+#: app/security/templates/security/fail2ban_rule_add.html:5
+#: app/security/templates/security/fail2ban_rule_add.html:7
+#: app/security/templates/security/fail2ban_rulelist.html:6
+#: app/security/templates/security/fail2ban_rulelist.html:14
+#: app/security/templates/security/fail2ban_whitelist.html:6
+#: app/security/templates/security/fail2ban_whitelist.html:14
+#: app/security/templates/security/fail2ban_whitelist_add.html:7
+msgid "动态屏蔽"
+msgstr ""
+
+#: app/security/templates/security/fail2ban_block_add.html:12
+#: app/security/templates/security/fail2ban_block_add.html:19
+msgid "屏蔽IP信息"
+msgstr ""
+
+#: app/security/templates/security/fail2ban_blocklist.html:15
+msgid " 屏蔽IP"
+msgstr ""
+
+#: app/security/templates/security/fail2ban_blocklist.html:22
+#: app/security/templates/security/fail2ban_whitelist.html:22
+#: app/setting/templates/setting/trustip_set.html:19
+#: app/setting/templates/setting/trustip_set.html:53
+msgid "添加IP"
+msgstr ""
+
+#: app/security/templates/security/fail2ban_blocklist.html:34
+#: app/security/templates/security/fail2ban_rulelist.html:4
+#: app/security/templates/security/fail2ban_rulelist.html:7
+#: app/security/templates/security/fail2ban_whitelist.html:34
+msgid "禁用IP列表"
+msgstr ""
+
+#: app/security/templates/security/fail2ban_blocklist.html:40
+#: app/security/templates/security/fail2ban_rulelist.html:40
+#: app/security/templates/security/fail2ban_whitelist.html:40
+msgid "屏蔽IP "
+msgstr ""
+
+#: app/security/templates/security/fail2ban_blocklist.html:46
+#: app/security/templates/security/fail2ban_rulelist.html:46
+#: app/security/templates/security/fail2ban_whitelist.html:4
+#: app/security/templates/security/fail2ban_whitelist.html:7
+#: app/security/templates/security/fail2ban_whitelist.html:46
+#: app/security/templates/security/fail2ban_whitelist_add.html:5
+#: app/security/templates/security/fail2ban_whitelist_add.html:8
+msgid "屏蔽白名单"
+msgstr ""
+
+#: app/security/templates/security/fail2ban_rule_add.html:8
+#: app/security/templates/security/fail2ban_rule_add.html:13
+#: app/security/templates/security/fail2ban_rule_add.html:20
+msgid "规则配置"
+msgstr ""
+
+#: app/security/templates/security/fail2ban_rulelist.html:15
+msgid " 屏蔽规则设置"
+msgstr ""
+
+#: app/security/templates/security/fail2ban_rulelist.html:34
+msgid "屏蔽规则设置"
+msgstr ""
+
+#: app/security/templates/security/fail2ban_rulelist.html:70
+msgid "间隔（分钟）"
+msgstr ""
+
+#: app/security/templates/security/fail2ban_rulelist.html:71
+msgid "屏蔽时间（分钟）"
+msgstr ""
+
+#: app/security/templates/security/fail2ban_whitelist.html:15
+msgid " 屏蔽白名单"
+msgstr ""
+
+#: app/security/templates/security/fail2ban_whitelist_add.html:12
+#: app/security/templates/security/fail2ban_whitelist_add.html:19
+msgid "屏蔽白名单信息"
+msgstr ""
+
+#: app/security/templates/security/frequency_setting.html:5
+#: app/security/templates/security/frequency_setting.html:21
+msgid "发信频率配置"
+msgstr ""
+
+#: app/security/templates/security/password_weak_import.html:5
+#: app/security/templates/security/password_weak_import.html:10
+msgid "弱密码导入"
+msgstr ""
+
+#: app/security/templates/security/password_weak_list.html:15
+msgid " 弱密码列表"
+msgstr ""
+
+#: app/security/templates/security/password_weak_list.html:22
+msgid "导入弱密码库"
+msgstr ""
+
+#: app/security/templates/security/password_weak_list.html:34
+msgid "弱密码库列表"
+msgstr ""
+
+#: app/setting/forms.py:159
+msgid "收件人数量限制不能小于等于0."
+msgstr ""
+
+#: app/setting/forms.py:163
+msgid "延迟删除天数不能小于0."
+msgstr ""
+
+#: app/setting/forms.py:473
+msgid "未知错误1！"
+msgstr ""
+
+#: app/setting/forms.py:483
+msgid "未知错误2！"
+msgstr ""
+
+#: app/setting/forms.py:490 app/setting/forms.py:553
+msgid "邮件大小必须大于0！"
+msgstr ""
+
+#: app/setting/forms.py:496
+msgid "未知错误3！"
+msgstr ""
+
+#: app/setting/forms.py:501
+msgid "未知错误4！"
+msgstr ""
+
+#: app/setting/forms.py:507
+msgid "未知错误5！"
+msgstr ""
+
+#: app/setting/forms.py:511 app/setting/forms.py:636
+msgid "不能为空！"
+msgstr ""
+
+#: app/setting/forms.py:515
+msgid "未知错误6！"
+msgstr ""
+
+#: app/setting/forms.py:535
+msgid "未知错误7！"
+msgstr ""
+
+#: app/setting/forms.py:545
+msgid "未知错误8！"
+msgstr ""
+
+#: app/setting/forms.py:559
+msgid "未知错误9！"
+msgstr ""
+
+#: app/setting/forms.py:564
+msgid "未知错误10！"
+msgstr ""
+
+#: app/setting/forms.py:570
+#, python-format
+msgid "未知错误11！： %s"
+msgstr ""
+
+#: app/setting/forms.py:575
+msgid "输入不能为空！"
+msgstr ""
+
+#: app/setting/forms.py:579
+msgid "未知错误12！"
+msgstr ""
+
+#: app/setting/forms.py:646
+msgid "请在编辑器输入追加内容！"
+msgstr ""
+
+#: app/setting/forms.py:654
+msgid "邮件头设置不能为空！"
+msgstr ""
+
+#: app/setting/forms.py:657
+msgid "邮件头设置值不能为空！"
+msgstr ""
+
+#: app/setting/forms.py:671
+msgid "发信人不能为空！"
+msgstr ""
+
+#: app/setting/forms.py:674
+msgid "收信人不能为空！"
+msgstr ""
+
+#: app/setting/forms.py:677
+msgid "主题不能为空！"
+msgstr ""
+
+#: app/setting/forms.py:684
+msgid "邮件内容不能为空！"
+msgstr ""
+
+#: app/setting/forms.py:696
+msgid "服务器不能为空！"
+msgstr ""
+
+#: app/setting/forms.py:699
+msgid "帐号不能为空！"
+msgstr ""
+
+#: app/setting/forms.py:702
+msgid "开启了ssl或需要验证密码后，密码不能为空！"
+msgstr ""
+
+#: app/setting/forms.py:1501
+msgid "无效的初始值"
+msgstr ""
+
+#: app/setting/forms.py:1504
+msgid "无效的翻译值"
+msgstr ""
+
+#: app/setting/forms.py:1592 app/setting/forms.py:1643
+#, python-format
+msgid "无效的服务器设置: %s"
+msgstr ""
+
+#: app/setting/forms.py:1651
+msgid "ldap必须配置'基础dn'"
+msgstr ""
+
+#: app/setting/forms.py:1764
+msgid "无效的本地域名"
+msgstr ""
+
+#: app/setting/forms.py:1768
+msgid "无效的服务器域名"
+msgstr ""
+
+#: app/setting/forms.py:1772
+msgid "无效的服务器地址"
+msgstr ""
+
+#: app/setting/forms.py:1776
+msgid "无效的服务器端口"
+msgstr ""
+
+#: app/setting/models.py:16
+msgid "需要替换的规则"
+msgstr ""
+
+#: app/setting/models.py:17
+msgid "客户输入的替换目标"
+msgstr ""
+
+#: app/setting/models.py:23 app/setting/templates/setting/header_trans.html:5
+msgid "邮件头翻译"
+msgstr ""
+
+#: app/setting/models.py:30 app/setting/templates/setting/cfilter.html:42
+#: app/setting/templates/setting/include/ldap_adlist.html:22
+msgid "优先级"
+msgstr ""
+
+#: app/setting/models.py:31
+#: app/setting/templates/setting/include/ldap_adlist.html:23
+msgid "服务器域名"
+msgstr ""
+
+#: app/setting/models.py:32
+#: app/setting/templates/setting/include/ldap_adlist.html:24
+msgid "服务器地址"
+msgstr ""
+
+#: app/setting/models.py:33
+#: app/setting/templates/setting/include/ldap_adlist.html:25
+msgid "服务器端口"
+msgstr ""
+
+#: app/setting/models.py:35
+#: app/setting/templates/setting/include/ldap_adlist.html:26
+msgid "登录帐号"
+msgstr ""
+
+#: app/setting/models.py:38
+#: app/setting/templates/setting/include/ldap_adlist.html:27
+msgid "部门规则"
+msgstr ""
+
+#: app/setting/models.py:39
+#: app/setting/templates/setting/include/ldap_adlist.html:28
+msgid "创建帐号属性"
+msgstr ""
+
+#: app/setting/models.py:40
+#: app/setting/templates/setting/include/ldap_adlist.html:29
+msgid "创建部门属性"
+msgstr ""
+
+#: app/setting/models.py:48
+msgid "AD域服务器列表"
+msgstr ""
+
+#: app/setting/models.py:58
+msgid "规则优先级"
+msgstr ""
+
+#: app/setting/models.py:70
+msgid "内容过滤器规则"
+msgstr ""
+
+#: app/setting/models.py:96 app/setting/models.py:188
+msgid "所属规则"
+msgstr ""
+
+#: app/setting/models.py:99
+msgid "逻辑表达式"
+msgstr ""
+
+#: app/setting/models.py:100
+msgid "条件1"
+msgstr ""
+
+#: app/setting/models.py:101
+msgid "条件2"
+msgstr ""
+
+#: app/setting/models.py:109 auditlog/models.py:30
+msgid "内容过滤器条件"
+msgstr ""
+
+#: app/setting/models.py:192
+msgid "动作优先级"
+msgstr ""
+
+#: app/setting/models.py:197 auditlog/models.py:31
+msgid "内容过滤器动作"
+msgstr ""
+
+#: app/setting/models.py:278
+msgid "MailBox"
+msgstr ""
+
+#: app/setting/models.py:281
+#: app/setting/templates/setting/include/mail_transfer_post.html:24
+msgid "通道类型"
+msgstr ""
+
+#: app/setting/models.py:284
+msgid "收件帐号"
+msgstr ""
+
+#: app/setting/models.py:286
+msgid "ssl登录"
+msgstr ""
+
+#: app/setting/models.py:287
+#: app/setting/templates/setting/include/mail_transfer_post.html:30
+msgid "需要验证"
+msgstr ""
+
+#: app/setting/models.py:288
+#: app/setting/templates/setting/include/mail_transfer_post.html:31
+msgid "警告邮件地址"
+msgstr ""
+
+#: app/setting/models.py:294
+#: app/setting/templates/setting/include/mail_transfer_post_set.html:8
+#: app/setting/templates/setting/mail_transfer.html:5
+#: app/setting/templates/setting/mail_transfer.html:8
+#: app/setting/templates/setting/mail_transfer.html:9
+#: app/setting/templates/setting/mail_transfer.html:16
+#: app/setting/templates/setting/mail_transfer.html:19
+#: app/setting/templates/setting/mail_transfer.html:31
+#: app/setting/templates/setting/mail_transfer_import.html:5
+#: app/setting/templates/setting/mail_transfer_import.html:8
+#: app/setting/templates/setting/mail_transfer_import.html:9
+#: app/setting/templates/setting/mail_transfer_import.html:16
+#: app/setting/templates/setting/mail_transfer_import.html:19
+#: app/setting/templates/setting/mail_transfer_import.html:30
+#: app/setting/templates/setting/mail_transfer_sender.html:5
+#: app/setting/templates/setting/mail_transfer_sender.html:8
+#: app/setting/templates/setting/mail_transfer_sender.html:9
+#: app/setting/templates/setting/mail_transfer_sender.html:16
+#: app/setting/templates/setting/mail_transfer_sender.html:19
+#: app/setting/templates/setting/mail_transfer_sender.html:31
+msgid "邮件收发代理"
+msgstr ""
+
+#: app/setting/models.py:299
+msgid "超级管理员后台"
+msgstr ""
+
+#: app/setting/models.py:300
+msgid "系统管理后台"
+msgstr ""
+
+#: app/setting/models.py:301
+msgid "域管理后台"
+msgstr ""
+
+#: app/setting/models.py:302
+msgid "部门管理后台"
+msgstr ""
+
+#: app/setting/models.py:303
+msgid "邮件域名和端口地址"
+msgstr ""
+
+#: app/setting/models.py:304
+msgid "附件预览地址"
+msgstr ""
+
+#: app/setting/models.py:309
+msgid "基础信息"
+msgstr ""
+
+#: app/setting/models.py:314 app/setting/templates/setting/relay.html:58
+msgid "源邮件域"
+msgstr ""
+
+#: app/setting/models.py:315 app/setting/templates/setting/relay.html:59
+msgid "目标邮件域"
+msgstr ""
+
+#: app/setting/models.py:316 app/setting/templates/setting/relay.html:60
+msgid "中继服务器"
+msgstr ""
+
+#: app/setting/models.py:322 app/setting/templates/setting/relay.html:4
+#: app/setting/templates/setting/relay.html:6
+#: app/setting/templates/setting/relay.html:7
+#: app/setting/templates/setting/relay.html:14
+#: app/setting/templates/setting/relay.html:39
+msgid "中继设置"
+msgstr ""
+
+#: app/setting/templates/setting/alias_domain.html:5
+msgid "域别名"
+msgstr ""
+
+#: app/setting/templates/setting/alias_domain.html:8
+#: app/setting/templates/setting/alias_domain_mdf.html:8
+#: app/setting/templates/setting/alias_mailbox.html:8
+#: app/setting/templates/setting/alias_mailbox_mdf.html:8
+#: app/setting/templates/setting/cfilter.html:8
+#: app/setting/templates/setting/cfilter_add.html:8
+#: app/setting/templates/setting/header_trans.html:8
+#: app/setting/templates/setting/header_trans_mdf.html:8
+#: app/setting/templates/setting/monitor_mailbox.html:8
+#: app/setting/templates/setting/monitor_mailbox_mdf.html:8
+#: app/setting/templates/setting/trustip_set.html:8
+msgid "功能设置"
+msgstr ""
+
+#: app/setting/templates/setting/alias_domain.html:9
+#: app/setting/templates/setting/alias_domain_mdf.html:9
+msgid "域别名管理"
+msgstr ""
+
+#: app/setting/templates/setting/alias_domain.html:17
+msgid "域别名列表"
+msgstr ""
+
+#: app/setting/templates/setting/alias_domain.html:22
+#: app/setting/templates/setting/alias_mailbox.html:25
+msgid "添加别名"
+msgstr ""
+
+#: app/setting/templates/setting/alias_domain_mdf.html:5
+#: app/setting/templates/setting/alias_domain_mdf.html:10
+#: app/setting/templates/setting/alias_domain_mdf.html:19
+msgid "修改域别名"
+msgstr ""
+
+#: app/setting/templates/setting/alias_domain_mdf.html:5
+#: app/setting/templates/setting/alias_domain_mdf.html:10
+#: app/setting/templates/setting/alias_domain_mdf.html:19
+msgid "添加域别名"
+msgstr ""
+
+#: app/setting/templates/setting/alias_mailbox.html:5
+msgid "邮箱别名"
+msgstr ""
+
+#: app/setting/templates/setting/alias_mailbox.html:9
+#: app/setting/templates/setting/alias_mailbox_mdf.html:9
+msgid "邮箱别名管理"
+msgstr ""
+
+#: app/setting/templates/setting/alias_mailbox.html:17
+msgid "邮箱别名列表"
+msgstr ""
+
+#: app/setting/templates/setting/alias_mailbox.html:42
+msgid "虚拟地址"
+msgstr ""
+
+#: app/setting/templates/setting/alias_mailbox.html:43
+msgid "真实地址"
+msgstr ""
+
+#: app/setting/templates/setting/alias_mailbox_mdf.html:5
+#: app/setting/templates/setting/alias_mailbox_mdf.html:10
+#: app/setting/templates/setting/alias_mailbox_mdf.html:19
+msgid "修改邮箱别名"
+msgstr ""
+
+#: app/setting/templates/setting/alias_mailbox_mdf.html:5
+#: app/setting/templates/setting/alias_mailbox_mdf.html:10
+#: app/setting/templates/setting/alias_mailbox_mdf.html:19
+msgid "添加邮箱别名"
+msgstr ""
+
+#: app/setting/templates/setting/black_whitelist.html:8
+#: app/setting/templates/setting/black_whitelist.html:16
+#: app/setting/templates/setting/whitelist.html:8
+#: app/setting/templates/setting/whitelist.html:16
+msgid "安全设置"
+msgstr ""
+
+#: app/setting/templates/setting/black_whitelist.html:26
+#: app/setting/templates/setting/black_whitelist.html:96
+#: app/setting/templates/setting/whitelist.html:68
+msgid "添加黑名单"
+msgstr ""
+
+#: app/setting/templates/setting/black_whitelist.html:26
+#: app/setting/templates/setting/black_whitelist.html:96
+#: app/setting/templates/setting/whitelist.html:26
+#: app/setting/templates/setting/whitelist.html:68
+msgid "添加白名单"
+msgstr ""
+
+#: app/setting/templates/setting/black_whitelist.html:28
+#: app/setting/templates/setting/black_whitelist.html:134
+#: app/setting/templates/setting/whitelist.html:106
+msgid "批量添加黑名单"
+msgstr ""
+
+#: app/setting/templates/setting/black_whitelist.html:28
+#: app/setting/templates/setting/black_whitelist.html:134
+#: app/setting/templates/setting/whitelist.html:27
+#: app/setting/templates/setting/whitelist.html:106
+msgid "批量添加白名单"
+msgstr ""
+
+#: app/setting/templates/setting/black_whitelist.html:47
+msgid "发件人白名单"
+msgstr ""
+
+#: app/setting/templates/setting/cfilter.html:5
+#: app/setting/templates/setting/cfilter.html:9
+#: app/setting/templates/setting/cfilter.html:17
+#: app/setting/templates/setting/cfilter_add.html:9
+msgid "邮件过滤"
+msgstr ""
+
+#: app/setting/templates/setting/cfilter_add.html:5
+#: app/setting/templates/setting/cfilter_add.html:10
+#: app/setting/templates/setting/cfilter_add.html:64
+msgid "修改过滤规则"
+msgstr ""
+
+#: app/setting/templates/setting/cfilter_add.html:5
+#: app/setting/templates/setting/cfilter_add.html:10
+#: app/setting/templates/setting/cfilter_add.html:64
+msgid "添加过滤规则"
+msgstr ""
+
+#: app/setting/templates/setting/cfilter_add.html:314
+msgid "新增父条件"
+msgstr ""
+
+#: app/setting/templates/setting/cfilter_add.html:489
+msgid "新增动作"
+msgstr ""
+
+#: app/setting/templates/setting/cfilter_config.html:6
+msgid "修改配置"
+msgstr ""
+
+#: app/setting/templates/setting/cfilter_config.html:6
+#: app/setting/templates/setting/cfilter_config.html:9
+#: app/setting/templates/setting/cfilter_config.html:17
+msgid "新版系统过滤器开关配置"
+msgstr ""
+
+#: app/setting/templates/setting/header_trans.html:9
+#: app/setting/templates/setting/header_trans_mdf.html:9
+msgid "邮件头翻译管理"
+msgstr ""
+
+#: app/setting/templates/setting/header_trans.html:17
+msgid "邮件头翻译列表"
+msgstr ""
+
+#: app/setting/templates/setting/header_trans.html:22
+#: app/setting/templates/setting/header_trans_mdf.html:5
+#: app/setting/templates/setting/header_trans_mdf.html:10
+#: app/setting/templates/setting/header_trans_mdf.html:19
+msgid "添加邮件头翻译"
+msgstr ""
+
+#: app/setting/templates/setting/header_trans.html:40
+msgid "被翻译值"
+msgstr ""
+
+#: app/setting/templates/setting/header_trans.html:41
+msgid "翻译目标值"
+msgstr ""
+
+#: app/setting/templates/setting/header_trans_mdf.html:5
+#: app/setting/templates/setting/header_trans_mdf.html:10
+#: app/setting/templates/setting/header_trans_mdf.html:19
+msgid "修改邮件头翻译"
+msgstr ""
+
+#: app/setting/templates/setting/include/ldap_setting.html:8
+msgid "LDAP服务器配置"
+msgstr ""
+
+#: app/setting/templates/setting/include/ldap_setting_ad.html:8
+msgid "AD域配置"
+msgstr ""
+
+#: app/setting/templates/setting/include/mail_transfer_post.html:26
+msgid "远程登录帐号"
+msgstr ""
+
+#: app/setting/templates/setting/include/mail_transfer_post.html:27
+msgid "远程收件帐号"
+msgstr ""
+
+#: app/setting/templates/setting/include/sslcert.html:13
+msgid " 设置证书"
+msgstr ""
+
+#: app/setting/templates/setting/include/sslen.html:12
+msgid "SSL加密功能开关"
+msgstr ""
+
+#: app/setting/templates/setting/include/sslkey.html:14
+msgid " 设置私钥"
+msgstr ""
+
+#: app/setting/templates/setting/include/sslsig.html:13
+msgid " 生成证书签名请求"
+msgstr ""
+
+#: app/setting/templates/setting/ldap_adlist.html:5
+#: app/setting/templates/setting/ldap_adlist.html:8
+#: app/setting/templates/setting/ldap_adlist.html:9
+#: app/setting/templates/setting/ldap_adlist.html:19
+#: app/setting/templates/setting/ldap_adlist.html:35
+#: app/setting/templates/setting/ldap_adlist_mdf.html:5
+#: app/setting/templates/setting/ldap_adlist_mdf.html:8
+#: app/setting/templates/setting/ldap_adlist_mdf.html:9
+#: app/setting/templates/setting/ldap_adlist_mdf.html:19
+#: app/setting/templates/setting/ldap_adlist_mdf.html:22
+#: app/setting/templates/setting/ldap_adlist_mdf.html:35
+#: app/setting/templates/setting/ldap_setting.html:5
+#: app/setting/templates/setting/ldap_setting.html:8
+#: app/setting/templates/setting/ldap_setting.html:9
+#: app/setting/templates/setting/ldap_setting.html:19
+#: app/setting/templates/setting/ldap_setting.html:22
+#: app/setting/templates/setting/ldap_setting.html:35
+msgid "LDAP/AD域同步设置"
+msgstr ""
+
+#: app/setting/templates/setting/ldap_adlist.html:22
+#: app/setting/templates/setting/ldap_adlist.html:40
+#: app/setting/templates/setting/ldap_adlist_mdf.html:40
+#: app/setting/templates/setting/ldap_setting.html:40
+msgid "AD域帐号列表"
+msgstr ""
+
+#: app/setting/templates/setting/ldap_setting.html:114
+msgid ""
+"选择删除 <AD域中不存在的帐号> 后，会自动删除掉这些帐号的所有帐号、邮件、网盘"
+"数据且不可挽回，是否确认此操作？"
+msgstr ""
+
+#: app/setting/templates/setting/mail_transfer.html:35
+#: app/setting/templates/setting/mail_transfer_import.html:34
+#: app/setting/templates/setting/mail_transfer_sender.html:35
+msgid "默认登录帐号"
+msgstr ""
+
+#: app/setting/templates/setting/monitor_mailbox.html:5
+msgid "邮箱监控"
+msgstr ""
+
+#: app/setting/templates/setting/monitor_mailbox.html:9
+#: app/setting/templates/setting/monitor_mailbox_mdf.html:9
+msgid "邮箱监控管理"
+msgstr ""
+
+#: app/setting/templates/setting/monitor_mailbox.html:17
+msgid "邮箱监控列表"
+msgstr ""
+
+#: app/setting/templates/setting/monitor_mailbox.html:24
+msgid "添加监控"
+msgstr ""
+
+#: app/setting/templates/setting/monitor_mailbox.html:41
+msgid "监控邮箱"
+msgstr ""
+
+#: app/setting/templates/setting/monitor_mailbox.html:42
+msgid "监控部门"
+msgstr ""
+
+#: app/setting/templates/setting/monitor_mailbox.html:43
+msgid "接收邮箱"
+msgstr ""
+
+#: app/setting/templates/setting/monitor_mailbox.html:44
+msgid "监控类型"
+msgstr ""
+
+#: app/setting/templates/setting/monitor_mailbox.html:45
+msgid "通道"
+msgstr ""
+
+#: app/setting/templates/setting/monitor_mailbox.html:46
+msgid "邮件搬家"
+msgstr ""
+
+#: app/setting/templates/setting/monitor_mailbox_mdf.html:5
+#: app/setting/templates/setting/monitor_mailbox_mdf.html:10
+#: app/setting/templates/setting/monitor_mailbox_mdf.html:19
+msgid "修改邮箱监控"
+msgstr ""
+
+#: app/setting/templates/setting/monitor_mailbox_mdf.html:5
+#: app/setting/templates/setting/monitor_mailbox_mdf.html:10
+#: app/setting/templates/setting/monitor_mailbox_mdf.html:19
+msgid "添加邮箱监控"
+msgstr ""
+
+#: app/setting/templates/setting/relay.html:15
+msgid " 中继设置"
+msgstr ""
+
+#: app/setting/templates/setting/relay.html:22
+#: app/setting/templates/setting/relay_setting.html:5
+#: app/setting/templates/setting/relay_setting.html:7
+#: app/setting/templates/setting/relay_setting.html:8
+#: app/setting/templates/setting/relay_setting.html:15
+msgid "设置全局中继"
+msgstr ""
+
+#: app/setting/templates/setting/relay.html:27
+#: app/setting/templates/setting/relay_mdf.html:5
+#: app/setting/templates/setting/relay_mdf.html:8
+#: app/setting/templates/setting/relay_mdf.html:13
+#: app/setting/templates/setting/relay_mdf.html:20
+msgid "添加中继"
+msgstr ""
+
+#: app/setting/templates/setting/relay_mdf.html:7
+msgid "中继列表"
+msgstr ""
+
+#: app/setting/templates/setting/relay_setting.html:28
+msgid " 先直接发送所有邮件，如果有问题再使用中继服务器发送"
+msgstr ""
+
+#: app/setting/templates/setting/relay_setting.html:29
+msgid " 将所有出站邮件直接发送到收件人的邮件服务器"
+msgstr ""
+
+#: app/setting/templates/setting/relay_setting.html:30
+msgid " 将所有出站邮件发送到中继服务器 "
+msgstr ""
+
+#: app/setting/templates/setting/ssl.html:5
+#: app/setting/templates/setting/ssl.html:9
+msgid "SSL加密"
+msgstr ""
+
+#: app/setting/templates/setting/ssl.html:18
+msgid "SSL加密设置"
+msgstr ""
+
+#: app/setting/templates/setting/sysinfo.html:5
+#: app/setting/templates/setting/sysinfo.html:8
+msgid "系统信息"
+msgstr ""
+
+#: app/setting/templates/setting/sysinfo.html:9 templates/licence.html:9
+msgid "授权信息"
+msgstr ""
+
+#: app/setting/templates/setting/sysset.html:5
+#: app/setting/templates/setting/sysset.html:21
+msgid "杂项设置"
+msgstr ""
+
+#: app/setting/templates/setting/trustip_set.html:15
+msgid "信任IP地址"
+msgstr ""
+
+#: app/support/templates/support/support.html:5
+#: app/support/templates/support/support.html:11
+#: app/support/templates/support/support.html:12
+#: app/support/templates/support/support.html:21
+msgid "技术支持"
+msgstr ""
+
+#: app/utils/MailboxLimitChecker.py:10 app/utils/MailboxLimitChecker.py:65
+msgid "超过授权文件数量"
+msgstr ""
+
+#: app/utils/MailboxLimitChecker.py:11 app/utils/MailboxLimitChecker.py:79
+msgid "超过域邮箱数量限制"
+msgstr ""
+
+#: app/utils/MailboxLimitChecker.py:12 app/utils/MailboxLimitChecker.py:89
+msgid "超过域邮箱空间限制"
+msgstr ""
+
+#: app/utils/MailboxLimitChecker.py:13 app/utils/MailboxLimitChecker.py:98
+msgid "超过域磁盘空间限制"
+msgstr ""
+
+#: app/utils/MailboxLimitChecker.py:84
+msgid "当前邮件域不允许分配无限大小的邮箱空间！"
+msgstr ""
+
+#: app/utils/MailboxLimitChecker.py:94
+msgid "当前邮件域不允许分配无限大小的网络硬盘空间！"
+msgstr ""
+
+#: app/utils/exceptions.py:14
+msgid "非常抱歉，您没有访问权限。"
+msgstr ""
+
+#: app/utils/exceptions.py:15
+msgid "非常抱歉，您没有访问权限。请联系您的管理员！"
+msgstr ""
+
+#: app/utils/ordered_model.py:72
+msgid ""
+"The method move() is deprecated and will be removed in the next release."
+msgstr ""
+
+#: app/utils/ordered_model.py:85
+msgid ""
+"The method move_down() is deprecated and will be removed in the next "
+"release. Please use down() instead!"
+msgstr ""
+
+#: app/utils/ordered_model.py:95
+msgid ""
+"The method move_up() is deprecated and will be removed in the next release. "
+"Please use up() instead!"
+msgstr ""
+
+#: app/utils/password.py:29
+msgid "密码包含非法字符，只能为半角字符。"
+msgstr ""
+
+#: app/utils/password.py:31
+msgid "密码必须大于等于8个字符小于等于20个字符。"
+msgstr ""
+
+#: app/utils/password.py:33
+msgid "密码与账号太相似了。"
+msgstr ""
+
+#: app/utils/password.py:35
+msgid "密码不能连续重复、递增、递减的数字或字母。"
+msgstr ""
+
+#: app/utils/password.py:37
+msgid "需要大写和小写字母、数字组合 或者 字母和数字以及特殊字符组合。"
+msgstr ""
+
+#: app/utils/password.py:39
+msgid "密码对称，太简单了。"
+msgstr ""
+
+#: auditlog/models.py:25
+msgid "登录"
+msgstr ""
+
+#: auditlog/models.py:26
+msgid "登出"
+msgstr ""
+
+#: auditlog/models.py:28
+msgid "域名设置"
+msgstr ""
+
+#: auditlog/models.py:185
+msgid "更新"
+msgstr ""
+
+#: auditlog/models.py:189 auditlog/models.py:347
+msgid "content type"
+msgstr ""
+
+#: auditlog/models.py:190
+msgid "object pk"
+msgstr ""
+
+#: auditlog/models.py:191
+msgid "object id"
+msgstr ""
+
+#: auditlog/models.py:192
+msgid "object representation"
+msgstr ""
+
+#: auditlog/models.py:193
+msgid "action"
+msgstr ""
+
+#: auditlog/models.py:194
+msgid "change message"
+msgstr ""
+
+#: auditlog/models.py:195
+msgid "actor"
+msgstr ""
+
+#: auditlog/models.py:196
+msgid "remote address"
+msgstr ""
+
+#: auditlog/models.py:197
+msgid "timestamp"
+msgstr ""
+
+#: auditlog/models.py:198
+msgid "additional data"
+msgstr ""
+
+#: auditlog/models.py:200
+msgid "所属域名ID"
+msgstr ""
+
+#: auditlog/models.py:201
+msgid "是否是扩展的类型"
+msgstr ""
+
+#: auditlog/models.py:202
+msgid "扩展类型"
+msgstr ""
+
+#: auditlog/models.py:203
+msgid "扩展说明"
+msgstr ""
+
+#: auditlog/models.py:212
+msgid "log entry"
+msgstr ""
+
+#: auditlog/models.py:213
+msgid "log entries"
+msgstr ""
+
+#: auditlog/models.py:217
+msgid "Created {repr:s}"
+msgstr ""
+
+#: auditlog/models.py:219
+msgid "Updated {repr:s}"
+msgstr ""
+
+#: auditlog/models.py:221
+msgid "Deleted {repr:s}"
+msgstr ""
+
+#: auditlog/models.py:223
+msgid "Logged {repr:s}"
+msgstr ""
+
+#: auditlog/models.py:351 auditlog/models.py:352
+msgid "统计入库此处的content_type_id"
+msgstr ""
+
+#: django_logtail/templates/logtail/logtail_list.html:5
+#: django_logtail/templates/logtail/logtail_list.html:8
+msgid "日志"
+msgstr ""
+
+#: rest_framework_jwt/authentication.py:35 rest_framework_jwt/serializers.py:91
+msgid "Signature has expired."
+msgstr ""
+
+#: rest_framework_jwt/authentication.py:38 rest_framework_jwt/serializers.py:94
+msgid "Error decoding signature."
+msgstr ""
+
+#: rest_framework_jwt/authentication.py:54
+#: rest_framework_jwt/serializers.py:103
+msgid "Invalid payload."
+msgstr ""
+
+#: rest_framework_jwt/authentication.py:60
+msgid "Invalid signature."
+msgstr ""
+
+#: rest_framework_jwt/authentication.py:64 rest_framework_jwt/serializers.py:57
+#: rest_framework_jwt/serializers.py:114
+msgid "User account is disabled."
+msgstr ""
+
+#: rest_framework_jwt/authentication.py:98 rest_framework_jwt/parse.py:34
+msgid "Invalid Authorization header. No credentials provided."
+msgstr ""
+
+#: rest_framework_jwt/authentication.py:101 rest_framework_jwt/parse.py:37
+msgid ""
+"Invalid Authorization header. Credentials string should not contain spaces."
+msgstr ""
+
+#: rest_framework_jwt/parse.py:71
+msgid "签名已过期."
+msgstr ""
+
+#: rest_framework_jwt/parse.py:74 rest_framework_jwt/parse.py:81
+msgid "签名不正确."
+msgstr ""
+
+#: rest_framework_jwt/parse.py:87
+msgid "用户不存在."
+msgstr ""
+
+#: rest_framework_jwt/parse.py:96
+msgid "用户不是超级管理员."
+msgstr ""
+
+#: rest_framework_jwt/parse.py:99
+msgid "不能登录共享用户的管理账号."
+msgstr ""
+
+#: rest_framework_jwt/permissions.py:9
+msgid "对于您登陆的共享邮箱，没有权限做此操作。"
+msgstr ""
+
+#: rest_framework_jwt/serializers.py:67
+msgid "Unable to log in with provided credentials."
+msgstr ""
+
+#: rest_framework_jwt/serializers.py:70
+#, python-brace-format
+msgid "Must include \"{username_field}\" and \"password\"."
+msgstr ""
+
+#: rest_framework_jwt/serializers.py:110
+msgid "User doesn't exist."
+msgstr ""
+
+#: rest_framework_jwt/serializers.py:162
+msgid "Refresh has expired."
+msgstr ""
+
+#: rest_framework_jwt/serializers.py:165
+msgid "orig_iat field is required."
+msgstr ""
+
+#: rest_framework_jwt/serializers.py:186
+msgid "请填写共享用户。"
+msgstr ""
+
+#: rest_framework_jwt/serializers.py:191
+msgid "共享邮箱不存在。"
+msgstr ""
+
+#: rest_framework_jwt/serializers.py:195
+msgid "没有关联共享邮箱。"
+msgstr ""
+
+#: templates/base.html:28 templates/login.html:16
+msgid "超域管理后台"
+msgstr ""
+
+#: templates/home.html:6
+msgid "主页"
+msgstr ""
+
+#: templates/home.html:683
+msgid "确认更新系统？"
+msgstr ""
+
+#: templates/login.html:4
+msgid "帐号登录"
+msgstr ""
+
+#: templates/login.html:28
+msgid "请输入登录信息"
+msgstr ""
+
+#: templates/login.html:33
+msgid "错误提示： "
+msgstr ""
+
+#: templates/login.html:69
+msgid "记住我"
+msgstr ""
+
+#: templates/login.html:75
+msgid "登录平台"
+msgstr ""
+
+#: templates/logout.html:4
+msgid "登录退出"
+msgstr ""
+
+#: templates/logout.html:13
+msgid "您已成功退出U-Mail超域管理后台, 感谢使用!"
+msgstr ""
+
+#: templates/logout.html:15
+msgid "秒后，跳转回首页.或者"
+msgstr ""
+
+#: templates/logout.html:15
+msgid "点击这里"
+msgstr ""
+
+#: templates/logout.html:15
+msgid "重新登录"
+msgstr ""
+
+#: templates/mail_read.html:43
+msgid "邮件时间"
+msgstr ""
+
+#: templates/queue.html:32
+msgid "查询"
+msgstr ""
+
+#: templates/upgrade_record.html:5
+msgid "更新记录"
+msgstr ""
+
+#: templates/upgrade_record.html:12
+msgid "公司"
+msgstr ""
+
+#: templates/upgrade_record.html:14
+msgid "App版本"
+msgstr "APP Version"
+
+#: templates/upgrade_record.html:15
+msgid "App上一版本"
+msgstr "APP Last Version"
+
+#: templates/upgrade_record.html:16
+msgid "Webmail版本"
+msgstr "Webmail Version"
+
+#: templates/upgrade_record.html:17
+msgid "Webmail上一版本"
+msgstr "Webmail Last Version"
+
+#: templates/upgrade_record.html:18
+msgid "Operation版本"
+msgstr "Operation Version"
+
+#: templates/upgrade_record.html:19
+msgid "Operation上一版本"
+msgstr "Operation Last Version"

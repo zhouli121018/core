@@ -34,7 +34,7 @@
     <h3 class="header smaller lighter blue">{% trans "域名配置" %}
     </h3>
     <div class="box" >
-        <input type="hidden" value="" name="id_remark_flag" id="id_remark_flag" />
+        <input type="hidden" value="basic" name="id_remark_flag" id="id_remark_flag" />
         <input type="hidden" value="" name="id_remark_flag2" id="id_remark_flag2" />
         <div id="tab2">
             <ul>
@@ -187,6 +187,7 @@
             success: function(html){
                 $(href).html(html);
                 $("#id_remark_flag").val(page);
+                $("#id_remark_flag2").val("");
                 get_remark_base();
             }
         }

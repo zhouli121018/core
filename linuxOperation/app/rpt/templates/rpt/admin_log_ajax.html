@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load rpt_tags %}
 <td>{{ d.id }}</td>
 <td>{{ d.actor }}</td>
@@ -10,11 +11,11 @@
 </td>
 <td>
     {% if d.action == 2 %}
-        <span class="text-danger">删除</span>
+        <span class="text-danger">{% trans "删除" %}</span>
     {% elif d.action == 1 %}
-        <span class="text-warning">更新</span>
+        <span class="text-warning">{% trans "更新" %}</span>
     {% else %}
-        <span class="text-success">添加</span>
+        <span class="text-success">{% trans "添加" %}</span>
     {% endif %}
 </td>
 <td>
@@ -35,4 +36,3 @@
 <td>{{ d.remote_addr }}</td>
 <td>{{ d.timestamp|date:"Y-m-d H:i:s" }}</td>
 <td>{{ d.domain_id|get_domain }}</td>
-

@@ -27,11 +27,11 @@
                 {% csrf_token %}
 
                 <div class="form-group {% if form.value.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_config_value"> 新版系统过滤器开关 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_config_value"> {% trans "新版系统过滤器开关 " %}</label>
                     <div class="col-sm-9">
                         <select class="col-xs-10 col-sm-5" id="id_config_value" name="sw_new_cfilter_value">
-                            <option value="1" {% if form.value.value == '1' %}selected{% endif %}>开启</option>
-                            <option value="0" {% if form.value.value == '0' %}selected{% endif %}>关闭</option>
+                            <option value="1" {% if form.value.value == '1' %}selected{% endif %}>{% trans "开启" %}</option>
+                            <option value="0" {% if form.value.value == '0' %}selected{% endif %}>{% trans "关闭" %}</option>
                         </select>
                         {% if form.value.error %}
                             <div style="clear: both">
@@ -48,10 +48,10 @@
                         </button>
 
                         <button class="btn" type="reset">
-                            <i class="ace-icon fa fa-undo bigger-110"></i>重置
+                            <i class="ace-icon fa fa-undo bigger-110"></i>{% trans "重置" %}
                         </button>
 
-                        <a type="button" class="btn btn-link" href="{% url 'cfilter_set' %}">取消</a>
+                        <a type="button" class="btn btn-link" href="{% url 'cfilter_set' %}">{% trans "取消" %}</a>
                     </div>
                 </div>
             </form>

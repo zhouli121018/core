@@ -4,19 +4,19 @@
     <div id="sub_webmail_tabs">
         <ul>
             <li>
-                <a href="#sub_webmail">Webmail 页面定制</a>
+                <a href="#sub_webmail" onclick="clickSubTab('')">Webmail 页面定制</a>
             </li>
             <li>
-                <a href="#tabs_logo">页面LOGO设置</a>
+                <a href="#tabs_logo" onclick="clickSubTab('logo')">页面LOGO设置</a>
             </li>
             <li >
-                <a href="#tabs_ad">页面广告设置</a>
+                <a href="#tabs_ad" onclick="clickSubTab('ad')">页面广告设置</a>
             </li>
             <li >
-                <a href="#tabs_first" onclick="clickWebmailLink()">首页链接设置</a>
+                <a href="#tabs_first" onclick="clickSubTab('link')">首页链接设置</a>
             </li>
             <li >
-                <a href="#tabs_login">登录模板选择</a>
+                <a href="#tabs_login" onclick="clickSubTab('login')">登录模板选择</a>
             </li>
         </ul>
 
@@ -642,17 +642,23 @@
         );
     }
 
-    function clickWebmailLink(){
-        console.log("clickWebmailLink");
-        $.ajax({
-            url:"{% url 'domain_webmail_link' %}",
-            type:"POST",
-            data:"&action=view",
-            success:function(html){
-                $('#tabs_first').html(html);
-                $('.modal-backdrop').remove();
-            }
-        })
+    function clickSubTab(key){
+        console.log("clickSubTab");
+        if(key=="link"){
+            $.ajax({
+                url:"{% url 'domain_webmail_link' %}",
+                type:"POST",
+                data:"&action=view",
+                success:function(html){
+                    $('#tabs_first').html(html);
+                    $('.modal-backdrop').remove();
+                }
+            })
+        }
+        console.log("clickSubTab   "+key);
+        $("#id_remark_flag").val('webmail');
+        $("#id_remark_flag2").val(key);
+        get_remark_base();
         return;
     }
 

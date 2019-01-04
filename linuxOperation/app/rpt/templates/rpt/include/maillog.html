@@ -5,8 +5,8 @@
         <div class="pull-right">
             <form id="search_form" class="form-inline pull-right" role="form" action="" style="text-align: left">
                 {{ form|bootstrap_flag }}
-                <button type="submit" class="btn btn-primary btn-sm">查询</button>
-                <button type="button" class="btn btn-purple btn-sm" onClick="exportLog()">导出</button>
+                <button type="submit" class="btn btn-primary btn-sm">{% trans "查询" %}</button>
+                <button type="button" class="btn btn-purple btn-sm" onClick="exportLog()">{% trans "导出" %}</button>
             </form>
         </div>
     </div>

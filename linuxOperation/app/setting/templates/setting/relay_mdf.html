@@ -21,7 +21,7 @@
                     <div class="panel-body">
                         {% csrf_token %}
                         <div class="form-group">
-                            <label class="control-label  " for="id_ssl">源邮件域</label>
+                            <label class="control-label  " for="id_ssl">{% trans "源邮件域" %}</label>
                             <div class=" ">
                                 <input type="text" class="form-control" name="src_domain" value="{{ domain }}" readonly="">
                             </div>
@@ -58,4 +58,3 @@
         });
     </script>
 {% endblock %}
-

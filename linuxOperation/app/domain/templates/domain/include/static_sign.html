@@ -2,10 +2,10 @@
     <div id="sub_sign_tabs">
         <ul>
             <li>
-                <a href="#sub_sign_content">域签名</a>
+                <a href="#sub_sign_content" onclick="clickSubTab('')">域签名</a>
             </li>
             <li>
-                <a href="#sub_sign_template">个人签名模板</a>
+                <a href="#sub_sign_template" onclick="clickSubTab('personal')">个人签名模板</a>
             </li>
         </ul>
         <div id="sub_sign_content">
@@ -122,7 +122,7 @@
                 'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image',
                 'flash', 'media', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak', 'link', 'unlink', '|', 'about']
             };
-    
+
     $('#sub_sign_tabs').tabs();
     var editor;
     //$('#editor2').html(editor2_content);
@@ -189,6 +189,13 @@
                                 },100)
             }
         })
+    }
+
+    function clickSubTab(key){
+        console.log("clickSubTab   "+key);
+        $("#id_remark_flag").val('sign');
+        $("#id_remark_flag2").val(key);
+        get_remark_base();
     }
 
 </script>

@@ -30,12 +30,12 @@
                 {% csrf_token %}
 
                 <div class="form-group {% if form.mailbox.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_mailbox"> 通道类型 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_mailbox"> {% trans "通道类型 " %}</label>
                     <div class="col-sm-9">
                         <select class="col-xs-10 col-sm-5" id="id_type" name="type" ">
-                            <option value="in" {% if form.type.value == 'in' %} selected {% endif %} > 接收邮件 </option>
-                            <option value="out" {% if form.type.value == 'out' %} selected {% endif %} > 发送邮件 </option>
-                            <option value="all" {% if form.type.value == 'all' %} selected {% endif %} > 所有邮件 </option>
+                            <option value="in" {% if form.type.value == 'in' %} selected {% endif %} > {% trans "接收邮件 " %}</option>
+                            <option value="out" {% if form.type.value == 'out' %} selected {% endif %} > {% trans "发送邮件 " %}</option>
+                            <option value="all" {% if form.type.value == 'all' %} selected {% endif %} > {% trans "所有邮件 " %}</option>
                         </select>
                         {% if form.type.error %}
                             <div style="clear: both">
@@ -46,12 +46,12 @@
                 </div>
 
                 <div class="form-group {% if form.mailbox.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_mailbox"> 本地帐号 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_mailbox"> {% trans "本地帐号 " %}</label>
                     <div class="col-sm-9">
                         <input type="text" name="mailbox" id="id_mailbox" value="{{ form.mailbox.value }}" maxlength="200" class="col-xs-10 col-sm-5" />
                         <!--
                         <select class="select2 col-xs-10 col-sm-5" id="id_mailbox" name="mailbox" >
-                            <option value="">请选择邮箱</option>
+                            <option value="">{% trans "请选择邮箱" %}</option>
                             {% for mailbox in form.mailboxLists %}
                             <option value="{{ mailbox.username }}" {% if form.mailbox.value == mailbox.username %} selected {% endif %}>{{ mailbox.username }}</option>
                             {% endfor %}
@@ -65,7 +65,7 @@
                         <div style="clear: both">
                             <span class="middle text-success ">
                             <li>
-                            若输入'@xxx.com'格式的帐号时，代表整个域名的有效邮箱都会作用该代理设置。
+                            {% trans "若输入'@xxx.com'格式的帐号时，代表整个域名的有效邮箱都会作用该代理设置。" %}
                             </li>
                             </span>
                         </div>
@@ -73,7 +73,7 @@
                 </div>
 
                 <div class="form-group {% if form.account.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_account"> 远程登录帐号 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_account"> {% trans "远程登录帐号 " %}</label>
                     <div class="col-sm-9">
                     <input type="text" name="account" id="id_account" value="{{ form.account.value }}" maxlength="200" class="col-xs-10 col-sm-5" />
                         {% if form.account.error %}
@@ -84,7 +84,7 @@
                         <div style="clear: both">
                             <span class="middle text-success ">
                             <li>
-                            若没有设置"远程登录帐号"，默认会使用“默认登录帐号”里面设置的帐号登录。
+                            {% trans "若没有设置‘远程登录帐号’，默认会使用“默认登录帐号”里面设置的帐号登录。" %}
                             </li>
                             </span>
                         </div>
@@ -92,23 +92,23 @@
                 </div>
 
                 <div class="form-group {% if form.password.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_password"> 密码 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_password"> {% trans "密码 " %}</label>
                     <div class="col-sm-9">
                     <input type="password" name="password" id="id_password" value="{{ form.password.value }}" maxlength="200" class="col-xs-10 col-sm-5" />
                     </div>
                 </div>
 
                 <div class="form-group {% if form.server.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_server"> 远程服务器 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_server"> {% trans "远程服务器 " %}</label>
                     <div class="col-sm-9">
                     <input type="text" name="server" id="id_server" value="{{ form.server.value }}" maxlength="200" class="col-xs-10 col-sm-5" />
                         <div style="clear: both">
                             <span class="middle text-success ">
                             <li>
-                            若“远程服务器”使用的域名与本服务器一致，应尽量输入IP地址，
+                            {% trans "若“远程服务器”使用的域名与本服务器一致，应尽量输入IP地址，" %}
                             </li>
                             <li>
-                            以避免DNS错误解析为本服务器IP地址。
+                            {% trans "以避免DNS错误解析为本服务器IP地址。" %}
                             </li>
                             </span>
                         </div>
@@ -116,7 +116,7 @@
                 </div>
 
                 <div class="form-group {% if form.recipient.error %} has-error {% endif %}">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_recipient"> 远程收件帐号 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_recipient"> {% trans "远程收件帐号 " %}</label>
                     <div class="col-sm-9">
                     <input type="text" name="recipient" id="id_recipient" value="{{ form.recipient.value }}" maxlength="200" class="col-xs-10 col-sm-5" />
                         {% if form.recipient.error %}
@@ -127,13 +127,13 @@
                         <div style="clear: both">
                             <span class="middle text-success ">
                             <li>
-                            “远程收件帐号”与“远程登录帐号”的关系为：
+                            “{% trans "远程收件帐号”与“远程登录帐号”的关系为：" %}
                             </li>
                             <li>
-                            以“远程登录帐号”登录“远程服务器”，然后将邮件转发到“远程收件帐号”这个邮箱；
+                            {% trans "以“远程登录”登录“远程服务器”，然后将邮件转发到“远程收件帐号”这个邮箱" %}；
                             </li>
                             <li>
-                            “远程收件帐号”输入为空时，默认投递到“远程登录帐号”。
+                            “{% trans "远程收件帐号”输入为空时，默认投递到“远程登录帐号” " %}。
                             </li>
                             </span>
                         </div>
@@ -141,11 +141,11 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_for_ssl" > SSL登录 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_for_ssl" > {% trans "SSL登录 " %}</label>
                     <div class="col-sm-9">
                         <select class="col-xs-10 col-sm-5" id="id_ssl" name="ssl" ">
-                            <option value="1" {% if form.ssl.value == '1' %} selected {% endif %} > 是 </option>
-                            <option value="-1" {% if form.ssl.value != '1' %} selected {% endif %} > 否 </option>
+                            <option value="1" {% if form.ssl.value == '1' %} selected {% endif %} > {% trans "是 " %}</option>
+                            <option value="-1" {% if form.ssl.value != '1' %} selected {% endif %} > {% trans "否 " %}</option>
                         </select>
                         {% if form.ssl.error %}
                             <div style="clear: both"><p class="errornote txt-color-red">{{ form.ssl.error }}</p></div>
@@ -154,11 +154,11 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_for_auth" > 需要验证 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_for_auth" > {% trans "需要验证 " %}</label>
                     <div class="col-sm-9">
                         <select class="col-xs-10 col-sm-5" id="id_auth" name="auth"">
-                            <option value="-1" {% if form.auth.value == -1 %} selected {% endif %} > 否 </option>
-                            <option value="1" {% if form.auth.value != -1 %} selected {% endif %} > 是 </option>
+                            <option value="-1" {% if form.auth.value == -1 %} selected {% endif %} > {% trans "否 " %}</option>
+                            <option value="1" {% if form.auth.value != -1 %} selected {% endif %} > {% trans "是 " %}</option>
                         </select>
                         {% if form.ssl.error %}
                             <div style="clear: both"><p class="errornote txt-color-red">{{ form.auth.error }}</p></div>
@@ -167,7 +167,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_fail_report" id="id_fail_report" > 警告邮件接收地址 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_fail_report" id="id_fail_report" > {% trans "警告邮件接收地址 " %}</label>
                     <div class="col-sm-9 no-padding-right">
                             <input type="text" name="fail_report" id="id_alert_address"
                                 value="{{ form.fail_report.value }}" class="col-xs-10 col-sm-5"/>
@@ -177,13 +177,13 @@
                             <div style="clear: both">
                             <span class="middle text-success ">
                             <li>
-                            若设置的帐号无法完成邮件投递，则会发送通知邮件到这里设置的邮箱地址中；
+                            {% trans "若设置的帐号无法完成邮件投递，则会发送通知邮件到这里设置的邮箱地址中" %}；
                             </li>
                             <li>
-                            多个帐号之间用','分隔，不可输入外域邮箱；
+                            {% trans "多个帐号之间用','分隔，不可输入外域邮箱" %}；
                             </li>
                             <li>
-                            警告邮件投递时间间隔为每10分钟一次。
+                            {% trans "警告邮件投递时间间隔为每10分钟一次。" %}
                             </li>
                             </span>
                             </div>
@@ -191,14 +191,14 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-3 control-label no-padding-right" for="id_disabled"> 激活状态 </label>
+                    <label class="col-sm-3 control-label no-padding-right" for="id_disabled"> {% trans "激活状态 " %}</label>
                     <div class="col-sm-9">
                         <label class="radio radio-inline padding-top-0 margin-top-0 form-inline">
                             <label>
-                                <input type="radio" name="disabled" value="-1" {% if form.disabled.value == '-1'  %} checked="" {% endif %}><span>启用</span>
+                                <input type="radio" name="disabled" value="-1" {% if form.disabled.value == '-1'  %} checked="" {% endif %}><span>{% trans "启用" %}</span>
                             </label>
                             <label>
-                                <input type="radio" name="disabled" value="1" {% if form.disabled.value != '-1'  %} checked="" {% endif %}><span>禁用</span>
+                                <input type="radio" name="disabled" value="1" {% if form.disabled.value != '-1'  %} checked="" {% endif %}><span>{% trans "禁用" %}</span>
                             </label>
                         </label>
                     </div>
@@ -211,10 +211,10 @@
                         </button>
 
                         <button class="btn" type="reset">
-                            <i class="ace-icon fa fa-undo bigger-110"></i>重置
+                            <i class="ace-icon fa fa-undo bigger-110"></i>{% trans "重置" %}
                         </button>
 
-                        <a type="button" class="btn btn-link" href="{% url 'mail_transfer' %}">取消</a>
+                        <a type="button" class="btn btn-link" href="{% url 'mail_transfer' %}">{% trans "取消" %}</a>
                     </div>
                 </div>
             </form>

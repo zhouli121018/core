@@ -1,3 +1,4 @@
+{% load i18n %}
 <td>{{ number }}</td>
 <td>{{ username|default_if_none:'' }}</td>
 <td>{{ name|default_if_none:'' }}</td>
@@ -10,9 +11,9 @@
 <td>{{ quotanetdisk|default_if_none:'' }} MB</td>
 <td>{{ quotamailbox_used|default_if_none:'' }} MB</td>
 {% if disabled != '1' %}
-    <td> <strong style="color: green"> 启用 </strong> </td>
+    <td> <strong style="color: green"> {% trans "启用 " %}</strong> </td>
 {% else %}
-    <td> <strong style="color: red"> 禁用 </strong> </td>
+    <td> <strong style="color: red"> {% trans "禁用 " %}</strong> </td>
 {% endif %}
 <td>{{ last_weblogin|default_if_none:'' }}</td>
 <td>{{ last_clientlogin|default_if_none:'' }}</td>

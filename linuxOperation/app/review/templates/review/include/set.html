@@ -5,11 +5,11 @@
             {% csrf_token %}
 
             <div class="form-group {% if form.value.error %} has-error {% endif %}">
-                <label class="col-sm-3 control-label no-padding-right" for="id_config_value"> 新版审核开关 </label>
+                <label class="col-sm-3 control-label no-padding-right" for="id_config_value"> {% trans "新版审核开关 " %}</label>
                 <div class="col-sm-9">
                     <select class="col-xs-10 col-sm-5" id="id_config_value" name="sw_new_review_value">
-                        <option value="1" {% if form.value.value == '1' %}selected{% endif %}>开启</option>
-                        <option value="0" {% if form.value.value == '0' %}selected{% endif %}>关闭</option>
+                        <option value="1" {% if form.value.value == '1' %}selected{% endif %}>{% trans "开启" %}</option>
+                        <option value="0" {% if form.value.value == '0' %}selected{% endif %}>{% trans "关闭" %}</option>
                     </select>
                     {% if form.value.error %}
                         <div style="clear: both">
@@ -20,7 +20,7 @@
             </div>
 
             <div class="form-group {% if form.value.error %} has-error {% endif %}">
-                <label class="col-sm-3 control-label no-padding-right" for="id_config_value2"> 审核结果邮件设置 </label>
+                <label class="col-sm-3 control-label no-padding-right" for="id_config_value2"> {% trans "审核结果邮件设置 " %}</label>
                 <div class="col-sm-9">
                     <select class="col-xs-10 col-sm-5" id="id_config_value2" name="review_notify_result">
                         {% for option,name in form.select_result %}
@@ -36,7 +36,7 @@
             </div>
 
             <div class="form-group {% if form.value.error %} has-error {% endif %}">
-                <label class="col-sm-3 control-label no-padding-right" for="id_config_value3"> 审核人通知邮件设置 </label>
+                <label class="col-sm-3 control-label no-padding-right" for="id_config_value3"> {% trans "审核人通知邮件设置 " %}</label>
                 <div class="col-sm-9">
                     <select class="col-xs-10 col-sm-5" id="id_config_value3" name="reviewer_no_mail">
                         {% for option,name in form.select_notify %}
@@ -58,10 +58,10 @@
                     </button>
 
                     <button class="btn" type="reset">
-                        <i class="ace-icon fa fa-undo bigger-110"></i>重置
+                        <i class="ace-icon fa fa-undo bigger-110"></i>{% trans "重置" %}
                     </button>
 
-                    <a type="button" class="btn btn-link" href="{% url 'review_list' %}">取消</a>
+                    <a type="button" class="btn btn-link" href="{% url 'review_list' %}">{% trans "取消" %}</a>
                 </div>
             </div>
         </form>
