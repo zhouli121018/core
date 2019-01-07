@@ -1,6 +1,6 @@
 <template>
   <section class="m-mail absolute_height">
-    <aside class="mlsidebar" :style="{width:asideWith+'px'}">
+    <aside class="mlsidebar" :style="{width:$parent.asideWith+'px'}">
       <div class="mlsidebar-bg"></div>
       <div class="wrapper u-scroll top0">
         <input type="hidden" v-model="cab_cid"/>
@@ -8,13 +8,13 @@
                  :default-expanded-keys="default_expanded_keys" :default-checked-keys="default_checked_keys" @node-click="f_TreeNodeClick" ref="treeForm">
         </el-tree>
       </div>
-      <div class="navbar-expand contact_sidebar" @click="toggleWidth">
-        <i v-if="asideWith==199" class="el-icon-arrow-right"></i>
-        <i v-if="asideWith==399" class="el-icon-arrow-left"></i>
+      <div class="navbar-expand contact_sidebar" @click="$parent.toggleWidth">
+        <i v-if="$parent.asideWith==199" class="el-icon-arrow-right"></i>
+        <i v-if="$parent.asideWith==399" class="el-icon-arrow-left"></i>
       </div>
     </aside>
 
-    <article class="mlmain mltabview overflow_auto" :style="{left:(asideWith+1)+'px'}">
+    <article class="mlmain mltabview overflow_auto" :style="{left:($parent.asideWith+1)+'px'}">
       <div  class="j-module-content j-maillist mllist-list height100 " v-loading="listLoading">
 
         <el-row>

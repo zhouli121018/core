@@ -1,6 +1,5 @@
 <template>
-  <div style="width:100%;height:100%">
-     <div v-if="!twofactor_login" id="login_bg" ref="login_bg" :class="'bg'+bgIndex">
+     <div  id="login_bg" ref="login_bg" :class="'bg'+bgIndex">
       <div class="main-bottom main-bottom-0"></div>
       <div class="main-middle main-middle-0"></div>
 
@@ -9,7 +8,7 @@
         <div class="content">
           <div>
             <a href="#" class="login_logo"  v-if="loginBeforeData.login_logo">
-              <img :src="loginBeforeData.login_logo" alt="U-Mail">
+              <img :src="loginBeforeData.login_logo" alt=" U-Mail">
             </a>
 
 
@@ -49,44 +48,39 @@
             <div id="login_box" style="min-width:260px;width: 54%;margin:0 auto;">
 
 
-              <!-- <el-radio-group v-model="labelPosition" size="small">
-              <el-radio-button label="left">左对齐</el-radio-button>
-              <el-radio-button label="right">右对齐</el-radio-button>
-              <el-radio-button label="top">顶部对齐</el-radio-button>
-              </el-radio-group> -->
-              <h2 class="text-center">用户登录</h2>
+              <h2 class="text-center">{{lan.user_login}}</h2>
               <el-form :label-position="labelPosition" class="loginForm" ref="loginForm" :rules="rules" label-width="80px" :model="formLabelAlign">
-                <el-form-item label="用户名" prop="username">
+                <el-form-item :label="lan.user_name" prop="username">
                   <!--<el-input v-model.trim="formLabelAlign.username"></el-input>-->
-                  <el-input placeholder="请输入用户名" v-model.trim="formLabelAlign.username" class="input-with-select" name="username">
+                  <el-input :placeholder="lan.placeholder_user_name" v-model.trim="formLabelAlign.username" class="input-with-select" name="username">
                     <template slot="append">@
-                    <el-select v-model="loginBeforeData.domain"  placeholder="请选择"  style="width:120px" @change="changeDomain">
+                    <el-select v-model="loginBeforeData.domain"  :placeholder="lan.please_choose"  style="width:120px" @change="changeDomain">
                       <el-option v-for="(d,k) in loginBeforeData.domains" :key="k" :label="d[1]" :value="d[1]"></el-option>
                     </el-select>
                     </template>
 
                   </el-input>
                 </el-form-item>
-                <el-form-item label="密码" prop="password">
+                <el-form-item :label="lan.password" prop="password">
                   <el-input type="password" name="password" v-model="formLabelAlign.password"></el-input>
                 </el-form-item>
                 <div style="height:30px;">
                   <!--<el-checkbox style="float:left;" v-model="rememberUserInfo" :class="{'is-checked el-checkbox__input':rememberUserInfo}">记住用户名和密码</el-checkbox>-->
-                  <el-button type="text" style="float:right;padding:0;color:#e6a23c;" @click="forget">忘记密码？</el-button>
+                  <el-button type="text" style="float:right;padding:0;color:#e6a23c;" @click="forget">{{lan.forget_password}}</el-button>
                 </div>
 
               </el-form>
               <div class="text-center">
-                <el-button type="primary" @click="login" style="width:50%">登录</el-button>
+                <el-button type="primary" @click="login" style="width:50%">{{lan.login}}</el-button>
               </div>
 
             </div>
           </div>
 
-          <el-dialog title="重置密码" :visible.sync="formVisible" width="400px" :append-to-body="true" :close-on-click-modal="false">
+          <el-dialog :title="lan.reset_password" :visible.sync="formVisible" width="400px" :append-to-body="true" :close-on-click-modal="false">
             <el-form :model="form" size="small" :rules="formRule" ref="reset2Form">
               <el-input v-model="form.carbled" type="hidden" style="display:none;"></el-input>
-              <el-form-item :label="'请输入验证码: '+form.code_label" prop="code">
+              <el-form-item :label="lan.placeholder_validation_code +form.code_label" prop="code">
                 <el-input v-model="form.code" auto-complete="off"></el-input>
               </el-form-item>
               <el-form-item :label="form.label_q1" prop="q1">
@@ -101,27 +95,27 @@
 
             </el-form>
             <div slot="footer" class="dialog-footer">
-              <el-button @click="formVisible = false">取 消</el-button>
-              <el-button type="primary" @click="reset2_submit">确 定</el-button>
+              <el-button @click="formVisible = false">{{lan.cancel}}</el-button>
+              <el-button type="primary" @click="reset2_submit">{{lan.sure}}</el-button>
             </div>
           </el-dialog>
 
-          <el-dialog title="重置密码" :visible.sync="form3Visible" width="400px" :append-to-body="true" :close-on-click-modal="false">
+          <el-dialog :title="lan.reset_password" :visible.sync="form3Visible" width="400px" :append-to-body="true" :close-on-click-modal="false">
             <el-form :model="form3" size="small" :rules="form3Rule" ref="reset3Form">
               <el-input v-model="form3.carbled" type="hidden" style="display:none;"></el-input>
               <el-input v-model="form3.new_carbled" type="hidden" style="display:none;"></el-input>
 
-              <el-form-item label="新密码" prop="new_password">
+              <el-form-item :label="lan.new_password" prop="new_password">
                 <el-input v-model="form3.new_password" type="password" auto-complete="off"></el-input>
               </el-form-item>
-              <el-form-item label="确认密码" prop="confirm_password">
+              <el-form-item :label="lan.confirm_password" prop="confirm_password">
                 <el-input v-model="form3.confirm_password" type="password" auto-complete="off"></el-input>
               </el-form-item>
               <div>
                 <div>
-                  <strong style="color: red">密码必须满足以下条件：</strong>
+                  <strong style="color: red">{{lan.condition_title}}</strong>
                   <ul style="margin-left: 26px;">
-                    <li style="list-style-type:circle;">密码长度为{{passwordRules.passwd_size2}}至16位；</li>
+                    <li style="list-style-type:circle;"> {{lan.password_length}} {{passwordRules.passwd_size2}} {{lan.to_16}}</li>
                     <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;">必须包含两种字符（数字、大写字母、小写字母、特殊字符）；</li>
                     <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">必须包含三种字符（数字、大写字母、小写字母、特殊字符）；</li>
                     <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">必须包含四种字符（数字、大写字母、小写字母、特殊字符）；</li>
@@ -136,8 +130,8 @@
 
             </el-form>
             <div slot="footer" class="dialog-footer">
-              <el-button @click="form3Visible = false">取 消</el-button>
-              <el-button type="primary" @click="reset3_submit">确 定</el-button>
+              <el-button @click="form3Visible = false">{{lan.cancel}}</el-button>
+              <el-button type="primary" @click="reset3_submit">{{lan.sure}}</el-button>
             </div>
           </el-dialog>
 
@@ -150,59 +144,12 @@
       <!--弹窗-->
 
     </div>
-    <div v-if="twofactor_login" class="verifyLayout">
-      <div class="two_main">
-        <h3>U-Mail 二次验证</h3>
-        <el-alert title="请任意选择一种验证方式登录" type="warning" style="margin:20px 0;" show-icon :closable="false">
-
-        </el-alert>
-        <el-tabs v-if="twofactor_login" v-model="activeTwoType" type="card" @tab-click="" class="safe_box" style="max-width:900px;text-align:left">
-                <el-tab-pane label="谷歌验证登录" name="google" class="two_box">
-                  <el-form  :model="goggleForm" :rules="goggleRules"  label-width="100px" size="small">
-                    <el-form-item label="谷歌验证码" prop="code">
-                      <el-input v-model="goggleForm.code" style="width:300px;" placeholder="请输入谷歌验证码"></el-input>
-                    </el-form-item>
-                    <el-form-item>
-                      <el-button type="primary" @click="googleLogin(goggleForm.code)">登 录</el-button>
-                    </el-form-item>
-                  </el-form>
-                </el-tab-pane>
-                <el-tab-pane label="手机短信登录" name="phone" class="two_box">
-                  <el-form :model="phoneForm" :rules="phoneRules"  label-width="100px" size="small"  style="max-width:900px">
-
-                    <el-form-item label="短信验证码" prop="code">
-                      <el-input v-model="phoneForm.code" style="width:300px;"></el-input>
-                      <el-button  @click="getLoginCode"> 获取验证码 </el-button>
-                    </el-form-item>
-                    <el-form-item label="" >
-                      <el-button  @click="googleLogin(phoneForm.code)" type="primary"> 登 录 </el-button>
-                    </el-form-item>
-                  </el-form>
-                </el-tab-pane>
-                <el-tab-pane label="备份密钥登录" name="backup" class="two_box">
-                  <el-form :model="backupForm" :rules="backupRules"  label-width="100px" size="small"  style="max-width:900px">
-
-                    <el-form-item label="备份密钥" prop="code">
-                      <el-input v-model="backupForm.code" style="width:300px;"></el-input>
-                    </el-form-item>
-                    <el-form-item label="" >
-                      <el-button  @click="googleLogin(backupForm.code)" type="primary"> 登 录 </el-button>
-                    </el-form-item>
-                  </el-form>
-                </el-tab-pane>
-
-              </el-tabs>
-      </div>
-      <div class="verifyBottom">
-        <div class="item">© 2018 - 2019 U-Mail</div>
-      </div>
-    </div>
-  </div>
 
 </template>
 <script>
   import cookie from '@/assets/js/cookie';
-  import {login,resetSecret1,resetSecret2,resetSecret3,loginBefore,twofactorLogin,loginSms} from '@/api/api'
+  import lan from '@/assets/js/lan';
+  import {login,resetSecret1,resetSecret2,resetSecret3,loginBefore} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   import router from '@/router'
   import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
@@ -228,21 +175,6 @@
         }
       };
       return {
-        phoneForm:{code:''},
-        phoneRules:{
-          code:[{ required: true, message: '请输入短信验证码~', trigger: 'blur' }],
-        },
-        backupForm:{code:''},
-        backupRules:{
-          code:[{ required: true, message: '请输入备份密钥~', trigger: 'blur' }],
-        },
-        activeTwoType:'google',
-        goggleForm:{code:''},
-        goggleRules:{
-          code:[{ required: true, message: '请输入谷歌验证码~', trigger: 'blur' }],
-        },
-        twofactor_login:false,
-        twofactorList:{"has_totp":true,"uuid_string":"08483291a0f3d11e9881e005056a7d9881411","has_phone":true},
         bgIndex:0,
         passwordRules:{},
         loginBeforeData:{
@@ -326,56 +258,6 @@
       };
     },
     methods: {
-      getLoginCode(){
-        let param = {
-          uuid_string:this.twofactorList.uuid_string
-        }
-        loginSms(param).then(res=>{
-          console.log(res)
-        }).catch(err=>{
-          console.log(err);
-          let str = '';
-          if(err.non_field_errors){
-            str = err.non_field_errors[0]
-          }
-          this.$message({
-            type:'error',
-            message:''+str
-          })
-        })
-      },
-      googleLogin(aa){
-        let param = {
-          uuid_string:this.twofactorList.uuid_string,
-          login_mode:this.activeTwoType,
-          verification_code:aa
-        }
-        console.log(param);
-        twofactorLogin(param).then(response=>{
-          if(response.data.token){
-            cookie.setCookie('name', this.formLabelAlign.username, 7);
-            cookie.setCookie('token', response.data.token, 7);
-            cookie.delCookie('locked')
-            // 设置联系人的初始值
-            window.sessionStorage.clear();
-            this.$store.dispatch('setInfo');
-            this.$router.push('/mailbox')
-          }
-        }).catch(err=>{
-          console.log(err)
-          let str = '';
-          if(err.non_field_errors){
-            str = err.non_field_errors[0]
-          }
-          if(err.verification_code){
-            str = err.verification_code[0]
-          }
-          this.$message({
-            type:'error',
-            message:''+str
-          })
-        })
-      },
       changeDomain(val){
         console.log(val)
         let param = {
@@ -394,6 +276,7 @@
           if(!res.data.is_domain){
             this.loginBeforeData.domains = [[res.data.domain,res.data.domain]]
           }
+          this.$store.dispatch('setLoginBeforeA',this.loginBeforeData);
 
           $('title').text(res.data.title)
         }).catch(err=>{
@@ -534,8 +417,18 @@
                 that.$router.push('/mailbox')
               }
               if(response.data.uuid_string){
-                this.twofactor_login = true;
-                this.twofactorList = response.data;
+                console.log(2343)
+                this.$router.push({
+                  path:'/twofactor_login',
+                  query:{
+                    uuid_string:response.data.uuid_string,
+                    mail:str,
+                    totp:response.data.has_totp,
+                    phone:response.data.has_phone,
+                    bi:this.bgIndex
+                  }
+                })
+                // this.twofactorList = response.data;
               }
 
             }).catch(err=>{
@@ -584,6 +477,9 @@
 
     },
     computed: {
+      lan:function(){
+        return lan.zh_hans
+      }
       // rememberUserInfo: {
         // get: function () {
         //   return this.$store.state.rememberUserInfo
@@ -620,52 +516,7 @@
   }
 </script>
 <style>
-  .verifyLayout {
-    box-sizing: border-box;
-    height: 100%;
-    min-height: 608px;
-    min-width: 870px;
-    background: #f7f7f7;
-    padding-bottom: 82px;
-    position: relative;
-  }
-  .verifyBottom {
-    padding: 15px 0;
-    text-align: center;
-    width: 100%;
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    background: #f7f7f7;
-  }
-  .verifyBottom .item {
-    font-size: 14px;
-    color: #999;
-    margin-bottom: 10px;
-  }
-  .verifyLayout .two_main {
-    width: 518px;
-    padding: 30px 30px 40px;
-    background: #fff;
-    position: absolute;
-    left: 50%;
-    top: 55%;
-    text-align: center;
-    -webkit-transform: translate(-50%,-50%);
-    -moz-transform: translate(-50%,-50%);
-    -ms-transform: translate(-50%,-50%);
-    -o-transform: translate(-50%,-50%);
-    transform: translate(-50%,-50%,0);
-    margin-top: -41px;
-  }
-  .two_box {
-    padding-top:15px;
-    color: #666;
-    font-size: 14px;
-    /*min-height: 360px;*/
-    border: 1px solid #e6e6e6;
-    margin-top: -1px;
-  }
+
   #login_bg>.main{
     position: absolute;
     width: 100%;

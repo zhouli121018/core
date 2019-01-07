@@ -1,6 +1,6 @@
 <template>
   <section class="m-mail absolute_height">
-    <aside class="mlsidebar" :style="{width:asideWith+'px'}">
+    <aside class="mlsidebar" :style="{width:$parent.asideWith+'px'}">
       <div class="mlsidebar-bg"></div>
       <div class="wrapper u-scroll top0">
         <div class="el-row" style="background: #f2f2f2;border-bottom: 1px solid #dfe6ec;">
@@ -39,13 +39,13 @@
           <!--<el-button type="success" @click="handlePabAdd" size="mini">添加联系组</el-button>-->
         </el-row>
       </div>
-      <div class="navbar-expand contact_sidebar" @click="toggleWidth">
-        <i v-if="asideWith==199" class="el-icon-arrow-right"></i>
-        <i v-if="asideWith==399" class="el-icon-arrow-left"></i>
+      <div class="navbar-expand contact_sidebar" @click="$parent.toggleWidth">
+        <i v-if="$parent.asideWith==199" class="el-icon-arrow-right"></i>
+        <i v-if="$parent.asideWith==399" class="el-icon-arrow-left"></i>
       </div>
     </aside>
 
-    <article class="mlmain mltabview overflow_auto" :style="{left:(asideWith+1)+'px'}">
+    <article class="mlmain mltabview overflow_auto" :style="{left:($parent.asideWith+1)+'px'}">
       <div  class="j-module-content j-maillist mllist-list height100" v-loading="listLoading"
       >
 
@@ -430,7 +430,6 @@
         }
       };
       return {
-        asideWith:199,
         fullscreenLoading:false,
         filters: {
           search: '',
@@ -620,13 +619,6 @@
     },
 
     methods: {
-      toggleWidth(){
-        if(this.asideWith == 199){
-          this.asideWith = 399
-        }else if(this.asideWith == 399){
-          this.asideWith = 199
-        }
-      },
       setCurrentKey() {
         this.$nextTick(() =>{
           this.$refs.treeForm.setCurrentKey(Number(this.pab_cid));

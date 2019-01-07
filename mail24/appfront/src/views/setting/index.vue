@@ -20,7 +20,7 @@
 
             <el-menu-item index="/setting/twofactor" style="text-align: left" >
               <img src="./img/op_password.gif" style="width:20px;">
-              <span slot="title" title="安全设置">安全中心</span>
+              <span slot="title" title="安全中心">安全中心</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/param" style="text-align: left">

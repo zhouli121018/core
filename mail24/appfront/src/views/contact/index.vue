@@ -19,6 +19,7 @@
   export default {
     data() {
       return {
+        asideWith:199,
         activeIndex:'pab',
         webmail_oab_show: true,
         webmail_cab_show: false,
@@ -45,6 +46,13 @@
       });
     },
     methods: {
+      toggleWidth(){
+        if(this.asideWith == 199){
+          this.asideWith = 399
+        }else if(this.asideWith == 399){
+          this.asideWith = 199
+        }
+      },
       jumpTo(path) {
         router.push(path);
       },

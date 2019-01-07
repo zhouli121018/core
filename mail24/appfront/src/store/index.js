@@ -63,9 +63,13 @@ const store = new Vuex.Store({
     is_swtime:false,
     filter_contact:[],
     login_after:{},
+    login_before:{},
     skin_order:''
   },
   getters:{
+    getLoginBefore(state){
+      return state.login_before;
+    },
     getSkinOrder(state){
       return state.skin_order
     },
@@ -226,9 +230,16 @@ const store = new Vuex.Store({
     },
     setLoginAfter(state,param){
       state.login_after = param;
+    },
+    setLoginBefore(state,param){
+      state.login_before = param;
     }
+
   },
   actions: {
+    setLoginBeforeA(store,param){
+      store.commit('setLoginBefore',param);
+    },
     setSkinOrderA(store,param){
       store.commit('setSkinOrder',param);
     },

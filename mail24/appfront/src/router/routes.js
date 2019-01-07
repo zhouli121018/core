@@ -12,6 +12,7 @@ export const rou = [
   {path:'/preview',component:_import('preview')},
   {path:'/lockscreen',component:_import('lockscreen/index')},
   {path:'/login',component:_import('login/Login'),name:'login'},
+  {path:'/twofactor_login',component:_import('lockscreen/twofactor_login'),name:'twofactor_login'},
   // {path: '/404', component: NotFound, hidden: true},
   {
     path:'/',component:Layout1,
@@ -153,4 +154,5 @@ export const rou = [
   //   path: '*',
   //   redirect: { path: '/404' }
   // }
+  { path: '*', redirect:'/mailbox/welcome'}
 ] 

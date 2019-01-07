@@ -48,6 +48,9 @@ router.beforeEach((to, from, next)=>{
     if (to.path === '/lockscreen') {
       next();
       return;
+    }else if (to.path === '/twofactor_login') {
+      next();
+      return
     }else if (to.path === '/login') {
       next();
       return
