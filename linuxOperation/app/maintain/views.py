@@ -52,29 +52,29 @@ def backup_view(request):
             name = request.POST.get('name')
             status = request.POST.get('status')
             if status in ("backup","restore") and unicode(request.user).startswith(u"demo_admin@"):
-                messages.add_message(request, messages.SUCCESS, u'演示版无法进行此操作！')
+                messages.add_message(request, messages.SUCCESS, _(u'演示版无法进行此操作！'))
                 return redirect('backup_maintain')
 
             redis = get_redis_connection()
             if redis.exists("task_trigger:backup"):
-                messages.add_message(request, messages.ERROR, u'正在执行备份操作，操作失败!')
+                messages.add_message(request, messages.ERROR, _(u'正在执行备份操作，操作失败!'))
                 return redirect('backup_maintain')
             if redis.exists("task_trigger:restore"):
-                messages.add_message(request, messages.ERROR, u'正在执行数据恢复操作，操作失败!')
+                messages.add_message(request, messages.ERROR, _(u'正在执行数据恢复操作，操作失败!'))
                 return redirect('backup_maintain')
 
             if status == "backup":
                 redis.set("task_trigger:backup", 1)
-                messages.add_message(request, messages.SUCCESS, u'正在备份数据，请耐心等待!')
+                messages.add_message(request, messages.SUCCESS, _(u'正在备份数据，请耐心等待!'))
             if status == "delete":
                 path = os.path.join(backuppath, name)
                 if os.path.exists(path):
                     cmd = "sudo /usr/local/u-mail/app/exec/backup delete {}".format(name)
                     child = subprocess.Popen(cmd, shell=True)
                     # child.communicate()
-                    messages.add_message(request, messages.SUCCESS, u'正在删除备份数据，请耐心等待!')
+                    messages.add_message(request, messages.SUCCESS, _(u'正在删除备份数据，请耐心等待!'))
                 else:
-                    messages.add_message(request, messages.ERROR, u'备份数据文件不存在，操作失败!')
+                    messages.add_message(request, messages.ERROR, _(u'备份数据文件不存在，操作失败!'))
             if status == "restore":
                 task_id = generateRedisTaskID()
                 d = json.dumps({ "backup_name":name, })
@@ -83,7 +83,7 @@ def backup_view(request):
                 p.rpush("task_queue:restore", task_id)
                 p.hset("task_data:restore", task_id, d)
                 p.execute()
-                messages.add_message(request, messages.SUCCESS, u'已提交数据恢复任务，请耐心等待数据恢复完成!')
+                messages.add_message(request, messages.SUCCESS, _(u'已提交数据恢复任务，请耐心等待数据恢复完成!'))
         redis.set("task_trigger:dispatcher_reload", 1)
         return redirect('backup_maintain')
 
@@ -102,7 +102,7 @@ def backup_view(request):
             for ff in os.listdir(path):
                 filepath = os.path.join(path, ff)
                 if ff.startswith("database"):
-                    names.append(u"数据库")
+                    names.append(_(u"数据库"))
                 if ff.startswith("licence"):
                     timestamp = os.path.getmtime(filepath)
                     dt = datetime.datetime.fromtimestamp( timestamp, pytz.timezone('Asia/Shanghai') )
@@ -112,7 +112,7 @@ def backup_view(request):
 
             maildata = os.path.join(path, "maildata")
             if os.path.exists(maildata):
-                names.append(u"邮件数据")
+                names.append(_(u"邮件数据"))
                 for ff in os.listdir(maildata):
                     filepath = os.path.join(maildata, ff)
                     if os.path.isfile(filepath):
@@ -120,23 +120,24 @@ def backup_view(request):
 
             netdisk = os.path.join(path, "netdisk")
             if os.path.exists(netdisk):
-                names.append(u"网盘数据")
+                names.append(_(u"网盘数据"))
                 for ff in os.listdir(netdisk):
                     filepath = os.path.join(netdisk, ff)
                     if os.path.isfile(filepath):
                         size += os.path.getsize( filepath )
             if names:
                 index += 1
+                lst = [unicode(c) for c in names]
                 lists.append(
-                    BackupFormat._make( [index, f, u"，".join(names), size, times] )
+                    BackupFormat._make( [index, f, _(u"，".join(lst)), size, times] )
                 )
 
     backupstatus=None
     redis = get_redis_connection()
     if redis.exists("task_trigger:restore"):
-        backupstatus=u"数据恢复"
+        backupstatus=_(u"数据恢复")
     if redis.exists("task_trigger:backup"):
-        backupstatus=u"数据备份"
+        backupstatus=_(u"数据备份")
 
     auto_backup = int(CoreConfig.getFuctionEnabled("auto_backup"))
     return render(request, "maintain/backup.html", context={
@@ -151,8 +152,8 @@ def backup_set_view(request):
         form = BackupSetForm(request.POST)
         if form.is_valid():
             obj = form.save()
-            messages.add_message(request, messages.SUCCESS, u'设置成功!')
-            api_create_admin_log(request, obj, 'coreconfig', u"备份参数设置：{}".format(json.loads(obj.param)))
+            messages.add_message(request, messages.SUCCESS, _(u'设置成功!'))
+            api_create_admin_log(request, obj, 'coreconfig', _(u"备份参数设置：{}").format(json.loads(obj.param)))
             return redirect('backup_maintain')
     return render(request, "maintain/backupset.html",
                   context={ "form": form,})
@@ -167,7 +168,7 @@ def account_transfer(request):
         status = request.POST.get('status', "")
         if status == "delete":
             AccountTransfer.objects.filter(pk=id).delete()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         return HttpResponseRedirect(reverse('account_transfer'))
     return render(request, "maintain/account_transfer.html", context={})
 
@@ -243,7 +244,7 @@ def account_transfer_add(request):
         form = AccountTransferForm(_handle_transfer_post(request.POST))
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加数据成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加数据成功'))
             return HttpResponseRedirect(reverse('account_transfer'))
     return render(request, "maintain/account_transfer_add.html", context={
         "form": form, "obj": None })
@@ -256,7 +257,7 @@ def account_transfer_modify(request, trans_id):
         form = AccountTransferForm(_handle_transfer_post(request.POST, True), instance=obj)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改数据成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改数据成功'))
             return HttpResponseRedirect(reverse('account_transfer'))
     return render(request, "maintain/account_transfer_add.html", context={
         "form": form, "obj": obj })
@@ -270,26 +271,26 @@ def mail_moving(request):
         if action == "delete":
             id = request.POST.get('id', "")
             IMAPMoving.objects.filter(pk=id).delete()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         if action == "receive":
             id = request.POST.get('id', "")
             add_task_to_queue("imapmail", { "imap_id": id })
-            messages.add_message(request, messages.SUCCESS, u'任务注册成功')
+            messages.add_message(request, messages.SUCCESS, _(u'任务注册成功'))
         if action == 'deleteall':
             ids = request.POST.get('ids', '')
             ids = ids.split(',')
             IMAPMoving.objects.filter(id__in=ids).delete()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         if action == 'disable':
             ids = request.POST.get('ids', '')
             ids = ids.split(',')
             IMAPMoving.objects.filter(id__in=ids).update(disabled='1')
-            messages.add_message(request, messages.SUCCESS, u'禁用成功')
+            messages.add_message(request, messages.SUCCESS, _(u'禁用成功'))
         if action == 'enable':
             ids = request.POST.get('ids', '')
             ids = ids.split(',')
             IMAPMoving.objects.filter(id__in=ids).update(disabled='-1')
-            messages.add_message(request, messages.SUCCESS, u'启用成功')
+            messages.add_message(request, messages.SUCCESS, _(u'启用成功'))
         return HttpResponseRedirect(reverse('mail_moving'))
     return render(request, "maintain/mail_moving.html", context={
     })
@@ -357,7 +358,7 @@ def mail_moving_add(request):
             obj2 = form.save()
             add_task_to_queue("imapmail", {
                 "mailbox_id": obj2.mailbox_id, "src_mailbox": obj2.src_mailbox, })
-            messages.add_message(request, messages.SUCCESS, u'添加数据成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加数据成功'))
             return HttpResponseRedirect(reverse('mail_moving'))
     return render(request, "maintain/mail_moving_add.html", context={
         "form": form, 'obj': None })
@@ -369,7 +370,7 @@ def mail_moving_default(request):
         form = IMAPMovingDefaultForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改数据成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改数据成功'))
             return HttpResponseRedirect(reverse('mail_moving'))
     return render(request, "maintain/mail_moving_default.html", context={
         "form": form})
@@ -384,7 +385,7 @@ def mail_moving_modify(request, move_id):
             obj2 = form.save()
             add_task_to_queue("imapmail", {
                 "mailbox_id": obj2.mailbox_id, "src_mailbox": obj2.src_mailbox, })
-            messages.add_message(request, messages.SUCCESS, u'修改数据成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改数据成功'))
             return HttpResponseRedirect(reverse('mail_moving'))
     return render(request, "maintain/mail_moving_add.html", context={
         "form": form, 'obj': obj })
@@ -405,7 +406,7 @@ def mail_moving_import(request):
             o = Mailbox.objects.filter(username=mailbox).first()
             if not o:
                 fail += 1
-                fail_list.append( "'%s'     -->       '%s'   :   %s"%(line,mailbox,u"本地帐号不存在") )
+                fail_list.append( "'%s'     -->       '%s'   :   %s"%(line,mailbox,_(u"本地帐号不存在")) )
                 continue
             mailbox_id = o.id
             src_mailbox = lines[1] if length>=2 else ""
@@ -447,16 +448,16 @@ def isolate_list(request):
         status = request.POST.get('status', False)
         if status == "permit":
             ExtSquesterMail.objects.filter(status="wait", id__in=ids).update(status="permit")
-            messages.add_message(request, messages.SUCCESS, u"放行成功")
+            messages.add_message(request, messages.SUCCESS, _(u"放行成功"))
         if status == "whitelist":
             ExtSquesterMail.objects.filter(status="wait", id__in=ids).update(status="whitelist")
-            messages.add_message(request, messages.SUCCESS, u"放行成功")
+            messages.add_message(request, messages.SUCCESS, _(u"放行成功"))
         if status == "whitelist2":
             ExtSquesterMail.objects.filter(status="wait", id__in=ids).update(status="whitelist2")
-            messages.add_message(request, messages.SUCCESS, u"放行成功")
+            messages.add_message(request, messages.SUCCESS, _(u"放行成功"))
         if status == "reject":
             ExtSquesterMail.objects.filter(status="wait", id__in=ids).update(status="reject")
-            messages.add_message(request, messages.SUCCESS, u"确认隔离成功")
+            messages.add_message(request, messages.SUCCESS, _(u"确认隔离成功"))
 
         current_uri = "{}?mail_status={}".format(
             reverse("isolate_list"), request.GET.get('mail_status', 'wait') )
@@ -620,7 +621,7 @@ def queues_list(request, name):
             for key in keys.split(','):
                 if delete_queue(redis, name, key):
                     i += 1
-        messages.add_message(request, messages.SUCCESS, u'成功删除{}个数据'.format(i))
+        messages.add_message(request, messages.SUCCESS, _(u'成功删除{}个数据').format(i))
         return HttpResponseRedirect(reverse('queue', args=(name,)))
     form = QueueSearchForm(request.GET)
     return render(request, "maintain/queues_list.html", {
@@ -681,7 +682,7 @@ def queues_list_ajax(request, name, action=''):
         return del_count
     colums = ['key', 'sender', 'recipients', 'senderip', 'create_time']
 
-    if lists and order_column and int(order_column) < len(colums):
+    if lists.exists() and order_column and int(order_column) < len(colums):
         if order_dir == 'desc':
             lists = sorted(lists, key=lambda l: l[colums[int(order_column)]], reverse=True)
         else:

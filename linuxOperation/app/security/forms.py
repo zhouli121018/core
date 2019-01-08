@@ -41,9 +41,9 @@ class BanRuleForm(forms.ModelForm):
         name = self.cleaned_data.get('name')
         name = name.strip()
         if not name:
-            raise forms.ValidationError(_(u"请填写组名称。",))
+            raise forms.ValidationError(_(u"请填写组名称。"))
         if Fail2Ban.objects.exclude(id=self.instance.id).filter(name=name).exists():
-            raise forms.ValidationError(_(u"名称已存在。", ))
+            raise forms.ValidationError(_(u"名称已存在。"))
         return name
 
     def clean(self):
@@ -54,13 +54,13 @@ class BanRuleForm(forms.ModelForm):
     def clean_internal(self):
         internal = self.cleaned_data.get('internal')
         if not internal or int(internal)<=0:
-            raise forms.ValidationError(_(u"时间间隔必须为大于0的整数，单位为分钟", ))
+            raise forms.ValidationError(_(u"时间间隔必须为大于0的整数，单位为分钟"))
         return internal
 
     def clean_block_minute(self):
         internal = self.cleaned_data.get('block_minute')
         if not internal or int(internal)<=0:
-            raise forms.ValidationError(_(u"禁用时间必须为大于0的整数，单位为分钟", ))
+            raise forms.ValidationError(_(u"禁用时间必须为大于0的整数，单位为分钟"))
         return internal
 
     def make_time(self):
@@ -100,27 +100,27 @@ class BanBlockListForm(forms.ModelForm):
         ip = self.cleaned_data.get('ip')
         ip = ip.strip()
         if not ip:
-            raise forms.ValidationError(_(u"请填写IP。",))
+            raise forms.ValidationError(_(u"请填写IP。"))
         try:
             from IPy import IP
             o = IP(ip)
         except:
-            raise forms.ValidationError(_(u"输入的IP不合法。", ))
+            raise forms.ValidationError(_(u"输入的IP不合法。"))
         if Fail2BanBlock.objects.exclude(id=self.instance.id).filter(ip=ip).exists():
-            raise forms.ValidationError(_(u"IP已存在。", ))
+            raise forms.ValidationError(_(u"IP已存在。"))
         return ip
 
     def clean_expire_time_bak(self):
         expire_time_bak = self.cleaned_data.get('expire_time_bak')
         try:
             if not expire_time_bak:
-                raise forms.ValidationError(_(u"请选择过期时间。", ))
+                raise forms.ValidationError(_(u"请选择过期时间。"))
             d = time.mktime(expire_time_bak.timetuple())
             now = time.time()
             if d <= now:
-                raise forms.ValidationError(_(u"必须选择一个未来时间。", ))
+                raise forms.ValidationError(_(u"必须选择一个未来时间。"))
         except:
-            raise forms.ValidationError(_(u"选择的过期时间不合法。", ))
+            raise forms.ValidationError(_(u"选择的过期时间不合法。"))
         return expire_time_bak
 
     def save(self, commit=True):
@@ -142,12 +142,12 @@ class Fail2BanTrustForm(forms.ModelForm):
         ip = self.cleaned_data.get('ip')
         ip = ip.strip()
         if not ip:
-            raise forms.ValidationError(_(u"请填写IP。",))
+            raise forms.ValidationError(_(u"请填写IP。"))
         try:
             from IPy import IP
             o = IP(ip)
         except:
-            raise forms.ValidationError(_(u"输入的IP不合法。", ))
+            raise forms.ValidationError(_(u"输入的IP不合法。"))
         #白名单优先级应该要比屏蔽IP要高，所以不要判断
         #if Fail2BanBlock.objects.exclude(id=self.instance.id).filter(ip=ip).exists():
         #    raise forms.ValidationError(_(u"IP已存在。", ))
@@ -463,16 +463,16 @@ class PasswordWeakForm(forms.ModelForm):
         password = self.cleaned_data.get('password')
         password = password.strip()
         if not password:
-            self.error_notify = _(u"请填写密码。",)
+            self.error_notify = _(u"请填写密码。")
             raise forms.ValidationError(self.error_notify)
         if len(password) >= 32:
-            self.error_notify = _(u"密码过长。",)
+            self.error_notify = _(u"密码过长。")
             raise forms.ValidationError(self.error_notify)
         return password
 
 class PasswordWeakImportForm(forms.Form):
 
-    txtfile = forms.FileField(label=u'选择文件', required=True)
+    txtfile = forms.FileField(label=_(u'选择文件'), required=True)
 
     def __init__(self, *args, **kwargs):
         super(PasswordWeakImportForm, self).__init__(*args, **kwargs)
@@ -483,11 +483,11 @@ class PasswordWeakImportForm(forms.Form):
     def clean_txtfile(self):
         f = self.files.get('txtfile', None)
         if not f:
-            raise forms.ValidationError(_(u"请选择文件。", ))
+            raise forms.ValidationError(_(u"请选择文件。"))
         file_name = f.name
         fext = file_name.split('.')[-1]
         if fext not in ('xls', 'xlsx', 'csv', 'txt'):
-            raise forms.ValidationError(_(u"只支持excel、txt、csv文件导入。", ))
+            raise forms.ValidationError(_(u"只支持excel、txt、csv文件导入。"))
         self.file_name = file_name
         self.file_ext = fext
         self.file_obj = f
@@ -513,10 +513,10 @@ ON DUPLICATE KEY UPDATE password=VALUES(password)
         for p in pwd_list:
             p = p.strip().replace('\n', '').replace('\r', '').replace('\000', '').replace(' ', '').replace('\t', '')
             if not p:
-                fail_list.append( _(u"密码为空。",) )
+                fail_list.append( _(u"密码为空。") )
                 continue
             if len(p) >= 32:
-                fail_list.append( _(u"密码过长。",) )
+                fail_list.append( _(u"密码过长。") )
                 continue
             l.append(p)
             i += 1

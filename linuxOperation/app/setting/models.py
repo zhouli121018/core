@@ -50,15 +50,15 @@ class ADSync(models.Model):
 class ExtCfilterRuleNew(models.Model):
     """ 新的内容过滤器规则表 """
     mailbox_id = models.IntegerField(_(u"邮箱ID"), default=0, db_index=True, null=False, blank=False,
-                                     help_text=u"mailbox_id=0时为系统过滤，有值时为用户过滤")
-    name = models.CharField(_(u"规则名称"), max_length=150, null=True, blank=True, help_text=u"管理员输入的规则备注，可不填")
+                                     help_text=_(u"mailbox_id=0时为系统过滤，有值时为用户过滤"))
+    name = models.CharField(_(u"规则名称"), max_length=150, null=True, blank=True, help_text=_(u"管理员输入的规则备注，可不填"))
     type = models.IntegerField(_(u"类型"), choices=constants.FILTER_RULE, default=-1, null=False, blank=False)
     logic = models.CharField(_(u"条件关系"), max_length=50, default="all", choices=constants.RULE_LOGIC, null=False, blank=False,
-                             help_text=u"all：满足所有条件，one：满足一条即可")
+                             help_text=_(u"all：满足所有条件，one：满足一条即可"))
     sequence = models.IntegerField(_(u"规则优先级"), default=999, null=False, blank=False)
     # 区分自动转发、自动回复 以及其他类型
-    extype = models.CharField(u"扩展类型", choices=( ("re", u'自动回复'), ("fw", u'自动转发'), ("ot", u'其他') ), default="ot", null=False, blank=False, max_length=5,
-                              help_text=u"区分自动转发、自动回复 以及 其他类型（指管理员创建的以及用户自己创建的类型）")
+    extype = models.CharField(_(u"扩展类型"), choices=( ("re", _(u'自动回复')), ("fw", _(u'自动转发')), ("ot", _(u'其他')) ), default="ot", null=False, blank=False, max_length=5,
+                              help_text=_(u"区分自动转发、自动回复 以及 其他类型（指管理员创建的以及用户自己创建的类型）"))
     #ExtCfilterNewAction 的action新增   ("reply",               u'自动回复'),
     #reply 的value为{"value": 回复内容}
     #forward 的value为{"value": 转发地址, "is_forward":  同时将信件保存在本邮箱内（Ture or False）, }
@@ -94,9 +94,9 @@ class ExtCfilterRuleNew(models.Model):
 class ExtCfilterNewCond(models.Model):
     """ 条件组表 """
     rule_id = models.IntegerField(_(u"所属规则"), default=0, db_index=True, null=False, blank=False,
-                                  help_text=u"所属节点，ext_cfilter_rule_new的主键")
-    parent_id = models.IntegerField(_(u"父ID"), db_index=True, default=0, null=False, blank=False, help_text=u"这个条件的父亲ID，逻辑关系由parent_id指向的那一行决定")
-    logic = models.CharField(_(u"逻辑表达式"), max_length=50, choices=constants.COND_LOGIC, default="all", null=False, blank=False, help_text=u"all:并且,one：或")
+                                  help_text=_(u"所属节点，ext_cfilter_rule_new的主键"))
+    parent_id = models.IntegerField(_(u"父ID"), db_index=True, default=0, null=False, blank=False, help_text=_(u"这个条件的父亲ID，逻辑关系由parent_id指向的那一行决定"))
+    logic = models.CharField(_(u"逻辑表达式"), max_length=50, choices=constants.COND_LOGIC, default="all", null=False, blank=False, help_text=_(u"all:并且,one：或"))
     option = models.CharField(_(u"条件1"), max_length=50, null=False, blank=False, choices=constants.ALL_CONDITION_OPTION)
     suboption = models.CharField(_(u"条件2"), max_length=50, null=False, blank=False)
     # suboption = models.CharField(u"条件2", max_length=50, null=False, blank=False, choices=constants.ALL_CONDITION_SUBOPTION)
@@ -174,9 +174,9 @@ class ExtCfilterNewCond(models.Model):
                     return u"{}Byte".format(value)
             elif self.suboption in constants.G_COND_OPTION_EQ:
                 if self.value == "1":
-                    return u'是'
+                    return _(u'是')
                 else:
-                    return u'否'
+                    return _(u'否')
             elif self.suboption in constants.G_COND_OPTION_OTHER:
                 return self.value
             else:
@@ -186,7 +186,7 @@ class ExtCfilterNewCond(models.Model):
 class ExtCfilterNewAction(models.Model):
     """ 新的内容过滤器动作表 """
     rule_id = models.IntegerField(_(u"所属规则"), default=0, db_index=True, null=False, blank=False,
-                                  help_text=u"所属节点，ext_cfilter_rule_new的主键")
+                                  help_text=_(u"所属节点，ext_cfilter_rule_new的主键"))
     action = models.CharField(_(u"动作"), max_length=50, null=False, blank=False, choices=constants.ALL_ACTION)
     value = models.CharField(_(u"值"), max_length=500, null=True, blank=True)
     sequence = models.IntegerField(_(u"动作优先级"), default=999, null=False, blank=False)
@@ -199,9 +199,9 @@ class ExtCfilterNewAction(models.Model):
     def view_html(self):
         T = '<div class="col-sm-12"><div class="hr hr-6 hr-dotted"></div></div>'
         load_html = self.template_string
-        htmls = [ safe_format(load_html, **{ "name": u"动作", "value": self.get_action_display() }) ]
+        htmls = [ safe_format(load_html, **{ "name": _(u"动作"), "value": self.get_action_display() }) ]
         htmls.append(T)
-        htmls.append( safe_format(load_html, **{ "name": u"优先级", "value": self.sequence }) )
+        htmls.append( safe_format(load_html, **{ "name": _(u"优先级"), "value": self.sequence }) )
 
         j = self.json_value
         # if self.action in ("break", "flag", "label", "delete", "sequester"):
@@ -212,24 +212,24 @@ class ExtCfilterNewAction(models.Model):
             key = dict_compatibility(j, "value")
             if key in d:  value = d[key]
             htmls.append(T)
-            htmls.append( safe_format(load_html, **{ "name": u"设置值", "value":  value }) )
+            htmls.append( safe_format(load_html, **{ "name": _(u"设置值"), "value":  value }) )
 
         if self.action in ("jump_to", "forward", "reply", "append_body"):
             value = dict_compatibility(j, "value")
             htmls.append(T)
-            htmls.append( safe_format(load_html, **{ "name": u"设置值", "value":  value }) )
+            htmls.append( safe_format(load_html, **{ "name": _(u"设置值"), "value":  value }) )
 
         if self.action in ("append_header", ):
             field = dict_compatibility(j, "field")
             value = dict_compatibility(j, "value")
             htmls.append(T)
-            htmls.append( safe_format(load_html, **{ "name": u"邮件头", "value":  field }) )
-            htmls.append( safe_format(load_html, **{ "name": u"邮件头设置值", "value":  value }) )
+            htmls.append( safe_format(load_html, **{ "name": _(u"邮件头"), "value":  field }) )
+            htmls.append( safe_format(load_html, **{ "name": _(u"邮件头设置值"), "value":  value }) )
 
         if self.action in ("delete_header", ):
             field = dict_compatibility(j, "field")
             htmls.append(T)
-            htmls.append( safe_format(load_html, **{ "name": u"邮件头", "value":  field }) )
+            htmls.append( safe_format(load_html, **{ "name": _(u"邮件头"), "value":  field }) )
 
         if self.action in ("mail", ):
             mail_sender = dict_compatibility(j, "sender")
@@ -238,15 +238,15 @@ class ExtCfilterNewAction(models.Model):
             mail_type = dict_compatibility(j, "content_type")
             content = dict_compatibility(j, "content")
             if mail_type == "html":
-                mail_type = "html内容"
+                mail_type = _(u"html内容")
             else:
-                mail_type = "纯文本"
+                mail_type = _(u"纯文本")
             htmls.append(T)
-            htmls.append( safe_format(load_html, **{ "name": u"发信人", "value":  mail_sender }) )
-            htmls.append( safe_format(load_html, **{ "name": u"收信人", "value":  mail_recipient }) )
-            htmls.append( safe_format(load_html, **{ "name": u"主题", "value":  mail_subject }) )
-            htmls.append( safe_format(load_html, **{ "name": u"类型", "value":  mail_type }) )
-            htmls.append( safe_format(load_html, **{ "name": u"内容", "value":  content }) )
+            htmls.append( safe_format(load_html, **{ "name": _(u"发信人"), "value":  mail_sender }) )
+            htmls.append( safe_format(load_html, **{ "name": _(u"收信人"), "value":  mail_recipient }) )
+            htmls.append( safe_format(load_html, **{ "name": _(u"主题"), "value":  mail_subject }) )
+            htmls.append( safe_format(load_html, **{ "name": _(u"类型"), "value":  mail_type }) )
+            htmls.append( safe_format(load_html, **{ "name": _(u"内容"), "value":  content }) )
 
         if self.action in ("smtptransfer", ):
             trans_server = dict_compatibility(j, "server")
@@ -254,10 +254,10 @@ class ExtCfilterNewAction(models.Model):
             trans_ssl = dict_compatibility(j, "ssl")
             trans_auth = dict_compatibility(j, "auth")
             htmls.append(T)
-            htmls.append( safe_format(load_html, **{ "name": u"SMTP服务器", "value":  trans_server }) )
-            htmls.append( safe_format(load_html, **{ "name": u"登录帐号", "value":  trans_account }) )
-            htmls.append( safe_format(load_html, **{ "name": u"需要验证", "value":  trans_auth }) )
-            htmls.append( safe_format(load_html, **{ "name": u"SSL登录", "value":  trans_ssl }) )
+            htmls.append( safe_format(load_html, **{ "name": _(u"SMTP服务器"), "value":  trans_server }) )
+            htmls.append( safe_format(load_html, **{ "name": _(u"登录帐号"), "value":  trans_account }) )
+            htmls.append( safe_format(load_html, **{ "name": _(u"需要验证"), "value":  trans_auth }) )
+            htmls.append( safe_format(load_html, **{ "name": _(u"SSL登录"), "value":  trans_ssl }) )
 
         return "".join(htmls)
 

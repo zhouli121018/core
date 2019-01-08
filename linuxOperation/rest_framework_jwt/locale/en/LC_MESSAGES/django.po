@@ -1,0 +1,106 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-01-08 09:59+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: rest_framework_jwt/authentication.py:35 rest_framework_jwt/serializers.py:91
+msgid "Signature has expired."
+msgstr ""
+
+#: rest_framework_jwt/authentication.py:38 rest_framework_jwt/serializers.py:94
+msgid "Error decoding signature."
+msgstr ""
+
+#: rest_framework_jwt/authentication.py:54
+#: rest_framework_jwt/serializers.py:103
+msgid "Invalid payload."
+msgstr ""
+
+#: rest_framework_jwt/authentication.py:60
+msgid "Invalid signature."
+msgstr ""
+
+#: rest_framework_jwt/authentication.py:64 rest_framework_jwt/serializers.py:57
+#: rest_framework_jwt/serializers.py:114
+msgid "User account is disabled."
+msgstr ""
+
+#: rest_framework_jwt/authentication.py:98 rest_framework_jwt/parse.py:34
+msgid "Invalid Authorization header. No credentials provided."
+msgstr ""
+
+#: rest_framework_jwt/authentication.py:101 rest_framework_jwt/parse.py:37
+msgid ""
+"Invalid Authorization header. Credentials string should not contain spaces."
+msgstr ""
+
+#: rest_framework_jwt/parse.py:71
+msgid "签名已过期."
+msgstr ""
+
+#: rest_framework_jwt/parse.py:74 rest_framework_jwt/parse.py:81
+msgid "签名不正确."
+msgstr ""
+
+#: rest_framework_jwt/parse.py:87
+msgid "用户不存在."
+msgstr ""
+
+#: rest_framework_jwt/parse.py:96
+msgid "用户不是超级管理员."
+msgstr ""
+
+#: rest_framework_jwt/parse.py:99
+msgid "不能登录共享用户的管理账号."
+msgstr ""
+
+#: rest_framework_jwt/permissions.py:9
+msgid "对于您登陆的共享邮箱，没有权限做此操作。"
+msgstr ""
+
+#: rest_framework_jwt/serializers.py:67
+msgid "Unable to log in with provided credentials."
+msgstr ""
+
+#: rest_framework_jwt/serializers.py:70
+#, python-brace-format
+msgid "Must include \"{username_field}\" and \"password\"."
+msgstr ""
+
+#: rest_framework_jwt/serializers.py:110
+msgid "User doesn't exist."
+msgstr ""
+
+#: rest_framework_jwt/serializers.py:162
+msgid "Refresh has expired."
+msgstr ""
+
+#: rest_framework_jwt/serializers.py:165
+msgid "orig_iat field is required."
+msgstr ""
+
+#: rest_framework_jwt/serializers.py:186
+msgid "请填写共享用户。"
+msgstr ""
+
+#: rest_framework_jwt/serializers.py:191
+msgid "共享邮箱不存在。"
+msgstr ""
+
+#: rest_framework_jwt/serializers.py:195
+msgid "没有关联共享邮箱。"
+msgstr ""

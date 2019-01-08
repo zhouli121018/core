@@ -5,13 +5,13 @@
 {% block breadcrumb %}
     <li> <a href="#">{% trans "部门机构管理" %}</a> </li>
     <li> <a href="#">{% trans "部门成员管理" %}</a> </li>
-    <li> <a class="active">{% trans "部门" %}:&nbsp;{{ obj.title }}</a> </li>
+    <li> <a class="active">{% trans "部门" %}:&nbsp;{{ obj.get_title }}</a> </li>
 {% endblock %}
 
 {% block page-content %}
     <div class="row">
         <div class="col-xs-4">
-            <div class="page-header"><h1>{% trans "部门" %}（{{ obj.title }}）{% trans "成员管理" %}</h1></div>
+            <div class="page-header"><h1>{% trans "部门" %}（{{ obj.get_title }}）{% trans "成员管理" %}</h1></div>
         </div>
         <div class="col-xs-8">
             <div class="pull-right" style="margin-right:30px;">
@@ -38,11 +38,11 @@
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th>序号</th>
-                        <th>姓名</th>
-                        <th>邮箱</th>
-                        <th>职位</th>
-                        <th>操作</th>
+                        <th>{% trans "序号" %}</th>
+                        <th>{% trans "姓名" %}</th>
+                        <th>{% trans "邮箱" %}</th>
+                        <th>{% trans "职位" %}</th>
+                        <th>{% trans "操作" %}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -66,12 +66,12 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">加载中</h4>
+                    <h4 class="modal-title" id="myModalLabel">{% trans "加载中" %}</h4>
                 </div>
-                <div class="modal-body">页面加载中
+                <div class="modal-body">{% trans "页面加载中" %}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">关闭</button>
+                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">{% trans "关闭" %}</button>
                 </div>
             </div>
         </div>

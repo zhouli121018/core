@@ -1,14 +1,15 @@
+{% load i18n %}
 <div class="modal-content">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">自动回复设置 -> {{ mailbox_obj.username }} -> 新增
+        <h4 class="modal-title">{% trans "自动回复设置 -" %}> {{ mailbox_obj.username }} -> {% trans "新增" %}
         </h4>
     </div>
     <div class="modal-body" style="overflow:auto;">
         <form id="form_autoreply" method="post" action="">
             <table class="table table-bordered">
                 <tr>
-                    <td>是否启用</td>
+                    <td>{% trans "是否启用" %}</td>
                     <td>
                         <label class="inline" >
                             <input name="disabled" checked  type="checkbox" class="ace ace-switch ace-switch-5">
@@ -17,23 +18,23 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="width:110px;">自动回复条件：</td>
+                    <td style="width:110px;">{% trans "自动回复条件：" %}</td>
                     <td>
                         <div >
-                            <span>父条件间关系：</span>
+                            <span>{% trans "父条件间关系：" %}</span>
                             <div class="radio inline">
                                 <label>
                                     <input name="logic" type="radio" checked class="ace" value="all">
-                                    <span class="lbl">满足所有条件</span>
+                                    <span class="lbl">{% trans "满足所有条件" %}</span>
                                 </label>
                             </div>
                             <div class="radio inline">
                                 <label>
                                     <input name="logic" type="radio" class="ace" value="one">
-                                    <span class="lbl middle"> 满足一条即可</span>
+                                    <span class="lbl middle"> {% trans "满足一条即可" %}</span>
                                 </label>
                             </div>
-                            <button type="button" class="btn btn-sm btn-success add_condition" style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>新增条件</button>
+                            <button type="button" class="btn btn-sm btn-success add_condition" style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>{% trans "新增条件" %}</button>
                         </div>
                         
                         <div class="list_item">
@@ -42,73 +43,73 @@
                                     <div class="panel-heading" style="position:relative;">
                                         <a href="#faq_0" data-toggle="collapse" class="accordion-toggle">
                                             <i class="smaller-80 ace-icon fa fa-chevron-down" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;
-                                            <b>条件</b>
+                                            <b>{% trans "条件" %}</b>
                                         </a>
                                     </div>
                                     <div class="panel-collapse collapse in" id="faq_0">
                                         <div class="panel-body">
                                             <div >
-                                                <span>子条件间关系：</span>
+                                                <span>{% trans "子条件间关系：" %}</span>
                                                 <div class="radio inline">
                                                     <label>
                                                         <input name="logic_0" type="radio" checked class="ace con_logic" value="all">
-                                                        <span class="lbl"> 满足所有</span>
+                                                        <span class="lbl"> {% trans "满足所有" %}</span>
                                                     </label>
                                                 </div>
                                                 <div class="radio inline">
                                                     <label>
                                                         <input name="logic_0" type="radio" class="ace con_logic" value="one">
-                                                        <span class="lbl middle"> 满足任意</span>
+                                                        <span class="lbl middle"> {% trans "满足任意" %}</span>
                                                     </label>
                                                 </div>
-                                                <button type="button" class="btn btn-xs btn-info add_sub_condition" dataindex="0" dataparentindex="0" style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>新增子条件</button>
+                                                <button type="button" class="btn btn-xs btn-info add_sub_condition" dataindex="0" dataparentindex="0" style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>{% trans "新增子条件" %}</button>
                                             </div>
                                             <ul>
                                                 <li class="condition_item">
                                                     <div class="hr"></div>
                                                     <div class="row">
                                                         <div class="col-sm-2 control-label">
-                                                            子条件：
+                                                            {% trans "子条件：" %}
                                                         </div>
                                                         <div class="col-sm-10">
                                                             <div class="row">
                                                                 <div class="col-sm-2 no-padding">
                                                                 <select class="form-control" name="suboption" style="height: 34px;">
-                                                                    <option value="all_mail">所有邮件</option>
-                                                                    <option value="has_attach">有附件</option>
-                                                                    <option value="attachments">附件名</option>
-                                                                    <option value="sender">发信人</option>
-                                                                    <option value="cc">抄送人</option>
-                                                                    <option value="recipient">收信人</option>
-                                                                    <option value="sender_dept">发信人部门</option>
-                                                                    <option value="cc_dept">抄送人部门</option>
-                                                                    <option value="rcpt_dept">收信人部门</option>
-                                                                    <option value="subject">主题</option>
-                                                                    <option value="body">邮件内容</option>
-                                                                    <option value="mail_size">邮件大小(MB)</option>
-                                                                    <option value="mail_size2">邮件大小(Byte)</option>
-                                                                    <option value="content_size">邮件正文大小(Byte)</option>
-                                                                    <option value="exec_date">执行时间</option>
+                                                                    <option value="all_mail">{% trans "所有邮件" %}</option>
+                                                                    <option value="has_attach">{% trans "有附件" %}</option>
+                                                                    <option value="attachments">{% trans "附件名" %}</option>
+                                                                    <option value="sender">{% trans "发信人" %}</option>
+                                                                    <option value="cc">{% trans "抄送人" %}</option>
+                                                                    <option value="recipient">{% trans "收信人" %}</option>
+                                                                    <option value="sender_dept">{% trans "发信人部门" %}</option>
+                                                                    <option value="cc_dept">{% trans "抄送人部门" %}</option>
+                                                                    <option value="rcpt_dept">{% trans "收信人部门" %}</option>
+                                                                    <option value="subject">{% trans "主题" %}</option>
+                                                                    <option value="body">{% trans "邮件内容" %}</option>
+                                                                    <option value="mail_size">{% trans "邮件大小(MB)" %}</option>
+                                                                    <option value="mail_size2">{% trans "邮件大小(Byte)" %}</option>
+                                                                    <option value="content_size">{% trans "邮件正文大小(Byte)" %}</option>
+                                                                    <option value="exec_date">{% trans "执行时间" %}</option>
                                                                 </select>
                                                             </div>
                                                             <div class="col-sm-10 no-padding">
                                                                 <div class="col-sm-2 no-padding actions">
                                                                     <select class="form-control"  name="action_contain" style="height: 34px;">
-                                                                        <option value="contains">包含</option>
-                                                                        <option value="not_contains">不包含</option>
-                                                                        <option value="==">等于</option>
+                                                                        <option value="contains">{% trans "包含" %}</option>
+                                                                        <option value="not_contains">{% trans "不包含" %}</option>
+                                                                        <option value="==">{% trans "等于" %}</option>
                                                                     </select>
                                                                     <select class="form-control display-none" name="action_eq" style="height: 34px;">
-                                                                        <option value=">=">大于等于</option>
-                                                                        <option value="<=">小于等于</option>
+                                                                        <option value=">=">{% trans "大于等于" %}</option>
+                                                                        <option value="<=">{% trans "小于等于" %}</option>
                                                                     </select>
                                                                     <select class="form-control display-none" name="action_belong" style="height: 34px;">
-                                                                        <option value="in">属于</option>
-                                                                        <option value="not_in">不属于</option>
+                                                                        <option value="in">{% trans "属于" %}</option>
+                                                                        <option value="not_in">{% trans "不属于" %}</option>
                                                                     </select>
                                                                     <select class="form-control display-none" name="action_date" style="height: 34px;">
-                                                                        <option value="in">星期</option>
-                                                                        <option value="not_in">天</option>
+                                                                        <option value="in">{% trans "星期" %}</option>
+                                                                        <option value="not_in">{% trans "天" %}</option>
                                                                     </select>
                                                                 </div>
                                                                     <div class="col-sm-8 no-padding values">
@@ -117,7 +118,7 @@
                                                                         <div id="id_rule_value_dpt0" class="col-xs-12 col-sm-12 no-padding  display-none dept_box">
                                                                             <div class="input-group">
                                                                                 <div id="input_box0">
-                                                                                    <input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">
+                                                                                    <input type="text" value="" readonly placeholder='{% trans "点击选择部门" %}' class="form-control department_choice">
                                                                                     <input type="hidden" class="id_dept_id" value="" name="option_value_dpt0">
                                                                                 </div>
                                                                             </div>
@@ -142,7 +143,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>回复内容：</td>
+                    <td>{% trans "回复内容：" %}</td>
                     <td>
                         <textarea class="form-control" rows="5" name="reply_body" id="reply_body"></textarea>
                     </td>
@@ -163,8 +164,8 @@
                         <input type="submit" value="y" id="submit_ok" style="display: none;">
                         <input type="hidden" name="action" value="add" id="reply_action_id">
 
-                        <button type="button" onclick="" class="btn btn-sm btn-primary add_btn">保存</button>
-                        <button type="button" id="id_return" class="btn btn-sm btn-danger cancel-btn" href="{% url 'mailbox_reply' mailbox_obj.id %}" data-target="#modal-reply" data-dismiss="modal" data-toggle="modal">返回</button>
+                        <button type="button" onclick="" class="btn btn-sm btn-primary add_btn">{% trans "保存" %}</button>
+                        <button type="button" id="id_return" class="btn btn-sm btn-danger cancel-btn" href="{% url 'mailbox_reply' mailbox_obj.id %}" data-target="#modal-reply" data-dismiss="modal" data-toggle="modal">{% trans "返回" %}</button>
                     </td>
                 </tr>
             </table>
@@ -174,7 +175,7 @@
             <button type="button" class="btn btn-danger btn-sm pull-right close_btn">&times;</button>
             <div class="widget-body" style="padding-right:20px;">
                 <div style="padding:20px  6px 0;">
-                    <input type="text" class="search_input form-control" placeholder="输入关键字搜索...">
+                    <input type="text" class="search_input form-control" placeholder='{% trans "输入关键字搜索..." %}'>
                 </div>
                 <div class="widget-main padding-8" style="height:auto;max-height:360px;">
                     <ul id="tree"></ul>
@@ -190,11 +191,11 @@
 <script>
     $('.add_btn').click(function(){
         var obj={
-            action:[{value:{value:'body内容'},action:'reply'}],
+            action:[{value:{value:'{% trans "body内容" %}'},action:'reply'}],
             disabled:-1,
             logic:'all',
             condition:[
-                {logic:'one',suboption:'subject',action:'contains',value:'abc',subs:[{suboption:'subject',action:'contains',value:'123456士大夫的'}]}
+                {logic:'one',suboption:'subject',action:'contains',value:'abc',subs:[{suboption:'subject',action:'contains',value:'{% trans "123456士大夫的" %}'}]}
             ]
         }
             
@@ -213,12 +214,12 @@
         })
     })
     var deptArr = [
-        {id:1,parent:0,name:"部门1",child:2},
-        {id:2,parent:1,name:"部门2",child:1},
-        {id:3,parent:2,name:"部门3",child:0},
-        {id:4,parent:1,name:"部门4",child:0},
-        {id:5,parent:2,name:"部门5",child:0},
-        {id:6,parent:0,name:"部门6",child:0}
+        {id:1,parent:0,name:'{% trans "部门1" %}',child:2},
+        {id:2,parent:1,name:'{% trans "部门2" %}',child:1},
+        {id:3,parent:2,name:'{% trans "部门3" %}',child:0},
+        {id:4,parent:1,name:'{% trans "部门4" %}',child:0},
+        {id:5,parent:2,name:'{% trans "部门5" %}',child:0},
+        {id:6,parent:0,name:'{% trans "部门6" %}',child:0}
     ];
 
     $('body').on('change','[name="suboption"]',function(){
@@ -411,74 +412,74 @@
                                     '<div class="panel-heading" style="position:relative;">'+
                                         '<a href="#faq_'+index+'" data-toggle="collapse" class="accordion-toggle">'+
                                             '<i class="smaller-80 ace-icon fa fa-chevron-down" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;'+
-                                            '<b>条件</b>'+
-                                            '<button type="button" class="delete_condition btn btn-sm btn-danger pull-right" data-id="id_option_'+index+'" style="position:absolute;top:-0;right:0;">删除条件</button>'+
+                                            '<b>{% trans "条件" %}</b>'+
+                                            '<button type="button" class="delete_condition btn btn-sm btn-danger pull-right" data-id="id_option_'+index+'" style="position:absolute;top:-0;right:0;">{% trans "删除条件" %}</button>'+
                                         '</a>'+
                                     '</div>'+
                                     '<div class="panel-collapse collapse in" id="faq_'+index+'">'+
                                         '<div class="panel-body">'+
                                             '<div >'+
-                                                '<span>子条件间关系：</span>'+
+                                                '<span>{% trans "子条件间关系：" %}</span>'+
                                                 '<div class="radio inline">'+
                                                     '<label>'+
                                                         '<input name="logic_'+index+'" type="radio" checked class="ace con_logic" value="all">'+
-                                                        '<span class="lbl"> 满足所有</span>'+
+                                                        '<span class="lbl"> {% trans "满足所有" %}</span>'+
                                                     '</label>'+
                                                 '</div>'+
                                                 '<div class="radio inline">'+
                                                     '<label>'+
                                                         '<input name="logic_'+index+'" type="radio" class="ace con_logic" value="one">'+
-                                                        '<span class="lbl middle"> 满足任意</span>'+
+                                                        '<span class="lbl middle"> {% trans "满足任意" %}</span>'+
                                                     '</label>'+
                                                 '</div>'+
-                                                '<button type="button" class="btn btn-xs btn-info add_sub_condition" dataindex="0" dataparentindex="'+index+'"  style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>新增子条件</button>'+
+                                                '<button type="button" class="btn btn-xs btn-info add_sub_condition" dataindex="0" dataparentindex="'+index+'"  style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>{% trans "新增子条件" %}</button>'+
                                             '</div>'+
                                             '<ul>'+
                                                 '<li class="condition_item">'+
                                                     '<div class="hr"></div>'+
                                                     '<div class="row">'+
                                                         '<div class="col-sm-2 control-label">'+
-                                                            '子条件：'+
+                                                            '{% trans "子条件：" %}'+
                                                         '</div>'+
                                                         '<div class="col-sm-10">'+
                                                             '<div class="row">'+
                                                                 '<div class="col-sm-2 no-padding">'+
                                                                 '<select class="form-control" name="suboption" style="height: 34px;">'+
-                                                                    '<option value="all_mail">所有邮件</option>'+
-                                                                    '<option value="has_attach">有附件</option>'+
-                                                                    '<option value="attachments">附件名</option>'+
-                                                                    '<option value="sender">发信人</option>'+
-                                                                    '<option value="cc">抄送人</option>'+
-                                                                    '<option value="recipient">收信人</option>'+
-                                                                    '<option value="sender_dept">发信人部门</option>'+
-                                                                    '<option value="cc_dept">抄送人部门</option>'+
-                                                                    '<option value="rcpt_dept">收信人部门</option>'+
-                                                                    '<option value="subject">主题</option>'+
-                                                                    '<option value="body">邮件内容</option>'+
-                                                                    '<option value="mail_size">邮件大小(MB)</option>'+
-                                                                    '<option value="mail_size2">邮件大小(Byte)</option>'+
-                                                                    '<option value="content_size">邮件正文大小(Byte)</option>'+
-                                                                    '<option value="exec_date">执行时间</option>'+
+                                                                    '<option value="all_mail">{% trans "所有邮件" %}</option>'+
+                                                                    '<option value="has_attach">{% trans "有附件" %}</option>'+
+                                                                    '<option value="attachments">{% trans "附件名" %}</option>'+
+                                                                    '<option value="sender">{% trans "发信人" %}</option>'+
+                                                                    '<option value="cc">{% trans "抄送人" %}</option>'+
+                                                                    '<option value="recipient">{% trans "收信人" %}</option>'+
+                                                                    '<option value="sender_dept">{% trans "发信人部门" %}</option>'+
+                                                                    '<option value="cc_dept">{% trans "抄送人部门" %}</option>'+
+                                                                    '<option value="rcpt_dept">{% trans "收信人部门" %}</option>'+
+                                                                    '<option value="subject">{% trans "主题" %}</option>'+
+                                                                    '<option value="body">{% trans "邮件内容" %}</option>'+
+                                                                    '<option value="mail_size">{% trans "邮件大小(MB)" %}</option>'+
+                                                                    '<option value="mail_size2">{% trans "邮件大小(Byte)" %}</option>'+
+                                                                    '<option value="content_size">{% trans "邮件正文大小(Byte)" %}</option>'+
+                                                                    '<option value="exec_date">{% trans "执行时间" %}</option>'+
                                                                 '</select>'+
                                                             '</div>'+
                                                             '<div class="col-sm-10 no-padding">'+
                                                                 '<div class="col-sm-2 no-padding actions">'+
                                                                     '<select class="form-control"  name="action_contain" style="height: 34px;">'+
-                                                                        '<option value="contains">包含</option>'+
-                                                                        '<option value="not_contains">不包含</option>'+
-                                                                        '<option value="==">等于</option>'+
+                                                                        '<option value="contains">{% trans "包含" %}</option>'+
+                                                                        '<option value="not_contains">{% trans "不包含" %}</option>'+
+                                                                        '<option value="==">{% trans "等于" %}</option>'+
                                                                     '</select>'+
                                                                     '<select class="form-control display-none" name="action_eq" style="height: 34px;">'+
-                                                                        '<option value=">=">大于等于</option>'+
-                                                                        '<option value="<=">小于等于</option>'+
+                                                                        '<option value=">=">{% trans "大于等于" %}</option>'+
+                                                                        '<option value="<=">{% trans "小于等于" %}</option>'+
                                                                     '</select>'+
                                                                     '<select class="form-control display-none" name="action_belong" style="height: 34px;">'+
-                                                                        '<option value="in">属于</option>'+
-                                                                        '<option value="not_in">不属于</option>'+
+                                                                        '<option value="in">{% trans "属于" %}</option>'+
+                                                                        '<option value="not_in">{% trans "不属于" %}</option>'+
                                                                     '</select>'+
                                                                     '<select class="form-control display-none" name="action_date" style="height: 34px;">'+
-                                                                        '<option value="in">星期</option>'+
-                                                                        '<option value="not_in">天</option>'+
+                                                                        '<option value="in">{% trans "星期" %}</option>'+
+                                                                        '<option value="not_in">{% trans "天" %}</option>'+
                                                                     '</select>'+
                                                                 '</div>'+
                                                                     '<div class="col-sm-8 no-padding values">'+
@@ -487,7 +488,7 @@
                                                                         '<div  class="col-xs-12 col-sm-12 no-padding  display-none dept_box">'+
                                                                             '<div class="input-group">'+
                                                                                 '<div id="input_box_'+index+'">'+
-                                                                                    '<input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">'+
+                                                                                    '<input type="text" value="" readonly placeholder='{% trans "点击选择部门" %}' class="form-control department_choice">'+
                                                                                     '<input type="hidden" class="id_dept_id" value="" name="option_value_dpt0">'+
                                                                                 '</div>'+
                                                                             '</div>'+
@@ -512,47 +513,47 @@
                         '<div class="hr"></div>'+
                         '<div class="row">'+
                             '<div class="col-sm-2 control-label">'+
-                                '子条件：'+
+                                '{% trans "子条件：" %}'+
                             '</div>'+
                             '<div class="col-sm-10">'+
                                 '<div class="row">'+
                                     '<div class="col-sm-2 no-padding">'+
                                     '<select class="form-control" name="suboption" style="height: 34px;">'+
-                                        '<option value="all_mail">所有邮件</option>'+
-                                        '<option value="has_attach">有附件</option>'+
-                                        '<option value="attachments">附件名</option>'+
-                                        '<option value="sender">发信人</option>'+
-                                        '<option value="cc">抄送人</option>'+
-                                        '<option value="recipient">收信人</option>'+
-                                        '<option value="sender_dept">发信人部门</option>'+
-                                        '<option value="cc_dept">抄送人部门</option>'+
-                                        '<option value="rcpt_dept">收信人部门</option>'+
-                                        '<option value="subject">主题</option>'+
-                                        '<option value="body">邮件内容</option>'+
-                                        '<option value="mail_size">邮件大小(MB)</option>'+
-                                        '<option value="mail_size2">邮件大小(Byte)</option>'+
-                                        '<option value="content_size">邮件正文大小(Byte)</option>'+
-                                        '<option value="exec_date">执行时间</option>'+
+                                        '<option value="all_mail">{% trans "所有邮件" %}</option>'+
+                                        '<option value="has_attach">{% trans "有附件" %}</option>'+
+                                        '<option value="attachments">{% trans "附件名" %}</option>'+
+                                        '<option value="sender">{% trans "发信人" %}</option>'+
+                                        '<option value="cc">{% trans "抄送人" %}</option>'+
+                                        '<option value="recipient">{% trans "收信人" %}</option>'+
+                                        '<option value="sender_dept">{% trans "发信人部门" %}</option>'+
+                                        '<option value="cc_dept">{% trans "抄送人部门" %}</option>'+
+                                        '<option value="rcpt_dept">{% trans "收信人部门" %}</option>'+
+                                        '<option value="subject">{% trans "主题" %}</option>'+
+                                        '<option value="body">{% trans "邮件内容" %}</option>'+
+                                        '<option value="mail_size">{% trans "邮件大小(MB)" %}</option>'+
+                                        '<option value="mail_size2">{% trans "邮件大小(Byte)" %}</option>'+
+                                        '<option value="content_size">{% trans "邮件正文大小(Byte)" %}</option>'+
+                                        '<option value="exec_date">{% trans "执行时间" %}</option>'+
                                     '</select>'+
                                 '</div>'+
                                 '<div class="col-sm-10 no-padding">'+
                                     '<div class="col-sm-2 no-padding actions">'+
                                         '<select class="form-control"  name="action_contain" style="height: 34px;">'+
-                                            '<option value="contains">包含</option>'+
-                                            '<option value="not_contains">不包含</option>'+
-                                            '<option value="==">等于</option>'+
+                                            '<option value="contains">{% trans "包含" %}</option>'+
+                                            '<option value="not_contains">{% trans "不包含" %}</option>'+
+                                            '<option value="==">{% trans "等于" %}</option>'+
                                         '</select>'+
                                         '<select class="form-control display-none" name="action_eq" style="height: 34px;">'+
-                                            '<option value=">=">大于等于</option>'+
-                                            '<option value="<=">小于等于</option>'+
+                                            '<option value=">=">{% trans "大于等于" %}</option>'+
+                                            '<option value="<=">{% trans "小于等于" %}</option>'+
                                         '</select>'+
                                         '<select class="form-control display-none" name="action_belong" style="height: 34px;">'+
-                                            '<option value="in">属于</option>'+
-                                            '<option value="not_in">不属于</option>'+
+                                            '<option value="in">{% trans "属于" %}</option>'+
+                                            '<option value="not_in">{% trans "不属于" %}</option>'+
                                         '</select>'+
                                         '<select class="form-control display-none" name="action_date" style="height: 34px;">'+
-                                            '<option value="in">星期</option>'+
-                                            '<option value="not_in">天</option>'+
+                                            '<option value="in">{% trans "星期" %}</option>'+
+                                            '<option value="not_in">{% trans "天" %}</option>'+
                                         '</select>'+
                                     '</div>'+
                                         '<div class="col-sm-8 no-padding values">'+
@@ -561,13 +562,13 @@
                                             '<div class="col-xs-12 col-sm-12 no-padding  display-none dept_box">'+
                                                 '<div class="input-group">'+
                                                     '<div id="input_box_'+parent_index+'_'+index+'">'+
-                                                        '<input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">'+
+                                                        '<input type="text" value="" readonly placeholder='{% trans "点击选择部门" %}' class="form-control department_choice">'+
                                                         '<input type="hidden" class="id_dept_id" value="" name="option_value_dpt0">'+
                                                     '</div>'+
                                                 '</div>'+
                                             '</div>'+
                                         '</div>'+
-                                        '<div class="col-sm-1"><button type="button" class="delete_sub_condition btn btn-xs btn-warning" title="删除此子条件"><i class="glyphicon glyphicon-trash"></i></button></div>'+
+                                        '<div class="col-sm-1"><button type="button" class="delete_sub_condition btn btn-xs btn-warning" title='{% trans "删除此子条件" %}'><i class="glyphicon glyphicon-trash"></i></button></div>'+
                                     '</div>'+
 
                                 '</div>'+
@@ -604,4 +605,3 @@
         // $('#tree_box').addClass('active')
     })
 </script>
-

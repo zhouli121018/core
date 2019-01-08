@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load perm_tags %}
 {% for p in mypermissions %}
     {% if p.per in perms %}
@@ -6,12 +7,12 @@
             {% if p.url %}
                 <a href="{{ p.url }}" >
                     <i class="menu-icon fa {{ class_list|get_index:forloop.counter0 }} fa-fw"></i>
-                    <span class="menu-text"> {{ p.nav_name }} </span>
+                    <span class="menu-text"> {{ p.get_nav_name }} </span>
                 </a>
             {% else %}
                 <a href="#" class="dropdown-toggle">
                     <i class="menu-icon fa {{ class_list|get_index:forloop.counter0 }} fa-fw"></i>
-                    <span class="menu-text"> {{ p.nav_name }} </span>
+                    <span class="menu-text"> {{ p.get_nav_name }} </span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
             {% endif %}
@@ -20,22 +21,22 @@
                 {% for p_child in p.nav_children|permission_order_by %}
                     {% if p_child.per in perms %}
                         <li class="">
-                            <a href="{{ p_child.url }}">{{ p_child.nav_name }}</a>
+                            <a href="{{ p_child.url }}">{{ p_child.get_nav_name }}</a>
                         </li>
                     {% endif %}
                 {% endfor %}
                 {% if p.name == "setting" %}
                     {% if open_distribute == "1" %}
                         <li class="">
-                            <a href="{% url 'distribute_list' %}"><i class="menu-icon fa fa-caret-right"></i> 分布式管理 </a><b class="arrow"></b>
+                            <a href="{% url 'distribute_list' %}"><i class="menu-icon fa fa-caret-right"></i> {% trans "分布式管理 " %}</a><b class="arrow"></b>
                         </li>
                     {% endif %}
                     {% if custom_kkserver == "1" %}
                         <li class="">
-                            <a href="{% url 'custom_kkserver' %}"><i class="menu-icon fa fa-caret-right"></i> 金湾自定义--推送配置 </a><b class="arrow"></b>
+                            <a href="{% url 'custom_kkserver' %}"><i class="menu-icon fa fa-caret-right"></i> {% trans "金湾自定义--推送配置 " %}</a><b class="arrow"></b>
                         </li>
                         <li class="">
-                            <a href="{% url 'custom_kkserver_login' %}"><i class="menu-icon fa fa-caret-right"></i> 金湾自定义--登录配置 </a><b class="arrow"></b>
+                            <a href="{% url 'custom_kkserver_login' %}"><i class="menu-icon fa fa-caret-right"></i> {% trans "金湾自定义--登录配置 " %}</a><b class="arrow"></b>
                         </li>
                     {% endif %}
                 {% endif %}

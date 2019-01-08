@@ -715,7 +715,7 @@ def domainPublic_Ajax(request):
             obj_cate = WmCustomerCate.objects.filter(id=cate_id).first()
             cate_name = u"" if not obj_cate else obj_cate.name
             d_cate_name[cate_id] = cate_name
-        cate_name = d_cate_name.get(cate_id,u"无分类")
+        cate_name = d_cate_name.get(cate_id,_(u"无分类"))
 
         tel_list = []
         if d.work_tel:
@@ -801,12 +801,12 @@ def domainList(request):
         action = request.POST.get('action', "")
         if action == "delete":
             if Domain.objects.all().count()<=1:
-                messages.add_message(request, messages.ERROR, u'不能删除唯一的域名!')
+                messages.add_message(request, messages.ERROR, _(u'不能删除唯一的域名!'))
                 return HttpResponseRedirect(reverse('domain_list'))
             obj = Domain.objects.filter(pk=id).first()
             if obj:
                 if obj.domain in ("comingchina.com","fenbu.comingchina.com") and unicode(request.user).startswith(u"demo_admin@"):
-                    messages.add_message(request, messages.ERROR, u'不能删除演示版本域名!')
+                    messages.add_message(request, messages.ERROR, _(u'不能删除演示版本域名!'))
                     return HttpResponseRedirect(reverse('domain_list'))
                 obj.delete()
     domain_list = Domain.objects.all().order_by('id')
@@ -826,9 +826,9 @@ def domainMdf(request):
     action = request.POST.get('action', "")
     if action == "save":
         form = DomainListForm(domain_id=domain_id, post=request.POST, request=request)
-        result, msg = u"0", u"保存失败"
+        result, msg = u"0", _(u"保存失败")
         if form.checkSave():
-            result, msg = u"1", u"保存成功"
+            result, msg = u"1", _(u"保存成功")
         else:
             msg = form.error
         data = {"result":result, "msg":msg}

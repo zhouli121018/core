@@ -19,7 +19,7 @@
                 ×
             </button>
             <i class="fa-fw fa fa-success"></i>
-            成功删除 <span class="text-success">{{ success }}</span> 个邮箱, 删除失败 <span class="text-danger"> {{ failures|length }}</span> 个邮箱：
+            {% trans "成功删除 " %}<span class="text-success">{{ success }}</span> {% trans "个邮箱, 删除失败 " %}<span class="text-danger"> {{ failures|length }}</span> {% trans "个邮箱：" %}
             {% if failures %}
             <pre>
                 {% for f in failures %}
@@ -98,24 +98,24 @@
                         <tbody>
                         <tr >
                             <td class="text-right">
-                                邮箱域名：
+                                {% trans "邮箱域名：" %}
                             </td>
                             <td>
                                 <b>{{ domain.domain }}</b>
                             </td>
                         </tr>
                         <tr>
-                            <td class="text-right">注意事项：</td>
+                            <td class="text-right">{% trans "注意事项：" %}</td>
                             <td>
-                                <p>请输入要删除的邮箱帐户用户名，一行填写一个用户	</p>
-                                <p class="red">例如:</p>
+                                <p>{% trans "请输入要删除的邮箱帐户用户名，一行填写一个用户	" %}</p>
+                                <p class="red">{% trans "例如:" %}</p>
                                 <p>tina</p>
                                 <p>gary</p>
                                 <p>tom</p>
                             </td>
                         </tr>
                         <tr>
-                            <td class="text-right">帐号列表：</td>
+                            <td class="text-right">{% trans "帐号列表：" %}</td>
                             <td>
                                 <textarea name="mailboxs" rows="8" class="form-control"></textarea>
                             </td>
@@ -126,11 +126,11 @@
                         <div class="text-center">
                             <button class="btn btn-info" type="submit">
                                 <i class="ace-icon fa fa-check bigger-110"></i>
-                                保存
+                                {% trans "保存" %}
                             </button>
                             <button class="btn" type="reset">
                                 <i class="ace-icon fa fa-undo bigger-110"></i>
-                                重置
+                                {% trans "重置" %}
                             </button>
                         </div>
                     </div>
@@ -140,5 +140,4 @@
     </div>
 </div>
 {% endblock %}
-
 

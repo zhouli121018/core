@@ -8,18 +8,18 @@
     <div class="row">
         <div class="space-2"></div>
         <div class="col-xs-4">
-            <div class="page-header"><h1>{% trans "邮件列表“" %}{{ lobj.address }}{% trans "”发件人列表" %}</h1></div>
+            <div class="page-header"><h1>{% trans "邮件列表" %}{{ lobj.address }}{% trans "发件人列表" %}</h1></div>
         </div>
         <div class="col-xs-8">
             <div class="pull-right" style="margin-right:30px;">
                 <div class="button-group">
                     {% if lobj.is_everyone %}
-                        <a data-toggle="modal" data-target="#tagModal" data-whatever="" class="btn btn-info btn-sm" href="{% url 'maillist_maintain_batchadd' list_id %}" type="button">批量添加邮箱</a>
+                        <a data-toggle="modal" data-target="#tagModal" data-whatever="" class="btn btn-info btn-sm" href="{% url 'maillist_maintain_batchadd' list_id %}" type="button">{% trans "批量添加邮箱" %}</a>
                     {% elif lobj.is_dept %}
                         <a type="button" class="btn btn-success btn-sm"  href="{% url 'maillist_maintain_export' list_id %}" target="_blank">{% trans "导出Excel" %}</a>
                     {% else %}
                         <a type="button" class="btn btn-primary btn-sm" href="{% url 'maillist_maintain_batchadd' list_id %}">{% trans "批量添加邮箱" %}</a>
-                        <a type="button" class="btn btn-info btn-sm" href="{% url 'maillist_maintain_add' list_id %}">添加邮箱</a>
+                        <a type="button" class="btn btn-info btn-sm" href="{% url 'maillist_maintain_add' list_id %}">{% trans "添加邮箱" %}</a>
                         <a type="button" class="btn btn-success btn-sm"  href="{% url 'maillist_maintain_export' list_id %}" target="_blank">{% trans "导出Excel" %}</a>
                     {% endif %}
                     <button type="button" class="btn btn-purple btn-sm" onclick="location.href='{% url 'maillist_list' %}'">{% trans "返回列表" %}</button>
@@ -50,14 +50,14 @@
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th>序号</th>
-                        <th>邮箱地址</th>
+                        <th>{% trans "序号" %}</th>
+                        <th>{% trans "邮箱地址" %}</th>
                         {% if not lobj.is_everyone %}
-                            <th>成员权限</th>
-                            <th>修改时间</th>
-                            <th>名称</th>
+                            <th>{% trans "成员权限" %}</th>
+                            <th>{% trans "修改时间" %}</th>
+                            <th>{% trans "名称" %}</th>
                         {% endif %}
-                        <th>操作</th>
+                        <th>{% trans "操作" %}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -81,12 +81,12 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">加载中</h4>
+                    <h4 class="modal-title" id="myModalLabel">{% trans "加载中" %}</h4>
                 </div>
-                <div class="modal-body">页面加载中
+                <div class="modal-body">{% trans "页面加载中" %}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">关闭</button>
+                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">{% trans "关闭" %}</button>
                 </div>
             </div>
         </div>
@@ -169,7 +169,7 @@
         }
 
         function Delete(id, name){
-            var str = '确定要删除发件人 "%s"？';
+            var str = '{% trans "确定要删除发件人 " %}"%s"？';
             str = str.replace(/%s/, name);
             if(confirm(str)) {
                 $('#id').val(id);

@@ -98,13 +98,13 @@
     <script>
 
         function setStatus(name, status){
-            var str = "确认此操作？"
+            var str = "{% trans "是否确认此操作？" %}"
             if ( status == "delete" ){
-                str = "确定要删除备份数据“" +name+ "”{% trans "吗？\n被删除的数据将无法恢复" %}"
+                str = "{% trans "确定要删除备份数据吗？\n被删除的数据将无法恢复" %}"
             } else if ( status == "restore" ){
-                str = "确定要恢复数据“" +name+ "”{% trans "吗？" %}"
+                str = "{% trans "确定要恢复数据吗？" %}"
             } else if ( status == "backup" ){
-                str = "确定要立即备份吗？"
+                str = "{% trans "确定要立即备份吗？" %}"
             }
             if(confirm(str)) {
                 $('#name').val(name);

@@ -2,6 +2,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 from django.conf import settings
+from django.utils.translation import ugettext as _
 
 
 def merge(a, b, path=None):
@@ -56,66 +57,66 @@ DEFAULTS = {"_ttl": 0,
 PROCESSES = {
     'mta': {
         'cmd': '/usr/local/u-mail/service/postfix/libexec/master',
-        'sname': u'MTA服务',
+        'sname': _(u'MTA服务'),
         'restart': '/etc/init.d/umail_postfix restart',
         'log': '/var/log/maillog',
         'order': 1
     },
     'dovecot': {
         'cmd': '/usr/local/u-mail/service/dovecot/sbin/dovecot',
-        'sname': u'POP、IMAP服务',
+        'sname': _(u'POP、IMAP服务'),
         'restart': '/etc/init.d/umail_dovecot restart',
         'order': 2
     },
     'postgrey': {
         'cmd': '/usr/local/u-mail/service/postfix/sbin/postgrey',
-        'sname': u'SMTPD灰名单服务',
+        'sname': _(u'SMTPD灰名单服务'),
         'restart': '/etc/init.d/umail_postgrey restart',
         'order': 3
     },
     'sa': {
         'cmd': '/usr/local/u-mail/service/spamassassin/bin/spamd',
-        'sname': u'反垃圾邮件服务(sa)',
+        'sname': _(u'反垃圾邮件服务(sa)'),
         'restart': '/etc/init.d/umail_spamassassin restart',
         'order': 4
     },
     'dspam': {
         'cmd': '/usr/bin/dspam',
-        'sname': u'反垃圾邮件服务(dspam)',
+        'sname': _(u'反垃圾邮件服务(dspam)'),
         'restart': '/etc/init.d/umail_dspam restart',
         'order': 5
     },
     'httpd': {
         'cmd': '/usr/local/u-mail/service/apache/bin/httpd',
-        'sname': u'WEB应用服务(httpd)',
+        'sname': _(u'WEB应用服务(httpd)'),
         'restart': '/etc/init.d/umail_apache restart',
         'log': '/usr/local/u-mail/log/apache/mail_access_log',
         'order': 6
     },
     'nginx': {
         'cmd': '/usr/local/u-mail/service/nginx/sbin/nginx',
-        'sname': u'WEB应用缓存(nginx)',
+        'sname': _(u'WEB应用缓存(nginx)'),
         'restart': '/etc/init.d/umail_nginx restart',
         'log': '/usr/local/u-mail/log/nginx/access.log',
         'order': 7
     },
     'mysql': {
         'cmd': '/usr/local/u-mail/service/mysql/bin/mysqld',
-        'sname': u'数据库(mysql)',
+        'sname': _(u'数据库(mysql)'),
         'restart': '/etc/init.d/umail_mysqld restart',
         'log': '/usr/local/u-mail/log/mysql/default.err',
         'order': 8
     },
     'redis': {
         'cmd': '/usr/local/u-mail/service/redis/bin/redis-server',
-        'sname': u'数据库(redis)',
+        'sname': _(u'数据库(redis)'),
         'restart': '/etc/init.d/umail_redis restart',
         'log': '/usr/local/u-mail/log/redis/redis.log',
         'order': 9
     },
     'pg': {
         'cmd': '/usr/local/u-mail/service/pgsql-9.4/bin/postmaster',
-        'sname': u'数据库(Pg)',
+        'sname': _(u'数据库(Pg)'),
         'restart': '/etc/init.d/umail_postgresql restart',
         'log': '/usr/local/u-mail/service/pgsql-9.4/data/pgstartup.log',
         'order': 10
@@ -129,35 +130,35 @@ PROCESSES = {
     },
     'rulefilter': {
         'cmd': '/usr/local/u-mail/app/repo/rulefilter.py',
-        'sname': u'Rulefilter服务',
+        'sname': _(u'Rulefilter服务'),
         'restart': '/usr/local/u-mail/app/engine/bin/supervisorctl -c /usr/local/u-mail/app/conf/supervisord.ini restart rulefilter',
         'log': '/usr/local/u-mail/log/app/rulefilter.log',
         'order': 12
     },
     'receiver': {
         'cmd': '/usr/local/u-mail/app/repo/receiver.py',
-        'sname': u'Receiver服务',
+        'sname': _(u'Receiver服务'),
         'restart': '/usr/local/u-mail/app/engine/bin/supervisorctl -c /usr/local/u-mail/app/conf/supervisord.ini restart receiver',
         'log': '/usr/local/u-mail/log/app/receiver.log',
         'order': 13
     },
     'dispatcher': {
         'cmd': '/usr/local/u-mail/app/repo/dispatcher.py',
-        'sname': u'Dispatcher服务',
+        'sname': _(u'Dispatcher服务'),
         'restart': '/usr/local/u-mail/app/engine/bin/supervisorctl -c /usr/local/u-mail/app/conf/supervisord.ini restart dispatcher',
         'log': '/usr/local/u-mail/log/app/dispatcher.log',
         'order': 14
     },
     'sizequerier': {
         'cmd': '/usr/local/u-mail/app/repo/sizequerier.py',
-        'sname': u'Sizequerier服务',
+        'sname': _(u'Sizequerier服务'),
         'restart': '/usr/local/u-mail/app/engine/bin/supervisorctl -c /usr/local/u-mail/app/conf/supervisord.ini restart sizequerier',
         'log': '/usr/local/u-mail/log/app/sizequerier.log',
         'order': 15
     },
     'auth': {
         'cmd': '/usr/local/u-mail/app/repo/authenticator.py',
-        'sname': u'Auth服务',
+        'sname': _(u'Auth服务'),
         'restart': '/usr/local/u-mail/app/engine/bin/supervisorctl -c /usr/local/u-mail/app/conf/supervisord.ini restart authenticator',
         'log': '/usr/local/u-mail/log/app/authenticator.log',
         'order': 16

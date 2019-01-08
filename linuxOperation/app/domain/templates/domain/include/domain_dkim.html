@@ -17,48 +17,48 @@
                             <button type="button" onclick="VerifyDkim({{ domain_id }})" class="btn btn-xs btn-danger">{% trans "验证" %}</button>
                         </div>
                         <div class="pull-left" style="margin:8px 0;">
-                            <button type="button" onclick="SetDkim({{ domain_id }})" class="btn btn-xs btn-primary">重新生成密钥</button>
+                            <button type="button" onclick="SetDkim({{ domain_id }})" class="btn btn-xs btn-primary">{% trans "重新生成密钥" %}</button>
                         </div>
                     </div>
                 </div>
                 <!--
                 <div class="form-group">
-                    <label class="col-sm-3 control-label no-padding-right" style="margin:8px 0;"> 操作： </label>
+                    <label class="col-sm-3 control-label no-padding-right" style="margin:8px 0;"> {% trans "操作： " %}</label>
                     <div class="col-sm-8">
                         {% if form.public_key %}
                             <div class="pull-left" style="margin:8px 0;">
-                                <button type="button" onclick="DeleteDkim({{ domain_id }})" class="btn btn-xs btn-danger">清除密钥</button>
+                                <button type="button" onclick="DeleteDkim({{ domain_id }})" class="btn btn-xs btn-danger">{% trans "清除密钥" %}</button>
                             </div>
                             <div class="pull-left" style="margin:8px 5px;">
-                                <button type="button" onclick="ExportDkim({{ domain_id }})" class="btn btn-xs btn-primary">导出密钥</button>
+                                <button type="button" onclick="ExportDkim({{ domain_id }})" class="btn btn-xs btn-primary">{% trans "导出密钥" %}</button>
                             </div>
                         {% else %}
                             <div class="pull-left" style="margin:8px 0;">
-                                <button type="button" onclick="SetDkim({{ domain_id }})" class="btn btn-xs btn-primary">生成密钥</button>
+                                <button type="button" onclick="SetDkim({{ domain_id }})" class="btn btn-xs btn-primary">{% trans "生成密钥" %}</button>
                             </div>
                         {% endif %}
                     </div>
                 </div>
                 {% if not form.public_key %}
                 <div class="form-group">
-                    <label class="col-sm-3 control-label no-padding-right"> 选择证书： </label>
+                    <label class="col-sm-3 control-label no-padding-right"> {% trans "选择证书： " %}</label>
                     <div class="col-sm-8">
                         <input type="hidden" value="import" name="action" id="id_import" />
                         <input type="hidden" value="{{ domain_id }}" name="domain_id" id="id_domain_id" />
                         <input type="file" name="certfile" class="test_importdkim" id="id-input-file" value="" style="float: left">
-                        <button type="button" onclick="ImportDkim({{ domain_id }})" class="btn btn-xs btn-primary" style="margin-right:5px;">导入私钥</button>
+                        <button type="button" onclick="ImportDkim({{ domain_id }})" class="btn btn-xs btn-primary" style="margin-right:5px;">{% trans "导入私钥" %}</button>
                     </div>
                 </div>
                 {% endif %}
                 -->
                 <div class="form-group">
-                    <label class="col-sm-3 control-label no-padding-right">域名记录名称：</label>
+                    <label class="col-sm-3 control-label no-padding-right">{% trans "域名记录名称：" %}</label>
                     <div class="col-sm-8" style="border-bottom:1px solid #E5E5E5">
                             <label class="control-label text-danger">umail._domainkey.{% if domain_id != '0' %}{{ domain }}{% endif %}</label>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-3 control-label no-padding-right">域名记录内容：</label>
+                    <label class="col-sm-3 control-label no-padding-right">{% trans "域名记录内容：" %}</label>
                     <div class="col-sm-8">
                         <textarea class="form-control" id="form-field-8" placeholder="" cols="10" rows="10">{{ form.public_key }}</textarea>
                     </div>
@@ -66,7 +66,7 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label no-padding-right"></label>
                     <div class="col-sm-8">
-                        <li> <strong class="text-danger"> 域名的SPF、MX记录必须配置正确才能验证通过！ </strong> </li>
+                        <li> <strong class="text-danger"> {% trans "域名的SPF、MX记录必须配置正确才能验证通过！ " %}</strong> </li>
                     </div>
                 </div>
             </div>
@@ -74,10 +74,10 @@
                 <input type="hidden" id="id" name="id" />
                 <input id="action" name="action" type="hidden" />
                 {% if form.verify_success %}
-                    <button type="button" class="btn btn-sm btn-success">验证通过！</button>
+                    <button type="button" class="btn btn-sm btn-success">{% trans "验证通过！" %}</button>
                 {% endif %}
                 {% if form.verify_failure %}
-                    <button type="button" class="btn text-danger"><strong class="text-danger"> 验证未通过: {{ form.error }} </strong></button>
+                    <button type="button" class="btn text-danger"><strong class="text-danger"> {% trans "验证未通过: " %}{{ form.error }} </strong></button>
                 {% endif %}
             </div>
     </div>
@@ -86,9 +86,9 @@
 <script type="text/javascript">
     $(function(){
         $('#id-input-file').ace_file_input({
-                    no_file:'未选择文件',
-                    btn_choose:'选择',
-                    btn_change:'修改',
+                    no_file:'{% trans "未选择文件" %}',
+                    btn_choose:'{% trans "选择" %}',
+                    btn_change:'{% trans "修改" %}',
                     droppable:false,
                     onchange:null,
                     blacklist:'gif|png|jpg|jpeg|exe|php'

@@ -1,39 +1,40 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from django.utils.translation import ugettext_lazy as _
 
 ##################################################
 # 隔离邮件
 ISOLATE_STATUS = (
-    ("wait", u"等待处理"), #1
-    ("permit", u"放行"),# 4 中间状态
-    ("reject", u"隔离"),  # 4 中间状态
-    ("whitelist", u"域名加入白名单并放行"),# 4 中间状态
-    ("whitelist2", u"地址加入白名单并放行"),# 4 中间状态
-    ("stop", u"确认隔离"), #3
-    ("pass", u"确认放行"), #2
+    ("wait", _(u"等待处理")), #1
+    ("permit", _(u"放行")),# 4 中间状态
+    ("reject", _(u"隔离")),  # 4 中间状态
+    ("whitelist", _(u"域名加入白名单并放行")),# 4 中间状态
+    ("whitelist2", _(u"地址加入白名单并放行")),# 4 中间状态
+    ("stop", _(u"确认隔离")), #3
+    ("pass", _(u"确认放行")), #2
 )
 
 ISOLATE_STATUS_R = (
-    ("wait", u"等待处理"),
+    ("wait", _(u"等待处理")),
     # ("permit", u"放行"),
     # ("reject", u"隔离"),
-    ("stop", u"确认隔离"),
-    ("pass", u"确认放行"),
+    ("stop", _(u"确认隔离")),
+    ("pass", _(u"确认放行")),
 )
 
 ##################################################
 # 备份参数设置
 DATA_TYPE_CHOICES = (
-    ('database', u'数据库'),
-    ('maildata', u'邮件数据'),
-    ('netdisk',  u'网盘数据')
+    ('database', _(u'数据库')),
+    ('maildata', _(u'邮件数据')),
+    ('netdisk',  _(u'网盘数据'))
 )
 BACKUP_TYPE = (
-    ('hour', u'小时'),
-    ('day', u'天'),
-    ('week',  u'周'),
-    ('month',  u'月'),
-    ('year',  u'年')
+    ('hour', _(u'小时')),
+    ('day', _(u'天')),
+    ('week',  _(u'周')),
+    ('month',  _(u'月')),
+    ('year',  _(u'年'))
 )
 BACKUP_MONTH = (
     ('1', u'01'),
@@ -83,13 +84,13 @@ BACKUP_DAY = (
     ('31', '31'),
 )
 BACKUP_WEEK = (
-    ('1', u'一'),
-    ('2', u'二'),
-    ('3', u'三'),
-    ('4', u'四'),
-    ('5', u'五'),
-    ('6', u'六'),
-    ('7', u'日'),
+    ('1', _(u'一')),
+    ('2', _(u'二')),
+    ('3', _(u'三')),
+    ('4', _(u'四')),
+    ('5', _(u'五')),
+    ('6', _(u'六')),
+    ('7', _(u'日')),
 )
 BACKUP_HOUR = (
     ('0', u'00'),
@@ -188,49 +189,49 @@ BACKUP_MINUTE = (
 #######################
 # # 账号迁移
 ACCOUNT_TRANSFER_DEL = (
-    (1, u'是'),
-    (-1, u'否'),
+    (1, _(u'是')),
+    (-1, _(u'否')),
 )
 
 ACCOUNT_TRANSFER_STATUS = (
-    ('wait', u'等待处理'),
-    ('transfering', u'正在传输'),
-    ('transfered', u'传输完毕'),
-    ('deleting', u'正在删除'),
-    ('deleted', u'删除完毕'),
-    ('finished', u'全部结束'),
+    ('wait', _(u'等待处理')),
+    ('transfering', _(u'正在传输')),
+    ('transfered', _(u'传输完毕')),
+    ('deleting', _(u'正在删除')),
+    ('deleted', _(u'删除完毕')),
+    ('finished', _(u'全部结束')),
 )
 
 ACCOUNT_TRANSFER_DISABLE = (
-    (-1, u'马上执行'),
-    (1, u'停止执行'),
+    (-1, _(u'马上执行')),
+    (1, _(u'停止执行')),
 )
 
 
 ACCOUNT_IMAPMOVING_STATUS = (
-    ('wait', u'等待处理'),
-    ('moving', u'迁移中'),
-    ('abort', u'异常中断'),
-    ('done', u'迁移完毕'),
+    ('wait', _(u'等待处理')),
+    ('moving', _(u'迁移中')),
+    ('abort', _(u'异常中断')),
+    ('done', _(u'迁移完毕')),
 )
 
 ACCOUNT_IMAPMOVING_DISABLE = (
-    (1, u'禁用'),
-    (-1, u'启用'),
+    (1, _(u'禁用')),
+    (-1, _(u'启用')),
 )
 
 ACCOUNT_IMAPMOVING_FOLDER = (
-    ('all', u'全部'),
-    ('INBOX', u'收件箱'),
+    ('all', _(u'全部')),
+    ('INBOX', _(u'收件箱')),
 )
 
 ACCOUNT_IMAPMOVING_SETFROM = (
-    ('file', u'文件导入'),
-    ('admin', u'管理员输入'),
-    ('user', u'用户输入'),
+    ('file', _(u'文件导入')),
+    ('admin', _(u'管理员输入')),
+    ('user', _(u'用户输入')),
 )
 
 ACCOUNT_IMAPMOVING_SSL = (
-    (1, u'启用'),
-    (-1, u'不启用'),
+    (1, _(u'启用')),
+    (-1, _(u'不启用')),
 )

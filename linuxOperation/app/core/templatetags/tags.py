@@ -103,7 +103,7 @@ def show_all_dept(parent_id):
     l = []
     while parent_id > 0:
         dept = Department.objects.get(id=parent_id)
-        l.append( u'{}'.format(dept.title) )
+        l.append( u'{}'.format(dept.get_title) )
         parent_id = dept.parent_id
     l.reverse()
     return " -- ".join(l[-4:])

@@ -67,7 +67,7 @@ def department(request):
     lists = Department.objects.filter(domain_id=domain_id, parent_id=cid).order_by("-order")
     return render(request, "dpt/dpt.html", {
         "cid": dept and dept.id or -1,
-        "cdpt": dept and dept.title or _(u"U-Mail邮件服务器"),
+        "cdpt": dept and dept.get_title or _(u"U-Mail邮件服务器"),
         "dept_list": json.dumps(dept_list),
         "lists": lists,
     })
@@ -78,7 +78,7 @@ def ajax_update_depart_order(request):
     dpt_id = int(request.POST.get('dpt_id', '-1'))
     obj = Department.objects.get(id=dpt_id)
     if not obj:
-        return HttpResponse(json.dumps({'message': '不存在的部门 {}'.format(dpt_id), "status":"failure"}), content_type="application/json")
+        return HttpResponse(json.dumps({'message': _(u'不存在的部门 {}').format(dpt_id), "status":"failure"}), content_type="application/json")
     order = request.POST.get("order", 0)
     obj.order = order
     obj.save()
@@ -160,12 +160,12 @@ def department_member(request, dpt_id):
         if action == 'delete':
             id = request.POST.get('id', '')
             DepartmentMember.objects.get(id=id).delete()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         if action == 'deleteall':
             ids = request.POST.get('ids', '')
             ids = ids.split(',')
             DepartmentMember.objects.filter(id__in=ids).delete()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         if action == 'add':
             mailbox_ids = request.POST.get('mailbox_ids', '')
             mailbox_title = request.POST.get('mailbox_title', '')
@@ -288,7 +288,7 @@ def domain_group_add(request, domain_id):
         obj.share_title = share_title
         obj.share_domains = group_ids
         obj.save()
-        messages.add_message(request, messages.SUCCESS, u'组合设置成功')
+        messages.add_message(request, messages.SUCCESS, _(u'组合设置成功'))
         return HttpResponseRedirect(reverse('domain_group'))
 
     share_domains = obj.share_domains or '0'
@@ -318,7 +318,7 @@ def GetDepartmentList(lists_dpt):
     for obj in lists_dpt:
         dataDept[obj.id] = {
                         "id"        :   obj.id,
-                        "name"      :   obj.title,
+                        "name"      :   obj.get_title,
                         "parent"    :   int(obj.parent_id),
                     }
     l = []
@@ -377,7 +377,7 @@ def department_export(request):
         dept_id = obj_dept.id
         list_member = DepartmentMember.objects.filter(dept_id=dept_id).all()
         for obj_member in list_member:
-            name_dept = obj_dept.title
+            name_dept = obj_dept.get_title
             name_position = obj_member.position
             obj_box = Mailbox.objects.filter(id=obj_member.mailbox_id).first()
             if not obj_box:
@@ -394,7 +394,7 @@ def department_export(request):
 
     output_name = u""
     if key == "foxmail":
-        lists = [[u'姓名',u'电子邮件地址',u'手机',u'职位',u'部门',u'foxaddrID',u'foxaddrListMembers',u'foxaddrFolderName']]
+        lists = [[_(u'姓名'),_(u'电子邮件地址'),_(u'手机'),_(u'职位'),_(u'部门'),u'foxaddrID',u'foxaddrListMembers',u'foxaddrFolderName']]
         output_name = u"address_foxmail"
         for d in data_list:
             lists.append( [d["realname"],d["mailbox"],d["tel_mobile"],d["posname"],d["deptname"],'','',''] )

@@ -1,6 +1,7 @@
+{% load i18n %}
 <div class="modal-content">
     <div class="modal-header">
-        <h4 class="modal-title">批量导入客户</h4>
+        <h4 class="modal-title">{% trans "批量导入客户" %}</h4>
     </div>
     <div class="modal-body">
         <div class="alert alert-block alert-warning">
@@ -9,13 +10,13 @@
             </button>
 
             <p><strong class="red">
-                注：
-            </strong>一行为一个客户，每一行的格式为"客户名称;邮件地址;联系电话;客户分组;备注;生日;性别;工作电话;家庭电话;QQ;MSN"，各字段间用";"或者"TAB"制表符分隔
-                性别说明："M"表示男,"F"表示女</p>
+                {% trans "注：" %}
+            </strong>{% trans "一行为一个客户，每一行的格式为：客户名称;邮件地址;联系电话;客户分组;备注;生日;性别;工作电话;家庭电话;QQ;MSN，各字段间用';'或者'TAB'制表符分隔" %}
+                {% trans "性别说明：'M'表示男'F'表示女" %}</p>
             <p class="red">eg：</p>
             <p>lihong;lh@domain.com;444444;catrogname;des;1980-04-24;F;tel;home tel;QQ;MSN</p>
             {% for data in form.import_error %}
-                <p><strong class="red"> 插入错误： {{ data }} </p>
+                <p><strong class="red"> {% trans "插入错误： " %}{{ data }} </p>
             {% endfor %}
         </div>
         <form class="form-horizontal form_import_add">
@@ -26,7 +27,7 @@
         </form>
     </div>
     <div class="modal-footer center">
-        <button type="button" class="btn btn-sm btn-info" onclick="clickDomainPublicSave('import_add','form_import_add')">保存</button>
-        <button type="button" class="btn btn-sm btn-danger" onclick="backDomainPublic()">返回</button>
+        <button type="button" class="btn btn-sm btn-info" onclick="clickDomainPublicSave('import_add','form_import_add')">{% trans "保存" %}</button>
+        <button type="button" class="btn btn-sm btn-danger" onclick="backDomainPublic()">{% trans "返回" %}</button>
     </div>
 </div>

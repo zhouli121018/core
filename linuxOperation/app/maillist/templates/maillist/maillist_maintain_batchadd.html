@@ -19,40 +19,40 @@
 
                         {% csrf_token %}
                         <div class="form-group">
-                            <label class="control-label  " for="id_permit">地址权限</label>
+                            <label class="control-label  " for="id_permit">{% trans "地址权限" %}</label>
                             <div class=" ">
                                 <select name="permit" class=" form-control" id="id_permit">
-                                    <option value="1">收发</option>
-                                    <option value="-1" selected="">只发</option>
-                                    <option value="0">只收</option>
+                                    <option value="1">{% trans "收发" %}</option>
+                                    <option value="-1" selected="">{% trans "只发" %}</option>
+                                    <option value="0">{% trans "只收" %}</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <div class=" ">
-                                <a data-toggle="modal" data-target="#tagModal" data-whatever="" class="btn btn-white btn-primary btn-xs" href="{% url 'maillist_maintain_select' %}">选择邮箱</a>
-                                <p class="help-block"> 选择邮箱添加到下面的输入框中进行添加邮箱</p>
+                                <a data-toggle="modal" data-target="#tagModal" data-whatever="" class="btn btn-white btn-primary btn-xs" href="{% url 'maillist_maintain_select' %}">{% trans "选择邮箱" %}</a>
+                                <p class="help-block"> {% trans "选择邮箱添加到下面的输入框中进行添加邮箱" %}</p>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label  " for="id_addresses">{% trans "添加数据" %}</label>
                             <div class=" ">
                                 <textarea name="addresses" id="id_addresses" rows="10" cols="40" class=" form-control"></textarea>
-                                <p class="help-block">可以选择邮箱添加输入，也可以手动输入！<br><br>
-                                    <strong>注意：</strong>
-                                    输入格式： 邮箱地址  名称<br>
-                                    邮箱地址和名称之间用tab隔开，名称可不输入，不输入时默认会查找该邮箱地址的姓名作为名称。<br>
-                                    一个邮箱地址占一行，其间不能有空格。<br>
-                                    用户名可以是字符、数字、上划线、下划线、点，但用户名的第一个字必须是数字或字母。<br>
-                                    如果输入的用户名是大写字母，系统将自动转为小写。<br>
-                                    如不填写邮箱后缀，将自动加上本域域名<br><br>
+                                <p class="help-block">{% trans "可以选择邮箱添加输入，也可以手动输入！" %}<br><br>
+                                    <strong>{% trans "注意：" %}</strong>
+                                    {% trans "输入格式： 邮箱地址  名称" %}<br>
+                                    {% trans "邮箱地址和名称之间用tab隔开，名称可不输入，不输入时默认会查找该邮箱地址的姓名作为名称。" %}<br>
+                                    {% trans "一个邮箱地址占一行，其间不能有空格。" %}<br>
+                                    {% trans "用户名可以是字符、数字、上划线、下划线、点，但用户名的第一个字必须是数字或字母。" %}<br>
+                                    {% trans "如果输入的用户名是大写字母，系统将自动转为小写。" %}<br>
+                                    {% trans "如不填写邮箱后缀，将自动加上本域域名" %}<br><br>
 
-                                    <strong>示例：</strong><br>
+                                    <strong>{% trans "示例：" %}</strong><br>
                                     <span style="color: blue;">user1</span><br>
                                     <span style="color: blue;">user2@domain.com</span><br>
-                                    <span style="color: blue;">user3@163.com 叔本华</span><br>
-                                    <span style="color: blue;">user4@gmail.com 尼采</span><br>
+                                    <span style="color: blue;">user3@163.com {% trans "叔本华" %}</span><br>
+                                    <span style="color: blue;">user4@gmail.com {% trans "尼采" %}</span><br>
                                 </p>
                             </div>
                         </div>
@@ -72,12 +72,12 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">加载中</h4>
+                    <h4 class="modal-title" id="myModalLabel">{% trans "加载中" %}</h4>
                 </div>
-                <div class="modal-body">页面加载中
+                <div class="modal-body">{% trans "页面加载中" %}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">关闭</button>
+                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">{% trans "关闭" %}</button>
                 </div>
             </div>
         </div>
@@ -112,4 +112,3 @@
     </script>
 
 {% endblock %}
-

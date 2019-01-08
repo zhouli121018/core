@@ -1,14 +1,15 @@
+{% load i18n %}
 {% load tags %}
 <div class="modal-content">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">自动转发设置 -> {{ mailbox_obj.username }} -> 修改</h4>
+        <h4 class="modal-title">{% trans "自动转发设置 -" %}> {{ mailbox_obj.username }} -> {% trans "修改" %}</h4>
     </div>
     <div class="modal-body" style="overflow:auto;">
         <form id="form_autoforward" method="post" action="">
             <table class="table table-bordered">
                 <tr>
-                    <td>是否启用</td>
+                    <td>{% trans "是否启用" %}</td>
                     <td>
                         <label class="inline" >
                             <input name="disabled" {% if obj.disabled == '-1' %}checked{% endif %} type="checkbox" class="ace ace-switch ace-switch-5">
@@ -17,14 +18,14 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="width:110px;">自动转发条件：</td>
+                    <td style="width:110px;">{% trans "自动转发条件：" %}</td>
                     <td>
                         <div>
                             <label class="radio-inline">
-                                <input type="radio" name="logic" value="all" {% if rule_obj.logic == 'all' %}checked{% endif %}> 符合以下所有选中的条件
+                                <input type="radio" name="logic" value="all" {% if rule_obj.logic == 'all' %}checked{% endif %}> {% trans "符合以下所有选中的条件" %}
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="logic" value="one" {% if rule_obj.logic == 'one' %}checked{% endif %}> 符合以下任意一个选中条件
+                                <input type="radio" name="logic" value="one" {% if rule_obj.logic == 'one' %}checked{% endif %}> {% trans "符合以下任意一个选中条件" %}
                             </label>
                         </div>
                         {% for c in con %}
@@ -40,17 +41,17 @@
                             <div class="col-sm-6 con_box">
                                 <div class="input-group">
                                     <div class="input-group-btn">
-                                        <button type="button" style="border:none;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_c" data_val="contains">包含</b> <span class="caret"></span></button>
+                                        <button type="button" style="border:none;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_c" data_val="contains">{% trans "包含" %}</b> <span class="caret"></span></button>
                                         <ul class="dropdown-menu">
-                                            <li><a href="contains">包含</a></li>
-                                            <li><a href="not_contains">不包含</a></li>
+                                            <li><a href="contains">{% trans "包含" %}</a></li>
+                                            <li><a href="not_contains">{% trans "不包含" %}</a></li>
                                         </ul>
                                     </div>
                                     <input type="text" name="con_val" class="form-control">
                                 </div>
                             </div>
                             <div class="col-sm-3">
-                                <button type="button" class="btn btn-sm btn-success add_btn_condition2">添加条件</button>
+                                <button type="button" class="btn btn-sm btn-success add_btn_condition2">{% trans "添加条件" %}</button>
                             </div>
                             {% endif %}
                             {% for child in c.children %}
@@ -61,21 +62,21 @@
                                     <div class="input-group-btn">
                                         <button type="button" style="border:none;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             {% if child.action == 'contains' %}
-                                            <b class="select_c" data_val="contains">包含</b> <span class="caret"></span>
+                                            <b class="select_c" data_val="contains">{% trans "包含" %}</b> <span class="caret"></span>
                                             {% elif child.action == 'not_contains' %}
-                                            <b class="select_c" data_val="not_contains">不包含</b> <span class="caret"></span>
+                                            <b class="select_c" data_val="not_contains">{% trans "不包含" %}</b> <span class="caret"></span>
                                             {% endif %}
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li><a href="contains">包含</a></li>
-                                            <li><a href="not_contains">不包含</a></li>
+                                            <li><a href="contains">{% trans "包含" %}</a></li>
+                                            <li><a href="not_contains">{% trans "不包含" %}</a></li>
                                         </ul>
                                     </div>
                                     <input type="text" value="{{ value.value|urllib_unquote }}" name="con_val" class="form-control">
                                 </div>
                             </div>
                             <div class="col-sm-3">
-                                <button type="button" class="btn btn-sm btn-success add_btn_condition1">添加条件</button>
+                                <button type="button" class="btn btn-sm btn-success add_btn_condition1">{% trans "添加条件" %}</button>
                             </div>
                             {% else %}
                             <div class="col-sm-12 con_box" style="margin-bottom: 2px;">
@@ -85,14 +86,14 @@
                                             <div class="input-group-btn">
                                                 <button type="button" style="border:none;border-right:1px solid #aaa;" class="btn btn-default dropdown-toggle and_or" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     {% if child.logic == 'all' %}
-                                                    <b class="select_b" data_val="1">并</b> <span class="caret"></span>
+                                                    <b class="select_b" data_val="1">{% trans "并" %}</b> <span class="caret"></span>
                                                     {% elif child.logic == 'one' %}
-                                                    <b class="select_b" data_val="-1">或</b> <span class="caret"></span>
+                                                    <b class="select_b" data_val="-1">{% trans "或" %}</b> <span class="caret"></span>
                                                     {% endif %}
                                                 </button>
                                                 <ul class="dropdown-menu" style="right:0;left:auto;min-width:52px;">
-                                                    <li><a href="1">并</a></li>
-                                                    <li><a href="-1">或</a></li>
+                                                    <li><a href="1">{% trans "并" %}</a></li>
+                                                    <li><a href="-1">{% trans "或" %}</a></li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -102,21 +103,21 @@
                                             <div class="input-group-btn">
                                                 <button type="button" style="border:none;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     {% if child.action == 'contains' %}
-                                                    <b class="select_c" data_val="contains">包含</b> <span class="caret"></span>
+                                                    <b class="select_c" data_val="contains">{% trans "包含" %}</b> <span class="caret"></span>
                                                     {% elif child.action == 'not_contains' %}
-                                                    <b class="select_c" data_val="not_contains">不包含</b> <span class="caret"></span>
+                                                    <b class="select_c" data_val="not_contains">{% trans "不包含" %}</b> <span class="caret"></span>
                                                     {% endif %}
                                                 </button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a href="contains">包含</a></li>
-                                                    <li><a href="not_contains">不包含</a></li>
+                                                    <li><a href="contains">{% trans "包含" %}</a></li>
+                                                    <li><a href="not_contains">{% trans "不包含" %}</a></li>
                                                 </ul>
                                             </div>
                                             <input type="text" value="{{ value.value|urllib_unquote }}" name="con_val" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
-                                        <button type="button" class="btn btn-sm btn-danger del_btn_condition">删除条件</button>
+                                        <button type="button" class="btn btn-sm btn-danger del_btn_condition">{% trans "删除条件" %}</button>
                                     </div>
                                 </div>
                             </div>
@@ -130,7 +131,7 @@
                             <div class="col-sm-3">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" {% if con_mail_size.disabled == -1 %}checked{% endif %} name="mailsize_chk" id="mailsize_chk"> 邮件大小：
+                                        <input type="checkbox" {% if con_mail_size.disabled == -1 %}checked{% endif %} name="mailsize_chk" id="mailsize_chk"> {% trans "邮件大小：" %}
                                     </label>
                                 </div>
                             </div>
@@ -140,14 +141,14 @@
                                 --
                                 <input type="number" value="{{ value.end }}" min="0" style="width:60px" name="mailsize_end" id="mailsize_end">
                                 {% endwith %}
-                                <span>(0表示不限制)</span>
+                                <span>{% trans "(0表示不限制)" %}</span>
                             </div>
 
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <td>执行时间：</td>
+                    <td>{% trans "执行时间：" %}</td>
                     <td>
                         <div id="exec_date_div">
                             <div style="margin-bottom:12px;">
@@ -163,22 +164,22 @@
                                 <div style="float:left;">
                                     <input type="radio" name="timeset" id="timeset2" {% if con_exec_date_week.disabled == -1 %}checked{% endif %} style="margin-right:10px;">
                                     <select name="week_start" id="week_start">
-                                        <option value="1" {% if value.day_start == '1' %}selected{% endif %}>星期一</option>
-                                        <option value="2" {% if value.day_start == '2' %}selected{% endif %}>星期二</option>
-                                        <option value="3" {% if value.day_start == '3' %}selected{% endif %}>星期三</option>
-                                        <option value="4" {% if value.day_start == '4' %}selected{% endif %}>星期四</option>
-                                        <option value="5" {% if value.day_start == '5' %}selected{% endif %}>星期五</option>
-                                        <option value="6" {% if value.day_start == '6' %}selected{% endif %}>星期六</option>
-                                        <option value="7" {% if value.day_start == '7' %}selected{% endif %}>星期日</option>
+                                        <option value="1" {% if value.day_start == '1' %}selected{% endif %}>{% trans "星期一" %}</option>
+                                        <option value="2" {% if value.day_start == '2' %}selected{% endif %}>{% trans "星期二" %}</option>
+                                        <option value="3" {% if value.day_start == '3' %}selected{% endif %}>{% trans "星期三" %}</option>
+                                        <option value="4" {% if value.day_start == '4' %}selected{% endif %}>{% trans "星期四" %}</option>
+                                        <option value="5" {% if value.day_start == '5' %}selected{% endif %}>{% trans "星期五" %}</option>
+                                        <option value="6" {% if value.day_start == '6' %}selected{% endif %}>{% trans "星期六" %}</option>
+                                        <option value="7" {% if value.day_start == '7' %}selected{% endif %}>{% trans "星期日" %}</option>
                                     </select> --
                                     <select name="week_end" id="week_end" style="margin-right:20px;" >
-                                        <option value="1" {% if value.day_end == '1' %}selected{% endif %}>星期一</option>
-                                        <option value="2" {% if value.day_end == '2' %}selected{% endif %}>星期二</option>
-                                        <option value="3" {% if value.day_end == '3' %}selected{% endif %}>星期三</option>
-                                        <option value="4" {% if value.day_end == '4' %}selected{% endif %}>星期四</option>
-                                        <option value="5" {% if value.day_end == '5' %}selected{% endif %}>星期五</option>
-                                        <option value="6" {% if value.day_end == '6' %}selected{% endif %}>星期六</option>
-                                        <option value="7" {% if value.day_end == '7' %}selected{% endif %}>星期日</option>
+                                        <option value="1" {% if value.day_end == '1' %}selected{% endif %}>{% trans "星期一" %}</option>
+                                        <option value="2" {% if value.day_end == '2' %}selected{% endif %}>{% trans "星期二" %}</option>
+                                        <option value="3" {% if value.day_end == '3' %}selected{% endif %}>{% trans "星期三" %}</option>
+                                        <option value="4" {% if value.day_end == '4' %}selected{% endif %}>{% trans "星期四" %}</option>
+                                        <option value="5" {% if value.day_end == '5' %}selected{% endif %}>{% trans "星期五" %}</option>
+                                        <option value="6" {% if value.day_end == '6' %}selected{% endif %}>{% trans "星期六" %}</option>
+                                        <option value="7" {% if value.day_end == '7' %}selected{% endif %}>{% trans "星期日" %}</option>
                                     </select>
                                 </div>
                                 <div class="input-group bootstrap-timepicker" style="width: 120px;float:left">
@@ -197,23 +198,23 @@
                                 {% endwith %}
                             </div>
                             <p style="padding-left:24px;">
-                                设置的时间段为：从当日的  0 点到当日的 24 点
+                                {% trans "设置的时间段为：从当日的  0 点到当日的 24 点" %}
                             </p>
 
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <td>转发到：</td>
+                    <td>{% trans "转发到：" %}</td>
                     <td>
                         <textarea class="form-control" rows="5" name="forward_body" id="forward_body">{{ obj.forward }}</textarea>
                     </td>
                 </tr>
                 <tr>
-                    <td>转发选项:</td>
+                    <td>{% trans "转发选项:" %}</td>
                     <td>
                         <input name="keep_mail" id="keep_mail" {% if obj.keep_mail == '1' %}checked{% endif %} type="checkbox">
-                        同时将信件保存在本邮箱内
+                        {% trans "同时将信件保存在本邮箱内" %}
                     </td>
                 </tr>
                 <tr>
@@ -231,12 +232,11 @@
                         <input type="hidden" name="mailsize_con" value="" id="mailsize_con">
                         <input type="hidden" name="action" value="edit" id="forward_action_id">
                         <input type="submit" value="y" id="submit_ok" style="display: none;">
-                        <button type="button" onclick="save_forward({{ mailbox_obj.id }})" class="btn btn-sm btn-primary">修改</button>
-                        <button type="button" id="id_return"  class="btn btn-sm btn-danger cancel-btn" href="{% url 'mailbox_forward' mailbox_obj.id %}" data-target="#modal-forward" data-dismiss="modal" data-toggle="modal">返回</button>
+                        <button type="button" onclick="save_forward({{ mailbox_obj.id }})" class="btn btn-sm btn-primary">{% trans "修改" %}</button>
+                        <button type="button" id="id_return"  class="btn btn-sm btn-danger cancel-btn" href="{% url 'mailbox_forward' mailbox_obj.id %}" data-target="#modal-forward" data-dismiss="modal" data-toggle="modal">{% trans "返回" %}</button>
                     </td>
                 </tr>
             </table>
         </form>
     </div>
 </div>
-

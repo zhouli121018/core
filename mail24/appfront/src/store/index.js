@@ -64,9 +64,13 @@ const store = new Vuex.Store({
     filter_contact:[],
     login_after:{},
     login_before:{},
-    skin_order:''
+    skin_order:'',
+    language:cookie.getCookie('webvue_language')||'zh'
   },
   getters:{
+    getLanguage(state){
+      return state.language;
+    },
     getLoginBefore(state){
       return state.login_before;
     },
@@ -144,6 +148,9 @@ const store = new Vuex.Store({
     }
   },
   mutations:{
+    setLanguage(state,param){
+      state.language = param
+    },
     setSkinOrder(state,param){
       state.skin_order = param
     },
@@ -237,6 +244,9 @@ const store = new Vuex.Store({
 
   },
   actions: {
+    setLanguageA(store,param){
+      store.commit('setLanguage',param);
+    },
     setLoginBeforeA(store,param){
       store.commit('setLoginBefore',param);
     },

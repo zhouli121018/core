@@ -21,10 +21,10 @@
                 ×
             </button>
             <i class="fa-fw fa fa-success"></i>
-            成功添加 <span class="text-success">{{ success }}</span> 个邮箱, 添加失败 <span class="text-danger"> {{ failures|length }}</span> 个邮箱：
+            {% trans "成功添加 " %}<span class="text-success">{{ success }}</span> {% trans "个邮箱, 添加失败 " %}<span class="text-danger"> {{ failures|length }}</span> {% trans "个邮箱：" %}
             {% if failures %}
             <br>
-            <i class="fa-fw fa fa-success"></i>失败数据重新放入<a href="#tip">输入框</a>中，您可以重新编辑提交
+            <i class="fa-fw fa fa-success"></i>{% trans "失败数据重新放入" %}<a href="#tip">{% trans "输入框" %}</a>{% trans "中，您可以重新编辑提交" %}
             <pre>{% for f in failures %}
 <span class="text-danger">{{ f.0 }}:</span> {{ f.1 }}
 {% endfor %}</pre>
@@ -106,44 +106,44 @@
                     <table class="table  table-bordered  ">
                         <tbody>
                         <tr>
-                            <td class="text-right">格式说明：</td>
+                            <td class="text-right">{% trans "格式说明：" %}</td>
                             <td colspan="5">
-                                <p>用户名可以是字符、数字、上划线、下划线，但用户名的第一个字必须是数字或字母。
-                                    如果输入的用户名是大写字母，系统将自动转为小写！</p>
-                                <p><span class="red">注意：</span>每行的格式为
+                                <p>{% trans "用户名可以是字符、数字、上划线、下划线，但用户名的第一个字必须是数字或字母。" %}
+                                    {% trans "如果输入的用户名是大写字母，系统将自动转为小写！" %}</p>
+                                <p><span class="red">{% trans "注意：" %}</span>{% trans "每行的格式为" %}
                                     <span class="blue">
-                    用户名 真实名称 所属部门 职位 工号 手机号码 电话号码 邮箱容量 网盘容量 排序权重 QQ号码 出生日期 密码
-                    </span> 之间用“TAB”符号隔开
-                                    “邮箱容量”和“网盘容量”的单位为“M”</p>
-                                <p>文件内容举例:</p>
-                                <textarea   rows="4" class="form-control">用户名 真实名称 所属部门 职位 工号 手机号码 电话号码 邮箱容量 网盘容量 排序权重 QQ号码 出生日期 密码
-wangwu 王五 技术部 高级工程师 U0003 13600000000 13600000000 500 500 0 88776655 1985-01-01 password1
-lisi 李四 技术部 中级工程师 U0004 13600000001 13600000001 500 500 0 88776656 1988-01-01 password2</textarea>
+                    {% trans "用户名 真实名称 所属部门 职位 工号 手机号码 电话号码 邮箱容量 网盘容量 排序权重 QQ号码 出生日期 密码" %}
+                    </span> {% trans "之间用“TAB”符号隔开" %}
+                                    “{% trans "邮箱容量”和“网盘容量”的单位为“M”" %}</p>
+                                <p>{% trans "文件内容举例:" %}</p>
+                                <textarea   rows="4" class="form-control">{% trans "用户名 真实名称 所属部门 职位 工号 手机号码 电话号码 邮箱容量 网盘容量 排序权重 QQ号码 出生日期 密码" %}
+wangwu {% trans "王五 技术部 高级工程师 U0003 13600000000 13600000000 500 500 0 88776655 1985-01-01 password1" %}
+lisi {% trans "李四 技术部 中级工程师 U0004 13600000001 13600000001 500 500 0 88776656 1988-01-01 password2" %}</textarea>
                                 <div class="hr hr-18 dotted hr-double"></div>
-                                <p>另外:有相同的子部门时，所属部门用 - 隔开如：</p>
-                                <textarea  rows="2" class="form-control">mike 王五 华北区-财务部 财务主管 U0003 13600000000 13600000000 500 500 0 88776655 1985-01-01 password3</textarea>
+                                <p>{% trans "另外:有相同的子部门时，所属部门用 - 隔开如：" %}</p>
+                                <textarea  rows="2" class="form-control">mike {% trans "王五 华北区-财务部 财务主管 U0003 13600000000 13600000000 500 500 0 88776655 1985-01-01 password3" %}</textarea>
                                 <div class="hr hr-18 dotted hr-double"></div>
-                                <p>标准操作步骤：</p>
+                                <p>{% trans "标准操作步骤：" %}</p>
                                 <ul>
-                                    <li>1、根据"格式说明"里的范例将用户数据保存为excel或者txt/csv格式的文件，分隔符为tab</li>
-                                    <li>2、点击表格下方的“导入文件”将文件提交，点击此处<a class="red" href="{% url 'mailbox_export_batch_example' %}">导出范例文件</a></li>
-                                    <li>3、显示名称 为空，则默认为选择列表"所属部门"的设置值</li>
-                                    <li>4、邮箱大小或网盘大小为空，则默认为邮箱容量或网盘容量的设置值</li>
-                                    <li>5、所属部门为空，则默认为选择列表"所属部门"的设置值</li>
-                                    <li>6、从"帐号列表"--"导出excel"导出的文件，在删掉"邮箱地址"列后可直接导入</li>
-                                    <li>7、请将要导入的文件内容保存为GBK编码</li>
+                                    <li>1、{% trans "根据" %}'{% trans "格式说明" %}'{% trans "里的范例将用户数据保存为excel或者txt/csv格式的文件，分隔符为tab" %}</li>
+                                    <li>2、{% trans "点击表格下方的“导入文件”将文件提交，点击此处" %}<a class="red" href="{% url 'mailbox_export_batch_example' %}">{% trans "导出范例文件" %}</a></li>
+                                    <li>3、{% trans "显示名称 为空，则默认为选择列表" %}'{% trans "所属部门" %}'{% trans "的设置值" %}</li>
+                                    <li>4、{% trans "邮箱大小或网盘大小为空，则默认为邮箱容量或网盘容量的设置值" %}</li>
+                                    <li>5、{% trans "‘所属部门’为空，则默认为选择列表“所属部门”的设置值" %}</li>
+                                    <li>6、{% trans "从“帐号列表”--“导出excel”导出的文件，在删掉“邮箱地址”列后可直接导入" %}</li>
+                                    <li>7、{% trans "请将要导入的文件内容保存为GBK编码" %}</li>
                                 </ul>
                             </td>
                         </tr>
                         <tr >
-                            <td class="text-right" style="width:100px;">默认邮箱容量：</td>
+                            <td class="text-right" style="width:100px;">{% trans "默认邮箱容量：" %}</td>
                             <td>
                                 <div class="input-group">
                                     <input type="number" name="quota_mailbox" value="{{ mb_quota_def }}" class="form-control">
                                     <span class="input-group-addon">MB</span>
                                 </div>
                             </td>
-                            <td class="text-right">默认网盘容量：</td>
+                            <td class="text-right">{% trans "默认网盘容量：" %}</td>
                             <td>
                                 <div class="input-group">
                                     <input type="number" name="quota_netdisk" value="{{ nd_quota_def }}" class="form-control">
@@ -152,18 +152,18 @@ lisi 李四 技术部 中级工程师 U0004 13600000001 13600000001 500 500 0 88
                             </td>
                         </tr>
                         <tr>
-                            <td class="text-right">默认所属部门：</td>
+                            <td class="text-right">{% trans "默认所属部门：" %}</td>
                             <td>
                                 <div style="position:relative;">
                                     <div id="input_box">
-                                        <input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">
+                                        <input type="text" value="" readonly placeholder='{% trans "点击选择部门" %}' class="form-control department_choice">
                                         <input type="hidden" class="id_dept_id" name="option_value_dpt{{ d.id }}">
                                     </div>
                                     <div class="widget-box widget-color-blue2 email_box_tree" id="tree_box" style="max-width:100%;position:absolute;top:32px;z-index:10;">
                                         <button type="button" class="btn btn-danger btn-sm pull-right close_btn" style="">&times;</button>
                                         <div class="widget-body" style="padding-right:20px;">
                                             <div style="padding:20px  6px 0;">
-                                                <input type="text" class="search_input form-control" placeholder="输入关键字搜索...">
+                                                <input type="text" class="search_input form-control" placeholder='{% trans "输入关键字搜索..." %}'>
                                             </div>
                                             <div class="widget-main padding-8" style="height:auto;">
                                                 <ul id="tree"></ul>
@@ -172,16 +172,16 @@ lisi 李四 技术部 中级工程师 U0004 13600000001 13600000001 500 500 0 88
                                     </div>
                                 </div>
                             </td>
-                            <td class="text-right">兼容模式：</td>
+                            <td class="text-right">{% trans "兼容模式：" %}</td>
                             <td>
                                 <select name="compatible_id" class="tree_select form-control">
-                                    <option value="1">U-Mail Linux 版数据格式</option>
-                                    <option value="2">U-Mail Windows 版数据格式</option>
+                                    <option value="1">U-Mail Linux {% trans "版数据格式" %}</option>
+                                    <option value="2">U-Mail Windows {% trans "版数据格式" %}</option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
-                            <td class="text-right" style="width:100px;">导入文件：</td>
+                            <td class="text-right" style="width:100px;">{% trans "导入文件：" %}</td>
                             <td>
                             <input type="file" name="txtfile" required="" id="id_txtfile">
                             </td>
@@ -192,11 +192,11 @@ lisi 李四 技术部 中级工程师 U0004 13600000001 13600000001 500 500 0 88
                         <div class="text-center">
                             <button class="btn btn-info" type="submit">
                                 <i class="ace-icon fa fa-check bigger-110"></i>
-                                保存
+                                {% trans "保存" %}
                             </button>
                             <button class="btn" type="reset">
                                 <i class="ace-icon fa fa-undo bigger-110"></i>
-                                重置
+                                {% trans "重置" %}
                             </button>
                         </div>
                     </div>
@@ -224,11 +224,11 @@ lisi 李四 技术部 中级工程师 U0004 13600000001 13600000001 500 500 0 88
 function checkForm(form) {
     var checkpass = "{{ severe_pass|default_if_none:0 }}";
     if(!checkFormat(form.quota_mailbox.value, 'number')) {
-        alert("{% trans '默认邮箱容量格式错误，无法提交数据！' %}");
+        alert("{% trans "默认邮箱容量格式错误，无法提交数据！" %}");
         return false;
     }
     if(!checkFormat(form.quota_netdisk.value, 'number')) {
-        alert("{% trans '默认网盘容量格式错误，无法提交数据！' %}");
+        alert("{% trans "默认网盘容量格式错误，无法提交数据！" %}");
         return false;
     }
     return true;

@@ -4,17 +4,18 @@
 '''
 
 import base64
+from django.utils.translation import ugettext_lazy as _
 
 
 DOMAIN_BASIC_PARAMS = (
-    (u"cf_limit_mailbox_cnt", u"限定邮箱数量"),
+    (u"cf_limit_mailbox_cnt", _(u"限定邮箱数量")),
     #(u"cf_limit_alias_cnt", u"限定别名数量"),        #这个开关没人用
-    (u"cf_limit_mailbox_size", u"限定邮箱空间总容量"),
-    (u"cf_limit_netdisk_size", u"限定网络硬盘总容量"),
-    (u"cf_limit_email_size", u"发送邮件限制大小"),
+    (u"cf_limit_mailbox_size", _(u"限定邮箱空间总容量")),
+    (u"cf_limit_netdisk_size", _(u"限定网络硬盘总容量")),
+    (u"cf_limit_email_size", _(u"发送邮件限制大小")),
     #(u"cf_limit_attach_size", u"WebMail单附件大小"),    #新版webmail不需要这个按钮
-    (u"cf_def_mailbox_size", u"用户邮箱默认容量"),
-    (u"cf_def_netdisk_size", u"网络硬盘默认容量"),
+    (u"cf_def_mailbox_size", _(u"用户邮箱默认容量")),
+    (u"cf_def_netdisk_size", _(u"网络硬盘默认容量")),
 )
 
 DOMAIN_BASIC_PARAMS_VALUE = (
@@ -40,18 +41,18 @@ DOMAIN_BASIC_PARAMS_TYPE = (
 )
 
 DOMAIN_BASIC_STATUS = (
-    (u"mailboxUsed", u"已分配邮箱"),
-    (u"aliasUsed", u"已分配别名"),
-    (u"spaceUsed", u"已分配邮箱空间"),
-    (u"netdiskUsed", u"已分配网盘空间"),
+    (u"mailboxUsed", _(u"已分配邮箱")),
+    (u"aliasUsed", _(u"已分配别名")),
+    (u"spaceUsed", _(u"已分配邮箱空间")),
+    (u"netdiskUsed", _(u"已分配网盘空间")),
 )
 
 DOMAIN_REG_LOGIN_PARAMS = (
-    (u"sw_user_reg", u"用户申请邮箱功能"),
-    (u"sw_reg_ratify", u"管理员审核开通"),
+    (u"sw_user_reg", _(u"用户申请邮箱功能")),
+    (u"sw_reg_ratify", _(u"管理员审核开通")),
     #(u"sw_link_admin", u"管理员登陆链接显示在邮件系统登陆页"),      #无语加无用的开关
-    (u"sw_welcome_letter", u"新用户欢迎信功能"),
-    (u"sw_agreement", u"新用户欢迎信功能"),
+    (u"sw_welcome_letter", _(u"新用户欢迎信功能")),
+    (u"sw_agreement", _(u"新用户欢迎信功能")),
 )
 
 DOMAIN_REG_LOGIN_VALUE = (
@@ -71,7 +72,7 @@ DOMAIN_REG_LOGIN_TYPE = (
 )
 
 DOMAIN_REG_LOGIN_WELCOME_PARAMS = (
-    (u"cf_welcome_letter", u"欢迎信内容"),
+    (u"cf_welcome_letter", _(u"欢迎信内容")),
 )
 
 DOMAIN_REG_LOGIN_WELCOME_VALUE = (
@@ -83,7 +84,7 @@ DOMAIN_REG_LOGIN_WELCOME_TYPE = (
 )
 
 DOMAIN_REG_LOGIN_AGREE_PARAMS = (
-    (u"cf_agreement", u"用户注册协议"),
+    (u"cf_agreement", _(u"用户注册协议")),
 )
 
 DOMAIN_REG_LOGIN_AGREE_VALUE = (
@@ -95,11 +96,11 @@ DOMAIN_REG_LOGIN_AGREE_TYPE = (
 )
 
 DOMAIN_SYS_RECV_PARAMS = (
-    (u"limit_send", u"发信功能限制"),
-    (u"limit_recv", u"收信功能限制"),
-    (u"limit_pop", u"POP/POPS邮箱收取功能"),
-    (u"limit_imap", u"IMAP/IMAPS客户端邮件收发功能"),
-    (u"limit_smtp", u"SMTP/SMTPS客户端邮件发送功能"),
+    (u"limit_send", _(u"发信功能限制")),
+    (u"limit_recv", _(u"收信功能限制")),
+    (u"limit_pop", _(u"POP/POPS邮箱收取功能")),
+    (u"limit_imap", _(u"IMAP/IMAPS客户端邮件收发功能")),
+    (u"limit_smtp", _(u"SMTP/SMTPS客户端邮件发送功能")),
 )
 
 DOMAIN_SYS_RECV_VALUE = (
@@ -119,9 +120,9 @@ DOMAIN_SYS_RECV_TYPE = (
 )
 
 DOMAIN_SYS_SECURITY_PARAMS = (
-    (u"sw_def_login_limit_mail", u"开启修改密码通知信"),
-    (u"cf_def_safe_login", u"安全登录限制"),
-    (u"cf_ip_limit", u"登陆IP限制"),
+    (u"sw_def_login_limit_mail", _(u"开启修改密码通知信")),
+    (u"cf_def_safe_login", _(u"安全登录限制")),
+    (u"cf_ip_limit", _(u"登陆IP限制")),
 )
 
 DOMAIN_SYS_SECURITY_VALUE = (
@@ -137,7 +138,7 @@ DOMAIN_SYS_SECURITY_TYPE = (
 )
 
 DOMAIN_SYS_SECURITY_PWD_PARAMS = (
-    (u"cf_def_login_limit_mail", u"修改密码通知信"),
+    (u"cf_def_login_limit_mail", _(u"修改密码通知信")),
 )
 
 DOMAIN_SYS_SECURITY_PWD_VALUES = (
@@ -149,12 +150,12 @@ DOMAIN_SYS_SECURITY_PWD_TYPE = (
 )
 
 DOMAIN_SYS_PASSWORD_PARAMS = (
-    (u"sw_pwdtimeout", u"定期密码修改设置"),
-    (u"cf_pwd_days", u"密码有效期间"),
+    (u"sw_pwdtimeout", _(u"定期密码修改设置")),
+    (u"cf_pwd_days", _(u"密码有效期间")),
     #(u"cf_first_change_pwd", u"首次登录修改密码"),
-    (u"cf_pwd_type", u"密码组成字符种类"),
-    (u"cf_pwd_rule", u"其他密码规则设置"),
-    (u"cf_pwd_forbid", u"用户密码强度低于规则设置"),
+    (u"cf_pwd_type", _(u"密码组成字符种类")),
+    (u"cf_pwd_rule", _(u"其他密码规则设置")),
+    (u"cf_pwd_forbid", _(u"用户密码强度低于规则设置")),
 )
 
 DOMAIN_SYS_PASSWORD_VALUE = (
@@ -177,9 +178,9 @@ DOMAIN_SYS_PASSWORD_TYPE = (
 
 #密码组成字符种类
 DOMAIN_SYS_PASSWORD_TYPE_LIMIT = (
-    (u"-1", u"必须包含两种字符"),
-    (u"1", u"必须包含三种字符"),
-    (u"2", u"必须包含四种字符"),
+    (u"-1", _(u"必须包含两种字符")),
+    (u"1", _(u"必须包含三种字符")),
+    (u"2", _(u"必须包含四种字符")),
 )
 
 #其他密码规则设置
@@ -230,10 +231,10 @@ DOMAIN_SYS_PASSWORD_RULE_LIMIT = (
 )
 
 DOMAIN_SYS_INTERFACE_PARAMS = (
-    (u"sw_auth_api", u"第三方登录验证"),
-    (u"sw_api_pwd_encry", u"接口修改密码是否加密"),
-    (u"sw_impush", u"即时通讯软件集成"),
-    (u"sw_xss_token", u"登录防止xss启用token验证"),
+    (u"sw_auth_api", _(u"第三方登录验证")),
+    (u"sw_api_pwd_encry", _(u"接口修改密码是否加密")),
+    (u"sw_impush", _(u"即时通讯软件集成")),
+    (u"sw_xss_token", _(u"登录防止xss启用token验证")),
 )
 
 DOMAIN_SYS_INTERFACE_VALUE = (
@@ -251,7 +252,7 @@ DOMAIN_SYS_INTERFACE_TYPE = (
 )
 
 DOMAIN_SYS_INTERFACE_AUTH_API_PARAMS = (
-    (u"cf_auth_api", u"第三方登录验证"),
+    (u"cf_auth_api", _(u"第三方登录验证")),
 )
 
 DOMAIN_SYS_INTERFACE_AUTH_API_VALUE = (
@@ -263,7 +264,7 @@ DOMAIN_SYS_INTERFACE_AUTH_API_TYPE = (
 )
 
 DOMAIN_SYS_INTERFACE_IM_API_PARAMS = (
-    (u"cf_impush_api", u"即时通讯软件集成"),
+    (u"cf_impush_api", _(u"即时通讯软件集成")),
 )
 
 DOMAIN_SYS_INTERFACE_IM_API_VALUE = (
@@ -276,17 +277,17 @@ DOMAIN_SYS_INTERFACE_IM_API_TYPE = (
 
 DOMAIN_SYS_OTHERS_PARAMS = (
     #(u"sw_size_limit_recv",        u"邮箱容量满后拒绝接收邮件"),  这个开关没意义，去掉了
-    (u"sw_auto_clean",         u"邮箱空间定时清理功能"),
-    (u"sw_online_attach_switch",      u"客户端网络附件开关"),
+    (u"sw_auto_clean",         _(u"邮箱空间定时清理功能")),
+    (u"sw_online_attach_switch",      _(u"客户端网络附件开关")),
     #(u"sw_auto_inbox",          u"登录默认打开收件箱"),
-    (u"sw_filter_duplicate_mail",    u"收件时是否过滤重复邮件"),
+    (u"sw_filter_duplicate_mail",    _(u"收件时是否过滤重复邮件")),
     #这个开关没有意义，应该作为通用设置存在
-    (u"sw_display_list",       u"邮件列表发来邮件显示邮件列表名称"),
-    (u"sw_welcome_letter", u"新用户欢迎信功能"),
-    (u"sw_agreement", u"新用户欢迎信功能"),
-    (u"sw_recvsms",               u"短信通知接收邮件"),
-    (u"sw_sendsms",               u"短信通知发送邮件"),
-    (u"cf_sms_conf",              u"短信模块设置"),
+    (u"sw_display_list",       _(u"邮件列表发来邮件显示邮件列表名称")),
+    (u"sw_welcome_letter", _(u"新用户欢迎信功能")),
+    (u"sw_agreement", _(u"新用户欢迎信功能")),
+    (u"sw_recvsms",               _(u"短信通知接收邮件")),
+    (u"sw_sendsms",               _(u"短信通知发送邮件")),
+    (u"cf_sms_conf",              _(u"短信模块设置")),
 )
 
 DOMAIN_SYS_OTHERS_VALUE = (
@@ -318,8 +319,8 @@ DOMAIN_SYS_OTHERS_TYPE = (
 )
 
 DOMAIN_SYS_OTHERS_SPACE_PARAMS = (
-    (u"cf_spaceclean",        u"邮箱空间清理"),
-    (u"cf_spacemail",         u"邮箱空间清理"),
+    (u"cf_spaceclean",        _(u"邮箱空间清理")),
+    (u"cf_spacemail",         _(u"邮箱空间清理")),
 )
 
 DOMAIN_SYS_OTHERS_SPACE_VALUE = (
@@ -333,7 +334,7 @@ DOMAIN_SYS_OTHERS_SPACE_TYPE = (
 )
 
 DOMAIN_SYS_OTHERS_ATTACH_PARAMS = (
-    (u"cf_online_attach",        u"客户端网络附件"),
+    (u"cf_online_attach",        _(u"客户端网络附件")),
 )
 
 DOMAIN_SYS_OTHERS_ATTACH_VALUE = (
@@ -345,7 +346,7 @@ DOMAIN_SYS_OTHERS_ATTACH_TYPE = (
 )
 
 DOMAIN_SIGN_PARAMS = (
-    (u'cf_domain_signature',u'域签名'),
+    (u'cf_domain_signature',_(u'域签名')),
 )
 
 DOMAIN_SIGN_VALUE = (
@@ -357,7 +358,7 @@ DOMAIN_SIGN_TYPE = (
 )
 
 DOMAIN_SIGN_PERSONAL_PARAMS = (
-    (u'cf_personal_sign',u'个人签名模板'),
+    (u'cf_personal_sign',_(u'个人签名模板')),
 )
 
 DOMAIN_SIGN_PERSONAL_VALUE = (
@@ -369,7 +370,7 @@ DOMAIN_SIGN_PERSONAL_TYPE = (
 )
 
 # ------个人签名 的输入参数 --------
-DOMAIN_PERSONAL_DEFAULT_CODE = """<p><span style="font-size:16px;"><strong>{NAME}&nbsp; [<span style="font-size:14px;">{POSITION}</span>]{DEPARTMENT}<br /></strong></span></p><p><span style="white-space:normal;font-size:16px;"><strong>{TELEPHONE}</strong></span></p><p><br /><strong></strong></p><p><span style="font-size:14px;"><strong>这里填公司名称<br /></strong></span></p><p>地址：这里填公司地址</p><p>电话：<span style="white-space:normal;">{WORKPHONE}&nbsp;&nbsp; 传真：这里填传真号码&nbsp; 邮箱：{EMAIL}<br /></span></p><br /><p><span style="white-space:normal;"><br /></span></p>"""
+DOMAIN_PERSONAL_DEFAULT_CODE = """<p><span style="font-size:16px;"><strong>{NAME}&nbsp; [<span style="font-size:14px;">{POSITION}</span>]{DEPARTMENT}<br /></strong></span></p><p><span style="white-space:normal;font-size:16px;"><strong>{TELEPHONE}</strong></span></p><p><br /><strong></strong></p><p><span style="font-size:14px;_(u"><strong>这里填公司名称<br /></strong></span></p><p>地址：这里填公司地址</p><p>电话：<span style=")white-space:normal;_(u">{WORKPHONE}&nbsp;&nbsp; 传真：这里填传真号码&nbsp; 邮箱：{EMAIL}<br /></span></p><br /><p><span style=")white-space:normal;"><br /></span></p>"""
 DOMAIN_PERSONAL_DEFAULT_CODE=base64.encodestring(DOMAIN_PERSONAL_DEFAULT_CODE)
 DOMAIN_PERSONAL_DEFAULT_CODE=u"{}".format(DOMAIN_PERSONAL_DEFAULT_CODE)
 DOMAIN_SIGN_PERSONAL_VALUE_DEFAULT = (
@@ -436,13 +437,13 @@ DOMAIN_MODULE_MAIL_PARAMS = (
     #(u'sw_mailpaper', u'去掉信纸模块'),
 
     #(u'sw_auto_receipt', u'自动发送回执功能'),  这个开关在新版没什么意义
-    (u'sw_mail_in_reply_to', u'添加Reply-To到邮件头'),
-    (u'sw_mail_recall_notify', u'邮件召回成功后提示收件人'),
-    (u'sw_save_client_sent_email', u'保存客户端已发送邮件'),
-    (u'sw_oab_dumpbutton', u'通讯录导出按钮开关'),
-    (u'oab_show_mod', u'企业通讯录设置'),    #新版webmail使用
-    (u'sw_oab_share', u'其他域通讯录共享'),
-    (u'sw_cab', u'公共通讯录'),
+    (u'sw_mail_in_reply_to', _(u'添加Reply-To到邮件头')),
+    (u'sw_mail_recall_notify', _(u'邮件召回成功后提示收件人')),
+    (u'sw_save_client_sent_email', _(u'保存客户端已发送邮件')),
+    (u'sw_oab_dumpbutton', _(u'通讯录导出按钮开关')),
+    (u'oab_show_mod', _(u'企业通讯录设置')),    #新版webmail使用
+    (u'sw_oab_share', _(u'其他域通讯录共享')),
+    (u'sw_cab', _(u'公共通讯录')),
 )
 
 DOMAIN_MODULE_MAIL_VALUE = (
@@ -479,7 +480,7 @@ DOMAIN_MODULE_MAIL_TYPE = (
 
 DOMAIN_MODULE_SET_PARAMS = (
     #(u'sw_change_userinfo', u'个人资料功能'),
-    (u'sw_change_pass', u'密码修改功能'),
+    (u'sw_change_pass', _(u'密码修改功能')),
     #(u'sw_options', u'参数设置功能'),
     #(u'sw_signature', u'邮件签名功能'),
 
@@ -487,14 +488,14 @@ DOMAIN_MODULE_SET_PARAMS = (
     #(u'sw_auto_forward', u'自动转发功能'),
     #(u'sys_userbwlist', u'黑白名单功能'),
     #(u'sw_autoforward_visible', u'设置自动转发默认值'),
-    (u'sw_mailboxmove', u'邮箱搬家功能'),
-    (u'sw_feedback', u'邮箱意见反馈功能'),
+    (u'sw_mailboxmove', _(u'邮箱搬家功能')),
+    (u'sw_feedback', _(u'邮箱意见反馈功能')),
 
-    (u'sw_zhaohui', u'邮件召回记录查看'),
-    (u'sw_cfilter', u'邮件过滤功能'),
-    (u'sw_smtptransfer_visible', u'SMTP外发邮件代理'),
-    (u'sw_realaddress_alert', u'代发邮件地址提醒'),
-    (u'sw_time_mode', u'邮件内容中时间显示'),
+    (u'sw_zhaohui', _(u'邮件召回记录查看')),
+    (u'sw_cfilter', _(u'邮件过滤功能')),
+    (u'sw_smtptransfer_visible', _(u'SMTP外发邮件代理')),
+    (u'sw_realaddress_alert', _(u'代发邮件地址提醒')),
+    (u'sw_time_mode', _(u'邮件内容中时间显示')),
 )
 
 DOMAIN_MODULE_SET_VALUE = (
@@ -561,26 +562,26 @@ DOMAIN_SECRET_GRADE_2 = u'1'   #机密
 DOMAIN_SECRET_GRADE_3 = u'2'   #绝密
 
 DOMAIN_SECRET_GRADE_ALL = (
-    (DOMAIN_SECRET_GRADE_1, u"秘密"),
-    (DOMAIN_SECRET_GRADE_2, u"机密"),
-    (DOMAIN_SECRET_GRADE_3, u"绝密"),
+    (DOMAIN_SECRET_GRADE_1, _(u"秘密")),
+    (DOMAIN_SECRET_GRADE_2, _(u"机密")),
+    (DOMAIN_SECRET_GRADE_3, _(u"绝密")),
 )
 
 DOMAIN_PUBLIC_GENDER_CHOICES = (
-    (u'M',u'男'),
-    (u'F',u'女'),
+    (u'M',_(u'男')),
+    (u'F',_(u'女')),
 )
 
 DOMAIN_LIST_PARAMS = (
-    (u"cf_limit_mailbox_cnt", u"限定邮箱数量"),
-    (u"cf_limit_mailbox_size", u"限定邮箱空间总容量"),
-    (u"cf_limit_netdisk_size", u"限定网络硬盘总容量"),
-    (u"cf_limit_email_size", u"发送邮件限制大小"),
+    (u"cf_limit_mailbox_cnt", _(u"限定邮箱数量")),
+    (u"cf_limit_mailbox_size", _(u"限定邮箱空间总容量")),
+    (u"cf_limit_netdisk_size", _(u"限定网络硬盘总容量")),
+    (u"cf_limit_email_size", _(u"发送邮件限制大小")),
     #(u"cf_limit_attach_size", u"WebMail单附件大小"),
-    (u"cf_def_mailbox_size", u"用户邮箱默认容量"),
-    (u"cf_def_netdisk_size", u"网络硬盘默认容量"),
-    (u"limit_send", u"发信功能限制"),
-    (u"limit_recv", u"收信功能限制"),
+    (u"cf_def_mailbox_size", _(u"用户邮箱默认容量")),
+    (u"cf_def_netdisk_size", _(u"网络硬盘默认容量")),
+    (u"limit_send", _(u"发信功能限制")),
+    (u"limit_recv", _(u"收信功能限制")),
 )
 
 DOMAIN_LIST_PARAMS_VALUE = (
@@ -608,16 +609,16 @@ DOMAIN_LIST_PARAMS_TYPE = (
 )
 
 DOMAIN_WEB_BASIC_PARAMS = (
-    (u"cf_title", u"页面标题"),
-    (u"cf_login_page", u"登录页面自动输入域名"),
-    (u"sw_icp_show", u"ICP 备案是否显示"),
-    (u"cf_icp_number", u"ICP 备案号"),
-    (u"cf_icp_url", u"ICP 备案链接地址"),
-    (u"cf_faq_url", u"帮助文件地址"),
-    (u"sw_unique_login", u"登录系统地点限制"),
+    (u"cf_title", _(u"页面标题")),
+    (u"cf_login_page", _(u"登录页面自动输入域名")),
+    (u"sw_icp_show", _(u"ICP 备案是否显示")),
+    (u"cf_icp_number", _(u"ICP 备案号")),
+    (u"cf_icp_url", _(u"ICP 备案链接地址")),
+    (u"cf_faq_url", _(u"帮助文件地址")),
+    (u"sw_unique_login", _(u"登录系统地点限制")),
     #(u"sw_login_captcha_error_num", u"启用验证码功能"),
-    (u"cf_logout_url", u"登出跳转地址"),
-    (u"sw_login_ssl", u"SSL访问"),
+    (u"cf_logout_url", _(u"登出跳转地址")),
+    (u"sw_login_ssl", _(u"SSL访问")),
 )
 
 DOMAIN_WEB_BASIC_VALUE = (
@@ -646,8 +647,8 @@ DOMAIN_WEB_BASIC_TYPE = (
 )
 
 DOMAIN_WEB_ANOUNCE_PARAMS = (
-    (u"cf_announce_set", u"设置系统公告"),
-    (u"cf_announce", u"系统公告"),
+    (u"cf_announce_set", _(u"设置系统公告")),
+    (u"cf_announce", _(u"系统公告")),
 )
 
 DOMAIN_WEB_ANOUNCE_VALUE = (
@@ -661,8 +662,8 @@ DOMAIN_WEB_ANOUNCE_YPE = (
 )
 
 DOMAIN_LOGO_PARAMS = (
-    (u"cf_webmail_logo", u"Webmail Logo 设置"),
-    (u"cf_login_logo", u"登录页面 Logo 设置"),
+    (u"cf_webmail_logo", _(u"Webmail Logo 设置")),
+    (u"cf_login_logo", _(u"登录页面 Logo 设置")),
 )
 
 DOMAIN_LOGO_VALUE = (
@@ -676,18 +677,18 @@ DOMAIN_LOGO_TYPE = (
 )
 
 DOMAIN_LOGIN_TEMP_LIST = (
-    (u"default", u"默认"),
-    (u"manual", u"手动域名"),
-    (u"adlogin", u"广告风格"),
-    (u"gao", u"大气管理员"),
-    (u"test", u"轮播图"),
-    (u"center", u"登录框居中"),
-    (u"sanya", u"背景图风格"),
+    (u"default", _(u"默认")),
+    (u"manual", _(u"手动域名")),
+    (u"adlogin", _(u"广告风格")),
+    (u"gao", _(u"大气管理员")),
+    (u"test", _(u"轮播图")),
+    (u"center", _(u"登录框居中")),
+    (u"sanya", _(u"背景图风格")),
 )
 
 DOMAIN_WEB_AD_PARAMS = (
     #(u"cf_adsetting", u"页面广告设置"),   #老版本webmail
-    (u"cf_adsetting2", u"页面广告设置"),   #新版本webmail
+    (u"cf_adsetting2", _(u"页面广告设置")),   #新版本webmail
 )
 
 DOMAIN_WEB_AD_VALUE = (
@@ -700,7 +701,7 @@ DOMAIN_WEB_AD_TYPE = (
 
 DOMAIN_WEB_LINK_PARAMS = (
     #(u"cf_webmail_link", u"首页链接设置"),      #老版本webmail
-    (u"cf_webmail_link2", u"首页链接设置"),      #新版本webmail
+    (u"cf_webmail_link2", _(u"首页链接设置")),      #新版本webmail
 )
 
 DOMAIN_WEB_LINK_VALUE = (

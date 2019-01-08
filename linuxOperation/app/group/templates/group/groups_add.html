@@ -316,11 +316,10 @@
         function formatStr(arr){
             for(var i=0,html='';i<arr.length;i++){
                 var o = arr[i]
-                html += '<tr><td>'+o["name"]+'</td><td class="text-center"><button type="button" class="btn btn-warning btn-xs dept_delete_btn" data_id="'+o["id"]+'">删除</button></td></tr>'
+                html += '<tr><td>'+o["name"]+'</td><td class="text-center"><button type="button" class="btn btn-warning btn-xs dept_delete_btn" data_id="'+o["id"]+'">{% trans "删除" %}</button></td></tr>'
             }
             $('#deptNames').html(html);
         }
     </script>
 
 {% endblock %}
-

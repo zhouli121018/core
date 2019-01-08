@@ -12,7 +12,7 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.template.response import TemplateResponse
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.db.models import Q, Count, Sum
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 from django.views.decorators.cache import cache_page
 from wsgiref.util import FileWrapper
 from django.utils import timezone
@@ -250,12 +250,12 @@ def maillog_ajax(request):
     return HttpResponse(json.dumps(rs), content_type="application/json")
 
 def maillog_export(request):
-    lists = [[u'序号', u'用户名称', u'用户姓名', u'部门', u'职位', u'工号', u'发送权限', u'接收权限', u'邮箱容量（MB）', u'网络硬盘容量（MB）', u'已用邮箱容量（MB）', u'邮箱状态']]
+    lists = [[_(u'序号'), _(u'用户名称'), _(u'用户姓名'), _(u'部门'), _(u'职位'), _(u'工号'), _(u'发送权限'), _(u'接收权限'), _(u'邮箱容量（MB）'), _(u'网络硬盘容量（MB）'), _(u'已用邮箱容量（MB）'), _(u'邮箱状态')]]
     mailbox_lists, start_num, page, length  = maillog_mailbox_search(request)
     current_row = 1
     for d in mailbox_lists:
         data = cal_mailboxstat(current_row, d)
-        disabled_name = u"启用" if data["disabled"]!="1" else u"禁用"
+        disabled_name = _(u"启用") if data["disabled"]!="1" else _(u"禁用")
         lists.append([current_row, data["username"], data["name"], data["department"], data["position"],
                       data["worknumber"], data["sendpermit"], data["recvpermit"], data["quotamailbox"], data["quotanetdisk"], data["quotamailbox_used"], disabled_name ])
         current_row += 1
@@ -379,7 +379,7 @@ def maillog_user_single(flag, lists, d, condition, lists_in_data=None, lists_out
 
     obj_box = Mailbox.objects.filter(id=mailbox_id).first()
     if not obj_box:
-        name = u"已删除邮箱_%s"%mailbox_id
+        name = _(u"已删除邮箱_%s")%mailbox_id
     else:
         name = obj_box.name
 
@@ -515,8 +515,8 @@ def maillog_user_ajax(request):
 
 @licence_required
 def maillog_user_export(request):
-    lists = [[u'序号', u'用户名', u'已用容量', u'邮件数量', u'总流量', u'入站数量', u'入站流量',
-              u'垃圾过滤数量', u'垃圾过滤流量', u'出站数量', u'出站流量', u'成功数量', u'成功流量', u'失败数量', u'失败流量', u'垃圾率', u'出站成功率']]
+    lists = [[_(u'序号'), _(u'用户名'), _(u'已用容量'), _(u'邮件数量'), _(u'总流量'), _(u'入站数量'), _(u'入站流量'),
+              _(u'垃圾过滤数量'), _(u'垃圾过滤流量'), _(u'出站数量'), _(u'出站流量'), _(u'成功数量'), _(u'成功流量'), _(u'失败数量'), _(u'失败流量'), _(u'垃圾率'), _(u'出站成功率')]]
     flag, user_lists, condition, start_num, page, length, showmax = maillog_user_search(request)
     current_row = 1
 
@@ -588,16 +588,16 @@ def maillog_stat_export(request):
     spam_reject = get_mail_stat_data(domain_id,mailbox_id,"spam_reject")
     spam_virus = get_mail_stat_data(domain_id,mailbox_id,"spam_virus")
 
-    nearday_name = u"{}天总计".format(save_days)
-    lists = [[u'序号', u'名称', u'近期总计', nearday_name, u'今日', u'昨日', u'2日之前', u'3日之前',u'4日之前', u'5日之前', u'6日之前']]
+    nearday_name = _(u"{}天总计").format(save_days)
+    lists = [[_(u'序号'), _(u'名称'), _(u'近期总计'), nearday_name, _(u'今日'), _(u'昨日'), _(u'2日之前'), _(u'3日之前'),_(u'4日之前'), _(u'5日之前'), _(u'6日之前')]]
     rows_mail =(
-        (u"SMTP邮件(收信)",smtp_in),
-        (u"SMTP邮件(发信)",smtp_out),
-        (u"IMAP会话",imap_session),
-        (u"POP3会话",pop3_session),
-        (u"已接收的垃圾邮件", spam_receive),
-        (u"已拒绝的垃圾邮件", spam_reject),
-        (u"已拒绝的病毒邮件", spam_virus),
+        (_(u"SMTP邮件(收信)"),smtp_in),
+        (_(u"SMTP邮件(发信)"),smtp_out),
+        (_(u"IMAP会话"),imap_session),
+        (_(u"POP3会话"),pop3_session),
+        (_(u"已接收的垃圾邮件"), spam_receive),
+        (_(u"已拒绝的垃圾邮件"), spam_reject),
+        (_(u"已拒绝的病毒邮件"), spam_virus),
     )
     current_row = 1
     for name, data in rows_mail:
@@ -678,10 +678,10 @@ def maillog_list_export(request):
     else:
         lists = MailLog.objects.all().order_by("-recv_time")[:max_show]
 
-    lists2 = [[u'序号', u'时间', u'用户名', u'类型', u'发件邮箱', u'收件邮箱', u'发件服务器', u'收件服务器', u'邮件标题', u'附件名称', u'附件大小', u'投递位置', u'结果', u'投递提示']]
+    lists2 = [[_(u'序号'), _(u'时间'), _(u'用户名'), _(u'类型'), _(u'发件邮箱'), _(u'收件邮箱'), _(u'发件服务器'), _(u'收件服务器'), _(u'邮件标题'), _(u'附件名称'), _(u'附件大小'), _(u'投递位置'), _(u'结果'), _(u'投递提示')]]
     current_row = 1
     for d in lists:
-        result = u'成功' if d.get_result == '1' else u'失败'
+        result = _(u'成功') if d.get_result == '1' else _(u'失败')
         lists2.append([current_row, d.get_time, d.get_username, d.get_type, d.send_mail, d.recv_mail, d.senderip, d.rcv_server, d.subject, d.attachment, d.get_attach_size, d.folder, result, d.remark])
         current_row += 1
     return ExcelResponse(lists2, "maillog_list", encoding='gbk')
@@ -840,7 +840,7 @@ def user_log_export(request):
     lists = get_user_log_lists(request)
     lists = lists[:1000]
     lists2 = [
-        [u'序号', u'时间', u'用户名', u'真实姓名', u'邮箱', u'手机号', u'微信昵称', u'头像', u'操作类型', u'模块动作', u'结果', u'详情', u'客户端IP',]]
+        [_(u'序号'), _(u'时间'), _(u'用户名'), _(u'真实姓名'), _(u'邮箱'), _(u'手机号'), _(u'微信昵称'), _(u'头像'), _(u'操作类型'), _(u'模块动作'), _(u'结果'), _(u'详情'), _(u'客户端IP'),]]
     current_row = 1
     for d in lists:
         name, realname, mailbox, tel_mobile, nickname, img = "", "", "", "", "", ""

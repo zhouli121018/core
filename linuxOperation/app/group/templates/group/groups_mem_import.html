@@ -4,8 +4,8 @@
 {% load bootstrap %}
 {% block title %} {% trans "组成员导入" %} {% endblock %}
 {% block breadcrumb %}
-    <li> <a href="#">{% trans " 组权限管理 " %}</a> </li>
-    <li> <a href="#">{% trans " 组成员列表 " %}</a> </li>
+    <li> <a href="#">{% trans "组权限管理 " %}</a> </li>
+    <li> <a href="#">{% trans "组成员列表 " %}</a> </li>
     <li class="active">{% trans "组成员导入" %}</li>
 {% endblock %}
 {% block page-content %}
@@ -20,8 +20,8 @@
                     <div class="panel-heading">{% trans "组成员导入" %}</div>
                     <div class="panel-body">
                         <p class="help-block">
-                           <span class="text-success"><span style="color:blue">说明: </span>
-                               <br>支持导入txt、csv、excel后缀的模板文件<br>文件格式如：<br>
+                           <span class="text-success"><span style="color:blue">{% trans "说明: " %}</span>
+                               <br>{% trans "支持导入txt、csv、excel后缀的模板文件" %}<br>{% trans "文件格式如：" %}<br>
                             </span>
                             <textarea style="word-break: normal;" rows="4" cols="33" >
 user1@test.com

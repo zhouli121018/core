@@ -14,8 +14,8 @@ FAIL2BAN_PROTO = (
 )
 
 FAIL2BAN_DISABLE = (
-    (-1, u'启用'),
-    (1, u'禁用'),
+    (-1, _(u'启用')),
+    (1, _(u'禁用')),
 )
 
 class Fail2Ban(models.Model):
@@ -40,7 +40,7 @@ class Fail2Ban(models.Model):
     def get_proto(self):
         proto_list = self.proto.split(u",")
         if "all" in proto_list:
-            return u"所有"
+            return _(u"所有")
         return self.proto
 
 class Fail2BanTrust(models.Model):
@@ -76,15 +76,15 @@ class Fail2BanBlock(models.Model):
         try:
             expire = int(self.expire_time)
         except:
-            return u"已失效"
+            return _(u"已失效")
         if expire <=0:
-            return u"已失效"
+            return _(u"已失效")
         try:
             t_tuple = time.localtime(expire)
             time_val = time.strftime('%Y-%m-%d %H:%M:%S',t_tuple)
             return u"{}".format(time_val)
         except:
-            return u"已失效"
+            return _(u"已失效")
 
 class PasswordWeakList(models.Model):
     password = models.CharField(_(u"弱密码"), max_length=32, unique=True)

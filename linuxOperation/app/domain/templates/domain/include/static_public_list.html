@@ -14,7 +14,7 @@
                     <a type="button" class="btn btn-info btn-sm"  onclick="clickDomainPublicButton('import_add');">{% trans "批量导入" %}</a>
                     <a type="button" class="btn btn-info btn-sm"  href="{% url 'domain_public_export' %}">{% trans "批量导出" %}</a>
                     <a type="button" class="btn btn-purple btn-sm" onclick="clickDomainPublicButton('import_del');" target="_blank">{% trans "批量删除" %}</a>
-                    <a type="button" class="btn btn-primary btn-sm"  onclick="clickDomainPublicButton('type_list');" >客户分类</a>
+                    <a type="button" class="btn btn-primary btn-sm"  onclick="clickDomainPublicButton('type_list');" >{% trans "客户分类" %}</a>
                 </div>
             </div>
         </div>
@@ -35,13 +35,13 @@
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th>序号</th>
-                        <th>姓名</th>
-                        <th>邮箱地址</th>
-                        <th>分类</th>
-                        <th>移动电话</th>
-                        <th>工作/住宅电话</th>
-                        <th>操作</th>
+                        <th>{% trans "序号" %}</th>
+                        <th>{% trans "姓名" %}</th>
+                        <th>{% trans "邮箱地址" %}</th>
+                        <th>{% trans "分类" %}</th>
+                        <th>{% trans "移动电话" %}</th>
+                        <th>{% trans "工作/住宅电话" %}</th>
+                        <th>{% trans "操作" %}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -63,12 +63,12 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">加载中</h4>
+                    <h4 class="modal-title" id="myModalLabel">{% trans "加载中" %}</h4>
                 </div>
-                <div class="modal-body">页面加载中
+                <div class="modal-body">{% trans "页面加载中" %}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">关闭</button>
+                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">{% trans "关闭" %}</button>
                 </div>
             </div>
         </div>
@@ -254,7 +254,7 @@
                 type:"POST",
                 data:str+"&action=save"+"&button="+button,
                 success:function(data){
-                    $('#domain_public').html('<div>保存中...</div>');
+                    $('#domain_public').html('<div>{% trans "保存中..." %}</div>');
                                     setTimeout(function(){
                                         $('#domain_public').html(data);
                                         $('.modal-backdrop').remove();
@@ -264,7 +264,7 @@
         }
 
         function Delete(id, name){
-            var str = '确定要删除发件人 "%s"？';
+            var str = '{% trans "确定要删除发件人 " %}"%s"？';
             str = str.replace(/%s/, name);
             $('#id').val(id);
             $('#action').val('delete');
@@ -275,7 +275,7 @@
                     type:"POST",
                     data:str,
                     success:function(data){
-                        $('#domain_public').html('<div>保存中...</div>');
+                        $('#domain_public').html('<div>{% trans "保存中..." %}</div>');
                                         setTimeout(function(){
                                             $('#domain_public').html(data);
                                             $('.modal-backdrop').remove();
@@ -306,7 +306,7 @@
                     type:"POST",
                     data:str,
                     success:function(data){
-                        $('#domain_public').html('<div>保存中...</div>');
+                        $('#domain_public').html('<div>{% trans "保存中..." %}</div>');
                                         setTimeout(function(){
                                             $('#domain_public').html(data);
                                             $('.modal-backdrop').remove();

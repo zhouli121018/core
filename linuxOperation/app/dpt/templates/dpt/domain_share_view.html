@@ -22,7 +22,7 @@
             <div class="pull-right">
                 <form id="search_form" class="form-inline pull-right" role="form" action="" style="text-align: left">
                     {{ form|bootstrap_flag }}
-                    <button type="button" class="btn btn-primary btn-sm" onclick="Javascript: ShareDomain()">添加</button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="Javascript: ShareDomain()">{% trans "添加" %}</button>
                     <button type="button" class="btn btn-purple btn-sm" onclick="location.href='{% url 'domain_share' %}'">{% trans "返回列表" %}</button>
                 </form>
             </div>
@@ -50,14 +50,14 @@
                             </td>
                             <td>
                                 {% if d.is_default %}
-                                    <span class="label label-xlg label-success arrowed-in arrowed-in-right">是</span>
+                                    <span class="label label-xlg label-success arrowed-in arrowed-in-right">{% trans "是" %}</span>
                                 {% else %}
-                                    <span class="label label-xlg label-light arrowed-in arrowed-in-right">否</span>
+                                    <span class="label label-xlg label-light arrowed-in arrowed-in-right">{% trans "否" %}</span>
                                 {% endif %}
                             </td>
                             <td>
-                                <a type="button" class="red delete btn btn-white btn-info btn-xs" href="Javascript: SetDefault('{{ d.id }}')">设为默认</a>
-                                <a type="button" class="red delete btn btn-white btn-danger btn-xs" href="Javascript: Delete({{ d.id }})">删除</a>
+                                <a type="button" class="red delete btn btn-white btn-info btn-xs" href="Javascript: SetDefault('{{ d.id }}')">{% trans "设为默认" %}</a>
+                                <a type="button" class="red delete btn btn-white btn-danger btn-xs" href="Javascript: Delete({{ d.id }})">{% trans "删除" %}</a>
                             </td>
                         </tr>
                     {% endfor %}

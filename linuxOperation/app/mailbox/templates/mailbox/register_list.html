@@ -7,7 +7,7 @@
 {% block page-content %}
     <div class="modal-header">
         <div class="col-xs-6">
-            <h4 class="modal-title">用户注册列表</h4>
+            <h4 class="modal-title">{% trans "用户注册列表" %}</h4>
             <ul class="nav nav-tabs" id="myTab">
                 <li>
                     <a href="{% url 'mailbox_account' %}">
@@ -47,9 +47,9 @@
     </div>
     <div class="modal-body">
         <label style="margin-right:20px;">
-            <input id="id_show_status" type="radio" {% if show_status == 'wait' %} checked {% endif %} onchange="ClickShowStatus('wait')"><span>等待列表</span>
-            <input id="id_show_status2" type="radio" {% if show_status == 'permit' %} checked {% endif %} onchange="ClickShowStatus('permit')"><span>批准列表</span>
-            <input id="id_show_status3" type="radio" {% if show_status == 'reject' %} checked {% endif %} onchange="ClickShowStatus('reject')"><span>拒绝列表</span>
+            <input id="id_show_status" type="radio" {% if show_status == 'wait' %} checked {% endif %} onchange="ClickShowStatus('wait')"><span>{% trans "等待列表" %}</span>
+            <input id="id_show_status2" type="radio" {% if show_status == 'permit' %} checked {% endif %} onchange="ClickShowStatus('permit')"><span>{% trans "批准列表" %}</span>
+            <input id="id_show_status3" type="radio" {% if show_status == 'reject' %} checked {% endif %} onchange="ClickShowStatus('reject')"><span>{% trans "拒绝列表" %}</span>
         </label>
         <form id="id_form" method="POST">
             <div class="tab-content">
@@ -225,4 +225,3 @@
         }
     </script>
 {% endblock %}
-

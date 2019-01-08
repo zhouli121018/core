@@ -1,6 +1,7 @@
+{% load i18n %}
 <div class="modal-content">
     <div class="modal-header">
-        <h4 class="modal-title">批量删除客户</h4>
+        <h4 class="modal-title">{% trans "批量删除客户" %}</h4>
     </div>
     <div class="modal-body">
         <div class="modal-body">
@@ -10,13 +11,13 @@
                 </button>
 
                 <p><strong class="red">
-                    注：
-                </strong>请输入客户名称，一个名称占一行。</p>
+                    {% trans "注：" %}
+                </strong>{% trans "请输入客户名称，一个名称占一行。" %}</p>
                 <p class="red">eg：</p>
-                <p>张三</p>
-                <p>李四</p>
+                <p>{% trans "张三" %}</p>
+                <p>{% trans "李四" %}</p>
                 {% for data in form.import_error %}
-                    <p><strong class="red"> 删除错误： {{ data }} </p>
+                    <p><strong class="red"> {% trans "删除错误： " %}{{ data }} </p>
                 {% endfor %}
             </div>
         <form class="form-horizontal form_import_del">
@@ -27,7 +28,7 @@
         </form>
     </div>
     <div class="modal-footer center">
-        <button type="button" class="btn btn-sm btn-info" onclick="clickDomainPublicSave('import_del','form_import_del')">保存</button>
-        <button type="button" class="btn btn-sm btn-danger" onclick="backDomainPublic()">返回</button>
+        <button type="button" class="btn btn-sm btn-info" onclick="clickDomainPublicSave('import_del','form_import_del')">{% trans "保存" %}</button>
+        <button type="button" class="btn btn-sm btn-danger" onclick="backDomainPublic()">{% trans "返回" %}</button>
     </div>
 </div>

@@ -6,28 +6,28 @@
 <div class="modal-content">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">修改信息 {{ mailbox_id }}-> {{ obj.username }}</h4>
+        <h4 class="modal-title">{% trans "修改信息 " %}{{ mailbox_id }}-> {{ obj.username }}</h4>
     </div>
     <div class="modal-body">
         <form id="edit_account_form" method="POST">
             <ul class="nav nav-tabs" id="tabContent">
                 <li class="active">
-                    <a href="#mailbox_info" data-toggle="tab">邮箱基本信息</a>
+                    <a href="#mailbox_info" data-toggle="tab">{% trans "邮箱基本信息" %}</a>
                 </li>
                 <li>
-                    <a href="#user_info" data-toggle="tab">用户信息</a>
+                    <a href="#user_info" data-toggle="tab">{% trans "用户信息" %}</a>
                 </li>
                 <li>
-                    <a href="#user_group" data-toggle="tab">用户组</a>
+                    <a href="#user_group" data-toggle="tab">{% trans "用户组" %}</a>
                 </li>
                 <li>
-                    <a href="#user_department" data-toggle="tab">用户归属部门</a>
+                    <a href="#user_department" data-toggle="tab">{% trans "用户归属部门" %}</a>
                 </li>
                 <li>
-                    <a href="#user_belong" data-toggle="tab">用户归属邮件列表</a>
+                    <a href="#user_belong" data-toggle="tab">{% trans "用户归属邮件列表" %}</a>
                 </li>
                 <li>
-                    <a href="#relation_share" data-toggle="tab">关联共享邮箱列表（默认完全控制权限）</a>
+                    <a href="#relation_share" data-toggle="tab">{% trans "关联共享邮箱列表（默认完全控制权限）" %}</a>
                 </li>
             </ul>
             <div class="tab-content">
@@ -35,7 +35,7 @@
                 <input type="hidden" name="mailbox_id" value="{{ obj.id }}" />
                 <input type="hidden" name="action" value="edit" />
                 <div id="mailbox_info" class="tab-pane active">
-                    <div class="table-header" style="margin-bottom:8px;">邮箱基本信息</div>
+                    <div class="table-header" style="margin-bottom:8px;">{% trans "邮箱基本信息" %}</div>
                     <div class="form-horizontal row">
                         <div class="col-sm-6" style="border-right:2px dashed #eee;">
                             <div class="col-sm-11">
@@ -43,7 +43,7 @@
                                 {{ form.password1|bootstrap_horizontal:"col-sm-4"}}
                                 {{ form.pwd_days|bootstrap_horizontal:"col-sm-4"}}
                                 <div class="form-group">
-                                    <label class="control-label col-sm-4 " >邮箱状态：</label>
+                                    <label class="control-label col-sm-4 " >{% trans "邮箱状态：" %}</label>
                                     <div class="  col-sm-8 ">
                                         <label class="inline">
                                             <input name="disabled" class="ace ace-switch ace-switch-5"  {% if obj.disabled == '-1' %}checked=""{% endif %} type="checkbox">
@@ -61,68 +61,68 @@
                                 <!--{{ form.limit_send|bootstrap_horizontal:"col-sm-4"}}-->
                                 {% if form.instance.pk %}
                                     <div class="form-group">
-                                        <label class="control-label col-sm-4 " for="id_limit_send">发信权限：</label>
+                                        <label class="control-label col-sm-4 " for="id_limit_send">{% trans "发信权限：" %}</label>
                                         <div class="  col-sm-8 ">
                                             <select name="limit_send" class=" form-control limit_send_select" id="id_limit_send" disabled>
-                                              <option value="-1" {% if form.instance.getSendLimit == '-1' %} selected {% endif %}>不限制邮件发送</option>
-                                              <option value="1" {% if form.instance.getSendLimit == '1' %} selected {% endif %}>禁止发送所有邮件</option>
-                                              <option value="2" {% if form.instance.getSendLimit == '2' %} selected {% endif %}>只发送本地域邮件</option>
-                                              <option value="3" {% if form.instance.getSendLimit == '3' %} selected {% endif %}>可发送指定外域邮件</option>
-                                              <option value="4" {% if form.instance.getSendLimit == '4' %} selected {% endif %}>可发送本地所有域邮件</option>
+                                              <option value="-1" {% if form.instance.getSendLimit == '-1' %} selected {% endif %}>{% trans "不限制邮件发送" %}</option>
+                                              <option value="1" {% if form.instance.getSendLimit == '1' %} selected {% endif %}>{% trans "禁止发送所有邮件" %}</option>
+                                              <option value="2" {% if form.instance.getSendLimit == '2' %} selected {% endif %}>{% trans "只发送本地域邮件" %}</option>
+                                              <option value="3" {% if form.instance.getSendLimit == '3' %} selected {% endif %}>{% trans "可发送指定外域邮件" %}</option>
+                                              <option value="4" {% if form.instance.getSendLimit == '4' %} selected {% endif %}>{% trans "可发送本地所有域邮件" %}</option>
                                             </select>
-                                            <button type="button" class="btn btn-xs btn-info"  {% if form.limit_send.value != '3' %} style="display:none;" {% endif %} data-toggle="modal" data-target="#allow_send_email_dress">设置允许名单</button>
+                                            <button type="button" class="btn btn-xs btn-info"  {% if form.limit_send.value != '3' %} style="display:none;" {% endif %} data-toggle="modal" data-target="#allow_send_email_dress">{% trans "设置允许名单" %}</button>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-sm-4 " for="id_limit_recv">收信权限：</label>
+                                        <label class="control-label col-sm-4 " for="id_limit_recv">{% trans "收信权限：" %}</label>
                                         <div class="  col-sm-8 ">
 
                                             <select name="limit_recv" class=" form-control limit_send_select" id="id_limit_recv" disabled>
-                                              <option value="-1" {% if form.instance.getRecvLimit == '-1' %} selected {% endif %} >不限制邮件接收</option>
-                                              <option value="1" {% if form.instance.getRecvLimit == '1' %} selected {% endif %}>禁止接收所有邮件</option>
-                                              <option value="2" {% if form.instance.getRecvLimit == '2' %} selected {% endif %}>只接收本地域邮件</option>
-                                              <option value="3" {% if form.instance.getRecvLimit == '3' %} selected {% endif %}>可接收指定外域邮件</option>
-                                              <option value="4" {% if form.instance.getRecvLimit == '4' %} selected {% endif %}>可接收本地所有域邮件</option>
+                                              <option value="-1" {% if form.instance.getRecvLimit == '-1' %} selected {% endif %} >{% trans "不限制邮件接收" %}</option>
+                                              <option value="1" {% if form.instance.getRecvLimit == '1' %} selected {% endif %}>{% trans "禁止接收所有邮件" %}</option>
+                                              <option value="2" {% if form.instance.getRecvLimit == '2' %} selected {% endif %}>{% trans "只接收本地域邮件" %}</option>
+                                              <option value="3" {% if form.instance.getRecvLimit == '3' %} selected {% endif %}>{% trans "可接收指定外域邮件" %}</option>
+                                              <option value="4" {% if form.instance.getRecvLimit == '4' %} selected {% endif %}>{% trans "可接收本地所有域邮件" %}</option>
                                             </select>
-                                            <button type="button" class="btn btn-xs btn-info"  {% if form.limit_recv.value != '3' %} style="display:none;" {% endif %} data-toggle="modal" data-target="#allow_send_email_dress">设置允许名单</button>
+                                            <button type="button" class="btn btn-xs btn-info"  {% if form.limit_recv.value != '3' %} style="display:none;" {% endif %} data-toggle="modal" data-target="#allow_send_email_dress">{% trans "设置允许名单" %}</button>
                                         </div>
                                     </div>
                                 {% else %}
                                     <div class="form-group">
-                                        <label class="control-label col-sm-4 " for="id_limit_send">发信权限{{ form.limit_send.value }}：</label>
+                                        <label class="control-label col-sm-4 " for="id_limit_send">{% trans "发信权限" %}{{ form.limit_send.value }}：</label>
                                         <div class="  col-sm-8 ">
                                             <select name="limit_send" class=" form-control limit_send_select" id="id_limit_send">
-                                              <option value="-1" {% if form.limit_send.value == '-1' %} selected {% endif %}>不限制邮件发送</option>
-                                              <option value="1" {% if form.limit_send.value == '1' %} selected {% endif %}>禁止发送所有邮件</option>
-                                              <option value="2" {% if form.limit_send.value == '2' %} selected {% endif %}>只发送本地域邮件</option>
-                                              <option value="3" {% if form.limit_send.value == '3' %} selected {% endif %}>可发送指定外域邮件</option>
-                                              <option value="4" {% if form.limit_send.value == '4' %} selected {% endif %}>可发送本地所有域邮件</option>
+                                              <option value="-1" {% if form.limit_send.value == '-1' %} selected {% endif %}>{% trans "不限制邮件发送" %}</option>
+                                              <option value="1" {% if form.limit_send.value == '1' %} selected {% endif %}>{% trans "禁止发送所有邮件" %}</option>
+                                              <option value="2" {% if form.limit_send.value == '2' %} selected {% endif %}>{% trans "只发送本地域邮件" %}</option>
+                                              <option value="3" {% if form.limit_send.value == '3' %} selected {% endif %}>{% trans "可发送指定外域邮件" %}</option>
+                                              <option value="4" {% if form.limit_send.value == '4' %} selected {% endif %}>{% trans "可发送本地所有域邮件" %}</option>
                                             </select>
-                                            <button type="button" class="btn btn-xs btn-info"  {% if form.limit_send.value != '3' %} style="display:none;" {% endif %} data-toggle="modal" data-target="#allow_send_email_dress">设置允许名单</button>
+                                            <button type="button" class="btn btn-xs btn-info"  {% if form.limit_send.value != '3' %} style="display:none;" {% endif %} data-toggle="modal" data-target="#allow_send_email_dress">{% trans "设置允许名单" %}</button>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label col-sm-4 " for="id_limit_recv">收信权限：</label>
+                                        <label class="control-label col-sm-4 " for="id_limit_recv">{% trans "收信权限：" %}</label>
                                         <div class="  col-sm-8 ">
                                             <select name="limit_recv" class=" form-control limit_send_select" id="id_limit_recv" >
-                                              <option value="-1" {% if form.limit_recv.value == '-1' %} selected {% endif %}>不限制邮件接收</option>
-                                              <option value="1" {% if form.limit_recv.value == '1' %} selected {% endif %}>禁止接收所有邮件</option>
-                                              <option value="2" {% if form.limit_recv.value == '2' %} selected {% endif %}>只接收本地域邮件</option>
-                                              <option value="3" {% if form.limit_recv.value == '3' %} selected {% endif %}>可接收指定外域邮件</option>
-                                              <option value="4" {% if form.limit_recv.value == '4' %} selected {% endif %}>可接收本地所有域邮件</option>
+                                              <option value="-1" {% if form.limit_recv.value == '-1' %} selected {% endif %}>{% trans "不限制邮件接收" %}</option>
+                                              <option value="1" {% if form.limit_recv.value == '1' %} selected {% endif %}>{% trans "禁止接收所有邮件" %}</option>
+                                              <option value="2" {% if form.limit_recv.value == '2' %} selected {% endif %}>{% trans "只接收本地域邮件" %}</option>
+                                              <option value="3" {% if form.limit_recv.value == '3' %} selected {% endif %}>{% trans "可接收指定外域邮件" %}</option>
+                                              <option value="4" {% if form.limit_recv.value == '4' %} selected {% endif %}>{% trans "可接收本地所有域邮件" %}</option>
                                             </select>
-                                            <button type="button" class="btn btn-xs btn-info"  {% if form.limit_recv.value != '3' %} style="display:none;" {% endif %} data-toggle="modal" data-target="#allow_send_email_dress">设置允许名单</button>
+                                            <button type="button" class="btn btn-xs btn-info"  {% if form.limit_recv.value != '3' %} style="display:none;" {% endif %} data-toggle="modal" data-target="#allow_send_email_dress">{% trans "设置允许名单" %}</button>
                                         </div>
                                     </div>
                                 {% endif %}
                                 {% if request.user.licence_validsms %}
                                     <div class="form-group">
-                                        <label class="control-label col-sm-4" for="id_recvsms">短信接收设置：</label>
+                                        <label class="control-label col-sm-4" for="id_recvsms">{% trans "短信接收设置：" %}</label>
                                         <div class="  col-sm-8 ">
                                             <select name="recvsms" class=" form-control form_recvsms" id="id_recvsms">
-                                              <option value="1" {% if form.recvsms.value == '1' %} selected {% endif %}>启用</option>
-                                              <option value="-1" {% if form.recvsms.value == '-1' %} selected {% endif %}>禁用</option>
-                                              <option value="0" {% if form.recvsms.value == '0' %} selected {% endif %}>白名单</option>
+                                              <option value="1" {% if form.recvsms.value == '1' %} selected {% endif %}>{% trans "启用" %}</option>
+                                              <option value="-1" {% if form.recvsms.value == '-1' %} selected {% endif %}>{% trans "禁用" %}</option>
+                                              <option value="0" {% if form.recvsms.value == '0' %} selected {% endif %}>{% trans "白名单" %}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -131,7 +131,7 @@
                                 {{ form.limit_login|bootstrap_horizontal:"col-sm-4"}}
                                 {{ form.ip_limit|bootstrap_horizontal:"col-sm-4"}}
                                 <div class="form-group">
-                                    <label class="control-label col-sm-4 " for="id_change_pwd">登录修改密码：</label>
+                                    <label class="control-label col-sm-4 " for="id_change_pwd">{% trans "登录修改密码：" %}</label>
                                     <div class="  col-sm-8 ">
                                         <label class="inline">
                                             <input name="change_pwd" class="ace ace-switch ace-switch-5" id="id_change_pwd" {% if obj.change_pwd == '1' %}checked=""{% endif %} type="checkbox">
@@ -141,7 +141,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-4 " for="id_enable_share">邮箱共享：</label>
+                                    <label class="control-label col-sm-4 " for="id_enable_share">{% trans "邮箱共享：" %}</label>
                                     <div class="  col-sm-8 ">
                                         <label class="inline">
                                             <input name="enable_share" class="ace ace-switch ace-switch-5" id="id_enable_share" {% if obj.enable_share == 1 %}checked=""{% endif %} type="checkbox">
@@ -158,11 +158,11 @@
                             <input type="hidden" value="{{ form.is_active.value }}" name="is_active" id="id_is_active" />
                             <input type="hidden" value="{{ form.is_superuser.value }}" name="is_superuser" id="id_is_superuser" />
                         </div>
-                        <button type="button" onclick="edit_account_form({{ obj.id }})" class="btn btn-success">保存</button>
+                        <button type="button" onclick="edit_account_form({{ obj.id }})" class="btn btn-success">{% trans "保存" %}</button>
                     </div>
                 </div>
                 <div class="tab-pane" id="user_info">
-                    <div class="table-header" style="margin-bottom:8px;">用户信息</div>
+                    <div class="table-header" style="margin-bottom:8px;">{% trans "用户信息" %}</div>
                     <div class="form-horizontal row">
                         <div class="col-sm-6" >
                             <div class="col-sm-11">
@@ -183,7 +183,7 @@
                                 {{ user_form.tel_group|bootstrap_horizontal:"col-sm-4"}}
                                 {{ user_form.tel_home|bootstrap_horizontal:"col-sm-4"}}
                                 <div class="form-group">
-                                    <label class="control-label col-sm-4 " for="id_oabshow">通讯录显示：</label>
+                                    <label class="control-label col-sm-4 " for="id_oabshow">{% trans "通讯录显示：" %}</label>
                                     <div class="  col-sm-8 ">
                                         <label class="inline">
                                             <input name="oabshow" class="ace ace-switch ace-switch-5" id="id_oabshow" {% if user.oabshow == '1' %}checked=""{% endif %} type="checkbox">
@@ -198,20 +198,20 @@
                         </div>
                     </div>
                     <div class="center" style="border-top:2px dashed #eee;padding-top:8px;">
-                        <button type="button" onclick="edit_account_form({{ obj.id }})" class="btn btn-success">保存</button>
+                        <button type="button" onclick="edit_account_form({{ obj.id }})" class="btn btn-success">{% trans "保存" %}</button>
                     </div>
                 </div>
                 <div class="tab-pane" id="user_group">
                     <div class="table-header" style="margin-bottom:8px;">
-                        用户组
+                        {% trans "用户组" %}
                     </div>
                     <div>
                         <table class="table table-bordered table-center">
                             <thead>
                             <tr>
-                                <th>序号</th>
-                                <th>组名称</th>
-                                <th>操作</th>
+                                <th>{% trans "序号" %}</th>
+                                <th>{% trans "组名称" %}</th>
+                                <th>{% trans "操作" %}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -219,7 +219,7 @@
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ g.group}}</td>
-                                <td><button data_id="{{ g.id }}" class="btn btn-xs btn-danger user_group_del" type="button">删除</button></td>
+                                <td><button data_id="{{ g.id }}" class="btn btn-xs btn-danger user_group_del" type="button">{% trans "删除" %}</button></td>
                             </tr>
                             {% endfor %}
                             </tbody>
@@ -228,9 +228,9 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="input-group">
-                                <span class="input-group-addon">添加组：</span>
+                                <span class="input-group-addon">{% trans "添加组：" %}</span>
                                 <select name="" id="" class="select2 form-control user_group_val">
-                                    <option value="">选择组</option>
+                                    <option value="">{% trans "选择组" %}</option>
                                     {% for g in groups %}
                                     <option value="{{ g.id }}">{{ g.name }}</option>
                                     {% endfor %}
@@ -238,22 +238,22 @@
                             </div>
                         </div>
                         <div class="col-sm-2">
-                            <button class="btn btn-success btn-sm user_group_add" type="button">添加</button>
+                            <button class="btn btn-success btn-sm user_group_add" type="button">{% trans "添加" %}</button>
                         </div>
                     </div>
                 </div>
                 <div class="tab-pane" id="user_department">
                     <div class="table-header" style="margin-bottom:8px;">
-                        用户归属部门
+                        {% trans "用户归属部门" %}
                     </div>
                     <div>
                         <table class="table table-bordered table-center">
                             <thead>
                             <tr>
-                                <th>序号</th>
-                                <th>部门名称</th>
-                                <th>职位</th>
-                                <th>操作</th>
+                                <th>{% trans "序号" %}</th>
+                                <th>{% trans "部门名称" %}</th>
+                                <th>{% trans "职位" %}</th>
+                                <th>{% trans "操作" %}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -263,13 +263,13 @@
                                 {% if d.dept %}
                                     <td>{{ d.dept.id|show_all_dept }}</td>
                                 {% else %}
-                                    <td>已删除部门</td>
+                                    <td>{% trans "已删除部门" %}</td>
                                 {% endif %}
                                 <td><input type="text" class="name_input" value="{{ d.position }}" /></td>
                                 <td>
-                                    <!--<button class="btn btn-xs btn-primary" type="button">编辑</button>-->
-                                    <button data_id="{{ d.id }}" class="btn btn-xs btn-primary user_department_edit" type="button">修改</button>
-                                    <button data_id="{{ d.id }}" class="btn btn-xs btn-danger user_department_del" type="button">删除</button>
+                                    <!--<button class="btn btn-xs btn-primary" type="button">{% trans "编辑" %}</button>-->
+                                    <button data_id="{{ d.id }}" class="btn btn-xs btn-primary user_department_edit" type="button">{% trans "修改" %}</button>
+                                    <button data_id="{{ d.id }}" class="btn btn-xs btn-danger user_department_del" type="button">{% trans "删除" %}</button>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -279,7 +279,7 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="input-group">
-                                <span class="input-group-addon">归属部门：</span>
+                                <span class="input-group-addon">{% trans "归属部门：" %}</span>
                                 <input type="text" readonly class="form-control dept_edit user_department_text">
                                 <input type="hidden" readonly class="form-control dept_edit_id">
 
@@ -288,7 +288,7 @@
                                 <button type="button" class="btn btn-danger btn-sm pull-right close_btn" style="">&times;</button>
                                 <div class="widget-body" style="padding-right:40px;">
                                     <div style="padding:20px 6px 0;">
-                                        <input type="text" id="search_input_edit" class="select_search form-control" placeholder="输入关键字搜索...">
+                                        <input type="text" id="search_input_edit" class="select_search form-control" placeholder='{% trans "输入关键字搜索..." %}'>
                                     </div>
                                     <div class="widget-main padding-8" style="height:auto;">
                                         <ul id="tree_edit"></ul>
@@ -298,12 +298,12 @@
                         </div>
                         <div class="col-sm-3">
                             <div class="input-group">
-                                <span class="input-group-addon">职位：</span>
+                                <span class="input-group-addon">{% trans "职位：" %}</span>
                                 <input type="text" class="form-control user_department_name" value="">
                             </div>
                         </div>
                         <div class="col-sm-2 col-sm-offset-2">
-                            <button class="btn btn-success btn-sm user_department_add" type="button">添加</button>
+                            <button class="btn btn-success btn-sm user_department_add" type="button">{% trans "添加" %}</button>
                         </div>
 
                     </div>
@@ -312,16 +312,16 @@
                 </div>
                 <div class="tab-pane" id="user_belong">
                     <div class="table-header" style="margin-bottom:8px;">
-                        用户归属邮件列表
+                        {% trans "用户归属邮件列表" %}
                     </div>
                     <div>
                         <table class="table table-bordered table-center">
                             <thead>
                             <tr>
-                                <th>序号</th>
-                                <th>列表名称</th>
-                                <th>地址</th>
-                                <th>操作</th>
+                                <th>{% trans "序号" %}</th>
+                                <th>{% trans "列表名称" %}</th>
+                                <th>{% trans "地址" %}</th>
+                                <th>{% trans "操作" %}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -331,7 +331,7 @@
                                 <td>{{ m.extlist.listname }}</td>
                                 <td>{{ m.extlist.address }}</td>
                                 <td>
-                                    <button data_id="{{ m.id }}" class="btn btn-xs btn-danger user_belong_del" type="button">删除</button>
+                                    <button data_id="{{ m.id }}" class="btn btn-xs btn-danger user_belong_del" type="button">{% trans "删除" %}</button>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -341,9 +341,9 @@
                     <div class="row">
                         <div class="col-sm-7">
                             <div class="input-group" style="width:100%;">
-                                <span class="input-group-addon">归属邮件列表：</span>
-                                <select class="select2 form-control user_belong_val" style="width:100%" data-placeholder="归属邮件列表">
-                                    <option value="">选择归属邮件列表</option>
+                                <span class="input-group-addon">{% trans "归属邮件列表：" %}</span>
+                                <select class="select2 form-control user_belong_val" style="width:100%" data-placeholder='{% trans "归属邮件列表" %}'>
+                                    <option value="">{% trans "选择归属邮件列表" %}</option>
                                     {% for m in maillists %}
                                     <option value="{{ m.id }}">{{ m.address }}</option>
                                     {% endfor %}
@@ -352,32 +352,32 @@
                         </div>
                         <div class="col-sm-3">
                             <div class="input-group">
-                                <span class="input-group-addon">权限：</span>
+                                <span class="input-group-addon">{% trans "权限：" %}</span>
                                 <select class="form-control user_belong_power" >
-                                    <option value="1">收发</option>
-                                    <option value="0">只收</option>
-                                    <option value="-1">只发</option>
+                                    <option value="1">{% trans "收发" %}</option>
+                                    <option value="0">{% trans "只收" %}</option>
+                                    <option value="-1">{% trans "只发" %}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-sm-2">
-                            <button class="btn btn-success btn-sm user_belong_add" type="button">添加</button>
+                            <button class="btn btn-success btn-sm user_belong_add" type="button">{% trans "添加" %}</button>
                         </div>
                     </div>
                 </div>
                 <div class="tab-pane" id="relation_share">
                     <div class="table-header" style="margin-bottom:8px;">
-                        关联共享邮箱列表
+                        {% trans "关联共享邮箱列表" %}
                     </div>
                     <div>
                         <table class="table table-bordered table-center">
                             <thead>
                             <tr>
-                                <th>序号</th>
-                                <th>邮箱地址</th>
-                                <th>所属域名</th>
-                                <th>权限</th>
-                                <th>操作</th>
+                                <th>{% trans "序号" %}</th>
+                                <th>{% trans "邮箱地址" %}</th>
+                                <th>{% trans "所属域名" %}</th>
+                                <th>{% trans "权限" %}</th>
+                                <th>{% trans "操作" %}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -388,7 +388,7 @@
                                 <td>{{ r.domain }}</td>
                                 <td>{{ r.get_access_display }}</td>
                                 <td>
-                                    <button data_id="{{ r.id }}" class="btn btn-xs btn-danger relation_share_del" type="button">删除</button>
+                                    <button data_id="{{ r.id }}" class="btn btn-xs btn-danger relation_share_del" type="button">{% trans "删除" %}</button>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -398,7 +398,7 @@
                     <div class="row">
                         <div class="col-sm-4 no-padding-right">
                             <div class="input-group">
-                                <span class="input-group-addon">添加关联共享邮箱：</span>
+                                <span class="input-group-addon">{% trans "添加关联共享邮箱：" %}</span>
                                 <input type="text" class="form-control relation_share_name">
                             </div>
                         </div>
@@ -413,7 +413,7 @@
                             </div>
                         </div>
                         <div class="col-sm-2">
-                            <button class="btn btn-success btn-sm relation_share_add" type="button">添加(默认完全控制权限)</button>
+                            <button class="btn btn-success btn-sm relation_share_add" type="button">{% trans "添加(默认完全控制权限)" %}</button>
                         </div>
                     </div>
                 </div>
@@ -429,20 +429,20 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">设置发送的外域邮件地址</h4>
+                <h4 class="modal-title">{% trans "设置发送的外域邮件地址" %}</h4>
             </div>
             <div class="modal-body">
-                <div class="table-header">例外地址</div>
+                <div class="table-header">{% trans "例外地址" %}</div>
                 <div>
                     <form class="form-horizontal form_send_limit_white" role="form" name="form_send_limit_white" action="" method="POST">
                         {% csrf_token %}
                         <table class="table table-bordered table-center">
                             <thead>
                             <tr>
-                                <th>序号</th>
-                                <th>邮件地址</th>
-                                <th>状态</th>
-                                <th>操作</th>
+                                <th>{% trans "序号" %}</th>
+                                <th>{% trans "邮件地址" %}</th>
+                                <th>{% trans "状态" %}</th>
+                                <th>{% trans "操作" %}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -457,7 +457,7 @@
                                         </label>
                                     </td>
                                 <td>
-                                    <button class="btn btn-xs btn-danger" type="button" onclick="clickLimitSendDelete('send', '{{ num }}')">删除</button>
+                                    <button class="btn btn-xs btn-danger" type="button" onclick="clickLimitSendDelete('send', '{{ num }}')">{% trans "删除" %}</button>
                                 </td>
                                 <input type="hidden" value="{{ id }}" name="send_{{ mailbox }}_id" id="id_send_id_{{ num }}" />
                                 <input type="hidden" value="-1" name="send_{{ mailbox }}_delete" id="id_send_delete_{{ num }}" />
@@ -468,13 +468,13 @@
                         <div class="row">
                             <div class="col-sm-10 col-sm-offset-1">
                                 <div class="input-group margin-bottom-8">
-                                    <span class="input-group-addon">邮件地址：</span>
+                                    <span class="input-group-addon">{% trans "邮件地址：" %}</span>
                                     <input type="text" name="new_mailbox" class="form-control">
                                 </div>
                                 <div class="margin-bottom-8">
-                                    <textarea class="form-control" name="new_mailbox_list" rows="5" placeholder="批量例外邮箱地址，格式 @126.com|@sina.com|@qq.com"></textarea>
+                                    <textarea class="form-control" name="new_mailbox_list" rows="5" placeholder="{% trans "批量例外邮箱地址，格式 " %}@126.com|@sina.com|@qq.com"></textarea>
                                 </div>
-                                <p class="alert alert-warning"><b class="red">注：</b>当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“@域名”，如“@test.com”。</p>
+                                <p class="alert alert-warning"><b class="red">{% trans "注：" %}</b>{% trans "当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“" %}@{% trans "域名”，如“" %}@test.com”。</p>
                             </div>
                         </div>
                         <div class=" ">
@@ -482,8 +482,8 @@
                         <input type="hidden" value="{{ obj.id }}" name="id" id="id_mailbox_id" />
                         </div>
                         <div class="center" style="background:#fafafa;">
-                            <button class="btn btn-primary submit_send_permit_btn" type="button">确定</button>
-                            <button class="btn btn-warning" type="reset">重置</button>
+                            <button class="btn btn-primary submit_send_permit_btn" type="button">{% trans "确定" %}</button>
+                            <button class="btn btn-warning" type="reset">{% trans "重置" %}</button>
                         </div>
                     </form>
                 </div>
@@ -496,20 +496,20 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">设置接收的外域邮件地址</h4>
+                <h4 class="modal-title">{% trans "设置接收的外域邮件地址" %}</h4>
             </div>
             <div class="modal-body">
-                <div class="table-header">例外地址</div>
+                <div class="table-header">{% trans "例外地址" %}</div>
                 <div>
                     <form class="form-horizontal form_recv_limit_white" role="form" name="form_recv_limit_white" action="" method="POST">
                         {% csrf_token %}
                         <table class="table table-bordered table-center">
                             <thead>
                             <tr>
-                                <th>序号</th>
-                                <th>邮件地址</th>
-                                <th>状态</th>
-                                <th>操作</th>
+                                <th>{% trans "序号" %}</th>
+                                <th>{% trans "邮件地址" %}</th>
+                                <th>{% trans "状态" %}</th>
+                                <th>{% trans "操作" %}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -524,7 +524,7 @@
                                         </label>
                                     </td>
                                 <td>
-                                    <button class="btn btn-xs btn-danger" type="button" onclick="clickLimitSendDelete('recv', '{{ num }}')">删除</button>
+                                    <button class="btn btn-xs btn-danger" type="button" onclick="clickLimitSendDelete('recv', '{{ num }}')">{% trans "删除" %}</button>
                                 </td>
                                 <input type="hidden" value="{{ id }}" name="send_{{ mailbox }}_id" id="id_send_id_{{ num }}" />
                                 <input type="hidden" value="-1" name="send_{{ mailbox }}_delete" id="id_send_delete_{{ num }}" />
@@ -535,13 +535,13 @@
                         <div class="row">
                             <div class="col-sm-10 col-sm-offset-1">
                                 <div class="input-group margin-bottom-8">
-                                    <span class="input-group-addon">邮件地址：</span>
+                                    <span class="input-group-addon">{% trans "邮件地址：" %}</span>
                                     <input type="text" name="new_mailbox" class="form-control">
                                 </div>
                                 <div class="margin-bottom-8">
-                                    <textarea class="form-control" name="new_mailbox_list" rows="5" placeholder="批量例外邮箱地址，格式 @126.com|@sina.com|@qq.com"></textarea>
+                                    <textarea class="form-control" name="new_mailbox_list" rows="5" placeholder="{% trans "批量例外邮箱地址，格式 " %}@126.com|@sina.com|@qq.com"></textarea>
                                 </div>
-                                <p class="alert alert-warning"><b class="red">注：</b>当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“@域名”，如“@test.com”。</p>
+                                <p class="alert alert-warning"><b class="red">{% trans "注：" %}</b>{% trans "当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“" %}@{% trans "域名”，如“" %}@test.com”。</p>
                             </div>
                         </div>
                         <div class=" ">
@@ -549,8 +549,8 @@
                         <input type="hidden" value="{{ obj.id }}" name="id" id="id_mailbox_id" />
                         </div>
                         <div class="center" style="background:#fafafa;">
-                            <button class="btn btn-primary submit_recv_permit_btn" type="button">确定</button>
-                            <button class="btn btn-warning" type="reset">重置</button>
+                            <button class="btn btn-primary submit_recv_permit_btn" type="button">{% trans "确定" %}</button>
+                            <button class="btn btn-warning" type="reset">{% trans "重置" %}</button>
                         </div>
                     </form>
                 </div>
@@ -578,10 +578,10 @@
             data:str,
             success:function(data){
                 if(data.status=='OK'){
-                    alert("设置成功！");
+                    alert('{% trans "设置成功！" %}');
                     $('#allow_send_email_dress').modal('hide');
                 }else{
-                    alert("设置失败：  "+data.message);
+                    alert('{% trans "设置失败：  " %}'+data.message);
                 }
             }
         })
@@ -783,16 +783,16 @@
             var group_id = $('.user_group_val').val();
             var selectedText = $('.user_group_val').find("option:selected").text();
             if(!group_id){
-                layer.tips('请选择用户组！','.user_group_val+');
+                layer.tips('{% trans "请选择用户组！" %}','.user_group_val+');
                 return;
             }
             $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'add_group', 'mailbox_id': '{{ obj.id }}', 'group_id': group_id}, function(data){
                 if(data.result) {
-                    var html = '<tr><td>' + data.group_id + '</td><td>' + data.group_name + '</td><td><button class="btn btn-xs btn-danger user_group_del" data_id="' + data.group_id + '" type="button">删除</button></td></tr>'
+                    var html = '<tr><td>' + data.group_id + '</td><td>' + data.group_name + '</td><td><button class="btn btn-xs btn-danger user_group_del" data_id="' + data.group_id + '" type="button">{% trans "删除" %}</button></td></tr>'
                     $('#user_group table tbody').append(html);
                     $('#user_group .user_group_del').unbind();
                     $('#user_group .user_group_del').click(function(){
-                        if(confirm("{% trans '确认删除组信息？' %}")){
+                        if(confirm("{% trans "确认删除组信息？" %}")){
                             var id = $(this).attr('data_id');
                             $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'del_group', 'mailbox_id': '{{ obj.id }}', 'id': id}, function(data){
                             })
@@ -805,7 +805,7 @@
         })
         $('#user_group .user_group_del').unbind();
         $('#user_group .user_group_del').click(function(){
-            if(confirm("{% trans '确认删除组信息？' %}")){
+            if(confirm("{% trans "确认删除组信息？" %}")){
             var id = $(this).attr('data_id');
             $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'del_group', 'mailbox_id': '{{ obj.id }}', 'id': id}, function(data){
                 layer.msg(data.msg);
@@ -817,7 +817,7 @@
         //user_department
         $('#user_department .user_department_del').unbind();
         $('#user_department .user_department_del').click(function(){
-            if(confirm("{% trans '确认删除部门信息？' %}")){
+            if(confirm("{% trans "确认删除部门信息？" %}")){
             var id = $(this).attr('data_id');
             $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'del_dept', 'mailbox_id': '{{ obj.id }}', 'id': id}, function(data){
                 layer.msg(data.msg);
@@ -831,20 +831,20 @@
             var id = $('.dept_edit_id').val();
             var name = $('.user_department_name').val();
             if(!id){
-                layer.tips('请选择部门！','.user_department_text');
+                layer.tips('{% trans "请选择部门！" %}','.user_department_text');
                 return;
             }
             if(!name){
-                layer.tips('请输入职位！','.user_department_name');
+                layer.tips('{% trans "请输入职位！" %}','.user_department_name');
                 return;
             }
             $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'add_dept', 'mailbox_id': '{{ obj.id }}', 'dept_id': id, 'position': name}, function(data){
                 if(data.result) {
-                    var html = '<tr><td>'+ data.dept_id +'</td><td>'+data.dept_name+'</td><td><input type="text" class="name_input" value="'+ data.position+'"></td><td><button class="btn btn-xs btn-primary user_department_edit" data_id="'+data.dept_id+'" type="button">修改</button> <button class="btn btn-xs btn-danger user_department_del" data_id="'+ data.dept_id +'" type="button">删除</button></td></tr>'
+                    var html = '<tr><td>'+ data.dept_id +'</td><td>'+data.dept_name+'</td><td><input type="text" class="name_input" value="'+ data.position+'"></td><td><button class="btn btn-xs btn-primary user_department_edit" data_id="'+data.dept_id+'" type="button">{% trans "修改" %}</button> <button class="btn btn-xs btn-danger user_department_del" data_id="'+ data.dept_id +'" type="button">{% trans "删除" %}</button></td></tr>'
                     $('#user_department table tbody').append(html);
                     $('#user_department .user_department_del').unbind();
                     $('#user_department .user_department_del').click(function(){
-                        if(confirm("{% trans '确认删除部门信息？' %}")){
+                        if(confirm("{% trans "确认删除部门信息？" %}")){
                             var id = $(this).attr('data_id');
                             $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'del_dept', 'mailbox_id': '{{ obj.id }}', 'id': id}, function(data){
                                 layer.msg(data.msg);
@@ -882,17 +882,17 @@
             var id = $('.user_belong_val').val();
             var permit = $('.user_belong_power').val();
             if(!id){
-                layer.tips('请选择归属邮件！','.user_belong_val+');
+                layer.tips('{% trans "请选择归属邮件！" %}','.user_belong_val+');
                 return;
             }
             //添加ajax
             $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'add_maillist', 'mailbox_id': '{{ obj.id }}', 'maillist_id': id, 'permit': permit}, function(data){
                 if(data.result) {
-                    var html = '<tr><td>'+ data.maillist_id +'</td><td>'+data.maillist_name+'</td><td>'+data.maillist_address+'</td><td><button class="btn btn-xs btn-danger user_belong_del" data_id="'+ data.maillist_id +'" type="button">删除</button></td></tr>'
+                    var html = '<tr><td>'+ data.maillist_id +'</td><td>'+data.maillist_name+'</td><td>'+data.maillist_address+'</td><td><button class="btn btn-xs btn-danger user_belong_del" data_id="'+ data.maillist_id +'" type="button">{% trans "删除" %}</button></td></tr>'
                     $('#user_belong table tbody').append(html);
                     $('#user_belong .user_belong_del').unbind();
                     $('#user_belong .user_belong_del').click(function(){
-                        if(confirm("{% trans '确认删除邮件列表信息？' %}")){
+                        if(confirm("{% trans "确认删除邮件列表信息？" %}")){
                             var id = $(this).attr('data_id');
                             $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'del_maillist', 'mailbox_id': '{{ obj.id }}', 'id': id}, function(data){
                             })
@@ -905,7 +905,7 @@
         })
         $('#user_belong .user_belong_del').unbind();
         $('#user_belong .user_belong_del').click(function(){
-            if(confirm("{% trans '确认删除邮件列表信息？' %}")){
+            if(confirm("{% trans "确认删除邮件列表信息？" %}")){
             var id = $(this).attr('data_id');
             $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'del_maillist', 'mailbox_id': '{{ obj.id }}', 'id': id}, function(data){
             })
@@ -920,17 +920,17 @@
             var relate_name = $('.relation_share_name').val();
             var relate_domain = $('.relation_share_yu').val();
             if(!relate_name){
-                layer.tips('请输入邮箱！','.relation_share_name');
+                layer.tips('{% trans "请输入邮箱！" %}','.relation_share_name');
                 return;
             }
             //添加ajax
             $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'add_relate_email', 'mailbox_id': '{{ obj.id }}', 'relate_name': relate_name, 'relate_domain': relate_domain}, function(data){
                 if(data.result) {
-                    var html = '<tr><td>'+data.relate_id+'</td><td>'+data.relate_name+'</td><td>'+data.relate_domain+'</td><td>'+ data.access+'</td><td><button class="btn btn-xs btn-danger relation_share_del" data_id="'+data.relate_id+'" type="button">删除</button></td></tr>'
+                    var html = '<tr><td>'+data.relate_id+'</td><td>'+data.relate_name+'</td><td>'+data.relate_domain+'</td><td>'+ data.access+'</td><td><button class="btn btn-xs btn-danger relation_share_del" data_id="'+data.relate_id+'" type="button">{% trans "删除" %}</button></td></tr>'
                     $('#relation_share table tbody').append(html);
                     $('#relation_share .relation_share_del').unbind();
                     $('#relation_share .relation_share_del').click(function(){
-                        if(confirm("{% trans '确认删除关联共享邮箱' %}")){
+                        if(confirm("{% trans "确认删除关联共享邮箱" %}")){
                             var id = $(this).attr('data_id');
                             $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'del_relate_email', 'mailbox_id': '{{ obj.id }}', 'id': id}, function(data){
                             })
@@ -943,7 +943,7 @@
         })
         $('#relation_share .relation_share_del').unbind();
         $('#relation_share .relation_share_del').click(function(){
-            if(confirm("{% trans '确认删除关联共享邮箱' %}")){
+            if(confirm("{% trans "确认删除关联共享邮箱" %}")){
             var id = $(this).attr('data_id');
             $.post("{% url 'mailbox_ajax_edit_account' %}", {'action': 'del_relate_email', 'mailbox_id': '{{ obj.id }}', 'id': id}, function(data){
                 layer.msg(data.msg);
@@ -973,4 +973,3 @@ function edit_account_form(mailbox_id){
     }
 }
 </script>
-

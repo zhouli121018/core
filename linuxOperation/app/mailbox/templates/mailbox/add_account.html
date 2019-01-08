@@ -73,7 +73,7 @@
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-sm-6" style="border-right:2px dotted #ccc;">
-                            <div class="table-header">邮箱基本信息</div>
+                            <div class="table-header">{% trans "邮箱基本信息" %}</div>
                             <div class="col-sm-9">
                                 {{ form.name|bootstrap_horizontal:"col-sm-5"}}
                                 {{ form.password1|bootstrap_horizontal:"col-sm-5"}}
@@ -85,19 +85,19 @@
                                 <!--{{ form.limit_send|bootstrap_horizontal:"col-sm-4"}}-->
                                 {% if request.user.licence_validsms %}
                                     <div class="form-group">
-                                        <label class="control-label col-sm-5" for="id_recvsms">短信接收设置：</label>
+                                        <label class="control-label col-sm-5" for="id_recvsms">{% trans "短信接收设置：" %}</label>
                                         <div class="  col-sm-7 ">
                                             <select name="recvsms" class=" form-control form_recvsms" id="id_recvsms">
-                                              <option value="1" {% if form.recvsms.value == '1' %} selected {% endif %}>启用</option>
-                                              <option value="-1" {% if form.recvsms.value == '-1' %} selected {% endif %}>禁用</option>
-                                              <option value="0" {% if form.recvsms.value == '0' %} selected {% endif %}>白名单</option>
+                                              <option value="1" {% if form.recvsms.value == '1' %} selected {% endif %}>{% trans "启用" %}</option>
+                                              <option value="-1" {% if form.recvsms.value == '-1' %} selected {% endif %}>{% trans "禁用" %}</option>
+                                              <option value="0" {% if form.recvsms.value == '0' %} selected {% endif %}>{% trans "白名单" %}</option>
                                             </select>
                                         </div>
                                     </div>
                                 {% endif %}
                                 {{ form.limit_login|bootstrap_horizontal:"col-sm-5"}}
                                 <div class="form-group">
-                                    <label class="control-label col-sm-5 " for="id_disabled">邮箱状态：</label>
+                                    <label class="control-label col-sm-5 " for="id_disabled">{% trans "邮箱状态：" %}</label>
                                     <div class="  col-sm-7 ">
                                         <label class="inline">
                                             <input name="disabled" class="ace ace-switch ace-switch-5" id="id_disabled" checked="" type="checkbox">
@@ -107,7 +107,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-5 " for="id_enable_share">是否打开邮箱共享：</label>
+                                    <label class="control-label col-sm-5 " for="id_enable_share">{% trans "是否打开邮箱共享：" %}</label>
                                     <div class="  col-sm-7 ">
                                         <label class="inline">
                                             <input name="enable_share" class="ace ace-switch ace-switch-5" id="id_enable_share" type="checkbox">
@@ -117,7 +117,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-sm-5 " for="id_change_pwd">登录强制修改密码：</label>
+                                    <label class="control-label col-sm-5 " for="id_change_pwd">{% trans "登录强制修改密码：" %}</label>
                                     <div class="  col-sm-7 ">
                                         <label class="inline">
                                             <input name="change_pwd" class="ace ace-switch ace-switch-5" id="id_change_pwd" type="checkbox">
@@ -131,7 +131,7 @@
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <div class="table-header">用户信息</div>
+                            <div class="table-header">{% trans "用户信息" %}</div>
                             <div class="col-sm-9">
                                 {{ user_form.realname|bootstrap_horizontal:"col-sm-5"}}
                                 {{ user_form.engname|bootstrap_horizontal:"col-sm-5"}}
@@ -147,7 +147,7 @@
                                 {{ user_form.showorder|bootstrap_horizontal:"col-sm-5"}}
                                 <div class="form-group">
                                     <p></p>
-                                    <label class="col-sm-5 control-label">归属部门：</label>
+                                    <label class="col-sm-5 control-label">{% trans "归属部门：" %}</label>
                                     <div class="col-sm-7 no-padding">
                                         <div class="col-sm-12">
                                             <ul id="add_list">
@@ -161,7 +161,7 @@
                                                     <button type="button" class="btn btn-danger btn-sm pull-right close_btn" style="">&times;</button>
                                                     <div class="widget-body" style="padding-right:40px;">
                                                         <div style="padding:20px 6px 0;">
-                                                            <input type="text" id="search_input" class="select_search form-control" placeholder="输入关键字搜索...">
+                                                            <input type="text" id="search_input" class="select_search form-control" placeholder='{% trans "输入关键字搜索..." %}'>
                                                         </div>
                                                         <div class="widget-main padding-8" style="height:auto;max-height:350px;">
                                                             <ul id="tree"></ul>
@@ -171,10 +171,10 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-8">
-                                            <input type="text" class="form-control dept_name" placeholder="部门职务">
+                                            <input type="text" class="form-control dept_name" placeholder='{% trans "部门职务" %}'>
                                         </div>
                                         <div class="col-sm-4 text-right">
-                                            <input type="button" id="add_department" class="btn btn-success btn-xs" value="添加">
+                                            <input type="button" id="add_department" class="btn btn-success btn-xs" value='{% trans "添加" %}'>
                                         </div>
                                         <div id="dept_input_area"></div>
                                     </div>
@@ -182,7 +182,7 @@
                                 </div>
                                 <div class="form-group">
                                     <p></p>
-                                    <label class="col-sm-5 control-label">归属邮件列表：</label>
+                                    <label class="col-sm-5 control-label">{% trans "归属邮件列表：" %}</label>
                                     <div class="col-sm-7 no-padding">
                                         <div class="col-sm-12">
                                             <ul id="add_mail_list">
@@ -196,14 +196,14 @@
                                             </select>
                                         </div>
                                         <div class="col-sm-8">
-                                            <select id="maillist_add_permit" class="form-control" title="成员权限">
-                                                <option value="1">收发</option>
-                                                <option value="0">只收</option>
-                                                <option value="-1">只发</option>
+                                            <select id="maillist_add_permit" class="form-control" title='{% trans "成员权限" %}'>
+                                                <option value="1">{% trans "收发" %}</option>
+                                                <option value="0">{% trans "只收" %}</option>
+                                                <option value="-1">{% trans "只发" %}</option>
                                             </select>
                                         </div>
                                         <div class="col-sm-4 text-right" >
-                                            <input type="button" id="add_mail_btn" class="btn btn-success btn-xs" value="添加">
+                                            <input type="button" id="add_mail_btn" class="btn btn-success btn-xs" value='{% trans "添加" %}'>
                                         </div>
                                     </div>
                                 </div>
@@ -212,13 +212,13 @@
                                 {{ user_form.remark|bootstrap_horizontal:"col-sm-5"}}
                                 {% comment %}
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">性别：</label>
+                                    <label class="col-sm-3 control-label">{% trans "性别：" %}</label>
                                     <div class="col-sm-7">
                                         <label class="radio-inline">
-                                            <input type="radio" name="gender" value="male" checked> 男
+                                            <input type="radio" name="gender" value="male" checked> {% trans "男" %}
                                         </label>
                                         <label class="radio-inline">
-                                            <input type="radio" name="gender" value="female" > 女
+                                            <input type="radio" name="gender" value="female" > {% trans "女" %}
                                         </label>
                                     </div>
                                 </div>
@@ -230,11 +230,11 @@
                         <div class="text-center">
                             <button class="btn btn-info" type="submit">
                                 <i class="ace-icon fa fa-check bigger-110"></i>
-                                保存
+                                {% trans "保存" %}
                             </button>
                             <button class="btn" type="reset">
                                 <i class="ace-icon fa fa-undo bigger-110"></i>
-                                重置
+                                {% trans "重置" %}
                             </button>
 
                         </div>
@@ -284,11 +284,11 @@
         var b = $('.dept_name').val();
         var c = $('#id_dept').val();
         if(!a){
-            layer.tips("请选择归属部门！",'.tip_dept');
+            layer.tips('{% trans "请选择归属部门！" %}','.tip_dept');
             return;
         }
         if(!b){
-            layer.tips("请填写部门职务！",'.dept_name');
+            layer.tips('{% trans "请填写部门职务！" %}','.dept_name');
             $('.dept_name').focus();
             return;
         }
@@ -460,4 +460,3 @@
     })
 </script>
 {% endblock %}
-

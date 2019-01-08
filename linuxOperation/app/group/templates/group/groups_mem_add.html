@@ -3,7 +3,7 @@
 <div class="modal-header">
     <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>-->
     <button type="button" class="close" onclick="closeTag();">×</button>
-    <h4 class="modal-title" id="myModalLabel" style="font-weight: 600">选择账号进行添加</h4>
+    <h4 class="modal-title" id="myModalLabel" style="font-weight: 600">{% trans "选择账号进行添加" %}</h4>
 </div>
 <form action="" method="post" role="form" class="">
     {% csrf_token %}
@@ -25,10 +25,10 @@
                                     <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>序号</th>
-                                        <th>邮箱地址</th>
-                                        <th>昵称</th>
-                                        <th>部门</th>
+                                        <th>{% trans "序号" %}</th>
+                                        <th>{% trans "邮箱地址" %}</th>
+                                        <th>{% trans "昵称" %}</th>
+                                        <th>{% trans "部门" %}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -45,8 +45,8 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" onclick="Javascript: ChooseSlected();">{% trans "确定选中的地址" %}</button>
-        <button type="button" class="btn btn-default" onclick="closeTag();">关闭</button>
-        <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-default" onclick="closeTag();">{% trans "关闭" %}</button>
+        <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">{% trans "关闭" %}</button>
     </div>
 </form>
 <!--[if !IE]> -->

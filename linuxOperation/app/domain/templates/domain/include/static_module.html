@@ -1,21 +1,22 @@
+{% load i18n %}
 <div id="module_made">
     <div id="module_made_tabs">
         <ul>
             <li>
-                <a href="#send_mail_block" onclick="clickSubTab('')">发邮件区</a>
+                <a href="#send_mail_block" onclick="clickSubTab('')">{% trans "发邮件区" %}</a>
             </li>
             <li >
-                <a href="#setting_block" onclick="clickSubTab('set')">设置区</a>
+                <a href="#setting_block" onclick="clickSubTab('set')">{% trans "设置区" %}</a>
             </li>
         </ul>
 
         <div id="send_mail_block">
-            <div class="table-header">发邮件区</div>
+            <div class="table-header">{% trans "发邮件区" %}</div>
             <form class="form-horizontal form_mail">
                 {% csrf_token %}
             <table class="table table-bordered table-striped">
                 <tr>
-                    <td class="text-right">邮件召回成功后提示收件人：</td>
+                    <td class="text-right">{% trans "邮件召回成功后提示收件人：" %}</td>
                     <td class="row">
                         <div class="col-sm-4 no-padding">
                             <label class="inline" >
@@ -24,12 +25,12 @@
                             </label>
                         </div>
                         <div class="col-sm-8 no-padding">
-                            注：选择为不启用后，召回邮件时对方不会收到提醒邮件；
+                            {% trans "注：选择为不启用后，召回邮件时对方不会收到提醒邮件；" %}
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-right" >添加Reply-To到邮件头：</td>
+                    <td class="text-right" >{% trans "添加Reply-To到邮件头：" %}</td>
                     <td>
                         <label class="inline" >
                             <input name="sw_mail_in_reply_to" value="1" {% if form_mail.sw_mail_in_reply_to.value == "1" %} checked {% endif %}  type="checkbox" class="ace ace-switch ace-switch-5 open">
@@ -38,7 +39,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-right" >保存客户端已发送邮件：</td>
+                    <td class="text-right" >{% trans "保存客户端已发送邮件：" %}</td>
                     <td>
                         <div class="col-sm-4 no-padding">
                         <label class="inline" >
@@ -47,27 +48,27 @@
                         </label>
                         </div>
                         <div class="col-sm-8 no-padding">
-                            注：每次保存这个值，都会重置所有用户邮箱管理界面上的同名按钮。
+                            {% trans "注：每次保存这个值，都会重置所有用户邮箱管理界面上的同名按钮。" %}
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-right" >企业通讯录显示设置：</td>
+                    <td class="text-right" >{% trans "企业通讯录显示设置：" %}</td>
                     <td class="row">
                         <div>
                             <input name="oab_show_mod" value="1" {% if form_mail.oab_show_mod.value == "1" %} checked {% endif %} type="radio"  class="ace">
-                            <span class="lbl"> 显示所有部门 </span>
+                            <span class="lbl"> {% trans "显示所有部门 " %}</span>
                             <input name="oab_show_mod" value="2" {% if form_mail.oab_show_mod.value == "2" %} checked {% endif %} type="radio"  class="ace">
-                            <span class="lbl"> 仅显示本部门 </span>
+                            <span class="lbl"> {% trans "仅显示本部门 " %}</span>
                             <input name="oab_show_mod" value="3" {% if form_mail.oab_show_mod.value == "3" %} checked {% endif %} type="radio"  class="ace">
-                            <span class="lbl"> 显示本部门和子部门 </span>
+                            <span class="lbl"> {% trans "显示本部门和子部门 " %}</span>
                             <input name="sw_oab_dumpbutton" value="1" {% if form_mail.sw_oab_dumpbutton.value == "1" %} checked {% endif %} type="checkbox"  class="ace">
-                            <span class="lbl"> 显示导出按钮 </span>
+                            <span class="lbl"> {% trans "显示导出按钮 " %}</span>
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-right" >公共通讯录功能：</td>
+                    <td class="text-right" >{% trans "公共通讯录功能：" %}</td>
                     <td>
                         <label class="inline" >
                             <input name="sw_cab" value="1" {% if form_mail.sw_cab.value == "1" %} checked {% endif %}  type="checkbox" class="ace ace-switch ace-switch-5 open">
@@ -76,7 +77,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-right">其他域通讯录共享功能：</td>
+                    <td class="text-right">{% trans "其他域通讯录共享功能：" %}</td>
                     <td>
                         <label class="inline" >
                             <input name="sw_oab_share" value="1" {% if form_mail.sw_oab_share.value == "1" %} checked {% endif %}  type="checkbox" class="ace ace-switch ace-switch-5 open">
@@ -89,18 +90,18 @@
             <input type="hidden" value="{{ domain.id }}" name="domain_id" id="domain_id" />
             </div>
             <div class="modal-footer center">
-                <button type="button" class="btn btn-success" onclick="clickSubmitButton('mail','form_mail')">提交</button>
-                <button type="button"  class="btn btn-warning">重置</button>
+                <button type="button" class="btn btn-success" onclick="clickSubmitButton('mail','form_mail')">{% trans "提交" %}</button>
+                <button type="button"  class="btn btn-warning">{% trans "重置" %}</button>
             </div>
             </form>
         </div>
         <div id="setting_block">
-            <div class="table-header">设置区</div>
+            <div class="table-header">{% trans "设置区" %}</div>
             <form class="form-horizontal form_set">
                 {% csrf_token %}
             <table class="table table-bordered table-striped">
                 <tr>
-                    <td class="text-right">密码修改功能：</td>
+                    <td class="text-right">{% trans "密码修改功能：" %}</td>
                     <td class="row" style="padding:8px;">
                         <div class="col-sm-4 no-padding">
                             <label class="inline" >
@@ -109,12 +110,12 @@
                             </label>
                         </div>
                         <div class="col-sm-8 no-padding">
-                            注：关闭此功能后用户无法修改邮箱密码；；
+                            {% trans "注：关闭此功能后用户无法修改邮箱密码；；" %}
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-right">黑白名单功能：</td>
+                    <td class="text-right">{% trans "黑白名单功能：" %}</td>
                     <td>
                         <label class="inline" >
                             <input name="sw_userbwlist" value="1" {% if form_set.sw_userbwlist.value == "1" %} checked {% endif %}  type="checkbox" class="ace ace-switch ace-switch-5 open">
@@ -125,7 +126,7 @@
                 </tr>
                 <!--
                 <tr>
-                    <td class="text-right" >设置自动转发默认值：</td>
+                    <td class="text-right" >{% trans "设置自动转发默认值：" %}</td>
                     <td class="row">
                         <div class="col-sm-4 no-padding">
                             <label class="inline" >
@@ -134,13 +135,13 @@
                             </label>
                         </div>
                         <div class="col-sm-8 no-padding">
-                            注：选择“是”，在后台邮件账户管理中，用户是否可以自行设置自动转发的默认值是“是”，否则为“否”；
+                            {% trans "注：选择“是”，在后台邮件账户管理中，用户是否可以自行设置自动转发的默认值是“是”，否则为“否”；" %}
                         </div>
                     </td>
                 </tr>
                 -->
                 <tr>
-                    <td class="text-right" >邮箱搬家功能：</td>
+                    <td class="text-right" >{% trans "邮箱搬家功能：" %}</td>
                     <td>
                         <label class="inline" >
                             <input name="sw_mailboxmove" value="1" {% if form_set.sw_mailboxmove.value == "1" %} checked {% endif %}  type="checkbox" class="ace ace-switch ace-switch-5 open">
@@ -150,7 +151,7 @@
 
                 </tr>
                 <tr>
-                    <td class="text-right">邮箱意见反馈功能：</td>
+                    <td class="text-right">{% trans "邮箱意见反馈功能：" %}</td>
                     <td class="row">
                         <div class="col-sm-4 no-padding">
                             <label class="inline" >
@@ -159,12 +160,12 @@
                             </label>
                         </div>
                         <div class="col-sm-8 no-padding">
-                            注：Webmail 配置中意见反馈功能开关；
+                            {% trans "注：Webmail 配置中意见反馈功能开关；" %}
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-right">邮件召回记录查看：</td>
+                    <td class="text-right">{% trans "邮件召回记录查看：" %}</td>
                     <td>
                         <label class="inline" >
                             <input name="sw_zhaohui" value="1" {% if form_set.sw_zhaohui.value == "1" %} checked {% endif %}  type="checkbox" class="ace ace-switch ace-switch-5 open">
@@ -173,7 +174,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-right">邮件过滤功能：</td>
+                    <td class="text-right">{% trans "邮件过滤功能：" %}</td>
                     <td>
                         <label class="inline" >
                             <input name="sw_cfilter" value="1" {% if form_set.sw_cfilter.value == "1" %} checked {% endif %}  type="checkbox" class="ace ace-switch ace-switch-5 open">
@@ -182,7 +183,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-right">SMTP外发代理：</td>
+                    <td class="text-right">{% trans "SMTP外发代理：" %}</td>
                     <td class="row">
                         <div class="col-sm-4 no-padding">
                             <label class="inline" >
@@ -191,12 +192,12 @@
                             </label>
                         </div>
                         <div class="col-sm-8 no-padding">
-                            注：开启本开关后，用户可在邮箱界面设置将umail作为邮件客户端，将外发邮件使用自定义设置的邮件服务器和帐号来进行发送
+                            {% trans "注：开启本开关后，用户可在邮箱界面设置将umail作为邮件客户端，将外发邮件使用自定义设置的邮件服务器和帐号来进行发送" %}
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-right">代发邮件地址提醒：</td>
+                    <td class="text-right">{% trans "代发邮件地址提醒：" %}</td>
                     <td class="row">
                         <div class="col-sm-4 no-padding">
                             <label class="inline" >
@@ -205,22 +206,22 @@
                             </label>
                         </div>
                         <div class="col-sm-8 no-padding">
-                            注：开启此功能，在阅读邮件内容时，如果真实发送邮件地址与发件人地址不一致，系统会进行提示；
+                            {% trans "注：开启此功能，在阅读邮件内容时，如果真实发送邮件地址与发件人地址不一致，系统会进行提示；" %}
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-right" >邮件内容中时间显示：</td>
+                    <td class="text-right" >{% trans "邮件内容中时间显示：" %}</td>
                     <td>
                         <!--<label class="inline" >-->
                         <!--<input name="wsw_time_mode" checked  type="checkbox" class="ace ace-switch ace-switch-5 open">-->
                         <!--<span class="lbl time"></span>-->
                         <!--</label>-->
                         <label style="margin-right:20px;">
-                            <input type="radio" value="1" {% if form_set.sw_time_mode.value == "1" %} checked {% endif %} name="sw_time_mode"> 12小时
+                            <input type="radio" value="1" {% if form_set.sw_time_mode.value == "1" %} checked {% endif %} name="sw_time_mode"> {% trans "12小时" %}
                         </label>
                         <label>
-                            <input type="radio" value="-1" {% if form_set.sw_time_mode.value != "1" %} checked {% endif %} name="sw_time_mode"> 24小时
+                            <input type="radio" value="-1" {% if form_set.sw_time_mode.value != "1" %} checked {% endif %} name="sw_time_mode"> {% trans "24小时" %}
                         </label>
                     </td>
                 </tr>
@@ -229,8 +230,8 @@
             <input type="hidden" value="{{ domain.id }}" name="domain_id" id="domain_id" />
             </div>
             <div class="modal-footer center">
-                <button type="button" class="btn btn-success" onclick="clickSubmitButton('set','form_set')">提交</button>
-                <button type="button"  class="btn btn-warning">重置</button>
+                <button type="button" class="btn btn-success" onclick="clickSubmitButton('set','form_set')">{% trans "提交" %}</button>
+                <button type="button"  class="btn btn-warning">{% trans "重置" %}</button>
             </div>
             </form>
         </div>
@@ -249,7 +250,7 @@
             type:"POST",
             data:data,
             success:function(data){
-                $('#domain_module').html('<div>保存中...</div>');
+                $('#domain_module').html('<div>{% trans "保存中..." %}</div>');
                                 setTimeout(function(){
                                     $('#domain_module').html(data);
                                 },100)

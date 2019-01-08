@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.template.response import TemplateResponse
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 from django.db.models import Q
 
 from .models import ExtList, ExtListMember
@@ -31,11 +31,11 @@ def maillist_list(request):
             list_id = request.POST.get('id', '')
             obj = ExtList.objects.filter(id=list_id).first()
             if obj.is_everyone:
-                messages.add_message(request, messages.ERROR, u'不能被删除')
+                messages.add_message(request, messages.ERROR, _(u'不能被删除'))
             else:
                 ExtListMember.objects.filter(extlist_id=list_id).delete()
                 ExtList.objects.get(id=list_id).delete()
-                messages.add_message(request, messages.SUCCESS, u'删除成功')
+                messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
             return HttpResponseRedirect(reverse('maillist_list'))
         elif action == 'show_dept':
             show_dept = request.POST.get('show_dept', '')
@@ -60,7 +60,7 @@ def maillist_add(request):
         form = ExtListForm(domain_id, domain, None, None, False, request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加成功'))
             return HttpResponseRedirect(reverse('maillist_list'))
     return render(request, "maillist/maillist_add.html",
                   { 'form': form, 'obj': obj, })
@@ -73,7 +73,7 @@ def maillist_modify(request, list_id):
         form = ExtListForm(obj.domain_id, obj.domain, obj.listname, obj.address, False, request.POST, instance=obj)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改成功'))
             return HttpResponseRedirect(reverse('maillist_list'))
     return render(request, "maillist/maillist_add.html",
                   { 'form': form, 'obj': obj, })
@@ -82,8 +82,8 @@ def maillist_modify(request, list_id):
 @login_required
 def maillist_export(request):
     domain_id = get_domainid_bysession(request)
-    lists = [[u'邮件名称', u'邮件地址', u'说明信息', u'列表类型', u'域名']]
-    file_name = u'邮件列表-{}'.format(datetime.datetime.now().strftime('%Y%m%d'))
+    lists = [[_(u'邮件名称'), _(u'邮件地址'), _(u'说明信息'), _(u'列表类型'), _(u'域名')]]
+    file_name = _(u'邮件列表-{}').format(datetime.datetime.now().strftime('%Y%m%d'))
     lists2 = ExtList.objects.filter(domain_id=domain_id).all()
     for d in lists2:
         lists.append([d.listname, d.address, d.description, d.get_listtype_display(), d.domain])
@@ -173,7 +173,7 @@ def maillist_import(request):
 def maillist_template(request):
     data = request.GET
     file_ext = data.get('ext', '').strip()
-    lists = [[u'邮件列表名称', u'邮件列表地址', u'说明信息', u'权限类型'], [u'test', u'test', u'test', u'说明']]
+    lists = [[_(u'邮件列表名称'), _(u'邮件列表地址'), _(u'说明信息'), _(u'权限类型')], [u'test', u'test', u'test', _(u'说明')]]
     if file_ext == 'csv':
         force_csv = True
         mimetype = 'text/csv'
@@ -214,24 +214,24 @@ def maillist_maintain(request, list_id):
         if action == 'delete':
             id = request.POST.get('id', '')
             ExtListMember.objects.get(id=id).delete()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         if action == 'deleteall':
             ids = request.POST.get('ids', '')
             ids = ids.split(',')
             ExtListMember.objects.filter(id__in=ids).delete()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         if action == 'shoufa':
             if lobj.is_everyone:
-                messages.add_message(request, messages.ERROR, u'everyone 不能设置权限，默认为收发')
+                messages.add_message(request, messages.ERROR, _(u'everyone 不能设置权限，默认为收发'))
             else:
                 ids = request.POST.get('ids', '')
                 permit = request.POST.get('permit', '')
                 if permit not in ('-1', '0', '1'):
-                    messages.add_message(request, messages.ERROR, u'设置权限失败')
+                    messages.add_message(request, messages.ERROR, _(u'设置权限失败'))
                 else:
                     ids = ids.split(',')
                     ExtListMember.objects.filter(id__in=ids).update(permit=permit)
-                    messages.add_message(request, messages.SUCCESS, u'设置权限成功')
+                    messages.add_message(request, messages.SUCCESS, _(u'设置权限成功'))
         if action == 'everyone':
             everyone_addresses = request.POST.get('everyone_addresses', '')
             everyone_addresses = everyone_addresses.split(',')
@@ -322,7 +322,7 @@ def maillist_maintain_add(request, list_id):
         form = ExtListMemberForm(lobj, request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加成功'))
             return HttpResponseRedirect(reverse('maillist_maintain', args=(list_id,)))
     return render(request, "maillist/maillist_maintain_add.html",
                   { 'form': form, 'obj': None, 'list_id': list_id, 'lobj': lobj })
@@ -336,7 +336,7 @@ def maillist_maintain_modify(request, list_id, member_id):
         form = ExtListMemberForm(lobj, request.POST, instance=obj)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改成功'))
             return HttpResponseRedirect(reverse('maillist_maintain', args=(list_id,)))
     return render(request, "maillist/maillist_maintain_add.html",
                   { 'form': form, 'obj': obj, 'list_id': list_id, 'lobj': lobj })
@@ -454,8 +454,8 @@ def maillist_maintain_select_ajax(request):
 @login_required
 def maillist_maintain_export(request, list_id):
     lobj = ExtList.objects.get(id=list_id)
-    lists = [[u'邮箱地址',  u'权限', u'成员名称']]
-    file_name = u'邮件列表地址({})-{}'.format(lobj.address, datetime.datetime.now().strftime('%Y%m%d'))
+    lists = [[_(u'邮箱地址'),  _(u'权限'), _(u'成员名称')]]
+    file_name = _(u'邮件列表地址({})-{}').format(lobj.address, datetime.datetime.now().strftime('%Y%m%d'))
     if not lobj.is_everyone:
         lists2 = ExtListMember.objects.filter(extlist_id=list_id)
         for d in lists2:

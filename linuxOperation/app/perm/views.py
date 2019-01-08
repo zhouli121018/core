@@ -10,6 +10,7 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import Group
 from django.contrib.auth.backends import ModelBackend
+from django.utils.translation import ugettext_lazy as _
 from app.core.models import Mailbox as MyUser, Domain, UserDomain, Department, UserDepartment
 from .models import MyPermission, WebmailAdmin
 from .forms import MyPermissionForm, GroupForm, UserCreationForm, PasswordChangeForm, \
@@ -29,7 +30,7 @@ def perm_list(request):
             perm_id = request.POST.get('perm_id', '')
             if perm_id:
                 MyPermission.objects.get(id=perm_id).delete()
-                messages.add_message(request, messages.SUCCESS, u'删除成功')
+                messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         return HttpResponseRedirect(reverse('perm_list'))
     permlists = MyPermission.objects.filter(parent__isnull=True).order_by('order_id')
     return render(request, "perm/perm_list.html",
@@ -43,7 +44,7 @@ def perm_add(request):
         form = MyPermissionForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加成功'))
             return HttpResponseRedirect(reverse('perm_list'))
     return render(request, "perm/perm_modify.html",
                   { 'form': form })
@@ -62,13 +63,13 @@ def perm_restore(request):
         password2 = request.POST.get("password2","")
         if not md5_crypt.verify(password, request.user.password):
             data["status"] = "Failure"
-            data["message"] = u"密码验证失败"
+            data["message"] = _(u"密码验证失败")
         elif not password1:
             data["status"] = "Failure"
-            data["message"] = u"密码不能为空"
+            data["message"] = _(u"密码不能为空")
         elif password1!=password2:
             data["status"] = "Failure"
-            data["message"] = u"两次密码输入不正确"
+            data["message"] = _(u"两次密码输入不正确")
         else:
             try:
                 cmd = [
@@ -80,13 +81,13 @@ def perm_restore(request):
                 p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, preexec_fn=os.setsid)
                 p.wait()
                 if p.returncode == 0:
-                    data["message"] = u"还原成功"
+                    data["message"] = _(u"还原成功")
                 else:
                     data["status"] = "Failure"
-                    data["message"] = u"还原过程中出现错误: %s"%(str(errs))
+                    data["message"] = _(u"还原过程中出现错误: %s")%(str(errs))
             except Exception,err:
                     data["status"] = "Failure"
-                    data["message"] = u"还原过程中出现错误: %s"%(str(err))
+                    data["message"] = _(u"还原过程中出现错误: %s")%(str(err))
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 @superuser_required
@@ -98,7 +99,7 @@ def perm_modify(request, perm_id):
         form = MyPermissionForm(request.POST, instance=perm_obj)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改成功'))
             return HttpResponseRedirect(reverse('perm_list'))
     return render(request, "perm/perm_modify.html",
                   { 'form': form })
@@ -113,10 +114,10 @@ def group_list(request):
             group_id = request.POST.get('id', '')
             if group_id:
                 Group.objects.get(id=group_id).delete()
-                messages.add_message(request, messages.SUCCESS, u'删除成功')
+                messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         return HttpResponseRedirect(reverse('group_list'))
     special_groups = []
-    for name in (u"系统管理员",u"域名管理员",u"部门管理员"):
+    for name in (_(u"系统管理员"),_(u"域名管理员"),_(u"部门管理员")):
         g = Group.objects.filter(name=name).first()
         if g:
             special_groups.append(g.id)
@@ -131,7 +132,7 @@ def group_add(request):
         form = GroupForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'信息添加成功')
+            messages.add_message(request, messages.SUCCESS, _(u'信息添加成功'))
             return HttpResponseRedirect(reverse('group_list'))
     return render(request, "perm/group_modify.html",
                   { 'form': form })
@@ -145,7 +146,7 @@ def group_modify(request, group_id):
         form = GroupForm(request.POST, instance=group_obj)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'信息修改成功')
+            messages.add_message(request, messages.SUCCESS, _(u'信息修改成功'))
             return HttpResponseRedirect(reverse('group_list'))
     return render(request, "perm/group_modify.html",
                   {'form': form})
@@ -177,7 +178,7 @@ def perm_grant(request):
             obj.user_permissions.clear()
             obj.user_permissions = permissions
 
-        messages.add_message(request, messages.SUCCESS, u'信息修改成功')
+        messages.add_message(request, messages.SUCCESS, _(u'信息修改成功'))
         # return HttpResponseRedirect(reverse('user_list'))
         return HttpResponseRedirect(request.get_full_path())
     return render(request, "perm/perm_grant.html", {
@@ -196,13 +197,13 @@ def user_list(request):
     action = data.get("action","")
     user_id = data.get("user_id", "0")
     if not request.user.is_superuser:
-        messages.add_message(request, messages.ERROR, u'无设置权限！')
+        messages.add_message(request, messages.ERROR, _(u'无设置权限！'))
         return HttpResponseRedirect(reverse('user_list'))
     #取消管理员权限
     if action == "cancel":
         lists = MyUser.objects.filter(id=user_id)
         if lists.filter(name__in=LICENCE_EXCLUDE_LIST).count()>0:
-            messages.add_message(request, messages.ERROR, u'无法取消系统特殊帐号的权限！')
+            messages.add_message(request, messages.ERROR, _(u'无法取消系统特殊帐号的权限！'))
             return HttpResponseRedirect(reverse('user_list'))
         lists.update(is_active=False, is_staff=False, is_superuser=False)
     #设为超级用户
@@ -212,7 +213,7 @@ def user_list(request):
     elif action == "unsuper":
         lists = MyUser.objects.filter(id=user_id)
         if lists.filter(name__in=LICENCE_EXCLUDE_LIST).count()>0:
-            messages.add_message(request, messages.ERROR, u'无法取消系统特殊帐号的权限！')
+            messages.add_message(request, messages.ERROR, _(u'无法取消系统特殊帐号的权限！'))
             return HttpResponseRedirect(reverse('user_list'))
         lists.update(is_active=True, is_superuser=False)
     #禁用用户
@@ -259,7 +260,7 @@ def user_modify(request, user_id):
         perms = Group.objects.filter(id__in=group_ids)
         user_obj.groups.clear()
         user_obj.groups = perms
-        messages.add_message(request, messages.SUCCESS, u'信息修改成功')
+        messages.add_message(request, messages.SUCCESS, _(u'信息修改成功'))
         return HttpResponseRedirect(reverse('user_list'))
     user_group_ids = user_obj.groups.values_list('id', flat=True)
     groups = Group.objects.all()
@@ -282,7 +283,7 @@ def user_domain(request, user_id):
         perms = Domain.objects.filter(id__in=group_ids)
         user_obj.domains.clear()
         user_obj.domains = perms
-        messages.add_message(request, messages.SUCCESS, u'信息修改成功')
+        messages.add_message(request, messages.SUCCESS, _(u'信息修改成功'))
         return HttpResponseRedirect(reverse('user_list'))
     user_domain_ids = user_obj.domains.values_list('id', flat=True)
     domains = Domain.objects.all()
@@ -331,7 +332,7 @@ def webmail_admin_list(request):
         if action == 'delete':
             admin_id = request.POST.get('id', '')
             obj = WebmailAdmin.objects.filter(id=admin_id).delete()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         return HttpResponseRedirect(reverse('webmail_admin_list'))
     lists = WebmailAdmin.objects.all()
     return render(request, "perm/webmail_admin_list.html", {'lists': lists,})
@@ -345,7 +346,7 @@ def webmail_admin_mdf(request, admin_id):
         form = WebmailAdminForm(obj.domain_id, obj.domain, obj.username, obj.password, obj.usertype, request.POST, instance=obj)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改成功'))
             return HttpResponseRedirect(reverse('webmail_admin_list'))
     return render(request, "perm/webmail_admin_mdf.html",
                   { 'form': form, 'obj': obj, })
@@ -361,7 +362,7 @@ def webmail_admin_add(request):
         form = WebmailAdminForm(domain_id, domain, None, None, None, request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加成功'))
             return HttpResponseRedirect(reverse('webmail_admin_list'))
     return render(request, "perm/webmail_admin_mdf.html",
                   { 'form': form, 'obj': obj, })

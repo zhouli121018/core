@@ -28,7 +28,7 @@ def config(request):
         form = ProxyServerConfigForm(instance=obj, get=request.GET, post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u"配置修改成功")
+            messages.add_message(request, messages.SUCCESS, _(u"配置修改成功"))
             return HttpResponseRedirect(reverse('proxy_open_config'))
 
     return render(request, template_name='distribute/config.html', context={
@@ -47,11 +47,11 @@ def distribute_list(request):
         if status == "local_ip":
             local_ip = request.POST.get('local_ip', False)
             if not check_ip(local_ip):
-                messages.add_message(request, messages.ERROR, u'您输入的本机IP地址不合法！')
+                messages.add_message(request, messages.ERROR, _(u'您输入的本机IP地址不合法！'))
             else:
                 local_obj.config_data = local_ip
                 local_obj.save()
-                messages.add_message(request, messages.SUCCESS, u'本机IP地址设置成功！')
+                messages.add_message(request, messages.SUCCESS, _(u'本机IP地址设置成功！'))
 
         # 取消主服务器
         if status == "unmaster":
@@ -61,7 +61,7 @@ def distribute_list(request):
                 if obj.is_master:
                     lists.update(is_master=False)
                     proxy_server_redis("proxy_server_list")
-            messages.add_message(request, messages.SUCCESS, u'取消主服务器成功')
+            messages.add_message(request, messages.SUCCESS, _(u'取消主服务器成功'))
 
         # 设为主服务器
         if status == "master":
@@ -69,21 +69,21 @@ def distribute_list(request):
                 ProxyServerList.objects.filter(pk=id).update(is_master=True)
                 ProxyServerList.objects.exclude(pk=id).update(is_master=False)
                 proxy_server_redis("proxy_server_list", int(id))
-            messages.add_message(request, messages.SUCCESS, u'设为主服务器成功')
+            messages.add_message(request, messages.SUCCESS, _(u'设为主服务器成功'))
 
         # 启用
         if status == "active":
             with atomic():
                 ProxyServerList.objects.filter(pk=id).update(disabled="-1")
                 proxy_server_redis("proxy_server_list")
-            messages.add_message(request, messages.SUCCESS, u'启用成功')
+            messages.add_message(request, messages.SUCCESS, _(u'启用成功'))
 
         # 禁用
         if status == "disabled":
             with atomic():
                 ProxyServerList.objects.filter(pk=id).update(disabled="1")
                 proxy_server_redis("proxy_server_list")
-            messages.add_message(request, messages.SUCCESS, u'禁用成功')
+            messages.add_message(request, messages.SUCCESS, _(u'禁用成功'))
 
         # 删除
         if status == "delete":
@@ -92,15 +92,15 @@ def distribute_list(request):
                 obj = lists.first()
                 if obj and obj.is_master:
                     if ProxyServerList.objects.exclude(pk=id).exists():
-                        messages.add_message(request, messages.ERROR, u'主服务器删除失败，如需删除主服务器，请先删除其他服务器。')
+                        messages.add_message(request, messages.ERROR, _(u'主服务器删除失败，如需删除主服务器，请先删除其他服务器。'))
                     else:
                         lists.delete()
                         proxy_server_redis("proxy_server_list")
-                        messages.add_message(request, messages.SUCCESS, u'主服务器删除成功')
+                        messages.add_message(request, messages.SUCCESS, _(u'主服务器删除成功'))
                 else:
                     lists.delete()
                     proxy_server_redis("proxy_server_list")
-                    messages.add_message(request, messages.SUCCESS, u'删除成功')
+                    messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
 
         return HttpResponseRedirect(reverse('distribute_list'))
 
@@ -166,7 +166,7 @@ def distribute_add(request):
         form = ProxyServerListForm(post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'服务器 ({}) 添加成功'.format(form.server_name.value))
+            messages.add_message(request, messages.SUCCESS, _(u'服务器 ({}) 添加成功').format(form.server_name.value))
             return HttpResponseRedirect(reverse('distribute_list'))
 
     return render(request, template_name='distribute/distribute_modify.html', context={
@@ -181,7 +181,7 @@ def distribute_modify(request, proxy_id):
         form = ProxyServerListForm(post=request.POST, instance=obj)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'服务器 ({}) 修改成功'.format(form.server_name.value))
+            messages.add_message(request, messages.SUCCESS, _(u'服务器 ({}) 修改成功').format(form.server_name.value))
             return HttpResponseRedirect(reverse('distribute_list'))
 
     return render(request, template_name='distribute/distribute_modify.html', context={
@@ -207,10 +207,10 @@ def distribute_account_move(request):
         if status == "delete":
             obj = ProxyAccountMove.objects.get(pk=id)
             if obj.status not in ("finish", "unvalid"):
-                messages.add_message(request, messages.ERROR, u"不能删除该状态下的迁移")
+                messages.add_message(request, messages.ERROR, _(u"不能删除该状态下的迁移"))
             else:
                 obj.delete()
-                messages.add_message(request, messages.SUCCESS, u"删除成功")
+                messages.add_message(request, messages.SUCCESS, _(u"删除成功"))
         return HttpResponseRedirect(reverse('distribute_account_move'))
 
     return render(request, template_name='distribute/move.html', context={
@@ -286,7 +286,7 @@ def distribute_move_add(request):
         form = ProxyAccountMoveForm(post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加迁移成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加迁移成功'))
             return HttpResponseRedirect(reverse('distribute_account_move'))
 
     return render(request, template_name='distribute/move_add.html', context={
@@ -297,10 +297,10 @@ def distribute_move_add(request):
 def distribute_move_modify(request, move_id):
     obj = ProxyAccountMove.objects.get(pk=move_id)
     if obj.move_type == "to" and obj.status not in ("init", "wait", "sync", "accept", "ready", "backup"):
-        messages.add_message(request, messages.ERROR, u"不能修改该状态下的迁移")
+        messages.add_message(request, messages.ERROR, _(u"不能修改该状态下的迁移"))
         return HttpResponseRedirect(reverse('distribute_account_move'))
     if obj.move_type == "from" and obj.status not in ("create", "done", "imap_recv"):
-        messages.add_message(request, messages.ERROR, u"不能修改该状态下的迁移")
+        messages.add_message(request, messages.ERROR, _(u"不能修改该状态下的迁移"))
         return HttpResponseRedirect(reverse('distribute_account_move'))
 
     form = ProxyAccountMoveForm(instance=obj)
@@ -308,7 +308,7 @@ def distribute_move_modify(request, move_id):
         form = ProxyAccountMoveForm(post=request.POST, instance=obj)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改迁移成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改迁移成功'))
             return HttpResponseRedirect(reverse('distribute_account_move'))
 
     return render(request, template_name='distribute/move_add.html', context={

@@ -13,7 +13,7 @@
 
 
           </div>
-          <div class="version" style="width:60%;min-height:200px;margin:0 auto;">
+          <div class="version" style="width:60%;min-height:200px;margin:0 auto;" v-if="loginBeforeData.login_ads && loginBeforeData.login_ads.length>0">
 
             <el-carousel trigger="click" indicator-position="outside">
               <el-carousel-item v-for="(item,k) in loginBeforeData.login_ads" :key="k" v-if="loginBeforeData.login_ads">
@@ -50,7 +50,19 @@
 
               <h2 class="text-center">{{lan.user_login}}</h2>
               <el-form :label-position="labelPosition" class="loginForm" ref="loginForm" :rules="rules" label-width="80px" :model="formLabelAlign">
-                <el-form-item :label="lan.user_name" prop="username">
+                <el-form-item :label="lan.user_name" prop="username" style="">
+                  <label slot="label">
+                    <template>
+                      <el-select v-model="language" @change="changeLanguage" class="no_border" style="float:right;width:124px;">
+                          <el-option label="中文（简体）" value="zh"></el-option>
+                          <el-option label="中文（繁體）" value="zh-tw"></el-option>
+                          <el-option label="English" value="en"></el-option>
+                          <el-option label="Español" value="es" disabled></el-option>
+                        </el-select>
+                        <span>{{lan.user_name}}</span>
+
+                    </template>
+                  </label>
                   <!--<el-input v-model.trim="formLabelAlign.username"></el-input>-->
                   <el-input :placeholder="lan.placeholder_user_name" v-model.trim="formLabelAlign.username" class="input-with-select" name="username">
                     <template slot="append">@
@@ -116,14 +128,14 @@
                   <strong style="color: red">{{lan.condition_title}}</strong>
                   <ul style="margin-left: 26px;">
                     <li style="list-style-type:circle;"> {{lan.password_length}} {{passwordRules.passwd_size2}} {{lan.to_16}}</li>
-                    <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;">必须包含两种字符（数字、大写字母、小写字母、特殊字符）；</li>
-                    <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">必须包含三种字符（数字、大写字母、小写字母、特殊字符）；</li>
-                    <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">必须包含四种字符（数字、大写字母、小写字母、特殊字符）；</li>
-                    <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">连续3位及以上数字不能连号（例如：123、654）；</li>
-                    <li v-if="passwordRules.passwd_name" style="list-style-type:circle;">密码不能包含账号；</li>
-                    <li v-if="passwordRules.passwd_name2" style="list-style-type:circle;">密码不能包含用户姓名大小写全拼；</li>
-                    <li v-if="passwordRules.passwd_letter" style="list-style-type:circle;">连续3位及以上字母不能连号（例如：abc、cba）；</li>
-                    <li v-if="passwordRules.passwd_letter2" style="list-style-type:circle;">密码不能包含连续3个及以上相同字符（例如：aaa、rrr）；</li>
+                    <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;">{{lan.two_characters}}</li>
+                    <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">{{lan.three_characters}}</li>
+                    <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">{{lan.four_characters}}</li>
+                    <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">{{lan.continues_three}}</li>
+                    <li v-if="passwordRules.passwd_name" style="list-style-type:circle;">{{lan.not_contains}}</li>
+                    <li v-if="passwordRules.passwd_name2" style="list-style-type:circle;">{{lan.not_contain_name}}</li>
+                    <li v-if="passwordRules.passwd_letter" style="list-style-type:circle;">{{lan.not_continuous_letters}}</li>
+                    <li v-if="passwordRules.passwd_letter2" style="list-style-type:circle;">{{lan.consecutive_identical_characters}}</li>
                   </ul>
                 </div>
               </div>
@@ -175,6 +187,7 @@
         }
       };
       return {
+        language:'zh',
         bgIndex:0,
         passwordRules:{},
         loginBeforeData:{
@@ -258,6 +271,10 @@
       };
     },
     methods: {
+      changeLanguage(val){
+        cookie.setCookie('webvue_language',val,365*10)
+        this.$store.dispatch('setLanguageA',val)
+      },
       changeDomain(val){
         console.log(val)
         let param = {
@@ -478,7 +495,18 @@
     },
     computed: {
       lan:function(){
-        return lan.zh_hans
+        if(this.$store.getters.getLanguage=='zh'){
+          return lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          return lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          return lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          return lan.zh
+        }else{
+          return lan.zh
+        }
+
       }
       // rememberUserInfo: {
         // get: function () {
@@ -496,6 +524,35 @@
       //     this.bgIndex = 0
       //   }
       // },2000)
+
+      var lang = cookie.getCookie('webvue_language')
+      if(lang){
+        cookie.setCookie('webvue_language',lang,365*10)
+      }else{
+        let JsSrc =(navigator.language || navigator.browserLanguage).toLowerCase();
+        if(JsSrc.indexOf('zh')>=0)
+        {
+           // 假如浏览器语言是中文
+          cookie.setCookie('webvue_language','zh',365*10)
+          if(JsSrc=='zh-tw'){
+            cookie.setCookie('webvue_language','zh-tw',365*10)
+          }
+        }
+        else if(JsSrc.indexOf('en')>=0)
+        {
+            // 假如浏览器语言是英文
+          cookie.setCookie('webvue_language','en',365*10)
+        }
+        else
+        {
+           // 假如浏览器语言是其它语言
+          cookie.setCookie('webvue_language','zh',365*10)
+        }
+      }
+      this.$store.dispatch('setLanguageA',cookie.getCookie('webvue_language'))
+      this.language = cookie.getCookie('webvue_language');
+
+
       this.bgIndex = Math.floor(Math.random()*4)
       this.getLoginBefore()
       var lett = this;
@@ -516,7 +573,13 @@
   }
 </script>
 <style>
-
+  #login_bg .no_border .el-input__inner{
+    border:none;
+    text-align: right;
+  }
+  #login_bg .el-form-item__label{
+    width:100%;
+  }
   #login_bg>.main{
     position: absolute;
     width: 100%;

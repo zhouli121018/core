@@ -6,61 +6,61 @@
 from django.utils.translation import ugettext_lazy as _
 
 USER_TYPE = (
-    ('systemadmin', u'系统管理员'),
-    ('superadmin', u'超管'),
-    ('deptadmin', u'部门管理员'),
-    ('domainadmin', u'域名管理员'),
+    ('systemadmin', _(u'系统管理员')),
+    ('superadmin', _(u'超管')),
+    ('deptadmin', _(u'部门管理员')),
+    ('domainadmin', _(u'域名管理员')),
 )
 
 PROXY_CONFIG_DISABLED = (
-    ("-1", u'启用'),
-    ("1", u'禁用'),
+    ("-1", _(u'启用')),
+    ("1", _(u'禁用')),
 )
 
 DISABLED_STATUS = (
-    ("-1", u'启用'),
-    ("1", u'禁用'),
+    ("-1", _(u'启用')),
+    ("1", _(u'禁用')),
 )
 
 FUNCTION_STATUS = (
-    ("1", u'启用'),
-    ("-1", u'禁用'),
+    ("1", _(u'启用')),
+    ("-1", _(u'禁用')),
 )
 
 PROXY_SERVER_STATUS = (
     ('', u''),
-    ('unconnect', u'未连接'),
-    ('connected', u'已连接'),
-    ('disconnected', u'连接断开'),
-    ('conn_error', u'连接出错'),
+    ('unconnect', _(u'未连接')),
+    ('connected', _(u'已连接')),
+    ('disconnected', _(u'连接断开')),
+    ('conn_error', _(u'连接出错')),
 )
 
 PROXY_MOVE_TYPE = (
-    ("from", u'迁入'),
-    ("to", u'迁出'),
+    ("from", _(u'迁入')),
+    ("to", _(u'迁出')),
 )
 
 PROXY_MOVE_STATUS = (
-    ("init", u'初始化'),
-    ("wait", u'等待同步'),
-    ("sync", u'正在同步'),
-    ("accept", u'已接收'),
-    ("ready", u'等待删帐号'),
-    ("backup", u'正在备份'),
-    ("ask_delete", u'开始删除帐号'),
-    ("deleted", u'已删除帐号'),
-    ("create", u'等待目标服创建帐号'),
-    ("done", u'成功创建'),
-    ("imap_recv", u'正在通过imap接收邮件'),
-    ("finish", u'已完结'),
-    ("unvalid", u'出错'),
+    ("init", _(u'初始化')),
+    ("wait", _(u'等待同步')),
+    ("sync", _(u'正在同步')),
+    ("accept", _(u'已接收')),
+    ("ready", _(u'等待删帐号')),
+    ("backup", _(u'正在备份')),
+    ("ask_delete", _(u'开始删除帐号')),
+    ("deleted", _(u'已删除帐号')),
+    ("create", _(u'等待目标服创建帐号')),
+    ("done", _(u'成功创建')),
+    ("imap_recv", _(u'正在通过imap接收邮件')),
+    ("finish", _(u'已完结')),
+    ("unvalid", _(u'出错')),
 )
 
 CORE_ALIS_TYPE = (
-    ('mailbox', u'邮箱'),
-    ('domain', u'域名'),
-    ('system', u'系统'),
-    ('review', u'审核'),
+    ('mailbox', _(u'邮箱')),
+    ('domain', _(u'域名')),
+    ('system', _(u'系统')),
+    ('review', _(u'审核')),
 )
 
 BLACK_WHITE_OPTOR = (
@@ -79,71 +79,71 @@ ATTR_TYPR = (
 )
 
 MONITOR_LISTEN_TYPE = (
-    (u'recipient', u'收信监控'),
-    (u'sender', u'发信监控'),
+    (u'recipient', _(u'收信监控')),
+    (u'sender', _(u'发信监控')),
 )
 
 MONITOR_TARGET_TYPE = (
-    (u'*', u'所有'),
-    (u'in', u'接收'),
-    (u'out', u'外发'),
+    (u'*', _(u'所有')),
+    (u'in', _(u'接收')),
+    (u'out', _(u'外发')),
 )
 
 MONITOR_MAILMOVE_SELECT = (
-    (u'1', u'监控'),
-    (u'-1', u'不监控'),
+    (u'1', _(u'监控')),
+    (u'-1', _(u'不监控')),
 )
 
 MAILBOX_SEND_PERMIT = (
-    (u"-1", u"不限制邮件发送"),
-    (u"1", u"禁止发送所有邮件"),
-    (u"2", u"只发送本地域邮件"),
-    (u"3", u"可发送指定外域邮件"),
-    (u"4", u"可发送本地所有域邮件"),
+    (u"-1", _(u"不限制邮件发送")),
+    (u"1", _(u"禁止发送所有邮件")),
+    (u"2", _(u"只发送本地域邮件")),
+    (u"3", _(u"可发送指定外域邮件")),
+    (u"4", _(u"可发送本地所有域邮件")),
 )
 
 
 MAILBOX_RECV_PERMIT = (
-    (u"-1", u"不限制邮件接收"),
-    (u"1", u"禁止接收所有邮件"),
-    (u"2", u"只接收本地域邮件"),
-    (u"3", u"可接收指定外域邮件"),
-    (u"4", u"可接收本地所有域邮件"),
+    (u"-1", _(u"不限制邮件接收")),
+    (u"1", _(u"禁止接收所有邮件")),
+    (u"2", _(u"只接收本地域邮件")),
+    (u"3", _(u"可接收指定外域邮件")),
+    (u"4", _(u"可接收本地所有域邮件")),
 )
 
 MAILBOX_LIMIT_LOGIN = (
-    (u"-1", u"不限制登录方式"),
-    (u"1", u"禁止网页登录"),
+    (u"-1", _(u"不限制登录方式")),
+    (u"1", _(u"禁止网页登录")),
 )
 
 MAILBOX_RECV_SMS = (
-    (u"-1", u"禁用"),
-    (u"1", u"启用"),
-    (u"0", u"白名单"),
+    (u"-1", _(u"禁用")),
+    (u"1", _(u"启用")),
+    (u"0", _(u"白名单")),
 )
 
 MAILBOX_CHANGE_PWD = (
-    (u"-1", u"不修改"),
-    (u"1", u"修改"),
-    (u"2", u"修改并禁用帐号"),
+    (u"-1", _(u"不修改")),
+    (u"1", _(u"修改")),
+    (u"2", _(u"修改并禁用帐号")),
 )
 
 MAILBOX_ENABLE = (
-    (-1, u"禁用"),
-    (1, u"开启"),
+    (-1, _(u"禁用")),
+    (1, _(u"开启")),
 )
 
 USER_SHOW = (
-    (u'-1', u"不显示"),
-    (u'1', u"显示"),
+    (u'-1', _(u"不显示")),
+    (u'1', _(u"显示")),
 )
 GENDER = (
-    ('male', u"男"),
-    ('female', u"女"),
+    ('male', _(u"男")),
+    ('female', _(u"女")),
 )
 MAILBOX_DISABLED = (
-    (u"-1", u"正常"),
-    (u"1", u"禁止"),
+    (u"-1", _(u"正常")),
+    (u"1", _(u"禁止")),
 )
 
 EXTRELAY_WORK_MODE = (
@@ -152,27 +152,27 @@ EXTRELAY_WORK_MODE = (
 )
 
 CHECKRULE_TYPE = (
-    ('reply', u'自动回复'),
-    ('forward', u'自动转发'),
+    ('reply', _(u'自动回复')),
+    ('forward', _(u'自动转发')),
 )
 CHECKRULE_CONDITION_OPTION = (
-    ('exec_date', u'执行时间'),
-    ('sender', u'发件人'),
-    ('sender_original', u'原始发件人'),
-    ('recipient', u'收件人'),
-    ('recipient_original', u'原始收件人'),
-    ('subject', u'主题'),
-    ('copy_addr', u'抄送人'),
-    ('mail_size', u'邮件大小'),
+    ('exec_date', _(u'执行时间')),
+    ('sender', _(u'发件人')),
+    ('sender_original', _(u'原始发件人')),
+    ('recipient', _(u'收件人')),
+    ('recipient_original', _(u'原始收件人')),
+    ('subject', _(u'主题')),
+    ('copy_addr', _(u'抄送人')),
+    ('mail_size', _(u'邮件大小')),
 )
 CHECKRULE_CONDITION_ACTION = (
-    ('not_contains', u'不包含'),
-    ('contains', u'包含'),
+    ('not_contains', _(u'不包含')),
+    ('contains', _(u'包含')),
     ('between', u''),
 )
 CHECKRULE_CONDITION_LOGIC = (
-    ('all', u'并'),
-    ('one', u'或'),
+    ('all', _(u'并')),
+    ('one', _(u'或')),
 )
 
 # domain_attr_default DomainAttr 域名系统设置的一些默认值
@@ -240,19 +240,19 @@ DOMAINATTR_DEFULT = (
  )
 
 FORWARD_VISIBLE = (
-    ("-1", u'不可见'),
-    ("1", u'可见'),
+    ("-1", _(u'不可见')),
+    ("1", _(u'可见')),
 )
 
 FORWARD_VISIBLE = (
-    ("-1", u'不可见'),
-    ("1", u'可见'),
+    ("-1", _(u'不可见')),
+    ("1", _(u'可见')),
 )
 FORWARD_VISIBLE = (
-    ("-1", u'不可见'),
-    ("1", u'可见'),
+    ("-1", _(u'不可见')),
+    ("1", _(u'可见')),
 )
 FORWARD_KEEP_MAIL = (
-    ("-1", u'不可见'),
-    ("1", u'可见'),
+    ("-1", _(u'不可见')),
+    ("1", _(u'可见')),
 )

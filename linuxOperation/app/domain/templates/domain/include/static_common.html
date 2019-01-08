@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load static %}
 {% block my_jsblock %}
 <script src="{% static 'assets/js/ace-extra.js' %}"></script>
@@ -76,31 +77,31 @@
                     [
                         'font',
                         null,
-                        {name:'fontSize', title: '字体大小'},
+                        {name:'fontSize', title: '{% trans "字体大小" %}'},
                         null,
-                        {name:'bold', className:'btn-info',title: '粗体/ctrl+B'},
-                        {name:'italic', className:'btn-info',title:"斜体/Ctrl+I"},
-                        {name:'strikethrough', className:'btn-info',title:"删除线"},
-                        {name:'underline', className:'btn-info',title:"下划线"},
+                        {name:'bold', className:'btn-info',title: '{% trans "粗体/ctrl" %}+B'},
+                        {name:'italic', className:'btn-info',title:"{% trans "斜体/Ctrl" %}+I"},
+                        {name:'strikethrough', className:'btn-info',title:'{% trans "删除线" %}'},
+                        {name:'underline', className:'btn-info',title:'{% trans "下划线" %}'},
                         null,
-                        {name:'insertunorderedlist', className:'btn-success',title:"图形列表"},
-                        {name:'insertorderedlist', className:'btn-success',title:"数字列表"},
-                        {name:'outdent', className:'btn-purple',title:"减少缩进"},
-                        {name:'indent', className:'btn-purple',title:"缩进"},
+                        {name:'insertunorderedlist', className:'btn-success',title:'{% trans "图形列表" %}'},
+                        {name:'insertorderedlist', className:'btn-success',title:'{% trans "数字列表" %}'},
+                        {name:'outdent', className:'btn-purple',title:'{% trans "减少缩进" %}'},
+                        {name:'indent', className:'btn-purple',title:'{% trans "缩进" %}'},
                         null,
-                        {name:'justifyleft', className:'btn-primary',title:"左对齐"},
-                        {name:'justifycenter', className:'btn-primary',title:"居中对齐"},
-                        {name:'justifyright', className:'btn-primary',title:"右对齐"},
-                        {name:'justifyfull', className:'btn-inverse',title:"两端对齐"},
+                        {name:'justifyleft', className:'btn-primary',title:'{% trans "左对齐" %}'},
+                        {name:'justifycenter', className:'btn-primary',title:'{% trans "居中对齐" %}'},
+                        {name:'justifyright', className:'btn-primary',title:'{% trans "右对齐" %}'},
+                        {name:'justifyfull', className:'btn-inverse',title:'{% trans "两端对齐" %}'},
                         null,
-                        {name:'createLink', className:'btn-pink',title:"链接"},
-                        {name:'unlink', className:'btn-pink',title:"断开链接"},
+                        {name:'createLink', className:'btn-pink',title:'{% trans "链接" %}'},
+                        {name:'unlink', className:'btn-pink',title:'{% trans "断开链接" %}'},
                         null,
-                        {name:'insertImage', className:'btn-success',title:"图片"},
+                        {name:'insertImage', className:'btn-success',title:'{% trans "图片" %}'},
                         null,
-                        {name:'foreColor', title:"颜色"},
+                        {name:'foreColor', title:'{% trans "颜色" %}'},
                         null,
-                        {name:'undo', className:'btn-grey',title:"撤销"}
+                        {name:'undo', className:'btn-grey',title:'{% trans "撤销" %}'}
                     ],
             'wysiwyg': {
                 fileUploadError: showErrorAlert

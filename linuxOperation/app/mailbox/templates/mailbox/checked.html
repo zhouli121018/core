@@ -1,33 +1,34 @@
+{% load i18n %}
 <div id="dynamic-div">
-    <h3 class="header smaller lighter blue">已审核列表</h3>
+    <h3 class="header smaller lighter blue">{% trans "已审核列表" %}</h3>
     <div id="tabs">
         <ul>
             <li>
-                <a href="#tabs_title">审核通过列表</a>
+                <a href="#tabs_title">{% trans "审核通过列表" %}</a>
             </li>
             <li>
-                <a href="#tabs_logo">拒绝通过列表</a>
+                <a href="#tabs_logo">{% trans "拒绝通过列表" %}</a>
             </li>
             <li>
-                <a href="#tabs_login">已注销列表</a>
+                <a href="#tabs_login">{% trans "已注销列表" %}</a>
             </li>
         </ul>
         <div id="tabs_title">
             <div class="table-header">
-                审核通过列表
+                {% trans "审核通过列表" %}
             </div>
             <div>
                 <table class="table table-bordered table-striped table-hover">
                     <thead>
                         <tr>
-                            <th class="center">序号</th>
-                            <th>账号名称</th>
-                            <th>姓名</th>
-                            <th>员工代码（工号、警号等）</th>
-                            <th>部门</th>
-                            <th>状态</th>
-                            <th>备注</th>
-                            <th>申请日期</th>
+                            <th class="center">{% trans "序号" %}</th>
+                            <th>{% trans "账号名称" %}</th>
+                            <th>{% trans "姓名" %}</th>
+                            <th>{% trans "员工代码（工号、警号等）" %}</th>
+                            <th>{% trans "部门" %}</th>
+                            <th>{% trans "状态" %}</th>
+                            <th>{% trans "备注" %}</th>
+                            <th>{% trans "申请日期" %}</th>
                         </tr>
                     </thead>
                     <tbody id="data-body">
@@ -56,7 +57,7 @@
                         <td>username</td>
                         <td>15648892</td>
                         <td>department</td>
-                        <td>审核通过</td>
+                        <td>{% trans "审核通过" %}</td>
                         <td>333</td>
                         <td>2018-01-02 17:15:20</td>
                     </tr>`
@@ -85,16 +86,16 @@
                             "lengthMenu":  [10,15,20, 50, 100,200],
                             "oLanguage": {
 //                                "sLengthMenu": ,
-                                "sZeroRecords": "对不起! 信息筛选结果为空!",
-                                "sInfo": "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录",
-                                "sInfoEmpty": "总计: 0 条记录",
-                                "sInfoFiltered": "(从 _MAX_ 条记录筛选出)",
-                                "sSearch": "搜索: ",
+                                "sZeroRecords": '{% trans "对不起! 信息筛选结果为空!" %}',
+                                "sInfo": '{% trans "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录" %}',
+                                "sInfoEmpty": '{% trans "总计: 0 条记录" %}',
+                                "sInfoFiltered": '{% trans "(从 _MAX_ 条记录筛选出)" %}',
+                                "sSearch": '{% trans "搜索: " %}',
                                 "oPaginate": {
-                                    "sFirst":    "第一页",
-                                    "sPrevious": "上一页",
-                                    "sNext":     "下一页",
-                                    "sLast":     "最后一页"
+                                    "sFirst":    '{% trans "第一页" %}',
+                                    "sPrevious": '{% trans "上一页" %}',
+                                    "sNext":     '{% trans "下一页" %}',
+                                    "sLast":     '{% trans "最后一页" %}'
                                 }
                             }
                 } );

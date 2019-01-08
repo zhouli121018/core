@@ -109,7 +109,7 @@ def systemSet(request):
         form = SystemSetForm(request.POST, request=request)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改设置成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改设置成功'))
             return HttpResponseRedirect(reverse('system_set'))
     return render(request, "setting/sysset.html", context={
         "form": form,
@@ -120,10 +120,10 @@ def systemSetDebug(request):
     from django.conf import settings
     if settings.DEBUG:
         settings.DEBUG=False
-        messages.add_message(request, messages.SUCCESS, u'成功取消DEBUG标记')
+        messages.add_message(request, messages.SUCCESS, _(u'成功取消DEBUG标记'))
     else:
         settings.DEBUG=True
-        messages.add_message(request, messages.SUCCESS, u'成功设置DEBUG标记')
+        messages.add_message(request, messages.SUCCESS, _(u'成功设置DEBUG标记'))
     return render(request, "setting/sysset.html", context={
         })
 
@@ -133,18 +133,18 @@ def systemSetDebugReceiver(request):
     import os
     folder = request.GET.get("folder","")
     if folder and not os.path.exists(folder):
-        messages.add_message(request, messages.ERROR, u'设置失败，路径不存在')
+        messages.add_message(request, messages.ERROR, _(u'设置失败，路径不存在'))
         return render(request, "setting/sysset.html", context={
             })
     redis = get_redis_connection()
     if not folder and redis.exists("debug_receiver"):
         redis.delete("debug_receiver")
-        messages.add_message(request, messages.SUCCESS, u'成功取消receiver的DEBUG标记')
+        messages.add_message(request, messages.SUCCESS, _(u'成功取消receiver的DEBUG标记'))
         return render(request, "setting/sysset.html", context={
             })
     folder = "1" if not folder.strip() else folder.strip()
     redis.set("debug_receiver", folder)
-    messages.add_message(request, messages.SUCCESS, u'成功设置receiver的DEBUG标记:"%s"'%folder)
+    messages.add_message(request, messages.SUCCESS, _(u'成功设置receiver的DEBUG标记:"%s"')%folder)
     return render(request, "setting/sysset.html", context={
         })
 
@@ -159,27 +159,27 @@ def trustip_set(request):
         if status == "delete":
             obj = CoreTrustIP.objects.filter(pk=id).first()
             obj.delete()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         if status == "active":
             obj = CoreTrustIP.objects.filter(pk=id).first()
             obj.disabled=-1
             obj.save()
-            messages.add_message(request, messages.SUCCESS, u'启用成功')
+            messages.add_message(request, messages.SUCCESS, _(u'启用成功'))
         if status == "disabled":
             obj = CoreTrustIP.objects.filter(pk=id).first()
             obj.disabled=1
             obj.save()
-            messages.add_message(request, messages.SUCCESS, u'禁用成功')
+            messages.add_message(request, messages.SUCCESS, _(u'禁用成功'))
         if status == "add":
             if not validators.check_ipaddr(ip):
-                messages.add_message(request, messages.ERROR, u'不合法的IP或IP段: {}'.format(ip))
+                messages.add_message(request, messages.ERROR, _(u'不合法的IP或IP段: {}').format(ip))
                 return HttpResponseRedirect(reverse('trustip_set'))
             obj = CoreTrustIP.objects.filter(ip=ip).first()
             if obj:
-                messages.add_message(request, messages.ERROR, u'重复添加，添加失败')
+                messages.add_message(request, messages.ERROR, _(u'重复添加，添加失败'))
             else:
                 CoreTrustIP.objects.create(ip=ip)
-                messages.add_message(request, messages.SUCCESS, u'添加成功')
+                messages.add_message(request, messages.SUCCESS, _(u'添加成功'))
         return HttpResponseRedirect(reverse('trustip_set'))
 
     clear_redis_cache()
@@ -290,29 +290,29 @@ def black_white_post(request, model, ltype, reverse_name):
     if status == "delete":
         obj = model.objects.filter(pk=id, type=ltype).first()
         obj.delete()
-        messages.add_message(request, messages.SUCCESS, u'删除成功')
+        messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
     if status == "active":
         obj = model.objects.filter(pk=id, type=ltype).first()
         obj.disabled=-1
         obj.save()
-        messages.add_message(request, messages.SUCCESS, u'启用成功')
+        messages.add_message(request, messages.SUCCESS, _(u'启用成功'))
     if status == "disabled":
         obj = model.objects.filter(pk=id, type=ltype).first()
         obj.disabled=1
         obj.save()
-        messages.add_message(request, messages.SUCCESS, u'禁用成功')
+        messages.add_message(request, messages.SUCCESS, _(u'禁用成功'))
     if status == "add":
         if not "*" in email:
             if not validators.check_email_ordomain(email):
-                messages.add_message(request, messages.ERROR, u'不合法的邮箱或域名: {}'.format(email))
+                messages.add_message(request, messages.ERROR, _(u'不合法的邮箱或域名: {}').format(email))
                 return HttpResponseRedirect(reverse(reverse_name))
 
         obj = model.objects.filter(email=email, type=ltype).first()
         if obj:
-            messages.add_message(request, messages.ERROR, u'重复添加，添加失败：{}'.format(email))
+            messages.add_message(request, messages.ERROR, _(u'重复添加，添加失败：{}').format(email))
         else:
             model.objects.create(operator='sys', type=ltype, email=email, add_time=int(time.time()), remark=remark)
-            messages.add_message(request, messages.SUCCESS, u'添加成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加成功'))
 
     if status == "badd":
         email = email.replace("\r\n","\n")
@@ -326,7 +326,7 @@ def black_white_post(request, model, ltype, reverse_name):
                 continue
             if not validators.check_email_ordomain(e) and not validators.check_domain(e) :
                 fail += 1
-                fail_message.append(u"'%s' 不符合邮箱或域名格式"%e)
+                fail_message.append(_(u"'%s' 不符合邮箱或域名格式")%e)
                 continue
             obj = model.objects.filter(email=e, type=ltype).first()
             #已经存在的算导入成功
@@ -347,7 +347,7 @@ def blacklist(request):
         return black_white_post(request, CoreBlacklist, "send", "blacklist_set")
     return render(request, "setting/black_whitelist.html", context={
         "model": "black",
-        "model_name": u"发件人黑名单",
+        "model_name": _(u"发件人黑名单"),
     })
 
 @licence_required
@@ -361,7 +361,7 @@ def whitelist(request):
         return black_white_post(request, CoreWhitelist, "send", "whitelist_set")
     return render(request, "setting/black_whitelist.html", context={
         "model": "white",
-        "model_name": u"发件人白名单",
+        "model_name": _(u"发件人白名单"),
     })
 
 @licence_required
@@ -375,7 +375,7 @@ def whitelist_rcp(request):
         return black_white_post(request, CoreWhitelist, "recv", "whitelist_rcp_set")
     return render(request, "setting/whitelist.html", context={
         "model": "white_rcp",
-        "model_name": u"收件人白名单",
+        "model_name": _(u"收件人白名单"),
     })
 
 @licence_required
@@ -396,7 +396,7 @@ def alias_domain(request):
         if status == "delete":
             obj = CoreAlias.objects.filter(pk=id).first()
             obj.delete()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         return HttpResponseRedirect(reverse('alias_domain'))
     return render(request, "setting/alias_domain.html", context={
     })
@@ -413,7 +413,7 @@ def alias_domain_add(request):
         form = CoreAliasForm(post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加成功'))
             return HttpResponseRedirect(reverse('alias_domain'))
     return render(request, "setting/alias_domain_mdf.html", context={
         "form": form,
@@ -431,7 +431,7 @@ def alias_domain_mdf(request, alias_id):
         form = CoreAliasForm(instance=obj, post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改成功'))
             return HttpResponseRedirect(reverse('alias_domain'))
     return render(request, "setting/alias_domain_mdf.html", context={
         "form": form,
@@ -501,7 +501,7 @@ def alias_mailbox(request):
             obj = CoreAlias.objects.filter(pk=id).first()
             if obj:
                 obj.delete()
-                messages.add_message(request, messages.SUCCESS, u'删除成功')
+                messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
 
     return render(request, "setting/alias_mailbox.html", context={
         "form"          :   form,
@@ -521,7 +521,7 @@ def alias_mailbox_add(request):
         form = MailboxAliasForm(domain_id=domain_id, post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加成功'))
             return HttpResponseRedirect(reverse('alias_mailbox'))
     return render(request, "setting/alias_mailbox_mdf.html", context={
         "form": form,
@@ -538,7 +538,7 @@ def alias_mailbox_mdf(request, alias_id):
 
     obj = CoreAlias.objects.get(id=alias_id,type='mailbox')
     if not obj:
-        messages.add_message(request, messages.SUCCESS, u'试图修改的数据不存在')
+        messages.add_message(request, messages.SUCCESS, _(u'试图修改的数据不存在'))
         return HttpResponseRedirect(reverse('alias_mailbox'))
 
     form = MailboxAliasForm(domain_id=domain_id, instance=obj)
@@ -546,7 +546,7 @@ def alias_mailbox_mdf(request, alias_id):
         form = MailboxAliasForm(domain_id=domain_id, instance=obj, post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改成功'))
             return HttpResponseRedirect(reverse('alias_mailbox'))
     return render(request, "setting/alias_mailbox_mdf.html", context={
         "form": form,
@@ -624,7 +624,7 @@ def monitor_mailbox(request):
             obj = CoreMonitor.objects.filter(pk=id).first()
             if obj:
                 obj.delete()
-                messages.add_message(request, messages.SUCCESS, u'删除成功')
+                messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
     return render(request, "setting/monitor_mailbox.html", context={
         "form"          :   form,
         "domain_id"    :   domain_id,
@@ -644,7 +644,7 @@ def monitor_mailbox_add(request):
         form = MailboxMonitorForm(domain_id=domain_id, post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加设置成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加设置成功'))
             return HttpResponseRedirect(reverse('monitor_mailbox'))
     return render(request, "setting/monitor_mailbox_mdf.html", context={
         "form"          :   form,
@@ -659,14 +659,14 @@ def monitor_mailbox_mdf(request, monitor_id):
 
     obj = CoreMonitor.objects.filter(id=monitor_id).first()
     if not obj:
-        messages.add_message(request, messages.SUCCESS, u'试图修改的数据不存在')
+        messages.add_message(request, messages.SUCCESS, _(u'试图修改的数据不存在'))
         return HttpResponseRedirect(reverse('monitor_mailbox'))
     form = MailboxMonitorForm(domain_id=domain_id, instance=obj)
     if request.method == "POST":
         form = MailboxMonitorForm(domain_id=domain_id, instance=obj, post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改设置成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改设置成功'))
             return HttpResponseRedirect(reverse('monitor_mailbox'))
     return render(request, "setting/monitor_mailbox_mdf.html", context={
         "form"          :   form,
@@ -736,17 +736,17 @@ def cfilter(request):
         if status == "delete":
             obj = ExtCfilterRuleNew.objects.filter(pk=id).first()
             obj.delete()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         if status == "active":
             obj = ExtCfilterRuleNew.objects.filter(pk=id).first()
             obj.disabled=-1
             obj.save()
-            messages.add_message(request, messages.SUCCESS, u'启用成功')
+            messages.add_message(request, messages.SUCCESS, _(u'启用成功'))
         if status == "disabled":
             obj = ExtCfilterRuleNew.objects.filter(pk=id).first()
             obj.disabled=1
             obj.save()
-            messages.add_message(request, messages.SUCCESS, u'禁用成功')
+            messages.add_message(request, messages.SUCCESS, _(u'禁用成功'))
         return HttpResponseRedirect(reverse('cfilter_set'))
     return render(request, "setting/cfilter.html", context={
     })
@@ -760,7 +760,7 @@ def cfilter_config(request):
         form = ExtCfilterConfigForm(post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改开关成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改开关成功'))
             return HttpResponseRedirect(reverse("cfilter_config"))
     return render(request, "setting/cfilter_config.html", context={
         "form": form,
@@ -773,7 +773,7 @@ def cfilter_add(request):
         form = ExtCfilterRuleNewForm(post=request.POST,request=request)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加成功'))
             return HttpResponseRedirect(reverse('cfilter_set'))
     return render(request, "setting/cfilter_add.html", context={
         "form": form,
@@ -787,7 +787,7 @@ def cfilter_modify(request, rule_id):
         form = ExtCfilterRuleNewForm(post=request.POST, instance=obj,request=request)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改成功'))
             return HttpResponseRedirect(reverse('cfilter_set'))
     return render(request, "setting/cfilter_add.html", context={
         "form": form,
@@ -845,7 +845,7 @@ def smtp_verify_account(account):
     import smtplib
 
     if not account or "server" not in account or "account" not in account:
-        return "FAIL", "缺少数据"
+        return "FAIL", _(u"缺少数据")
     status = "FAIL"
     msg = ""
     trans_server = account.get("server","")
@@ -875,14 +875,14 @@ def smtp_verify_account(account):
 
         status = "OK"
         if trans_auth == "1":
-            msg = "服务器登录验证成功！"
+            msg = _(u"服务器登录验证成功！")
             smtpObj.login( trans_account, trans_password )
     except smtplib.SMTPAuthenticationError,err:
         status = "FAIL"
-        msg = "服务器验证失败： %s"%str(err)
+        msg = _(u"服务器验证失败： %s")%str(err)
     except Exception,err:
         status = "NET_FAIL"
-        msg = "您输入的帐号因为网络原因验证失败，服务器已保存您当前输入的数据，请检查网络后重新检查数据是否能通过验证： %s"%str(err)
+        msg = _(u"您输入的帐号因为网络原因验证失败，服务器已保存您当前输入的数据，请检查网络后重新检查数据是否能通过验证： %s")%str(err)
     return status, msg
 
 @licence_required
@@ -970,7 +970,7 @@ def mailTransfer(request):
             obj = PostTransfer.objects.filter(pk=id).first()
             if obj:
                 obj.delete()
-                messages.add_message(request, messages.SUCCESS, u'删除成功')
+                messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
     return render(request, "setting/mail_transfer.html", context={
         "form"          :   form,
     })
@@ -983,7 +983,7 @@ def mailTransferSender(request):
         form = MailTransferSenderForm(post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加数据成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加数据成功'))
             return HttpResponseRedirect(reverse('mail_transfer_sender'))
 
     return render(request, "setting/mail_transfer_sender.html", context={
@@ -997,7 +997,7 @@ def postTransferAdd(request):
         form = PostTransferForm(post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加数据成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加数据成功'))
             return HttpResponseRedirect(reverse('mail_transfer'))
 
     return render(request, "setting/include/mail_transfer_post_set.html", context={
@@ -1008,7 +1008,7 @@ def postTransferAdd(request):
 def postTransferModify(request, trans_id):
     obj = PostTransfer.objects.filter(id=trans_id).first()
     if not obj:
-        messages.add_message(request, messages.SUCCESS, u'试图修改的数据不存在')
+        messages.add_message(request, messages.SUCCESS, _(u'试图修改的数据不存在'))
         return HttpResponseRedirect(reverse('mail_transfer'))
 
     form = PostTransferForm(instance=obj)
@@ -1016,7 +1016,7 @@ def postTransferModify(request, trans_id):
         form = PostTransferForm(instance=obj, post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改数据成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改数据成功'))
             return HttpResponseRedirect(reverse('mail_transfer'))
 
     return render(request, "setting/include/mail_transfer_post_set.html", context={
@@ -1083,14 +1083,14 @@ def mail_transfer_import(request):
                 continue
             if not '\t' in line:
                 fail += 1
-                fail_list.append( u"'%s'    :   %s"%(line,u"不是以'制表符'作为分割符") )
+                fail_list.append( u"'%s'    :   %s"%(line,_(u"不是以'制表符'作为分割符")) )
                 continue
             lines = line.split("\t")
             length = len(lines)
-            type = lines[0].strip() if length>=1 else u"空列"
+            type = lines[0].strip() if length>=1 else _(u"空列")
             if not type in constants.MAIL_TRANSFER_TYPE2:
                 fail += 1
-                fail_list.append( u"'%s'     -->       '%s'   :   %s"%(line,type,u"未知的通道类型") )
+                fail_list.append( u"'%s'     -->       '%s'   :   %s"%(line,type,_(u"未知的通道类型")) )
                 continue
             type = constants.MAIL_TRANSFER_TYPE2[type]
             mailbox = lines[1] if length>=1 else ""
@@ -1101,7 +1101,7 @@ def mail_transfer_import(request):
                 o = Mailbox.objects.filter(username=mailbox).first()
                 if not o:
                     fail += 1
-                    fail_list.append( u"'%s'     -->       '%s'   :   %s"%(line,mailbox,u"本地帐号不存在") )
+                    fail_list.append( u"'%s'     -->       '%s'   :   %s"%(line,mailbox,_(u"本地帐号不存在")) )
                     continue
                 mailbox_id = o.id
             account = lines[2] if length>=3 else ""
@@ -1111,7 +1111,7 @@ def mail_transfer_import(request):
             ssl = '1' if str(ssl)=='1' else '-1'
             if PostTransfer.objects.filter(type=type, mailbox=mailbox, server=server, account=account).first():
                 fail += 1
-                fail_list.append( u"'%s'     -->       '%s'   :   %s"%(line,mailbox,u"相同数据已经在数据库中存在") )
+                fail_list.append( u"'%s'     -->       '%s'   :   %s"%(line,mailbox,_(u"相同数据已经在数据库中存在")) )
                 continue
             form = PostTransferForm(post={
                 'type'  :   type,
@@ -1158,7 +1158,7 @@ def ajax_imapCheck(request):
         except:
             pass
     except Exception, err :
-        msg = "连接服务器失败： %s"%str(err)
+        msg = _(u"连接服务器失败： %s")%str(err)
 
     rs = {
         "status"    :   status,
@@ -1188,7 +1188,7 @@ def header_trans(request):
         if status == "delete":
             obj = ExtTranslateHeader.objects.filter(pk=id).first()
             obj.delete()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         return HttpResponseRedirect(reverse('header_trans'))
     return render(request, "setting/header_trans.html", context={
         "domain_id"    :   domain_id,
@@ -1258,7 +1258,7 @@ def header_trans_add(request):
         form = HeaderTransForm(domain_id=domain_id, post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加设置成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加设置成功'))
             return HttpResponseRedirect(reverse('header_trans'))
     return render(request, "setting/header_trans_mdf.html", context={
         "form"          :   form,
@@ -1274,7 +1274,7 @@ def header_trans_mdf(request, trans_id):
 
     obj = ExtTranslateHeader.objects.filter(id=trans_id).first()
     if not obj:
-        messages.add_message(request, messages.SUCCESS, u'试图修改的数据不存在')
+        messages.add_message(request, messages.SUCCESS, _(u'试图修改的数据不存在'))
         return HttpResponseRedirect(reverse('header_trans'))
 
     form = HeaderTransForm(domain_id=domain_id, instance=obj)
@@ -1282,7 +1282,7 @@ def header_trans_mdf(request, trans_id):
         form = HeaderTransForm(domain_id=domain_id, instance=obj, post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改设置成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改设置成功'))
             return HttpResponseRedirect(reverse('header_trans'))
 
     return render(request, "setting/header_trans_mdf.html", context={
@@ -1310,7 +1310,7 @@ def ldap_setting(request):
             form = LdapFormLDAP(instance=ldap_set, domain_id=domain.id, post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改设置成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改设置成功'))
     return render(request, "setting/ldap_setting.html", context={
         "form"          :   form,
         "type"          :   select,
@@ -1358,7 +1358,7 @@ def ldap_adlist(request):
             obj = ADSync.objects.filter(pk=id).first()
             if obj:
                 obj.delete()
-                messages.add_message(request, messages.SUCCESS, u'删除成功')
+                messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
 
     return render(request, "setting/ldap_adlist.html", context={
         "domain"        :   domain,
@@ -1376,7 +1376,7 @@ def ldap_adlist_add(request):
         form = LdapFormADObj(domain_id=domain_id, post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加设置成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加设置成功'))
             return HttpResponseRedirect(reverse('ldap_adlist'))
 
     return render(request, "setting/ldap_adlist_mdf.html", context={
@@ -1393,7 +1393,7 @@ def ldap_adlist_mdf(request, mdf_id):
 
     obj = ADSync.objects.filter(id=mdf_id).first()
     if not obj:
-        messages.add_message(request, messages.SUCCESS, u'试图修改的数据不存在')
+        messages.add_message(request, messages.SUCCESS, _(u'试图修改的数据不存在'))
         return HttpResponseRedirect(reverse('ldap_setting'))
 
     form = LdapFormADObj(instance=obj,domain_id=domain.id)
@@ -1401,7 +1401,7 @@ def ldap_adlist_mdf(request, mdf_id):
         form = LdapFormADObj(instance=obj, domain_id=domain_id, post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改设置成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改设置成功'))
             return HttpResponseRedirect(reverse('ldap_adlist'))
 
     return render(request, "setting/ldap_adlist_mdf.html", context={
@@ -1481,7 +1481,7 @@ def ldap_download_log(request):
         response['Content-Disposition'] = 'attachment; filename=%s' % "ldap_sync.log"
         return response
     except Exception,err:
-        messages.add_message(request, messages.ERROR, u'导出日志请求失败: '+str(err))
+        messages.add_message(request, messages.ERROR, _(u'导出日志请求失败: ')+str(err))
         return HttpResponseRedirect(reverse("ldap_setting"))
 
 #########################################
@@ -1502,18 +1502,18 @@ def sslView(request):
         if status == "generate":
             # 系统生成私钥
             if value:
-                messages.add_message(request, messages.ERROR, u'私钥已存在，设置私钥失败!')
+                messages.add_message(request, messages.ERROR, _(u'私钥已存在，设置私钥失败!'))
                 return HttpResponseRedirect(reverse("ssl_maintain"))
             else:
                 try:
                     privkey = sslopts.genPrivKey()
                     keyobj.value = privkey
                     keyobj.save()
-                    messages.add_message(request, messages.SUCCESS, u'生成私钥成功')
+                    messages.add_message(request, messages.SUCCESS, _(u'生成私钥成功'))
                     return HttpResponseRedirect(reverse("ssl_maintain"))
                 except Exception,err:
                     print err
-                    messages.add_message(request, messages.ERROR, u'生成私钥失败,请重新生成: %s'%unicode(err))
+                    messages.add_message(request, messages.ERROR, _(u'生成私钥失败,请重新生成: %s')%unicode(err))
                     return HttpResponseRedirect(reverse("ssl_maintain"))
 
         if status == "clear":
@@ -1524,14 +1524,14 @@ def sslView(request):
             DomainAttr.emptyAttrObjValue(item="ssl_signrequest")
             # 清除证书
             DomainAttr.emptyAttrObjValue(item="ssl_certificate")
-            messages.add_message(request, messages.SUCCESS, u'清除私钥成功')
+            messages.add_message(request, messages.SUCCESS, _(u'清除私钥成功'))
             return HttpResponseRedirect(reverse("ssl_maintain"))
 
         if status == "export-signature":
             # 导出签名请求
             sigvalue = sigobj.value or None
             if not sigvalue:
-                messages.add_message(request, messages.ERROR, u'签名请求 不存在')
+                messages.add_message(request, messages.ERROR, _(u'签名请求 不存在'))
                 return HttpResponseRedirect(reverse("ssl_maintain"))
             else:
                 try:
@@ -1541,20 +1541,20 @@ def sslView(request):
                     response['Content-Disposition'] = 'attachment; filename=%s' % "ssl_signrequest.csr"
                     return response
                 except:
-                    messages.add_message(request, messages.ERROR, u'导出签名请求失败，请重新导出')
+                    messages.add_message(request, messages.ERROR, _(u'导出签名请求失败，请重新导出'))
                     return HttpResponseRedirect(reverse("ssl_maintain"))
 
         if status == "clear-signature":
             # 清除签名请求
             DomainAttr.emptyAttrObjValue(item="ssl_signrequest")
-            messages.add_message(request, messages.SUCCESS, u'清除签名请求成功')
+            messages.add_message(request, messages.SUCCESS, _(u'清除签名请求成功'))
             return HttpResponseRedirect(reverse("ssl_maintain"))
 
         if status == "cert-export":
             # 导出证书
             certvalue = certobj.value or None
             if not certvalue:
-                messages.add_message(request, messages.ERROR, u'证书 不存在')
+                messages.add_message(request, messages.ERROR, _(u'证书 不存在'))
                 return HttpResponseRedirect(reverse("ssl_maintain"))
             else:
                 try:
@@ -1564,13 +1564,13 @@ def sslView(request):
                     response['Content-Disposition'] = 'attachment; filename=%s' % "ssl_certificate.crt"
                     return response
                 except:
-                    messages.add_message(request, messages.ERROR, u'导出证书失败，请重新导出')
+                    messages.add_message(request, messages.ERROR, _(u'导出证书失败，请重新导出'))
                     return HttpResponseRedirect(reverse("ssl_maintain"))
 
         if status == "cert-clear":
             # 清除证书
             DomainAttr.emptyAttrObjValue(item="ssl_certificate")
-            messages.add_message(request, messages.SUCCESS, u'清除证书成功成功')
+            messages.add_message(request, messages.SUCCESS, _(u'清除证书成功成功'))
             return HttpResponseRedirect(reverse("ssl_maintain"))
 
     is_verify = False
@@ -1601,7 +1601,7 @@ def sslView(request):
 def sslEnableView(request):
     if request.method == "POST":
         if unicode(request.user).startswith(u"demo_admin@"):
-            messages.add_message(request, messages.ERROR, u'演示版本不能开启SSL!')
+            messages.add_message(request, messages.ERROR, _(u'演示版本不能开启SSL!'))
             return HttpResponseRedirect(reverse("ssl_maintain"))
 
         # 私钥数据
@@ -1615,13 +1615,13 @@ def sslEnableView(request):
         if ssl in ("1", "-1"):
             if ssl == "1":
                 if not keyobj.value or keyobj.value=="-1":
-                    messages.add_message(request, messages.ERROR, u'未设置加密密钥!')
+                    messages.add_message(request, messages.ERROR, _(u'未设置加密密钥!'))
                     return HttpResponseRedirect(reverse("ssl_maintain"))
                 if not sigobj.value or sigobj.value=="-1":
-                    messages.add_message(request, messages.ERROR, u'未设置签名!')
+                    messages.add_message(request, messages.ERROR, _(u'未设置签名!'))
                     return HttpResponseRedirect(reverse("ssl_maintain"))
                 if not certobj.value or certobj.value=="-1":
-                    messages.add_message(request, messages.ERROR, u'未生成证书!')
+                    messages.add_message(request, messages.ERROR, _(u'未生成证书!'))
                     return HttpResponseRedirect(reverse("ssl_maintain"))
 
             obj = CoreConfig.getFuctionObj('ssl')
@@ -1630,9 +1630,9 @@ def sslEnableView(request):
 
             redis = get_redis_connection()
             redis.rpush("task_queue:apply_setting", "ssl")
-            messages.add_message(request, messages.SUCCESS, u'应用设置成功')
+            messages.add_message(request, messages.SUCCESS, _(u'应用设置成功'))
         else:
-            messages.add_message(request, messages.ERROR, u'未知错误，操作失败!')
+            messages.add_message(request, messages.ERROR, _(u'未知错误，操作失败!'))
         return HttpResponseRedirect(reverse("ssl_maintain"))
     raise Http404
 
@@ -1648,7 +1648,7 @@ def sslPrivateView(request):
             keywd = request.POST.get("sslkey_passwd_import", "").strip()
             keywd = keywd or None
             if value:
-                messages.add_message(request, messages.ERROR, u'私钥已存在，设置私钥失败!')
+                messages.add_message(request, messages.ERROR, _(u'私钥已存在，设置私钥失败!'))
                 return HttpResponseRedirect(reverse("ssl_maintain"))
             else:
                 try:
@@ -1657,10 +1657,10 @@ def sslPrivateView(request):
                     privkey = sslopts.importPrivKey(privkey, passwd=keywd)
                     obj.value = privkey
                     obj.save()
-                    messages.add_message(request, messages.SUCCESS, u'导入私钥成功')
+                    messages.add_message(request, messages.SUCCESS, _(u'导入私钥成功'))
                     return HttpResponseRedirect(reverse("ssl_maintain"))
                 except BaseException as e:
-                    messages.add_message(request, messages.ERROR, u'导入私钥失败（保护密码错误、非密钥文件等）, 请重新导入！ ： %s'%unicode(e))
+                    messages.add_message(request, messages.ERROR, _(u'导入私钥失败（保护密码错误、非密钥文件等）, 请重新导入！ ： %s')%unicode(e))
                     return HttpResponseRedirect(reverse("ssl_maintain"))
         if status == "export":
             keywd = request.POST.get("sslkey_passwd_export", "").strip()
@@ -1674,10 +1674,10 @@ def sslPrivateView(request):
                     response['Content-Disposition'] = 'attachment; filename=%s' % "ssl_private.key"
                     return response
                 except BaseException as e:
-                    messages.add_message(request, messages.ERROR, u'私钥不正确，请重新生成私钥导出!')
+                    messages.add_message(request, messages.ERROR, _(u'私钥不正确，请重新生成私钥导出!'))
                     return HttpResponseRedirect(reverse("ssl_maintain"))
             else:
-                messages.add_message(request, messages.ERROR, u'私钥不存在，导出失败!')
+                messages.add_message(request, messages.ERROR, _(u'私钥不存在，导出失败!'))
                 return HttpResponseRedirect(reverse("ssl_maintain"))
         return HttpResponseRedirect(reverse("ssl_maintain"))
     raise Http404
@@ -1691,7 +1691,7 @@ def sslSignatureView(request):
         keyobj = DomainAttr.getAttrObj(item="ssl_privatekey")
         keyvalue = keyobj.value
         if obj.value:
-            messages.add_message(request, messages.ERROR, u'证书签名请求已存在，生成证书签名请求失败!')
+            messages.add_message(request, messages.ERROR, _(u'证书签名请求已存在，生成证书签名请求失败!'))
             return HttpResponseRedirect(reverse("ssl_maintain"))
         else:
             sig_domain = request.POST.get("sig_domain", "").strip()
@@ -1702,34 +1702,34 @@ def sslSignatureView(request):
             j = {}
             msg = []
             if not validators.check_domain(u"@{}".format(sig_domain)):
-                msg.append(u"域名 填写错误")
+                msg.append(_(u"域名 填写错误"))
             j.update(sig_domain=sig_domain)
 
             if not sig_organization:
-                msg.append(u"单位/组织 不能为空")
+                msg.append(_(u"单位/组织 不能为空"))
             elif  not validators.check_English(sig_organization):
-                msg.append(u"单位/组织 只能填写英文字符")
+                msg.append(_(u"单位/组织 只能填写英文字符"))
             j.update(sig_organization=sig_organization)
 
             if sig_depart and not validators.check_English(sig_depart):
-                msg.append(u"部门 只能填写英文字符")
+                msg.append(_(u"部门 只能填写英文字符"))
             j.update(sig_depart=sig_depart)
 
             if not sig_province:
-                msg.append(u"省/市/自治区 不能为空")
+                msg.append(_(u"省/市/自治区 不能为空"))
             elif not validators.check_English(sig_province):
-                msg.append(u"省/市/自治区 只能填写英文字符")
+                msg.append(_(u"省/市/自治区 只能填写英文字符"))
             j.update(sig_province=sig_province)
 
             if not sig_locale:
-                msg.append(u"所在地 不能为空")
+                msg.append(_(u"所在地 不能为空"))
             elif not validators.check_English(sig_locale):
-                msg.append(u"所在地 只能填写英文字符")
+                msg.append(_(u"所在地 只能填写英文字符"))
             j.update(sig_locale=sig_locale)
 
             DomainAttr.saveAttrObjValue(item="ssl_signrequest_cache", value=json.dumps(j))
             if not keyvalue:
-                messages.add_message(request, messages.ERROR, u'私钥不存在，请先设置私钥!')
+                messages.add_message(request, messages.ERROR, _(u'私钥不存在，请先设置私钥!'))
                 return HttpResponseRedirect(reverse("ssl_maintain"))
             if msg:
                 messages.add_message(request, messages.ERROR, u"，".join(msg))
@@ -1740,7 +1740,7 @@ def sslSignatureView(request):
                     sig_organization=sig_organization, sig_province=sig_province, sig_locale=sig_locale)
                 obj.value = signature
                 obj.save()
-                messages.add_message(request, messages.SUCCESS, u'生成证书签名请求成功')
+                messages.add_message(request, messages.SUCCESS, _(u'生成证书签名请求成功'))
                 return HttpResponseRedirect(reverse("ssl_maintain"))
 
         return HttpResponseRedirect(reverse("ssl_maintain"))
@@ -1755,21 +1755,21 @@ def sslCertView(request):
             certobj = DomainAttr.getAttrObj(item="ssl_certificate")
             privkey = keyobj.value
             if not privkey:
-                messages.add_message(request, messages.ERROR, u'私钥不存在，请先生成或导入!')
+                messages.add_message(request, messages.ERROR, _(u'私钥不存在，请先生成或导入!'))
                 return HttpResponseRedirect(reverse("ssl_maintain"))
             fileobj = request.FILES['certfile']
             certificate = fileobj.read()
             T = sslopts.checkCert(bytes(privkey), bytes(certificate))
             if not T:
-                messages.add_message(request, messages.ERROR, u'证书与私钥不匹配，无法导入！')
+                messages.add_message(request, messages.ERROR, _(u'证书与私钥不匹配，无法导入！'))
                 return HttpResponseRedirect(reverse("ssl_maintain"))
             certobj.value = certificate
             certobj.save()
-            messages.add_message(request, messages.SUCCESS, u'导入证书成功！')
+            messages.add_message(request, messages.SUCCESS, _(u'导入证书成功！'))
             return HttpResponseRedirect(reverse("ssl_maintain"))
         except BaseException as e:
             print ">>>>>>>>>>>>>>>>>>>>      ",e
-            messages.add_message(request, messages.ERROR, u'无法解析证书，请检测证书文件！')
+            messages.add_message(request, messages.ERROR, _(u'无法解析证书，请检测证书文件！'))
             return HttpResponseRedirect(reverse("ssl_maintain"))
     raise Http404
 
@@ -1810,11 +1810,11 @@ def user_cfilter_list(request):
             return v
     mailbox_id = request.GET.get("mailbox_id", 0)
     if int(mailbox_id) <= 0:
-        result = {"status":"failure","message":u"不存在的邮箱帐号！"}
+        result = {"status":"failure","message":_(u"不存在的邮箱帐号！")}
         return HttpResponse(json.dumps(result), content_type="application/json")
     extype = request.GET.get("extype", "")
     if not extype in ("re", "fw", "ot"):
-        result = {"status":"failure","message":u"错误类型: '{}'".format(extype)}
+        result = {"status":"failure","message":_(u"错误类型: '{}'").format(extype)}
         return HttpResponse(json.dumps(result), content_type="application/json")
     data = []
     for obj in ExtCfilterRuleNew.objects.filter(mailbox_id=mailbox_id, extype=extype):
@@ -1869,7 +1869,7 @@ def user_cfilter_mdf(request):
         result = {"status":"failure","message":reason}
         return HttpResponse(json.dumps(result), content_type="application/json")
     form.save()
-    result = {"status":"OK", "message":u"更新成功！"}
+    result = {"status":"OK", "message":_(u"更新成功！")}
     return HttpResponse(json.dumps(result), content_type="application/json")
 
 @csrf_exempt
@@ -1884,7 +1884,7 @@ def user_cfilter_mdf_batch(request):
     for mailbox_id in mailbox_lst:
         Box = Mailbox.objects.filter(id=mailbox_id).first()
         if not Box:
-            failure_list[mailbox_id] = u"邮箱帐号不存在"
+            failure_list[mailbox_id] = _(u"邮箱帐号不存在")
             continue
         form = ExtUserCfilterForm(rule_id=0, mailbox_id=mailbox_id, post=data, extype=extype)
         succ, reason = form.is_valid()
@@ -1903,7 +1903,7 @@ def user_cfilter_del(request):
     ExtCfilterNewCond.objects.filter(rule_id=rule_id).delete()
     ExtCfilterNewAction.objects.filter(rule_id=rule_id).delete()
     ExtCfilterRuleNew.objects.filter(id=rule_id).delete()
-    data = {"status":"OK","message":u"删除成功！"}
+    data = {"status":"OK","message":_(u"删除成功！")}
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 @licence_required
@@ -1973,7 +1973,7 @@ def relay_list_add(request):
         form = RelayForm(domain_id, domain, request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加成功'))
             return HttpResponseRedirect(reverse('relay_list'))
     return render(request, "setting/relay_mdf.html", context={
         "form"           : form,
@@ -1988,14 +1988,14 @@ def relay_list_mdf(request, mdf_id):
         return HttpResponseRedirect(reverse('relay_list'))
     obj = CoreRelay.objects.filter(id=mdf_id).first()
     if not obj:
-        messages.add_message(request, messages.SUCCESS, u'试图修改的数据不存在')
+        messages.add_message(request, messages.SUCCESS, _(u'试图修改的数据不存在'))
         return HttpResponseRedirect(reverse('relay_list'))
     form = RelayForm(domain_id, domain, instance=obj)
     if request.method == "POST":
         form = RelayForm(domain_id, domain, request.POST, instance=obj)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改设置成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改设置成功'))
             return HttpResponseRedirect(reverse('relay_list'))
     return render(request, "setting/relay_mdf.html", context={
         "form"          :   form,
@@ -2010,8 +2010,7 @@ def relay_setting(request):
         form = RelayPublicForm(domain_id, request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改数据成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改数据成功'))
             return HttpResponseRedirect(reverse('relay_list'))
     return render(request, "setting/relay_setting.html", context={
         "form": form})
-

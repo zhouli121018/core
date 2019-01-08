@@ -24,11 +24,11 @@ class MailboxForm(forms.ModelForm):
         'password_mismatch': _(u"两次输入的密码不一致."),
     }
 
-    password1 = forms.CharField(label=u'登录密码：', widget=forms.PasswordInput)
-    password2 = forms.CharField(label=u'确认密码：', widget=forms.PasswordInput)
+    password1 = forms.CharField(label=_(u'登录密码：'), widget=forms.PasswordInput)
+    password2 = forms.CharField(label=_(u'确认密码：'), widget=forms.PasswordInput)
     """
-    enable_share = forms.BooleanField(label=u'是否打开邮箱共享：', required=False, initial=False) limit_imap = forms.BooleanField(label=u'IMAP功能：', required=False, initial=True) disabled = forms.BooleanField(label=u'邮箱帐号状态：', required=False, initial=True)
-    change_pwd = forms.BooleanField(label=u'登录强制修改密码：', required=False, initial=False)
+    enable_share = forms.BooleanField(label=_(u'是否打开邮箱共享：'), required=False, initial=False) limit_imap = forms.BooleanField(label=_(u'IMAP功能：'), required=False, initial=True) disabled = forms.BooleanField(label=_(u'邮箱帐号状态：'), required=False, initial=True)
+    change_pwd = forms.BooleanField(label=_(u'登录强制修改密码：'), required=False, initial=False)
     """
 
     def __init__(self, domain, *args, **kwargs):
@@ -47,7 +47,7 @@ class MailboxForm(forms.ModelForm):
         self.fields['name'].widget.attrs.update({'addon': self.domain_str})
         self.fields['quota_mailbox'].widget.attrs.update({'addon': u'MB'})
         self.fields['quota_netdisk'].widget.attrs.update({'addon': u'MB'})
-        self.fields['pwd_days'].widget.attrs.update({'addon': u'天'})
+        self.fields['pwd_days'].widget.attrs.update({'addon': _(u'天')})
 
         mailbox_size = DomainAttr.getAttrObjValue(self.domain.id, 'system', 'cf_def_mailbox_size')
         netdisk_size = DomainAttr.getAttrObjValue(self.domain.id, 'system', 'cf_def_netdisk_size')
@@ -77,7 +77,7 @@ class MailboxForm(forms.ModelForm):
             self.fields['password2'].required = False
             s = self.instance.size
             size = s.size if s else 0
-            self.fields['quota_mailbox'].widget.attrs.update({'addon': u'MB(已使用{}MB)'.format(size)})
+            self.fields['quota_mailbox'].widget.attrs.update({'addon': _(u'MB(已使用{}MB)').format(size)})
             self.fields['name'].widget.attrs.update({'readonly': 'readonly'})
 
     def clean_domain(self):
@@ -94,9 +94,9 @@ class MailboxForm(forms.ModelForm):
         name = self.cleaned_data.get('name', '')
         self.mailbox = u"{}@{}".format(name, self.domain)
         if not pure_english_regex(name):
-            raise forms.ValidationError(_(u"邮箱名称只能由字母、数字或下划线点横杠组成！", ))
+            raise forms.ValidationError(_(u"邮箱名称只能由字母、数字或下划线点横杠组成！"))
         if Mailbox.objects.exclude(id=self.instance.id).filter(name=name, domain=self.domain):
-            raise forms.ValidationError(u"邮箱名称'{}'重复".format(name))
+            raise forms.ValidationError(_(u"邮箱名称'{}'重复").format(name))
         return name
 
     def clean_password1(self):
@@ -167,7 +167,7 @@ class MailboxForm(forms.ModelForm):
 
 class MailboxUserForm(forms.ModelForm):
     # oabshow = forms.BooleanField(label=u'通讯录显示：', required=False, initial=True)
-    remark = forms.CharField(label=u'备注：', required=False, widget=forms.Textarea(attrs={'rows': '4'}))
+    remark = forms.CharField(label=_(u'备注：'), required=False, widget=forms.Textarea(attrs={'rows': '4'}))
 
     def __init__(self, domain, *args, **kwargs):
         super(MailboxUserForm, self).__init__(*args, **kwargs)
@@ -184,20 +184,20 @@ class MailboxUserForm(forms.ModelForm):
         if data:
             tel_mobile = self.cleaned_data.get('tel_mobile', '')
             if not pure_english_regex(data):
-                raise forms.ValidationError(_(u"工号只能由字母、数字或下划线点横杠组成！", ))
+                raise forms.ValidationError(_(u"工号只能由字母、数字或下划线点横杠组成！"))
             if MailboxUser.objects.exclude(mailbox_id=self.instance.mailbox_id).filter(eenumber=data, domain=self.domain):
-                raise forms.ValidationError(u"工号'{}'重复".format(data))
+                raise forms.ValidationError(_(u"工号'{}'重复").format(data))
             if tel_mobile and tel_mobile == data:
-                raise forms.ValidationError(u"工号和手机号一样，不能保存！")
+                raise forms.ValidationError(_(u"工号和手机号一样，不能保存！"))
         return data
 
     def clean_tel_mobile(self):
         data = self.cleaned_data.get('tel_mobile', '')
         if data:
             if not pure_tel_regex(data):
-                raise forms.ValidationError(_(u"手机号码格式不对", ))
+                raise forms.ValidationError(_(u"手机号码格式不对"))
             if MailboxUser.objects.exclude(mailbox_id=self.instance.mailbox_id).filter(tel_mobile=data, domain=self.domain):
-                raise forms.ValidationError(u"手机号码重复")
+                raise forms.ValidationError(_(u"手机号码重复"))
         return data
 
     def clean_showorder(self):
@@ -220,9 +220,9 @@ class MailboxUserForm(forms.ModelForm):
 
 
 class BatchAddMailboxForm(forms.Form):
-    quota_mailbox = forms.CharField(label=u'默认邮箱容量：', widget=forms.TextInput(attrs={'addon': u'MB'}))
-    quota_netdisk = forms.CharField(label=u'默认网盘容量：', widget=forms.TextInput(attrs={'addon': u'MB'}))
-    txtfile = forms.FileField(label=u'选择文件', required=True)
+    quota_mailbox = forms.CharField(label=_(u'默认邮箱容量：'), widget=forms.TextInput(attrs={'addon': u'MB'}))
+    quota_netdisk = forms.CharField(label=_(u'默认网盘容量：'), widget=forms.TextInput(attrs={'addon': u'MB'}))
+    txtfile = forms.FileField(label=_(u'选择文件'), required=True)
 
     def __init__(self, domain, post={}, *args, **kwargs):
         super(BatchAddMailboxForm, self).__init__(*args, **kwargs)
@@ -238,30 +238,30 @@ class BatchAddMailboxForm(forms.Form):
         if data:
             tel_mobile = self.cleaned_data.get('tel_mobile', '')
             if not pure_english_regex(data):
-                raise forms.ValidationError(_(u"工号只能由字母、数字或下划线点横杠组成！", ))
+                raise forms.ValidationError(_(u"工号只能由字母、数字或下划线点横杠组成！"))
             if MailboxUser.objects.exclude(id=self.instance.id).filter(eenumber=data, domain=self.domain):
-                raise forms.ValidationError(u"工号'{}'重复".format(data))
+                raise forms.ValidationError(_(u"工号'{}'重复").format(data))
             if tel_mobile and tel_mobile == data:
-                raise forms.ValidationError(u"工号和手机号一样，不能保存！")
+                raise forms.ValidationError(_(u"工号和手机号一样，不能保存！"))
         return data
 
     def clean_tel_mobile(self):
         data = self.cleaned_data.get('tel_mobile', '')
         if data:
             if not pure_tel_regex(data):
-                raise forms.ValidationError(_(u"手机号码格式不对", ))
+                raise forms.ValidationError(_(u"手机号码格式不对"))
             if MailboxUser.objects.exclude(id=self.instance.id).filter(tel_mobile=data, domain=self.domain):
-                raise forms.ValidationError(u"手机号码重复")
+                raise forms.ValidationError(_(u"手机号码重复"))
         return data
 
     def clean_txtfile(self):
         f = self.files.get('txtfile', None)
         if not f:
-            raise forms.ValidationError(_(u"请选择文件。", ))
+            raise forms.ValidationError(_(u"请选择文件。"))
         file_name = f.name
         fext = file_name.split('.')[-1]
         if fext not in ('xls', 'xlsx', 'csv', 'txt'):
-            raise forms.ValidationError(_(u"只支持excel、txt、csv文件导入。", ))
+            raise forms.ValidationError(_(u"只支持excel、txt、csv文件导入。"))
         self.file_name = file_name
         self.file_ext = fext
         self.file_obj = f
@@ -281,17 +281,17 @@ class BatchAddMailboxForm(forms.Form):
 
 
 class MailboxSearchForm(forms.Form):
-    dept = forms.CharField(label=u'选择部门:', required=False,
+    dept = forms.CharField(label=_(u'选择部门:'), required=False,
                            widget=forms.TextInput(attrs={'class': 'department_choice', 'readonly': 'readonly'}))
-    login_time = forms.DateField(label=u'登录时间:', required=False,
+    login_time = forms.DateField(label=_(u'登录时间:'), required=False,
                                  widget=forms.DateInput(
                                      attrs={'class': 'dateinput date-range-picker min-width-170', 'readonly': 'readonly',
                                             'addon': 'datetime'}))
-    keyword = forms.CharField(label=u'关键字:',  required=False)
+    keyword = forms.CharField(label=_(u'关键字:'),  required=False)
     # status = forms.ChoiceField(label=u'状态:', choices=constants.MAILBOX_ENABLE, required=False)
 
 class MailboxDetailSearchForm(forms.Form):
-    size = forms.ChoiceField(label=u'空间')
+    size = forms.ChoiceField(label=_(u'空间'))
 
 class MailboxRegisterForm(forms.Form):
     pass

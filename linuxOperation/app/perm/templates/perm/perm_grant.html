@@ -7,7 +7,7 @@
 {% block page-content %}
     <div class="row">
         <div class="col-xs-12">
-            <div class="page-header"><h1>授予权限/{% if request.GET.g_id %}<a href="{% url 'group_list' %}">管理员组</a>{% endif %}({{ obj }})</h1></div>
+            <div class="page-header"><h1>{% trans "授予权限/" %}{% if request.GET.g_id %}<a href="{% url 'group_list' %}">{% trans "管理员组" %}</a>{% endif %}({{ obj }})</h1></div>
         </div>
     </div>
 
@@ -39,7 +39,7 @@
                                     {% endfor %}
                                 </ul>
                             </div>
-                            <button type="button" onclick="Sumbit()" class="btn btn-primary btn-sm">确认</button>
+                            <button type="button" onclick="Sumbit()" class="btn btn-primary btn-sm">{% trans "确认" %}</button>
                             <button type="button" class="btn btn-link" onclick="location.href='{% url 'user_list' %}'">{% trans "取消" %}</button>
                         </form>
                     </div>
@@ -100,4 +100,3 @@
     </script>
 
 {% endblock %}
-

@@ -30,7 +30,7 @@ def get_dept_list(lists_dpt, current_dpt_id=None):
         dpt_id = obj.id
         value = {
             "id": dpt_id,
-            "name": obj.title,
+            "name": obj.get_title,
             "parent": obj.parent_id,
             "order": obj.order,
         }

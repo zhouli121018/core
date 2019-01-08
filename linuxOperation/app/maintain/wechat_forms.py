@@ -11,8 +11,8 @@ from .wechat_models import WxConfig, WxTemplate, WxTemplateField
 from app.utils.regex import pure_english_regex2
 
 class WxNewsSearchForm(forms.Form):
-    start_time = forms.DateTimeField(label=u'发送开始时间', required=False)
-    end_time = forms.DateTimeField(label=u'发送截止时间', required=False)
+    start_time = forms.DateTimeField(label=_(u'发送开始时间'), required=False)
+    end_time = forms.DateTimeField(label=_(u'发送截止时间'), required=False)
     status = forms.ChoiceField(label=_(u"状态"), choices=((-1, _(u"所有")), (0, _(u"失败")), (1, _(u"成功"))), required=False,
                                initial=-1)
 
@@ -23,9 +23,9 @@ class WxNewsSearchForm(forms.Form):
 
 class WxApilogSearchForm(forms.Form):
     status = forms.ChoiceField(label=_(u"状态"), choices=((-1, _(u"所有")), (0, _(u"失败")), (1, _(u"成功"))), required=False, initial=-1)
-    start_time = forms.DateTimeField(label=u'发送开始时间', required=False)
-    end_time = forms.DateTimeField(label=u'发送截止时间', required=False)
-    keyword = forms.CharField(label=u' 关键词', required=False)
+    start_time = forms.DateTimeField(label=_(u'发送开始时间'), required=False)
+    end_time = forms.DateTimeField(label=_(u'发送截止时间'), required=False)
+    keyword = forms.CharField(label=_(u' 关键词'), required=False)
     def __init__(self, *args, **kwargs):
         super(WxApilogSearchForm, self).__init__(*args, **kwargs)
         for field in self.fields:
@@ -85,7 +85,7 @@ class WxTemplateForm(forms.ModelForm):
         code = self.cleaned_data.get('code')
         code = code.strip()
         if not code:
-            raise forms.ValidationError(u"请输入调用方法标识code")
+            raise forms.ValidationError(_(u"请输入调用方法标识code"))
         if WxTemplate.objects.exclude(id=self.instance.id).filter(
                 type=self.template_type, code=code).exists():
             raise forms.ValidationError(_(u"调用方法标识code已存在。"))
@@ -95,14 +95,14 @@ class WxTemplateForm(forms.ModelForm):
         name = self.cleaned_data.get('name')
         name = name.strip()
         if not name:
-            raise forms.ValidationError(u"请输入模板名称")
+            raise forms.ValidationError(_(u"请输入模板名称"))
         return name
 
     def clean_temp_id(self):
         temp_id = self.cleaned_data.get('temp_id')
         temp_id = temp_id.strip()
         if not temp_id:
-            raise forms.ValidationError(u"请输入微信模板ID")
+            raise forms.ValidationError(_(u"请输入微信模板ID"))
         return temp_id
 
 class WxTemplateFieldForm(forms.ModelForm):

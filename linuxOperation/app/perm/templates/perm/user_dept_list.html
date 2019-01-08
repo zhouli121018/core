@@ -1,1 +1,2 @@
-{% for d in lists %}<tr id="wechat_template_field_tr_{{ d.id }}"><td>{{ forloop.counter }}</td><td>{{ d.title }}</td><td><button type="button" class="btn btn-danger btn-minier" onclick="DeleteField('{{ d.id }}');">删除</button></td></tr>{% endfor %}
+{% load i18n %}
+{% for d in lists %}<tr id="wechat_template_field_tr_{{ d.id }}"><td>{{ forloop.counter }}</td><td>{{ d.title }}</td><td><button type="button" class="btn btn-danger btn-minier" onclick="DeleteField('{{ d.id }}');">{% trans "删除" %}</button></td></tr>{% endfor %}

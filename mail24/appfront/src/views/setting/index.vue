@@ -10,7 +10,7 @@
 
             <el-menu-item index="/setting/user" style="text-align: left">
               <img src="./img/op_userinfo.gif" style="width:20px;">
-              <span slot="title" title="检查或修改个人资料、语言等设置">个人资料</span>
+              <span slot="title" :title="lan.SETTING_INDEX_PERSONAL_MENU_TITLE">{{lan.SETTING_INDEX_PERSONAL_MENU}}</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/password" style="text-align: left" v-show="setting_password_show && menuShow.setting_password_show">
@@ -122,6 +122,7 @@
 </template>
 
 <script>
+  import lan from '@/assets/js/lan';
   import { settingShow } from '@/api/api'
 
   export default {
@@ -143,12 +144,10 @@
           setting_accountcancel_show: false,
           setting_password_show: false,
           setting_relatelist_show: false
-
         }
       };
     },
     components: {
-
     },
     created: function() {
       this.getShows();
@@ -171,6 +170,19 @@
       },
       setting_relatelist_show(){
         return  !this.$store.getters.getIsShared
+      },
+      lan(){
+        if(this.$store.getters.getLanguage=='zh'){
+          return lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          return lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          return lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          return lan.zh
+        }else{
+          return lan.zh
+        }
       },
     },
     watch:{

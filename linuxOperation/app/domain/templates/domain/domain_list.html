@@ -25,13 +25,13 @@
                 <table id="dynamic-table"  class="table table-striped table-bordered table-hover table-center" role="grid" >
                     <thead>
                     <tr>
-                        <th>序号</th>
-                        <th>域名</th>
-                        <th>限定邮箱数量</th>
-                        <th>限定总容量</th>
-                        <th>状态</th>
-                        <th>是否微信主域名</th>
-                        <th>操作</th>
+                        <th>{% trans "序号" %}</th>
+                        <th>{% trans "域名" %}</th>
+                        <th>{% trans "限定邮箱数量" %}</th>
+                        <th>{% trans "限定总容量" %}</th>
+                        <th>{% trans "状态" %}</th>
+                        <th>{% trans "是否微信主域名" %}</th>
+                        <th>{% trans "操作" %}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -205,7 +205,7 @@
         }
 
         function Delete(id, name){
-            var str = '确定要删除列表 "%s"？';
+            var str = '{% trans "确定要删除列表 " %}"%s"？';
             str = str.replace(/%s/, name);
             if(confirm(str)) {
                 $('#id').val(id);
@@ -242,7 +242,7 @@
                             $('#myModal').modal('hide');
                             window.location.reload();
                         }else{
-                            alert("保存失败： "+data.msg);
+                            alert('{% trans "保存失败： " %}'+data.msg);
                         }
                     }
                 }
@@ -311,9 +311,9 @@
         function fileImport() {
             //获取读取我文件的File对象
             var selectedFile = document.getElementById('files').files[0];
-            var name = selectedFile.name;//读取选中文件的文件名
-            var size = selectedFile.size;//读取选中文件的大小
-            console.log("文件名:"+name+"大小:"+size);
+            var name = selectedFile.name;//{% trans "读取选中文件的文件名" %}
+            var size = selectedFile.size;//{% trans "读取选中文件的大小" %}
+            console.log('{% trans "文件名:" %}'+name+'{% trans "大小:" %}'+size);
 
             var reader = new FileReader();
             //reader.readAsText(selectedFile);//读取文件的内容,也可以读取文件的URL
@@ -327,11 +327,11 @@
             var str = $('.test_importdkim').val();
             var selectedFile = document.getElementsByClassName('test_importdkim')[0].files[0];
             if(!selectedFile){
-                layer.tips("请选择文件！",'.test_importdkim+');
+                layer.tips('{% trans "请选择文件！" %}','.test_importdkim+');
                 return;
             }
             var reader = new FileReader();
-            reader.readAsText(selectedFile);//读取文件的内容,也可以读取文件的URL
+            reader.readAsText(selectedFile);//{% trans "读取文件的内容,也可以读取文件的URL" %}
             reader.onload = function () {
                 //当读取完成后回调这个函数,然后此时文件的内容存储到了result中,直接操作即可
                 console.log(this.result);

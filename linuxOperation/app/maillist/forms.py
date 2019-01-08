@@ -34,7 +34,7 @@ class ExtListForm(forms.ModelForm):
         listname = self.cleaned_data.get('listname')
         listname = listname and listname.strip() or None
         if not listname:
-            raise forms.ValidationError(_(u"请填写邮件邮件列表名称。",))
+            raise forms.ValidationError(_(u"请填写邮件邮件列表名称。"))
         return listname
 
     def clean_address(self):
@@ -43,22 +43,22 @@ class ExtListForm(forms.ModelForm):
         address = self.cleaned_data.get('address')
         address = address and address.strip() or None
         if not address:
-            self.error_notify = u"请填写邮件列表地址。"
+            self.error_notify = _(u"请填写邮件列表地址。")
             raise forms.ValidationError(_(self.error_notify))
         if not self.is_import:
             address = u"{}@{}".format(address, self.domain)
         if not pure_email_regex(address):
-            self.error_notify = u"输入的邮件列表地址不合法"
+            self.error_notify = _(u"输入的邮件列表地址不合法")
             raise forms.ValidationError(_(self.error_notify))
         if ExtList.objects.exclude(id=self.instance.id).filter(
                 address=address, domain_id=self.domain_id).exists():
-            self.error_notify = u"邮件列表地址已存在列表中"
+            self.error_notify = _(u"邮件列表地址已存在列表中")
             raise forms.ValidationError(_(self.error_notify))
         if Mailbox.objects.filter(username=address).exists():
-            self.error_notify = u"邮件列表地址不能是已存在的邮箱帐号"
+            self.error_notify = _(u"邮件列表地址不能是已存在的邮箱帐号")
             raise forms.ValidationError(_(self.error_notify))
         if CoreAlias.objects.filter(source=address).exists():
-            self.error_notify = u"邮件列表地址不能是已存在的邮箱别名"
+            self.error_notify = _(u"邮件列表地址不能是已存在的邮箱别名")
             raise forms.ValidationError(_(self.error_notify))
         return address
 
@@ -101,20 +101,20 @@ class ExtListMemberForm(forms.ModelForm):
     def clean_address(self):
         address = self.cleaned_data.get('address')
         if not address:
-            self.error_notify = _(u"请填写邮件地址。",)
+            self.error_notify = _(u"请填写邮件地址。")
             raise forms.ValidationError(self.error_notify)
         if not pure_email_regex(address):
             address = u'{}@{}'.format(address, self.extlist.domain)
             if not pure_email_regex(address):
-                self.error_notify = _(u"输入的邮件地址不合法", )
+                self.error_notify = _(u"输入的邮件地址不合法")
                 raise forms.ValidationError(self.error_notify)
         if ExtListMember.objects.exclude(id=self.instance.id).filter(
                 address=address, extlist=self.extlist).exists():
-            self.error_notify = _(u"邮件地址已存在列表中", )
+            self.error_notify = _(u"邮件地址已存在列表中")
             raise forms.ValidationError(self.error_notify)
         if self.extlist.is_everyone:
             if not Mailbox.objects.filter(username=address).exists():
-                self.error_notify = _(u"邮件地址不在邮件账号中", )
+                self.error_notify = _(u"邮件地址不在邮件账号中")
                 raise forms.ValidationError(self.error_notify)
         return address
 
@@ -141,7 +141,7 @@ class ExtListMemberForm(forms.ModelForm):
         return mem
 
 class ExcelTxtImport(forms.Form):
-    txtfile = forms.FileField(label=u'选择文件', required=True)
+    txtfile = forms.FileField(label=_(u'选择文件'), required=True)
 
     def __init__(self, *args, **kwargs):
         super(ExcelTxtImport, self).__init__(*args, **kwargs)
@@ -152,13 +152,12 @@ class ExcelTxtImport(forms.Form):
     def clean_txtfile(self):
         f = self.files.get('txtfile', None)
         if not f:
-            raise forms.ValidationError(_(u"请选择文件。", ))
+            raise forms.ValidationError(_(u"请选择文件。"))
         file_name = f.name
         fext = file_name.split('.')[-1]
         if fext not in ('xls', 'xlsx', 'csv', 'txt'):
-            raise forms.ValidationError(_(u"只支持excel、txt、csv文件导入。", ))
+            raise forms.ValidationError(_(u"只支持excel、txt、csv文件导入。"))
         self.file_name = file_name
         self.file_ext = fext
         self.file_obj = f
         return f
-

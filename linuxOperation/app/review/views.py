@@ -32,7 +32,7 @@ def review_list(request):
             with atomic():
                 Review.objects.filter(next_id=id).update(next_id=0)
                 obj.delete()
-                messages.add_message(request, messages.SUCCESS, u'删除成功')
+                messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
 
         return HttpResponseRedirect(reverse('review_list'))
     lists = Review.getReviewList()
@@ -60,7 +60,7 @@ def review_add(request):
         form = ReviewForm(post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'审核人 ({}) 创建成功'.format(form.name.value))
+            messages.add_message(request, messages.SUCCESS, _(u'审核人 ({}) 创建成功').format(form.name.value))
             return HttpResponseRedirect(reverse('review_list'))
     mailboxLists = Mailbox.objects.all()
     return render(request, template_name='review/review_modify.html', context={
@@ -76,7 +76,7 @@ def review_modify(request, review_id):
         form = ReviewForm(post=request.POST, instance=obj)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'审核人 ({}) 修改成功'.format(form.name.value))
+            messages.add_message(request, messages.SUCCESS, _(u'审核人 ({}) 修改成功').format(form.name.value))
             return HttpResponseRedirect(reverse('review_list'))
 
     mailboxLists = Mailbox.objects.all()
@@ -96,16 +96,16 @@ def reviewrule_list(request):
         if status == "active":
             obj.disabled=-1
             obj.save()
-            messages.add_message(request, messages.SUCCESS, u'启用成功')
+            messages.add_message(request, messages.SUCCESS, _(u'启用成功'))
 
         if status == "disabled":
             obj.disabled=1
             obj.save()
-            messages.add_message(request, messages.SUCCESS, u'禁用成功')
+            messages.add_message(request, messages.SUCCESS, _(u'禁用成功'))
 
         if status == "delete":
             obj.delete()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
 
         return HttpResponseRedirect(reverse('reviewrule_list'))
     return render(request, template_name='review/reviewrule.html', context={})
@@ -220,7 +220,7 @@ def review_config(request):
         form = ReviewConfigForm(instance=obj, instance2=obj2, instance3=obj3, post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改开关成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改开关成功'))
             return HttpResponseRedirect(reverse("review_config"))
     return render(request, template_name='review/review_config.html', context={
         "form": form,

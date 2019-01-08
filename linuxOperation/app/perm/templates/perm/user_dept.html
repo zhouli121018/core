@@ -2,7 +2,7 @@
 {% load static %}
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h4 class="modal-title" id="myModalLabel" style="font-weight: 600">用户“{{ user_obj.fullname }}({{ user_obj.username }})”部门管理</h4>
+    <h4 class="modal-title" id="myModalLabel" style="font-weight: 600">{% trans "用户“" %}{{ user_obj.fullname }}({{ user_obj.username }})”{% trans "部门管理" %}</h4>
 </div>
 <form action="" method="post" role="form" class="">
     {% csrf_token %}
@@ -22,15 +22,15 @@
                                         <div class="input-group">
                                             <input type="text" class="form-control department_choice tip_dept" value="" name="parent_bak" id="id_parent_bak" placeholder="{% trans "点击选择部门" %}" readonly>
                                             <span class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary" type="button" onclick="SaveField()">添加</button>
-                                            <button class="btn btn-sm btn-default" type="button" onclick="Clear()">清除</button>
+                                            <button class="btn btn-sm btn-primary" type="button" onclick="SaveField()">{% trans "添加" %}</button>
+                                            <button class="btn btn-sm btn-default" type="button" onclick="Clear()">{% trans "清除" %}</button>
                                         </span>
                                         </div>
                                         <div class="widget-box widget-color-blue2 email_box_tree" style="width:85%;position:absolute;z-index:10;">
                                             <button type="button" class="btn btn-danger btn-sm pull-right close_btn" style="">&times;</button>
                                             <div class="widget-body" style="padding-right:40px;">
                                                 <div style="padding:20px 6px 0;">
-                                                    <input type="text" id="search_input" class="select_search form-control" placeholder="输入关键字搜索...">
+                                                    <input type="text" id="search_input" class="select_search form-control" placeholder='{% trans "输入关键字搜索..." %}'>
                                                 </div>
                                                 <div class="widget-main padding-8">
                                                     <ul id="tree"></ul>
@@ -63,7 +63,7 @@
                         <td>{{ forloop.counter }}</td>
                         <td>{{ d.title }}</td>
                         <td>
-                            <button type="button" class="btn btn-danger btn-minier" onclick="DeleteField('{{ d.id }}');">删除</button>
+                            <button type="button" class="btn btn-danger btn-minier" onclick="DeleteField('{{ d.id }}');">{% trans "删除" %}</button>
                         </td>
                     </tr>
                 {% endfor %}
@@ -75,8 +75,8 @@
         </div>
     </div>
     <div class="modal-footer">
-        <!--<button type="submit" class="btn btn-primary">保存</button>-->
-        <button id="modal_close" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <!--<button type="submit" class="btn btn-primary">{% trans "保存" %}</button>-->
+        <button id="modal_close" type="button" class="btn btn-default" data-dismiss="modal">{% trans "关闭" %}</button>
     </div>
 </form>
 
@@ -109,7 +109,7 @@
     function SaveField() {
         var dept_id = $.trim( $("#id_dept_id").val() );
         if (dept_id=='-1' || dept_id==''){
-            alert('请选择部门');
+            alert('{% trans "请选择部门" %}');
             return;
         }
         $.post('{% url 'perm_user_dept' user_id %}',
@@ -117,7 +117,7 @@
             function (data) {
                 if (data.status == 'Y'){
                     $("#wechat_template_field_tbody").html(data.msg);
-                    alert("添加成功");
+                    alert('{% trans "添加成功" %}');
                     return;
                 } else {
                     alert(data.msg);

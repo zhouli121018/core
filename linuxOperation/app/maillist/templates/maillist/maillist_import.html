@@ -19,17 +19,17 @@
                     <div class="panel-heading">{% trans "邮件列表文件导入" %}</div>
                     <div class="panel-body">
                         <p class="help-block">
-                           <span class="text-success"><span style="color:blue">文件格式说明: </span><br>
-                            文件第一行为导出日期，导入程序会忽略这一行<br>
-                            文件第二行为每列名称，导入程序会忽略这一行<br>
-                            从第三行开始，程序会读取每行数据导入到邮件列表中<br>
-                            支持导入txt、csv、excel后缀的模板文件<br>
-                            导入格式跟导出一致即可<br>
+                           <span class="text-success"><span style="color:blue">{% trans "文件格式说明: " %}</span><br>
+                            {% trans "文件第一行为导出日期，导入程序会忽略这一行" %}<br>
+                            {% trans "文件第二行为每列名称，导入程序会忽略这一行" %}<br>
+                            {% trans "从第三行开始，程序会读取每行数据导入到邮件列表中" %}<br>
+                            {% trans "支持导入txt、csv、excel后缀的模板文件" %}<br>
+                            {% trans "导入格式跟导出一致即可" %}<br>
                             </span>
                             <textarea style="word-break: normal;width: 800px;" rows="5">
 comingchina.com--2018-06-01 14:07:21
-邮件名称    邮件地址    部门信息    列表类型    域名
-all all@comingchina.com    U-Mail集团全体  公开列表    comingchina.com
+{% trans "邮件名称    邮件地址    部门信息    列表类型    域名" %}
+all all@comingchina.com    U-{% trans "Mail集团全体  公开列表    comingchina.com" %}
                             </textarea>
                         </p>
 

@@ -12,12 +12,12 @@ class MyPermission(models.Model):
     '''
     parent = models.ForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
     permission = models.ForeignKey(Permission, null=True, blank=True, db_index=True)
-    name = models.CharField(_(u'权限名称'), max_length=50, unique=True, null=False, blank=False, help_text=u'请使用英文名称，只能使用数字、字母以及特殊字符（._-）')
+    name = models.CharField(_(u'权限名称'), max_length=50, unique=True, null=False, blank=False, help_text=_(u'请使用英文名称，只能使用数字、字母以及特殊字符（._-）'))
     is_nav = models.BooleanField(_(u'是否为导航'), default=True)
     nav_name = models.CharField(_(u'导航名称'), max_length=50, null=False, blank=False)
-    url = models.CharField(_(u'目录url'), max_length=150, null=True, blank=True, help_text=u'注意：比如/p/123/, 请维护成/p/modify/')
+    url = models.CharField(_(u'目录url'), max_length=150, null=True, blank=True, help_text=_(u'注意：比如/p/123/, 请维护成/p/modify/'))
     is_default = models.BooleanField(_(u'是否为默认权限'), default=False)
-    order_id = models.IntegerField(_(u'导航顺序'), default=1, help_text=u'越小排在越前面')
+    order_id = models.IntegerField(_(u'导航顺序'), default=1, help_text=_(u'越小排在越前面'))
 
     def __unicode__(self):
         return u'{}({})'.format(self.name, self.nav_name)
@@ -47,6 +47,9 @@ class MyPermission(models.Model):
 
     def get_perm(self):
         return '%s.%s' % (self.permission.content_type.app_label, self.permission.codename)
+
+    def get_nav_name(self):
+        return _(unicode(self.nav_name))
 
     class Meta:
         managed = False

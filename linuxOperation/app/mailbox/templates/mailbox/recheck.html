@@ -1,19 +1,20 @@
+{% load i18n %}
 <div id="dynamic-div">
-    <h3 class="header smaller lighter blue">审批管理</h3>
+    <h3 class="header smaller lighter blue">{% trans "审批管理" %}</h3>
     <div id="tabs">
         <ul>
             <li>
-                <a href="#tab_recheck">审批申请详情</a>
+                <a href="#tab_recheck">{% trans "审批申请详情" %}</a>
             </li>
 
             <li>
-                <a href="#tab_cancel">审批注销申请详情</a>
+                <a href="#tab_cancel">{% trans "审批注销申请详情" %}</a>
             </li>
             <li>
-                <a href="#tab_profile">审批个人资料详情</a>
+                <a href="#tab_profile">{% trans "审批个人资料详情" %}</a>
             </li>
             <li>
-                <a href="#tab_config">审批配置</a>
+                <a href="#tab_config">{% trans "审批配置" %}</a>
             </li>
         </ul>
 
@@ -21,18 +22,18 @@
             <div class="sub_tabs_check">
                 <ul>
                     <li>
-                        <a href="#wait_check">待审核列表</a>
+                        <a href="#wait_check">{% trans "待审核列表" %}</a>
                     </li>
                     <li>
-                        <a href="#check_sucess">审核通过列表</a>
+                        <a href="#check_sucess">{% trans "审核通过列表" %}</a>
                     </li>
                     <li>
-                        <a href="#check_fail">拒绝通过列表</a>
+                        <a href="#check_fail">{% trans "拒绝通过列表" %}</a>
                     </li>
                 </ul>
                 <div id="wait_check">
                     <div class="table-header">
-                        审批申请用户
+                        {% trans "审批申请用户" %}
                     </div>
                     <div>
                         <table id="dynamic-table" class="table table-striped table-bordered table-hover table-center" role="grid" >
@@ -44,16 +45,16 @@
                                         <span class="lbl"></span>
                                     </label>
                                 </th>
-                                <th>序号</th>
-                                <th>账号名称</th>
-                                <th class="hidden-480" >姓名</th>
+                                <th>{% trans "序号" %}</th>
+                                <th>{% trans "账号名称" %}</th>
+                                <th class="hidden-480" >{% trans "姓名" %}</th>
                                 <th>
-                                    员工代码(工号、警号等)
+                                    {% trans "员工代码(工号、警号等)" %}
                                 </th>
-                                <th>部门</th>
-                                <th>状态</th>
-                                <th>备注</th>
-                                <th>申请日期</th>
+                                <th>{% trans "部门" %}</th>
+                                <th>{% trans "状态" %}</th>
+                                <th>{% trans "备注" %}</th>
+                                <th>{% trans "申请日期" %}</th>
                             </tr>
                             </thead>
                             <tbody id="data-body">
@@ -62,27 +63,27 @@
                         </table>
                     </div>
                     <div class="table-footer center" style="margin-top:8px;">
-                        <button type="button" class="btn btn-success">开通邮箱</button>
-                        <button type="button" class="btn btn-danger">拒绝通过</button>
+                        <button type="button" class="btn btn-success">{% trans "开通邮箱" %}</button>
+                        <button type="button" class="btn btn-danger">{% trans "拒绝通过" %}</button>
                     </div>
                 </div>
 
                 <div id="check_sucess">
                     <div class="table-header">
-                        审核通过列表
+                        {% trans "审核通过列表" %}
                     </div>
                     <div>
                         <table id="check_sucess_table" class="table table-bordered table-striped table-hover table-center">
                             <thead>
                             <tr>
-                                <th class="center">序号</th>
-                                <th>账号名称</th>
-                                <th>姓名</th>
-                                <th>员工代码（工号、警号等）</th>
-                                <th>部门</th>
-                                <th>状态</th>
-                                <th>备注</th>
-                                <th>申请日期</th>
+                                <th class="center">{% trans "序号" %}</th>
+                                <th>{% trans "账号名称" %}</th>
+                                <th>{% trans "姓名" %}</th>
+                                <th>{% trans "员工代码（工号、警号等）" %}</th>
+                                <th>{% trans "部门" %}</th>
+                                <th>{% trans "状态" %}</th>
+                                <th>{% trans "备注" %}</th>
+                                <th>{% trans "申请日期" %}</th>
                             </tr>
                             </thead>
                             <tbody id="check_success_body">
@@ -93,20 +94,20 @@
                 </div>
                 <div id="check_fail">
                     <div class="table-header">
-                        拒绝通过列表
+                        {% trans "拒绝通过列表" %}
                     </div>
                     <div>
                         <table id="check_fail_table" class="table table-bordered table-striped table-hover table-center">
                             <thead>
                             <tr>
-                                <th class="center">序号</th>
-                                <th>账号名称</th>
-                                <th>姓名</th>
-                                <th>员工代码（工号、警号等）</th>
-                                <th>部门</th>
-                                <th>状态</th>
-                                <th>备注</th>
-                                <th>申请日期</th>
+                                <th class="center">{% trans "序号" %}</th>
+                                <th>{% trans "账号名称" %}</th>
+                                <th>{% trans "姓名" %}</th>
+                                <th>{% trans "员工代码（工号、警号等）" %}</th>
+                                <th>{% trans "部门" %}</th>
+                                <th>{% trans "状态" %}</th>
+                                <th>{% trans "备注" %}</th>
+                                <th>{% trans "申请日期" %}</th>
                             </tr>
                             </thead>
                             <tbody id="check_fail_body">
@@ -123,18 +124,18 @@
             <div class="sub_tabs_check">
                 <ul>
                     <li>
-                        <a href="#wait_cancel">审批注销申请</a>
+                        <a href="#wait_cancel">{% trans "审批注销申请" %}</a>
                     </li>
                     <li>
-                        <a href="#cancel_sucess">已注销列表</a>
+                        <a href="#cancel_sucess">{% trans "已注销列表" %}</a>
                     </li>
                     <li>
-                        <a href="#cancel_fail">拒绝注销列表</a>
+                        <a href="#cancel_fail">{% trans "拒绝注销列表" %}</a>
                     </li>
                 </ul>
                 <div id="wait_cancel">
                     <div class="table-header">
-                        审批注销申请
+                        {% trans "审批注销申请" %}
                     </div>
                     <div>
                         <table id="dynamic-table2" class="table table-striped table-bordered table-hover table-center" role="grid" >
@@ -146,16 +147,16 @@
                                         <span class="lbl"></span>
                                     </label>
                                 </th>
-                                <th>序号</th>
-                                <th>邮箱地址</th>
-                                <th class="hidden-480" >姓名</th>
+                                <th>{% trans "序号" %}</th>
+                                <th>{% trans "邮箱地址" %}</th>
+                                <th class="hidden-480" >{% trans "姓名" %}</th>
                                 <th>
-                                    员工代码(工号、警号等)
+                                    {% trans "员工代码(工号、警号等)" %}
                                 </th>
-                                <th>部门</th>
-                                <th>状态</th>
-                                <th>注销说明</th>
-                                <th>申请日期</th>
+                                <th>{% trans "部门" %}</th>
+                                <th>{% trans "状态" %}</th>
+                                <th>{% trans "注销说明" %}</th>
+                                <th>{% trans "申请日期" %}</th>
                             </tr>
                             </thead>
                             <tbody id="data-body2">
@@ -164,27 +165,27 @@
                         </table>
                     </div>
                     <div class="table-footer center" style="margin-top:8px;">
-                        <button type="button" class="btn btn-success">注销邮箱</button>
-                        <button type="button" class="btn btn-danger">拒绝申请</button>
+                        <button type="button" class="btn btn-success">{% trans "注销邮箱" %}</button>
+                        <button type="button" class="btn btn-danger">{% trans "拒绝申请" %}</button>
                     </div>
                 </div>
 
                 <div id="cancel_sucess">
                     <div class="table-header">
-                        已注销列表
+                        {% trans "已注销列表" %}
                     </div>
                     <div>
                         <table id="cancel_sucess_table" class="table table-bordered table-striped table-hover table-center">
                             <thead>
                             <tr>
-                                <th class="center">序号</th>
-                                <th>邮箱地址</th>
-                                <th>姓名</th>
-                                <th>员工代码（工号、警号等）</th>
-                                <th>部门</th>
-                                <th>状态</th>
-                                <th>注销说明</th>
-                                <th>申请日期</th>
+                                <th class="center">{% trans "序号" %}</th>
+                                <th>{% trans "邮箱地址" %}</th>
+                                <th>{% trans "姓名" %}</th>
+                                <th>{% trans "员工代码（工号、警号等）" %}</th>
+                                <th>{% trans "部门" %}</th>
+                                <th>{% trans "状态" %}</th>
+                                <th>{% trans "注销说明" %}</th>
+                                <th>{% trans "申请日期" %}</th>
                             </tr>
                             </thead>
                             <tbody id="cancel_success_body">
@@ -195,20 +196,20 @@
                 </div>
                 <div id="cancel_fail">
                     <div class="table-header">
-                        拒绝注销列表
+                        {% trans "拒绝注销列表" %}
                     </div>
                     <div>
                         <table id="cancel_fail_table" class="table table-bordered table-striped table-hover table-center">
                             <thead>
                             <tr>
-                                <th class="center">序号</th>
-                                <th>邮箱地址</th>
-                                <th>姓名</th>
-                                <th>员工代码（工号、警号等）</th>
-                                <th>部门</th>
-                                <th>状态</th>
-                                <th>注销说明</th>
-                                <th>申请日期</th>
+                                <th class="center">{% trans "序号" %}</th>
+                                <th>{% trans "邮箱地址" %}</th>
+                                <th>{% trans "姓名" %}</th>
+                                <th>{% trans "员工代码（工号、警号等）" %}</th>
+                                <th>{% trans "部门" %}</th>
+                                <th>{% trans "状态" %}</th>
+                                <th>{% trans "注销说明" %}</th>
+                                <th>{% trans "申请日期" %}</th>
                             </tr>
                             </thead>
                             <tbody id="cancel_fail_body">
@@ -225,18 +226,18 @@
             <div class="sub_tabs_check">
                 <ul>
                     <li>
-                        <a href="#wait_profile">审批个人资料修改</a>
+                        <a href="#wait_profile">{% trans "审批个人资料修改" %}</a>
                     </li>
                     <li>
-                        <a href="#profile_sucess">已审核通过列表</a>
+                        <a href="#profile_sucess">{% trans "已审核通过列表" %}</a>
                     </li>
                     <li>
-                        <a href="#profile_fail">拒绝通过列表</a>
+                        <a href="#profile_fail">{% trans "拒绝通过列表" %}</a>
                     </li>
                 </ul>
                 <div id="wait_profile">
                     <div class="table-header">
-                        审批个人资料修改
+                        {% trans "审批个人资料修改" %}
                     </div>
                     <div>
                         <table id="dynamic-table3" class="table table-striped table-bordered table-hover table-center" role="grid" >
@@ -248,17 +249,17 @@
                                         <span class="lbl"></span>
                                     </label>
                                 </th>
-                                <th>序号</th>
-                                <th>邮箱地址</th>
-                                <th class="hidden-480" >姓名</th>
+                                <th>{% trans "序号" %}</th>
+                                <th>{% trans "邮箱地址" %}</th>
+                                <th class="hidden-480" >{% trans "姓名" %}</th>
                                 <th>
-                                    员工代码(工号、警号等)
+                                    {% trans "员工代码(工号、警号等)" %}
                                 </th>
-                                <th>部门</th>
-                                <th>修改数据</th>
-                                <th>状态</th>
-                                <th>注销说明</th>
-                                <th>申请日期</th>
+                                <th>{% trans "部门" %}</th>
+                                <th>{% trans "修改数据" %}</th>
+                                <th>{% trans "状态" %}</th>
+                                <th>{% trans "注销说明" %}</th>
+                                <th>{% trans "申请日期" %}</th>
                             </tr>
                             </thead>
                             <tbody id="data-body3">
@@ -267,27 +268,27 @@
                         </table>
                     </div>
                     <div class="table-footer center" style="margin-top:8px;">
-                        <button type="button" class="btn btn-success">审核通过</button>
-                        <button type="button" class="btn btn-danger">拒绝通过</button>
+                        <button type="button" class="btn btn-success">{% trans "审核通过" %}</button>
+                        <button type="button" class="btn btn-danger">{% trans "拒绝通过" %}</button>
                     </div>
                 </div>
 
                 <div id="profile_sucess">
                     <div class="table-header">
-                        已审核通过列表
+                        {% trans "已审核通过列表" %}
                     </div>
                     <div>
                         <table id="profile_sucess_table" class="table table-bordered table-striped table-hover table-center">
                             <thead>
                             <tr>
-                                <th class="center">序号</th>
-                                <th>账号名称</th>
-                                <th>姓名</th>
-                                <th>员工代码（工号、警号等）</th>
-                                <th>部门</th>
-                                <th>修改数据</th>
-                                <th>状态</th>
-                                <th>申请日期</th>
+                                <th class="center">{% trans "序号" %}</th>
+                                <th>{% trans "账号名称" %}</th>
+                                <th>{% trans "姓名" %}</th>
+                                <th>{% trans "员工代码（工号、警号等）" %}</th>
+                                <th>{% trans "部门" %}</th>
+                                <th>{% trans "修改数据" %}</th>
+                                <th>{% trans "状态" %}</th>
+                                <th>{% trans "申请日期" %}</th>
                             </tr>
                             </thead>
                             <tbody id="profile_success_body">
@@ -298,20 +299,20 @@
                 </div>
                 <div id="profile_fail">
                     <div class="table-header">
-                        拒绝通过列表
+                        {% trans "拒绝通过列表" %}
                     </div>
                     <div>
                         <table id="profile_fail_table" class="table table-bordered table-striped table-hover table-center">
                             <thead>
                             <tr>
-                                <th class="center">序号</th>
-                                <th>账号名称</th>
-                                <th>姓名</th>
-                                <th>员工代码（工号、警号等）</th>
-                                <th>部门</th>
-                                <th>修改数据</th>
-                                <th>状态</th>
-                                <th>申请日期</th>
+                                <th class="center">{% trans "序号" %}</th>
+                                <th>{% trans "账号名称" %}</th>
+                                <th>{% trans "姓名" %}</th>
+                                <th>{% trans "员工代码（工号、警号等）" %}</th>
+                                <th>{% trans "部门" %}</th>
+                                <th>{% trans "修改数据" %}</th>
+                                <th>{% trans "状态" %}</th>
+                                <th>{% trans "申请日期" %}</th>
                             </tr>
                             </thead>
                             <tbody id="profile_fail_body">
@@ -326,12 +327,12 @@
 
         <div id="tab_config">
             <div class="table-header">
-                审批配置
+                {% trans "审批配置" %}
             </div>
             <div>
                 <table class="table table-bordered">
                     <tr>
-                        <td class="text-right" style="width:300px;">注册邮箱是否需审批：</td>
+                        <td class="text-right" style="width:300px;">{% trans "注册邮箱是否需审批：" %}</td>
                         <td>
                             <label class="inline" >
                                 <input  checked  type="checkbox" class="ace ace-switch ace-switch-5">
@@ -340,7 +341,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="text-right">注销邮箱是否需审批：</td>
+                        <td class="text-right">{% trans "注销邮箱是否需审批：" %}</td>
                         <td>
                             <label class="inline" >
                                 <input  checked  type="checkbox" class="ace ace-switch ace-switch-5">
@@ -349,7 +350,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="text-right">修改个人资料是否需审批：</td>
+                        <td class="text-right">{% trans "修改个人资料是否需审批：" %}</td>
                         <td>
                             <label class="inline" >
                                 <input type="checkbox" class="ace ace-switch ace-switch-5">
@@ -376,11 +377,11 @@
                     '<input type="checkbox" class="ace">' +
                     '<span class="lbl"></span></label></td><td> '+(i+1)+' </td>' +
                     '<td><span class="label  label-info arrowed arrowed-righ">testtest</span></td> ' +
-                    '<td><span class="label  label-success arrowed-right">姓名</span></td>' +
+                    '<td><span class="label  label-success arrowed-right">{% trans "姓名" %}</span></td>' +
                     '<td>'+(1234+1)+'</td>' +
-                    '<td>后勤部</td>' +
-                    '<td><span class="label label-sm label-warning arrowed-in arrowed-in-right">等待中</span></td>' +
-                    '<td>备注备注</td>' +
+                    '<td>{% trans "后勤部" %}</td>' +
+                    '<td><span class="label label-sm label-warning arrowed-in arrowed-in-right">{% trans "等待中" %}</span></td>' +
+                    '<td>{% trans "备注备注" %}</td>' +
                     '<td>2018-01-02</td>' +
                     '</tr>'
         }
@@ -405,17 +406,17 @@
                             "lengthMenu":  [10,15,20, 50, 100,200],
                             "oLanguage": {
 //                                "sLengthMenu": ,
-                                "sLengthMenu": "显示 _MENU_ 条记录 / 页",
-                                "sZeroRecords": "对不起! 信息筛选结果为空!",
-                                "sInfo": "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录",
-                                "sInfoEmpty": "总计: 0 条记录",
-                                "sInfoFiltered": "(从 _MAX_ 条记录筛选出)",
-                                "sSearch": "搜索: ",
+                                "sLengthMenu": '{% trans "显示 _MENU_ 条记录 / 页" %}',
+                                "sZeroRecords": '{% trans "对不起! 信息筛选结果为空!" %}',
+                                "sInfo": '{% trans "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录" %}',
+                                "sInfoEmpty": '{% trans "总计: 0 条记录" %}',
+                                "sInfoFiltered": '{% trans "(从 _MAX_ 条记录筛选出)" %}',
+                                "sSearch": '{% trans "搜索: " %}',
                                 "oPaginate": {
-                                    "sFirst":    "第一页",
-                                    "sPrevious": "上一页",
-                                    "sNext":     "下一页",
-                                    "sLast":     "最后一页"
+                                    "sFirst":    '{% trans "第一页" %}',
+                                    "sPrevious": '{% trans "上一页" %}',
+                                    "sNext":     '{% trans "下一页" %}',
+                                    "sLast":     '{% trans "最后一页" %}'
                                 }
                             }
                         } );
@@ -492,9 +493,9 @@
     });
     $('#tab_recheck .table-footer button').click(function(){
         if($(this).hasClass('btn-success')){
-            confirm('您确定审核通过此邮件吗？');
+            confirm('{% trans "您确定审核通过此邮件吗？" %}');
         }else{
-            confirm('您确定拒绝通过此邮件吗？');
+            confirm('{% trans "您确定拒绝通过此邮件吗？" %}');
         }
     })
 
@@ -505,11 +506,11 @@
                     '<input type="checkbox" class="ace"><span class="lbl"></span></label></td>' +
                     '<td>'+(i+1)+'</td>' +
                     '<td>testtest</td>' +
-                    '<td><span class="label label-info arrowed arrowed-righ">姓名'+(i+1)+'</span></td>' +
+                    '<td><span class="label label-info arrowed arrowed-righ">{% trans "姓名" %}'+(i+1)+'</span></td>' +
                     '<td>123456</td>' +
-                    '<td>后勤部</td>' +
-                    '<td>等待中</td>' +
-                    '<td>备注备注</td>' +
+                    '<td>{% trans "后勤部" %}</td>' +
+                    '<td>{% trans "等待中" %}</td>' +
+                    '<td>{% trans "备注备注" %}</td>' +
                     '<td>2018-01-02</td>' +
                     '</tr>'
         }
@@ -537,17 +538,17 @@
                             "lengthMenu":  [12,15,20, 50, 100,200],
                             "oLanguage": {
 //                                "sLengthMenu": ,
-                                "sLengthMenu": "显示 _MENU_ 条记录 / 页",
-                                "sZeroRecords": "对不起! 信息筛选结果为空!",
-                                "sInfo": "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录",
-                                "sInfoEmpty": "总计: 0 条记录",
-                                "sInfoFiltered": "(从 _MAX_ 条记录筛选出)",
-                                "sSearch": "搜索: ",
+                                "sLengthMenu": '{% trans "显示 _MENU_ 条记录 / 页" %}',
+                                "sZeroRecords": '{% trans "对不起! 信息筛选结果为空!" %}',
+                                "sInfo": '{% trans "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录" %}',
+                                "sInfoEmpty": '{% trans "总计: 0 条记录" %}',
+                                "sInfoFiltered": '{% trans "(从 _MAX_ 条记录筛选出)" %}',
+                                "sSearch": '{% trans "搜索: " %}',
                                 "oPaginate": {
-                                    "sFirst":    "第一页",
-                                    "sPrevious": "上一页",
-                                    "sNext":     "下一页",
-                                    "sLast":     "最后一页"
+                                    "sFirst":    '{% trans "第一页" %}',
+                                    "sPrevious": '{% trans "上一页" %}',
+                                    "sNext":     '{% trans "下一页" %}',
+                                    "sLast":     '{% trans "最后一页" %}'
                                 }
                             }
                         } );
@@ -623,9 +624,9 @@
     });
     $('#tab_cancel .table-footer button').click(function(){
         if($(this).hasClass('btn-success')){
-            confirm('您确定注销此邮件吗？');
+            confirm('{% trans "您确定注销此邮件吗？" %}');
         }else{
-            confirm('您确定拒绝注销此邮件吗？');
+            confirm('{% trans "您确定拒绝注销此邮件吗？" %}');
         }
     })
 
@@ -637,12 +638,12 @@
                     '</td>' +
                     '<td>'+(i+1)+'</td>' +
                     '<td>testtest</td>' +
-                    '<td>姓名</td>' +
+                    '<td>{% trans "姓名" %}</td>' +
                     '<td>123456</td>' +
-                    '<td>后勤部</td>' +
-                    '<td>真实姓名：cs => 我们</td>' +
-                    '<td>等待中</td>' +
-                    '<td>备注备注</td>' +
+                    '<td>{% trans "后勤部" %}</td>' +
+                    '<td>{% trans "真实姓名：cs =" %}> {% trans "我们" %}</td>' +
+                    '<td>{% trans "等待中" %}</td>' +
+                    '<td>{% trans "备注备注" %}</td>' +
                     '<td>2018-01-02</td>' +
                     '</tr>'
         }
@@ -672,17 +673,17 @@
                             "lengthMenu":  [10,15,20, 50, 100,200],
                             "oLanguage": {
 //                                "sLengthMenu": ,
-                                "sLengthMenu": "显示 _MENU_ 条记录 / 页",
-                                "sZeroRecords": "对不起! 信息筛选结果为空!",
-                                "sInfo": "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录",
-                                "sInfoEmpty": "总计: 0 条记录",
-                                "sInfoFiltered": "(从 _MAX_ 条记录筛选出)",
-                                "sSearch": "搜索: ",
+                                "sLengthMenu": '{% trans "显示 _MENU_ 条记录 / 页" %}',
+                                "sZeroRecords": '{% trans "对不起! 信息筛选结果为空!" %}',
+                                "sInfo": '{% trans "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录" %}',
+                                "sInfoEmpty": '{% trans "总计: 0 条记录" %}',
+                                "sInfoFiltered": '{% trans "(从 _MAX_ 条记录筛选出)" %}',
+                                "sSearch": '{% trans "搜索: " %}',
                                 "oPaginate": {
-                                    "sFirst":    "第一页",
-                                    "sPrevious": "上一页",
-                                    "sNext":     "下一页",
-                                    "sLast":     "最后一页"
+                                    "sFirst":    '{% trans "第一页" %}',
+                                    "sPrevious": '{% trans "上一页" %}',
+                                    "sNext":     '{% trans "下一页" %}',
+                                    "sLast":     '{% trans "最后一页" %}'
                                 }
                             }
                         } );
@@ -758,9 +759,9 @@
     });
     $('#tab_profile .table-footer button').click(function() {
         if ($(this).hasClass('btn-success')) {
-            confirm('您确定审核通过这些修改吗？');
+            confirm('{% trans "您确定审核通过这些修改吗？" %}');
         } else {
-            confirm('您确定拒绝通过这些修改吗？');
+            confirm('{% trans "您确定拒绝通过这些修改吗？" %}');
         }
     })
 
@@ -773,7 +774,7 @@
                     '<td>username</td>' +
                     '<td>15648892</td>' +
                     '<td>department</td>' +
-                    '<td>审核通过</td>' +
+                    '<td>{% trans "审核通过" %}</td>' +
                     '<td>333</td>' +
                     '<td>2018-01-02 17:15:20</td>' +
                     '</tr>'
@@ -802,17 +803,17 @@
                             "lengthMenu":  [10,15,20, 50, 100,200],
                             "oLanguage": {
 //                                "sLengthMenu": ,
-                                "sLengthMenu": "显示 _MENU_ 条记录 / 页",
-                                "sZeroRecords": "对不起! 信息筛选结果为空!",
-                                "sInfo": "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录",
-                                "sInfoEmpty": "总计: 0 条记录",
-                                "sInfoFiltered": "(从 _MAX_ 条记录筛选出)",
-                                "sSearch": "搜索: ",
+                                "sLengthMenu": '{% trans "显示 _MENU_ 条记录 / 页" %}',
+                                "sZeroRecords": '{% trans "对不起! 信息筛选结果为空!" %}',
+                                "sInfo": '{% trans "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录" %}',
+                                "sInfoEmpty": '{% trans "总计: 0 条记录" %}',
+                                "sInfoFiltered": '{% trans "(从 _MAX_ 条记录筛选出)" %}',
+                                "sSearch": '{% trans "搜索: " %}',
                                 "oPaginate": {
-                                    "sFirst":    "第一页",
-                                    "sPrevious": "上一页",
-                                    "sNext":     "下一页",
-                                    "sLast":     "最后一页"
+                                    "sFirst":    '{% trans "第一页" %}',
+                                    "sPrevious": '{% trans "上一页" %}',
+                                    "sNext":     '{% trans "下一页" %}',
+                                    "sLast":     '{% trans "最后一页" %}'
                                 }
                             }
                         } );
@@ -826,7 +827,7 @@
                     '<td>username</td>' +
                     '<td>15648892</td>' +
                     '<td>department</td>' +
-                    '<td>拒绝通过</td>' +
+                    '<td>{% trans "拒绝通过" %}</td>' +
                     '<td>123456</td>' +
                     '<td>2018-01-02 17:15:20</td>' +
                     '</tr>'
@@ -855,17 +856,17 @@
                             "lengthMenu":  [10,15,20, 50, 100,200],
                             "oLanguage": {
 //                                "sLengthMenu": ,
-                                "sLengthMenu": "显示 _MENU_ 条记录 / 页",
-                                "sZeroRecords": "对不起! 信息筛选结果为空!",
-                                "sInfo": "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录",
-                                "sInfoEmpty": "总计: 0 条记录",
-                                "sInfoFiltered": "(从 _MAX_ 条记录筛选出)",
-                                "sSearch": "搜索: ",
+                                "sLengthMenu": '{% trans "显示 _MENU_ 条记录 / 页" %}',
+                                "sZeroRecords": '{% trans "对不起! 信息筛选结果为空!" %}',
+                                "sInfo": '{% trans "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录" %}',
+                                "sInfoEmpty": '{% trans "总计: 0 条记录" %}',
+                                "sInfoFiltered": '{% trans "(从 _MAX_ 条记录筛选出)" %}',
+                                "sSearch": '{% trans "搜索: " %}',
                                 "oPaginate": {
-                                    "sFirst":    "第一页",
-                                    "sPrevious": "上一页",
-                                    "sNext":     "下一页",
-                                    "sLast":     "最后一页"
+                                    "sFirst":    '{% trans "第一页" %}',
+                                    "sPrevious": '{% trans "上一页" %}',
+                                    "sNext":     '{% trans "下一页" %}',
+                                    "sLast":     '{% trans "最后一页" %}'
                                 }
                             }
                         } );
@@ -880,7 +881,7 @@
                     '<td>username</td>' +
                     '<td>15648892</td>' +
                     '<td>department</td>' +
-                    '<td>已注销</td>' +
+                    '<td>{% trans "已注销" %}</td>' +
                     '<td>789546</td>' +
                     '<td>2018-01-02 17:15:20</td>' +
                     '</tr>'
@@ -909,17 +910,17 @@
                             "lengthMenu":  [10,15,20, 50, 100,200],
                             "oLanguage": {
 //                                "sLengthMenu": ,
-                                "sLengthMenu": "显示 _MENU_ 条记录 / 页",
-                                "sZeroRecords": "对不起! 信息筛选结果为空!",
-                                "sInfo": "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录",
-                                "sInfoEmpty": "总计: 0 条记录",
-                                "sInfoFiltered": "(从 _MAX_ 条记录筛选出)",
-                                "sSearch": "搜索: ",
+                                "sLengthMenu": '{% trans "显示 _MENU_ 条记录 / 页" %}',
+                                "sZeroRecords": '{% trans "对不起! 信息筛选结果为空!" %}',
+                                "sInfo": '{% trans "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录" %}',
+                                "sInfoEmpty": '{% trans "总计: 0 条记录" %}',
+                                "sInfoFiltered": '{% trans "(从 _MAX_ 条记录筛选出)" %}',
+                                "sSearch": '{% trans "搜索: " %}',
                                 "oPaginate": {
-                                    "sFirst":    "第一页",
-                                    "sPrevious": "上一页",
-                                    "sNext":     "下一页",
-                                    "sLast":     "最后一页"
+                                    "sFirst":    '{% trans "第一页" %}',
+                                    "sPrevious": '{% trans "上一页" %}',
+                                    "sNext":     '{% trans "下一页" %}',
+                                    "sLast":     '{% trans "最后一页" %}'
                                 }
                             }
                         } );
@@ -933,7 +934,7 @@
                     '<td>username</td>' +
                     '<td>89645692</td>' +
                     '<td>department</td>' +
-                    '<td>拒绝通过</td>' +
+                    '<td>{% trans "拒绝通过" %}</td>' +
                     '<td>123456</td>' +
                     '<td>2018-01-02 17:15:20</td>' +
                     '</tr>'
@@ -962,17 +963,17 @@
                             "lengthMenu":  [10,15,20, 50, 100,200],
                             "oLanguage": {
 //                                "sLengthMenu": ,
-                                "sLengthMenu": "显示 _MENU_ 条记录 / 页",
-                                "sZeroRecords": "对不起! 信息筛选结果为空!",
-                                "sInfo": "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录",
-                                "sInfoEmpty": "总计: 0 条记录",
-                                "sInfoFiltered": "(从 _MAX_ 条记录筛选出)",
-                                "sSearch": "搜索: ",
+                                "sLengthMenu": '{% trans "显示 _MENU_ 条记录 / 页" %}',
+                                "sZeroRecords": '{% trans "对不起! 信息筛选结果为空!" %}',
+                                "sInfo": '{% trans "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录" %}',
+                                "sInfoEmpty": '{% trans "总计: 0 条记录" %}',
+                                "sInfoFiltered": '{% trans "(从 _MAX_ 条记录筛选出)" %}',
+                                "sSearch": '{% trans "搜索: " %}',
                                 "oPaginate": {
-                                    "sFirst":    "第一页",
-                                    "sPrevious": "上一页",
-                                    "sNext":     "下一页",
-                                    "sLast":     "最后一页"
+                                    "sFirst":    '{% trans "第一页" %}',
+                                    "sPrevious": '{% trans "上一页" %}',
+                                    "sNext":     '{% trans "下一页" %}',
+                                    "sLast":     '{% trans "最后一页" %}'
                                 }
                             }
                         } );
@@ -987,7 +988,7 @@
                     '<td>username</td>' +
                     '<td>15648892</td>' +
                     '<td>department</td>' +
-                    '<td>审核通过</td>' +
+                    '<td>{% trans "审核通过" %}</td>' +
                     '<td>333</td>' +
                     '<td>2018-01-02 17:15:20</td>' +
                     '</tr>'
@@ -1016,17 +1017,17 @@
                             "lengthMenu":  [10,15,20, 50, 100,200],
                             "oLanguage": {
 //                                "sLengthMenu": ,
-                                "sLengthMenu": "显示 _MENU_ 条记录 / 页",
-                                "sZeroRecords": "对不起! 信息筛选结果为空!",
-                                "sInfo": "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录",
-                                "sInfoEmpty": "总计: 0 条记录",
-                                "sInfoFiltered": "(从 _MAX_ 条记录筛选出)",
-                                "sSearch": "搜索: ",
+                                "sLengthMenu": '{% trans "显示 _MENU_ 条记录 / 页" %}',
+                                "sZeroRecords": '{% trans "对不起! 信息筛选结果为空!" %}',
+                                "sInfo": '{% trans "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录" %}',
+                                "sInfoEmpty": '{% trans "总计: 0 条记录" %}',
+                                "sInfoFiltered": '{% trans "(从 _MAX_ 条记录筛选出)" %}',
+                                "sSearch": '{% trans "搜索: " %}',
                                 "oPaginate": {
-                                    "sFirst":    "第一页",
-                                    "sPrevious": "上一页",
-                                    "sNext":     "下一页",
-                                    "sLast":     "最后一页"
+                                    "sFirst":    '{% trans "第一页" %}',
+                                    "sPrevious": '{% trans "上一页" %}',
+                                    "sNext":     '{% trans "下一页" %}',
+                                    "sLast":     '{% trans "最后一页" %}'
                                 }
                             }
                         } );
@@ -1040,7 +1041,7 @@
                     '<td>username</td>' +
                     '<td>15648892</td>' +
                     '<td>department</td>' +
-                    '<td>拒绝通过</td>' +
+                    '<td>{% trans "拒绝通过" %}</td>' +
                     '<td>123456</td>' +
                     '<td>2018-01-02 17:15:20</td>' +
                     '</tr>'
@@ -1069,17 +1070,17 @@
                             "lengthMenu":  [10,15,20, 50, 100,200],
                             "oLanguage": {
 //                                "sLengthMenu": ,
-                                "sLengthMenu": "显示 _MENU_ 条记录 / 页",
-                                "sZeroRecords": "对不起! 信息筛选结果为空!",
-                                "sInfo": "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录",
-                                "sInfoEmpty": "总计: 0 条记录",
-                                "sInfoFiltered": "(从 _MAX_ 条记录筛选出)",
-                                "sSearch": "搜索: ",
+                                "sLengthMenu": '{% trans "显示 _MENU_ 条记录 / 页" %}',
+                                "sZeroRecords": '{% trans "对不起! 信息筛选结果为空!" %}',
+                                "sInfo": '{% trans "从 _START_ 到 _END_ 总计: _TOTAL_ 条记录" %}',
+                                "sInfoEmpty": '{% trans "总计: 0 条记录" %}',
+                                "sInfoFiltered": '{% trans "(从 _MAX_ 条记录筛选出)" %}',
+                                "sSearch": '{% trans "搜索: " %}',
                                 "oPaginate": {
-                                    "sFirst":    "第一页",
-                                    "sPrevious": "上一页",
-                                    "sNext":     "下一页",
-                                    "sLast":     "最后一页"
+                                    "sFirst":    '{% trans "第一页" %}',
+                                    "sPrevious": '{% trans "上一页" %}',
+                                    "sNext":     '{% trans "下一页" %}',
+                                    "sLast":     '{% trans "最后一页" %}'
                                 }
                             }
                         } );

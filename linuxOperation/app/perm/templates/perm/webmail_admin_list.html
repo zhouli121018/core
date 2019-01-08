@@ -13,7 +13,7 @@
         <div class="col-xs-8">
             <div class="pull-right" style="margin-right:30px;">
                 <div class="button-group">
-                    <a type="button" class="btn btn-primary btn-sm"  href="{% url 'webmail_admin_add' %}">添加管理员</a>
+                    <a type="button" class="btn btn-primary btn-sm"  href="{% url 'webmail_admin_add' %}">{% trans "添加管理员" %}</a>
                 </div>
             </div>
         </div>
@@ -25,12 +25,12 @@
                 <table id="dynamic-table"  class="table table-striped table-bordered table-hover table-center" role="grid" >
                     <thead>
                     <tr>
-                        <th>序号</th>
-                        <th>用户名</th>
-                        <th>域名</th>
-                        <th>用户类型</th>
-                        <th>状态</th>
-                        <th>操作</th>
+                        <th>{% trans "序号" %}</th>
+                        <th>{% trans "用户名" %}</th>
+                        <th>{% trans "域名" %}</th>
+                        <th>{% trans "用户类型" %}</th>
+                        <th>{% trans "状态" %}</th>
+                        <th>{% trans "操作" %}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -42,8 +42,8 @@
                             <td>{{ d.get_usertype_display|default_if_none:'' }}</td>
                             <td>{{ d.get_disabled_display|default_if_none:'' }}</td>
                             <td>
-                                <a type="button" class="green btn btn-white btn-primary btn-xs" href="{% url 'webmail_admin_mdf' d.id %}">修改</a>
-                                <a type="button" class="red delete btn btn-white btn-danger btn-xs" href="Javascript: Delete({{ d.id }}, '{{ d.username }}')">删除</a>
+                                <a type="button" class="green btn btn-white btn-primary btn-xs" href="{% url 'webmail_admin_mdf' d.id %}">{% trans "修改" %}</a>
+                                <a type="button" class="red delete btn btn-white btn-danger btn-xs" href="Javascript: Delete({{ d.id }}, '{{ d.username }}')">{% trans "删除" %}</a>
                             </td>
                         </tr>
                     {% endfor %}
@@ -109,7 +109,7 @@
         });
 
         function Delete(id, name){
-            var str = '确定要删除列表 "%s"？';
+            var str = '{% trans "确定要删除列表 " %}"%s"？';
             str = str.replace(/%s/, name);
             if(confirm(str)) {
                 $('#id').val(id);

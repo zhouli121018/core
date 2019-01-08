@@ -3,13 +3,13 @@ from __future__ import unicode_literals
 
 from django.db import models
 from app.core import constants
-
+from django.utils.translation import ugettext_lazy as _
 
 class ProxyServerConfig(models.Model):
-    config_name = models.CharField(u"配置名称", max_length=40, null=False, blank=False, unique=True)
-    config_data = models.CharField(u"配置值", max_length=250, null=False, blank=False)
-    ext = models.CharField(u'备注', max_length=100, null=False, blank=False, help_text=u"指明数据的用途")
-    pwd = models.CharField(u'授权密码', max_length=128, null=False, blank=False, default="0", help_text=u"分布式开关使用到的授权码")
+    config_name = models.CharField(_(u"配置名称"), max_length=40, null=False, blank=False, unique=True)
+    config_data = models.CharField(_(u"配置值"), max_length=250, null=False, blank=False)
+    ext = models.CharField(_(u'备注'), max_length=100, null=False, blank=False, help_text=_(u"指明数据的用途"))
+    pwd = models.CharField(_(u'授权密码'), max_length=128, null=False, blank=False, default="0", help_text=_(u"分布式开关使用到的授权码"))
 
     class Meta:
         managed = False
@@ -23,7 +23,7 @@ class ProxyServerConfig(models.Model):
         obj, _created = ProxyServerConfig.objects.get_or_create(config_name="proxy_open")
         if _created:
             obj.config_data = "1"
-            obj.ext = "分布式开关"
+            obj.ext = _(u"分布式开关")
             obj.save()
         return obj
 
@@ -32,16 +32,16 @@ class ProxyServerConfig(models.Model):
         obj, _created = ProxyServerConfig.objects.get_or_create(config_name="local_ip")
         if _created:
             obj.config_data = ""
-            obj.ext = "本机IP"
+            obj.ext = _(u"本机IP")
             obj.save()
         return obj
 
 class ProxyServerList(models.Model):
     id = models.AutoField(primary_key=True, db_column='server_num')
-    server_name = models.CharField(u'服务器名称', max_length=120, null=False, blank=False)
-    server_ip = models.CharField(u'服务器IP', max_length=20, null=False, blank=False)
-    is_master = models.BooleanField(u'是否主服务器', default=False)
-    disabled = models.CharField(u'状态', max_length=1, choices=constants.PROXY_CONFIG_DISABLED, null=False, blank=False, default="-1")
+    server_name = models.CharField(_(u'服务器名称'), max_length=120, null=False, blank=False)
+    server_ip = models.CharField(_(u'服务器IP'), max_length=20, null=False, blank=False)
+    is_master = models.BooleanField(_(u'是否主服务器'), default=False)
+    disabled = models.CharField(_(u'状态'), max_length=1, choices=constants.PROXY_CONFIG_DISABLED, null=False, blank=False, default="-1")
 
     class Meta:
         managed = False
@@ -52,10 +52,10 @@ class ProxyServerList(models.Model):
 
 class ProxyServerStatus(models.Model):
     id = models.AutoField(primary_key=True, db_column='server_num')
-    status_conn = models.CharField(u'本服发起状态', max_length=20, choices=constants.PROXY_SERVER_STATUS, null=True, blank=True)
-    status_recv = models.CharField(u'本服接收状态', max_length=20, choices=constants.PROXY_SERVER_STATUS, null=True, blank=True)
-    reject_reason = models.CharField(u'拒绝原因', max_length=500, null=True, blank=True)
-    last_update = models.DateTimeField(u'更新时间', null=True, auto_now=True)
+    status_conn = models.CharField(_(u'本服发起状态'), max_length=20, choices=constants.PROXY_SERVER_STATUS, null=True, blank=True)
+    status_recv = models.CharField(_(u'本服接收状态'), max_length=20, choices=constants.PROXY_SERVER_STATUS, null=True, blank=True)
+    reject_reason = models.CharField(_(u'拒绝原因'), max_length=500, null=True, blank=True)
+    last_update = models.DateTimeField(_(u'更新时间'), null=True, auto_now=True)
 
     class Meta:
         managed = False
@@ -71,8 +71,8 @@ class ProxyServerStatus(models.Model):
 
 class ProxyRouter(models.Model):
     id = models.AutoField(primary_key=True, db_column='router_id')
-    server_num = models.IntegerField(u'服务器', default=0)
-    acct_idx = models.IntegerField(u'唯一编号', default=0)
+    server_num = models.IntegerField(_(u'服务器'), default=0)
+    acct_idx = models.IntegerField(_(u'唯一编号'), default=0)
 
     class Meta:
         managed = False
@@ -81,11 +81,11 @@ class ProxyRouter(models.Model):
 class ProxyAccount(models.Model):
     id = models.AutoField(primary_key=True, db_column='acct_id')
     router_id = models.IntegerField(u"ProxyRouter", default=0, db_index=True)
-    birth_server = models.IntegerField("账号创建服务器", default=0, db_index=True)
+    birth_server = models.IntegerField(_(u"账号创建服务器"), default=0, db_index=True)
     mailbox_id = models.IntegerField(u"MailBox", default=0)
-    mailbox = models.CharField(u"发件人邮箱", null=False, blank=False, max_length=200, unique=True)
-    acct_server = models.IntegerField("账号服务器", default=0, db_index=True)
-    disabled = models.CharField(u'状态', max_length=1, choices=constants.PROXY_CONFIG_DISABLED, null=False, blank=False, default="-1")
+    mailbox = models.CharField(_(u"发件人邮箱"), null=False, blank=False, max_length=200, unique=True)
+    acct_server = models.IntegerField(_(u"账号服务器"), default=0, db_index=True)
+    disabled = models.CharField(_(u'状态'), max_length=1, choices=constants.PROXY_CONFIG_DISABLED, null=False, blank=False, default="-1")
 
     class Meta:
         managed = False
@@ -95,18 +95,18 @@ class ProxyAccount(models.Model):
 class ProxyAccountMove(models.Model):
     acct_id = models.IntegerField("ProxyAccount", default=0, unique=True)
     mailbox_id = models.IntegerField(u"MailBox", default=0)
-    mailbox = models.CharField(u"发件人邮箱", null=False, blank=False, max_length=200, unique=True)
-    old_mailbox = models.CharField(u"新邮箱名字", null=True, blank=True, max_length=200, default="", db_index=True)
-    from_server = models.IntegerField(u"源服务器", default=0)
-    from_ip = models.CharField(u"源服务器IP", null=True, blank=True, max_length=20, default="")
-    target_server = models.IntegerField(u"目标服务器", default=0)
-    target_ip = models.CharField(u"目标服务器IP", null=False, blank=False, max_length=20)
-    move_type = models.CharField(u'移动方式', null=False, blank=False, max_length=20, choices=constants.PROXY_MOVE_TYPE, default="to")
-    sync_mail = models.BooleanField(u"是否同步邮件", default=False)
-    status = models.CharField(u"状态", default="init", null=False, blank=False, max_length=20, choices=constants.PROXY_MOVE_STATUS)
-    desc_msg = models.TextField(u"描述", null=True, blank=True)
-    last_update = models.DateTimeField(u'更新时间', null=True, auto_now=True)
-    data = models.BinaryField(u"迁移的数据", null=True, blank=True)
+    mailbox = models.CharField(_(u"发件人邮箱"), null=False, blank=False, max_length=200, unique=True)
+    old_mailbox = models.CharField(_(u"新邮箱名字"), null=True, blank=True, max_length=200, default="", db_index=True)
+    from_server = models.IntegerField(_(u"源服务器"), default=0)
+    from_ip = models.CharField(_(u"源服务器IP"), null=True, blank=True, max_length=20, default="")
+    target_server = models.IntegerField(_(u"目标服务器"), default=0)
+    target_ip = models.CharField(_(u"目标服务器IP"), null=False, blank=False, max_length=20)
+    move_type = models.CharField(_(u'移动方式'), null=False, blank=False, max_length=20, choices=constants.PROXY_MOVE_TYPE, default="to")
+    sync_mail = models.BooleanField(_(u"是否同步邮件"), default=False)
+    status = models.CharField(_(u"状态"), default="init", null=False, blank=False, max_length=20, choices=constants.PROXY_MOVE_STATUS)
+    desc_msg = models.TextField(_(u"描述"), null=True, blank=True)
+    last_update = models.DateTimeField(_(u'更新时间'), null=True, auto_now=True)
+    data = models.BinaryField(_(u"迁移的数据"), null=True, blank=True)
 
     class Meta:
         managed = False

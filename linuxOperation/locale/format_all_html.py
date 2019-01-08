@@ -36,6 +36,7 @@ SPECIEL_FLAGS = set([
     u",", u"，", u"/", u"\\", u"\t", u" ", u"-", u"_", u":", u"：", u"！", u"!", u"、", u".", u"。",
     u"（", u"）", u"(", u")", u"?", u"？", u"=", u"%", u"$",
     u"[", u"]", u"”", u"“",
+    u";", u"；",
 ])
 
 def replace_line(line):
@@ -46,6 +47,8 @@ def replace_line(line):
     if line.strip().startswith("/*"):
         return line
     if line.strip().startswith("<--"):
+        return line
+    if line.strip().startswith("<!--"):
         return line
     list0, lst1, lst2 = [], [], []
     for code in line:
@@ -67,18 +70,14 @@ def replace_line(line):
             else:
                 list0 = []
             if lst1:
-                lst2.append( "".join(lst1) )
+                lst2.append( u"".join(lst1) )
                 list0 = []
                 lst1 = []
     if lst1:
-        lst2.append( "".join(lst1) )
+        lst2.append( u"".join(lst1) )
         lst1 = []
     lst2.sort(lambda x,y:cmp(len(x),len(y)),reverse=True)
     for code in lst2:
-        if u'"{}"'.format(code) in line:
-            continue
-        if u"'{}'".format(code) in line:
-            continue
         #替换正则表达式中的字符
         code2 = code
         code2 = code2.replace(u"(",u"\\(")
@@ -88,18 +87,25 @@ def replace_line(line):
         code2 = code2.replace(u"-",u"\\-")
         code2 = code2.replace(u"_",u"\\_")
         code2 = code2.replace(u"$",u"\\$")
+        Re=u"\{\%\s+trans\s+\"\s*{CODE}\s*\"\s+\%\}".replace("{CODE}",code2)
+        #已经被trans包裹了
+        #print "Re is ",Re
+        if re.search(Re, line):
+            continue
         Re=u"\{\%\s+blocktrans\s+\%\}\s*{CODE}\s*\{\%\s+endblocktrans\s+\%\}".replace("{CODE}",code2)
         #已经被blocktrans包裹了
         #print "Re is ",Re
         #print "line is ",line
         if re.search(Re, line):
             continue
+        #if u'"{}"'.format(code) in line:
+        #    line = line.replace(u'"{}"'.format(code),u"'{}'".format(code))
         code1 = u'{% trans "{CODE}" %}'.replace("{CODE}",code)
         line = line.replace(code, code1)
     return line
 
 #for dir_name in ("app","templates"):
-for dir_name in ("app/review",):
+for dir_name in ("templates",):
     for root,dirs,files in os.walk("../{}".format(dir_name)):
         for filename in files:
             if not filename.endswith(".html"):

@@ -31,7 +31,7 @@ def wechat_conf_add(request):
         form = WxConfigForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加成功'))
             return HttpResponseRedirect(reverse('wechat_conf'))
     return render(request, "maintain/wechat_conf_add.html",
                   context={"form": form, "obj": None })
@@ -44,7 +44,7 @@ def wechat_conf_modify(request, conf_id):
         form = WxConfigForm(request.POST, instance=obj)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改成功'))
             return HttpResponseRedirect(reverse('wechat_conf'))
     return render(request, "maintain/wechat_conf_add.html",
                   context={"form": form, "obj": obj })
@@ -58,7 +58,7 @@ def wechat_template(request):
         if status == "delete":
             id = request.POST.get('id', "")
             WxTemplate.objects.filter(pk=id).delete()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         return HttpResponseRedirect(reverse('wechat_template'))
     lists = WxTemplate.objects.all()
     return render(request, "maintain/wechat_template.html",
@@ -71,7 +71,7 @@ def wechat_template_add(request):
         form = WxTemplateForm(2, request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加成功'))
             return HttpResponseRedirect(reverse('wechat_template'))
     return render(request, "maintain/wechat_template_add.html",
                   context={"form": form, "obj": None })
@@ -84,7 +84,7 @@ def wechat_template_modify(request, conf_id):
         form = WxTemplateForm(2, request.POST, instance=obj)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改成功'))
             return HttpResponseRedirect(reverse('wechat_template'))
     return render(request, "maintain/wechat_template_add.html",
                   context={"form": form, "obj": obj })

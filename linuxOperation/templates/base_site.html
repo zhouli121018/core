@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load static from staticfiles %}
 {% load perm_tags %}
 {% load tags %}
@@ -54,13 +55,13 @@
                     <li class="green">
                         <a  href="#" data-toggle="dropdown" href="#" class="dropdown-toggle">
                             <i class="ace-icon glyphicon glyphicon-font"></i>
-                            语言
+                            {% trans "语言" %}
                             <i class="ace-icon fa fa-caret-down"></i>
                         </a>
                         <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
                             <li>
                                 <a href="#" >
-                                    中文
+                                    {% trans "中文" %}
                                 </a>
                             </li>
 
@@ -83,14 +84,14 @@
                     <li class="purple">
                         <a   href="#" data-toggle="modal" data-target="#resetPwd">
                             <i class="ace-icon fa fa-cog"></i>
-                            修改密码
+                            {% trans "修改密码" %}
                         </a>
                     </li>
 
                     <li class="light-blue">
                         <a   href="{% url 'logout' %}" >
                             <i class="ace-icon fa fa-power-off"></i>
-                            退出登录
+                            {% trans "退出登录" %}
                         </a>
                     </li>
                 </ul>
@@ -98,7 +99,7 @@
             <!--
             <form class="pull-right" style="margin:6px 28px 5px 0;width:220px;">
                 <select class="select2"  id="search_select2" style="max-width:100%;">
-                    <option disabled selected>输入关键词搜索功能</option>
+                    <option disabled selected>{% trans "输入关键词搜索功能" %}</option>
                 </select>
             </form>
             -->
@@ -125,7 +126,7 @@
                 <li class="">
                     <a href="{% url 'home' %}">
                         <i class="menu-icon fa fa-tachometer"></i>
-                        <span class="menu-text"> 主页 </span>
+                        <span class="menu-text"> {% trans "主页 " %}</span>
                     </a>
                     <b class="arrow"></b>
                 </li>
@@ -136,24 +137,24 @@
                     <li class="" id="nav_perm">
                         <a href="#" class="dropdown-toggle">
                             <i class="menu-icon fa fa-list"></i>
-                            <span class="menu-text"> 管理员管理 </span>
+                            <span class="menu-text"> {% trans "管理员管理 " %}</span>
                             <b class="arrow fa fa-angle-down"></b>
                         </a>
                         <b class="arrow"></b>
                         <ul class="submenu">
                             <li class="">
-                                <a href="{% url 'user_list' %}"><i class="menu-icon fa fa-caret-right"></i> 管理员列表 </a><b class="arrow"></b>
+                                <a href="{% url 'user_list' %}"><i class="menu-icon fa fa-caret-right"></i> {% trans "管理员列表" %}</a><b class="arrow"></b>
                             </li>
                             <li class="">
-                                <a href="{% url 'group_list' %}"><i class="menu-icon fa fa-caret-right"></i> 管理员组管理 </a><b class="arrow"></b>
+                                <a href="{% url 'group_list' %}"><i class="menu-icon fa fa-caret-right"></i> {% trans "管理员组管理" %}</a><b class="arrow"></b>
                             </li>
                             {% if request.user.is_develop_server %}
                                 <li class="">
-                                    <a href="{% url 'perm_list' %}"><i class="menu-icon fa fa-caret-right"></i> 权限管理 </a><b class="arrow"></b>
+                                    <a href="{% url 'perm_list' %}"><i class="menu-icon fa fa-caret-right"></i> {% trans "权限管理" %}</a><b class="arrow"></b>
                                 </li>
                             {% endif %}
                             <li class="">
-                                <a href="{% url 'webmail_admin_list' %}"><i class="menu-icon fa fa-caret-right"></i> Webmail管理员管理 </a><b class="arrow"></b>
+                                <a href="{% url 'webmail_admin_list' %}"><i class="menu-icon fa fa-caret-right"></i> {% trans "Webmail管理员管理" %}</a><b class="arrow"></b>
                             </li>
                         </ul>
                     </li>
@@ -181,7 +182,7 @@
                     <ul class="breadcrumb">
                         <li>
                             <i class="ace-icon fa fa-home home-icon"></i>
-                            <a href="{% url 'home' %}">主页</a>
+                            <a href="{% url 'home' %}">{% trans "主页" %}</a>
                         </li>
 
                         {% block breadcrumb %}
@@ -252,27 +253,27 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">修改密码</h4> <h4 id="id_modal-content-notify"></h4>
+                    <h4 class="modal-title">{% trans "修改密码" %}</h4> <h4 id="id_modal-content-notify"></h4>
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal modify_pwd_form">
                         {% csrf_token %}
                         <div class="form-group">
-                            <label class=" col-sm-3 control-label">旧密码:</label>
+                            <label class=" col-sm-3 control-label">{% trans "旧密码:" %}</label>
                             <div class="col-sm-7">
                                 <input name="password" type="password" class="form-control"  >
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-3 ">新密码:</label>
+                            <label class="control-label col-sm-3 ">{% trans "新密码:" %}</label>
                             <div class="col-sm-7">
                                 <input name="password1" type="password" class="form-control" >
-                                <p class="help-block"><span class="red">注：</span>密码长度最少为8位，其中必须包括字母和数字！</p>
+                                <p class="help-block"><span class="red">{% trans "注：" %}</span>{% trans "密码长度最少为8位，其中必须包括字母和数字！" %}</p>
                             </div>
 
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-sm-3">确认新密码:</label>
+                            <label class="control-label col-sm-3">{% trans "确认新密码:" %}</label>
                             <div class="col-sm-7">
                                 <input name="password2" type="password" class="form-control" >
                             </div>
@@ -280,7 +281,7 @@
                     </form>
                 </div>
                 <div class="modal-footer center">
-                    <button type="button" class="btn btn-primary" onclick="onClickModifyPassword()">保存</button>
+                    <button type="button" class="btn btn-primary" onclick="onClickModifyPassword()">{% trans "保存" %}</button>
                 </div>
             </div>
         </div>
@@ -513,7 +514,7 @@
                 data:str,
                 success:function(data){
                     if(data.status == 'OK'){
-                        alert("修改密码成功！");
+                        alert("{% trans "修改密码成功！" %}");
                         $('#resetPwd').modal('hide');
                     }else{
                         alert(data.message);
@@ -529,7 +530,7 @@
                 console.log(">>>>>>>>>>> + data.result = ",data.result)
                 if (data.result == 1){
                     $('#resetPwd').modal();
-                    msg = "您当前密码不符合强度规则，请修改密码： "+data.reason;
+                    msg = "{% trans "您当前密码不符合强度规则，请修改密码： " %}"+data.reason;
                     $('#id_modal-content-notify').html(msg);
                 }
             }

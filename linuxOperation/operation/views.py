@@ -18,6 +18,7 @@ from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnIn
 from django.template.response import TemplateResponse
 from django.contrib import messages
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
 from django_sysinfo.api import get_sysinfo, get_processes
 from django_sysinfo.utils import get_network_speed
@@ -203,7 +204,7 @@ def home(request, template_name='home.html'):
                 line = line.decode('utf-8', 'ignore')
                 if line.find('Version') != -1 or line.find(u'版本') != -1:
                     versions.append(line.replace(u'：', ':').split(':')[-1].strip())
-            install_version = versions[0] if (versions and versions[0]) else u'未识别'
+            install_version = versions[0] if (versions and versions[0]) else _(u'未识别')
             available_version = versions[1] if len(versions) >= 2 else None
 
             sys_info = get_sysinfo(request)

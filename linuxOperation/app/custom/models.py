@@ -2,6 +2,7 @@
 import time
 
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 #
 #class CustomKKServerToken(models.Model):
@@ -25,7 +26,7 @@ class ExtMailboxExtra(models.Model):
     type = models.CharField(u'type', max_length=20, null=False, blank=False)
     data = models.CharField(u'data', max_length=500, null=False, blank=False)
 
-    last_update = models.DateTimeField(u"更新时间", null=False, blank=False)
+    last_update = models.DateTimeField(_(u"更新时间"), null=False, blank=False)
 
     class Meta:
         managed = False

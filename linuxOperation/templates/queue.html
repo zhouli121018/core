@@ -45,9 +45,9 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <p>
-                                    <button type="button" class="btn btn-link" onclick="fnGetAll();">全选</button>/<button type="button" class="btn btn-link" onclick="fnGetReverse();">取消</button>
-                                    <button type="button" class="btn btn-danger" onclick="DeleteAll()">全部删除</button>
-                                    <button type="button" class="btn btn-danger pull-right" onclick="EmptyAll()">全部清空</button>
+                                    <button type="button" class="btn btn-link" onclick="fnGetAll();">{% trans "全选" %}</button>/<button type="button" class="btn btn-link" onclick="fnGetReverse();">{% trans "取消" %}</button>
+                                    <button type="button" class="btn btn-danger" onclick="DeleteAll()">{% trans "全部删除" %}</button>
+                                    <button type="button" class="btn btn-danger pull-right" onclick="EmptyAll()">{% trans "全部清空" %}</button>
                                 </p>
                             </div>
                         </div>
@@ -55,11 +55,11 @@
             <thead>
             <tr>
                 <th>KEY</th>
-                <th>发件人</th>
-                <th>收件人</th>
-                <th>发件IP</th>
-                <th>接收时间</th>
-                <th>操作</th>
+                <th>{% trans "发件人" %}</th>
+                <th>{% trans "收件人" %}</th>
+                <th>{% trans "发件IP" %}</th>
+                <th>{% trans "接收时间" %}</th>
+                <th>{% trans "操作" %}</th>
             </tr>
             </thead>
             <tbody>
@@ -76,10 +76,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">加载中</h4>
+                <h4 class="modal-title" id="myModalLabel">{% trans "加载中" %}</h4>
             </div>
             <div class="modal-body">
-                页面加载中
+                {% trans "页面加载中" %}
             </div>
             <div class="modal-footer">
                 <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">Close</button>
@@ -200,11 +200,11 @@
         var id_array = fnGetSelected();
 
         if (id_array.length == 0){
-            alert("你还没有选中要操作的邮件！ 请点击需要操作的行");
+            alert("{% trans "你还没有选中要操作的邮件！ 请点击需要操作的行" %}");
             return false;
         }
 
-        if (!confirm("你确定要删除所选队列邮件?")) {
+        if (!confirm("{% trans "你确定要删除所选队列邮件?" %}")) {
             return false;
         } else {
             $('#ids').val(id_array);
@@ -212,13 +212,13 @@
         }
     }
     function Delete(key) {
-         if (confirm("你确定要删除邮件" + key + "?")) {
+         if (confirm("{% trans "你确定要删除邮件" %}" + key + "?")) {
             $('#ids').val(key);
             $('#id_form').submit();
         }
     }
     function EmptyAll() {
-         if (confirm("你确定要全部清空搜索出来的所有邮件?")) {
+         if (confirm("{% trans "你确定要全部清空搜索出来的所有邮件?" %}")) {
             $('#action').val('empty_all');
             $('#id_form').submit();
         }
@@ -228,4 +228,3 @@
 </script>
 
 {% endblock %}
-

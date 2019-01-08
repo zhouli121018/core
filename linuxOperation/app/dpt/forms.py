@@ -7,7 +7,7 @@ from app.utils.regex import pure_email_regex
 from lib.tools import clear_redis_cache, phpLoads, phpDumps
 
 class DomainSearchForm(forms.Form):
-    domain_search = forms.ChoiceField(label=u'添加共享域', required=False)
+    domain_search = forms.ChoiceField(label=_(u'添加共享域'), required=False)
 
     def __init__(self, domain_id, *args, **kwargs):
         super(DomainSearchForm, self).__init__(*args, **kwargs)
@@ -73,7 +73,7 @@ class DepartmentForm(forms.ModelForm):
     def clean_parent_id(self):
         parent_id = self.cleaned_data.get('parent_id')
         if not self.is_superuser and parent_id in (0, -1):
-            raise forms.ValidationError(_(u"请选择部门。", ))
+            raise forms.ValidationError(_(u"请选择部门。"))
         # if parent_id not in self.dept_ids:
         #     raise forms.ValidationError(_(u"您选择的部门不合法，请重新选择。", ))
         return parent_id
@@ -81,7 +81,7 @@ class DepartmentForm(forms.ModelForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if email and not pure_email_regex(email):
-            raise forms.ValidationError(_(u"输入的E-Mail不合法。", ))
+            raise forms.ValidationError(_(u"输入的E-Mail不合法。"))
         return email
 
     def clean_order(self):
@@ -199,4 +199,3 @@ class DepartmentMemberForm(forms.ModelForm):
         if not position:
             return _(u"员工")
         return position
-

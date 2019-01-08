@@ -1,7 +1,8 @@
+{% load i18n %}
 <td>{{ d.id }}</td>
 <td>{{ d.name }}</td>
 <td>
-    <a type="button" class="green btn btn-white btn-primary btn-xs" href="Javascript: clickDomainPublicTypeMdf({{ d.id }})">修改</a>
-    <a type="button" class="red delete btn btn-white btn-danger btn-xs" href="Javascript: Delete({{ d.id }}, '{{ d.name }}')">删除</a>
+    <a type="button" class="green btn btn-white btn-primary btn-xs" href="Javascript: clickDomainPublicTypeMdf({{ d.id }})">{% trans "修改" %}</a>
+    <a type="button" class="red delete btn btn-white btn-danger btn-xs" href="Javascript: Delete({{ d.id }}, '{{ d.name }}')">{% trans "删除" %}</a>
 </td>
 <td>{{ d.order }}</td>

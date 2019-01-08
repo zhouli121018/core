@@ -34,10 +34,10 @@ class CoreGroupForms(forms.ModelForm):
         name = self.cleaned_data.get('name')
         name = name.strip()
         if not name:
-            raise forms.ValidationError(_(u"请填写组名称。",))
+            raise forms.ValidationError(_(u"请填写组名称。"))
         if CoreGroup.objects.exclude(id=self.instance.id).filter(
                 domain_id=self.domain_id, name=name).exists():
-            raise forms.ValidationError(_(u"组名称存在。", ))
+            raise forms.ValidationError(_(u"组名称存在。"))
         return name
 
     def save(self, commit=True):
@@ -69,7 +69,7 @@ class CoreGroupMemberForm(forms.ModelForm):
         if obj:
             o_group = CoreGroup.objects.filter(id=obj.group_id).first()
             if o_group:
-                self.error_message = _(u"邮箱已存在于其他组'%s'中"%o_group.name)
+                self.error_message = _(u"邮箱已存在于其他组'%s'中")%o_group.name
                 raise forms.ValidationError(self.error_message)
             else:
                 CoreGroupMember.objects.filter(mailbox_id=mailbox_id).delete()
@@ -84,7 +84,7 @@ class CoreGroupMemberForm(forms.ModelForm):
         clear_redis_cache()
 
 class CoreGroupMemberImportForm(forms.Form):
-    txtfile = forms.FileField(label=u'文件导入', required=True)
+    txtfile = forms.FileField(label=_(u'文件导入'), required=True)
 
     def __init__(self, *args, **kwargs):
         super(CoreGroupMemberImportForm, self).__init__(*args, **kwargs)
@@ -95,11 +95,11 @@ class CoreGroupMemberImportForm(forms.Form):
     def clean_txtfile(self):
         f = self.files.get('txtfile', None)
         if not f:
-            raise forms.ValidationError(_(u"请选择文件。", ))
+            raise forms.ValidationError(_(u"请选择文件。"))
         file_name = f.name
         fext = file_name.split('.')[-1]
         if fext not in ('xls', 'xlsx', 'csv', 'txt'):
-            raise forms.ValidationError(_(u"只支持excel、txt、csv文件导入。", ))
+            raise forms.ValidationError(_(u"只支持excel、txt、csv文件导入。"))
         self.file_name = file_name
         self.file_ext = fext
         self.file_obj = f
@@ -107,12 +107,12 @@ class CoreGroupMemberImportForm(forms.Form):
 
 #常规设置
 SETTING_BASIC=(
-    (u"mail_space", u"邮箱空间"),
-    (u"net_space", u"网络硬盘空间"),
-    (u"allow_out_size", u"允许发送邮件大小"),
-    (u"send_limit", u"发信功能限制"),
-    (u"recv_limit", u"收信功能限制"),
-    (u"limit_whitelist", u"收发限制白名单"),
+    (u"mail_space", _(u"邮箱空间")),
+    (u"net_space", _(u"网络硬盘空间")),
+    (u"allow_out_size", _(u"允许发送邮件大小")),
+    (u"send_limit", _(u"发信功能限制")),
+    (u"recv_limit", _(u"收信功能限制")),
+    (u"limit_whitelist", _(u"收发限制白名单")),
 )
 #常规设置默认值
 SETTING_BASIC_DEFAULT=(
@@ -135,9 +135,9 @@ SETTING_BASIC_DEFAULT=(
 )
 #登陆方式限制
 SETTING_LOGIN=(
-    (u"is_pop", u"POP/POPS邮箱收取功能"),
-    (u"is_smtp", u"SMTP/SMTPS客户端邮件发送功能"),
-    (u"is_imap", u"IMAP/IMAPS客户端邮件收发功能"),
+    (u"is_pop", _(u"POP/POPS邮箱收取功能")),
+    (u"is_smtp", _(u"SMTP/SMTPS客户端邮件发送功能")),
+    (u"is_imap", _(u"IMAP/IMAPS客户端邮件收发功能")),
 )
 #登陆方式限制默认值
 SETTING_LOGIN_DEFAULT=(
@@ -147,12 +147,12 @@ SETTING_LOGIN_DEFAULT=(
 )
 #密码规则
 SETTING_PASSWORD=(
-    (u"is_passwd", u"定期密码修改设置"),
-    (u"passwd_day", u"密码有效期"),
-    (u"passwd_size2", u"密码长度"),
-    (u"passwd_type", u"密码组成字符种类"),
-    (u"passwd_other", u"其他密码规则设置"),
-    (u"passwd_forbid", u"用户密码强度低于规则操作"),
+    (u"is_passwd", _(u"定期密码修改设置")),
+    (u"passwd_day", _(u"密码有效期")),
+    (u"passwd_size2", _(u"密码长度")),
+    (u"passwd_type", _(u"密码组成字符种类")),
+    (u"passwd_other", _(u"其他密码规则设置")),
+    (u"passwd_forbid", _(u"用户密码强度低于规则操作")),
 )
 #密码规则默认值
 SETTING_PASSWORD_DEFAULT=(
@@ -174,21 +174,21 @@ SETTING_PASSWORD_DEFAULT=(
 )
 #反垃圾/反病毒
 SETTING_SPAM=(
-    (u"is_virus", u"反病毒功能"),
-    (u"is_spam", u"反垃圾功能"),
-    (u"check_attach", u"检查附件"),
-    (u"match_black", u"匹配黑名单"),
-    (u"check_spam", u"反垃圾引擎"),
-    (u"is_formt", u"检查发件人格式"),
-    (u"spam_folder", u"垃圾邮件投递位置"),
-    (u"spam_subject_flag", u"垃圾邮件主题标识"),
-    (u"isolate_day", u"隔离邮件保存天数"),
-    (u"is_send_isolate", u"发送隔离报告"),
-    (u"send_isolate_name", u"隔离报告发件人"),
-    (u"isolate_url", u"隔离报告链接地址"),
-    (u"check_object", u"检测对象"),
-    (u"check_local", u"本域进站邮件"),
-    (u"check_outside", u"外域进站邮件"),
+    (u"is_virus", _(u"反病毒功能")),
+    (u"is_spam", _(u"反垃圾功能")),
+    (u"check_attach", _(u"检查附件")),
+    (u"match_black", _(u"匹配黑名单")),
+    (u"check_spam", _(u"反垃圾引擎")),
+    (u"is_formt", _(u"检查发件人格式")),
+    (u"spam_folder", _(u"垃圾邮件投递位置")),
+    (u"spam_subject_flag", _(u"垃圾邮件主题标识")),
+    (u"isolate_day", _(u"隔离邮件保存天数")),
+    (u"is_send_isolate", _(u"发送隔离报告")),
+    (u"send_isolate_name", _(u"隔离报告发件人")),
+    (u"isolate_url", _(u"隔离报告链接地址")),
+    (u"check_object", _(u"检测对象")),
+    (u"check_local", _(u"本域进站邮件")),
+    (u"check_outside", _(u"外域进站邮件")),
 )
 #反垃圾/反病毒默认值
 SETTING_SPAM_DEFAULT=(
@@ -221,12 +221,12 @@ SETTING_SPAM_DEFAULT=(
 )
 #发信频率设置
 SETTING_FREQUENCY=(
-    (u"is_frequency", u"开启发信频率限制"),
-    (u"frequency_minute", u"发信频率间隔"),
-    (u"frequency_minute_count", u"分钟发信频率次数"),
-    (u"frequency_hour_count", u"每小时发信数量"),
-    (u"frequency_day_count", u"每天发信数量"),
-    (u"frequency_operate", u"发信频率超限操作"),
+    (u"is_frequency", _(u"开启发信频率限制")),
+    (u"frequency_minute", _(u"发信频率间隔")),
+    (u"frequency_minute_count", _(u"分钟发信频率次数")),
+    (u"frequency_hour_count", _(u"每小时发信数量")),
+    (u"frequency_day_count", _(u"每天发信数量")),
+    (u"frequency_operate", _(u"发信频率超限操作")),
 )
 #发信频率设置默认值
 SETTING_FREQUENCY_DEFAULT=(
@@ -239,9 +239,9 @@ SETTING_FREQUENCY_DEFAULT=(
 )
 #企业通讯录设置
 SETTING_OAB=(
-    (u"oab_show_mod", u"企业通讯录显示限制"),
-    (u"oab_show_export", u"企业通讯录导出按钮"),
-    (u"oab_dept_list", u"显示指定部门"),
+    (u"oab_show_mod", _(u"企业通讯录显示限制")),
+    (u"oab_show_export", _(u"企业通讯录导出按钮")),
+    (u"oab_dept_list", _(u"显示指定部门")),
 )
 #企业通讯录设置默认值
 SETTING_OAB_DEFAULT=(
@@ -255,11 +255,11 @@ SETTING_OAB_DEFAULT=(
 )
 #邮箱空间设置
 SETTING_SPACE=(
-    (u"is_space_clean", u"邮箱空间定时清理"),
-    (u"space_clean_normal", u"普通邮件保留天数"),
-    (u"space_clean_sent", u"发件箱邮件保留天数"),
-    (u"space_clean_spam", u"垃圾箱邮件保留天数"),
-    (u"space_clean_trash", u"废件箱邮件保留天数"),
+    (u"is_space_clean", _(u"邮箱空间定时清理")),
+    (u"space_clean_normal", _(u"普通邮件保留天数")),
+    (u"space_clean_sent", _(u"发件箱邮件保留天数")),
+    (u"space_clean_spam", _(u"垃圾箱邮件保留天数")),
+    (u"space_clean_trash", _(u"废件箱邮件保留天数")),
 )
 #邮箱空间设置默认值
 SETTING_SPACE_DEFAULT=(
@@ -295,9 +295,9 @@ class CoreGroupSettingForm(forms.Form):
 
     def update_limit_whitelist(self):
         if not self.instance:
-            return False, u"对应的组配置不存在"
+            return False, _(u"对应的组配置不存在")
         if self.type != u"basic":
-            return False, u"组配置'{}'不包含白名单".format(self.type)
+            return False, _(u"组配置'{}'不包含白名单").format(self.type)
         t = self.post.get("type", "")
         v = self.post.get("value", [])
         v = self.json_loads(v, [])
@@ -308,21 +308,21 @@ class CoreGroupSettingForm(forms.Form):
             self.value["limit_whitelist"][t] = v
             self.instance.value = json.dumps(self.value)
             self.instance.save()
-            return True, u"保存成功"
+            return True, _(u"保存成功")
         else:
-            return False, u"错误的白名单类型 '{}'".format(t)
+            return False, _(u"错误的白名单类型 '{}'").format(t)
 
     def update_oab_dept_list(self):
         if not self.instance:
-            return False, u"对应的组配置不存在"
+            return False, _(u"对应的组配置不存在")
         if self.type != u"oab":
-            return False, u"组配置'{}'不包含部门列表".format(self.type)
+            return False, _(u"组配置'{}'不包含部门列表").format(self.type)
         v = self.post.get("value", [])
         v = self.json_loads(v, [])
         self.value["oab_dept_list"] = v
         self.instance.value = json.dumps(self.value)
         self.instance.save()
-        return True, u"保存成功"
+        return True, _(u"保存成功")
 
     def save(self):
         def load_data(value, default_data):
@@ -371,16 +371,16 @@ class CoreGroupSettingForm(forms.Form):
         elif self.type == u"space":
             data = load_data(value, SETTING_SPACE_DEFAULT)
         else:
-            self.error_message = _(u"保存的类型不匹配 '%s'"%self.type)
+            self.error_message = _(u"保存的类型不匹配 '%s'")%self.type
             return False
         if not self.instance:
             obj = CoreGroupSetting.objects.filter(group_id=group_id, type=self.type).first()
             if obj:
-                self.error_message = _(u"已存在类型 '%s'"%self.type)
+                self.error_message = _(u"已存在类型 '%s'")%self.type
                 return False
         else:
             if self.type != self.instance.type:
-                self.error_message = _(u"不能保存为其他类型 '%s'"%self.type)
+                self.error_message = _(u"不能保存为其他类型 '%s'")%self.type
                 return False
 
         value = json.dumps(data)

@@ -13,7 +13,7 @@ from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.template.response import TemplateResponse
 from django.contrib import messages
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.utils import six
@@ -212,8 +212,8 @@ def account(request, template_name='mailbox/emailAccounts.html'):
     if export == '1':
         # list = [[_(u'用户名'), _(u'邮箱容量'), _(u'网盘容量'), _(u'真实姓名'), _(u'邮箱'), _(u'部门'), _(u'工号'), _(u'邮箱状态'),
         #          _(u'手机号码'), _(u'电话号码'), _(u'职位'), _(u'域名'), _(u'上次登录时间'), _(u'已用容量(MB)')]]
-        list = [[u'用户名', u'邮箱', u'真实姓名', u'所属部门', u'职位', u'工号', u'手机号码', u'电话号码', u'邮箱容量', u'网盘容量',
-                 u'排序权重', u'QQ号码', u'出生日期', u'性别', u'邮箱状态', u'域名', u'上次登录时间', u'已用容量(MB)', u'密码']]
+        list = [[_(u'用户名'), _(u'邮箱'), _(u'真实姓名'), _(u'所属部门'), _(u'职位'), _(u'工号'), _(u'手机号码'), _(u'电话号码'), _(u'邮箱容量'), _(u'网盘容量'),
+                 _(u'排序权重'), _(u'QQ号码'), _(u'出生日期'), _(u'性别'), _(u'邮箱状态'), _(u'域名'), _(u'上次登录时间'), _(u'已用容量(MB)'), _(u'密码')]]
 
         name = 'mailbox-list_{}'.format(time.strftime('%Y%m%d%H%M%S'))
         lists = get_mailbox_list(request)
@@ -292,7 +292,7 @@ def account(request, template_name='mailbox/emailAccounts.html'):
             gender = "" if gender=="None" else gender
             eenumber = "" if not data_user["eenumber"] else data_user["eenumber"]
             showorder = "0" if not data_user["showorder"] else data_user["showorder"]
-            status = u"启用" if str(l.disabled)!="1" else u"禁用"
+            status = _(u"启用") if str(l.disabled)!="1" else _(u"禁用")
             list.append(
                 [l.name, l.username, realname, depts, position, eenumber, tel_mobile, tel_work,
                  l.quota_mailbox, l.quota_netdisk, showorder, im_qq, birthday, gender, status, domain.domain, last_login, used, u''])
@@ -306,7 +306,7 @@ def account(request, template_name='mailbox/emailAccounts.html'):
             task_queue = TaskQueue()
             mails = Mailbox.objects.filter(id__in=ids)
             if mails.filter(name__in=LICENCE_EXCLUDE_LIST).count()>0:
-                messages.add_message(request, messages.ERROR, '禁止删除特殊管理帐号system')
+                messages.add_message(request, messages.ERROR, _(u'禁止删除特殊管理帐号system'))
             else:
                 count = mails.count()
                 mails.update(disabled='1')
@@ -317,7 +317,7 @@ def account(request, template_name='mailbox/emailAccounts.html'):
         if status == 'disabled':
             mails = Mailbox.objects.filter(id__in=ids, disabled='-1')
             if mails.filter(name__in=LICENCE_EXCLUDE_LIST).count()>0 and request.user.name in LICENCE_EXCLUDE_LIST:
-                messages.add_message(request, messages.ERROR, '想要禁用自己时请用别的超级管理员登录')
+                messages.add_message(request, messages.ERROR, _(u'想要禁用自己时请用别的超级管理员登录'))
             else:
                 count = mails.count()
                 mails.update(disabled='1')
@@ -352,7 +352,7 @@ def account(request, template_name='mailbox/emailAccounts.html'):
         if status == 'cancel_manager':
             mails = Mailbox.objects.filter(Q(is_active=True)|Q(is_superuser=True), id__in=ids)
             if mails.filter(name__in=LICENCE_EXCLUDE_LIST).count()>0:
-                messages.add_message(request, messages.ERROR, '无法取消特殊帐号的管理权限')
+                messages.add_message(request, messages.ERROR, _(u'无法取消特殊帐号的管理权限'))
             else:
                 count = mails.count()
                 mails.update(is_active=False, is_staff=False, is_superuser=False)
@@ -384,8 +384,8 @@ def account(request, template_name='mailbox/emailAccounts.html'):
 def mailbox_export_batch_example(request):
     # list = [[_(u'用户名'), _(u'邮箱容量'), _(u'网盘容量'), _(u'真实姓名'), _(u'邮箱'), _(u'部门'), _(u'工号'), _(u'邮箱状态'),
     #          _(u'手机号码'), _(u'电话号码'), _(u'职位'), _(u'域名'), _(u'上次登录时间'), _(u'已用容量(MB)')]]
-    list = [[u'用户名', u'真实姓名', u'所属部门', u'职位', u'工号', u'手机号码', u'电话号码', u'邮箱容量', u'网盘容量',
-             u'排序权重', u'QQ号码', u'出生日期', u'密码']]
+    list = [[_(u'用户名'), _(u'真实姓名'), _(u'所属部门'), _(u'职位'), _(u'工号'), _(u'手机号码'), _(u'电话号码'), _(u'邮箱容量'), _(u'网盘容量'),
+             _(u'排序权重'), _(u'QQ号码'), _(u'出生日期'), _(u'密码')]]
 
     name = 'mailbox-list_{}'.format(time.strftime('%Y%m%d%H%M%S'))
     lists = get_mailbox_list(request)
@@ -465,7 +465,7 @@ def mailbox_export_batch_example(request):
         gender = "" if gender=="None" else gender
         eenumber = "" if not data_user["eenumber"] else data_user["eenumber"]
         showorder = "0" if not data_user["showorder"] else data_user["showorder"]
-        status = u"启用" if str(l.disabled)!="1" else u"禁用"
+        status = _(u"启用") if str(l.disabled)!="1" else _(u"禁用")
         list.append(
             [l.name, realname, depts, position, eenumber, tel_mobile, tel_work,
              l.quota_mailbox, l.quota_netdisk, showorder, im_qq, birthday, u""])
@@ -485,10 +485,10 @@ def mailbox_reset_pwd(request):
         password2 = request.POST.get("password2","")
         if not md5_crypt.verify(password, request.user.password):
             data["status"] = "Failure"
-            data["message"] = u"密码验证失败"
+            data["message"] = _(u"密码验证失败")
         elif password1!=password2:
             data["status"] = "Failure"
-            data["message"] = u"两次密码输入不正确"
+            data["message"] = _(u"两次密码输入不正确")
         else:
             domain_id = get_domainid_bysession(request)
             ret, reason = CheckMailboxPassword(domain_id=domain_id, mailbox_id=request.user.id, password=password1)
@@ -520,7 +520,7 @@ def ajax_check_change_pwd(request):
     if ret == 1:
         _, reason = CheckMailboxPassword(domain_id=user.domain_id, mailbox_id=user.id)
         if not reason:
-            reason = u"被系统强制设置为需要修改密码",
+            reason = _(u"被系统强制设置为需要修改密码"),
         else:
             data["reason"] = reason
     return HttpResponse(json.dumps(data), content_type="application/json")
@@ -582,7 +582,7 @@ def add_account(request, template_name='mailbox/add_account.html'):
                 messages.add_message(request, messages.SUCCESS, _(u'添加成功'))
                 return HttpResponseRedirect(reverse('mailbox_account'))
         else:
-                messages.add_message(request, messages.ERROR, _(u'添加失败： {}-{}'.format(form.errors, user_form.errors)))
+                messages.add_message(request, messages.ERROR, _(u'添加失败： {}-{}').format(form.errors, user_form.errors))
                 return HttpResponseRedirect(reverse('mailbox_account'))
 
     mail_list = ExtList.objects.filter(domain_id=domain_id, dept_id=0).order_by('-id')
@@ -632,7 +632,7 @@ def batchadd_account(request, template_name='mailbox/batchadd_account.html'):
         file_name = fobj.name
         fext = file_name.split('.')[-1]
         if fext not in ('xls', 'xlsx', 'csv', 'txt'):
-            messages.add_message(request, messages.ERROR, _(u"只支持excel、txt、csv文件导入。", ))
+            messages.add_message(request, messages.ERROR, _(u"只支持excel、txt、csv文件导入。"))
             return render(request, template_name=template_name, context={
                     'mb_quota_def': mb_quota_def,
                     'nd_quota_def': nd_quota_def,
@@ -666,7 +666,7 @@ def batchadd_account(request, template_name='mailbox/batchadd_account.html'):
                     continue
                 lines.append( table.row_values(line) )
         if len(lines)>500:
-            messages.add_message(request, messages.ERROR, _(u"单次只能导入500行数据，请分批次导入。", ))
+            messages.add_message(request, messages.ERROR, _(u"单次只能导入500行数据，请分批次导入。"))
             return render(request, template_name=template_name, context={
                     'mb_quota_def': mb_quota_def,
                     'nd_quota_def': nd_quota_def,
@@ -772,7 +772,7 @@ def batchedit_account(request, template_name='mailbox/batchedit_account.html'):
         file_name = fobj.name
         fext = file_name.split('.')[-1]
         if fext not in ('xls', 'xlsx', 'csv', 'txt'):
-            messages.add_message(request, messages.ERROR, _(u"只支持excel、txt、csv文件导入。", ))
+            messages.add_message(request, messages.ERROR, _(u"只支持excel、txt、csv文件导入。"))
             return render(request, template_name=template_name, context={
                 'domain': domain,
                 'failures': failures,
@@ -809,7 +809,7 @@ def batchedit_account(request, template_name='mailbox/batchedit_account.html'):
                 lines.append( table.row_values(line) )
         idx = 0
         if len(lines)>500:
-            messages.add_message(request, messages.ERROR, _(u"单次只能导入500行数据，请分批次导入。", ))
+            messages.add_message(request, messages.ERROR, _(u"单次只能导入500行数据，请分批次导入。"))
             return render(request, template_name=template_name, context={
                 'domain': domain,
                 'failures': failures,
@@ -936,9 +936,9 @@ def delete_account(request, template_name='mailbox/delete_account.html'):
             mailbox_list.append(m)
         mailboxs = Mailbox.objects.filter(username__in=mailbox_list)
         if mailboxs.filter(name__in=LICENCE_EXCLUDE_LIST).count()>0:
-            messages.add_message(request, messages.ERROR, '禁止删除特殊管理帐号system')
+            messages.add_message(request, messages.ERROR, _(u'禁止删除特殊管理帐号system'))
         elif not request.user.is_superuser and mailboxs.filter(is_superuser=True).count()>0:
-            messages.add_message(request, messages.ERROR, '当前帐号没有删除超级管理员的权限')
+            messages.add_message(request, messages.ERROR, _(u'当前帐号没有删除超级管理员的权限'))
         else:
             ids = list(mailboxs.values_list('id', flat=True))
             ids = ','.join([str(id) for id in ids])
@@ -1454,12 +1454,12 @@ def ajax_edit_forward(request):
         keep_mail = data.get('keep_mail', '1')
 
         if not body:
-            msg = u"未输入转发地址"
+            msg = _(u"未输入转发地址")
             return HttpResponse(json.dumps({'msg': msg.encode('utf-8'), 'status':'failure'}), content_type="application/json")
         body_list = body.split(",")
         for box in body_list:
             if not '@' in box:
-                msg = u"地址'{}'不是完整的邮箱地址".format(box)
+                msg = _(u"地址'{}'不是完整的邮箱地址").format(box)
                 return HttpResponse(json.dumps({'msg': msg.encode('utf-8'), 'status':'failure'}), content_type="application/json")
 
         if action == 'edit':
@@ -1611,7 +1611,7 @@ def register_list(request):
                             CoUserReg.objects.filter(id=id).update(status=u"permit")
                             messages.add_message(request, messages.SUCCESS, _(u'操作成功'))
                     else:
-                        messages.add_message(request, messages.ERROR, _(u'添加帐号失败： {}-{}'.format(form.errors, user_form.errors)))
+                        messages.add_message(request, messages.ERROR, _(u'添加帐号失败： {}-{}').format(form.errors, user_form.errors))
     return render(request, "mailbox/register_list.html",context={"show_status":show_status,"domain":domain})
 
 @licence_required
@@ -1666,10 +1666,10 @@ def api_check_password(request):
     mailbox = request.GET.get("mailbox","")
     password = request.GET.get("password","")
     if not mailbox or not password:
-        return HttpResponse(json.dumps({'message':"帐号或密码为空","result":-99}),content_type="application/json")
+        return HttpResponse(json.dumps({'message':_(u"帐号或密码为空"),"result":-99}),content_type="application/json")
     obj = Mailbox.objects.filter(username=mailbox).first()
     if not obj:
-        return HttpResponse(json.dumps({'message':"帐号不存在","result":-100}),content_type="application/json")
+        return HttpResponse(json.dumps({'message':_(u"帐号不存在"),"result":-100}),content_type="application/json")
     ret, force, pwd_rules, reason = CheckMailboxPasswordLimit(domain_id=obj.domain_id, mailbox_id=obj.id, password=password)
     if isinstance(reason,unicode):
         reason = reason.encode("utf-8", "ignore")
@@ -1679,7 +1679,7 @@ def api_check_basic(request):
     mailbox = request.GET.get("mailbox","")
     obj = Mailbox.objects.filter(username=mailbox).first()
     if not obj:
-        return HttpResponse(json.dumps({'message':"帐号不存在","result":-100,"data":{}}),content_type="application/json")
+        return HttpResponse(json.dumps({'message':_(u"帐号不存在"),"result":-100,"data":{}}),content_type="application/json")
     setting = CheckMailboxBasic(domain_id=obj.domain_id, mailbox_id=obj.id)
     pwd_rules = GetMailboxPwdRules(domain_id=obj.domain_id, mailbox_id=obj.id)
     return HttpResponse(json.dumps({'message':"","result":0,"data":setting,"pwd_rules":pwd_rules}),content_type="application/json")

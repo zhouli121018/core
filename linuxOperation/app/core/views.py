@@ -49,7 +49,7 @@ def choose_mailbox_list(request):
         for obj in lists_dpt:
             dataDept[obj.id] = {
                             "id"        :   obj.id,
-                            "name"      :   obj.title,
+                            "name"      :   obj.get_title,
                             "parent"    :   obj.parent_id,
                         }
         for sub_id in dataDept.keys():
@@ -76,7 +76,7 @@ def choose_mailbox_list(request):
     if action == "all":
         for obj in lists_mbox:
             objUser = MailboxUser.objects.filter(mailbox_id=obj.id).first()
-            name = u"未知用户" if not objUser else objUser.realname
+            name = _(u"未知用户") if not objUser else objUser.realname
             objMember = DepartmentMember.objects.filter(mailbox_id=obj.id).first()
             dept_id = -1 if not objMember else objMember.dept_id
             data["mailbox"].append( {
@@ -102,7 +102,7 @@ def choose_mailbox_list(request):
                     continue
                 #print ">>>>>>>>> objBox ",objBox
                 objUser = MailboxUser.objects.filter(mailbox_id=objBox.id).first()
-                name = u"未知用户" if not objUser else objUser.realname
+                name = _(u"未知用户") if not objUser else objUser.realname
                 data["mailbox"].append( {
                                     "id"        :   objBox.id,
                                     "box"       :   objBox.username,
@@ -118,7 +118,7 @@ def choose_mailbox_list(request):
                 if not objBox:
                     continue
                 objUser = MailboxUser.objects.filter(mailbox_id=objBox.id).first()
-                name = u"未知用户" if not objUser else objUser.realname
+                name = _(u"未知用户") if not objUser else objUser.realname
                 data["mailbox"].append( {
                                     "id"        :   objBox.id,
                                     "box"       :   objBox.username,

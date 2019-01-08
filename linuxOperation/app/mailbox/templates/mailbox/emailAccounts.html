@@ -108,16 +108,16 @@
                         <div class="">
                             <form id="search_form" class="form-inline" role="form" action="" style="text-align: right">
                                 <div class="form-group">
-                                    <label class="control-label  control-label-flag     " for="id_dept">选择部门:</label>
+                                    <label class="control-label  control-label-flag     " for="id_dept">{% trans "选择部门:" %}</label>
                                     <div class="input-group">
                                         <input name="dept" value="{{ request.GET.dept }}" readonly="readonly" class="department_choice form-control form-control-flag" id="id_dept" type="text" placeholder="{% trans "点击选择部门" %}">
                                         <input name="dept_id" id="id_dept_id" type="hidden" value="{{ request.GET.dept_id }}">
-                                        <span class="input-group-btn"><button class="btn btn-sm btn-default" type="button" onclick="Clear()">清除</button></span>
+                                        <span class="input-group-btn"><button class="btn btn-sm btn-default" type="button" onclick="Clear()">{% trans "清除" %}</button></span>
                                     </div>
                                     <div class="widget-box widget-color-blue2" id="email_dept_choice" style="max-width:500px;overflow: auto;background: #fff;text-align:left;border: 1px solid #5090c1;min-width:160px;left:73px;margin-top:0;position:absolute;z-index:100;">
                                         <div class="widget-body" style="padding:0 0 20px ;">
                                             <div style="padding:10px;">
-                                                <input type="text" id="search_input" class="select_search form-control" placeholder="输入关键字搜索..." style="width:100%;">
+                                                <input type="text" id="search_input" class="select_search form-control" placeholder='{% trans "输入关键字搜索..." %}' style="width:100%;">
                                             </div>
 
                                             <ul id="tree"></ul>
@@ -125,42 +125,42 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label  control-label-flag">登录时间:</label>
+                                    <label class="control-label  control-label-flag">{% trans "登录时间:" %}</label>
                                     <input name="login_time_start" value="{{ request.GET.login_time_start }}" id="id_login_time_start" class="datetime form-control" addon="datetime" type="text"> -
                                     <input name="login_time_end" value="{{ request.GET.login_time_end }}"  id="id_login_time_end" class="datetime form-control" addon="datetime" type="text">
                                 </div>
                                 <div class="form-group">
-                                    <label title="{% trans '邮箱地址/姓名/电话' %}" class="control-label  control-label-flag" for="id_keyword">关键字:</label>
-                                    <input name="keyword" placeholder="{% trans '邮箱地址/姓名/工号/电话' %}"  value="{{ request.GET.keyword }}"  class=" form-control form-control-flag" id="id_keyword" type="text">
+                                    <label title='{% trans "邮箱地址/姓名/电话" %}' class="control-label  control-label-flag" for="id_keyword">{% trans "关键字:" %}</label>
+                                    <input name="keyword" placeholder='{% trans "邮箱地址/姓名/工号/电话" %}'  value="{{ request.GET.keyword }}"  class=" form-control form-control-flag" id="id_keyword" type="text">
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label" for="id_status">状态:</label>
+                                    <label class="control-label" for="id_status">{% trans "状态:" %}</label>
                                     <select name="disabled" class=" form-control form-control-flag" id="id_disabled">
                                         <option value="">--</option>
-                                        <option {% if request.GET.status == '-1' %}selected{% endif %} value="-1">正常</option>
-                                        <option {% if request.GET.status == '1' %}selected{% endif %} value="1">禁用</option>
-                                        <option {% if request.GET.status == '2' %}selected{% endif %} value="2">等待删除</option>
+                                        <option {% if request.GET.status == '-1' %}selected{% endif %} value="-1">{% trans "正常" %}</option>
+                                        <option {% if request.GET.status == '1' %}selected{% endif %} value="1">{% trans "禁用" %}</option>
+                                        <option {% if request.GET.status == '2' %}selected{% endif %} value="2">{% trans "等待删除" %}</option>
                                     </select>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label">管理员:</label>
+                                    <label class="control-label">{% trans "管理员:" %}</label>
                                     <select name="is_active" class=" form-control form-control-flag">
                                         <option value="">--</option>
-                                        <option {% if request.GET.is_active == '1' %}selected{% endif %} value="1">是</option>
-                                        <option {% if request.GET.is_active == '0' %}selected{% endif %} value="0">否</option>
+                                        <option {% if request.GET.is_active == '1' %}selected{% endif %} value="1">{% trans "是" %}</option>
+                                        <option {% if request.GET.is_active == '0' %}selected{% endif %} value="0">{% trans "否" %}</option>
                                     </select>
                                 </div>
 
                                 <div class="form-group">
                                     <input type="hidden" name="show_more_search" id="show_more_search" />
-                                    <button type="submit" class="btn btn-primary btn-sm">查询</button>
-                                    <a type="button" class="btn btn-primary btn-sm" onclick="Export()">导出excel</a>
-                                    <a href="Javascript:MoreSearch(this)">更多搜索</a>
+                                    <button type="submit" class="btn btn-primary btn-sm">{% trans "查询" %}</button>
+                                    <a type="button" class="btn btn-primary btn-sm" onclick="Export()">{% trans "导出excel" %}</a>
+                                    <a href="Javascript:MoreSearch(this)">{% trans "更多搜索" %}</a>
                                 </div>
                                 <div>
                                     <div class="form-group show_hide">
-                                        <label class="control-label">邮箱空间:</label>
+                                        <label class="control-label">{% trans "邮箱空间:" %}</label>
                                         <span class="input-group">
                                             <select name="quota_mailbox_term" class="input-group-addon" style="position: relative;top:-2px;height:34px;">
                                                 <option {% if request.GET.quota_mailbox_term == '0' %}selected{% endif %} value="0" selected="">=</option>
@@ -172,7 +172,7 @@
                                         </span>
                                     </div>
                                     <div class="form-group show_hide">
-                                        <label class="control-label">网络硬盘空间:</label>
+                                        <label class="control-label">{% trans "网络硬盘空间:" %}</label>
                                         <span class="input-group">
                                                 <select name="quota_netdisk_term" class="input-group-addon" style="position: relative;top:-2px;height:34px;">
                                                     <option {% if request.GET.quota_netdisk_term == '0' %}selected{% endif %} value="0" selected="">=</option>
@@ -184,7 +184,7 @@
                                             </span>
                                     </div>
                                     <div class="form-group show_hide">
-                                        <label class="control-label">已用容量(MB):</label>
+                                        <label class="control-label">{% trans "已用容量(MB):" %}</label>
                                         <span class="input-group">
                                             <select name="used_term" class="input-group-addon" style="position: relative;top:-2px;height:34px;">
                                                 <option {% if request.GET.used_term == '0' %}selected{% endif %} value="0" selected="">=</option>
@@ -196,45 +196,45 @@
                                             </span>
                                     </div>
                                     <div class="form-group show_hide">
-                                        <label class="control-label">邮箱空间状态:</label>
+                                        <label class="control-label">{% trans "邮箱空间状态:" %}</label>
                                         <select name="size_status" class=" form-control form-control-flag" id="id_size_status">
                                             <option value="">--</option>
-                                            <option {% if request.GET.size_status == '1' %}selected{% endif %} value="1">即将满-橙色</option>
-                                            <option {% if request.GET.size_status == '2' %}selected{% endif %} value="2">满-红色</option>
+                                            <option {% if request.GET.size_status == '1' %}selected{% endif %} value="1">{% trans "即将满-橙色" %}</option>
+                                            <option {% if request.GET.size_status == '2' %}selected{% endif %} value="2">{% trans "满-红色" %}</option>
                                         </select>
                                     </div>
                                     <br/>
                                     <div class="form-group show_hide">
-                                        <label class="control-label">发信权限:</label>
+                                        <label class="control-label">{% trans "发信权限:" %}</label>
                                         <span class="input-group">
                                             <select name="limit_send" class="input-group-addon" style="position: relative;top:-2px;height:34px;">
                                               <option value="">--</option>
-                                              <option value="-1" {% if request.GET.limit_send == '-1' %} selected {% endif %}>不限制邮件发送</option>
-                                              <option value="1" {% if request.GET.limit_send == '1' %} selected {% endif %}>禁止发送所有邮件</option>
-                                              <option value="2" {% if request.GET.limit_send == '2' %} selected {% endif %}>只发送本地域邮件</option>
-                                              <option value="3" {% if request.GET.limit_send == '3' %} selected {% endif %}>可发送指定外域邮件</option>
-                                              <option value="4" {% if request.GET.limit_send == '4' %} selected {% endif %}>可发送本地所有域邮件</option>
+                                              <option value="-1" {% if request.GET.limit_send == '-1' %} selected {% endif %}>{% trans "不限制邮件发送" %}</option>
+                                              <option value="1" {% if request.GET.limit_send == '1' %} selected {% endif %}>{% trans "禁止发送所有邮件" %}</option>
+                                              <option value="2" {% if request.GET.limit_send == '2' %} selected {% endif %}>{% trans "只发送本地域邮件" %}</option>
+                                              <option value="3" {% if request.GET.limit_send == '3' %} selected {% endif %}>{% trans "可发送指定外域邮件" %}</option>
+                                              <option value="4" {% if request.GET.limit_send == '4' %} selected {% endif %}>{% trans "可发送本地所有域邮件" %}</option>
                                             </select>
                                         </span>
                                     </div>
                                     <div class="form-group show_hide">
-                                        <label class="control-label">收信权限:</label>
+                                        <label class="control-label">{% trans "收信权限:" %}</label>
                                         <span class="input-group">
                                             <select name="limit_recv" class="input-group-addon" style="position: relative;top:-2px;height:34px;">
                                               <option value="">--</option>
-                                              <option value="-1" {% if request.GET.limit_recv == '-1' %} selected {% endif %}>不限制邮件接收</option>
-                                              <option value="1" {% if request.GET.limit_recv == '1' %} selected {% endif %}>禁止接收所有邮件</option>
-                                              <option value="2" {% if request.GET.limit_recv == '2' %} selected {% endif %}>只接收本地域邮件</option>
-                                              <option value="3" {% if request.GET.limit_recv == '3' %} selected {% endif %}>可接收指定外域邮件</option>
-                                              <option value="4" {% if request.GET.limit_recv == '4' %} selected {% endif %}>可接收本地所有域邮件</option>
+                                              <option value="-1" {% if request.GET.limit_recv == '-1' %} selected {% endif %}>{% trans "不限制邮件接收" %}</option>
+                                              <option value="1" {% if request.GET.limit_recv == '1' %} selected {% endif %}>{% trans "禁止接收所有邮件" %}</option>
+                                              <option value="2" {% if request.GET.limit_recv == '2' %} selected {% endif %}>{% trans "只接收本地域邮件" %}</option>
+                                              <option value="3" {% if request.GET.limit_recv == '3' %} selected {% endif %}>{% trans "可接收指定外域邮件" %}</option>
+                                              <option value="4" {% if request.GET.limit_recv == '4' %} selected {% endif %}>{% trans "可接收本地所有域邮件" %}</option>
                                             </select>
                                         </span>
                                     </div>
                                     <div class="form-group show_hide">
-                                        <label class="control-label">距离上一次登陆>=:</label>
+                                        <label class="control-label">{% trans "距离上一次登陆" %}>=:</label>
                                         <span class="input-group">
                                             <input name="from_last_login" value="{{ request.GET.from_last_login}}" type="number" min="0">
-                                            <span class="input-group-addon">天</span>
+                                            <span class="input-group-addon">{% trans "天" %}</span>
                                             </span>
                                     </div>
                                     <br/>
@@ -255,18 +255,18 @@
                     <div class="row" style="margin:0;">
                         <div class="col-sm-12" style="background-color: #EFF3F8;">
                             <p>
-                                <button type="button" class="btn btn-link btn-sm" onclick="fnGetAll();">全选</button>/<button type="button" class="btn btn-link" onclick="fnGetReverse();">取消</button>
-                                <input type="button" onclick="changeStatus('delete', '{% trans "删除" %}');" class="btn btn-danger btn-sm" value="删除所选邮箱" >
-                                <input type="button" onclick="changeStatus('disabled', '{% trans "禁用" %}');" class="btn btn-warning btn-sm" value="禁用所选邮箱" >
-                                <input type="button" onclick="changeStatus('enabled', '{% trans "启用" %}');" class="btn btn-success btn-sm" value="启用所选邮箱" >
+                                <button type="button" class="btn btn-link btn-sm" onclick="fnGetAll();">{% trans "全选" %}</button>/<button type="button" class="btn btn-link" onclick="fnGetReverse();">{% trans "取消" %}</button>
+                                <input type="button" onclick="changeStatus('delete', '{% trans "删除" %}');" class="btn btn-danger btn-sm" value='{% trans "删除所选邮箱" %}' >
+                                <input type="button" onclick="changeStatus('disabled', '{% trans "禁用" %}');" class="btn btn-warning btn-sm" value='{% trans "禁用所选邮箱" %}' >
+                                <input type="button" onclick="changeStatus('enabled', '{% trans "启用" %}');" class="btn btn-success btn-sm" value='{% trans "启用所选邮箱" %}' >
                                 {% if request.user.is_superuser or request.user.is_sys_admin %}
-                                    <input type="button" onclick="changeStatus('cancel_manager', '{% trans "取消设置管理员" %}');" class="btn btn-danger btn-sm" value="取消设置管理员" >
-                                    <input type="button" onclick="changeStatus('set_manager', '{% trans "设置管理员" %}');" class="btn btn-success btn-sm" value="设置管理员" >
+                                    <input type="button" onclick="changeStatus('cancel_manager', '{% trans "取消设置管理员" %}');" class="btn btn-danger btn-sm" value="{% trans "取消设置管理员" %}" >
+                                    <input type="button" onclick="changeStatus('set_manager', '{% trans "设置管理员" %}');" class="btn btn-success btn-sm" value="{% trans "设置管理员" %}" >
                                 {% endif %}
-                                <input type="button" onclick="changeStatus('tip_pwd', '{% trans "提示密码" %}');" class="btn btn-info btn-sm" value="登录后强制改密码" >
+                                <input type="button" onclick="changeStatus('tip_pwd', '{% trans "提示密码" %}');" class="btn btn-info btn-sm" value='{% trans "登录后强制改密码" %}' >
                                 {% if request.user.is_superuser or request.user.is_sys_admin %}
                                     &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <input type="button" onclick="tipPwd()" class="btn btn-primary btn-sm" value="所有邮箱登录后强制改密码" >
+                                    <input type="button" onclick="tipPwd()" class="btn btn-primary btn-sm" value='{% trans "所有邮箱登录后强制改密码" %}' >
                                 {% endif %}
                             </p>
                         </div>
@@ -275,21 +275,21 @@
                         <thead>
                         <tr role="row">
                             <th>ID</th>
-                            <th class="sorting" tabindex="0">序号</th>
-                            <th class="sorting center" tabindex="0">邮箱地址</th>
-                            <th class="" tabindex="0" >真实姓名</th>
+                            <th class="sorting" tabindex="0">{% trans "序号" %}</th>
+                            <th class="sorting center" tabindex="0">{% trans "邮箱地址" %}</th>
+                            <th class="" tabindex="0" >{% trans "真实姓名" %}</th>
                             <th  tabindex="0" >
                                 <i class="ace-icon fa fa-clock-o bigger-110 hidden-480"></i>
-                                部门
+                                {% trans "部门" %}
                             </th>
-                            <th class="" tabindex="0">邮箱/网盘 容量</th>
-                            <th class="sorting">已用容量</th>
-                            <th>收发权限</th>
-                            <th>只允许登录IP</th>
-                            <th class="sorting">账号状态</th>
-                            <th class="sorting">管理员</th>
-                            <th class="sorting">最后登录时间</th>
-                            <th>操作</th>
+                            <th class="" tabindex="0">{% trans "邮箱/网盘 容量" %}</th>
+                            <th class="sorting">{% trans "已用容量" %}</th>
+                            <th>{% trans "收发权限" %}</th>
+                            <th>{% trans "只允许登录IP" %}</th>
+                            <th class="sorting">{% trans "账号状态" %}</th>
+                            <th class="sorting">{% trans "管理员" %}</th>
+                            <th class="sorting">{% trans "最后登录时间" %}</th>
+                            <th>{% trans "操作" %}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -306,10 +306,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="LgModalLabel">加载中</h4>
+                <h4 class="modal-title" id="LgModalLabel">{% trans "加载中" %}</h4>
             </div>
             <div class="modal-body">
-                页面加载中
+                {% trans "页面加载中" %}
             </div>
             <div class="modal-footer">
                 <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">Close</button>
@@ -322,10 +322,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="LgModalLabel2">加载中</h4>
+                <h4 class="modal-title" id="LgModalLabel2">{% trans "加载中" %}</h4>
             </div>
             <div class="modal-body">
-                页面加载中
+                {% trans "页面加载中" %}
             </div>
             <div class="modal-footer">
                 <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">Close</button>
@@ -338,10 +338,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="LgModalLabel2">加载中</h4>
+                <h4 class="modal-title" id="LgModalLabel2">{% trans "加载中" %}</h4>
             </div>
             <div class="modal-body">
-                页面加载中
+                {% trans "页面加载中" %}
             </div>
             <div class="modal-footer">
                 <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">Close</button>
@@ -354,10 +354,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="LgModalLabel2">加载中</h4>
+                <h4 class="modal-title" id="LgModalLabel2">{% trans "加载中" %}</h4>
             </div>
             <div class="modal-body">
-                页面加载中
+                {% trans "页面加载中" %}
             </div>
             <div class="modal-footer">
                 <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">Close</button>
@@ -370,10 +370,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="LgModalLabel2">加载中</h4>
+                <h4 class="modal-title" id="LgModalLabel2">{% trans "加载中" %}</h4>
             </div>
             <div class="modal-body">
-                页面加载中
+                {% trans "页面加载中" %}
             </div>
             <div class="modal-footer">
                 <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">Close</button>
@@ -386,10 +386,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="LgModalLabel2">加载中</h4>
+                <h4 class="modal-title" id="LgModalLabel2">{% trans "加载中" %}</h4>
             </div>
             <div class="modal-body">
-                页面加载中
+                {% trans "页面加载中" %}
             </div>
             <div class="modal-footer">
                 <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">Close</button>
@@ -402,10 +402,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="LgModalLabel2">加载中</h4>
+                <h4 class="modal-title" id="LgModalLabel2">{% trans "加载中" %}</h4>
             </div>
             <div class="modal-body">
-                页面加载中
+                {% trans "页面加载中" %}
             </div>
             <div class="modal-footer">
                 <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">Close</button>
@@ -418,10 +418,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="LgModalLabel2">加载中</h4>
+                <h4 class="modal-title" id="LgModalLabel2">{% trans "加载中" %}</h4>
             </div>
             <div class="modal-body">
-                页面加载中
+                {% trans "页面加载中" %}
             </div>
             <div class="modal-footer">
                 <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">Close</button>
@@ -434,16 +434,16 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">批量删除账号</h4>
+                <h4 class="modal-title">{% trans "批量删除账号" %}</h4>
             </div>
             <div class="modal-body">
                 <div class="table-header">
-                    批量删除邮箱
+                    {% trans "批量删除邮箱" %}
                 </div>
             </div>
             <div class="modal-footer center">
-                <button class="btn btn-primary" type="button">确定</button>
-                <button class="btn btn-warning" type="button">重置</button>
+                <button class="btn btn-primary" type="button">{% trans "确定" %}</button>
+                <button class="btn btn-warning" type="button">{% trans "重置" %}</button>
             </div>
         </div>
     </div>
@@ -476,8 +476,8 @@
         'applyClass' : 'btn-sm btn-success',
         'cancelClass' : 'btn-sm btn-default',
         locale: {
-            applyLabel: '确认',
-            cancelLabel: '取消'
+            applyLabel: '{% trans "确认" %}',
+            cancelLabel: '{% trans "取消" %}'
         }
     })
 
@@ -801,7 +801,7 @@
         var id_array = fnGetSelected();
 
         if (id_array.length == 0){
-            layer.msg("{% trans '请选择要处理的邮箱帐号！' %}", {time: 2000, icon:7});
+            layer.msg('{% trans "请选择要处理的邮箱帐号！" %}', {time: 2000, icon:7});
             return false;
         }
 
@@ -833,4 +833,3 @@
 
 </script>
 {% endblock %}
-

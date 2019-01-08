@@ -10,11 +10,11 @@
 </td>
  <td >
   {% for d in l.depts %}
-  {{ d.title }}
+  {{ d.get_title }}
   {% if not forloop.last %} <br> {% endif %}
   {% endfor %}
  </td>
- <td>邮箱：{{ l.quota_mailbox }}MB <br> 网盘：{{ l.quota_netdisk }}MB</td>
+ <td>{% trans "邮箱：" %}{{ l.quota_mailbox }}MB <br> {% trans "网盘：" %}{{ l.quota_netdisk }}MB</td>
  <td>
   {% with l.size as s %}
   {% if s %}
@@ -25,21 +25,21 @@
   {% endwith %}
  </td>
   <td>
-  <span class="label label-sm {% if l.getSendLimit == '-1' %}label-success{% else %}label-grey{% endif %}">发送: {{ l.display_limit_send }}</span>
-  <span class="label label-sm {% if l.getRecvLimit == '-1' %}label-success{% else %}label-grey{% endif %}">接收: {{ l.display_limit_recv }}</span>
+  <span class="label label-sm {% if l.getSendLimit == '-1' %}label-success{% else %}label-grey{% endif %}">{% trans "发送: " %}{{ l.display_limit_send }}</span>
+  <span class="label label-sm {% if l.getRecvLimit == '-1' %}label-success{% else %}label-grey{% endif %}">{% trans "接收: " %}{{ l.display_limit_recv }}</span>
  </td>
  <td>{{ l.ip_limit|default_if_none:'' }}</td>
  <td>
   {% if l.is_delete == 1 %}
-    <a href=# title="{{ l.get_delete_time_desc }}"><span class="text-danger">等待删除</span></a>
+    <a href=# title="{{ l.get_delete_time_desc }}"><span class="text-danger">{% trans "等待删除" %}</span></a>
   {% else %}
-    {% if l.disabled == '-1' %}<span class="text-success">正常</span>{% else %}<span class="text-danger">禁用</span>{% endif %}
+    {% if l.disabled == '-1' %}<span class="text-success">{% trans "正常" %}</span>{% else %}<span class="text-danger">{% trans "禁用" %}</span>{% endif %}
   {% endif %}
 </td>
- <td>{% if l.is_active or l.is_superuser %}<span class="text-success">是</span>{% else %}<span class="text-danger">否</span>{% endif %}</td>
+ <td>{% if l.is_active or l.is_superuser %}<span class="text-success">{% trans "是" %}</span>{% else %}<span class="text-danger">{% trans "否" %}</span>{% endif %}</td>
  <td>{{ l.last_login|date:"Y-m-d H:i:s" }}</td>
  <td>
-  <a class="green btn btn-white btn-primary btn-xs" data-toggle="modal" href="{% url 'mailbox_reply' l.id %}" data-target="#modal-reply">自动回复</a>
-  <a class="green btn btn-white btn-primary btn-xs" data-toggle="modal" href="{% url 'mailbox_forward' l.id %}" data-target="#modal-lg">自动转发</a>
+  <a class="green btn btn-white btn-primary btn-xs" data-toggle="modal" href="{% url 'mailbox_reply' l.id %}" data-target="#modal-reply">{% trans "自动回复" %}</a>
+  <a class="green btn btn-white btn-primary btn-xs" data-toggle="modal" href="{% url 'mailbox_forward' l.id %}" data-target="#modal-lg">{% trans "自动转发" %}</a>
  </td>
 </tr>

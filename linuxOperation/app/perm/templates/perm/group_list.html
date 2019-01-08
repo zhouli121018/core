@@ -10,7 +10,7 @@
             <div class="page-header"><h1>{% trans "管理员组" %}</h1></div>
         </div>
         <div class="col-xs-6"><div class="pull-right" style="margin-right:30px;"><div class="button-group">
-            <a type="button" class="btn btn-primary btn-sm"  href="{% url 'group_add' %}">添加管理员组</a>
+            <a type="button" class="btn btn-primary btn-sm"  href="{% url 'group_add' %}">{% trans "添加管理员组" %}</a>
         </div></div></div></div>
 
     <div class="row">
@@ -20,10 +20,10 @@
                 <table id="dynamic-table"  class="table table-striped table-bordered table-hover table-center" role="grid" >
                     <thead>
                     <tr>
-                        <th>组名</th>
-                        <th>用户数</th>
-                        <th>权限数</th>
-                        <th>操作</th>
+                        <th>{% trans "组名" %}</th>
+                        <th>{% trans "用户数" %}</th>
+                        <th>{% trans "权限数" %}</th>
+                        <th>{% trans "操作" %}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -34,11 +34,11 @@
                             <td>{{ g.permissions.count }}</td>
                             <td>
                                 {% if not g.id in special_groups %}
-                                    <a type="button" class="btn btn-white btn-primary btn-xs" href="{% url 'group_modify' g.id %}">修改</a>
+                                    <a type="button" class="btn btn-white btn-primary btn-xs" href="{% url 'group_modify' g.id %}">{% trans "修改" %}</a>
                                 {% endif %}
-                                <a type="button" class="btn btn-white btn-success btn-xs" href="{% url 'perm_grant' %}?g_id={{g.id}}">授权</a>
+                                <a type="button" class="btn btn-white btn-success btn-xs" href="{% url 'perm_grant' %}?g_id={{g.id}}">{% trans "授权" %}</a>
                                 {% if not g.id in special_groups %}
-                                    <button type="button" class="red btn btn-white btn-danger btn-xs" onclick="Delete('{{ g.id }}', '{{ g.name }}')">删除</button>
+                                    <button type="button" class="red btn btn-white btn-danger btn-xs" onclick="Delete('{{ g.id }}', '{{ g.name }}')">{% trans "删除" %}</button>
                                 {% endif %}
                             </td>
                         </tr>
@@ -104,7 +104,7 @@
         });
 
         function Delete(id, group){
-            var str = '是否要删除管理员组 "%s"？';
+            var str = '{% trans "是否要删除管理员组 " %}"%s"？';
             str = str.replace(/%s/, group);
             if(confirm(str)) {
                 $('#group_id').val(id);

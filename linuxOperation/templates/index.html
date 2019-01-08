@@ -5,7 +5,7 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta charset="utf-8" />
-    <title>超域管理后台</title>
+    <title>{% trans "超域管理后台" %}</title>
 
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -156,13 +156,13 @@
             margin-top:8px;
         }
         .ace.ace-switch + .lbl::before{
-            content:"启用 a0\a0\a0\a0 禁用" !important;
+            content:"{% trans "启用 a0\a0\a0\a0 禁用" %}" !important;
         }
          .ace.ace-switch + .lbl.gender::before{
-             content:"\a0\a0男 a0\a0\a0\a0\a0\a0\a0 女\a0" !important;
+             content:"\a0\{% trans "a0男 a0\a0\a0\a0\a0\a0\a0 女\a0" %}" !important;
          }
         .ace.ace-switch + .lbl::before{
-            content:"启用 a0\a0\a0\a0 禁用" !important;
+            content:"{% trans "启用 a0\a0\a0\a0 禁用" %}" !important;
         }
 
         table td{
@@ -299,21 +299,21 @@
         <div class="modal-content">
             <div class="modal-header" style="background:#607D8B;color:#fff;">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">发送反馈</h4>
+                <h4 class="modal-title">{% trans "发送反馈" %}</h4>
             </div>
             <div class="modal-body" style="background:#FAFAFA;">
                 <form class="form-horizontal">
                     <div class="form-group">
 
                         <div class="col-sm-12">
-                            <textarea class="form-control" rows="20" placeholder="请说明您的问题或分享您的想法"></textarea>
+                            <textarea class="form-control" rows="20" placeholder="{% trans "请说明您的问题或分享您的想法" %}"></textarea>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer text-right">
-                <button type="button" class="btn btn-warning" >取消</button>
-                <button type="button" class="btn btn-success" id="tijiao">发送</button>
+                <button type="button" class="btn btn-warning" >{% trans "取消" %}</button>
+                <button type="button" class="btn btn-success" id="tijiao">{% trans "发送" %}</button>
             </div>
         </div>
     </div>
@@ -323,41 +323,41 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">邮件域基本信息</h4>
+                <h4 class="modal-title">{% trans "邮件域基本信息" %}</h4>
             </div>
             <div class="modal-body">
                 <form class="form-horizontal">
                     <div class="form-group">
-                        <label class=" col-sm-3 control-label">旧密码:</label>
+                        <label class=" col-sm-3 control-label">{% trans "旧密码:" %}</label>
                         <div class="col-sm-7">
                             <input type="password" class="form-control"  >
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-3 ">新密码:</label>
+                        <label class="control-label col-sm-3 ">{% trans "新密码:" %}</label>
                         <div class="col-sm-7">
                             <input type="password" class="form-control" >
-                            <p class="help-block"><span class="red">注：</span>密码长度最少为8位，其中必须包括字母和数字！</p>
+                            <p class="help-block"><span class="red">{% trans "注：" %}</span>{% trans "密码长度最少为8位，其中必须包括字母和数字！" %}</p>
                         </div>
 
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-3">确认新密码:</label>
+                        <label class="control-label col-sm-3">{% trans "确认新密码:" %}</label>
                         <div class="col-sm-7">
                             <input type="password" class="form-control" >
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label col-sm-3">自动登录IP:</label>
+                        <label class="control-label col-sm-3">{% trans "自动登录IP:" %}</label>
                         <div class="col-sm-7">
                             <input type="text" class="form-control" >
-                            <p class="help-block"><span class="red">注：</span>为了账号安全，请不要设置公用网络的IP地址</p>
+                            <p class="help-block"><span class="red">{% trans "注：" %}</span>{% trans "为了账号安全，请不要设置公用网络的IP地址" %}</p>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer center">
-                <button type="button" class="btn btn-primary">保存</button>
+                <button type="button" class="btn btn-primary">{% trans "保存" %}</button>
             </div>
         </div>
     </div>
@@ -367,42 +367,42 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">设置后台标题以及全局参数</h4>
+                <h4 class="modal-title">{% trans "设置后台标题以及全局参数" %}</h4>
             </div>
             <div class="modal-body">
                 <form class="form-horizontal">
                     <div class="form-group">
-                        <label class=" col-sm-4 control-label">超域管理后台标题:</label>
+                        <label class=" col-sm-4 control-label">{% trans "超域管理后台标题:" %}</label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" value="超域管理员后台" >
+                            <input type="text" class="form-control" value="{% trans "超域管理员后台" %}" >
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class=" col-sm-4 control-label">系统管理后台标题:</label>
+                        <label class=" col-sm-4 control-label">{% trans "系统管理后台标题:" %}</label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" value="系统222" >
+                            <input type="text" class="form-control" value="{% trans "系统222" %}" >
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class=" col-sm-4 control-label">域管理后台标题:</label>
+                        <label class=" col-sm-4 control-label">{% trans "域管理后台标题:" %}</label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" value="域22" >
+                            <input type="text" class="form-control" value="{% trans "域22" %}" >
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class=" col-sm-4 control-label">部门管理后台标题:</label>
+                        <label class=" col-sm-4 control-label">{% trans "部门管理后台标题:" %}</label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" value="部门22" >
+                            <input type="text" class="form-control" value="{% trans "部门22" %}" >
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class=" col-sm-4 control-label">附件预览服务器域名:</label>
+                        <label class=" col-sm-4 control-label">{% trans "附件预览服务器域名:" %}</label>
                         <div class="col-sm-6">
                             <input type="text" class="form-control" value="http://office.comingchina.com" >
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class=" col-sm-4 control-label">主域名和端口:</label>
+                        <label class=" col-sm-4 control-label">{% trans "主域名和端口:" %}</label>
                         <div class="col-sm-6">
                             <input type="text" class="form-control" value="http://mail.test.com" >
                         </div>
@@ -410,7 +410,7 @@
                 </form>
             </div>
             <div class="modal-footer center">
-                <button type="button" class="btn btn-primary">保存</button>
+                <button type="button" class="btn btn-primary">{% trans "保存" %}</button>
             </div>
         </div>
     </div>
@@ -436,7 +436,7 @@
             <a href="#" class="navbar-brand">
                 <small>
                     <i class="fa fa-leaf"></i>
-                    U-Mail邮件系统--超级管理员后台
+                    U-{% trans "Mail邮件系统--超级管理员后台" %}
                 </small>
             </a>
 
@@ -453,7 +453,7 @@
                 <li class="green">
                     <a  href="#" data-toggle="dropdown" href="#" class="dropdown-toggle">
                         <i class="ace-icon glyphicon glyphicon-font"></i>
-                        语言
+                        {% trans "语言" %}
                         <!--<span class="badge badge-important">8</span>-->
                         <i class="ace-icon fa fa-caret-down"></i>
                     </a>
@@ -461,7 +461,7 @@
                         <li>
                             <a href="#" >
                             <!--<i class="ace-icon fa fa-user"></i>-->
-                            中文
+                            {% trans "中文" %}
                             </a>
                         </li>
 
@@ -479,7 +479,7 @@
                 <li class=" blue">
                     <a  href="#" data-toggle="modal" id="fankui_btn" data-target="#fankui">
                         <i class="ace-icon fa fa-codepen"></i>
-                        反馈
+                        {% trans "反馈" %}
                         <!--<span class="badge badge-important">8</span>-->
                     </a>
 
@@ -488,14 +488,14 @@
                 <li class="purple">
                     <a   href="#" data-toggle="modal" data-target="#resetPwd">
                         <i class="ace-icon fa fa-cog"></i>
-                        修改密码
+                        {% trans "修改密码" %}
                     </a>
                 </li>
 
                 <li class="light-blue">
                     <a   href="#" >
                         <i class="ace-icon fa fa-power-off"></i>
-                        退出登录
+                        {% trans "退出登录" %}
                     </a>
                 </li>
 
@@ -515,14 +515,14 @@
                         <!--<li>-->
                             <!--<a href="#" data-toggle="modal" data-target="#resetPwd">-->
                                 <!--<i class="ace-icon fa fa-user"></i>-->
-                                <!--修改密码-->
+                                <!--{% trans "修改密码--" %}>
                             <!--</a>-->
                         <!--</li>-->
 
                         <!--<li>-->
                             <!--<a href="#" data-toggle="modal" data-target="#global_set">-->
                                 <!--<i class="ace-icon fa fa-cog"></i>-->
-                                <!--全局设置-->
+                                <!--{% trans "全局设置--" %}>
                             <!--</a>-->
                         <!--</li>-->
 
@@ -531,7 +531,7 @@
                         <!--<li>-->
                             <!--<a href="#">-->
                                 <!--<i class="ace-icon fa fa-power-off"></i>-->
-                                <!--退出登录-->
+                                <!--{% trans "退出登录--" %}>
                             <!--</a>-->
                         <!--</li>-->
                     <!--</ul>-->
@@ -542,10 +542,10 @@
         </div>
         <form class="pull-right" style="margin:6px 28px 5px 0;width:220px;">
             <select class="select2"  id="search_select2" style="max-width:100%;">
-                <option disabled selected>输入关键词搜索功能</option>
-                <!--<option value="systemStatus/licence">授权信息</option>-->
-                <!--<option value="systemStatus/sysinfo">软件信息</option>-->
-                <!--<option value="systemStatus/status">系统状态</option>-->
+                <option disabled selected>{% trans "输入关键词搜索功能" %}</option>
+                <!--<option value="systemStatus/licence">{% trans "授权信息" %}</option>-->
+                <!--<option value="systemStatus/sysinfo">{% trans "软件信息" %}</option>-->
+                <!--<option value="systemStatus/status">{% trans "系统状态" %}</option>-->
             </select>
         </form>
         <!-- /section:basics/navbar.dropdown -->
@@ -568,14 +568,14 @@
             <li class="single active">
                 <a href="home">
                     <i class="menu-icon fa fa-tachometer"></i>
-                    <span class="menu-text"> 主页 </span>
+                    <span class="menu-text"> {% trans "主页 " %}</span>
                 </a>
                 <b class="arrow"></b>
             </li>
             <li>
                 <a href="index.html" class="dropdown-toggle">
                     <i class="menu-icon glyphicon glyphicon-transfer"></i>
-                    <span class="menu-text"> 系统状态 </span>
+                    <span class="menu-text"> {% trans "系统状态 " %}</span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
 
@@ -584,21 +584,21 @@
                     <li>
                         <a href="systemStatus/licence" >
                             <i class="menu-icon fa fa-caret-right"></i>
-                            授权信息
+                            {% trans "授权信息" %}
                         </a>
                         <b class="arrow"></b>
                     </li>
                     <li class="" >
                         <a href="systemStatus/sysinfo">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            软件信息
+                            {% trans "软件信息" %}
                         </a>
                         <b class="arrow"></b>
                     </li>
                     <li class="" >
                         <a href="systemStatus/status">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            系统状态
+                            {% trans "系统状态" %}
                         </a>
                         <b class="arrow"></b>
                     </li>
@@ -607,7 +607,7 @@
             <li>
                 <a href="index.html" class="dropdown-toggle">
                     <i class="menu-icon glyphicon glyphicon-book"></i>
-                    <span class="menu-text"> 域名管理 </span>
+                    <span class="menu-text"> {% trans "域名管理 " %}</span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
                 <b class="arrow"></b>
@@ -615,7 +615,7 @@
                     <li class="" id="dynamic-table0">
                         <a href="domain/dynamic">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            域名管理
+                            {% trans "域名管理" %}
                         </a>
                         <b class="arrow"></b>
                     </li>
@@ -623,14 +623,14 @@
                         <a href="domain/static" >
                             <i class="menu-icon fa fa-caret-right"></i>
 
-                            域名配置
+                            {% trans "域名配置" %}
                         </a>
                         <b class="arrow"></b>
                     </li>
                     <!--<li class="">-->
                         <!--<a href="domain/managerList">-->
                             <!--<i class="menu-icon fa fa-caret-right"></i>-->
-                            <!--域管理员列表-->
+                            <!--{% trans "域管理员列表--" %}>
                         <!--</a>-->
                         <!--<b class="arrow"></b>-->
                     <!--</li>-->
@@ -641,7 +641,7 @@
                 <a href="#" class="dropdown-toggle">
                     <i class="menu-icon fa fa-at"></i>
 							<span class="menu-text">
-								邮箱管理
+								{% trans "邮箱管理" %}
 							</span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
@@ -653,7 +653,7 @@
                         <a href="mailbox/emailAccounts">
                             <i class="menu-icon fa fa-caret-right"></i>
 
-                            邮箱账号管理
+                            {% trans "邮箱账号管理" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -663,7 +663,7 @@
                     <!--<li class="">-->
                         <!--<a href="#">-->
                             <!--<i class="menu-icon fa fa-caret-right"></i>-->
-                            <!--添加新账号-->
+                            <!--{% trans "添加新账号--" %}>
                         <!--</a>-->
 
                         <!--<b class="arrow"></b>-->
@@ -672,7 +672,7 @@
                     <li class="">
                         <a href="mailbox/recheck">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            审批管理
+                            {% trans "审批管理" %}
                         </a>
                         <b class="arrow"></b>
                     </li>
@@ -682,7 +682,7 @@
             <li class="single">
                 <a href="group">
                     <i class="menu-icon fa fa-list"></i>
-                    <span class="menu-text"> 组权限管理 </span>
+                    <span class="menu-text"> {% trans "组权限管理 " %}</span>
                 </a>
                 <b class="arrow"></b>
             </li>
@@ -690,7 +690,7 @@
             <li class="">
                 <a href="#" class="dropdown-toggle">
                     <i class="menu-icon fa fa-th-large"></i>
-                    <span class="menu-text"> 部门机构管理 </span>
+                    <span class="menu-text"> {% trans "部门机构管理 " %}</span>
 
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
@@ -701,7 +701,7 @@
                     <li class="">
                         <a href="department/departmentList">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            部门列表
+                            {% trans "部门列表" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -709,7 +709,7 @@
                     <!--<li class="">-->
                         <!--<a href="department/deptadminList">-->
                             <!--<i class="menu-icon fa fa-caret-right"></i>-->
-                            <!--部门管理员列表-->
+                            <!--{% trans "部门管理员列表--" %}>
                         <!--</a>-->
 
                         <!--<b class="arrow"></b>-->
@@ -717,7 +717,7 @@
                     <li class="">
                         <a href="department/shareDomain">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            其他域通讯录共享
+                            {% trans "其他域通讯录共享" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -725,7 +725,7 @@
                     <li class="">
                         <a href="department/domainGroup">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            企业通讯录域组合
+                            {% trans "企业通讯录域组合" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -736,7 +736,7 @@
             <li class="single">
                 <a href="maillist">
                     <i class="menu-icon fa fa-envelope-o"></i>
-                    <span class="menu-text"> 邮件列表管理 </span>
+                    <span class="menu-text"> {% trans "邮件列表管理 " %}</span>
                 </a>
                 <b class="arrow"></b>
             </li>
@@ -746,7 +746,7 @@
                     <i class="menu-icon fa fa-connectdevelop"></i>
 
 							<span class="menu-text">
-								安全设置
+								{% trans "安全设置" %}
 							</span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
@@ -758,7 +758,7 @@
                     <li class="">
                         <a href="safeSet/banned_ips">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            动态屏蔽
+                            {% trans "动态屏蔽" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -766,7 +766,7 @@
                     <li class="">
                         <a href="safeSet/trustip">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            信任IP地址
+                            {% trans "信任IP地址" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -774,7 +774,7 @@
                     <li class="">
                         <a href="safeSet/black">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            发件人黑/白名单
+                            {% trans "发件人黑/白名单" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -783,7 +783,7 @@
                     <li class="">
                         <a href="safeSet/white_rcp">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            收件人白名单
+                            {% trans "收件人白名单" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -791,7 +791,7 @@
                     <li class="">
                         <a href="safeSet/no_rubbish">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            反垃圾/反病毒设置
+                            {% trans "反垃圾/反病毒设置" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -799,7 +799,7 @@
                     <li class="">
                         <a href="safeSet/send_hz">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            发信频率设置
+                            {% trans "发信频率设置" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -811,7 +811,7 @@
                     <i class="menu-icon fa fa-cog"></i>
 
 							<span class="menu-text">
-								系统设置
+								{% trans "系统设置" %}
 							</span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
@@ -823,7 +823,7 @@
                     <li class="">
                         <a href="misc/translate">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            邮件头翻译
+                            {% trans "邮件头翻译" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -831,7 +831,7 @@
                     <li class="">
                         <a href="misc/review">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            邮件审核设置
+                            {% trans "邮件审核设置" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -839,7 +839,7 @@
                     <li class="">
                         <a href="misc/monitor">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            邮箱监控设置
+                            {% trans "邮箱监控设置" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -847,7 +847,7 @@
                     <li class="">
                         <a href="misc/mailboxalias">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            邮箱别名设置
+                            {% trans "邮箱别名设置" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -856,7 +856,7 @@
                     <!--<li class="">-->
                         <!--<a href="misc/secret">-->
                             <!--<i class="menu-icon fa fa-caret-right"></i>-->
-                            <!--密级管理-->
+                            <!--{% trans "密级管理--" %}>
                         <!--</a>-->
 
                         <!--<b class="arrow"></b>-->
@@ -864,7 +864,7 @@
                     <li class="">
                         <a href="misc/distribute">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            分布式管理
+                            {% trans "分布式管理" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -872,7 +872,7 @@
                     <li class="">
                         <a href="misc/ldap_ad">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            LDAP/AD域同步设置
+                            LDAP/{% trans "AD域同步设置" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -881,7 +881,7 @@
                     <li class="">
                         <a href="misc/alias">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            邮件域别名
+                            {% trans "邮件域别名" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -889,7 +889,7 @@
                     <li class="">
                         <a href="misc/cfilter">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            内容过滤器
+                            {% trans "内容过滤器" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -897,7 +897,7 @@
                     <li class="">
                         <a href="misc/mail_send">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            内网邮件代发
+                            {% trans "内网邮件代发" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -905,7 +905,7 @@
                     <li class="">
                         <a href="misc/ssl_secret">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            SSL数字证书
+                            {% trans "SSL数字证书" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -913,7 +913,7 @@
                     <!--<li class="">-->
                         <!--<a href="misc/dkim">-->
                             <!--<i class="menu-icon fa fa-caret-right"></i>-->
-                            <!--DKIM 设置-->
+                            <!--DKIM {% trans "设置--" %}>
                         <!--</a>-->
 
                         <!--<b class="arrow"></b>-->
@@ -921,7 +921,7 @@
                     <li class="">
                         <a href="misc/global_set">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            杂项设置
+                            {% trans "杂项设置" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -936,7 +936,7 @@
                     <i class="menu-icon glyphicon glyphicon-wrench"></i>
 
 							<span class="menu-text">
-								系统维护
+								{% trans "系统维护" %}
 							</span>
 
                     <b class="arrow fa fa-angle-down"></b>
@@ -949,7 +949,7 @@
                     <li class="">
                         <a href="maintain/backup">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            数据备份
+                            {% trans "数据备份" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -957,7 +957,7 @@
                     <li class="">
                         <a href="maintain/acct_transfer">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            帐号间数据迁移
+                            {% trans "帐号间数据迁移" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -965,7 +965,7 @@
                     <li class="">
                         <a href="maintain/mail_moving">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            外域邮件数据导入
+                            {% trans "外域邮件数据导入" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -973,7 +973,7 @@
                     <li class="">
                         <a href="maintain/mail_queue">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            邮件队列
+                            {% trans "邮件队列" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -981,7 +981,7 @@
                     <li class="">
                         <a href="maintain/weixin">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            微信版管理
+                            {% trans "微信版管理" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -993,7 +993,7 @@
                 <i class="menu-icon glyphicon glyphicon-list-alt"></i>
 
 							<span class="menu-text">
-								日志/报告
+								{% trans "日志/报告" %}
 							</span>
 
                 <b class="arrow fa fa-angle-down"></b>
@@ -1005,7 +1005,7 @@
                 <li class="">
                     <a href="maintain/maillog">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        邮件统计报告
+                        {% trans "邮件统计报告" %}
                     </a>
 
                     <b class="arrow"></b>
@@ -1014,7 +1014,7 @@
                 <li class="">
                     <a href="system/userlog">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        用户操作日志
+                        {% trans "用户操作日志" %}
                     </a>
 
                     <b class="arrow"></b>
@@ -1022,7 +1022,7 @@
                 <li class="">
                     <a href="system/adminlog">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        管理员操作日志
+                        {% trans "管理员操作日志" %}
                     </a>
 
                     <b class="arrow"></b>
@@ -1030,7 +1030,7 @@
                 <li class="">
                     <a href="maintain/log">
                         <i class="menu-icon fa fa-caret-right"></i>
-                        底层程序日志
+                        {% trans "底层程序日志" %}
                     </a>
 
                     <b class="arrow"></b>
@@ -1043,7 +1043,7 @@
                     <i class="menu-icon glyphicon glyphicon-tasks"></i>
 
 							<span class="menu-text">
-								管理员管理
+								{% trans "管理员管理" %}
 							</span>
 
                     <b class="arrow fa fa-angle-down"></b>
@@ -1055,7 +1055,7 @@
                     <li class="">
                         <a href="wangguan/user">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            用户管理
+                            {% trans "用户管理" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -1063,7 +1063,7 @@
                     <li class="">
                         <a href="wangguan/usergroup">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            用户组管理
+                            {% trans "用户组管理" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -1072,7 +1072,7 @@
                     <li class="">
                         <a href="wangguan/power">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            权限管理
+                            {% trans "权限管理" %}
                         </a>
 
                         <b class="arrow"></b>
@@ -1096,9 +1096,9 @@
             <!-- #section:basics/content.breadcrumbs -->
             <div class="breadcrumbs ace-save-state" id="breadcrumbs">
                 <div class="row pull-right" id="switch-email">
-                    <div class="col-sm-2" style="width:120px;"><span class="">切换当前域名：</span></div>
+                    <div class="col-sm-2" style="width:120px;"><span class="">{% trans "切换当前域名：" %}</span></div>
                     <div class="col-sm-10" style="width:200px;">
-                        <select class="chosen-select form-control"  data-placeholder="切换当前域名">
+                        <select class="chosen-select form-control"  data-placeholder="{% trans "切换当前域名" %}">
                             <option value="">test.com</option>
                             <option value="AL">Alabama</option>
                             <option value="AK">Alaska</option>
@@ -1156,20 +1156,20 @@
                 <ul class="breadcrumb">
                     <li>
                         <i class="ace-icon fa fa-home home-icon"></i>
-                        <a href="#">邮件域管理</a>
+                        <a href="#">{% trans "邮件域管理" %}</a>
                     </li>
-                    <li class="active">邮件域信息一览</li>
+                    <li class="active">{% trans "邮件域信息一览" %}</li>
                 </ul><!-- /.breadcrumb -->
 
                  <!--#section:basics/content.searchbox -->
                 <!--<div class="nav-search" id="nav-search">-->
                     <!--<form class="form-search">-->
 								<!--<span class="input-icon">-->
-									<!--<input type="text" placeholder="输入关键词搜索功能" class="nav-search-input" id="search_fun"  autocomplete="off" />-->
+									<!--<input type="text" placeholder="{% trans "输入关键词搜索功能" %}" class="nav-search-input" id="search_fun"  autocomplete="off" />-->
 									<!--<i class="ace-icon fa fa-search nav-search-icon"></i>-->
 
 								<!--</span>-->
-                        <!--<input type="button" class="btn btn-primary btn-xs" id="search_btn" value="搜索">-->
+                        <!--<input type="button" class="btn btn-primary btn-xs" id="search_btn" value="{% trans "搜索" %}">-->
                     <!--</form>-->
                 <!--</div>&lt;!&ndash; /.nav-search &ndash;&gt;-->
 
@@ -1204,7 +1204,7 @@
                             <!-- #section:settings.navbar -->
                             <div class="ace-settings-item">
                                 <input type="checkbox" class="ace ace-checkbox-2 ace-save-state" id="ace-settings-navbar" autocomplete="off" />
-                                <label class="lbl" for="ace-settings-navbar"> 固定导航栏 </label>
+                                <label class="lbl" for="ace-settings-navbar"> {% trans "固定导航栏 " %}</label>
                             </div>
 
                             <!-- /section:settings.navbar -->
@@ -1212,7 +1212,7 @@
                             <!-- #section:settings.sidebar -->
                             <div class="ace-settings-item">
                                 <input type="checkbox" class="ace ace-checkbox-2 ace-save-state" id="ace-settings-sidebar" autocomplete="off" />
-                                <label class="lbl" for="ace-settings-sidebar"> 固定侧边栏 </label>
+                                <label class="lbl" for="ace-settings-sidebar"> {% trans "固定侧边栏 " %}</label>
                             </div>
 
                             <!-- /section:settings.sidebar -->
@@ -1220,7 +1220,7 @@
                             <!-- #section:settings.breadcrumbs -->
                             <div class="ace-settings-item">
                                 <input type="checkbox" class="ace ace-checkbox-2 ace-save-state" id="ace-settings-breadcrumbs" autocomplete="off" />
-                                <label class="lbl" for="ace-settings-breadcrumbs"> 固定面包屑导航</label>
+                                <label class="lbl" for="ace-settings-breadcrumbs"> {% trans "固定面包屑导航" %}</label>
                             </div>
 
                             <!-- /section:settings.breadcrumbs -->
@@ -1228,7 +1228,7 @@
                             <!-- #section:settings.rtl -->
                             <div class="ace-settings-item">
                                 <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-rtl" autocomplete="off" />
-                                <label class="lbl" for="ace-settings-rtl"> 从右到左 </label>
+                                <label class="lbl" for="ace-settings-rtl"> {% trans "从右到左 " %}</label>
                             </div>
 
                             <!-- /section:settings.rtl -->
@@ -1237,7 +1237,7 @@
                             <div class="ace-settings-item">
                                 <input type="checkbox" class="ace ace-checkbox-2 ace-save-state" id="ace-settings-add-container" autocomplete="off" />
                                 <label class="lbl" for="ace-settings-add-container">
-                                    内部
+                                    {% trans "内部" %}
                                     <b>.container</b>
                                 </label>
                             </div>
@@ -1249,12 +1249,12 @@
                             <!-- #section:basics/sidebar.options -->
                             <div class="ace-settings-item">
                                 <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-hover" autocomplete="off" />
-                                <label class="lbl" for="ace-settings-hover"> 鼠标移入显示子菜单</label>
+                                <label class="lbl" for="ace-settings-hover"> {% trans "鼠标移入显示子菜单" %}</label>
                             </div>
 
                             <div class="ace-settings-item">
                                 <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-compact" autocomplete="off" />
-                                <label class="lbl" for="ace-settings-compact"> 紧凑的侧边栏</label>
+                                <label class="lbl" for="ace-settings-compact"> {% trans "紧凑的侧边栏" %}</label>
                             </div>
 
                             <div class="ace-settings-item">
@@ -1270,10 +1270,10 @@
                 <!-- /section:settings.box -->
                 <div class="page-header hide">
                     <h1>
-                        邮件域信息一览
+                        {% trans "邮件域信息一览" %}
                         <small>
                             <i class="ace-icon fa fa-angle-double-right"></i>
-                            邮件域基本信息
+                            {% trans "邮件域基本信息" %}
                         </small>
                     </h1>
                 </div><!-- /.page-header -->
@@ -1291,31 +1291,31 @@
                 <div class="well" style="margin-top:5px;background:#fff;" id="remark_content">
                     <div class="user_content_box">
                         <div class="wysiwyg_content_show">
-                            <p class="red"><b>备注：</b></p>
-                            <p>设置的登录页面只有在使用域名访问时才生效；使用IP地址访问时将会使用默认登录页面。</p>
+                            <p class="red"><b>{% trans "备注：" %}</b></p>
+                            <p>{% trans "设置的登录页面只有在使用域名访问时才生效；使用IP地址访问时将会使用默认登录页面。" %}</p>
                         </div>
                         <div class="hr hr-18 dotted"></div>
                         <button class="btn btn-sm btn-primary admin_edit">
                             <i class="ace-icon fa fa-pencil bigger-125"></i>
-                            编辑备注
+                            {% trans "编辑备注" %}
                         </button>
                     </div>
                     <div class="wysiwyg-editor-box">
                         <div class="wysiwyg-editor" id="editor_all">
-                            <p class="red"><b>备注：</b></p>
-                            <p>设置的登录页面只有在使用域名访问时才生效；使用IP地址访问时将会使用默认登录页面。</p>
+                            <p class="red"><b>{% trans "备注：" %}</b></p>
+                            <p>{% trans "设置的登录页面只有在使用域名访问时才生效；使用IP地址访问时将会使用默认登录页面。" %}</p>
                         </div>
                         <div class="widget-toolbox padding-4  admin_setted center">
                             <div class="btn-group">
                                 <button class="btn btn-sm btn-purple save">
                                     <i class="ace-icon fa fa-floppy-o bigger-125"></i>
-                                    保存
+                                    {% trans "保存" %}
                                 </button>
                             </div>
                             <div class="btn-group">
                                 <button class="btn btn-sm btn-info">
                                     <i class="ace-icon fa fa-times bigger-125"></i>
-                                    取消
+                                    {% trans "取消" %}
                                 </button>
                             </div>
                         </div>
@@ -1332,7 +1332,7 @@
             <div class="footer-content text-left">
 						<span class="bigger-120">
 
-							<a href="http://www.comingchina.com/" target="_blank" style="color:#438eb9;">Power by <span >U-Mail</span> 邮件服务器</a>
+							<a href="http://www.comingchina.com/" target="_blank" style="color:#438eb9;">Power by <span >U-Mail</span> {% trans "邮件服务器" %}</a>
 						</span>
 						<!--<span class="action-buttons">-->
 							<!--<a href="#">-->
@@ -1537,9 +1537,9 @@
 
         function initFileInput(){
             $('input[type=file]').ace_file_input({
-                no_file:'未选中文件',
-                btn_choose:'选择',
-                btn_change:'修改',
+                no_file:'{% trans "未选中文件" %}',
+                btn_choose:'{% trans "选择" %}',
+                btn_change:'{% trans "修改" %}',
                 droppable:false,
                 onchange:null,
                 thumbnail:false //| true | large
@@ -1696,311 +1696,311 @@
 
 <script>
     $('#search_select2').select2({
-        placeholder: "输入关键词搜索功能",
+        placeholder: "{% trans "输入关键词搜索功能" %}",
         allowClear: true,
         data: [
-            {id: 'home', text: '主页'},
-            {id: 'systemStatus/licence', text: "授权信息" ,title:"child_1"},
-            {id: 'systemStatus/sysinfo', text: "软件信息",title:"child_1"},
-            {id: 'systemStatus/status', text: '系统状态',title:"child_2"},
-            {id: 'domain/dynamic', text: '域名管理'},
-            {id: 'domain/static', text: '域名配置'},
-            {id: 'mailbox/emailAccounts', text: '邮箱账号管理'},
-            {id: 'mailbox/recheck', text: '审批管理'},
-            {id: 'group', text: ' 组权限管理 '},
-            {id: 'department/departmentList', text: ' 部门列表 '},
-            {id: 'department/shareDomain', text: ' 其他域通讯录共享 '},
-            {id: 'department/domainGroup', text: ' 企业通讯录域组合 '},
-            {id: 'maillist', text: '  邮件列表管理  '},
-            {id: 'safeSet/banned_ips', text: '  动态屏蔽  '},
-            {id: 'safeSet/trustip', text: '  信任IP地址  '},
-            {id: 'safeSet/black', text: '  发件人黑/白名单  '},
-            {id: 'safeSet/white_rcp', text: '  收件人白名单  '},
-            {id: 'safeSet/no_rubbish', text: ' 安全设置 - 反垃圾/反病毒设置  '},
-            {id: 'safeSet/send_hz', text: ' 发信频率设置  '},
-            {id: 'misc/translate', text: ' 邮件头翻译  '},
-            {id: 'misc/review', text: ' 邮件审核设置  '},
-            {id: 'misc/monitor', text: ' 邮箱监控设置  '},
-            {id: 'misc/mailboxalias', text: ' 邮箱别名设置  '},
-            {id: 'misc/distribute', text: ' 分布式管理  '},
-            {id: 'misc/distribute', text: ' 分布式主机  '},
-            {id: 'misc/distribute|#distribute_config', text: ' 分布式开关  '},
-            {id: 'misc/distribute|#distribute_status', text: ' 服务器连接状态  '},
-            {id: 'misc/distribute|#distribute_move', text: ' 账号迁移进程  '},
-            {id: 'misc/ldap_ad', text: ' LDAP/AD域同步设置  '},
-            {id: 'misc/alias', text: ' 邮件域别名  '},
-            {id: 'misc/cfilter', text: ' 内容过滤器  '},
-            {id: 'misc/mail_send', text: ' 内网邮件代发  '},
-            {id: 'misc/ssl_secret', text: ' SSL数字证书  '},
-            {id: 'misc/global_set', text: ' 杂项设置  '},
-            {id: 'maintain/backup', text: ' 数据备份  '},
-            {id: 'maintain/acct_transfer', text: ' 帐号间数据迁移  '},
-            {id: 'maintain/mail_moving', text: ' 外域邮件数据导入  '},
-            {id: 'maintain/mail_queue', text: ' 邮件队列  '},
-            {id: 'maintain/weixin', text: ' 微信版管理  '},
-            {id: 'maintain/maillog', text: ' 邮件统计报告  '},
-            {id: 'system/userlog', text: ' 用户操作日志  '},
-            {id: 'system/adminlog', text: ' 管理员操作日志  '},
-            {id: 'maintain/log', text: ' 底层程序日志  '},
-            {id: 'wangguan/user', text: ' 用户管理  '},
-            {id: 'wangguan/usergroup', text: ' 用户组管理  '},
-            {id: 'wangguan/power', text: ' 权限管理  '},
+            {id: 'home', text: '{% trans "主页" %}'},
+            {id: 'systemStatus/licence', text: "{% trans "授权信息" %}" ,title:"child_1"},
+            {id: 'systemStatus/sysinfo', text: "{% trans "软件信息" %}",title:"child_1"},
+            {id: 'systemStatus/status', text: '{% trans "系统状态" %}',title:"child_2"},
+            {id: 'domain/dynamic', text: '{% trans "域名管理" %}'},
+            {id: 'domain/static', text: '{% trans "域名配置" %}'},
+            {id: 'mailbox/emailAccounts', text: '{% trans "邮箱账号管理" %}'},
+            {id: 'mailbox/recheck', text: '{% trans "审批管理" %}'},
+            {id: 'group', text: ' {% trans "组权限管理 " %}'},
+            {id: 'department/departmentList', text: ' {% trans "部门列表 " %}'},
+            {id: 'department/shareDomain', text: ' {% trans "其他域通讯录共享 " %}'},
+            {id: 'department/domainGroup', text: ' {% trans "企业通讯录域组合 " %}'},
+            {id: 'maillist', text: '  {% trans "邮件列表管理  " %}'},
+            {id: 'safeSet/banned_ips', text: '  {% trans "动态屏蔽  " %}'},
+            {id: 'safeSet/trustip', text: '  {% trans "信任IP地址  " %}'},
+            {id: 'safeSet/black', text: '  {% trans "发件人黑/白名单  " %}'},
+            {id: 'safeSet/white_rcp', text: '  {% trans "收件人白名单  " %}'},
+            {id: 'safeSet/no_rubbish', text: ' {% trans "安全设置 - 反垃圾/反病毒设置  " %}'},
+            {id: 'safeSet/send_hz', text: ' {% trans "发信频率设置  " %}'},
+            {id: 'misc/translate', text: ' {% trans "邮件头翻译  " %}'},
+            {id: 'misc/review', text: ' {% trans "邮件审核设置  " %}'},
+            {id: 'misc/monitor', text: ' {% trans "邮箱监控设置  " %}'},
+            {id: 'misc/mailboxalias', text: ' {% trans "邮箱别名设置  " %}'},
+            {id: 'misc/distribute', text: ' {% trans "分布式管理  " %}'},
+            {id: 'misc/distribute', text: ' {% trans "分布式主机  " %}'},
+            {id: 'misc/distribute|#distribute_config', text: ' {% trans "分布式开关  " %}'},
+            {id: 'misc/distribute|#distribute_status', text: ' {% trans "服务器连接状态  " %}'},
+            {id: 'misc/distribute|#distribute_move', text: ' {% trans "账号迁移进程  " %}'},
+            {id: 'misc/ldap_ad', text: ' LDAP/{% trans "AD域同步设置  " %}'},
+            {id: 'misc/alias', text: ' {% trans "邮件域别名  " %}'},
+            {id: 'misc/cfilter', text: ' {% trans "内容过滤器  " %}'},
+            {id: 'misc/mail_send', text: ' {% trans "内网邮件代发  " %}'},
+            {id: 'misc/ssl_secret', text: ' {% trans "SSL数字证书  " %}'},
+            {id: 'misc/global_set', text: ' {% trans "杂项设置  " %}'},
+            {id: 'maintain/backup', text: ' {% trans "数据备份  " %}'},
+            {id: 'maintain/acct_transfer', text: ' {% trans "帐号间数据迁移  " %}'},
+            {id: 'maintain/mail_moving', text: ' {% trans "外域邮件数据导入  " %}'},
+            {id: 'maintain/mail_queue', text: ' {% trans "邮件队列  " %}'},
+            {id: 'maintain/weixin', text: ' {% trans "微信版管理  " %}'},
+            {id: 'maintain/maillog', text: ' {% trans "邮件统计报告  " %}'},
+            {id: 'system/userlog', text: ' {% trans "用户操作日志  " %}'},
+            {id: 'system/adminlog', text: ' {% trans "管理员操作日志  " %}'},
+            {id: 'maintain/log', text: ' {% trans "底层程序日志  " %}'},
+            {id: 'wangguan/user', text: ' {% trans "用户管理  " %}'},
+            {id: 'wangguan/usergroup', text: ' {% trans "用户组管理  " %}'},
+            {id: 'wangguan/power', text: ' {% trans "权限管理  " %}'},
 
-            {id: 'systemStatus/licence', text: '被授权单位'},
-            {id: 'systemStatus/licence', text: '绑定主域域名'},
-            {id: 'systemStatus/licence', text: '邮箱用户数'},
-            {id: 'systemStatus/licence', text: '附加模块'},
-            {id: 'systemStatus/licence', text: '服务到期时间'},
-            {id: 'systemStatus/licence', text: '授权截止时间'},
-            {id: 'systemStatus/licence', text: '更新授权文件'},
+            {id: 'systemStatus/licence', text: '{% trans "被授权单位" %}'},
+            {id: 'systemStatus/licence', text: '{% trans "绑定主域域名" %}'},
+            {id: 'systemStatus/licence', text: '{% trans "邮箱用户数" %}'},
+            {id: 'systemStatus/licence', text: '{% trans "附加模块" %}'},
+            {id: 'systemStatus/licence', text: '{% trans "服务到期时间" %}'},
+            {id: 'systemStatus/licence', text: '{% trans "授权截止时间" %}'},
+            {id: 'systemStatus/licence', text: '{% trans "更新授权文件" %}'},
 
-            {id: 'systemStatus/sysinfo', text: ' 邮件系统使用统计'},
-            {id: 'systemStatus/sysinfo', text: ' Webmail程序版本信息'},
-            {id: 'systemStatus/sysinfo', text: ' 底层服务程序版本信息'},
-            {id: 'systemStatus/sysinfo', text: ' PHP、MySQL版本信息'},
-            {id: 'systemStatus/sysinfo', text: ' 病毒、反垃圾程序版本信息'},
+            {id: 'systemStatus/sysinfo', text: ' {% trans "邮件系统使用统计" %}'},
+            {id: 'systemStatus/sysinfo', text: ' {% trans "Webmail程序版本信息" %}'},
+            {id: 'systemStatus/sysinfo', text: ' {% trans "底层服务程序版本信息" %}'},
+            {id: 'systemStatus/sysinfo', text: ' PHP、{% trans "MySQL版本信息" %}'},
+            {id: 'systemStatus/sysinfo', text: ' {% trans "病毒、反垃圾程序版本信息" %}'},
 
-            {id: 'domain/dynamic', text: '添加域名'},
-            {id: 'domain/dynamic', text: 'DKIM配置'},
+            {id: 'domain/dynamic', text: '{% trans "添加域名" %}'},
+            {id: 'domain/dynamic', text: '{% trans "DKIM配置" %}'},
 
-            {id: 'mailbox/emailAccounts', text: '添加帐号'},
-            {id: 'mailbox/emailAccounts', text: '批量添加帐号'},
-            {id: 'mailbox/emailAccounts', text: '批量修改帐号'},
-            {id: 'mailbox/emailAccounts', text: '批量删除帐号'},
-            {id: 'mailbox/emailAccounts', text: '导入导出帐号'},
-            {id: 'mailbox/emailAccounts', text: '自动回复'},
-            {id: 'mailbox/emailAccounts', text: '自动转发'},
+            {id: 'mailbox/emailAccounts', text: '{% trans "添加帐号" %}'},
+            {id: 'mailbox/emailAccounts', text: '{% trans "批量添加帐号" %}'},
+            {id: 'mailbox/emailAccounts', text: '{% trans "批量修改帐号" %}'},
+            {id: 'mailbox/emailAccounts', text: '{% trans "批量删除帐号" %}'},
+            {id: 'mailbox/emailAccounts', text: '{% trans "导入导出帐号" %}'},
+            {id: 'mailbox/emailAccounts', text: '{% trans "自动回复" %}'},
+            {id: 'mailbox/emailAccounts', text: '{% trans "自动转发" %}'},
 
-            {id: 'mailbox/recheck', text: '审批申请'},
-            {id: 'mailbox/recheck|#tab_cancel', text: '审批注销'},
-            {id: 'mailbox/recheck|#tab_profile', text: '审批个人资料'},
-            {id: 'mailbox/recheck|#tab_config', text: '审批配置'},
+            {id: 'mailbox/recheck', text: '{% trans "审批申请" %}'},
+            {id: 'mailbox/recheck|#tab_cancel', text: '{% trans "审批注销" %}'},
+            {id: 'mailbox/recheck|#tab_profile', text: '{% trans "审批个人资料" %}'},
+            {id: 'mailbox/recheck|#tab_config', text: '{% trans "审批配置" %}'},
 
-            {id: 'group', text: ' 组配置 '},
-            {id: 'group', text: ' 成员管理 '},
-            {id: 'group', text: ' 添加组 '},
-            {id: 'group', text: ' 删除组 '},
+            {id: 'group', text: ' {% trans "组配置 " %}'},
+            {id: 'group', text: ' {% trans "成员管理 " %}'},
+            {id: 'group', text: ' {% trans "添加组 " %}'},
+            {id: 'group', text: ' {% trans "删除组 " %}'},
 
-            {id: 'department/departmentList', text: ' 添加部门 '},
-            {id: 'department/departmentList', text: ' 修改部门 '},
-            {id: 'department/departmentList', text: ' 删除部门 '},
-            {id: 'department/departmentList', text: ' 部门排序 '},
+            {id: 'department/departmentList', text: ' {% trans "添加部门 " %}'},
+            {id: 'department/departmentList', text: ' {% trans "修改部门 " %}'},
+            {id: 'department/departmentList', text: ' {% trans "删除部门 " %}'},
+            {id: 'department/departmentList', text: ' {% trans "部门排序 " %}'},
 
-            {id: 'maillist', text: '  添加邮件列表  '},
-            {id: 'maillist', text: '  修改邮件列表  '},
-            {id: 'maillist', text: '  维护邮件列表  '},
+            {id: 'maillist', text: '  {% trans "添加邮件列表  " %}'},
+            {id: 'maillist', text: '  {% trans "修改邮件列表  " %}'},
+            {id: 'maillist', text: '  {% trans "维护邮件列表  " %}'},
 
-            {id: 'safeSet/no_rubbish', text: ' 安全设置 - 反病毒功能  '},
-            {id: 'safeSet/no_rubbish', text: ' 安全设置 - 反垃圾功能  '},
-            {id: 'safeSet/no_rubbish', text: ' 安全设置 - SPF检测  '},
-            {id: 'safeSet/no_rubbish', text: ' 安全设置 - 灰名单检测  '},
-            {id: 'safeSet/no_rubbish', text: ' 安全设置 - 检查附件  '},
-            {id: 'safeSet/no_rubbish', text: ' 安全设置 - 匹配黑名单  '},
-            {id: 'safeSet/no_rubbish', text: ' 安全设置 - 反垃圾引擎  '},
-            {id: 'safeSet/no_rubbish', text: ' 安全设置 - 检查发件人格式  '},
-            {id: 'safeSet/no_rubbish', text: ' 安全设置 - 垃圾邮件投递位置  '},
-            {id: 'safeSet/no_rubbish', text: ' 安全设置 - 垃圾邮件主题标识  '},
-            {id: 'safeSet/no_rubbish', text: ' 安全设置 - 隔离邮件保存天数  '},
-            {id: 'safeSet/no_rubbish', text: ' 安全设置 - 发送隔离报告  '},
-            {id: 'safeSet/no_rubbish', text: ' 安全设置 - 隔离报告发件人  '},
-            {id: 'safeSet/no_rubbish', text: ' 安全设置 - 隔离报告链接地址  '},
-            {id: 'safeSet/no_rubbish', text: ' 安全设置 - 检测对象  '},
-            {id: 'safeSet/no_rubbish', text: ' 安全设置 - 本域进站邮件  '},
-            {id: 'safeSet/no_rubbish', text: ' 安全设置 - 外域进站邮件  '},
+            {id: 'safeSet/no_rubbish', text: ' {% trans "安全设置 - 反病毒功能  " %}'},
+            {id: 'safeSet/no_rubbish', text: ' {% trans "安全设置 - 反垃圾功能  " %}'},
+            {id: 'safeSet/no_rubbish', text: ' {% trans "安全设置 - SPF检测  " %}'},
+            {id: 'safeSet/no_rubbish', text: ' {% trans "安全设置 - 灰名单检测  " %}'},
+            {id: 'safeSet/no_rubbish', text: ' {% trans "安全设置 - 检查附件  " %}'},
+            {id: 'safeSet/no_rubbish', text: ' {% trans "安全设置 - 匹配黑名单  " %}'},
+            {id: 'safeSet/no_rubbish', text: ' {% trans "安全设置 - 反垃圾引擎  " %}'},
+            {id: 'safeSet/no_rubbish', text: ' {% trans "安全设置 - 检查发件人格式  " %}'},
+            {id: 'safeSet/no_rubbish', text: ' {% trans "安全设置 - 垃圾邮件投递位置  " %}'},
+            {id: 'safeSet/no_rubbish', text: ' {% trans "安全设置 - 垃圾邮件主题标识  " %}'},
+            {id: 'safeSet/no_rubbish', text: ' {% trans "安全设置 - 隔离邮件保存天数  " %}'},
+            {id: 'safeSet/no_rubbish', text: ' {% trans "安全设置 - 发送隔离报告  " %}'},
+            {id: 'safeSet/no_rubbish', text: ' {% trans "安全设置 - 隔离报告发件人  " %}'},
+            {id: 'safeSet/no_rubbish', text: ' {% trans "安全设置 - 隔离报告链接地址  " %}'},
+            {id: 'safeSet/no_rubbish', text: ' {% trans "安全设置 - 检测对象  " %}'},
+            {id: 'safeSet/no_rubbish', text: ' {% trans "安全设置 - 本域进站邮件  " %}'},
+            {id: 'safeSet/no_rubbish', text: ' {% trans "安全设置 - 外域进站邮件  " %}'},
 
-            {id: 'safeSet/send_hz', text: ' 发信频率 - 速率  '},
-            {id: 'safeSet/send_hz', text: ' 发信频率 - 每小时发信数量  '},
-            {id: 'safeSet/send_hz', text: ' 发信频率 - 每天发信数量  '},
-            {id: 'safeSet/send_hz', text: ' 发信频率 - 超限操作  '},
-            {id: 'safeSet/send_hz', text: ' 发信频率 - 警告邮件接收地址  '},
-            {id: 'safeSet/send_hz', text: ' 发信频率 - 发信频率限制  '},
+            {id: 'safeSet/send_hz', text: ' {% trans "发信频率 - 速率  " %}'},
+            {id: 'safeSet/send_hz', text: ' {% trans "发信频率 - 每小时发信数量  " %}'},
+            {id: 'safeSet/send_hz', text: ' {% trans "发信频率 - 每天发信数量  " %}'},
+            {id: 'safeSet/send_hz', text: ' {% trans "发信频率 - 超限操作  " %}'},
+            {id: 'safeSet/send_hz', text: ' {% trans "发信频率 - 警告邮件接收地址  " %}'},
+            {id: 'safeSet/send_hz', text: ' {% trans "发信频率 - 发信频率限制  " %}'},
 
-            {id: 'misc/translate', text: ' 添加邮件头翻译  '},
-            {id: 'misc/translate', text: ' 修改邮件头翻译  '},
-            {id: 'misc/translate', text: ' 删除邮件头翻译  '},
+            {id: 'misc/translate', text: ' {% trans "添加邮件头翻译  " %}'},
+            {id: 'misc/translate', text: ' {% trans "修改邮件头翻译  " %}'},
+            {id: 'misc/translate', text: ' {% trans "删除邮件头翻译  " %}'},
 
-            {id: 'misc/monitor', text: ' 添加邮箱监控  '},
-            {id: 'misc/monitor', text: ' 修改邮箱监控  '},
-            {id: 'misc/monitor', text: ' 删除邮箱监控  '},
+            {id: 'misc/monitor', text: ' {% trans "添加邮箱监控  " %}'},
+            {id: 'misc/monitor', text: ' {% trans "修改邮箱监控  " %}'},
+            {id: 'misc/monitor', text: ' {% trans "删除邮箱监控  " %}'},
 
-            {id: 'misc/global_set', text: ' 超管后台标题  '},
-            {id: 'misc/global_set', text: ' 邮件收发日志保存天数  '},
-            {id: 'misc/global_set', text: ' 发件人数量限制  '},
-            {id: 'misc/global_set', text: ' 发信时对本服无效用户进行退信  '},
-            {id: 'misc/global_set', text: ' “旧邮件备份”目录备份功能  '},
-            {id: 'misc/global_set', text: ' 附件预览服务器域名  '},
-            {id: 'misc/global_set', text: ' Webmail地址和端口  '},
-            {id: 'misc/global_set', text: ' 邮件搜索加速  '},
-            {id: 'misc/global_set', text: ' 邮件发送编码  '},
-            {id: 'misc/global_set', text: ' 短信模块设置  '},
-            {id: 'misc/global_set', text: ' SMTP发送重试时间  '},
+            {id: 'misc/global_set', text: ' {% trans "超管后台标题  " %}'},
+            {id: 'misc/global_set', text: ' {% trans "邮件收发日志保存天数  " %}'},
+            {id: 'misc/global_set', text: ' {% trans "发件人数量限制  " %}'},
+            {id: 'misc/global_set', text: ' {% trans "发信时对本服无效用户进行退信  " %}'},
+            {id: 'misc/global_set', text: ' “{% trans "旧邮件备份”目录备份功能  " %}'},
+            {id: 'misc/global_set', text: ' {% trans "附件预览服务器域名  " %}'},
+            {id: 'misc/global_set', text: ' {% trans "Webmail地址和端口  " %}'},
+            {id: 'misc/global_set', text: ' {% trans "邮件搜索加速  " %}'},
+            {id: 'misc/global_set', text: ' {% trans "邮件发送编码  " %}'},
+            {id: 'misc/global_set', text: ' {% trans "短信模块设置  " %}'},
+            {id: 'misc/global_set', text: ' {% trans "SMTP发送重试时间  " %}'},
 
-            {id: 'maintain/mail_queue', text: ' 出站队列  '},
-            {id: 'maintain/mail_queue|#in_queue', text: ' 入站队列  '},
-            {id: 'maintain/mail_queue|#iso_queue', text: ' 隔离队列  '},
+            {id: 'maintain/mail_queue', text: ' {% trans "出站队列  " %}'},
+            {id: 'maintain/mail_queue|#in_queue', text: ' {% trans "入站队列  " %}'},
+            {id: 'maintain/mail_queue|#iso_queue', text: ' {% trans "隔离队列  " %}'},
 
-            {id: 'maintain/weixin', text: ' 微信公众号配置  '},
-            {id: 'maintain/weixin|#teplate', text: ' 微信消息模板管理  '},
-            {id: 'maintain/weixin|#users', text: ' 微信用户管理  '},
-            {id: 'maintain/weixin|#news', text: ' 微信通知消息管理  '},
-            {id: 'maintain/weixin|#news_log', text: ' 微信API调用日志  '},
-            {id: 'maintain/weixin|#sms', text: ' 短信发送记录  '},
+            {id: 'maintain/weixin', text: ' {% trans "微信公众号配置  " %}'},
+            {id: 'maintain/weixin|#teplate', text: ' {% trans "微信消息模板管理  " %}'},
+            {id: 'maintain/weixin|#users', text: ' {% trans "微信用户管理  " %}'},
+            {id: 'maintain/weixin|#news', text: ' {% trans "微信通知消息管理  " %}'},
+            {id: 'maintain/weixin|#news_log', text: ' {% trans "微信API调用日志  " %}'},
+            {id: 'maintain/weixin|#sms', text: ' {% trans "短信发送记录  " %}'},
 
-            {id: 'system/userlog|#web', text: ' web访问记录  '},
-            {id: 'system/userlog|#custom', text: ' 客户端访问记录  '},
+            {id: 'system/userlog|#web', text: ' {% trans "web访问记录  " %}'},
+            {id: 'system/userlog|#custom', text: ' {% trans "客户端访问记录  " %}'},
 
-            {id: 'domain/static|#tabs_email_basic', text: '邮件域基本信息'},
-            {id: 'domain/static|#tabs_email_basic', text: '邮件域名称'},
-            {id: 'domain/static|#tabs_email_basic', text: '限定邮箱数量'},
-            {id: 'domain/static|#tabs_email_basic', text: '限定别名数量'},
-            {id: 'domain/static|#tabs_email_basic', text: '限定邮箱空间总容量'},
-            {id: 'domain/static|#tabs_email_basic', text: '限定网络硬盘总容量'},
-            {id: 'domain/static|#tabs_email_basic', text: '发送邮件限制大小'},
-            {id: 'domain/static|#tabs_email_basic', text: '超大附件限制大小'},
-            {id: 'domain/static|#tabs_email_basic', text: '用户邮箱默认容量'},
-            {id: 'domain/static|#tabs_email_basic', text: '网络硬盘默认容量'},
+            {id: 'domain/static|#tabs_email_basic', text: '{% trans "邮件域基本信息" %}'},
+            {id: 'domain/static|#tabs_email_basic', text: '{% trans "邮件域名称" %}'},
+            {id: 'domain/static|#tabs_email_basic', text: '{% trans "限定邮箱数量" %}'},
+            {id: 'domain/static|#tabs_email_basic', text: '{% trans "限定别名数量" %}'},
+            {id: 'domain/static|#tabs_email_basic', text: '{% trans "限定邮箱空间总容量" %}'},
+            {id: 'domain/static|#tabs_email_basic', text: '{% trans "限定网络硬盘总容量" %}'},
+            {id: 'domain/static|#tabs_email_basic', text: '{% trans "发送邮件限制大小" %}'},
+            {id: 'domain/static|#tabs_email_basic', text: '{% trans "超大附件限制大小" %}'},
+            {id: 'domain/static|#tabs_email_basic', text: '{% trans "用户邮箱默认容量" %}'},
+            {id: 'domain/static|#tabs_email_basic', text: '{% trans "网络硬盘默认容量" %}'},
 
-            {id: 'domain/static|#tabs_reg_login', text: '用户注册'},
-            {id: 'domain/static|#tabs_reg_login', text: '用户申请邮箱功能'},
-            {id: 'domain/static|#tabs_reg_login', text: '管理员登陆链接显示在邮件系统登陆页'},
-            {id: 'domain/static|#tabs_reg_login', text: '新用户欢迎信功能'},
-            {id: 'domain/static|#tabs_reg_login', text: '用户注册协议'},
-            {id: 'domain/static|#tabs_reg_login', text: '设置欢迎信内容'},
+            {id: 'domain/static|#tabs_reg_login', text: '{% trans "用户注册" %}'},
+            {id: 'domain/static|#tabs_reg_login', text: '{% trans "用户申请邮箱功能" %}'},
+            {id: 'domain/static|#tabs_reg_login', text: '{% trans "管理员登陆链接显示在邮件系统登陆页" %}'},
+            {id: 'domain/static|#tabs_reg_login', text: '{% trans "新用户欢迎信功能" %}'},
+            {id: 'domain/static|#tabs_reg_login', text: '{% trans "用户注册协议" %}'},
+            {id: 'domain/static|#tabs_reg_login', text: '{% trans "设置欢迎信内容" %}'},
 
-            {id: 'domain/static|#tabs_sys', text: '域名功能设置'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_limit', text: '收发限制'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_limit', text: '发信功能限制'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_limit', text: '收信功能限制'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_limit', text: '批量修改用户收发信权限为上面两项'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_limit', text: 'POP/POPS邮箱收取功能'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_limit', text: 'SMTP/SMTPS客户端邮件发送功能'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_limit', text: 'IMAP/IMAPS客户端邮件收发功能'},
+            {id: 'domain/static|#tabs_sys', text: '{% trans "域名功能设置" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_limit', text: '{% trans "收发限制" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_limit', text: '{% trans "发信功能限制" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_limit', text: '{% trans "收信功能限制" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_limit', text: '{% trans "批量修改用户收发信权限为上面两项" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_limit', text: 'POP/{% trans "POPS邮箱收取功能" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_limit', text: 'SMTP/{% trans "SMTPS客户端邮件发送功能" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_limit', text: 'IMAP/{% trans "IMAPS客户端邮件收发功能" %}'},
 
-            {id: 'domain/static|#tabs_sys|#sub_sys_safe', text: '安全类设置'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_safe', text: '修改密码通知信'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_safe', text: '用户登录安全'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_safe', text: '管理员登录密码错误3次锁定登录IP'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_safe', text: '{% trans "安全类设置" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_safe', text: '{% trans "修改密码通知信" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_safe', text: '{% trans "用户登录安全" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_safe', text: '{% trans "管理员登录密码错误3次锁定登录IP" %}'},
 
-            {id: 'domain/static|#tabs_sys|#pwd_rule', text: '密码规则'},
-            {id: 'domain/static|#tabs_sys|#pwd_rule', text: '定期修改密码设置'},
-            {id: 'domain/static|#tabs_sys|#pwd_rule', text: '密码有效期'},
-            {id: 'domain/static|#tabs_sys|#pwd_rule', text: '密码有效开始时间'},
-            {id: 'domain/static|#tabs_sys|#pwd_rule', text: '首次登录修改密码'},
-            {id: 'domain/static|#tabs_sys|#pwd_rule', text: '密码组成字符种类'},
-            {id: 'domain/static|#tabs_sys|#pwd_rule', text: '其他密码规则设置'},
+            {id: 'domain/static|#tabs_sys|#pwd_rule', text: '{% trans "密码规则" %}'},
+            {id: 'domain/static|#tabs_sys|#pwd_rule', text: '{% trans "定期修改密码设置" %}'},
+            {id: 'domain/static|#tabs_sys|#pwd_rule', text: '{% trans "密码有效期" %}'},
+            {id: 'domain/static|#tabs_sys|#pwd_rule', text: '{% trans "密码有效开始时间" %}'},
+            {id: 'domain/static|#tabs_sys|#pwd_rule', text: '{% trans "首次登录修改密码" %}'},
+            {id: 'domain/static|#tabs_sys|#pwd_rule', text: '{% trans "密码组成字符种类" %}'},
+            {id: 'domain/static|#tabs_sys|#pwd_rule', text: '{% trans "其他密码规则设置" %}'},
 
-            {id: 'domain/static|#tabs_sys|#sub_sys_third', text: '第三方对接'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_third', text: '第三方登录验证'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_third', text: '接口修改密码是否加密'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_third', text: '即时通讯软件集成'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_third', text: '登录防止xss启用token验证'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_third', text: '{% trans "第三方对接" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_third', text: '{% trans "第三方登录验证" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_third', text: '{% trans "接口修改密码是否加密" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_third', text: '{% trans "即时通讯软件集成" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_third', text: '{% trans "登录防止xss启用token验证" %}'},
 
-            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '域名功能设置 - 杂项设置'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '邮箱容量满后拒绝接收邮件'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '邮箱空间定时清理功能'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '客户端在线附件开关'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '登录默认打开收件箱'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '收件时是否过滤重复邮件'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '所有用户的“保存客户端已发送邮件”选项设置为“是”'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '邮件列表发来邮件显示邮件列表名称'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '短信通知功能'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '邮箱空间清理设置'},
-            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '客户端在线附件设置'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '{% trans "域名功能设置 - 杂项设置" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '{% trans "邮箱容量满后拒绝接收邮件" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '{% trans "邮箱空间定时清理功能" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '{% trans "客户端在线附件开关" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '{% trans "登录默认打开收件箱" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '{% trans "收件时是否过滤重复邮件" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '{% trans "所有用户的“保存客户端已发送邮件”选项设置为“是”" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '{% trans "邮件列表发来邮件显示邮件列表名称" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '{% trans "短信通知功能" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '{% trans "邮箱空间清理设置" %}'},
+            {id: 'domain/static|#tabs_sys|#sub_sys_other', text: '{% trans "客户端在线附件设置" %}'},
 
-            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: 'webmail页面定制'},
-            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '企业名称'},
-            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '页面标题'},
-            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '显示SSL安全登录框'},
-            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '登录页面自动输入域名'},
-            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: 'ICP备案是否显示'},
-            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '备案号'},
-            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '帮助文件地址'},
-            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '设置系统公告'},
-            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '登录系统地点限制'},
-            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '启用验证码功能'},
-            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '登出跳转地址'},
-            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: 'SSL访问'},
+            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '{% trans "webmail页面定制" %}'},
+            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '{% trans "企业名称" %}'},
+            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '{% trans "页面标题" %}'},
+            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '{% trans "显示SSL安全登录框" %}'},
+            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '{% trans "登录页面自动输入域名" %}'},
+            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '{% trans "ICP备案是否显示" %}'},
+            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '{% trans "备案号" %}'},
+            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '{% trans "帮助文件地址" %}'},
+            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '{% trans "设置系统公告" %}'},
+            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '{% trans "登录系统地点限制" %}'},
+            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '{% trans "启用验证码功能" %}'},
+            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '{% trans "登出跳转地址" %}'},
+            {id: 'domain/static|#tabs_web_d|#sub_webmail', text: '{% trans "SSL访问" %}'},
 
-            {id: 'domain/static|#tabs_web_d|#tabs_logo', text: '页面LOGO设置'},
-            {id: 'domain/static|#tabs_web_d|#tabs_logo', text: 'Webmail Logo 设置'},
-            {id: 'domain/static|#tabs_web_d|#tabs_logo', text: '登录页面 Logo 设置'},
+            {id: 'domain/static|#tabs_web_d|#tabs_logo', text: '{% trans "页面LOGO设置" %}'},
+            {id: 'domain/static|#tabs_web_d|#tabs_logo', text: 'Webmail Logo {% trans "设置" %}'},
+            {id: 'domain/static|#tabs_web_d|#tabs_logo', text: '{% trans "登录页面 Logo 设置" %}'},
 
-            {id: 'domain/static|#tabs_web_d|#tabs_login', text: '登录模板选择'},
+            {id: 'domain/static|#tabs_web_d|#tabs_login', text: '{% trans "登录模板选择" %}'},
 
-            {id: 'domain/static|#tabs_web_d|#tabs_ad', text: '页面广告设置'},
-            {id: 'domain/static|#tabs_web_d|#tabs_ad', text: '登录页面广告设置'},
-            {id: 'domain/static|#tabs_web_d|#tabs_ad', text: 'webmail首页广告设置'},
+            {id: 'domain/static|#tabs_web_d|#tabs_ad', text: '{% trans "页面广告设置" %}'},
+            {id: 'domain/static|#tabs_web_d|#tabs_ad', text: '{% trans "登录页面广告设置" %}'},
+            {id: 'domain/static|#tabs_web_d|#tabs_ad', text: '{% trans "webmail首页广告设置" %}'},
 
-            {id: 'domain/static|#tabs_web_d|#tabs_first', text: '首页链接设置'},
-            {id: 'domain/static|#tabs_web_d|#tabs_first', text: '添加链接'},
+            {id: 'domain/static|#tabs_web_d|#tabs_first', text: '{% trans "首页链接设置" %}'},
+            {id: 'domain/static|#tabs_web_d|#tabs_first', text: '{% trans "添加链接" %}'},
 
-            {id: 'domain/static|#tabs_web_d|#tabs_paple', text: '信纸管理'},
-            {id: 'domain/static|#tabs_web_d|#tabs_paple', text: '添加信纸'},
-            {id: 'domain/static|#tabs_web_d|#tabs_paple', text: '修改信纸'},
+            {id: 'domain/static|#tabs_web_d|#tabs_paple', text: '{% trans "信纸管理" %}'},
+            {id: 'domain/static|#tabs_web_d|#tabs_paple', text: '{% trans "添加信纸" %}'},
+            {id: 'domain/static|#tabs_web_d|#tabs_paple', text: '{% trans "修改信纸" %}'},
 
-            {id: 'domain/static|#sign|#sub_sign_content', text: '签名'},
-            {id: 'domain/static|#sign|#sub_sign_content', text: '域签名'},
-            {id: 'domain/static|#sign|#sub_sign_content', text: '超文本签名'},
-            {id: 'domain/static|#sign|#sub_sign_content', text: '纯文本签名'},
-            {id: 'domain/static|#sign|#sub_sign_template', text: '个人签名模板'},
-            {id: 'domain/static|#sign|#sub_sign_template', text: '新邮件默认签名'},
-            {id: 'domain/static|#sign|#sub_sign_template', text: '回复/转发默认签名'},
-            {id: 'domain/static|#sign|#sub_sign_template', text: '新用户自动应用模板'},
-            {id: 'domain/static|#sign|#sub_sign_template', text: '签名模板'},
+            {id: 'domain/static|#sign|#sub_sign_content', text: '{% trans "签名" %}'},
+            {id: 'domain/static|#sign|#sub_sign_content', text: '{% trans "域签名" %}'},
+            {id: 'domain/static|#sign|#sub_sign_content', text: '{% trans "超文本签名" %}'},
+            {id: 'domain/static|#sign|#sub_sign_content', text: '{% trans "纯文本签名" %}'},
+            {id: 'domain/static|#sign|#sub_sign_template', text: '{% trans "个人签名模板" %}'},
+            {id: 'domain/static|#sign|#sub_sign_template', text: '{% trans "新邮件默认签名" %}'},
+            {id: 'domain/static|#sign|#sub_sign_template', text: '{% trans "回复/转发默认签名" %}'},
+            {id: 'domain/static|#sign|#sub_sign_template', text: '{% trans "新用户自动应用模板" %}'},
+            {id: 'domain/static|#sign|#sub_sign_template', text: '{% trans "签名模板" %}'},
 
-            {id: 'domain/static|#module_made|#tabs_webmail', text: '前台模块管理'},
-            {id: 'domain/static|#module_made|#tabs_webmail', text: '首页区'},
-            {id: 'domain/static|#module_made|#tabs_webmail', text: '商务小工具栏目'},
-            {id: 'domain/static|#module_made|#tabs_webmail', text: '万年历'},
-            {id: 'domain/static|#module_made|#tabs_webmail', text: '万用计算器'},
-            {id: 'domain/static|#module_made|#tabs_webmail', text: '城市地图'},
-            {id: 'domain/static|#module_made|#tabs_webmail', text: '邮箱容量查看功能'},
-            {id: 'domain/static|#module_made|#tabs_webmail', text: '天气预报功能'},
-            {id: 'domain/static|#module_made|#tabs_webmail', text: '企业通讯录功能'},
-            {id: 'domain/static|#module_made|#tabs_webmail', text: '公共通讯录功能'},
-            {id: 'domain/static|#module_made|#tabs_webmail', text: '其他域通讯录共享功能'},
-            {id: 'domain/static|#module_made|#tabs_webmail', text: '企业通讯录域组合'},
-            {id: 'domain/static|#module_made|#tabs_webmail', text: '父部门中是否显示子部门邮件账号'},
-            {id: 'domain/static|#module_made|#tabs_webmail', text: '网络硬盘功能'},
-            {id: 'domain/static|#module_made|#tabs_webmail', text: '日程功能'},
-            {id: 'domain/static|#module_made|#tabs_webmail', text: '便签功能'},
+            {id: 'domain/static|#module_made|#tabs_webmail', text: '{% trans "前台模块管理" %}'},
+            {id: 'domain/static|#module_made|#tabs_webmail', text: '{% trans "首页区" %}'},
+            {id: 'domain/static|#module_made|#tabs_webmail', text: '{% trans "商务小工具栏目" %}'},
+            {id: 'domain/static|#module_made|#tabs_webmail', text: '{% trans "万年历" %}'},
+            {id: 'domain/static|#module_made|#tabs_webmail', text: '{% trans "万用计算器" %}'},
+            {id: 'domain/static|#module_made|#tabs_webmail', text: '{% trans "城市地图" %}'},
+            {id: 'domain/static|#module_made|#tabs_webmail', text: '{% trans "邮箱容量查看功能" %}'},
+            {id: 'domain/static|#module_made|#tabs_webmail', text: '{% trans "天气预报功能" %}'},
+            {id: 'domain/static|#module_made|#tabs_webmail', text: '{% trans "企业通讯录功能" %}'},
+            {id: 'domain/static|#module_made|#tabs_webmail', text: '{% trans "公共通讯录功能" %}'},
+            {id: 'domain/static|#module_made|#tabs_webmail', text: '{% trans "其他域通讯录共享功能" %}'},
+            {id: 'domain/static|#module_made|#tabs_webmail', text: '{% trans "企业通讯录域组合" %}'},
+            {id: 'domain/static|#module_made|#tabs_webmail', text: '{% trans "父部门中是否显示子部门邮件账号" %}'},
+            {id: 'domain/static|#module_made|#tabs_webmail', text: '{% trans "网络硬盘功能" %}'},
+            {id: 'domain/static|#module_made|#tabs_webmail', text: '{% trans "日程功能" %}'},
+            {id: 'domain/static|#module_made|#tabs_webmail', text: '{% trans "便签功能" %}'},
 
-            {id: 'domain/static|#module_made|#send_mail_block', text: '发邮件区'},
-            {id: 'domain/static|#module_made|#send_mail_block', text: '保存草稿功能'},
-            {id: 'domain/static|#module_made|#send_mail_block', text: '发送邮件显示加密选项'},
-            {id: 'domain/static|#module_made|#send_mail_block', text: '显示地址簿和信纸模块'},
-            {id: 'domain/static|#module_made|#send_mail_block', text: '去掉信纸模块'},
-            {id: 'domain/static|#module_made|#send_mail_block', text: '自动发送回执功能'},
-            {id: 'domain/static|#module_made|#send_mail_block', text: '添加Reply-To到邮件头'},
+            {id: 'domain/static|#module_made|#send_mail_block', text: '{% trans "发邮件区" %}'},
+            {id: 'domain/static|#module_made|#send_mail_block', text: '{% trans "保存草稿功能" %}'},
+            {id: 'domain/static|#module_made|#send_mail_block', text: '{% trans "发送邮件显示加密选项" %}'},
+            {id: 'domain/static|#module_made|#send_mail_block', text: '{% trans "显示地址簿和信纸模块" %}'},
+            {id: 'domain/static|#module_made|#send_mail_block', text: '{% trans "去掉信纸模块" %}'},
+            {id: 'domain/static|#module_made|#send_mail_block', text: '{% trans "自动发送回执功能" %}'},
+            {id: 'domain/static|#module_made|#send_mail_block', text: '{% trans "添加Reply-To到邮件头" %}'},
 
-            {id: 'domain/static|#module_made|#setting_block', text: '设置区'},
-            {id: 'domain/static|#module_made|#setting_block', text: '个人资料功能'},
-            {id: 'domain/static|#module_made|#setting_block', text: '密码修改功能'},
-            {id: 'domain/static|#module_made|#setting_block', text: '参数设置功能'},
-            {id: 'domain/static|#module_made|#setting_block', text: '邮件签名功能'},
-            {id: 'domain/static|#module_made|#setting_block', text: '自动回复功能'},
-            {id: 'domain/static|#module_made|#setting_block', text: '自动转发功能'},
-            {id: 'domain/static|#module_made|#setting_block', text: '黑白名单功能'},
-            {id: 'domain/static|#module_made|#setting_block', text: '设置自动转发默认值'},
-            {id: 'domain/static|#module_made|#setting_block', text: '邮箱搬家功能'},
-            {id: 'domain/static|#module_made|#setting_block', text: '邮箱意见反馈功能'},
-            {id: 'domain/static|#module_made|#setting_block', text: '邮件召回记录查看'},
-            {id: 'domain/static|#module_made|#setting_block', text: '邮件过滤功能'},
-            {id: 'domain/static|#module_made|#setting_block', text: 'SMTP外发代理'},
+            {id: 'domain/static|#module_made|#setting_block', text: '{% trans "设置区" %}'},
+            {id: 'domain/static|#module_made|#setting_block', text: '{% trans "个人资料功能" %}'},
+            {id: 'domain/static|#module_made|#setting_block', text: '{% trans "密码修改功能" %}'},
+            {id: 'domain/static|#module_made|#setting_block', text: '{% trans "参数设置功能" %}'},
+            {id: 'domain/static|#module_made|#setting_block', text: '{% trans "邮件签名功能" %}'},
+            {id: 'domain/static|#module_made|#setting_block', text: '{% trans "自动回复功能" %}'},
+            {id: 'domain/static|#module_made|#setting_block', text: '{% trans "自动转发功能" %}'},
+            {id: 'domain/static|#module_made|#setting_block', text: '{% trans "黑白名单功能" %}'},
+            {id: 'domain/static|#module_made|#setting_block', text: '{% trans "设置自动转发默认值" %}'},
+            {id: 'domain/static|#module_made|#setting_block', text: '{% trans "邮箱搬家功能" %}'},
+            {id: 'domain/static|#module_made|#setting_block', text: '{% trans "邮箱意见反馈功能" %}'},
+            {id: 'domain/static|#module_made|#setting_block', text: '{% trans "邮件召回记录查看" %}'},
+            {id: 'domain/static|#module_made|#setting_block', text: '{% trans "邮件过滤功能" %}'},
+            {id: 'domain/static|#module_made|#setting_block', text: '{% trans "SMTP外发代理" %}'},
 
-            {id: 'domain/static|#module_made|#other_block', text: '前台模块管理 - 杂项区'},
-            {id: 'domain/static|#module_made|#other_block', text: '清空文件夹功能'},
-            {id: 'domain/static|#module_made|#other_block', text: '代发邮件地址提醒'},
-            {id: 'domain/static|#module_made|#other_block', text: '邮件内容中时间显示'},
-            {id: 'domain/static|#module_made|#other_block', text: '用户积分功能'},
-            {id: 'domain/static|#module_made|#other_block', text: '设置用户积分'},
-            {id: 'domain/static|#module_made|#other_block', text: '部门邮件列表'},
+            {id: 'domain/static|#module_made|#other_block', text: '{% trans "前台模块管理 - 杂项区" %}'},
+            {id: 'domain/static|#module_made|#other_block', text: '{% trans "清空文件夹功能" %}'},
+            {id: 'domain/static|#module_made|#other_block', text: '{% trans "代发邮件地址提醒" %}'},
+            {id: 'domain/static|#module_made|#other_block', text: '{% trans "邮件内容中时间显示" %}'},
+            {id: 'domain/static|#module_made|#other_block', text: '{% trans "用户积分功能" %}'},
+            {id: 'domain/static|#module_made|#other_block', text: '{% trans "设置用户积分" %}'},
+            {id: 'domain/static|#module_made|#other_block', text: '{% trans "部门邮件列表" %}'},
 
-            {id: 'domain/static|#tabs_public', text: '公共通讯录'},
-            {id: 'domain/static|#tabs_public', text: '添加客户'},
-            {id: 'domain/static|#tabs_public', text: '客户分类'},
+            {id: 'domain/static|#tabs_public', text: '{% trans "公共通讯录" %}'},
+            {id: 'domain/static|#tabs_public', text: '{% trans "添加客户" %}'},
+            {id: 'domain/static|#tabs_public', text: '{% trans "客户分类" %}'},
 
-            {id: 'domain/static|#tabs_secret', text: '密级管理'}
+            {id: 'domain/static|#tabs_secret', text: '{% trans "密级管理" %}'}
 
 
         ]
@@ -2057,33 +2057,33 @@
         $(el).ace_wysiwyg({
             toolbar:
                     [
-                        {name:'font', title: '字体'},
+                        {name:'font', title: '{% trans "字体" %}'},
                         null,
-                        {name:'fontSize', title: '字体大小'},
+                        {name:'fontSize', title: '{% trans "字体大小" %}'},
                         null,
-                        {name:'bold', className:'btn-info',title: '粗体/ctrl+B'},
-                        {name:'italic', className:'btn-info',title:"斜体/Ctrl+I"},
-                        {name:'strikethrough', className:'btn-info',title:"删除线"},
-                        {name:'underline', className:'btn-info',title:"下划线"},
+                        {name:'bold', className:'btn-info',title: '{% trans "粗体/ctrl" %}+B'},
+                        {name:'italic', className:'btn-info',title:"{% trans "斜体/Ctrl" %}+I"},
+                        {name:'strikethrough', className:'btn-info',title:"{% trans "删除线" %}"},
+                        {name:'underline', className:'btn-info',title:"{% trans "下划线" %}"},
                         null,
-                        {name:'insertunorderedlist', className:'btn-success',title:"图形列表"},
-                        {name:'insertorderedlist', className:'btn-success',title:"数字列表"},
-                        {name:'outdent', className:'btn-purple',title:"减少缩进"},
-                        {name:'indent', className:'btn-purple',title:"缩进"},
+                        {name:'insertunorderedlist', className:'btn-success',title:"{% trans "图形列表" %}"},
+                        {name:'insertorderedlist', className:'btn-success',title:"{% trans "数字列表" %}"},
+                        {name:'outdent', className:'btn-purple',title:"{% trans "减少缩进" %}"},
+                        {name:'indent', className:'btn-purple',title:"{% trans "缩进" %}"},
                         null,
-                        {name:'justifyleft', className:'btn-primary',title:"左对齐"},
-                        {name:'justifycenter', className:'btn-primary',title:"居中对齐"},
-                        {name:'justifyright', className:'btn-primary',title:"右对齐"},
-                        {name:'justifyfull', className:'btn-inverse',title:"两端对齐"},
+                        {name:'justifyleft', className:'btn-primary',title:"{% trans "左对齐" %}"},
+                        {name:'justifycenter', className:'btn-primary',title:"{% trans "居中对齐" %}"},
+                        {name:'justifyright', className:'btn-primary',title:"{% trans "右对齐" %}"},
+                        {name:'justifyfull', className:'btn-inverse',title:"{% trans "两端对齐" %}"},
                         null,
-                        {name:'createLink', className:'btn-pink',title:"链接"},
-                        {name:'unlink', className:'btn-pink',title:"断开链接"},
+                        {name:'createLink', className:'btn-pink',title:"{% trans "链接" %}"},
+                        {name:'unlink', className:'btn-pink',title:"{% trans "断开链接" %}"},
                         null,
-                        {name:'insertImage', className:'btn-success',title:"图片"},
+                        {name:'insertImage', className:'btn-success',title:"{% trans "图片" %}"},
                         null,
-                        {name:'foreColor', title:"颜色"},
+                        {name:'foreColor', title:"{% trans "颜色" %}"},
                         null,
-                        {name:'undo', className:'btn-grey',title:"撤销"}
+                        {name:'undo', className:'btn-grey',title:"{% trans "撤销" %}"}
                     ],
             'wysiwyg': {
                 fileUploadError: showErrorAlert

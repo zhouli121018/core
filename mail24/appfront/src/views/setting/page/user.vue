@@ -109,7 +109,6 @@
 </template>
 
 <script>
-
   import { settingUsersGet, settingUsersUpdate } from '@/api/api'
 
   export default {
@@ -146,8 +145,8 @@
         },
         formRules: {
           realname: [
-            { required: true, message: '请输入姓名', trigger: 'blur' },
-            { min: 1, max: 35, message: '长度在 1 到 35 个字符', trigger: 'blur' }
+            { required: true, message: this.$parent.lan.SETTING_USER_RULE_NAME, trigger: 'blur' },
+            { min: 1, max: 35, message: this.$parent.lan.SETTING_USER_RULE_NAME_LEN, trigger: 'blur' }
           ]
         },
 

@@ -53,13 +53,13 @@
                                         <td>{{ forloop.counter }}</td>
                                         <td>
                                             <!--{{ d.title }}-->
-                                            <a href="{% url 'department_member' d.id %}" title="查看部门成员">{{ d.title }}</a>
+                                            <a href="{% url 'department_member' d.id %}" title="查看部门成员">{{ d.get_title }}</a>
                                         </td>
                                         <td>
                                             <a type="button" class="red delete btn btn-white btn-primary btn-xs" href="{% url 'department_modify' d.id %}">{% trans "修改" %}</a>
                                             <a type="button" class="red delete btn btn-white btn-info btn-xs" href="{% url 'department_list' %}?cid={{ d.id }}">{% trans "查看子部门" %}</a>
                                             <a type="button" class="red delete btn btn-white btn-success btn-xs" href="{% url 'department_member' d.id %}">{% trans "添加部门成员" %}</a>
-                                            <button type="button" class="red delete btn btn-white btn-danger btn-xs" onclick="Delete('{{ d.id }}', '{{ d.title }}')">{% trans "删除" %}</button>
+                                            <button type="button" class="red delete btn btn-white btn-danger btn-xs" onclick="Delete('{{ d.id }}', '{{ d.get_title }}')">{% trans "删除" %}</button>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -92,7 +92,7 @@
                                     <td>{{ forloop.counter }}</td>
                                     <td class='display-none'>{{ d.id }}</td>
                                     <td>
-                                        <a href="{% url 'department_member' d.id %}" title="查看部门成员">{{ d.title }}</a>
+                                        <a href="{% url 'department_member' d.id %}" title="查看部门成员">{{ d.get_title }}</a>
                                     </td>
                                     <td class="col-sm-3">
                                         <input type="number" name="order_{{ d.id }}" class="col-sm-3" value="{{ d.order }}" onchange="onchangeDeptOrder({{ d.id }}, this.value)">
@@ -100,7 +100,7 @@
                                     <td>
                                         <a type="button" class="red delete btn btn-white btn-primary btn-xs" href="{% url 'department_modify' d.id %}">{% trans "修改" %}</a>
                                         <a type="button" class="red delete btn btn-white btn-success btn-xs" href="{% url 'department_member' d.id %}">{% trans "添加部门成员" %}</a>
-                                        <button type="button" class="red delete btn btn-white btn-danger btn-xs" onclick="Delete('{{ d.id }}', '{{ d.title }}')">{% trans "删除" %}</button>
+                                        <button type="button" class="red delete btn btn-white btn-danger btn-xs" onclick="Delete('{{ d.id }}', '{{ d.get_title }}')">{% trans "删除" %}</button>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -160,7 +160,7 @@
     <script>
 
         function Delete(id, name){
-            var str = '确定要删除列表 "%s"？';
+            var str = '{% trans "确定要删除列表 " %}"%s"？';
             str = str.replace(/%s/, name);
             if(confirm(str)) {
                 $('#id').val(id);

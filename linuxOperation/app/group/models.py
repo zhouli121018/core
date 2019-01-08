@@ -87,7 +87,7 @@ PASSWD_LEVEL = (
 )
 
 FREQUENCYSET_PARAM_OPERATOR = (
-    (u'block', u'只可发送本地邮件'),
+    (u'block', _(u'只可发送本地邮件')),
     #(u'disable', u'永久禁用外发'),   修改的是core_mailbox.limit_send，这个设定目前与组权限冲突！
 )
 
@@ -98,7 +98,7 @@ AUTO_CLEAN_OPEN = (
 )
 
 class CoreGroup(models.Model):
-    domain_id = models.IntegerField(u'所属域名ID', default=0)
+    domain_id = models.IntegerField(_(u'所属域名ID'), default=0)
     name = models.CharField(_(u'组名称'), max_length=100, blank=False, null=False)
     description = models.TextField(_(u'组描述'), null=True, blank=True)
 
@@ -124,19 +124,19 @@ class CoreGroup(models.Model):
         super(CoreGroup, self).delete(using=using, keep_parents=keep_parents)
 
 GROUP_SETTING_TYPE=(
-    (u"basic", u"常规设置"),
-    (u"login", u"登陆方式限制"),
-    (u"password", u"密码规则"),
-    (u"spam", u"反垃圾/反病毒"),
-    (u"frequency", u"发信频率设置"),
-    (u"oab", u"企业通讯录设置"),
-    (u"space", u"邮箱空间设置"),
+    (u"basic", _(u"常规设置")),
+    (u"login", _(u"登陆方式限制")),
+    (u"password", _(u"密码规则")),
+    (u"spam", _(u"反垃圾/反病毒")),
+    (u"frequency", _(u"发信频率设置")),
+    (u"oab", _(u"企业通讯录设置")),
+    (u"space", _(u"邮箱空间设置")),
 )
 class CoreGroupSetting(models.Model):
 
     group = models.ForeignKey(CoreGroup, related_name='group_setting', on_delete=models.CASCADE, verbose_name=_(u"组权限管理"))
-    type = models.CharField(u"类型", choices=GROUP_SETTING_TYPE, max_length=50, null=False, blank=False)
-    value = models.TextField(u"值")
+    type = models.CharField(_(u"类型"), choices=GROUP_SETTING_TYPE, max_length=50, null=False, blank=False)
+    value = models.TextField(_(u"值"))
 
     class Meta:
         managed = False

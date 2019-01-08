@@ -235,12 +235,13 @@ class ReviewRuleForm(object):
     def __check_condition_valid(self, option, action, value):
         if option in (u"date",):
             if not self.__check_format_time(value):
-                return False, u"时期格式错误"
+                return False, _(u"时期格式错误")
         if not option in self.reviewrule_condtion_option:
-            return False, u"未注册的条件"
+            return False, _(u"未注册的条件")
         action_list = dict(self.reviewrule_condtion_option[option])
         if not action in action_list and not option in self.reviewrule_condtion_no_input:
-            return False, u"匹配动作范围为: %s 输入为: %s"%(",".join(action_list.values()), action)
+            v = ",".join(action_list.values())
+            return False, _(u"匹配动作范围为: %(action)s 输入为: %(input)s"%{"action":v, "input":action})
         return True, u""
 
     def __check(self):
@@ -312,7 +313,7 @@ class ReviewRuleForm(object):
             instance.save()
         self.__instance = instance
 
-        logList = [u'审核规则: {} ID: {}'.format(self.__instance.name,self.__instance.id)]
+        logList = [_(u'审核规则: {} ID: {}').format(self.__instance.name,self.__instance.id)]
         ReviewCondition.objects.filter(rule_id=rule_id).delete()
         for data in condition:
             logic = data["logic"]
@@ -328,7 +329,7 @@ class ReviewRuleForm(object):
             obj = ReviewCondition.objects.create(
                 rule_id=rule_id, parent_id=0, logic=logic, option=option, action=action, value=value
                 )
-            logList.append(u'条件 : {} - {} - {}'.format(option,action,value))
+            logList.append(_(u'条件 : {} - {} - {}').format(option,action,value))
             for sub in data.get("sub",[]):
                 sub_option = sub["option"]
                 sub_action = sub.get("action","")
@@ -342,7 +343,7 @@ class ReviewRuleForm(object):
                 sub_obj = ReviewCondition.objects.create(
                     rule_id=rule_id, parent_id=obj.id, logic=logic, option=sub_option, action=sub_action, value=sub_value
                     )
-                logList.append(u'条件 : {} - {} - {}'.format(sub_option,sub_action,sub_value))
+                logList.append(_(u'条件 : {} - {} - {}').format(sub_option,sub_action,sub_value))
         ReviewConfig.open_review_new()
         api_create_admin_log(self.__request, self.__instance, u'reviewcondition',u"{}".format(u' || '.join(logList)))
         clear_redis_cache()

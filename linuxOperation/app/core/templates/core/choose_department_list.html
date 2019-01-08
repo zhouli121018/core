@@ -27,7 +27,7 @@
 
                         {% for l in lists %}
                             <tr lang="{ id:{{ l.id }},pid:{{ l.next_id }},level:{{ l.level }} }" >
-                                <td>{{ l.title }}</td>
+                                <td>{{ l.get_title }}</td>
                                 <td>{{ l.domain }}</td>
                                 <td>
                                     <div class="radio">

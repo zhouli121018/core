@@ -99,7 +99,7 @@ def fail2ban_rule_add(request):
         if form.is_valid():
             form.save()
             clear_fail2ban_cache()
-            messages.add_message(request, messages.SUCCESS, u'添加规则成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加规则成功'))
             return HttpResponseRedirect(reverse('fail2ban_rulelist'))
     return render(request, "security/fail2ban_rule_add.html",context={"form":form})
 
@@ -112,7 +112,7 @@ def fail2ban_rule_modify(request, rule_id):
         if form.is_valid():
             form.save()
             clear_fail2ban_cache()
-            messages.add_message(request, messages.SUCCESS, u'修改规则成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改规则成功'))
             return HttpResponseRedirect(reverse('fail2ban_rulelist'))
     return render(request, "security/fail2ban_rule_add.html",context={"form":form})
 
@@ -127,7 +127,7 @@ def fail2ban_blocklist(request):
         if status == "delete":
             Fail2BanBlock.objects.filter(pk=id).delete()
             clear_fail2ban_cache()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         return HttpResponseRedirect(reverse('fail2ban_blocklist'))
     return render(request, "security/fail2ban_blocklist.html",context={})
 
@@ -186,7 +186,7 @@ def fail2ban_block_add(request):
         if form.is_valid():
             form.save()
             clear_fail2ban_cache()
-            messages.add_message(request, messages.SUCCESS, u'添加成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加成功'))
             return HttpResponseRedirect(reverse('fail2ban_blocklist'))
     return render(request, "security/fail2ban_block_add.html",context={"form":form})
 
@@ -199,7 +199,7 @@ def fail2ban_block_modify(request, block_id):
         if form.is_valid():
             form.save()
             clear_fail2ban_cache()
-            messages.add_message(request, messages.SUCCESS, u'修改成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改成功'))
             return HttpResponseRedirect(reverse('fail2ban_blocklist'))
     return render(request, "security/fail2ban_block_add.html",context={"form":form})
 
@@ -214,7 +214,7 @@ def fail2ban_whitelist(request):
         if status == "delete":
             Fail2BanTrust.objects.filter(pk=id).delete()
             clear_fail2ban_cache()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         return HttpResponseRedirect(reverse('fail2ban_whitelist'))
     return render(request, "security/fail2ban_whitelist.html",context={})
 
@@ -226,7 +226,7 @@ def fail2ban_whitelist_add(request):
         if form.is_valid():
             form.save()
             clear_fail2ban_cache()
-            messages.add_message(request, messages.SUCCESS, u'添加成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加成功'))
             return HttpResponseRedirect(reverse('fail2ban_whitelist'))
     return render(request, "security/fail2ban_whitelist_add.html",context={"form":form})
 
@@ -239,7 +239,7 @@ def fail2ban_whitelist_modify(request, white_id):
         if form.is_valid():
             form.save()
             clear_fail2ban_cache()
-            messages.add_message(request, messages.SUCCESS, u'修改成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改成功'))
             return HttpResponseRedirect(reverse('fail2ban_whitelist'))
     return render(request, "security/fail2ban_whitelist_add.html",context={"form":form})
 
@@ -303,10 +303,10 @@ def security_antispam(request):
         form = SpamSetForm(instance=spam_set, post=request.POST, request=request, domain_id=obj.id)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改设置成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改设置成功'))
             return HttpResponseRedirect(reverse('security_antispam'))
         else:
-            messages.add_message(request, messages.ERROR, u'修改设置失败，请检查输入参数')
+            messages.add_message(request, messages.ERROR, _(u'修改设置失败，请检查输入参数'))
 
     return render(request, "security/antispam.html", context={
         "form": form,
@@ -330,7 +330,7 @@ def security_frequency(request):
         form = SendFrequencyForm(instance=frequency_set, post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改设置成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改设置成功'))
 
     return render(request, "security/frequency_setting.html", context={
         "form"          :   form,

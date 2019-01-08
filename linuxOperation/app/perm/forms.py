@@ -29,9 +29,9 @@ class MyPermissionForm(forms.ModelForm):
         if not name:
             raise forms.ValidationError(_(u"请输入权限名"))
         if not pure_english_regex(name):
-            raise forms.ValidationError(u"请使用英文名称，可以使用数字、字母以及特殊字符（._-）")
+            raise forms.ValidationError(_(u"请使用英文名称，可以使用数字、字母以及特殊字符（._-）"))
         if MyPermission.objects.exclude(id=self.instance.id).filter(name=name).exists():
-            raise forms.ValidationError(u"不能重复添加权限名")
+            raise forms.ValidationError(_(u"不能重复添加权限名"))
         return name
 
     class Meta:
@@ -65,7 +65,7 @@ class GroupForm(forms.ModelForm):
         if not name:
             raise forms.ValidationError(_(u"请输入组名"))
         if Group.objects.exclude(id=self.instance.id).filter(name=name).exists():
-            raise forms.ValidationError(u"不能重复添加组名")
+            raise forms.ValidationError(_(u"不能重复添加组名"))
         return name
 
     class Meta:
@@ -102,9 +102,9 @@ class UserCreationForm(forms.ModelForm):
     def clean_password1(self):
         password1 = self.cleaned_data.get('password1')
         if len(password1)<8:
-            raise forms.ValidationError(_(u"您的密码必须至少包含8个字符。",))
+            raise forms.ValidationError(_(u"您的密码必须至少包含8个字符。"))
         if pure_digits_regex(password1):
-            raise forms.ValidationError(_(u"您的密码不能完全是数字。", ))
+            raise forms.ValidationError(_(u"您的密码不能完全是数字。"))
         return password1
 
     def clean_password2(self):
@@ -153,9 +153,9 @@ class SetPasswordForm(forms.Form):
     def clean_new_password1(self):
         password1 = self.cleaned_data.get('new_password1')
         if len(password1)<8:
-            raise forms.ValidationError(_(u"您的密码必须至少包含8个字符。",))
+            raise forms.ValidationError(_(u"您的密码必须至少包含8个字符。"))
         if pure_digits_regex(password1):
-            raise forms.ValidationError(_(u"您的密码不能完全是数字。", ))
+            raise forms.ValidationError(_(u"您的密码不能完全是数字。"))
         return password1
 
     def clean_new_password2(self):
@@ -183,7 +183,7 @@ class PasswordChangeForm(SetPasswordForm):
     password.
     """
     error_messages = dict(SetPasswordForm.error_messages, **{
-        'password_incorrect': _("您的旧密码输入不正确。 请重新输入。"),
+        'password_incorrect': _(u"您的旧密码输入不正确。 请重新输入。")
     })
     old_password = forms.CharField(
         label=_(u"旧密码"),
@@ -229,18 +229,18 @@ class WebmailAdminForm(forms.ModelForm):
         username = self.cleaned_data.get('username')
         username = username and username.strip() or None
         if not username:
-            raise forms.ValidationError(_(u"用户名不能为空。",))
+            raise forms.ValidationError(_(u"用户名不能为空。"))
         if not self.instance:
             obj = WebmailAdmin.objects.filter(domain_id=self.domain_id,username=username).first()
             if obj:
-                raise forms.ValidationError(_(u"用户名已存在。",))
+                raise forms.ValidationError(_(u"用户名已存在。"))
         return username
 
     def clean_password(self):
         password = self.cleaned_data.get('password')
         password = password and password.strip() or None
         if not password:
-            raise forms.ValidationError(_(u"密码不能为空。",))
+            raise forms.ValidationError(_(u"密码不能为空。"))
         import hashlib
         password = hashlib.md5(password).hexdigest()
         return password

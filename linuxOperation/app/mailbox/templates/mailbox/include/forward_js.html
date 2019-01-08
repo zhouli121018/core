@@ -1,8 +1,11 @@
-<!--/* 自动转发js */-->
 {% load i18n %}
+<!--/* {% trans "自动转发js " %}*/-->
 
 <script>
     $(function () {
+        $('#modal-lg').on('hidden.bs.modal', function (event) {
+            $(this).removeData('bs.modal').find(".modal-content").empty();
+        })
         $('#modal-forward').on('hidden.bs.modal', function (event) {
             $(this).removeData('bs.modal').find(".modal-content").empty();
         })
@@ -22,10 +25,10 @@
                                     <div class="col-sm-3 text-right no-padding">
                                         <div class="input-group">
                                             <div class="input-group-btn">
-                                                <button type="button" style="border:none;border-right:1px solid #aaa;" class="btn btn-default dropdown-toggle and_or" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_b" data_val="1">并</b> <span class="caret"></span></button>
+                                                <button type="button" style="border:none;border-right:1px solid #aaa;" class="btn btn-default dropdown-toggle and_or" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_b" data_val="1">{% trans "并" %}</b> <span class="caret"></span></button>
                                                 <ul class="dropdown-menu" style="right:0;left:auto;min-width:52px;">
-                                                    <li><a href="1">并</a></li>
-                                                    <li><a href="-1">或</a></li>
+                                                    <li><a href="1">{% trans "并" %}</a></li>
+                                                    <li><a href="-1">{% trans "或" %}</a></li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -33,17 +36,17 @@
                                     <div class="col-sm-6">
                                         <div class="input-group">
                                             <div class="input-group-btn">
-                                                <button type="button" style="border:none;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_c" data_val="contains">包含</b> <span class="caret"></span></button>
+                                                <button type="button" style="border:none;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_c" data_val="contains">{% trans "包含" %}</b> <span class="caret"></span></button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a href="contains">包含</a></li>
-                                                    <li><a href="not_contains">不包含</a></li>
+                                                    <li><a href="contains">{% trans "包含" %}</a></li>
+                                                    <li><a href="not_contains">{% trans "不包含" %}</a></li>
                                                 </ul>
                                             </div>
                                             <input type="text" name="con_val" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
-                                        <button type="button" class="btn btn-sm btn-danger del_btn_condition">删除条件</button>
+                                        <button type="button" class="btn btn-sm btn-danger del_btn_condition">{% trans "删除条件" %}</button>
                                     </div>
                                 </div>
                             </div>`;
@@ -79,7 +82,7 @@
             $('.add_btn_condition1,.add_btn_condition2,.add_btn_condition3,.add_btn_condition4,.add_btn_condition5,.add_btn_condition6').unbind();
             $('.add_btn_condition1,.add_btn_condition2,.add_btn_condition3,.add_btn_condition4,.add_btn_condition5,.add_btn_condition6').click(function(){
                 $(this).parent().parent().append(html);
-                layer.msg('添加成功');
+                layer.msg('{% trans "添加成功" %}');
             })
             $('#modal-forward-add').on('click','.del_btn_condition',function(){
                 $(this).parent().parent().parent().remove();
@@ -104,10 +107,10 @@
                                     <div class="col-sm-3 text-right no-padding">
                                         <div class="input-group">
                                             <div class="input-group-btn">
-                                                <button type="button" style="border:none;border-right:1px solid #aaa;" class="btn btn-default dropdown-toggle and_or" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_b" data_val="1">并</b> <span class="caret"></span></button>
+                                                <button type="button" style="border:none;border-right:1px solid #aaa;" class="btn btn-default dropdown-toggle and_or" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_b" data_val="1">{% trans "并" %}</b> <span class="caret"></span></button>
                                                 <ul class="dropdown-menu" style="right:0;left:auto;min-width:52px;">
-                                                    <li><a href="1">并</a></li>
-                                                    <li><a href="-1">或</a></li>
+                                                    <li><a href="1">{% trans "并" %}</a></li>
+                                                    <li><a href="-1">{% trans "或" %}</a></li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -115,17 +118,17 @@
                                     <div class="col-sm-6">
                                         <div class="input-group">
                                             <div class="input-group-btn">
-                                                <button type="button" style="border:none;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_c" data_val="contains">包含</b> <span class="caret"></span></button>
+                                                <button type="button" style="border:none;" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><b class="select_c" data_val="contains">{% trans "包含" %}</b> <span class="caret"></span></button>
                                                 <ul class="dropdown-menu">
-                                                    <li><a href="contains">包含</a></li>
-                                                    <li><a href="not_contains">不包含</a></li>
+                                                    <li><a href="contains">{% trans "包含" %}</a></li>
+                                                    <li><a href="not_contains">{% trans "不包含" %}</a></li>
                                                 </ul>
                                             </div>
                                             <input type="text" name="con_val" class="form-control">
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
-                                        <button type="button" class="btn btn-sm btn-danger del_btn_condition">删除条件</button>
+                                        <button type="button" class="btn btn-sm btn-danger del_btn_condition">{% trans "删除条件" %}</button>
                                     </div>
                                 </div>
                             </div>`;
@@ -161,7 +164,7 @@
             $('.add_btn_condition1,.add_btn_condition2,.add_btn_condition3,.add_btn_condition4,.add_btn_condition5,.add_btn_condition6').unbind();
             $('.add_btn_condition1,.add_btn_condition2,.add_btn_condition3,.add_btn_condition4,.add_btn_condition5,.add_btn_condition6').click(function(){
                 $(this).parent().parent().append(html);
-                layer.msg('添加成功');
+                layer.msg('{% trans "添加成功" %}');
             })
             $('#modal-forward-edit').on('click','.del_btn_condition',function(){
                 $(this).parent().parent().parent().remove();
@@ -196,13 +199,13 @@ function forward_change_status(id, status, dom){
     $.post("{% url 'mailbox_ajax_edit_forward' %}", {action:'change_status', 'forward_id': id, 'status': status}, function(data){
         onclick="del_forward_contion({{ l.id }}, this)"
         if (status == '1'){
-            $(dom).html('启用');
+            $(dom).html('{% trans "启用" %}');
             $(dom).attr('onclick', 'forward_change_status(' + id + ', -1, this)');
-            $(dom).parent().prev().html('<span class="text-danger">禁用</span>');
+            $(dom).parent().prev().html('<span class="text-danger">{% trans "禁用" %}</span>');
         }else {
-            $(dom).html('禁用');
+            $(dom).html('{% trans "禁用" %}');
             $(dom).attr('onclick', 'forward_change_status(' + id + ', 1, this)');
-            $(dom).parent().prev().html('<span class="text-success">启用</span>');
+            $(dom).parent().prev().html('<span class="text-success">{% trans "启用" %}</span>');
         }
         layer.msg(data.msg);
     })
@@ -247,12 +250,12 @@ function save_forward(mailbox_id){
         $('#exec_date_con').val(disbaled + '#' + time_beg + '#' + time_end);
     }
     if (disbaled == -1 && $('#exec_date_con').val() == '') {
-        layer.msg('请选择执行时间');
+        layer.msg('{% trans "请选择执行时间" %}');
         return false;
     }
 
     if(form.forward_body.value==''){
-        layer.msg('请填写转发地址');
+        layer.msg('{% trans "请填写转发地址" %}');
         return false;
     }
     disbaled = $('#exec_date_div #timeset2').prop('checked') ? -1 : 1;
@@ -264,7 +267,7 @@ function save_forward(mailbox_id){
         form.exec_week_con.value = disbaled + '#' + week_start + '#' + week_end + '#' + start + '#' + end;
     }
     if (disbaled == -1 && $('#exec_week_con').val() == '') {
-        layer.msg('请选择执行时间');
+        layer.msg('{% trans "请选择执行时间" %}');
         return false;
     }
 
@@ -276,7 +279,7 @@ function save_forward(mailbox_id){
             r = 0;
         }
         if (disbaled == -1 && value == '') {
-            layer.msg('请输入[发件人]条件关键字');
+            layer.msg('{% trans "请输入[发件人]条件关键字" %}');
             is_submit = false;
             return false;
         }
@@ -287,7 +290,7 @@ function save_forward(mailbox_id){
     });
     form.sender_con.value = sender_con;
     if (disbaled == -1 && $('#sender_con').val() == '') {
-        layer.msg('请输入[发件人]条件关键字');
+        layer.msg('{% trans "请输入[发件人]条件关键字" %}');
         is_submit = false;
         return false;
     }
@@ -299,7 +302,7 @@ function save_forward(mailbox_id){
             r = 0;
         }
         if (disbaled == -1 && value == '') {
-            layer.msg('请输入[原始发件人]条件关键字');
+            layer.msg('{% trans "请输入[原始发件人]条件关键字" %}');
             is_submit = false;
             return false;
         }
@@ -310,7 +313,7 @@ function save_forward(mailbox_id){
     });
     form.sender_original_con.value = sender_original_con;
     if (disbaled == -1 && $('#sender_original_con').val() == '') {
-        layer.msg('请输入[原始发件人]条件关键字');
+        layer.msg('{% trans "请输入[原始发件人]条件关键字" %}');
         is_submit = false;
         return false;
     }
@@ -323,7 +326,7 @@ function save_forward(mailbox_id){
             r = 0;
         }
         if (disbaled == -1 && value == '') {
-            layer.msg('请输入[原始收件人]条件关键字');
+            layer.msg('{% trans "请输入[原始收件人]条件关键字" %}');
             is_submit = false;
             return false;
         }
@@ -334,7 +337,7 @@ function save_forward(mailbox_id){
     });
     form.recipient_original_con.value = recipient_original_con;
     if (disbaled == -1 && $('#recipient_original_con').val() == '') {
-        layer.msg('请输入[原始收件人]条件关键字');
+        layer.msg('{% trans "请输入[原始收件人]条件关键字" %}');
         is_submit = false;
         return false;
     }
@@ -347,7 +350,7 @@ function save_forward(mailbox_id){
             r = 0;
         }
         if (disbaled == -1 && value == '') {
-            layer.msg('请输入[收件人]条件关键字');
+            layer.msg('{% trans "请输入[收件人]条件关键字" %}');
             is_submit = false;
             return false;
         }
@@ -358,7 +361,7 @@ function save_forward(mailbox_id){
     });
     form.recipient_con.value = recipient_con;
     if (disbaled == -1 && $('#recipient_con').val() == '') {
-        layer.msg('请输入[收件人]条件关键字');
+        layer.msg('{% trans "请输入[收件人]条件关键字" %}');
         is_submit = false;
         return false;
     }
@@ -372,7 +375,7 @@ function save_forward(mailbox_id){
             r = 0;
         }
         if (disbaled == -1 && value == '') {
-            layer.msg('请输入[抄送人]条件关键字');
+            layer.msg('{% trans "请输入[抄送人]条件关键字" %}');
             is_submit = false;
             return false;
         }
@@ -383,7 +386,7 @@ function save_forward(mailbox_id){
     });
     form.copy_addr_con.value = copy_addr_con;
     if (disbaled == -1 && $('#copy_addr_con').val() == '') {
-        layer.msg('请输入[抄送人]条件关键字');
+        layer.msg('{% trans "请输入[抄送人]条件关键字" %}');
         is_submit = false;
         return false;
     }
@@ -397,7 +400,7 @@ function save_forward(mailbox_id){
         }
         var c = $(this).find('.select_c').attr('data_val');
         if (disbaled == -1 && value == '') {
-            layer.msg('请输入[主题]条件关键字');
+            layer.msg('{% trans "请输入[主题]条件关键字" %}');
             is_submit = false;
             return false;
         }
@@ -407,7 +410,7 @@ function save_forward(mailbox_id){
     });
     form.subject_con.value = subject_con;
     if (disbaled == -1 && $('#subject_con').val() == '') {
-        layer.msg('请输入[主题]条件关键字');
+        layer.msg('{% trans "请输入[主题]条件关键字" %}');
         is_submit = false;
         return false;
     }
@@ -416,12 +419,12 @@ function save_forward(mailbox_id){
     disbaled = $('#condition_mailsize').find('#mailsize_chk').prop('checked') ? -1 : 1;
     console.log(mailsize_con)
     if(disbaled == -1 && $('#condition_mailsize').find('#mailsize_beg').val()==''){
-        layer.msg('请输入[邮件大小]条件关键字');
+        layer.msg('{% trans "请输入[邮件大小]条件关键字" %}');
         is_submit = false;
         return false;
     }
     if(disbaled == -1 && $('#condition_mailsize').find('#mailsize_end').val()==''){
-        layer.msg('请输入[邮件大小]条件关键字');
+        layer.msg('{% trans "请输入[邮件大小]条件关键字" %}');
         is_submit = false;
         return false;
     }
@@ -434,17 +437,17 @@ function save_forward(mailbox_id){
     }
     console.log($('#mailsize_con').val())
     if (disbaled == -1 && $('#mailsize_con').val() == '') {
-        layer.msg('请输入[邮件大小]条件关键字');
+        layer.msg('{% trans "请输入[邮件大小]条件关键字" %}');
         is_submit = false;
         return false;
     }
     if (form.exec_date_con.value == '' && form.exec_week_con.value == '') {
-        layer.msg('请选择[执行时间]条件关键字');
+        layer.msg('{% trans "请选择[执行时间]条件关键字" %}');
         is_submit = false;
         return false;
     }
     if(is_submit){
-        layer.msg('提交中...');
+        layer.msg('{% trans "提交中..." %}');
         console.log($('#form_autoforward').serialize())
 
         var data = {

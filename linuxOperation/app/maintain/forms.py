@@ -13,13 +13,13 @@ from lib.forms import BaseFied, DotDict, BaseCfilterActionFied, BaseCfilterOptio
 from app.utils.regex import pure_email_regex
 
 class MailSearchForm(forms.Form):
-    mail_status = forms.ChoiceField(label=u'状态', choices=choices.ISOLATE_STATUS_R, required=False, initial="wait")
-    mail_sender = forms.CharField(label=u'发件人', max_length=80, required=False, widget=forms.TextInput(attrs={'size':12, 'placeholder': u""}))
-    mail_sender_not = forms.CharField(label=u'发件人不包含', max_length=80, required=False, widget=forms.TextInput(attrs={'size':12, 'placeholder': u""}))
-    mail_recipient = forms.CharField(label=u'收件人', max_length=80, required=False, widget=forms.TextInput(attrs={'size':12}))
-    mail_subject = forms.CharField(label=u'主题', max_length=80, required=False, widget=forms.TextInput(attrs={'size':12}))
-    mail_reason = forms.CharField(label=u'隔离原因', max_length=50, required=False, widget=forms.TextInput(attrs={'size':12}))
-    mail_detail = forms.CharField(label=u'详情', max_length=80, required=False, widget=forms.TextInput(attrs={'size':12}))
+    mail_status = forms.ChoiceField(label=_(u'状态'), choices=choices.ISOLATE_STATUS_R, required=False, initial="wait")
+    mail_sender = forms.CharField(label=_(u'发件人'), max_length=80, required=False, widget=forms.TextInput(attrs={'size':12, 'placeholder': u""}))
+    mail_sender_not = forms.CharField(label=_(u'发件人不包含'), max_length=80, required=False, widget=forms.TextInput(attrs={'size':12, 'placeholder': u""}))
+    mail_recipient = forms.CharField(label=_(u'收件人'), max_length=80, required=False, widget=forms.TextInput(attrs={'size':12}))
+    mail_subject = forms.CharField(label=_(u'主题'), max_length=80, required=False, widget=forms.TextInput(attrs={'size':12}))
+    mail_reason = forms.CharField(label=_(u'隔离原因'), max_length=50, required=False, widget=forms.TextInput(attrs={'size':12}))
+    mail_detail = forms.CharField(label=_(u'详情'), max_length=80, required=False, widget=forms.TextInput(attrs={'size':12}))
 
     def __init__(self, *args, **kwargs):
         super(MailSearchForm, self).__init__(*args, **kwargs)
@@ -28,9 +28,9 @@ class MailSearchForm(forms.Form):
 
 class QueueSearchForm(forms.Form):
     key = forms.CharField(label=u'KEY', required=False)
-    sender = forms.CharField(label=u'发件人', required=False)
-    recipients = forms.CharField(label=u'收件人', required=False)
-    senderip = forms.CharField(label=u'发件IP', required=False)
+    sender = forms.CharField(label=_(u'发件人'), required=False)
+    recipients = forms.CharField(label=_(u'收件人'), required=False)
+    senderip = forms.CharField(label=_(u'发件IP'), required=False)
 
     def __init__(self, *args, **kwargs):
         super(QueueSearchForm, self).__init__(*args, **kwargs)
@@ -47,14 +47,14 @@ class BackupSetForm(forms.Form):
     BACKUP_HOUR = choices.BACKUP_HOUR
     BACKUP_MINUTE = choices.BACKUP_MINUTE
 
-    path = forms.CharField(label=u'保存路径', max_length=300, required=True, initial=u"/usr/local/u-mail/data/backup/",
-                           help_text=u"注：备份数据的保存路径，请填写绝对路径；默认为“/usr/local/u-mail/data/backup/”！",
+    path = forms.CharField(label=_(u'保存路径'), max_length=300, required=True, initial=u"/usr/local/u-mail/data/backup/",
+                           help_text=_(u"注：备份数据的保存路径，请填写绝对路径；默认为“/usr/local/u-mail/data/backup/”！"),
                            error_messages={'required': _(u"请填写保存路径"),})
-    data = forms.MultipleChoiceField(label=u'数据类型', required=True, choices=DATA_TYPE_CHOICES, initial=["database", "maildata"],
-                                     help_text=u"可多选。", widget=forms.CheckboxSelectMultiple,) #widget=forms.CheckboxSelectMultiple,
-    count = forms.IntegerField(label=u"保留备份数量", initial=10, required=True, help_text=u"留注：当备份的数据超过此限制时，将会删除旧的备份数据！ ")
+    data = forms.MultipleChoiceField(label=_(u'数据类型'), required=True, choices=DATA_TYPE_CHOICES, initial=["database", "maildata"],
+                                     help_text=_(u"可多选。"), widget=forms.CheckboxSelectMultiple,) #widget=forms.CheckboxSelectMultiple,
+    count = forms.IntegerField(label=_(u"保留备份数量"), initial=10, required=True, help_text=_(u"留注：当备份的数据超过此限制时，将会删除旧的备份数据！ "))
     # 备份周期
-    type = forms.ChoiceField(label=u"备份周期", required=True, choices=BACKUP_TYPE, initial="month")
+    type = forms.ChoiceField(label=_(u"备份周期"), required=True, choices=BACKUP_TYPE, initial="month")
     cycle = forms.IntegerField(label=u"Cycle", required=True, initial=1)
     # 备份时间
     month = forms.ChoiceField(label=u"Month", required=False, choices=BACKUP_MONTH)
@@ -264,26 +264,26 @@ class IMAPMovingForm(forms.ModelForm):
         password = self.cleaned_data.get('src_password')
         password = password.strip()
         if not password:
-            self.error_notify = u"密码为空"
-            raise forms.ValidationError(u"请重新输入密码")
+            self.error_notify = _(u"密码为空")
+            raise forms.ValidationError(_(u"请重新输入密码"))
         return password
 
     def clean_src_mailbox(self):
         account = self.cleaned_data.get('src_mailbox')
         account = account.strip()
         if not account:
-            self.error_notify = u"远程帐号为空"
-            raise forms.ValidationError(u"请输入远程帐号")
+            self.error_notify = _(u"远程帐号为空")
+            raise forms.ValidationError(_(u"请输入远程帐号"))
         if not pure_email_regex(account):
-            self.error_notify = u"输入的远程账号不合法。"
+            self.error_notify = _(u"输入的远程账号不合法。")
             raise forms.ValidationError(_(self.error_notify))
         mailbox_id = self.cleaned_data.get('mailbox_id')
         if IMAPMoving.objects.exclude(id=self.instance.id).filter(
                 mailbox_id=mailbox_id, src_mailbox=account).exists():
-            self.error_notify = u"该用户已经在“邮箱搬家”设置了相同的迁移任务。"
+            self.error_notify = _(u"该用户已经在“邮箱搬家”设置了相同的迁移任务。")
             raise forms.ValidationError(_(self.error_notify))
         if POP3Moving.objects.filter(mailbox_id=mailbox_id, src_mailbox=account).exists():
-            self.error_notify = u"该用户已经在“邮箱搬家”设置了相同的迁移任务。"
+            self.error_notify = _(u"该用户已经在“邮箱搬家”设置了相同的迁移任务。")
             raise forms.ValidationError(_(self.error_notify))
         return account
 
@@ -291,8 +291,8 @@ class IMAPMovingForm(forms.ModelForm):
         server = self.cleaned_data.get('src_server')
         server = server and server.strip() or None
         if not server:
-            self.error_notify = u"远程服务器为空"
-            raise forms.ValidationError(u"请输入远程服务器")
+            self.error_notify = _(u"远程服务器为空")
+            raise forms.ValidationError(_(u"请输入远程服务器"))
         return server
 
     def clean_ssl(self):

@@ -21,25 +21,25 @@
                 <input type="hidden" name="status" id="status" />
                 <input type="hidden" name="ids" id="ids" />
             </form>
-            <div class="table-header">Webmail程序版本信息</div>
+            <div class="table-header">{% trans "Webmail程序版本信息" %}</div>
             <table class="table table-bordered table-hover" width="100%">
                 <tbody>
                 <tr>
-                    <td style="width: 10%; text-align: right;background-color: #EDF3F4;" class="profile-user-info-striped profile-info-name">版本编号：</td>
+                    <td style="width: 10%; text-align: right;background-color: #EDF3F4;" class="profile-user-info-striped profile-info-name">{% trans "版本编号：" %}</td>
                     <td class="profile-user-info-striped profile-info-value"><b>{{ install_version }}</b>
-                        <!--<a href="/operation/admin/django_logtail/log/?log=update_umail_beta">查看更新日志</a>-->
+                        <!--<a href="/operation/admin/django_logtail/log/?log=update_umail_beta">{% trans "查看更新日志" %}</a>-->
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 10%; text-align: right;background-color: #EDF3F4;" class="profile-user-info-striped profile-info-name">最新版本：</td>
+                    <td style="width: 10%; text-align: right;background-color: #EDF3F4;" class="profile-user-info-striped profile-info-name">{% trans "最新版本：" %}</td>
                     <td class="profile-user-info-striped profile-info-value">
                         {% if pid %}
-                            <span class="red"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>正在更新...</span>
+                            <span class="red"><i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>{% trans "正在更新..." %}</span>
                         {% elif available_version %}
                             <b>{{ available_version }}</b>
-                            <!--<a class="" href="Javascript: setStatus('update')">更新系统</a>-->
+                            <!--<a class="" href="Javascript: setStatus('update')">{% trans "更新系统" %}</a>-->
                         {% else %}
-                            <span class="green"><i class="ace-icon fa fa-check green"></i>已是最新</span>
+                            <span class="green"><i class="ace-icon fa fa-check green"></i>{% trans "已是最新" %}</span>
                         {% endif %}
                     </td>
                 </tr>
@@ -60,7 +60,7 @@
                 <div class="widget-header">
                     <h5 class="widget-title bigger lighter">
                         <i class="ace-icon fa fa-table"></i>
-                        主要资料
+                        {% trans "主要资料" %}
                     </h5>
                 </div>
 
@@ -69,14 +69,14 @@
                     <div class="widget-main no-padding">
                         <table class="table table-striped table-bordered table-hover simple-table">
                             <tr>
-                                <th> 主机名称 </th>
+                                <th> {% trans "主机名称 " %}</th>
                                 <td>
                                     {{ info.os.uname.1 }}
 
                                 </td>
                             </tr>
                             <tr>
-                                <th> 操作系统 </th>
+                                <th> {% trans "操作系统 " %}</th>
                                 <td>
                                     {% if info.os.system_name %}
                                         {{ info.os.system_name }}
@@ -87,31 +87,31 @@
 
                             </tr>
                             <tr>
-                                <th> 核心版本 </th>
+                                <th> {% trans "核心版本 " %}</th>
                                 <td>
                                     {{ info.os.uname.2 }}(SMP) {{ info.os.uname.4 }}
                                 </td>
                             </tr>
                             <tr>
-                                <th>最后启动</th>
+                                <th>{% trans "最后启动" %}</th>
                                 <td> {{ info.os.boot_time|date:"Y-m-d H:i:s" }}</td>
                             </tr>
                             <tr>
-                                <th> 运行时间 </th>
+                                <th> {% trans "运行时间 " %}</th>
                                 <td>
                                     {{ info.os.delta_time }}
-                                    <a data-toggle="modal" class="btn btn-xs btn-danger" data-target="#reboot" data-whatever="">重启服务器</a>
-                                    <a data-toggle="modal" class="btn btn-xs btn-danger" data-target="#shutdown" data-whatever="">关闭服务器</a>
+                                    <a data-toggle="modal" class="btn btn-xs btn-danger" data-target="#reboot" data-whatever="">{% trans "重启服务器" %}</a>
+                                    <a data-toggle="modal" class="btn btn-xs btn-danger" data-target="#shutdown" data-whatever="">{% trans "关闭服务器" %}</a>
                                 </td>
                             </tr>
                             <tr>
-                                <th> 进程数 </th>
+                                <th> {% trans "进程数 " %}</th>
                                 <td>
                                     {{ info.os.pids }}
                                 </td>
                             </tr>
                             <tr>
-                                <th> 平均负载 </th>
+                                <th> {% trans "平均负载 " %}</th>
                                 <td>
                                     {{ info.os.avg_load }}
 
@@ -122,7 +122,7 @@
                                     <div class="action-buttons">
                                         <a href="#" class="show-details-btn" title="Show Details">
                                             <i class="ace-icon fa fa-angle-double-down"></i>
-                                            在线用户
+                                            {% trans "在线用户" %}
                                         </a>
                                     </div>
                                 </th>
@@ -136,10 +136,10 @@
                                         <table class="table table-striped table-bordered table-hover simple-table">
                                             <thead>
                                             <tr>
-                                                <th>用户名</th>
-                                                <th>终端</th>
-                                                <th>主机</th>
-                                                <th>登录时间</th>
+                                                <th>{% trans "用户名" %}</th>
+                                                <th>{% trans "终端" %}</th>
+                                                <th>{% trans "主机" %}</th>
+                                                <th>{% trans "登录时间" %}</th>
                                                 <th>PID</th>
                                             </tr>
                                             </thead>
@@ -175,7 +175,7 @@
                 <!-- #section:custom/widget-box.options -->
                 <div class="widget-header">
                     <h5 class="widget-title bigger lighter">
-                        <i class="ace-icon fa fa-table"></i> CPU信息 ({{ info.os.cpus }}核)
+                        <i class="ace-icon fa fa-table"></i> {% trans "CPU信息 (" %}{{ info.os.cpus }}{% trans "核)" %}
                     </h5>
                 </div>
                 <!-- /section:custom/widget-box.options -->
@@ -192,7 +192,7 @@
                             <div class="grid4">
 															<span class="grey">
 																<i class="ace-icon fa fa-users fa-2x red"></i>
-																&nbsp; 用户
+																&nbsp; {% trans "用户" %}
 															</span>
                                 <h4 class="bigger pull-right">{{ info.os.cpu_percent.user }}</h4>
                             </div>
@@ -200,7 +200,7 @@
                             <div class="grid4">
 															<span class="grey">
 																<i class="ace-icon fa fa-twitter-square fa-2x orange"></i>
-																&nbsp; 系统
+																&nbsp; {% trans "系统" %}
 															</span>
                                 <h4 class="bigger pull-right">{{ info.os.cpu_percent.system }}</h4>
                             </div>
@@ -215,7 +215,7 @@
                             <div class="grid4">
 															<span class="grey">
 																<i class="ace-icon fa fa-pinterest-square fa-2x green"></i>
-																&nbsp; 空闲
+																&nbsp; {% trans "空闲" %}
 															</span>
                                 <h4 class="bigger pull-right">{{ info.os.cpu_percent.idle }}</h4>
                             </div>
@@ -235,7 +235,7 @@
                     <!-- #section:custom/widget-box.options -->
                     <div class="widget-header">
                         <h5 class="widget-title bigger lighter">
-                            <i class="ace-icon fa fa-table"></i> 网络信息
+                            <i class="ace-icon fa fa-table"></i> {% trans "网络信息" %}
                         </h5>
                     </div>
                     <!-- /section:custom/widget-box.options -->
@@ -244,22 +244,22 @@
 
                             <table class="table table-striped table-bordered table-hover simple-table">
                                 <tr>
-                                    <th rowspan="2">设备</th>
+                                    <th rowspan="2">{% trans "设备" %}</th>
                                     <th class="center" rowspan="2">Address/Netmask</th>
-                                    <th class="center" width="20%" colspan="2">发送(数据包)</th>
-                                    <th class="center" width="20%" colspan="2">接收(数据包)</th>
-                                    <th class="center" width="20%" colspan="2">发送(字节)</th>
-                                    <th class="center" width="20%" colspan="2">接收(字节)</th>
+                                    <th class="center" width="20%" colspan="2">{% trans "发送(数据包)" %}</th>
+                                    <th class="center" width="20%" colspan="2">{% trans "接收(数据包)" %}</th>
+                                    <th class="center" width="20%" colspan="2">{% trans "发送(字节)" %}</th>
+                                    <th class="center" width="20%" colspan="2">{% trans "接收(字节)" %}</th>
                                 </tr>
                                 <tr>
-                                    <th>总共</th>
-                                    <th>速度</th>
-                                    <th>总共</th>
-                                    <th>速度</th>
-                                    <th>总共</th>
-                                    <th width="12%">速度</th>
-                                    <th>总共</th>
-                                    <th width="12%">速度</th>
+                                    <th>{% trans "总共" %}</th>
+                                    <th>{% trans "速度" %}</th>
+                                    <th>{% trans "总共" %}</th>
+                                    <th>{% trans "速度" %}</th>
+                                    <th>{% trans "总共" %}</th>
+                                    <th width="12%">{% trans "速度" %}</th>
+                                    <th>{% trans "总共" %}</th>
+                                    <th width="12%">{% trans "速度" %}</th>
                                 </tr>
                                 <tbody>
                                 {% for k, v in info.os.network.iteritems %}
@@ -294,7 +294,7 @@
                     <!-- #section:custom/widget-box.options -->
                     <div class="widget-header">
                         <h5 class="widget-title bigger lighter">
-                            <i class="ace-icon fa fa-table"></i>最近3天网卡流量监控
+                            <i class="ace-icon fa fa-table"></i>{% trans "最近3天网卡流量监控" %}
                         </h5>
                         <div class="pull-right" style="margin-top: 10px;margin-right: 13px;">
                             {% for k in network_monitor_keys %}
@@ -340,15 +340,15 @@
                     <!-- #section:custom/widget-box.options -->
                     <div class="widget-header">
                         <h5 class="widget-title bigger lighter">
-                            <i class="ace-icon fa fa-table"></i> TCP连接情况
+                            <i class="ace-icon fa fa-table"></i> {% trans "TCP连接情况" %}
                         </h5>
                         {%  if bntcp_info_json %}
                             <div class="pull-right" style="margin-top: 10px;margin-right: 13px;">
                                 <label class="radio-inline">
-                                    <input class="radioItemcpu" checked="" value="now" id="optionsRadiosNow" name="optionsRadiosNow" type="radio" autocomplete="off">今日
+                                    <input class="radioItemcpu" checked="" value="now" id="optionsRadiosNow" name="optionsRadiosNow" type="radio" autocomplete="off">{% trans "今日" %}
                                 </label>
                                 <label class="radio-inline">
-                                    <input class="radioItemcpu" value="bnow" id="optionsRadiosNow" name="optionsRadiosNow" type="radio" autocomplete="off">昨日
+                                    <input class="radioItemcpu" value="bnow" id="optionsRadiosNow" name="optionsRadiosNow" type="radio" autocomplete="off">{% trans "昨日" %}
                                 </label>
                             </div>
                         {% endif %}
@@ -386,7 +386,7 @@
                 <!-- #section:custom/widget-box.options -->
                 <div class="widget-header">
                     <h5 class="widget-title bigger lighter">
-                        <i class="ace-icon fa fa-table"></i> 内存信息
+                        <i class="ace-icon fa fa-table"></i> {% trans "内存信息" %}
                     </h5>
                 </div>
                 <!-- /section:custom/widget-box.options -->
@@ -394,19 +394,19 @@
                     <div class="widget-main no-padding">
                         <table class="table table-striped table-bordered table-hover simple-table">
                             <tr>
-                                <th> 类型 </th>
-                                <th> 总共 </th>
-                                <th> 已用 </th>
-                                <th> 缓冲(Buffers)  </th>
-                                <th> 缓存(Cached) </th>
-                                <th> 空闲 </th>
-                                <th> 实际可分配 </th>
-                                <th> 使用率 </th>
+                                <th> {% trans "类型 " %}</th>
+                                <th> {% trans "总共 " %}</th>
+                                <th> {% trans "已用 " %}</th>
+                                <th> {% trans "缓冲(Buffers)  " %}</th>
+                                <th> {% trans "缓存(Cached) " %}</th>
+                                <th> {% trans "空闲 " %}</th>
+                                <th> {% trans "实际可分配 " %}</th>
+                                <th> {% trans "使用率 " %}</th>
                             </tr>
                             <tbody>
                             <tr>
                                 {% with info.host.memory as mem %}
-                                    <td> 物理内存 </td>
+                                    <td> {% trans "物理内存 " %}</td>
                                     <td>{{ mem.total }}</td>
                                     <td>{{ mem.used }}</td>
                                     <td>{{ mem.buffers }}</td>
@@ -418,7 +418,7 @@
                             </tr>
                             <tr>
                                 {% with info.host.swap as swap %}
-                                    <td> Swap交换区 </td>
+                                    <td> {% trans "Swap交换区 " %}</td>
                                     <td>{{ swap.total }}</td>
                                     <td>{{ swap.used }}</td>
                                     <td>-</td>
@@ -440,7 +440,7 @@
                 <!-- #section:custom/widget-box.options -->
                 <div class="widget-header">
                     <h5 class="widget-title bigger lighter">
-                        <i class="ace-icon fa fa-table"></i> 磁盘信息
+                        <i class="ace-icon fa fa-table"></i> {% trans "磁盘信息" %}
                     </h5>
                 </div>
                 <!-- /section:custom/widget-box.options -->
@@ -448,13 +448,13 @@
                     <div class="widget-main no-padding">
                         <table class="table table-striped table-bordered table-hover simple-table">
                             <tr>
-                                <th> 挂载位置 </th>
-                                <th> 类型 </th>
-                                <th> 硬盘分区 </th>
-                                <th> 总共  </th>
-                                <th> 已用 </th>
-                                <th> 可用 </th>
-                                <th> 使用率 </th>
+                                <th> {% trans "挂载位置 " %}</th>
+                                <th> {% trans "类型 " %}</th>
+                                <th> {% trans "硬盘分区 " %}</th>
+                                <th> {% trans "总共  " %}</th>
+                                <th> {% trans "已用 " %}</th>
+                                <th> {% trans "可用 " %}</th>
+                                <th> {% trans "使用率 " %}</th>
                             </tr>
                             <tbody>
                             {% for disk in info.host.disk  %}
@@ -481,7 +481,7 @@
                 <!-- #section:custom/widget-box.options -->
                 <div class="widget-header">
                     <h5 class="widget-title bigger lighter">
-                        <i class="ace-icon fa fa-table"></i> 队列信息
+                        <i class="ace-icon fa fa-table"></i> {% trans "队列信息" %}
                     </h5>
                 </div>
                 <!-- /section:custom/widget-box.options -->
@@ -489,10 +489,10 @@
                     <div class="widget-main no-padding">
                         <table class="table table-striped table-bordered table-hover simple-table">
                             <tr>
-                                <th> 队列名称 </th>
-                                <th> 目录大小 </th>
-                                <th> 正在处理 </th>
-                                <th> 等待处理 </th>
+                                <th> {% trans "队列名称 " %}</th>
+                                <th> {% trans "目录大小 " %}</th>
+                                <th> {% trans "正在处理 " %}</th>
+                                <th> {% trans "等待处理 " %}</th>
                             </tr>
                             <tbody>
                             {% for k, v in info.queues.iteritems %}
@@ -518,7 +518,7 @@
                 <!-- #section:custom/widget-box.options -->
                 <div class="widget-header">
                     <h5 class="widget-title bigger lighter">
-                        <i class="ace-icon fa fa-table"></i> 服务
+                        <i class="ace-icon fa fa-table"></i> {% trans "服务" %}
                     </h5>
                 </div>
                 <!-- /section:custom/widget-box.options -->
@@ -527,15 +527,15 @@
                         <table id="dynamic-table" class="table table-striped table-bordered table-hover">
                             <thead>
                             <tr>
-                                <th> 序号 </th>
-                                <th> 名称 </th>
+                                <th> {% trans "序号 " %}</th>
+                                <th> {% trans "名称 " %}</th>
                                 <th> CPU </th>
-                                <th> 内存 </th>
-                                <th> 启动时间 </th>
-                                <th> 命令行 </th>
+                                <th> {% trans "内存 " %}</th>
+                                <th> {% trans "启动时间 " %}</th>
+                                <th> {% trans "命令行 " %}</th>
                                 <th> PID </th>
-                                <th> 状态 </th>
-                                <th> 操作 </th>
+                                <th> {% trans "状态 " %}</th>
+                                <th> {% trans "操作 " %}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -548,11 +548,11 @@
                                     <td><span id="crt_{{k}}">{{ v.create_time|int2datetime }}</span></td>
                                     <td><span id="cmd_{{k}}">{{ v.cmdline|join:" "|truncatechars:80 }}</span></td>
                                     <td><span id="pid_{{k}}">{{ v.pid }}</span></td>
-                                    <td><span id="status_{{k}}">{% if v.pid %}<span class="text-success">已启动</span>{% else %}<span class="text-danger">未启动</span>{% endif %}</span></td>
+                                    <td><span id="status_{{k}}">{% if v.pid %}<span class="text-success">{% trans "已启动" %}</span>{% else %}<span class="text-danger">{% trans "未启动" %}</span>{% endif %}</span></td>
                                     <td>
                                         <div class="hidden-sm hidden-xs btn-group">
-                                            <button id="btn_{{k}}" onclick="RestartProcess('{{k}}', '{{v.sname}}')" class="btn btn-xs btn-success"> 重启 </button>
-                                            <!--<button class="btn btn-xs btn-info">详情 </button>-->
+                                            <button id="btn_{{k}}" onclick="RestartProcess('{{k}}', '{{v.sname}}')" class="btn btn-xs btn-success"> {% trans "重启 " %}</button>
+                                            <!--<button class="btn btn-xs btn-info">{% trans "详情 " %}</button>-->
                                         </div>
                                     </td>
                                 </tr>
@@ -574,16 +574,16 @@
                     {% csrf_token %}
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">重启服务器</h4>
+                        <h4 class="modal-title" id="myModalLabel">{% trans "重启服务器" %}</h4>
                     </div>
                     <div class="modal-body">
-                        <span class="text-danger">请注意：该操作将会重启您的服务器，请谨慎操作!</span></br>
-                        <span class="text-danger">请输入ROOT密码:</span></br>
+                        <span class="text-danger">{% trans "请注意：该操作将会重启您的服务器，请谨慎操作!" %}</span></br>
+                        <span class="text-danger">{% trans "请输入ROOT密码:" %}</span></br>
                         <input type="hidden" name="status" value="reboot" />
                         <input type="text" name="password" value="" />
                     </div>
                     <div class="modal-footer">
-                        <input type="submit" id="modal_submit" class="btn btn-danger" value="确认重启">
+                        <input type="submit" id="modal_submit" class="btn btn-danger" value="{% trans "确认重启" %}">
                         <button type="button" id="modal_close" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </form>
@@ -597,16 +597,16 @@
                     {% csrf_token %}
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">关闭服务器</h4>
+                        <h4 class="modal-title" id="myModalLabel">{% trans "关闭服务器" %}</h4>
                     </div>
                     <div class="modal-body">
-                        <span class="text-danger">请注意：该操作将会关闭您的服务器，请谨慎操作!</span></br>
-                        <span class="text-danger">请输入ROOT密码:</span></br>
+                        <span class="text-danger">{% trans "请注意：该操作将会关闭您的服务器，请谨慎操作!" %}</span></br>
+                        <span class="text-danger">{% trans "请输入ROOT密码:" %}</span></br>
                         <input type="hidden" name="status" value="shutdown" />
                         <input type="text" name="password" value="" />
                     </div>
                     <div class="modal-footer">
-                        <input type="submit" id="modal_submit" class="btn btn-danger" value="确认关闭">
+                        <input type="submit" id="modal_submit" class="btn btn-danger" value="{% trans "确认关闭" %}">
                         <button type="button" id="modal_close" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </form>
@@ -744,10 +744,10 @@
             }
             var placeholder = $('#piechart-placeholder').css({'width':'90%' , 'min-height':'230px'});
             var data = [
-                { label: "用户", data: {{ info.os.cpu_percent.user }}, color: "red"},
-                { label: "系统", data: {{ info.os.cpu_percent.system }}, color: "orange"},
+                { label: "{% trans "用户" %}", data: {{ info.os.cpu_percent.user }}, color: "red"},
+                { label: "{% trans "系统" %}", data: {{ info.os.cpu_percent.system }}, color: "orange"},
                 { label: "IO", data: {{ info.os.cpu_percent.iowait }}, color: "#AF4E96"},
-                { label: "空闲", data: {{ info.os.cpu_percent.idle }}, color: "green"},
+                { label: "{% trans "空闲" %}", data: {{ info.os.cpu_percent.idle }}, color: "green"},
             ]
             drawPieChart(placeholder, data);
             placeholder.data('chart', data);
@@ -774,7 +774,7 @@
             // getNetwork();
         });
         function RestartProcess(name, sname){
-            var str = "确认重启" + sname + "？";
+            var str = "{% trans "确认重启" %}" + sname + "？";
             if(confirm(str)) {
 
                 var loading_img = '<i class="ace-icon fa fa-spinner fa-spin orange bigger-125"></i>';

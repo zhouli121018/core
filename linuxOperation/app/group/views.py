@@ -25,7 +25,7 @@ def groups(request):
         if action == 'delete':
             group_id = request.POST.get('id', '')
             CoreGroup.objects.get(id=group_id).delete()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
             clear_redis_cache()
         return HttpResponseRedirect(reverse('core_group_list'))
     domain_id = get_domainid_bysession(request)
@@ -43,7 +43,7 @@ def groups_add(request):
         form = CoreGroupForms(domain_id, domain, request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'添加成功')
+            messages.add_message(request, messages.SUCCESS, _(u'添加成功'))
             return HttpResponseRedirect(reverse('core_group_list'))
     return render(request, "group/groups_add.html",
                   { 'form': form, "group_id":group_id })
@@ -57,7 +57,7 @@ def groups_modify(request, group_id):
         form = CoreGroupForms(obj.domain_id, obj.domain, request.POST, instance=obj)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'保存成功')
+            messages.add_message(request, messages.SUCCESS, _(u'保存成功'))
             return HttpResponseRedirect(reverse('core_group_list'))
     return render(request, "group/groups_add.html",
                   { 'form': form, "group_id":group_id,
@@ -71,12 +71,12 @@ def groups_mem(request, group_id):
         if action == 'delete':
             id = request.POST.get('id', '')
             CoreGroupMember.objects.get(id=id).delete()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         if action == 'deleteall':
             ids = request.POST.get('ids', '')
             ids = ids.split(',')
             CoreGroupMember.objects.filter(id__in=ids).delete()
-            messages.add_message(request, messages.SUCCESS, u'删除成功')
+            messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
         if action == 'add':
             everyone_addresses = request.POST.get('everyone_addresses', '')
             everyone_addresses = everyone_addresses.split(',')
@@ -283,7 +283,7 @@ def group_limit_whitelist_ajax(request):
     if not group_id or not obj:
         data = {
             "status"        :   "Failure",
-            "message"      :   "权限组不存在",
+            "message"      :   _(u"权限组不存在"),
         }
         return HttpResponse(json.dumps(data), content_type="application/json")
 
@@ -291,7 +291,7 @@ def group_limit_whitelist_ajax(request):
     if not type in ('send','recv'):
         data = {
             "status"        :   "Failure",
-            "message"      :   "类型不正确",
+            "message"      :   _(u"类型不正确"),
         }
         return HttpResponse(json.dumps(data), content_type="application/json")
 
@@ -387,7 +387,7 @@ def ajax_group_setting_white_mdf(request):
     if not obj or obj.type != "basic":
         data = {
             "status"        :   "failure",
-            "message"      :   "不正确的组配置或类型",
+            "message"      :   _(u"不正确的组配置或类型"),
         }
     else:
         form = CoreGroupSettingForm("basic", obj, request.POST)
@@ -412,7 +412,7 @@ def ajax_group_setting_dept(request):
         obj_dept = Department.objects.filter(id=dept_id).first()
         if not obj_dept:
             continue
-        dept_info[dept_id] = obj_dept.title
+        dept_info[dept_id] = obj_dept.get_title
     return HttpResponse(json.dumps(dept_info))
 
 @csrf_exempt
@@ -422,7 +422,7 @@ def ajax_group_setting_dept_mdf(request):
     if not obj or obj.type != "oab":
         data = {
             "status"        :   "failure",
-            "message"      :   "不正确的组配置或类型",
+            "message"      :   _(u"不正确的组配置或类型"),
         }
     else:
         form = CoreGroupSettingForm("oab", obj, post=request.POST)
@@ -439,15 +439,15 @@ def ajax_group_setting_mdf(request):
     group_id = request.POST.get("group_id", 0)
     group_obj = CoreGroup.objects.filter(id=group_id).first()
     if not group_obj:
-        return HttpResponse(json.dumps({"status":"failure","message":u"不存在的组{}".format(str(group_id))}), content_type="application/json")
+        return HttpResponse(json.dumps({"status":"failure","message":_(u"不存在的组{}").format(str(group_id))}), content_type="application/json")
     t = request.POST.get("type", "")
     setting_id = request.POST.get("setting_id", 0)
     obj = CoreGroupSetting.objects.filter(id=setting_id).first()
     form = CoreGroupSettingForm(t, obj, request.POST)
     if form.save():
-        data = {"status":"OK","message":u"添加成功！"}
+        data = {"status":"OK","message":_(u"添加成功！")}
     else:
-        data = {"status":"failure","message":u"添加失败： {}".format(form.error_message)}
+        data = {"status":"failure","message":_(u"添加失败： {}").format(form.error_message)}
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 @csrf_exempt
@@ -457,7 +457,7 @@ def ajax_group_setting_del(request):
     obj = CoreGroupSetting.objects.filter(id=setting_id).first()
     if obj:
         obj.delete()
-    data = {"status":"OK","message":u"删除成功！"}
+    data = {"status":"OK","message":_(u"删除成功！")}
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 #--------------------新版本组权限的设置操作函数------------------------------------------

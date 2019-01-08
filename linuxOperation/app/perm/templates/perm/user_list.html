@@ -16,12 +16,12 @@
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th>用户名</th>
-                        <th>管理员组</th>
-                        <th>用户状态</th>
-                        <th>超级用户</th>
-                        <th>最后登录</th>
-                        <th>操作</th>
+                        <th>{% trans "用户名" %}</th>
+                        <th>{% trans "管理员组" %}</th>
+                        <th>{% trans "用户状态" %}</th>
+                        <th>{% trans "超级用户" %}</th>
+                        <th>{% trans "最后登录" %}</th>
+                        <th>{% trans "操作" %}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -34,58 +34,58 @@
                                     <span class="btn btn-white btn-success btn-xs">{{ gd.name }}</span>
                                 {% endfor %}
                             </td>
-                            <th>{% if d.disabled == '-1' %}启用{% else %}已禁用{% endif %}</th>
-                            <td>{% if d.is_superuser %}是{% else %}否{% endif %}</td>
+                            <th>{% if d.disabled == '-1' %}{% trans "启用" %}{% else %}{% trans "已禁用" %}{% endif %}</th>
+                            <td>{% if d.is_superuser %}{% trans "是" %}{% else %}{% trans "否" %}{% endif %}</td>
                             <td>{{ d.last_login|date:'Y-m-d H:i' }}</td>
                             <td>
-                                <a data-toggle="modal" data-target="#tagModal" data-whatever="" class="btn btn-white btn-primary btn-xs" href="{% url 'user_modify' d.id %}">修改管理员组</a>
+                                <a data-toggle="modal" data-target="#tagModal" data-whatever="" class="btn btn-white btn-primary btn-xs" href="{% url 'user_modify' d.id %}">{% trans "修改管理员组" %}</a>
                                 {% if group_id > 0 and d.is_domain_admin %}
-                                    <a data-toggle="modal" data-target="#tagModal" data-whatever="" class="btn btn-white btn-purple btn-xs" href="{% url 'perm_user_domain' d.id %}">设置管理域名</a>
+                                    <a data-toggle="modal" data-target="#tagModal" data-whatever="" class="btn btn-white btn-purple btn-xs" href="{% url 'perm_user_domain' d.id %}">{% trans "设置管理域名" %}</a>
                                 {% endif %}
                                 {% if group_id > 0 and d.is_dept_admin %}
-                                    <a data-toggle="modal" data-target="#tagModal" data-whatever="" class="btn btn-white btn-info btn-xs" href="{% url 'perm_user_dept' d.id %}">设置管理部门</a>
+                                    <a data-toggle="modal" data-target="#tagModal" data-whatever="" class="btn btn-white btn-info btn-xs" href="{% url 'perm_user_dept' d.id %}">{% trans "设置管理部门" %}</a>
                                 {% endif %}
                                 {% if request.user.is_superuser %}
                                     {% if request.user.id != d.id %}
-                                        <button type="button" class="red delete btn btn-white btn-danger btn-xs" onclick="ActionU('{{ d.id }}','cancel')">取消管理员权限</button>
+                                        <button type="button" class="red delete btn btn-white btn-danger btn-xs" onclick="ActionU('{{ d.id }}','cancel')">{% trans "取消管理员权限" %}</button>
                                         {% if d.is_superuser %}
-                                            <button type="button" class="btn btn-white btn-success btn-xs" onclick="ActionU('{{ d.id }}','unsuper')">取消超级用户权限</button>
+                                            <button type="button" class="btn btn-white btn-success btn-xs" onclick="ActionU('{{ d.id }}','unsuper')">{% trans "取消超级用户权限" %}</button>
                                         {% else %}
-                                            <button type="button" class="red delete btn btn-white btn-danger btn-xs" onclick="ActionU('{{ d.id }}', 'super')">设为超级用户</button>
+                                            <button type="button" class="red delete btn btn-white btn-danger btn-xs" onclick="ActionU('{{ d.id }}', 'super')">{% trans "设为超级用户" %}</button>
                                         {% endif %}
                                         {% if d.disabled == '-1' %}
-                                            <button type="button" class="red delete btn btn-white btn-danger btn-xs" onclick="ActionU('{{ d.id }}','disabled')">禁用用户</button>
+                                            <button type="button" class="red delete btn btn-white btn-danger btn-xs" onclick="ActionU('{{ d.id }}','disabled')">{% trans "禁用用户" %}</button>
                                         {% else %}
-                                            <button type="button" class="btn btn-white btn-primary btn-xs" onclick="ActionU('{{ d.id }}', 'active')">启用用户</button>
+                                            <button type="button" class="btn btn-white btn-primary btn-xs" onclick="ActionU('{{ d.id }}', 'active')">{% trans "启用用户" %}</button>
                                         {% endif %}
                                     {% endif %}
                                 {% endif %}
 
                                 {% comment %}
                                     {% if request.user.id == d.id or d.is_superuser %}
-                                        <a type="button" class="red delete btn btn-white btn-danger btn-xs" href="{% url 'user_passwd_change' d.id %}">修改密码</a>
+                                        <a type="button" class="red delete btn btn-white btn-danger btn-xs" href="{% url 'user_passwd_change' d.id %}">{% trans "修改密码" %}</a>
                                     {% else %}
-                                        <a type="button" class="red delete btn btn-white btn-danger btn-xs" href="{% url 'user_passwd_set' d.id %}">修改密码</a>
+                                        <a type="button" class="red delete btn btn-white btn-danger btn-xs" href="{% url 'user_passwd_set' d.id %}">{% trans "修改密码" %}</a>
                                     {% endif %}
 
                                     {% if d.is_active %}
                                         {% if not d.is_superuser  %}
-                                            <button type="button" class="red delete btn btn-white btn-danger btn-xs" onclick="ActionU('{{ d.id }}','disabled')">禁用用户</button>
+                                            <button type="button" class="red delete btn btn-white btn-danger btn-xs" onclick="ActionU('{{ d.id }}','disabled')">{% trans "禁用用户" %}</button>
                                         {% endif %}
                                     {% else %}
-                                        <button type="button" class="btn btn-white btn-primary btn-xs" onclick="ActionU('{{ d.id }}', 'active')">激活用户</button>
+                                        <button type="button" class="btn btn-white btn-primary btn-xs" onclick="ActionU('{{ d.id }}', 'active')">{% trans "激活用户" %}</button>
                                     {% endif %}
 
                                     {% if request.user.id != d.id %}
                                         {% if d.is_superuser %}
-                                            <button type="button" class="btn btn-white btn-success btn-xs" onclick="ActionU('{{ d.id }}','unsuper')">取消超级用户</button>
+                                            <button type="button" class="btn btn-white btn-success btn-xs" onclick="ActionU('{{ d.id }}','unsuper')">{% trans "取消超级用户" %}</button>
                                         {% else %}
-                                            <button type="button" class="red delete btn btn-white btn-danger btn-xs" onclick="ActionU('{{ d.id }}', 'super')">设为超级用户</button>
+                                            <button type="button" class="red delete btn btn-white btn-danger btn-xs" onclick="ActionU('{{ d.id }}', 'super')">{% trans "设为超级用户" %}</button>
                                         {% endif %}
                                     {% endif %}
 
                                     {% if request.user.id != d.id  and not d.is_superuser %}
-                                        <button type="button" class="red delete btn btn-white btn-danger btn-xs" onclick="Delete('{{ d.id }}', '{{ d.username }}')">删除</button>
+                                        <button type="button" class="red delete btn btn-white btn-danger btn-xs" onclick="Delete('{{ d.id }}', '{{ d.username }}')">{% trans "删除" %}</button>
                                     {% endif %}
                                 {% endcomment %}
                             </td>
@@ -108,12 +108,12 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">加载中</h4>
+                    <h4 class="modal-title" id="myModalLabel">{% trans "加载中" %}</h4>
                 </div>
-                <div class="modal-body">页面加载中
+                <div class="modal-body">{% trans "页面加载中" %}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">关闭</button>
+                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">{% trans "关闭" %}</button>
                 </div>
             </div>
         </div>
@@ -183,7 +183,7 @@
         });
 
         function Delete(id, user){
-            var str = '是否要删除用户 "%s"？';
+            var str = '{% trans "是否要删除用户 " %}"%s"？';
             str = str.replace(/%s/, user);
             if(confirm(str)) {
                 $('#user_id').val(id);
@@ -194,7 +194,7 @@
         }
 
         function ActionU(id, action) {
-            var str = '是否确认此操作？';
+            var str = '{% trans "是否确认此操作？" %}';
             if(confirm(str)) {
                 $('#user_id').val(id);
                 $('#action').val(action);

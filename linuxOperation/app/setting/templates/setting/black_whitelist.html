@@ -1,4 +1,4 @@
-{% extends 'base_site.html' %}{% trans "当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“@域名”，eg:“@test.com”。%}
+{% extends 'base_site.html' %}
 {% load i18n %}
 {% load static %}
 
@@ -103,7 +103,7 @@
                             <div class=" ">
                                 <input type="text" maxlength="60" id="id_eamil_bak" name="eamil_bak" value="" class=" form-control"/>
                                 <p class="help-block">
-                                    {% trans "当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“@域名”，eg:“@test.com”。%}
+                                    {% trans "当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“@域名”，eg:“@test.com”。" %}
                                 </p>
                             </div>
                         </div>
@@ -142,7 +142,7 @@
                                 <textarea id="id_eamil_bak2" name="eamil_bak2" value="" class=" form-control" rows="5" cols="5"></textarea>
                                 <p class="help-block">
                                     {% trans "一行一条数据" %}<br>
-                                    {% trans "当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“@域名”，eg:“@test.com”。%}
+                                    {% trans "当对象为邮箱时请在“地址”里填写邮件地址，对象为域时请在“地址”中填写“@域名”，eg:“@test.com”。" %}
                                 </p>
                             </div>
                         </div>

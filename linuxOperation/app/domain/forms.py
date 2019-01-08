@@ -165,7 +165,7 @@ class DomainForm(DotDict):
             if len(value) > 100:
                 value = u"..."
             param = u"{}({})".format(self.PARAM_NAME.get(obj.item,u''),u"{}-{}".format(obj.type,obj.item))
-            msg = u"域名参数:'{}' 值:{}".format(param,value)
+            msg = _(u"域名参数:'{}' 值:{}").format(param,value)
             api_create_admin_log(self.request, obj, 'domainconfig', msg)
         clear_redis_cache()
 
@@ -568,8 +568,8 @@ class DomainSysOthersForm(DomainForm):
     PARAM_TYPE = dict(constants.DOMAIN_SYS_OTHERS_TYPE)
 
     SMSServiceList = (
-        (u'jiutian',      u'短信通道一（九天）'),
-        (u'zhutong',      u'短信通道二（助通）'),
+        (u'jiutian',      _(u'短信通道一（九天）')),
+        (u'zhutong',      _(u'短信通道二（助通）')),
     )
 
     @property
@@ -805,7 +805,7 @@ class DomainSignPersonalForm(DomainForm):
 
     def applyAll(self):
         import cgi
-        caption = u"系统默认签名"
+        caption = _(u"系统默认签名")
         content = self.personal_sign_templ
         content = cgi.escape(content)
         content = get_unicode(content)
@@ -959,7 +959,7 @@ class DomainSecretForm(DotDict):
         for d in lists:
             mailbox_id = d.mailbox_id
             boxObj = Mailbox.objects.filter(id=mailbox_id).first()
-            mailbox = u"已删除帐号" if not boxObj else boxObj.username
+            mailbox = _(u"已删除帐号") if not boxObj else boxObj.username
             dataList.append( {
                 "id"        :   d.id,
                 "mailbox"  :   mailbox,
@@ -976,7 +976,7 @@ class DomainSecretForm(DotDict):
             for mailbox in self.addList:
                 boxObj = Mailbox.objects.filter(username=mailbox).first()
                 if not boxObj:
-                    self.error = u"邮箱帐号不存在"
+                    self.error = _(u"邮箱帐号不存在")
                     self.valid = False
                     return self.valid
         return self.valid
@@ -1053,16 +1053,16 @@ class DomainPublicInputForm(DotDict):
     def check(self):
         fullname = u"" if not self.fullname.value.strip() else self.fullname.value.strip()
         if not fullname:
-            self.fullname.set_error(u"请填写姓名")
+            self.fullname.set_error(_(u"请填写姓名"))
             self.valid = False
             return self.valid
         pref_email = u"" if not self.pref_email.value.strip() else self.pref_email.value.strip()
         if not pref_email:
-            self.pref_email.set_error(u"请填写邮箱地址")
+            self.pref_email.set_error(_(u"请填写邮箱地址"))
             self.valid = False
             return self.valid
         if not check_email_ordomain(pref_email):
-            self.pref_email.set_error(u"不合法的邮箱地址格式")
+            self.pref_email.set_error(_(u"不合法的邮箱地址格式"))
             self.valid = False
             return self.valid
         #生日不应该是个必填项,用一个默认值填充
@@ -1188,7 +1188,7 @@ class DomainPublicImportForm(DotDict):
     def checkImportAdd(self):
         for line,data in self.data_list:
             if len(data) < len(self.COL_ADD_LIST):
-                self.import_error.append( u"数据列不足: {}".format(line) )
+                self.import_error.append( _(u"数据列不足: {}").format(line) )
                 continue
             self.insert_list.append( data )
 
@@ -1213,14 +1213,14 @@ class DomainPublicImportForm(DotDict):
                     im_qq = data["im_qq"].strip()
                     im_msn = data["im_msn"].strip()
                 except Exception,err:
-                    self.import_error.append( u"数据格式错误: {}  ：  {}".format(line,get_unicode(err)) )
+                    self.import_error.append( _(u"数据格式错误: {}  ：  {}").format(line,get_unicode(err)) )
                     continue
 
                 if not pref_email or not check_email_ordomain(pref_email):
-                    self.import_error.append( u"不合法的邮箱地址: {}  ：  '{}'".format(line,pref_email) )
+                    self.import_error.append( _(u"不合法的邮箱地址: {}  ：  '{}'").format(line,pref_email) )
                     continue
                 if not fullname:
-                    self.import_error.append( u"未填写姓名: {}  ：  '{}'".format(line,fullname) )
+                    self.import_error.append( _(u"未填写姓名: {}  ：  '{}'").format(line,fullname) )
                     continue
                 if not birthday:
                     birthday = u"1970-01-01"
@@ -1272,7 +1272,7 @@ class DomainPublicImportForm(DotDict):
                             remark=u"{}".format(remark),
                         )
                 except Exception,err:
-                    self.import_error.append( u"数据保存失败: {}  ：  {}".format(line,get_unicode(err)) )
+                    self.import_error.append( _(u"数据保存失败: {}  ：  {}").format(line,get_unicode(err)) )
                     continue
 
         elif self.action == "import_del":
@@ -1283,16 +1283,16 @@ class DomainPublicImportForm(DotDict):
         import xlwt,StringIO,os
         #创建workbook对象并设置编码
         ws = xlwt.Workbook(encoding='utf-8')
-        w = ws.add_sheet(u'公共通讯录',cell_overwrite_ok=True)
-        w.write(0, 0, u"客户名称")
-        w.write(0, 1, u"邮件地址")
-        w.write(0, 2, u"联系电话")
-        w.write(0, 3, u"客户分组")
-        w.write(0, 4, u"备注")
-        w.write(0, 5, u"生日")
-        w.write(0, 6, u"性别")
-        w.write(0, 7, u"工作电话")
-        w.write(0, 8, u"家庭电话")
+        w = ws.add_sheet(_(u'公共通讯录'),cell_overwrite_ok=True)
+        w.write(0, 0, _(u"客户名称"))
+        w.write(0, 1, _(u"邮件地址"))
+        w.write(0, 2, _(u"联系电话"))
+        w.write(0, 3, _(u"客户分组"))
+        w.write(0, 4, _(u"备注"))
+        w.write(0, 5, _(u"生日"))
+        w.write(0, 6, _(u"性别"))
+        w.write(0, 7, _(u"工作电话"))
+        w.write(0, 8, _(u"家庭电话"))
         w.write(0, 9, u"QQ")
         w.write(0, 10, u"MSN")
 
@@ -1372,7 +1372,7 @@ class DomainPublicTypeForm(DotDict):
     def check(self):
         name = u"" if not self.name.value.strip() else self.name.value.strip()
         if not name:
-            self.name.set_error(u"请填写分类名称")
+            self.name.set_error(_(u"请填写分类名称"))
             self.valid = False
             return self.valid
         return self.valid
@@ -1425,23 +1425,23 @@ class DomainListForm(DomainForm):
 
     def checkSave(self):
         if not self.domainName.value.strip():
-            self.error = u"请设置域名名称"
+            self.error = _(u"请设置域名名称")
             return False
         if not check_email_ordomain('test@'+self.domainName.value):
-            self.error = u"错误的域名格式"
+            self.error = _(u"错误的域名格式")
             return False
         if self.operate == u"add":
             obj = Domain.objects.filter(domain=self.domainName.value).first()
             if obj:
-                self.error = u"域名已存在"
+                self.error = _(u"域名已存在")
                 return False
             obj = CoreAlias.objects.filter(source=u'@%s'%self.domainName.value).first()
             if obj:
-                self.error = u"域名已存在于域别名中的虚拟地址中"
+                self.error = _(u"域名已存在于域别名中的虚拟地址中")
                 return False
         if self.domainName.value in ("comingchina.com","fenbu.comingchina.com") \
             and unicode(self.request.user).startswith(u"demo_admin@"):
-                self.error = u"演示版本主域名不可修改"
+                self.error = _(u"演示版本主域名不可修改")
                 return False
         self.save()
         return True
@@ -1532,13 +1532,13 @@ class DomainDkimForm(DotDict):
     def importFile(self, request):
         private_key = request.POST.get('certfile', '').replace('\r', '').strip()
         if not private_key:
-            self.error = u'请选择密钥文件导入'
+            self.error = _(u'请选择密钥文件导入')
             return False
         else:
             try:
                 private_key, public_key = generate_rsa(pkey=private_key)
             except Exception,err:
-                self.error = u'您导入的密钥格式不正确，请重新生成:   %s'%str(err)
+                self.error = _(u'您导入的密钥格式不正确，请重新生成:   %s')%str(err)
                 self.verify_failure = True
             else:
                 attr, _ = DomainAttr.objects.get_or_create(item=self.ItemKey, type=self.ItemType, domain_id=self.domain_id)
@@ -1555,7 +1555,7 @@ class DomainDkimForm(DotDict):
         try:
             attr = DomainAttr.objects.get(item=self.ItemKey, type=self.ItemType, domain_id=self.domain_id)
         except DomainAttr.DoesNotExist:
-            self.error = u'密钥数据不存在'
+            self.error = _(u'密钥数据不存在')
             return None
         response = HttpResponse(content_type='text/plain')
         response['Content-Disposition'] = 'attachment; filename=dkim.key'
@@ -1574,13 +1574,13 @@ class DomainDkimForm(DotDict):
 
         domain_name = Domain.objects.filter(id=self.domain_id).first().domain
         if not dkim_tools.valid_domain(domain=domain_name, rdtype='dkim', record=self.public_key):
-            self.error = u"验证DKIM记录不通过，请确认SPF、MX记录已经配置正确！"
+            self.error = _(u"验证DKIM记录不通过，请确认SPF、MX记录已经配置正确！")
             self.verify_failure = True
             return False
 
         try:
             if not self.private_key:
-                self.error = u"未设置加密私钥"
+                self.error = _(u"未设置加密私钥")
                 return False
 
             import dkim
@@ -1590,11 +1590,11 @@ class DomainDkimForm(DotDict):
 
             # 生成邮件
             mail = MIMEMultipart()
-            part = MIMEText(u"测试邮件", 'plain', 'utf-8')
+            part = MIMEText(_(u"测试邮件"), 'plain', 'utf-8')
             mail['Date']    = time.strftime("%a, %d %b %Y %H:%M:%S %z")
             mail["From"]    = "test@umail.com"
             mail["To"]      = "test@umail.com"
-            mail['Subject'] = make_header(((u"测试DKIM邮件", 'utf-8'),))
+            mail['Subject'] = make_header(((_(u"测试DKIM邮件"), 'utf-8'),))
             mail.attach(part)
             maildata = mail.as_string()
 
@@ -1606,7 +1606,7 @@ class DomainDkimForm(DotDict):
             Domain.objects.filter(id=self.domain_id).update(dkim=u'1')
             return True
         except Exception,err:
-            self.error = u"测试签名邮件时发生错误： {}".format(str(err))
+            self.error = _(u"测试签名邮件时发生错误： {}").format(str(err))
             self.verify_failure = True
             #验证失败后需要关闭DKIM开关
             Domain.objects.filter(id=self.domain_id).update(dkim=u'-1')

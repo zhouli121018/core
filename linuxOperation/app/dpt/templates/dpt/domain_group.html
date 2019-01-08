@@ -33,16 +33,16 @@
                     {% for d in lists %}
                         <tr class="{% cycle 'odd' 'even' %}">
                             <td>{{ forloop.counter }}</td>
-                            <td>{{ d.domain }}{% if forloop.first %}<strong class="grey">&nbsp;(主域)</strong>{% endif %}</td>
+                            <td>{{ d.domain }}{% if forloop.first %}<strong class="grey">&nbsp;{% trans "(主域)" %}</strong>{% endif %}</td>
                             <td>
                                 {% if d.disabled == "-1" %}
-                                    <span class="label label-xlg label-success arrowed-in arrowed-in-right">启用</span>
+                                    <span class="label label-xlg label-success arrowed-in arrowed-in-right">{% trans "启用" %}</span>
                                 {% else %}
-                                    <span class="label label-xlg label-light arrowed-in arrowed-in-right">禁用</span>
+                                    <span class="label label-xlg label-light arrowed-in arrowed-in-right">{% trans "禁用" %}</span>
                                 {% endif %}
                             </td>
                             <td>
-                                <a data-toggle="modal" data-target="#tagModal" data-whatever="" class="btn btn-white btn-purple btn-xs" href="{% url 'domain_group_add' d.id %}">查看组合并修改</a>
+                                <a data-toggle="modal" data-target="#tagModal" data-whatever="" class="btn btn-white btn-purple btn-xs" href="{% url 'domain_group_add' d.id %}">{% trans "查看组合并修改" %}</a>
                             </td>
                         </tr>
                     {% endfor %}
@@ -58,12 +58,12 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">加载中</h4>
+                    <h4 class="modal-title" id="myModalLabel">{% trans "加载中" %}</h4>
                 </div>
-                <div class="modal-body">页面加载中
+                <div class="modal-body">{% trans "页面加载中" %}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">关闭</button>
+                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">{% trans "关闭" %}</button>
                 </div>
             </div>
         </div>

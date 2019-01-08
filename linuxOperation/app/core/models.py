@@ -10,7 +10,7 @@ from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import Permission, Group
 from django.contrib.auth.models import UserManager, AbstractUser
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 from lib.formats import dict_compatibility
 from lib.licence import licence_validate, licence_validsms
 from app.utils.ordered_model import OrderedModel
@@ -22,27 +22,27 @@ class Domain(models.Model):
     域名信息
     """
     id = models.AutoField(primary_key=True, db_column='domain_id')
-    domain = models.CharField(u'域名', max_length=50, null=False, blank=False)
-    antivirus = models.CharField(u'反病毒开关', max_length=1, choices=constants.FUNCTION_STATUS, default='-1', null=False,
+    domain = models.CharField(_(u'域名'), max_length=50, null=False, blank=False)
+    antivirus = models.CharField(_(u'反病毒开关'), max_length=1, choices=constants.FUNCTION_STATUS, default='-1', null=False,
                                  blank=False)
-    antispam = models.CharField(u'反垃圾开关', max_length=1, choices=constants.FUNCTION_STATUS, default='-1', null=False,
+    antispam = models.CharField(_(u'反垃圾开关'), max_length=1, choices=constants.FUNCTION_STATUS, default='-1', null=False,
                                 blank=False)
-    userbwlist = models.CharField(u'黑白名单开关', max_length=1, choices=constants.FUNCTION_STATUS, default='1', null=False,
+    userbwlist = models.CharField(_(u'黑白名单开关'), max_length=1, choices=constants.FUNCTION_STATUS, default='1', null=False,
                                   blank=False)
-    sendlimit = models.CharField(u'发信频率开关', max_length=1, choices=constants.FUNCTION_STATUS, default='-1', null=False,
+    sendlimit = models.CharField(_(u'发信频率开关'), max_length=1, choices=constants.FUNCTION_STATUS, default='-1', null=False,
                                  blank=False)
-    disabled = models.CharField(u'是否禁用', max_length=1, choices=constants.DISABLED_STATUS, default='-1', null=False,
+    disabled = models.CharField(_(u'是否禁用'), max_length=1, choices=constants.DISABLED_STATUS, default='-1', null=False,
                                 blank=False)
 
-    dkim = models.CharField(u'开启DKIM', max_length=2, default='-1')
-    recvsms = models.CharField(u'开启发件短信', max_length=2, default='-1')
-    sendsms = models.CharField(u'开启收件短信', max_length=2, default='-1')
-    popmail = models.CharField(u'开启POP', max_length=2, default='1')
-    spaceclean = models.CharField(u'开启空间清理', max_length=2, default='1')
-    impush = models.CharField(u'开启IM通信', max_length=2, default='-1')
+    dkim = models.CharField(_(u'开启DKIM'), max_length=2, default='-1')
+    recvsms = models.CharField(_(u'开启发件短信'), max_length=2, default='-1')
+    sendsms = models.CharField(_(u'开启收件短信'), max_length=2, default='-1')
+    popmail = models.CharField(_(u'开启POP'), max_length=2, default='1')
+    spaceclean = models.CharField(_(u'开启空间清理'), max_length=2, default='1')
+    impush = models.CharField(_(u'开启IM通信'), max_length=2, default='-1')
     share_domains = models.CharField(max_length=200, default='0', verbose_name=_(u"域名组合情况"))
     share_title = models.CharField(max_length=200, default='0', verbose_name=_(u"所有域企业通讯录组合显示别名"))
-    is_wx_host = models.IntegerField(u'是否微信主域名', default='-1')
+    is_wx_host = models.IntegerField(_(u'是否微信主域名'), default='-1')
 
     class Meta:
         db_table = 'core_domain'
@@ -130,7 +130,7 @@ class Department(OrderedModel):
     @property
     def parent_name(self):
         o = self.parent
-        return o and o.title or None
+        return o and o.get_title or None
 
     @property
     def has_child(self):
@@ -157,9 +157,13 @@ class Department(OrderedModel):
         data = {}
         return get_child(data, self)
 
+    @property
+    def get_title(self):
+        return _(unicode(self.title))+u"_{}".format(self.id)
+
 class CoDepartmentInfo(models.Model):
     # dept_id = models.IntegerField(unique=True)
-    id = models.IntegerField(primary_key=True, db_column='dept_id', verbose_name=_("部门ID"))
+    id = models.IntegerField(primary_key=True, db_column='dept_id', verbose_name=_(u"部门ID"))
     domain_id = models.IntegerField(_(u'域名'), default=0)
     manager = models.CharField(_(u'部门领导'), max_length=50, blank=True, null=True)
     contact = models.CharField(_(u'联系人'), max_length=50, blank=True, null=True)
@@ -180,15 +184,15 @@ class Mailbox(AbstractUser):
     """
     id = models.AutoField(primary_key=True, db_column='mailbox_id')
     domain = models.ForeignKey(Domain)
-    domain_str = models.CharField(u'域名', max_length=50, null=False, blank=False, db_column='domain')
-    name = models.CharField(u'邮箱名称：', max_length=80, null=False, blank=False)
-    quota_mailbox = models.IntegerField(u'邮箱容量：', default=100)
-    quota_netdisk = models.IntegerField(u'网络硬盘容量：', default=100)
-    limit_send = models.CharField(u'发信权限：', max_length=2, choices=constants.MAILBOX_SEND_PERMIT, default='-1',
+    domain_str = models.CharField(_(u'域名'), max_length=50, null=False, blank=False, db_column='domain')
+    name = models.CharField(_(u'邮箱名称：'), max_length=80, null=False, blank=False)
+    quota_mailbox = models.IntegerField(_(u'邮箱容量：'), default=100)
+    quota_netdisk = models.IntegerField(_(u'网络硬盘容量：'), default=100)
+    limit_send = models.CharField(_(u'发信权限：'), max_length=2, choices=constants.MAILBOX_SEND_PERMIT, default='-1',
                                   null=True, blank=True)
-    limit_recv = models.CharField(u'收信权限：', max_length=2, choices=constants.MAILBOX_RECV_PERMIT, default='-1',
+    limit_recv = models.CharField(_(u'收信权限：'), max_length=2, choices=constants.MAILBOX_RECV_PERMIT, default='-1',
                                   null=True, blank=True)
-    use_group = models.IntegerField(u'是否应用组权限', default=1)
+    use_group = models.IntegerField(_(u'是否应用组权限'), default=1)
     # limit_pop = RevCharBooleanField(u'POP功能：', default=True)
     # limit_imap = RevCharBooleanField(u'IMAP功能：', default=True)
     # disabled = RevCharBooleanField(u'邮箱帐号状态：', default=True)
@@ -196,26 +200,26 @@ class Mailbox(AbstractUser):
     #limit_pop = models.CharField(u'POP功能', max_length=2, default='-1', choices=constants.MAILBOX_DISABLED)
     #与组权限冲突
     #limit_imap = models.CharField(u'IMAP功能', max_length=2, default='-1', choices=constants.MAILBOX_DISABLED)
-    disabled = models.CharField(u'邮箱帐号状态', max_length=2, default='-1', choices=constants.MAILBOX_DISABLED)
-    is_delete = models.CharField(u'邮箱删除状态', max_length=2, default='-1', choices=constants.MAILBOX_DISABLED)
+    disabled = models.CharField(_(u'邮箱帐号状态'), max_length=2, default='-1', choices=constants.MAILBOX_DISABLED)
+    is_delete = models.CharField(_(u'邮箱删除状态'), max_length=2, default='-1', choices=constants.MAILBOX_DISABLED)
     delete_time = models.DateTimeField(_(u'删除开始时间'), blank=True, null=True)
-    ip_limit = models.CharField(u'只允许登录IP：', max_length=255, null=True, blank=True)
-    savepath = models.CharField(u'邮件保存地址：', max_length=100, blank=True, null=True)
-    limit_login = models.CharField(u'登录方式：', max_length=2, default='-1', choices=constants.MAILBOX_LIMIT_LOGIN)
-    recvsms = models.CharField(u'短信接收设置：', max_length=2, choices=constants.MAILBOX_RECV_SMS, default='1')
+    ip_limit = models.CharField(_(u'只允许登录IP：'), max_length=255, null=True, blank=True)
+    savepath = models.CharField(_(u'邮件保存地址：'), max_length=100, blank=True, null=True)
+    limit_login = models.CharField(_(u'登录方式：'), max_length=2, default='-1', choices=constants.MAILBOX_LIMIT_LOGIN)
+    recvsms = models.CharField(_(u'短信接收设置：'), max_length=2, choices=constants.MAILBOX_RECV_SMS, default='1')
     sys_mailbox = models.CharField(max_length=2, default='-1')
-    change_pwd = models.CharField(u'登录强制修改密码：', max_length=2, choices=constants.MAILBOX_CHANGE_PWD)
-    enable_share = models.IntegerField(u'是否打开邮箱共享：', default=-1, choices=constants.MAILBOX_ENABLE)
+    change_pwd = models.CharField(_(u'登录强制修改密码：'), max_length=2, choices=constants.MAILBOX_CHANGE_PWD)
+    enable_share = models.IntegerField(_(u'是否打开邮箱共享：'), default=-1, choices=constants.MAILBOX_ENABLE)
     # change_pwd = CharBooleanField(u'登录强制修改密码：', default=False)
     # enable_share = CharBooleanField(u'是否打开邮箱共享：', default=False)
     #first_change_pwd已经去掉
     #first_change_pwd = models.IntegerField(u'首次登录强制修改密码：', default=-1, choices=constants.MAILBOX_ENABLE)
-    pwd_days = models.IntegerField(u'密码有效天数：', default=365, help_text=u'0代表永远有效，大于0代表多少天密码过期后会强制用户修改密码,新增用户默认是365天')
-    pwd_days_time = models.IntegerField(u'密码有效开始时间：', default=int(time.time()), help_text=u'不能大于当前时间')
+    pwd_days = models.IntegerField(_(u'密码有效天数：'), default=365, help_text=_(u'0代表永远有效，大于0代表多少天密码过期后会强制用户修改密码,新增用户默认是365天'))
+    pwd_days_time = models.IntegerField(_(u'密码有效开始时间：'), default=int(time.time()), help_text=_(u'不能大于当前时间'))
 
     # 用户表 设置
-    username = models.CharField(u'账号全名：', max_length=200, null=False, blank=False, unique=True, db_column="mailbox")
-    password = models.CharField(u'邮箱密码：', max_length=120, blank=True, null=True)
+    username = models.CharField(_(u'账号全名：'), max_length=200, null=False, blank=False, unique=True, db_column="mailbox")
+    password = models.CharField(_(u'邮箱密码：'), max_length=120, blank=True, null=True)
     # 新增字段
     last_login = models.DateTimeField(_(u'最后登录时间'), blank=True, null=True)
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
@@ -224,7 +228,7 @@ class Mailbox(AbstractUser):
     # is_active = models.BooleanField(u'是否是活跃用户', default=False, help_text=u'不选择的话，被当作标记删除用户对待。此处用于区分 PHP前端用户，还是管理员用户')
     # is_active 不选择的话，被当作标记删除用户对待。此处用于区分 PHP前端用户，还是管理员用户
     is_active = models.BooleanField(_(u'管理员：'), default=False)
-    is_staff = models.BooleanField(u'是否是员工', default=True)
+    is_staff = models.BooleanField(_(u'是否是员工'), default=True)
     is_superuser = models.BooleanField(
         _(u'超级管理员：'),
         default=False,
@@ -254,7 +258,7 @@ class Mailbox(AbstractUser):
 
     domains = models.ManyToManyField(
         Domain,
-        verbose_name=u'域名',
+        verbose_name=_(u'域名'),
         blank=True,
         related_name="domain_set",  # 比如 得到一个Tag模型tag， 查询 tag.tag_set.all()
         related_query_name="mailbox",  #
@@ -263,7 +267,7 @@ class Mailbox(AbstractUser):
 
     departments = models.ManyToManyField(
         Department,
-        verbose_name=u'部门',
+        verbose_name=_(u'部门'),
         blank=True,
         related_name="department_set",  # 比如 得到一个Tag模型tag， 查询 tag.tag_set.all()
         related_query_name="mailbox",  #
@@ -329,7 +333,7 @@ class Mailbox(AbstractUser):
         if obj:
             obj2 = Department.objects.filter(id=obj.dept_id).first()
             if obj2:
-                return obj2.title
+                return obj2.get_title
         return ""
 
     @property
@@ -355,7 +359,7 @@ class Mailbox(AbstractUser):
         obj = DomainAttr.objects.filter(domain_id=0,type="system",item=u'superadmintitle').first()
         if obj:
             return obj.value
-        return u'U-Mail邮件系统--超级管理员后台'
+        return _(u'U-Mail邮件系统--超级管理员后台')
 
     @property
     def enable_remark(self):
@@ -385,7 +389,7 @@ class Mailbox(AbstractUser):
     def is_sys_admin(self):
         if self.is_superuser:
             return False
-        group = Group.objects.filter(name=u"系统管理员").first()
+        group = Group.objects.filter(name=_(u"系统管理员")).first()
         if not group:
             return False
         users = group.user_set.filter(is_active=True).filter(id=self.id).first()
@@ -397,7 +401,7 @@ class Mailbox(AbstractUser):
             return False
         if self.is_sys_admin:
             return False
-        group = Group.objects.filter(name=u"域名管理员").first()
+        group = Group.objects.filter(name=_(u"域名管理员")).first()
         if not group:
             return False
         users = group.user_set.filter(is_active=True).filter(id=self.id).first()
@@ -412,7 +416,7 @@ class Mailbox(AbstractUser):
             return False
         if self.is_sys_admin:
             return False
-        group = Group.objects.filter(name=u"部门管理员").first()
+        group = Group.objects.filter(name=_(u"部门管理员")).first()
         if not group:
             return False
         users = group.user_set.filter(is_active=True).filter(id=self.id).first()
@@ -428,10 +432,10 @@ class Mailbox(AbstractUser):
     @property
     def get_delete_time_desc(self):
         if not self.delete_time:
-            return u"等待删除"
+            return _(u"等待删除")
         delay_setting = DomainAttr.getAttrObjValue(domain_id=0, type="system", item='cf_mailbox_delete_delay')
         delete_value = (self.delete_time + datetime.timedelta(days=int(delay_setting))).strftime('%Y-%m-%d %H:%M:%S')
-        return u"将于<{}>后执行删除".format(delete_value)
+        return _(u"将于<{}>后执行删除").format(delete_value)
 
     #新版函数
     @property
@@ -517,21 +521,21 @@ class MailboxUser(models.Model):
     mailbox = models.OneToOneField(Mailbox, primary_key=True, related_name='mailboxuser')
     domain = models.ForeignKey(Domain)
 
-    realname = models.CharField(u'姓名：', max_length=80, null=False, blank=False)
-    eenumber = models.CharField(u'工号：', max_length=200, null=True, blank=True)
-    last_login = models.DateTimeField(u'最后登录', blank=True, null=True)
-    engname = models.CharField(u'英文名：', max_length=35, blank=True, null=True)
-    oabshow = models.CharField(u'通讯录显示：', max_length=2, default='1', choices=constants.USER_SHOW)
+    realname = models.CharField(_(u'姓名：'), max_length=80, null=False, blank=False)
+    eenumber = models.CharField(_(u'工号：'), max_length=200, null=True, blank=True)
+    last_login = models.DateTimeField(_(u'最后登录'), blank=True, null=True)
+    engname = models.CharField(_(u'英文名：'), max_length=35, blank=True, null=True)
+    oabshow = models.CharField(_(u'通讯录显示：'), max_length=2, default='1', choices=constants.USER_SHOW)
     # oabshow = CharBooleanField(u'通讯录显示：', default=True)
-    showorder = models.IntegerField(u'排序权重：', default=0, help_text=u'注：数字越大越靠前显示')
-    gender = models.CharField(u'性别：', max_length=6, choices=constants.GENDER, default='male')
-    birthday = ZeroDateField(u'生日：', null=True, blank=True)
-    homepage = models.CharField(u'主页：', max_length=100, blank=True, null=True)
-    tel_mobile = models.CharField(u'手机号码：', max_length=20, blank=True, null=True)
-    tel_home = models.CharField(u'住宅号码：', max_length=20, blank=True, null=True)
-    tel_work = models.CharField(u'公司电话：', max_length=20, blank=True, null=True)
-    tel_work_ext = models.CharField(u'分机号码：', max_length=10, blank=True, null=True)
-    tel_group = models.CharField(u'集团号：', max_length=20, blank=True, null=True)
+    showorder = models.IntegerField(_(u'排序权重：'), default=0, help_text=_(u'注：数字越大越靠前显示'))
+    gender = models.CharField(_(u'性别：'), max_length=6, choices=constants.GENDER, default='male')
+    birthday = ZeroDateField(_(u'生日：'), null=True, blank=True)
+    homepage = models.CharField(_(u'主页：'), max_length=100, blank=True, null=True)
+    tel_mobile = models.CharField(_(u'手机号码：'), max_length=20, blank=True, null=True)
+    tel_home = models.CharField(_(u'住宅号码：'), max_length=20, blank=True, null=True)
+    tel_work = models.CharField(_(u'公司电话：'), max_length=20, blank=True, null=True)
+    tel_work_ext = models.CharField(_(u'分机号码：'), max_length=10, blank=True, null=True)
+    tel_group = models.CharField(_(u'集团号：'), max_length=20, blank=True, null=True)
     im_qq = models.CharField(u'QQ：', max_length=25, blank=True, null=True)
     im_msn = models.CharField(u'MSN：', max_length=50, blank=True, null=True)
     addr_country = models.CharField(max_length=50, blank=True, null=True)
@@ -539,7 +543,7 @@ class MailboxUser(models.Model):
     addr_city = models.CharField(max_length=50, blank=True, null=True)
     addr_address = models.CharField(max_length=100, blank=True, null=True)
     addr_zip = models.CharField(max_length=20, blank=True, null=True)
-    remark = models.TextField(u'备注：', blank=True, null=True)
+    remark = models.TextField(_(u'备注：'), blank=True, null=True)
     last_session = models.CharField(max_length=32, blank=True, null=True)
     openid = models.CharField(max_length=128, default='0')
     unionid = models.CharField(max_length=255, default='0')
@@ -563,9 +567,9 @@ class MailboxUserAttr(models.Model):
         unique_together = (('mailbox', 'type', 'item'),)
 
 REGISTER_CHOICE=(
-    (u"wait", u"等待处理"),
-    (u"permit", u"批准"),
-    (u"reject", u"拒绝"),
+    (u"wait", _(u"等待处理")),
+    (u"permit", _(u"批准")),
+    (u"reject", _(u"拒绝")),
 )
 class CoUserReg(models.Model):
     domain_id = models.IntegerField()
@@ -645,9 +649,9 @@ class MailboxSize(models.Model):
     """
     #id = models.AutoField(primary_key=True, db_column='mailbox_id')
     mailbox = models.OneToOneField(Mailbox, primary_key=True, related_name='mailboxsize')
-    name = models.CharField(u'账号全名', max_length=200, null=False, blank=False, db_column='mailbox')
-    size = models.IntegerField(u'邮箱当前容量', default=0)
-    per = models.IntegerField(u'邮箱容量使用比例', default=0)
+    name = models.CharField(_(u'账号全名'), max_length=200, null=False, blank=False, db_column='mailbox')
+    size = models.IntegerField(_(u'邮箱当前容量'), default=0)
+    per = models.IntegerField(_(u'邮箱容量使用比例'), default=0)
     last_update = models.DateTimeField('update_time', blank=True, null=True)
 
     def __unicode__(self):
@@ -764,8 +768,8 @@ class MyUserGroups(models.Model):
 class CoreUrlRemark(models.Model):
     """  每个页面下的备注， url唯一
     """
-    url = models.CharField(u'URL', max_length=200, null=False, blank=False, unique=True, help_text=u'url地址')
-    remark = models.TextField(u'备注', null=True, blank=True)
+    url = models.CharField(u'URL', max_length=200, null=False, blank=False, unique=True, help_text=_(u'url地址'))
+    remark = models.TextField(_(u'备注'), null=True, blank=True)
 
     class Meta:
         managed = False
@@ -863,10 +867,10 @@ class CoreWhitelist(models.Model):
 
 
 class DomainAttr(models.Model):
-    domain_id = models.IntegerField(u"域名ID", default=0, null=False, blank=False)
-    type = models.CharField(u"类型", choices=constants.ATTR_TYPR, max_length=20, null=False, blank=False)
-    item = models.CharField(u"键", max_length=35, null=False, blank=False)
-    value = models.TextField(u"值")
+    domain_id = models.IntegerField(_(u"域名ID"), default=0, null=False, blank=False)
+    type = models.CharField(_(u"类型"), choices=constants.ATTR_TYPR, max_length=20, null=False, blank=False)
+    item = models.CharField(_(u"键"), max_length=35, null=False, blank=False)
+    value = models.TextField(_(u"值"))
 
     class Meta:
         db_table = 'core_domain_attr'
@@ -936,10 +940,10 @@ class DomainAttr(models.Model):
 
 
 class CoreConfig(models.Model):
-    function = models.CharField(u"类型", max_length=50, null=True, blank=True)
-    enabled = models.CharField(u'状态', max_length=1, choices=constants.DISABLED_STATUS, default='-1', null=False,
+    function = models.CharField(_(u"类型"), max_length=50, null=True, blank=True)
+    enabled = models.CharField(_(u'状态'), max_length=1, choices=constants.DISABLED_STATUS, default='-1', null=False,
                                blank=False)
-    param = models.TextField(u"值")
+    param = models.TextField(_(u"值"))
 
     class Meta:
         db_table = 'core_config'
@@ -1049,14 +1053,14 @@ class CoreConfig(models.Model):
 
 
 class CoreMonitor(models.Model):
-    domain_id = models.IntegerField(u'域名ID', default=0, null=False, blank=False, db_index=True)
-    target = models.CharField(u"监控对象", max_length=80, db_index=True)
-    target_dept = models.IntegerField(u'发信人部门', default=0, help_text=u'需要审核的部门ID')
-    forward = models.CharField(u"接收邮箱", max_length=80, db_index=True)
-    listen_type = models.CharField(u'监听类型', max_length=20, choices=constants.MONITOR_LISTEN_TYPE, db_column='type')
-    target_type = models.CharField(u'通道类型', max_length=20, choices=constants.MONITOR_TARGET_TYPE)
-    monit_move = models.CharField(u'监控邮件搬家', max_length=10, choices=constants.MONITOR_MAILMOVE_SELECT)
-    disabled = models.CharField(u'状态', max_length=1, choices=constants.DISABLED_STATUS, default='-1', null=False,
+    domain_id = models.IntegerField(_(u'域名ID'), default=0, null=False, blank=False, db_index=True)
+    target = models.CharField(_(u"监控对象"), max_length=80, db_index=True)
+    target_dept = models.IntegerField(_(u'发信人部门'), default=0, help_text=_(u'需要审核的部门ID'))
+    forward = models.CharField(_(u"接收邮箱"), max_length=80, db_index=True)
+    listen_type = models.CharField(_(u'监听类型'), max_length=20, choices=constants.MONITOR_LISTEN_TYPE, db_column='type')
+    target_type = models.CharField(_(u'通道类型'), max_length=20, choices=constants.MONITOR_TARGET_TYPE)
+    monit_move = models.CharField(_(u'监控邮件搬家'), max_length=10, choices=constants.MONITOR_MAILMOVE_SELECT)
+    disabled = models.CharField(_(u'状态'), max_length=1, choices=constants.DISABLED_STATUS, default='-1', null=False,
                                 blank=False)
 
     class Meta:
@@ -1067,7 +1071,7 @@ class CoreMonitor(models.Model):
     @property
     def department(self):
         obj = Department.objects.filter(pk=self.target_dept).first()
-        return obj and obj.title or ''
+        return obj and obj.get_title or ''
 
     def get_domain_name(self):
         obj = Domain.objects.filter(id=self.domain_id).first()
@@ -1095,7 +1099,7 @@ class AuthLog(models.Model):
     """
     客户端访问日志
     """
-    domain_id = models.IntegerField(u'域名ID', default=0, null=False, blank=False, db_index=True)
+    domain_id = models.IntegerField(_(u'域名ID'), default=0, null=False, blank=False, db_index=True)
     user = models.CharField('user', max_length=100, null=True, blank=True)
     type = models.CharField('type', max_length=10, null=True, blank=True)
     client_ip = models.CharField('client_ip', max_length=20, null=True, blank=True)
@@ -1152,7 +1156,7 @@ class ExtCommonCheckrule(models.Model):
     disabled = models.IntegerField()
 
     def __unicode__(self):
-        return u"规则"
+        return _(u"规则")
 
     @property
     def conditions(self):
@@ -1176,7 +1180,7 @@ class ExtCheckruleCondition(models.Model):
     disabled = models.IntegerField()
 
     def __unicode__(self):
-        return u"条件"
+        return _(u"条件")
 
     @property
     def children(self):
@@ -1223,10 +1227,10 @@ class ExtForward(models.Model):
     rule = models.ForeignKey(ExtCommonCheckrule)
     sequence = models.IntegerField(_(u"排序"), default=999)
     forward = models.TextField(blank=True, null=True)
-    visible = models.CharField(_(u'用户可否设置'), max_length=2, default='-1', choices=constants.FORWARD_VISIBLE, help_text=u'已弃用')
+    visible = models.CharField(_(u'用户可否设置'), max_length=2, default='-1', choices=constants.FORWARD_VISIBLE, help_text=_(u'已弃用'))
     keep_mail = models.CharField(_(u'同时将信件保存在本邮箱内'), max_length=2, choices=constants.FORWARD_KEEP_MAIL)
     disabled = models.CharField(max_length=2, choices=constants.DISABLED_STATUS)
-    local = models.CharField(_(u'仅转发本地邮箱'), max_length=2, default='-1', help_text=u'已弃用')
+    local = models.CharField(_(u'仅转发本地邮箱'), max_length=2, default='-1', help_text=_(u'已弃用'))
 
     class Meta:
         managed = False

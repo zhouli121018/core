@@ -1,7 +1,7 @@
 {% load i18n %}
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h4 class="modal-title" id="myModalLabel" style="font-weight: 600">组合其他域名的企业通讯录, 主域：{{ obj.domain }}</h4>
+    <h4 class="modal-title" id="myModalLabel" style="font-weight: 600">{% trans "组合其他域名的企业通讯录, 主域：" %}{{ obj.domain }}</h4>
 </div>
 <form action="{% url 'domain_group_add' domain_id %}" method="post" role="form" class="" id="id-domain_group_add">
     {% csrf_token %}
@@ -13,14 +13,14 @@
 
                         <div class="col-xs-12 col-sm-12 col-md-12">
                             <div class="form-group">
-                                <label class="col-md-2 control-label"><strong>显示别名：</strong></label>
+                                <label class="col-md-2 control-label"><strong>{% trans "显示别名：" %}</strong></label>
                                 <div class="col-md-9 input-group">
                                     <input name="share_title" id="id_share_title" required="" class=" form-control" maxlength="200" type="text" value="{{ share_title }}">
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-2 control-label"><strong>组合情况：</strong></label>
+                                <label class="col-md-2 control-label"><strong>{% trans "组合情况：" %}</strong></label>
                                 <div class="col-md-10 input-group">
                                     <div>
                                         {% for g in lists %}
@@ -48,7 +48,7 @@
     </div>
     <div class="modal-footer">
         <input value="{% trans '确定' %}" onclick="CheckChareTitle()" type="button" class="btn btn-primary">
-        <button id="modal_close" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button id="modal_close" type="button" class="btn btn-default" data-dismiss="modal">{% trans "关闭" %}</button>
     </div>
 </form>
 

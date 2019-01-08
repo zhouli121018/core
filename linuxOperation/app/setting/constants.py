@@ -1,49 +1,50 @@
 # -*- coding: utf-8 -*-
+from django.utils.translation import ugettext_lazy as _
 
 FILTER_RULE = (
-    (-1, u'发送'),
-    (1, u'接收'),
+    (-1, _(u'发送')),
+    (1, _(u'接收')),
 )
 
 RULE_LOGIC = (
-    ("all", u'满足所有条件'),
-    ("one", u'满足一条即可'),
+    ("all", _(u'满足所有条件')),
+    ("one", _(u'满足一条即可')),
 )
 
 DISABLED_STATUS = (
-    (-1, u'启用'),
-    (1, u'禁用'),
+    (-1, _(u'启用')),
+    (1, _(u'禁用')),
 )
 
 COND_LOGIC = (
-    ("all", u'满足所有'),
-    ("one", u'满足任意'),
+    ("all", _(u'满足所有')),
+    ("one", _(u'满足任意')),
 )
 
 ####################################################
 ALL_CONDITION_OPTION = (
-    ("header",         u'邮件头'),
-    ("extra",          u'其他'),
+    ("header",         _(u'邮件头')),
+    ("extra",          _(u'其他')),
 )
 
 ALL_CONDITION_SUBOPTION = (
-    ("all_mail",            u'所有邮件'),
-    ("has_attach",          u'有附件'),
-    ("attachments",        u'附件名'),
-    ("sender",              u'发信人'),
-    ("cc",                   u'抄送人'),
-    ("recipient",           u'收信人'),
-    ("sender_dept",         u'发信人部门'),
-    ("cc_dept",             u'抄送人部门'),
-    ("rcpt_dept",           u'收信人部门'),
+    ("all_mail",            _(u'所有邮件')),
+    ("has_attach",          _(u'有附件')),
+    ("attachments",        _(u'附件名')),
+    ("sender",              _(u'发信人')),
+    ("cc",                   _(u'抄送人')),
+    ("recipient",           _(u'收信人')),
+    ("sender_dept",         _(u'发信人部门')),
+    ("cc_dept",             _(u'抄送人部门')),
+    ("rcpt_dept",           _(u'收信人部门')),
     # ("header",              u'邮件头'),
-    ("subject",             u'主题'),
-    ("body",                 u'邮件内容'),
-    ("mail_size",           u'邮件大小(MB)'),
-    ("mail_size2",           u'邮件大小(Byte)'),
-    ("content_size",        u'邮件正文大小(Byte)'),
-    ("header_received",    u'邮件头Received'),
-    ("header_from",         u'邮件头From'),
+    ("subject",             _(u'主题')),
+    ("body",                 _(u'邮件内容')),
+    ("mail_size",           _(u'邮件大小(MB)')),
+    ("mail_size2",           _(u'邮件大小(Byte)')),
+    ("content_size",        _(u'邮件正文大小(Byte)')),
+    ("header_received",    _(u'邮件头Received')),
+    ("header_from",         _(u'邮件头From')),
     #("address_list",       u'用户通讯录'),
     #("send_whitelist",    u'发信人白名单'),
     #("recv_whitelist",     u'收信人白名单'),
@@ -51,38 +52,38 @@ ALL_CONDITION_SUBOPTION = (
 )
 
 ALL_CONDITION_ACTION = (
-    ("contains",            u'包含'),
-    ("not_contains",       u'不包含'),
-    ("==",                   u'等于'),
-    (">=",                   u'大于等于'),
-    ("<=",                   u'小于等于'),
-    ("in",                   u'属于'),
-    ("not_in",              u'不属于'),
+    ("contains",            _(u'包含')),
+    ("not_contains",       _(u'不包含')),
+    ("==",                   _(u'等于')),
+    (">=",                   _(u'大于等于')),
+    ("<=",                   _(u'小于等于')),
+    ("in",                   _(u'属于')),
+    ("not_in",              _(u'不属于')),
 )
 
 ####################################################
 #
 ALL_CONDITION_OPTION_HEADER = (
-    ("sender",              u'发信人'),
-    ("cc",                   u'抄送人'),
-    ("recipient",           u'收信人'),
-    ("sender_dept",         u'发信人部门'),
-    ("cc_dept",             u'抄送人部门'),
-    ("rcpt_dept",           u'收信人部门'),
-    ("subject",             u'主题'),
-    ("header_received",    u'邮件头Received'),
-    ("header_from",        u'邮件头From'),
-    ("attachments",        u'附件名'),
+    ("sender",              _(u'发信人')),
+    ("cc",                   _(u'抄送人')),
+    ("recipient",           _(u'收信人')),
+    ("sender_dept",         _(u'发信人部门')),
+    ("cc_dept",             _(u'抄送人部门')),
+    ("rcpt_dept",           _(u'收信人部门')),
+    ("subject",             _(u'主题')),
+    ("header_received",    _(u'邮件头Received')),
+    ("header_from",        _(u'邮件头From')),
+    ("attachments",        _(u'附件名')),
     # ("header",              u'邮件头'),
 )
 
 ALL_CONDITION_OPTION_EXTRA = (
-    ("all_mail",            u'所有邮件'),
-    ("has_attach",          u'有附件'),
-    ("mail_size",           u'邮件大小(MB)'),
-    ("mail_size2",           u'邮件大小(Byte)'),
-    ("content_size",        u'邮件正文大小(Byte)'),
-    ("body",                 u'邮件内容'),
+    ("all_mail",            _(u'所有邮件')),
+    ("has_attach",          _(u'有附件')),
+    ("mail_size",           _(u'邮件大小(MB)')),
+    ("mail_size2",           _(u'邮件大小(Byte)')),
+    ("content_size",        _(u'邮件正文大小(Byte)')),
+    ("body",                 _(u'邮件内容')),
 )
 
 ALL_CONDITION_OPTION_HEADER_VALUE = ("sender", "cc", "recipient", "sender_dept", "cc_dept",
@@ -93,13 +94,13 @@ COND_OPTION_OTHER = ("all_mail", "has_attach", "mail_size", "mail_size2", "conte
 ###  条件 和 动作 分组 GROUP
 # 1. 可以为 not_in , in 的  option
 G_COND_OPTION_IN_T = (
-    ("sender_dept",         u'发信人部门'),
-    ("cc_dept",             u'抄送人部门'),
-    ("rcpt_dept",           u'收信人部门'),
+    ("sender_dept",         _(u'发信人部门')),
+    ("cc_dept",             _(u'抄送人部门')),
+    ("rcpt_dept",           _(u'收信人部门')),
 )
 G_COND_ACTION_IN_T = (
-    ("in",                   u'属于'),
-    ("not_in",              u'不属于'),
+    ("in",                   _(u'属于')),
+    ("not_in",              _(u'不属于')),
 )
 G_COND_OPTION_IN = ("sender_dept", "cc_dept", "rcpt_dept") # 部门下拉选择
 G_COND_ACTION_IN = ("not_in", "in")
@@ -107,13 +108,13 @@ G_COND_ACTION_IN = ("not_in", "in")
 
 # 可以为 >= , <= 的 option
 G_COND_OPTION_GTE_T = (
-    ("mail_size",           u'邮件大小(MB)'),
-    ("mail_size2",           u'邮件大小(Byte)'),
-    ("content_size",        u'邮件正文大小(Byte)'),
+    ("mail_size",           _(u'邮件大小(MB)')),
+    ("mail_size2",           _(u'邮件大小(Byte)')),
+    ("content_size",        _(u'邮件正文大小(Byte)')),
 )
 G_COND_ACTION_GTE_T = (
-    (">=",                   u'大于等于'),
-    ("<=",                   u'小于等于'),
+    (">=",                   _(u'大于等于')),
+    ("<=",                   _(u'小于等于')),
 )
 G_COND_OPTION_GTE = ("mail_size", "mail_size2", "content_size" )  # 整型输入框
 G_COND_ACTION_GTE = (">=", "<=")
@@ -121,34 +122,34 @@ G_COND_ACTION_GTE = (">=", "<=")
 
 # 特殊设置的 option 只能为 ==
 G_COND_OPTION_EQ_T = (
-    ("all_mail",            u'所有邮件'),
-    ("has_attach",          u'有附件'),
+    ("all_mail",            _(u'所有邮件')),
+    ("has_attach",          _(u'有附件')),
 )
 G_COND_ACTION_EQ_T = (
-    ("==",                   u'等于'),
+    ("==",                   _(u'等于')),
 )
 G_COND_OPTION_EQ = ("all_mail", "has_attach") # 值 1 -1 下拉选择
 G_COND_ACTION_EQ = ("==", )
 G_COND_ACTION_EQ_VALUE = (
-    ("-1", u'否'),
-    ("1", u'是'),
+    ("-1", _(u'否')),
+    ("1", _(u'是')),
 )
 
 # 通用
 G_COND_OPTION_OTHER_T = (
-    ("sender",              u'发信人'),
-    ("cc",                   u'抄送人'),
-    ("recipient",           u'收信人'),
-    ("subject",             u'主题'),
-    ("body",                 u'邮件内容'),
-    ("header_received",     u'邮件头Received'),
-    ("header_from",        u'邮件头From'),
-    ("attachments",        u'附件名'),
+    ("sender",              _(u'发信人')),
+    ("cc",                   _(u'抄送人')),
+    ("recipient",           _(u'收信人')),
+    ("subject",             _(u'主题')),
+    ("body",                 _(u'邮件内容')),
+    ("header_received",     _(u'邮件头Received')),
+    ("header_from",        _(u'邮件头From')),
+    ("attachments",        _(u'附件名')),
 )
 G_COND_ACTION_OTHER_T = (
-    ("contains",            u'包含'),
-    ("not_contains",       u'不包含'),
-    ("==",                   u'等于'),
+    ("contains",            _(u'包含')),
+    ("not_contains",       _(u'不包含')),
+    ("==",                   _(u'等于')),
 )
 G_COND_OPTION_OTHER = ("sender", "cc", "recipient", "subject",  "body", "header_received", "header_from", "attachments")  # 字符串输入框
 G_COND_ACTION_OTHER = ("contains", "not_contains", "==")
@@ -161,30 +162,30 @@ G_COND_OPTION_ALL = ("sender", "cc", "recipient", "subject",  "body", "header_re
 
 ####################################################
 CFILTER_ACTION_SELECT_VALUE = (
-    ("Spam", u"垃圾箱"),
-    ("Trash", u"废件箱"),
-    ("Inbox", u"收件箱"),
-    ("Sent", u"发件箱"),
+    ("Spam", _(u"垃圾箱")),
+    ("Trash", _(u"废件箱")),
+    ("Inbox", _(u"收件箱")),
+    ("Sent", _(u"发件箱")),
 )
 
 ## 动作
 ALL_ACTION = (
-    ("break",               u'中断执行规则'),
-    ("jump_to",             u'跳过后面N个规则'),
+    ("break",               _(u'中断执行规则')),
+    ("jump_to",             _(u'跳过后面N个规则')),
     #("flag",                u'设置旗帜'),
     #("label",               u'设置标签'), webmail 尚未实现
-    ("delete",              u'删除邮件'),
-    ("sequester",           u'隔离邮件'),
-    ("move_to",             u'移动邮件至文件夹'),
-    ("copy_to",             u'复制邮件至文件夹'),
-    ("forward",             u'转发'),
-    ("delete_header",      u'删除邮件头'),
-    ("append_header",      u'追加头部'),
-    ("append_body",        u'追加邮件内容'),
-    ("mail",                u'发送邮件'),
-    ("smtptransfer",        u'邮件外发代理'),
-    ("replace_subject",      u'邮件主题替换'),
-    ("replace_body",       u'邮件正文替换'),
+    ("delete",              _(u'删除邮件')),
+    ("sequester",           _(u'隔离邮件')),
+    ("move_to",             _(u'移动邮件至文件夹')),
+    ("copy_to",             _(u'复制邮件至文件夹')),
+    ("forward",             _(u'转发')),
+    ("delete_header",      _(u'删除邮件头')),
+    ("append_header",      _(u'追加头部')),
+    ("append_body",        _(u'追加邮件内容')),
+    ("mail",                _(u'发送邮件')),
+    ("smtptransfer",        _(u'邮件外发代理')),
+    ("replace_subject",      _(u'邮件主题替换')),
+    ("replace_body",       _(u'邮件正文替换')),
     #("add_send_white",       u'添加到发信人白名单'),
     #("add_recv_white",       u'添加到收信人白名单'),
     #("add_send_black",       u'添加到发信人黑名单'),
@@ -222,8 +223,8 @@ ALL_ACTION = (
 
 
 ACCOUNT_IMAPMOVING_DISABLE = (
-    ('1', u'停止'),
-    ('-1', u'开始'),
+    ('1', _(u'停止')),
+    ('-1', _(u'开始')),
 )
 
 ACCOUNT_IMAPMOVING_PROTO = (
@@ -233,37 +234,37 @@ ACCOUNT_IMAPMOVING_PROTO = (
 
 
 MAIL_TRANSFER_DISABLE = (
-    ('1', u'禁用'),
-    ('-1', u'激活'),
+    ('1', _(u'禁用')),
+    ('-1', _(u'激活')),
 )
 
 MAIL_RELAY_TYPE = (
-    ('1', u'直接中继'),
-    ('-1', u'失败中继'),
+    ('1', _(u'直接中继')),
+    ('-1', _(u'失败中继')),
 )
 
 MAIL_RELAY_DISABLE = (
-    ('1', u'禁用'),
-    ('-1', u'激活'),
+    ('1', _(u'禁用')),
+    ('-1', _(u'激活')),
 )
 
 MAIL_TRANSFER_TYPE = (
-    (u'in', u'接收邮件'),
-    (u'out', u'发送邮件'),
-    (u'all', u'所有邮件'),
+    (u'in', _(u'接收邮件')),
+    (u'out', _(u'发送邮件')),
+    (u'all', _(u'所有邮件')),
 )
 MAIL_TRANSFER_TYPE2={}
 for k,v in dict(MAIL_TRANSFER_TYPE).items():
     MAIL_TRANSFER_TYPE2[v]=k
 
 MAIL_TRANSFER_SSL = (
-    ('1', u'启用'),
-    ('-1', u'不启用'),
+    ('1', _(u'启用')),
+    ('-1', _(u'不启用')),
 )
 
 MAIL_TRANSFER_AUTH = (
-    ('1', u'是'),
-    ('-1', u'否'),
+    ('1', _(u'是')),
+    ('-1', _(u'否')),
 )
 
 # ------邮箱监控 的输入参数 --------
@@ -279,15 +280,15 @@ MONITOR_PARAM_DEFAULT = (
 
 # ------邮箱监控 的类型参数 -------
 MONITOR_PARAM_LISTEN_TYPE = (
-    (u'recipient', u'收信监控'),
-    (u'sender', u'发信监控'),
+    (u'recipient', _(u'收信监控')),
+    (u'sender', _(u'发信监控')),
 )
 
 # ------邮箱监控 的通道参数 -------
 MONITOR_PARAM_TARGET_TYPE = (
-    (u'*', u'所有'),
-    (u'in', u'内网邮件'),
-    (u'out', u'外网邮件'),
+    (u'*', _(u'所有')),
+    (u'in', _(u'内网邮件')),
+    (u'out', _(u'外网邮件')),
 )
 
 # ------邮箱别名 的输入参数 --------
@@ -301,8 +302,8 @@ ALIAS_PARAM_DEFAULT = (
 
 # ------邮件头翻译设置类型 --------
 DOMAINSET_TRANS_HEADER_TYPE = (
-    (u'1', u'接收'),
-    (u'-1', u'外发'),
+    (u'1', _(u'接收')),
+    (u'-1', _(u'外发')),
 )
 
 # ------邮件头翻译类型默认值 --------
@@ -312,15 +313,15 @@ DOMAINSET_TRANS_HEADER_DISABLED_DEFAULT = "-1"
 
 # ------邮件头翻译可选字段 --------
 DOMAINSET_TRANS_HEADER_SELECT = (
-    (u'Sender', u'发信人'),
-    (u'From', u'发信人'),
-    (u'Subject', u'主题'),
+    (u'Sender', _(u'发信人')),
+    (u'From', _(u'发信人')),
+    (u'Subject', _(u'主题')),
 )
 
 # ------LDAP 类型 --------
 LDAP_TYPE_SELECT = (
-    (u'ad', u'Microsoft Active Directory同步(AD域)'),
-    (u'ldap', u'LDAP 服务器同步'),
+    (u'ad', _(u'Microsoft Active Directory同步(AD域)')),
+    (u'ldap', _(u'LDAP 服务器同步')),
 )
 
 # ------AD 类型的输入参数 --------
@@ -358,16 +359,16 @@ AD_ACCOUNT_PARAM_DEFAULT = (
 )
 
 AD_DISABLED_STATUS = (
-    (-1, u"启用"),
-    (1, u"禁用"),
+    (-1, _(u"启用")),
+    (1, _(u"禁用")),
     )
 
 AD_ACCOUNT_CREATE_NAME = (
-    (u'username', u'用户登录名'),
-    (u'email', u'电子邮箱'),
+    (u'username', _(u'用户登录名')),
+    (u'email', _(u'电子邮箱')),
 )
 
 AD_ACCOUNT_CREATE_DEPT = (
-    (u'ou', u'组织单位(OU)'),
-    (u'department', u'用户属性列表中的“部门”属性'),
+    (u'ou', _(u'组织单位(OU)')),
+    (u'department', _(u'用户属性列表中的“部门”属性')),
 )

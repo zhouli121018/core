@@ -18,7 +18,7 @@
             <h1>{% trans "系统设置" %}
                 <small>
                     <i class="ace-icon fa fa-angle-double-right"></i>
-                    授权信息
+                    {% trans "授权信息" %}
                 </small>
             </h1>
         </div>
@@ -30,7 +30,7 @@
         <div class="form-horizontal" role="form">
             {% csrf_token %}
             <div class="form-group">
-                <label class="col-sm-2 control-label no-padding-right" for="id_source"> 被授权单位： </label>
+                <label class="col-sm-2 control-label no-padding-right" for="id_source"> {% trans "被授权单位： " %}</label>
                 <div class="col-sm-4" style="border-bottom:1px solid #E5E5E5">
                     <label class="control-label text-danger"><strong>{{ info.organization }}</strong></label>
                 </div>
@@ -38,35 +38,35 @@
 
             {% if not info.evaluation %}
             <div class="form-group">
-                <label class="col-sm-2 control-label no-padding-right"> 绑定主域域名： </label>
+                <label class="col-sm-2 control-label no-padding-right"> {% trans "绑定主域域名： " %}</label>
                 <div class="col-sm-4" style="border-bottom:1px solid #E5E5E5">
                     <label class="control-label text-primary"><strong>{{ info.domain_name }}</strong></label>
                 </div>
             </div>
             {% endif %}
             <div class="form-group">
-                <label class="col-sm-2 control-label no-padding-right"> 邮箱用户数： </label>
+                <label class="col-sm-2 control-label no-padding-right"> {% trans "邮箱用户数： " %}</label>
                 <div class="col-sm-4" style="border-bottom:1px solid #E5E5E5">
-                    <label class="control-label "><strong>{% if info.limit_count != 0 %}{{ info.limit_count }}{% else %}无限制{% endif %}</strong></label>
+                    <label class="control-label "><strong>{% if info.limit_count != 0 %}{{ info.limit_count }}{% else %}{% trans "无限制" %}{% endif %}</strong></label>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label no-padding-right"> 附加模块： </label>
+                <label class="col-sm-2 control-label no-padding-right"> {% trans "附加模块： " %}</label>
                 <div class="col-sm-4" style="border-bottom:1px solid #E5E5E5">
                     <label class="control-label text-success">
-                        {% if extra_module %} {{ extra_module }} {% else %} 无附加模块 {% endif %}
+                        {% if extra_module %} {{ extra_module }} {% else %} {% trans "无附加模块 " %}{% endif %}
                     </label>
                 </div>
             </div>
             {% if info.evaluation %}
             <div class="form-group">
-                <label class="col-sm-2 control-label no-padding-right"> 授权类型： </label>
+                <label class="col-sm-2 control-label no-padding-right"> {% trans "授权类型： " %}</label>
                 <div class="col-sm-4" style="border-bottom:1px solid #E5E5E5">
-                    <label class="control-label">测试用户</label>
+                    <label class="control-label">{% trans "测试用户" %}</label>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label no-padding-right"> 试用时间： </label>
+                <label class="col-sm-2 control-label no-padding-right"> {% trans "试用时间： " %}</label>
                 <div class="col-sm-4" style="border-bottom:1px solid #E5E5E5">
                     <label class="control-label text-primary">{{ trial_begin|date:"Y-m-d" }} -- {{ trial_end|date:"Y-m-d" }}</label>
                 </div>
@@ -74,30 +74,30 @@
             {% endif %}
             {% if info.service_end %}
             <div class="form-group">
-                <label class="col-sm-2 control-label no-padding-right"> 服务到期时间： </label>
+                <label class="col-sm-2 control-label no-padding-right"> {% trans "服务到期时间： " %}</label>
                 <div class="col-sm-4" style="border-bottom:1px solid #E5E5E5">
                     <label class="control-label text-primary">{{ info.service_end|date:"Y-m-d" }}</label>
                 </div>
             </div>
             {% endif %}
             <div class="form-group">
-                <label class="col-sm-2 control-label no-padding-right"> 授权截止时间： </label>
+                <label class="col-sm-2 control-label no-padding-right"> {% trans "授权截止时间： " %}</label>
                 <div class="col-sm-4" style="border-bottom:1px solid #E5E5E5">
                     <label class="control-label">
                     {% if info.expires_time %}
                         {% if info.expires_time|date:"Y-m-d" > '2050-01-01' %}
-                            无限制
+                            {% trans "无限制" %}
                         {%  else %}
                             {{ info.expires_time|date:"Y-m-d" }}
                         {% endif %}
                     {% else %}
-                        无限制
+                        {% trans "无限制" %}
                     {% endif %}
                     </label>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label no-padding-right"> 更新授权文件： </label>
+                <label class="col-sm-2 control-label no-padding-right"> {% trans "更新授权文件： " %}</label>
                 <div class="col-sm-6">
                     <form method="POST" action="" enctype="multipart/form-data" onsubmit="return checkForm(this);">
                         {% csrf_token %}
@@ -106,7 +106,7 @@
                                 <!-- #section:custom/file-input -->
                                 <input type="file" name="licence_file" id="id-input-file" />
                             </div>
-                            <input type="submit" value="更新" class="btn btn-xs btn-primary" style="float:left" />
+                            <input type="submit" value="{% trans "更新" %}" class="btn btn-xs btn-primary" style="float:left" />
                         </div>
                     </form>
                 </div>
@@ -121,9 +121,9 @@
 <script>
         $(function(){
         $('#id-input-file').ace_file_input({
-                    no_file:'未选择文件',
-                    btn_choose:'选择',
-                    btn_change:'修改',
+                    no_file:'{% trans "未选择文件" %}',
+                    btn_choose:'{% trans "选择" %}',
+                    btn_change:'{% trans "修改" %}',
                     droppable:false,
                     onchange:null,
                     blacklist:'gif|png|jpg|jpeg|exe|php'
@@ -132,7 +132,7 @@
         });
         function checkForm(form) {
             if(form.licence_file.value == '') {
-            alert("请选择授权文件");
+            alert("{% trans "请选择授权文件" %}");
             return false;
             }
             return true;

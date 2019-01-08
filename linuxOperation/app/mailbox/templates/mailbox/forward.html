@@ -4,60 +4,60 @@
 <div class="modal-content">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">自动转发设置 -> {{ mailbox_obj.username }}</h4>
+        <h4 class="modal-title">{% trans "自动转发设置 -" %}> {{ mailbox_obj.username }}</h4>
     </div>
     <div class="modal-body">
         <div class="row">
             <div class="col-lg-4">
-                <span>用户可否设置：</span>
-                <input name="forward_visible" value="1" onclick="change_forward({{mailbox_obj.id}}, this,'forward_visible');" {% if forward_visible == '1' %}checked{% endif %} type="radio"> 是
-                <input name="forward_visible" value="-1" onclick="change_forward({{mailbox_obj.id}}, this,'forward_visible');" {% if forward_visible == '-1' %}checked{% endif %} type="radio"> 否
+                <span>{% trans "用户可否设置：" %}</span>
+                <input name="forward_visible" value="1" onclick="change_forward({{mailbox_obj.id}}, this,'forward_visible');" {% if forward_visible == '1' %}checked{% endif %} type="radio"> {% trans "是" %}
+                <input name="forward_visible" value="-1" onclick="change_forward({{mailbox_obj.id}}, this,'forward_visible');" {% if forward_visible == '-1' %}checked{% endif %} type="radio"> {% trans "否" %}
             </div>
             <div class="col-lg-4">
-                <span>仅转发本地邮箱：</span>
-                <input name="forward_local" value="1" onclick="change_forward({{mailbox_obj.id}}, this,'forward_local');" {% if forward_local == '1' %}checked{% endif %} type="radio"> 是
-                <input name="forward_local" value="-1" onclick="change_forward({{mailbox_obj.id}}, this,'forward_local');" {% if forward_local == '-1' %}checked{% endif %} type="radio"> 否
+                <span>{% trans "仅转发本地邮箱：" %}</span>
+                <input name="forward_local" value="1" onclick="change_forward({{mailbox_obj.id}}, this,'forward_local');" {% if forward_local == '1' %}checked{% endif %} type="radio"> {% trans "是" %}
+                <input name="forward_local" value="-1" onclick="change_forward({{mailbox_obj.id}}, this,'forward_local');" {% if forward_local == '-1' %}checked{% endif %} type="radio"> {% trans "否" %}
             </div>
         </div>
         <div>
             <div class="forward_box forward_list">
                 <div>
-                    <button class="btn btn-success pull-right btn-sm box_show_btn" style="margin-bottom:6px;" >新增</button>
+                    <button class="btn btn-success pull-right btn-sm box_show_btn" style="margin-bottom:6px;" >{% trans "新增" %}</button>
                 </div>
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>排序</th>
-                            <th>条件关系</th>
-                            <th>条件</th>
-                            <th>状态</th>
-                            <th>操作</th>
+                            <th>{% trans "排序" %}</th>
+                            <th>{% trans "条件关系" %}</th>
+                            <th>{% trans "条件" %}</th>
+                            <th>{% trans "状态" %}</th>
+                            <th>{% trans "操作" %}</th>
                         </tr>
                     </thead>
                     <tbody id="forward_tbody">
-    
+
                     </tbody>
                 </table>
-    
+
                 <div class="well" style="background:#fff;margin-top:12px;">
-                    <p>通过本功能您可以根据您设置的条件规则来进行自动转发</p>
-                    <p>操作方法:</p>
+                    <p>{% trans "通过本功能您可以根据您设置的条件规则来进行自动转发" %}</p>
+                    <p>{% trans "操作方法:" %}</p>
                     <ul>
-                        <li>根据您的需要选择规则条件，可以对邮件（原始）发件人、（原始）收件人/抄送人、邮件主题、和邮件大小进行设定。</li>
-                        <li>已经设置完毕的规则会显示在自动转发列表中，也可以对该自动转发规则进行删除/修改操作。</li>
-                        <li>单击增加规则页【确定】完成单条规则设置。</li>
+                        <li>{% trans "根据您的需要选择规则条件，可以对邮件（原始）发件人、（原始）收件人/抄送人、邮件主题、和邮件大小进行设定。" %}</li>
+                        <li>{% trans "已经设置完毕的规则会显示在自动转发列表中，也可以对该自动转发规则进行删除/修改操作。" %}</li>
+                        <li>{% trans "单击增加规则页" %}【{% trans "确定" %}】{% trans "完成单条规则设置。" %}</li>
                     </ul>
-                    <p>注意事项:</p>
+                    <p>{% trans "注意事项:" %}</p>
                     <ul>
-                        <li>自动转发规则的执行顺序：规则列表由上而下的顺序；支持手动进行规则排序。</li>
-                        <li>如要对所有收到的邮件进行自动转发，则可设置条件为：发件人包含@。</li>
+                        <li>{% trans "自动转发规则的执行顺序：规则列表由上而下的顺序；支持手动进行规则排序。" %}</li>
+                        <li>{% trans "如要对所有收到的邮件进行自动转发，则可设置条件为：发件人包含" %}@。</li>
                     </ul>
                 </div>
             </div>
             <div class="forward_box display-none">
                 <table class="table table-bordered">
                     <tr>
-                        <td>是否启用</td>
+                        <td>{% trans "是否启用" %}</td>
                         <td>
                             <label class="inline" >
                                 <input name="disabled" checked id="status_checkbox_forward" type="checkbox" class="ace ace-switch ace-switch-5">
@@ -66,20 +66,20 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="width:110px;">自动回复条件：</td>
+                        <td style="width:110px;">{% trans "自动回复条件：" %}</td>
                         <td id="forward_condition_box">
-                            
-                            
+
+
                         </td>
                     </tr>
                     <tr>
-                        <td>转发到：</td>
+                        <td>{% trans "转发到：" %}</td>
                         <td>
                             <textarea class="form-control" rows="2" name="forward_body" id="forward_body"></textarea>
                         </td>
                     </tr>
                     <tr>
-                        <td>同时将信件保存在本邮箱内：</td>
+                        <td>{% trans "同时将信件保存在本邮箱内：" %}</td>
                         <td>
                             <label class="inline" >
                                 <input  checked id="is_save_forward" type="checkbox" class="ace ace-switch ace-switch-5">
@@ -89,10 +89,10 @@
                     </tr>
                     <tr>
                         <td colspan="2" class="center">
-                            
-    
-                            <button type="button" onclick="" class="btn btn-sm btn-primary add_btn" type_id="0">保存</button>
-                            <button type="button" class="btn btn-sm btn-danger hide_box_btn" >返回</button>
+
+
+                            <button type="button" onclick="" class="btn btn-sm btn-primary add_btn" type_id="0">{% trans "保存" %}</button>
+                            <button type="button" class="btn btn-sm btn-danger hide_box_btn" >{% trans "返回" %}</button>
                         </td>
                     </tr>
                 </table>
@@ -100,15 +100,15 @@
             <div class="tree_div_box">
                 <div class="display-none">
                     <div id="input_box_forward" class="input-group">
-                        <input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">
+                        <input type="text" value="" readonly placeholder="{% trans "点击选择部门" %}" class="form-control department_choice">
                         <input type="hidden" class="id_dept_id" value="" name="target_dept">
-                        <span class="input-group-addon clear_dept" style="cursor:pointer;background:#a0a0a0;color:#fff;">清空</span>
+                        <span class="input-group-addon clear_dept" style="cursor:pointer;background:#a0a0a0;color:#fff;">{% trans "清空" %}</span>
                     </div>
                     <div class="widget-box widget-color-blue2 email_box_tree" id="tree_box_forward" style="position:absolute;top:32px;z-index:10;min-width:60%;max-width:100%;left:0;">
                         <button type="button" class="btn btn-danger btn-sm pull-right close_btn" style="">&times;</button>
                         <div class="widget-body" style="padding-right:20px;">
                             <div style="padding:20px  6px 0;">
-                                <input type="text" class="search_input form-control" placeholder="输入关键字搜索...">
+                                <input type="text" class="search_input form-control" placeholder="{% trans "输入关键字搜索..." %}">
                             </div>
                             <div class="widget-main padding-8" style="height:auto;max-height:360px;">
                                 <ul id="tree_forward"></ul>
@@ -116,11 +116,11 @@
                         </div>
                     </div>
                 </div>
-                    
-            </div>
-            
 
-            
+            </div>
+
+
+
         </div>
     </div>
 </div>
@@ -132,20 +132,20 @@
     var dataHash = [];
     function getInitHtml(){
         var initHtml = '<div class="logic_con">'+
-            '<span>父条件间关系：</span>'+
+            '<span>{% trans "父条件间关系：" %}</span>'+
             '<div class="radio inline">'+
                 '<label>'+
                     '<input name="logic" type="radio" checked class="ace" value="all">'+
-                    '<span class="lbl">满足所有条件</span>'+
+                    '<span class="lbl">{% trans "满足所有条件" %}</span>'+
                 '</label>'+
             '</div>'+
             '<div class="radio inline">'+
                 '<label>'+
                     '<input name="logic" type="radio" class="ace" value="one">'+
-                    '<span class="lbl middle"> 满足一条即可</span>'+
+                    '<span class="lbl middle"> {% trans "满足一条即可" %}</span>'+
                 '</label>'+
             '</div>'+
-            '<button type="button" class="btn btn-sm btn-success add_condition" style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>新增条件</button>'+
+            '<button type="button" class="btn btn-sm btn-success add_condition" style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>{% trans "新增条件" %}</button>'+
         '</div>'+
         '<div class="list_item">'+
             '<div id="faq-list-3" class="panel-group accordion-style1 accordion-style2 condition_box">'+
@@ -153,73 +153,73 @@
                     '<div class="panel-heading" style="position:relative;">'+
                         '<a href="#faq_0" data-toggle="collapse" class="accordion-toggle">'+
                             '<i class="smaller-80 ace-icon fa fa-chevron-down" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;'+
-                            '<b>条件</b>'+
+                            '<b>{% trans "条件" %}</b>'+
                         '</a>'+
                     '</div>'+
                     '<div class="panel-collapse collapse in" id="faq_0">'+
                         '<div class="panel-body">'+
                             '<div >'+
-                                '<span>子条件间关系：</span>'+
+                                '<span>{% trans "子条件间关系：" %}</span>'+
                                 '<div class="radio inline">'+
                                     '<label>'+
                                         '<input name="logic_0" type="radio" checked class="ace con_logic" value="all">'+
-                                        '<span class="lbl"> 满足所有</span>'+
+                                        '<span class="lbl"> {% trans "满足所有" %}</span>'+
                                     '</label>'+
                                 '</div>'+
                                 '<div class="radio inline">'+
                                     '<label>'+
                                         '<input name="logic_0" type="radio" class="ace con_logic" value="one">'+
-                                        '<span class="lbl middle"> 满足任意</span>'+
+                                        '<span class="lbl middle"> {% trans "满足任意" %}</span>'+
                                     '</label>'+
                                 '</div>'+
-                                '<button type="button" class="btn btn-xs btn-info add_sub_condition" dataindex="0" dataparentindex="0" style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>新增子条件</button>'+
+                                '<button type="button" class="btn btn-xs btn-info add_sub_condition" dataindex="0" dataparentindex="0" style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>{% trans "新增子条件" %}</button>'+
                             '</div>'+
                             '<ul>'+
                                 '<li class="condition_item">'+
                                     '<div class="hr"></div>'+
                                     '<div class="row">'+
                                         '<div class="col-sm-2 control-label">'+
-                                            '子条件：'+
+                                            '{% trans "子条件：" %}'+
                                         '</div>'+
                                         '<div class="col-sm-10">'+
                                             '<div class="row">'+
                                                 '<div class="col-sm-2 no-padding">'+
                                                 '<select class="form-control" name="suboption" style="height: 34px;">'+
-                                                    '<option value="all_mail">所有邮件</option>'+
-                                                    '<option value="has_attach">有附件</option>'+
-                                                    '<option value="attachments">附件名</option>'+
-                                                    '<option value="sender">发信人</option>'+
-                                                    '<option value="cc">抄送人</option>'+
-                                                    '<option value="recipient">收信人</option>'+
-                                                    '<option value="sender_dept">发信人部门</option>'+
-                                                    '<option value="cc_dept">抄送人部门</option>'+
-                                                    '<option value="rcpt_dept">收信人部门</option>'+
-                                                    '<option value="subject">主题</option>'+
-                                                    '<option value="body">邮件内容</option>'+
-                                                    '<option value="mail_size">邮件大小(MB)</option>'+
-                                                    '<option value="mail_size2">邮件大小(Byte)</option>'+
-                                                    '<option value="content_size">邮件正文大小(Byte)</option>'+
-                                                    '<option value="exec_date">执行时间</option>'+
+                                                    '<option value="all_mail">{% trans "所有邮件" %}</option>'+
+                                                    '<option value="has_attach">{% trans "有附件" %}</option>'+
+                                                    '<option value="attachments">{% trans "附件名" %}</option>'+
+                                                    '<option value="sender">{% trans "发信人" %}</option>'+
+                                                    '<option value="cc">{% trans "抄送人" %}</option>'+
+                                                    '<option value="recipient">{% trans "收信人" %}</option>'+
+                                                    '<option value="sender_dept">{% trans "发信人部门" %}</option>'+
+                                                    '<option value="cc_dept">{% trans "抄送人部门" %}</option>'+
+                                                    '<option value="rcpt_dept">{% trans "收信人部门" %}</option>'+
+                                                    '<option value="subject">{% trans "主题" %}</option>'+
+                                                    '<option value="body">{% trans "邮件内容" %}</option>'+
+                                                    '<option value="mail_size">{% trans "邮件大小(MB)" %}</option>'+
+                                                    '<option value="mail_size2">{% trans "邮件大小(Byte)" %}</option>'+
+                                                    '<option value="content_size">{% trans "邮件正文大小(Byte)" %}</option>'+
+                                                    '<option value="exec_date">{% trans "执行时间" %}</option>'+
                                                 '</select>'+
                                             '</div>'+
                                             '<div class="col-sm-10 no-padding">'+
                                                 '<div class="col-sm-2 no-padding actions">'+
                                                     '<select class="form-control display-none"  name="action_contain" style="height: 34px;">'+
-                                                        '<option value="contains">包含</option>'+
-                                                        '<option value="not_contains">不包含</option>'+
-                                                        '<option value="==">等于</option>'+
+                                                        '<option value="contains">{% trans "包含" %}</option>'+
+                                                        '<option value="not_contains">{% trans "不包含" %}</option>'+
+                                                        '<option value="==">{% trans "等于" %}</option>'+
                                                     '</select>'+
                                                     '<select class="form-control display-none" name="action_eq" style="height: 34px;">'+
-                                                        '<option value=">=">大于等于</option>'+
-                                                        '<option value="<=">小于等于</option>'+
+                                                        '<option value=">=">{% trans "大于等于" %}</option>'+
+                                                        '<option value="<=">{% trans "小于等于" %}</option>'+
                                                     '</select>'+
                                                     '<select class="form-control display-none" name="action_belong" style="height: 34px;">'+
-                                                        '<option value="in">属于</option>'+
-                                                        '<option value="not_in">不属于</option>'+
+                                                        '<option value="in">{% trans "属于" %}</option>'+
+                                                        '<option value="not_in">{% trans "不属于" %}</option>'+
                                                     '</select>'+
                                                     '<select class="form-control display-none" name="action_date" style="height: 34px;">'+
-                                                        '<option value="week">星期</option>'+
-                                                        '<option value="date">天</option>'+
+                                                        '<option value="week">{% trans "星期" %}</option>'+
+                                                        '<option value="date">{% trans "天" %}</option>'+
                                                     '</select>'+
                                                 '</div>'+
                                                     '<div class="col-sm-8 no-padding values">'+
@@ -228,7 +228,7 @@
                                                         '<div id="id_rule_value_dpt0" class="col-xs-12 col-sm-12 no-padding  display-none dept_box">'+
                                                             '<div class="input-group">'+
                                                                 '<div id="input_box0">'+
-                                                                    '<input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">'+
+                                                                    '<input type="text" value="" readonly placeholder="{% trans "点击选择部门" %}" class="form-control department_choice">'+
                                                                     '<input type="hidden" class="id_dept_id" value="" name="option_value_dpt0">'+
                                                                 '</div>'+
                                                             '</div>'+
@@ -240,22 +240,22 @@
                                                         '<div class="col-xs-12 col-sm-12 no-padding  display-none week_box clear">'+
                                                             '<div style="float:left;">'+
                                                                 '<select name="day_start">'+
-                                                                    '<option value="1" selected>星期一</option>'+
-                                                                    '<option value="2">星期二</option>'+
-                                                                    '<option value="3">星期三</option>'+
-                                                                    '<option value="4">星期四</option>'+
-                                                                    '<option value="5">星期五</option>'+
-                                                                    '<option value="6">星期六</option>'+
-                                                                    '<option value="7">星期日</option>'+
+                                                                    '<option value="1" selected>{% trans "星期一" %}</option>'+
+                                                                    '<option value="2">{% trans "星期二" %}</option>'+
+                                                                    '<option value="3">{% trans "星期三" %}</option>'+
+                                                                    '<option value="4">{% trans "星期四" %}</option>'+
+                                                                    '<option value="5">{% trans "星期五" %}</option>'+
+                                                                    '<option value="6">{% trans "星期六" %}</option>'+
+                                                                    '<option value="7">{% trans "星期日" %}</option>'+
                                                                 '</select> --'+
                                                                 '<select name="day_end"  style="margin-right:20px;" >'+
-                                                                    '<option value="1">星期一</option>'+
-                                                                    '<option value="2">星期二</option>'+
-                                                                    '<option value="3">星期三</option>'+
-                                                                    '<option value="4">星期四</option>'+
-                                                                    '<option value="5">星期五</option>'+
-                                                                    '<option value="6">星期六</option>'+
-                                                                    '<option value="7" selected>星期日</option>'+
+                                                                    '<option value="1">{% trans "星期一" %}</option>'+
+                                                                    '<option value="2">{% trans "星期二" %}</option>'+
+                                                                    '<option value="3">{% trans "星期三" %}</option>'+
+                                                                    '<option value="4">{% trans "星期四" %}</option>'+
+                                                                    '<option value="5">{% trans "星期五" %}</option>'+
+                                                                    '<option value="6">{% trans "星期六" %}</option>'+
+                                                                    '<option value="7" selected>{% trans "星期日" %}</option>'+
                                                                 '</select>'+
                                                             '</div>'+
                                                             '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
@@ -272,7 +272,7 @@
                                                                 '</span>'+
                                                             '</div>'+
                                                         '</div>'+
-                                                        
+
                                                     '</div>'+
                                                 '</div>'+
 
@@ -293,6 +293,7 @@
     }
     function initAddHtml(){
         $('#status_checkbox_forward').prop('checked',true)
+        $('#is_save_forward').prop('checked',true)
         $('#forward_body').val('')
         $('.add_btn').attr('type_id',0)
         $('#forward_condition_box').html(getInitHtml);
@@ -301,21 +302,21 @@
         addsub();
     }
     $(function(){
-        
+
         initAddHtml();
     })
     function init_tree_box(){
         var treehtml = '<div class="display-none">'+
                 '<div id="input_box_forward" class="input-group">'+
-                    '<input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">'+
+                    '<input type="text" value="" readonly placeholder="{% trans "点击选择部门" %}" class="form-control department_choice">'+
                     '<input type="hidden" class="id_dept_id" value="" name="target_dept">'+
-                    '<span class="input-group-addon clear_dept" style="cursor:pointer;background:#a0a0a0;color:#fff;">清空</span>'+
+                    '<span class="input-group-addon clear_dept" style="cursor:pointer;background:#a0a0a0;color:#fff;">{% trans "清空" %}</span>'+
                 '</div>'+
                 '<div class="widget-box widget-color-blue2 email_box_tree" id="tree_box_forward" style="position:absolute;top:32px;z-index:10;min-width:60%;max-width:100%;left:0;">'+
                     '<button type="button" class="btn btn-danger btn-sm pull-right close_btn" style="">&times;</button>'+
                     '<div class="widget-body" style="padding-right:20px;">'+
                         '<div style="padding:20px  6px 0;">'+
-                            '<input type="text" class="search_input form-control" placeholder="输入关键字搜索...">'+
+                            '<input type="text" class="search_input form-control" placeholder="{% trans "输入关键字搜索..." %}">'+
                         '</div>'+
                         '<div class="widget-main padding-8" style="height:auto;max-height:360px;">'+
                             '<ul id="tree_forward"></ul>'+
@@ -330,12 +331,14 @@
         var logic_all = rule_data.logic == 'all'?true:false ;
         var logic_one = rule_data.logic == 'one'?true:false ;
         var action_value = rule_data.action[0].value.value;
+        var action_is_forward = rule_data.action[0].value.is_forward?true:false;
+        $('#is_save_forward').prop('checked',action_is_forward)
         console.log(action_value)
         $('#forward_body').val(action_value);
         var disabled_status = rule_data.disabled =='-1'?true:false;
         $('#status_checkbox_forward').prop('checked',disabled_status)
         var initHtml = '<div class="logic_con">'+
-            '<span>父条件间关系：</span>'+
+            '<span>{% trans "父条件间关系：" %}</span>'+
             '<div class="radio inline">'+
                 '<label>'+
                     '<input name="logic" type="radio" '
@@ -343,7 +346,7 @@
                         initHtml += 'checked'
                     }
                     initHtml += ' class="ace" value="all">'+
-                    '<span class="lbl">满足所有条件</span>'+
+                    '<span class="lbl">{% trans "满足所有条件" %}</span>'+
                 '</label>'+
             '</div>'+
             '<div class="radio inline">'+
@@ -353,14 +356,14 @@
                         initHtml += 'checked'
                     }
                     initHtml += ' class="ace" value="one">'+
-                    '<span class="lbl middle"> 满足一条即可</span>'+
+                    '<span class="lbl middle"> {% trans "满足一条即可" %}</span>'+
                 '</label>'+
             '</div>'+
-            '<button type="button" class="btn btn-sm btn-success add_condition" style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>新增条件</button>'+
+            '<button type="button" class="btn btn-sm btn-success add_condition" style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>{% trans "新增条件" %}</button>'+
         '</div>'+
         '<div class="list_item">'+
             '<div id="faq-list-3" class="panel-group accordion-style1 accordion-style2 condition_box">'
-            
+
             for(var i=0;i<rule_data.condition.length;i++){
                 var logic_all_sub = rule_data.condition[i].logic == 'all'?true:false ;
                 var logic_one_sub = rule_data.condition[i].logic == 'one'?true:false ;
@@ -368,16 +371,16 @@
                     '<div class="panel-heading" style="position:relative;">'+
                         '<a href="#faq_'+i+'" data-toggle="collapse" class="accordion-toggle">'+
                             '<i class="smaller-80 ace-icon fa fa-chevron-down" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;'+
-                            '<b>条件</b>'
+                            '<b>{% trans "条件" %}</b>'
                             if(i>0){
-                                initHtml += '<button type="button" class="delete_condition btn btn-sm btn-danger pull-right" data-id="id_option_'+i+'" style="position:absolute;top:-0;right:0;">删除条件</button>'
+                                initHtml += '<button type="button" class="delete_condition btn btn-sm btn-danger pull-right" data-id="id_option_'+i+'" style="position:absolute;top:-0;right:0;">{% trans "删除条件" %}</button>'
                             }
                         initHtml += '</a>'+
                     '</div>'+
                     '<div class="panel-collapse collapse in" id="faq_'+i+'">'+
                         '<div class="panel-body">'+
                             '<div >'+
-                                '<span>子条件间关系：</span>'+
+                                '<span>{% trans "子条件间关系：" %}</span>'+
                                 '<div class="radio inline">'+
                                     '<label>'+
                                         '<input name="logic_'+i+'" type="radio" '
@@ -385,7 +388,7 @@
                                             initHtml += ' checked'
                                         }
                                         initHtml += ' class="ace con_logic" value="all">'+
-                                        '<span class="lbl"> 满足所有</span>'+
+                                        '<span class="lbl"> {% trans "满足所有" %}</span>'+
                                     '</label>'+
                                 '</div>'+
                                 '<div class="radio inline">'+
@@ -395,68 +398,68 @@
                                             initHtml += ' checked'
                                         }
                                         initHtml +=' class="ace con_logic" value="one">'+
-                                        '<span class="lbl middle"> 满足任意</span>'+
+                                        '<span class="lbl middle"> {% trans "满足任意" %}</span>'+
                                     '</label>'+
                                 '</div>'+
-                                '<button type="button" class="btn btn-xs btn-info add_sub_condition" dataindex="0" dataparentindex="0" style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>新增子条件</button>'+
+                                '<button type="button" class="btn btn-xs btn-info add_sub_condition" dataindex="0" dataparentindex="0" style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>{% trans "新增子条件" %}</button>'+
                             '</div>'+
                             '<ul>'+
                                 '<li class="condition_item">'+
                                     '<div class="hr"></div>'+
                                     '<div class="row">'+
                                         '<div class="col-sm-2 control-label">'+
-                                            '子条件：'+
+                                            '{% trans "子条件：" %}'+
                                         '</div>'+
                                         '<div class="col-sm-10">'+
                                             '<div class="row">'+
                                                 '<div class="col-sm-2 no-padding">'+
                                                 '<select class="form-control" name="suboption" style="height: 34px;">'+
-                                                    '<option value="all_mail" ' 
+                                                    '<option value="all_mail" '
                                                     var subo = rule_data.condition[i].suboption;
                                                     if(subo == "all_mail"){ initHtml += ' selected '}
-                                                      initHtml +='>所有邮件</option>'+
+                                                      initHtml +='>{% trans "所有邮件" %}</option>'+
                                                     '<option value="has_attach" '
                                                     if(subo == "has_attach"){ initHtml += ' selected '}
-                                                      initHtml +='>有附件</option>'+
+                                                      initHtml +='>{% trans "有附件" %}</option>'+
                                                     '<option value="attachments"'
                                                     if(subo == "attachments"){ initHtml += ' selected '}
-                                                      initHtml +='>附件名</option>'+
+                                                      initHtml +='>{% trans "附件名" %}</option>'+
                                                     '<option value="sender"'
                                                     if(subo == "sender"){ initHtml += ' selected '}
-                                                      initHtml +='>发信人</option>'+
+                                                      initHtml +='>{% trans "发信人" %}</option>'+
                                                     '<option value="cc"'
                                                     if(subo == "cc"){ initHtml += ' selected '}
-                                                      initHtml +='>抄送人</option>'+
+                                                      initHtml +='>{% trans "抄送人" %}</option>'+
                                                     '<option value="recipient"'
                                                     if(subo == "recipient"){ initHtml += ' selected '}
-                                                      initHtml +='>收信人</option>'+
+                                                      initHtml +='>{% trans "收信人" %}</option>'+
                                                     '<option value="sender_dept"'
                                                     if(subo == "sender_dept"){ initHtml += ' selected '}
-                                                      initHtml +='>发信人部门</option>'+
+                                                      initHtml +='>{% trans "发信人部门" %}</option>'+
                                                     '<option value="cc_dept"'
                                                     if(subo == "cc_dept"){ initHtml += ' selected '}
-                                                      initHtml +='>抄送人部门</option>'+
+                                                      initHtml +='>{% trans "抄送人部门" %}</option>'+
                                                     '<option value="rcpt_dept"'
                                                     if(subo == "rcpt_dept"){ initHtml += ' selected '}
-                                                      initHtml +='>收信人部门</option>'+
+                                                      initHtml +='>{% trans "收信人部门" %}</option>'+
                                                     '<option value="subject"'
                                                     if(subo == "subject"){ initHtml += ' selected '}
-                                                      initHtml +='>主题</option>'+
+                                                      initHtml +='>{% trans "主题" %}</option>'+
                                                     '<option value="body"'
                                                     if(subo == "body"){ initHtml += ' selected '}
-                                                      initHtml +='>邮件内容</option>'+
+                                                      initHtml +='>{% trans "邮件内容" %}</option>'+
                                                     '<option value="mail_size"'
                                                     if(subo == "mail_size"){ initHtml += ' selected '}
-                                                      initHtml +='>邮件大小(MB)</option>'+
+                                                      initHtml +='>{% trans "邮件大小(MB)" %}</option>'+
                                                     '<option value="mail_size2"'
                                                     if(subo == "mail_size2"){ initHtml += ' selected '}
-                                                      initHtml +='>邮件大小(Byte)</option>'+
+                                                      initHtml +='>{% trans "邮件大小(Byte)" %}</option>'+
                                                     '<option value="content_size"'
                                                     if(subo == "content_size"){ initHtml += ' selected '}
-                                                      initHtml +='>邮件正文大小(Byte)</option>'+
+                                                      initHtml +='>{% trans "邮件正文大小(Byte)" %}</option>'+
                                                     '<option value="exec_date"'
                                                     if(subo == "exec_date"){ initHtml += ' selected '}
-                                                      initHtml +='>执行时间</option>'+
+                                                      initHtml +='>{% trans "执行时间" %}</option>'+
                                                 '</select>'+
                                             '</div>'+
                                             '<div class="col-sm-10 no-padding">'+
@@ -470,15 +473,15 @@
                                                         initHtml += ' display-none'
                                                     }
                                                     initHtml += '"  name="action_contain" style="height: 34px;">'+
-                                                        '<option value="contains" ' 
+                                                        '<option value="contains" '
                                                         if(action == "contains"){initHtml += ' selected'}
-                                                        initHtml += '>包含</option>'+
-                                                        '<option value="not_contains" ' 
+                                                        initHtml += '>{% trans "包含" %}</option>'+
+                                                        '<option value="not_contains" '
                                                         if(action == "not_contains"){initHtml += ' selected'}
-                                                        initHtml += '>不包含</option>'+
-                                                        '<option value="==" ' 
+                                                        initHtml += '>{% trans "不包含" %}</option>'+
+                                                        '<option value="==" '
                                                         if(action == "=="){initHtml += ' selected'}
-                                                        initHtml += '>等于</option>'+
+                                                        initHtml += '>{% trans "等于" %}</option>'+
                                                     '</select>'+
                                                     '<select class="form-control '
                                                     if(v=='mail_size'||v=='mail_size2'||v=='content_size'){
@@ -487,12 +490,12 @@
                                                         initHtml += ' display-none'
                                                     }
                                                     initHtml += '" name="action_eq" style="height: 34px;">'+
-                                                        '<option value=">=" ' 
+                                                        '<option value=">=" '
                                                         if(action == ">="){initHtml += ' selected'}
-                                                        initHtml += '>大于等于</option>'+
-                                                        '<option value="<=" ' 
+                                                        initHtml += '>{% trans "大于等于" %}</option>'+
+                                                        '<option value="<=" '
                                                         if(action == "<=>"){initHtml += ' selected'}
-                                                        initHtml += '>小于等于</option>'+
+                                                        initHtml += '>{% trans "小于等于" %}</option>'+
                                                     '</select>'+
                                                     '<select class="form-control  '
                                                     if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
@@ -501,12 +504,12 @@
                                                         initHtml += ' display-none'
                                                     }
                                                     initHtml += '" name="action_belong" style="height: 34px;">'+
-                                                        '<option value="in" ' 
+                                                        '<option value="in" '
                                                         if(action == "in"){initHtml += ' selected'}
-                                                        initHtml += '>属于</option>'+
-                                                        '<option value="not_in" ' 
+                                                        initHtml += '>{% trans "属于" %}</option>'+
+                                                        '<option value="not_in" '
                                                         if(action == "not_in"){initHtml += ' selected'}
-                                                        initHtml += '>不属于</option>'+
+                                                        initHtml += '>{% trans "不属于" %}</option>'+
                                                     '</select>'+
                                                     '<select class="form-control '
                                                     if(v != 'exec_date'){
@@ -517,12 +520,12 @@
                                                         if(action == 'week'){
                                                             initHtml += 'selected'
                                                         }
-                                                        initHtml += '>星期</option>'+
+                                                        initHtml += '>{% trans "星期" %}</option>'+
                                                         '<option value="date" '
                                                         if(action == 'date'){
                                                             initHtml += 'selected'
                                                         }
-                                                        initHtml += '>天</option>'+
+                                                        initHtml += '>{% trans "天" %}</option>'+
                                                     '</select>'+
                                                 '</div>'+
                                                     '<div class="col-sm-8 no-padding values">'+
@@ -542,7 +545,7 @@
                                                         initHtml += '   style="width: 100%;"/>'+
                                                         '<div id="id_rule_value_dpt0" class="col-xs-12 col-sm-12 no-padding dept_box '
                                                         if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
-                                                            
+
                                                         }else{
                                                             initHtml += ' display-none" ';
                                                         }
@@ -553,7 +556,7 @@
                                                                     if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
                                                                         initHtml += hashdept['dept_'+rule_data.condition[i].value]
                                                                     }
-                                                                    initHtml += '" readonly placeholder="点击选择部门" class="form-control department_choice">'+
+                                                                    initHtml += '" readonly placeholder="{% trans "点击选择部门" %}" class="form-control department_choice">'+
                                                                     '<input type="hidden" class="id_dept_id" '
                                                                     if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
                                                                         initHtml += ' value="'+rule_data.condition[i].value+'"'
@@ -582,7 +585,7 @@
                                                             }
                                                             initHtml += '>'+
                                                         '</div>'+
-                                                        '<div class="col-xs-12 col-sm-12 no-padding '  
+                                                        '<div class="col-xs-12 col-sm-12 no-padding '
                                                         if(v=='exec_date' && action == 'week'){
 
                                                         }else{
@@ -592,78 +595,78 @@
                                                             '<div style="float:left;">'+
                                                                 '<select name="day_start">'+
                                                                     '<option value="1" '
-                                                                    
+
                                                                     if(vv.day_start && vv.day_start == '1'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期一</option>'+
+                                                                    initHtml += '>{% trans "星期一" %}</option>'+
                                                                     '<option value="2" '
                                                                     if(vv.day_start && vv.day_start == '2'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期二</option>'+
+                                                                    initHtml += '>{% trans "星期二" %}</option>'+
                                                                     '<option value="3" '
                                                                     if(vv.day_start && vv.day_start == '3'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期三</option>'+
+                                                                    initHtml += '>{% trans "星期三" %}</option>'+
                                                                     '<option value="4" '
                                                                     if(vv.day_start && vv.day_start == '4'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期四</option>'+
+                                                                    initHtml += '>{% trans "星期四" %}</option>'+
                                                                     '<option value="5" '
                                                                     if(vv.day_start && vv.day_start == '5'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期五</option>'+
+                                                                    initHtml += '>{% trans "星期五" %}</option>'+
                                                                     '<option value="6" '
-                                                                    if(vv.day_start && vv.day_start == '5'){
+                                                                    if(vv.day_start && vv.day_start == '6'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期六</option>'+
+                                                                    initHtml += '>{% trans "星期六" %}</option>'+
                                                                     '<option value="7" '
                                                                     if(vv.day_start && vv.day_start == '7'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期日</option>'+
+                                                                    initHtml += '>{% trans "星期日" %}</option>'+
                                                                 '</select> --'+
                                                                 '<select name="day_end"  style="margin-right:20px;" >'+
                                                                     '<option value="1" '
                                                                     if(vv.day_end && vv.day_end == '1'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期一</option>'+
+                                                                    initHtml += '>{% trans "星期一" %}</option>'+
                                                                     '<option value="2" '
                                                                     if(vv.day_end && vv.day_end == '2'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期二</option>'+
+                                                                    initHtml += '>{% trans "星期二" %}</option>'+
                                                                     '<option value="3" '
                                                                     if(vv.day_end && vv.day_end == '3'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期三</option>'+
+                                                                    initHtml += '>{% trans "星期三" %}</option>'+
                                                                     '<option value="4" '
                                                                     if(vv.day_end && vv.day_end == '4'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期四</option>'+
+                                                                    initHtml += '>{% trans "星期四" %}</option>'+
                                                                     '<option value="5" '
                                                                     if(vv.day_end && vv.day_end == '5'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期五</option>'+
+                                                                    initHtml += '>{% trans "星期五" %}</option>'+
                                                                     '<option value="6" '
-                                                                    if(vv.day_end && vv.day_end == '5'){
+                                                                    if(vv.day_end && vv.day_end == '6'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期六</option>'+
+                                                                    initHtml += '>{% trans "星期六" %}</option>'+
                                                                     '<option value="7" '
                                                                     if(vv.day_end && vv.day_end == '7'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期日</option>'+
+                                                                    initHtml += '>{% trans "星期日" %}</option>'+
                                                                 '</select>'+
                                                             '</div>'+
                                                             '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
@@ -705,58 +708,58 @@
                                     '<div class="hr"></div>'+
                                     '<div class="row">'+
                                         '<div class="col-sm-2 control-label">'+
-                                            '子条件：'+
+                                            '{% trans "子条件：" %}'+
                                         '</div>'+
                                         '<div class="col-sm-10">'+
                                             '<div class="row">'+
                                                 '<div class="col-sm-2 no-padding">'+
                                                 '<select class="form-control" name="suboption" style="height: 34px;">'+
-                                                    '<option value="all_mail"' 
+                                                    '<option value="all_mail"'
                                                     var subo_sub = rule_data.condition[i].subs[j].suboption;
                                                     if(subo_sub == "all_mail"){ initHtml += ' selected '}
-                                                      initHtml +='>所有邮件</option>'+
+                                                      initHtml +='>{% trans "所有邮件" %}</option>'+
                                                     '<option value="has_attach"'
                                                     if(subo_sub == "has_attach"){ initHtml += ' selected '}
-                                                      initHtml +='>有附件</option>'+
+                                                      initHtml +='>{% trans "有附件" %}</option>'+
                                                     '<option value="attachments"'
                                                     if(subo_sub == "attachments"){ initHtml += ' selected '}
-                                                      initHtml +='>附件名</option>'+
+                                                      initHtml +='>{% trans "附件名" %}</option>'+
                                                     '<option value="sender"'
                                                     if(subo_sub == "sender"){ initHtml += ' selected '}
-                                                      initHtml +='>发信人</option>'+
+                                                      initHtml +='>{% trans "发信人" %}</option>'+
                                                     '<option value="cc"'
                                                     if(subo_sub == "cc"){ initHtml += ' selected '}
-                                                      initHtml +='>抄送人</option>'+
+                                                      initHtml +='>{% trans "抄送人" %}</option>'+
                                                     '<option value="recipient"'
                                                     if(subo_sub == "recipient"){ initHtml += ' selected '}
-                                                      initHtml +='>收信人</option>'+
+                                                      initHtml +='>{% trans "收信人" %}</option>'+
                                                     '<option value="sender_dept"'
                                                     if(subo_sub == "sender_dept"){ initHtml += ' selected '}
-                                                      initHtml +='>发信人部门</option>'+
+                                                      initHtml +='>{% trans "发信人部门" %}</option>'+
                                                     '<option value="cc_dept"'
                                                     if(subo_sub == "cc_dept"){ initHtml += ' selected '}
-                                                      initHtml +='>抄送人部门</option>'+
+                                                      initHtml +='>{% trans "抄送人部门" %}</option>'+
                                                     '<option value="rcpt_dept"'
                                                     if(subo_sub == "rcpt_dept"){ initHtml += ' selected '}
-                                                      initHtml +='>收信人部门</option>'+
+                                                      initHtml +='>{% trans "收信人部门" %}</option>'+
                                                     '<option value="subject"'
                                                     if(subo_sub == "subject"){ initHtml += ' selected '}
-                                                      initHtml +='>主题</option>'+
+                                                      initHtml +='>{% trans "主题" %}</option>'+
                                                     '<option value="body"'
                                                     if(subo_sub == "body"){ initHtml += ' selected '}
-                                                      initHtml +='>邮件内容</option>'+
+                                                      initHtml +='>{% trans "邮件内容" %}</option>'+
                                                     '<option value="mail_size"'
                                                     if(subo_sub == "mail_size"){ initHtml += ' selected '}
-                                                      initHtml +='>邮件大小(MB)</option>'+
+                                                      initHtml +='>{% trans "邮件大小(MB)" %}</option>'+
                                                     '<option value="mail_size2"'
                                                     if(subo_sub == "mail_size2"){ initHtml += ' selected '}
-                                                      initHtml +='>邮件大小(Byte)</option>'+
+                                                      initHtml +='>{% trans "邮件大小(Byte)" %}</option>'+
                                                     '<option value="content_size"'
                                                     if(subo_sub == "content_size"){ initHtml += ' selected '}
-                                                      initHtml +='>邮件正文大小(Byte)</option>'+
+                                                      initHtml +='>{% trans "邮件正文大小(Byte)" %}</option>'+
                                                     '<option value="exec_date"'
                                                     if(subo_sub == "exec_date"){ initHtml += ' selected '}
-                                                      initHtml +='>执行时间</option>'+
+                                                      initHtml +='>{% trans "执行时间" %}</option>'+
                                                 '</select>'+
                                             '</div>'+
                                             '<div class="col-sm-10 no-padding">'+
@@ -770,15 +773,15 @@
                                                         initHtml += ' display-none'
                                                     }
                                                     initHtml += '"  name="action_contain" style="height: 34px;">'+
-                                                        '<option value="contains" ' 
+                                                        '<option value="contains" '
                                                         if(action == "contains"){initHtml += ' selected'}
-                                                        initHtml += '>包含</option>'+
-                                                        '<option value="not_contains" ' 
+                                                        initHtml += '>{% trans "包含" %}</option>'+
+                                                        '<option value="not_contains" '
                                                         if(action == "not_contains"){initHtml += ' selected'}
-                                                        initHtml += '>不包含</option>'+
-                                                        '<option value="==" ' 
+                                                        initHtml += '>{% trans "不包含" %}</option>'+
+                                                        '<option value="==" '
                                                         if(action == "=="){initHtml += ' selected'}
-                                                        initHtml += '>等于</option>'+
+                                                        initHtml += '>{% trans "等于" %}</option>'+
                                                     '</select>'+
                                                     '<select class="form-control '
                                                     if(v=='mail_size'||v=='mail_size2'||v=='content_size'){
@@ -787,12 +790,12 @@
                                                         initHtml += ' display-none'
                                                     }
                                                     initHtml += '" name="action_eq" style="height: 34px;">'+
-                                                        '<option value=">=" ' 
+                                                        '<option value=">=" '
                                                         if(action == ">="){initHtml += ' selected'}
-                                                        initHtml += '>大于等于</option>'+
-                                                        '<option value="<=" ' 
+                                                        initHtml += '>{% trans "大于等于" %}</option>'+
+                                                        '<option value="<=" '
                                                         if(action == "<=>"){initHtml += ' selected'}
-                                                        initHtml += '>小于等于</option>'+
+                                                        initHtml += '>{% trans "小于等于" %}</option>'+
                                                     '</select>'+
                                                     '<select class="form-control  '
                                                     if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
@@ -801,12 +804,12 @@
                                                         initHtml += ' display-none'
                                                     }
                                                     initHtml += '" name="action_belong" style="height: 34px;">'+
-                                                        '<option value="in" ' 
+                                                        '<option value="in" '
                                                         if(action == "in"){initHtml += ' selected'}
-                                                        initHtml += '>属于</option>'+
-                                                        '<option value="not_in" ' 
+                                                        initHtml += '>{% trans "属于" %}</option>'+
+                                                        '<option value="not_in" '
                                                         if(action == "not_in"){initHtml += ' selected'}
-                                                        initHtml += '>不属于</option>'+
+                                                        initHtml += '>{% trans "不属于" %}</option>'+
                                                     '</select>'+
                                                     '<select class="form-control '
                                                     if(v != 'exec_date'){
@@ -817,12 +820,12 @@
                                                         if(action == 'week'){
                                                             initHtml += 'selected'
                                                         }
-                                                        initHtml += '>星期</option>'+
+                                                        initHtml += '>{% trans "星期" %}</option>'+
                                                         '<option value="date" '
                                                         if(action == 'date'){
                                                             initHtml += 'selected'
                                                         }
-                                                        initHtml += '>天</option>'+
+                                                        initHtml += '>{% trans "天" %}</option>'+
                                                     '</select>'+
                                                 '</div>'+
                                                     '<div class="col-sm-8 no-padding values">'+
@@ -842,7 +845,7 @@
                                                         initHtml += '   style="width: 100%;"/>'+
                                                         '<div id="id_rule_value_dpt0" class="col-xs-12 col-sm-12 no-padding dept_box '
                                                         if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
-                                                            
+
                                                         }else{
                                                             initHtml += ' display-none" ';
                                                         }
@@ -853,7 +856,7 @@
                                                                     if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
                                                                         initHtml += hashdept['dept_'+rule_data.condition[i].subs[j].value]
                                                                     }
-                                                                    initHtml += '" readonly placeholder="点击选择部门" class="form-control department_choice">'+
+                                                                    initHtml += '" readonly placeholder="{% trans "点击选择部门" %}" class="form-control department_choice">'+
                                                                     '<input type="hidden" class="id_dept_id" '
                                                                     if(v=='sender_dept'||v=='cc_dept'||v=='rcpt_dept'){
                                                                         initHtml += ' value="'+rule_data.condition[i].subs[j].value+'"'
@@ -882,7 +885,7 @@
                                                             }
                                                             initHtml += '">'+
                                                         '</div>'+
-                                                        '<div class="col-xs-12 col-sm-12 no-padding '  
+                                                        '<div class="col-xs-12 col-sm-12 no-padding '
                                                         if(v=='exec_date' && action == 'week'){
 
                                                         }else{
@@ -892,78 +895,78 @@
                                                             '<div style="float:left;">'+
                                                                 '<select name="day_start">'+
                                                                     '<option value="1" '
-                                                                    
+
                                                                     if(vv.day_start && vv.day_start == '1'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期一</option>'+
+                                                                    initHtml += '>{% trans "星期一" %}</option>'+
                                                                     '<option value="2" '
                                                                     if(vv.day_start && vv.day_start == '2'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期二</option>'+
+                                                                    initHtml += '>{% trans "星期二" %}</option>'+
                                                                     '<option value="3" '
                                                                     if(vv.day_start && vv.day_start == '3'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期三</option>'+
+                                                                    initHtml += '>{% trans "星期三" %}</option>'+
                                                                     '<option value="4" '
                                                                     if(vv.day_start && vv.day_start == '4'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期四</option>'+
+                                                                    initHtml += '>{% trans "星期四" %}</option>'+
                                                                     '<option value="5" '
                                                                     if(vv.day_start && vv.day_start == '5'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期五</option>'+
+                                                                    initHtml += '>{% trans "星期五" %}</option>'+
                                                                     '<option value="6" '
-                                                                    if(vv.day_start && vv.day_start == '5'){
+                                                                    if(vv.day_start && vv.day_start == '6'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期六</option>'+
+                                                                    initHtml += '>{% trans "星期六" %}</option>'+
                                                                     '<option value="7" '
                                                                     if(vv.day_start && vv.day_start == '7'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期日</option>'+
+                                                                    initHtml += '>{% trans "星期日" %}</option>'+
                                                                 '</select> --'+
                                                                 '<select name="day_end"  style="margin-right:20px;" >'+
                                                                     '<option value="1" '
                                                                     if(vv.day_end && vv.day_end == '1'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期一</option>'+
+                                                                    initHtml += '>{% trans "星期一" %}</option>'+
                                                                     '<option value="2" '
                                                                     if(vv.day_end && vv.day_end == '2'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期二</option>'+
+                                                                    initHtml += '>{% trans "星期二" %}</option>'+
                                                                     '<option value="3" '
                                                                     if(vv.day_end && vv.day_end == '3'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期三</option>'+
+                                                                    initHtml += '>{% trans "星期三" %}</option>'+
                                                                     '<option value="4" '
                                                                     if(vv.day_end && vv.day_end == '4'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期四</option>'+
+                                                                    initHtml += '>{% trans "星期四" %}</option>'+
                                                                     '<option value="5" '
                                                                     if(vv.day_end && vv.day_end == '5'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期五</option>'+
+                                                                    initHtml += '>{% trans "星期五" %}</option>'+
                                                                     '<option value="6" '
-                                                                    if(vv.day_end && vv.day_end == '5'){
+                                                                    if(vv.day_end && vv.day_end == '6'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期六</option>'+
+                                                                    initHtml += '>{% trans "星期六" %}</option>'+
                                                                     '<option value="7" '
                                                                     if(vv.day_end && vv.day_end == '7'){
                                                                         initHtml += 'selected'
                                                                     }
-                                                                    initHtml += '>星期日</option>'+
+                                                                    initHtml += '>{% trans "星期日" %}</option>'+
                                                                 '</select>'+
                                                             '</div>'+
                                                             '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
@@ -993,7 +996,7 @@
 
 
                                                     '</div>'+
-                                                    '<div class="col-sm-1"><button type="button" class="delete_sub_condition btn btn-xs btn-warning" title="删除此子条件"><i class="glyphicon glyphicon-trash"></i></button></div>'+
+                                                    '<div class="col-sm-1"><button type="button" class="delete_sub_condition btn btn-xs btn-warning" title="{% trans "删除此子条件" %}"><i class="glyphicon glyphicon-trash"></i></button></div>'+
                                                 '</div>'+
 
                                             '</div>'+
@@ -1017,7 +1020,7 @@
         dateInit();
         addsub();
     }
-    
+
     function dateInit(){
         $('[name="start"]').timepicker({
             minuteStep: 1,
@@ -1049,7 +1052,7 @@
             pickerPosition: "bottom-right",
         });
     }
-    
+
 
     function demoinitdept(treeid,treeparentid,inputparentid,deptArr){
         var treeEle;
@@ -1260,7 +1263,7 @@
     $('.hide_box_btn').click(function(){
         $(this).parents('.forward_box').addClass('display-none').siblings().removeClass('display-none')
     })
-    
+
     function getList(){
         initdept();
         $.ajax({
@@ -1276,16 +1279,17 @@
                 dataHash = [];
                 for(var i=0,html='';i<data.length;i++){
                     var logicstr = '',statusstr = '',constr = '';
-                    logicstr = data[i].logic=='all'?'满足所有':'满足任一';
-                    statusstr = data[i].disabled==1?'禁用':'启用';
+                    logicstr = data[i].logic=='all'?'{% trans "满足所有" %}':'{% trans "满足任一" %}';
+                    statusstr = data[i].disabled==1?'{% trans "禁用" %}':'{% trans "启用" %}';
                     dataHash['rule_'+data[i].id] = data[i]
                     for(var k=0;k<data[i].condition.length;k++){
                         var c = data[i].condition[k];
-                        var optionstr = c.suboption=="all_mail"?'所有邮件':c.suboption=="has_attach"?'有附件':c.suboption=="attachments"?'附件名':c.suboption=="sender"?'发信人':c.suboption=="cc"?'抄送人':c.suboption=="recipient"?'收信人':c.suboption=="sender_dept"?'发信人部门':c.suboption=="cc_dept"?'抄送人部门':c.suboption=="rcpt_dept"?'收信人部门':c.suboption=="subject"?'主题':c.suboption=="body"?'邮件内容':c.suboption=="mail_size"?'邮件大小(MB)':c.suboption=="mail_size2"?'邮件大小(Byte)':c.suboption=="exec_date"?'执行时间':'邮件正文大小(Byte)'
-                        var actionstr = c.action=='contains'?'包含':c.action=='not_contains'?'不包含':c.action=='=='?'等于':c.action=='>='?'大于等于':c.action=='<='?'小于等于':c.action=='in'?'属于':c.action=='not_in'?'不属于':c.action=='week'?'':c.action=='date'?'':''
+                        var optionstr = c.suboption=="all_mail"?'{% trans "所有邮件" %}':c.suboption=="has_attach"?'{% trans "有附件" %}':c.suboption=="attachments"?'{% trans "附件名" %}':c.suboption=="sender"?'{% trans "发信人" %}':c.suboption=="cc"?'{% trans "抄送人" %}':c.suboption=="recipient"?'{% trans "收信人" %}':c.suboption=="sender_dept"?'{% trans "发信人部门" %}':c.suboption=="cc_dept"?'{% trans "抄送人部门" %}':c.suboption=="rcpt_dept"?'{% trans "收信人部门" %}':c.suboption=="subject"?'{% trans "主题" %}':c.suboption=="body"?'{% trans "邮件内容" %}':c.suboption=="mail_size"?'{% trans "邮件大小(MB)" %}':c.suboption=="mail_size2"?'{% trans "邮件大小(Byte)" %}':c.suboption=="exec_date"?'{% trans "执行时间" %}':'{% trans "邮件正文大小(Byte)" %}'
+                        var actionstr = c.action=='contains'?'{% trans "包含" %}':c.action=='not_contains'?'{% trans "不包含" %}':c.action=='=='?'{% trans "等于" %}':c.action=='>='?'{% trans "大于等于" %}':c.action=='<='?'{% trans "小于等于" %}':c.action=='in'?'{% trans "属于" %}':c.action=='not_in'?'{% trans "不属于" %}':c.action=='week'?'':c.action=='date'?'':''
+                        if(c.suboption=="all_mail"||c.suboption=="has_attach"){ actionstr = ''};
                         if(k>0){constr += '<br/>'}
                         constr += '<span>'+(k+1)+'、</span><span>【'+ optionstr + '】</span><span>'+actionstr+'</span>'
-                        if(c.action!='date'&&c.action!='week'&&(c.value2||c.value)){
+                        if(c.suboption!="all_mail" && c.suboption!="has_attach" && c.action!='date'&&c.action!='week'&&(c.value2||c.value)){
                             var vv = c.value2||c.value
                             if(c.suboption=="sender_dept" || c.suboption=="cc_dept" || c.suboption=="rcpt_dept"){
                                 vv = hashdept['dept_'+vv]
@@ -1294,22 +1298,23 @@
                         }
                         if(c.action=="date"){
                             var vv = c.value
-                            constr += '<span> '+ vv.start +' 到 '+ vv.end +'  </span> '
+                            constr += '<span> '+ vv.start +' {% trans "到 " %}'+ vv.end +'  </span> '
                         }
                         if(c.action=="week"){
                             var vv = c.value2||c.value
-                            var start_str = vv.day_start=='1'?'星期一':vv.day_start=='2'?'星期二':vv.day_start=='3'?'星期三':vv.day_start=='4'?'星期四':vv.day_start=='5'?'星期五':vv.day_start=='6'?'星期六':'星期日'
-                            var end_str = vv.day_end=='1'?'星期一':vv.day_end=='2'?'星期二':vv.day_end=='3'?'星期三':vv.day_end=='4'?'星期四':vv.day_end=='5'?'星期五':vv.day_end=='6'?'星期六':'星期日'
-                            constr += '<span> '+ start_str + ' ' + vv.start +' 到 '+ end_str + ' '+ vv.end + '  </span> ' 
+                            var start_str = vv.day_start=='1'?'{% trans "星期一" %}':vv.day_start=='2'?'{% trans "星期二" %}':vv.day_start=='3'?'{% trans "星期三" %}':vv.day_start=='4'?'{% trans "星期四" %}':vv.day_start=='5'?'{% trans "星期五" %}':vv.day_start=='6'?'{% trans "星期六" %}':'{% trans "星期日" %}'
+                            var end_str = vv.day_end=='1'?'{% trans "星期一" %}':vv.day_end=='2'?'{% trans "星期二" %}':vv.day_end=='3'?'{% trans "星期三" %}':vv.day_end=='4'?'{% trans "星期四" %}':vv.day_end=='5'?'{% trans "星期五" %}':vv.day_end=='6'?'{% trans "星期六" %}':'{% trans "星期日" %}'
+                            constr += '<span> '+ start_str + ' ' + vv.start +' {% trans "到 " %}'+ end_str + ' '+ vv.end + '  </span> '
                         }
                         for(var j=0;j<c.subs.length;j++){
-                            var logiccc = c.logic=='all'?'并':'或';
+                            var logiccc = c.logic=='all'?'{% trans "并" %}':'{% trans "或" %}';
                             var cc = c.subs[j];
-                            var suboptionstr = cc.suboption=="all_mail"?'所有邮件':cc.suboption=="has_attach"?'有附件':cc.suboption=="attachments"?'附件名':cc.suboption=="sender"?'发信人':cc.suboption=="cc"?'抄送人':cc.suboption=="recipient"?'收信人':cc.suboption=="sender_dept"?'发信人部门':cc.suboption=="cc_dept"?'抄送人部门':cc.suboption=="rcpt_dept"?'收信人部门':cc.suboption=="subject"?'主题':cc.suboption=="body"?'邮件内容':cc.suboption=="mail_size"?'邮件大小(MB)':cc.suboption=="mail_size2"?'邮件大小(Byte)':cc.suboption=="exec_date"?'执行时间':'邮件正文大小(Byte)'
-                            var subactionstr = cc.action=='contains'?'包含':cc.action=='not_contains'?'不包含':cc.action=='=='?'等于':cc.action=='>='?'大于等于':cc.action=='<='?'小于等于':cc.action=='in'?'属于':cc.action=='not_in'?'不属于':cc.action=='week'?'':cc.action=='date'?'':''
+                            var suboptionstr = cc.suboption=="all_mail"?'{% trans "所有邮件" %}':cc.suboption=="has_attach"?'{% trans "有附件" %}':cc.suboption=="attachments"?'{% trans "附件名" %}':cc.suboption=="sender"?'{% trans "发信人" %}':cc.suboption=="cc"?'{% trans "抄送人" %}':cc.suboption=="recipient"?'{% trans "收信人" %}':cc.suboption=="sender_dept"?'{% trans "发信人部门" %}':cc.suboption=="cc_dept"?'{% trans "抄送人部门" %}':cc.suboption=="rcpt_dept"?'{% trans "收信人部门" %}':cc.suboption=="subject"?'{% trans "主题" %}':cc.suboption=="body"?'{% trans "邮件内容" %}':cc.suboption=="mail_size"?'{% trans "邮件大小(MB)" %}':cc.suboption=="mail_size2"?'{% trans "邮件大小(Byte)" %}':cc.suboption=="exec_date"?'{% trans "执行时间" %}':'{% trans "邮件正文大小(Byte)" %}'
+                            var subactionstr = cc.action=='contains'?'{% trans "包含" %}':cc.action=='not_contains'?'{% trans "不包含" %}':cc.action=='=='?'{% trans "等于" %}':cc.action=='>='?'{% trans "大于等于" %}':cc.action=='<='?'{% trans "小于等于" %}':cc.action=='in'?'{% trans "属于" %}':cc.action=='not_in'?'{% trans "不属于" %}':cc.action=='week'?'':cc.action=='date'?'':''
+                            if(cc.suboption=="all_mail"||cc.suboption=="has_attach"){ subactionstr = ''};
                             constr += '<button type="button" class="btn btn-xs btn-success">'+logiccc+'</button><span>【'+suboptionstr+'】</span><span>'+subactionstr+'</span>'
 
-                            if(cc.action!='date'&&cc.action!='week'&&(cc.value2||cc.value)){
+                            if(cc.suboption!="all_mail"||cc.suboption!="has_attach" && cc.action!='date'&&cc.action!='week'&&(cc.value2||cc.value)){
                                 var subvv = cc.value2||cc.value
                                 if(cc.suboption=="sender_dept" || cc.suboption=="cc_dept" || cc.suboption=="rcpt_dept"){
                                     subvv = hashdept['dept_'+subvv]
@@ -1318,19 +1323,19 @@
                             }
                             if(cc.action=="date"){
                                 var subvv = cc.value2||cc.value
-                                constr += '<span> '+ subvv.start +' 到 '+ subvv.end +'  </span> '
+                                constr += '<span> '+ subvv.start +' {% trans "到 " %}'+ subvv.end +'  </span> '
                             }
                             if(cc.action=="week"){
                                 var subvv = cc.value2||cc.value
-                                var start_str = subvv.day_start=='1'?'星期一':subvv.day_start=='2'?'星期二':subvv.day_start=='3'?'星期三':subvv.day_start=='4'?'星期四':subvv.day_start=='5'?'星期五':subvv.day_start=='6'?'星期六':'星期日'
-                                var end_str = subvv.day_end=='1'?'星期一':subvv.day_end=='2'?'星期二':subvv.day_end=='3'?'星期三':subvv.day_end=='4'?'星期四':subvv.day_end=='5'?'星期五':subvv.day_end=='6'?'星期六':'星期日'
-                                constr += '<span> '+ start_str +' '+ subvv.start +' 到 '+ end_str  + ' '+ subvv.end + '  </span> ' 
+                                var start_str = subvv.day_start=='1'?'{% trans "星期一" %}':subvv.day_start=='2'?'{% trans "星期二" %}':subvv.day_start=='3'?'{% trans "星期三" %}':subvv.day_start=='4'?'{% trans "星期四" %}':subvv.day_start=='5'?'{% trans "星期五" %}':subvv.day_start=='6'?'{% trans "星期六" %}':'{% trans "星期日" %}'
+                                var end_str = subvv.day_end=='1'?'{% trans "星期一" %}':subvv.day_end=='2'?'{% trans "星期二" %}':subvv.day_end=='3'?'{% trans "星期三" %}':subvv.day_end=='4'?'{% trans "星期四" %}':subvv.day_end=='5'?'{% trans "星期五" %}':subvv.day_end=='6'?'{% trans "星期六" %}':'{% trans "星期日" %}'
+                                constr += '<span> '+ start_str +' '+ subvv.start +' {% trans "到 " %}'+ end_str  + ' '+ subvv.end + '  </span> '
                             }
                         }
                     }
                     html+='<tr><td>'+(i+1)+'</td><td>'+logicstr+'</td><td>'+constr+'</td><td>'+statusstr+'</td><td>'+
-                    '<button type="button" class="btn btn-xs btn-primary edit_con_btn" data_id="'+data[i].id+'" style="margin-right:10px;">修改</button>'+
-                    '<button type="button" class="btn btn-xs btn-danger delete_con_btn" data_id="'+data[i].id+'">删除</button>'+
+                    '<button type="button" class="btn btn-xs btn-primary edit_con_btn" data_id="'+data[i].id+'" style="margin-right:10px;">{% trans "修改" %}</button>'+
+                    '<button type="button" class="btn btn-xs btn-danger delete_con_btn" data_id="'+data[i].id+'">{% trans "删除" %}</button>'+
                     '</td></tr>'
                 }
                 $('#forward_tbody').html(html)
@@ -1340,7 +1345,7 @@
                     $('.forward_list').addClass('display-none').siblings().removeClass('display-none')
                     add_condition_init();
                 })
-                
+
             }
         })
     }
@@ -1350,7 +1355,7 @@
     $('.add_btn').click(function(){
         var rule_id = $(this).attr('type_id');
         if(!$('#forward_body').val() || $('#forward_body').val() == ''){
-            layer.msg('请填写回复内容~')
+            layer.msg('{% trans "请填写回复内容" %}~')
             return;
         }
         var arr = [];
@@ -1361,49 +1366,49 @@
                 for(var g=0;g<$list_item.find('.condition_item:eq('+j+') .values>input').length;g++){
                     if($list_item.find('.condition_item:eq('+j+') .values>input:eq('+g+')') && !$list_item.find('.condition_item:eq('+j+') .values>input:eq('+g+')').hasClass('display-none')){
                         if(!$list_item.find('.condition_item:eq('+j+') .values>input:eq('+g+')').val() || $list_item.find('.condition_item:eq('+j+') .values>input:eq('+g+')').val()==''){
-                            layer.msg('请填写条件内容~')
+                            layer.msg('{% trans "请填写条件内容" %}~')
                             return;
                         }
                     }
                 }
                 if($list_item.find('.condition_item:eq('+j+') .values>.dept_box') && !$list_item.find('.condition_item:eq('+j+') .values>.dept_box').hasClass('display-none')){
                     if(!$list_item.find('.condition_item:eq('+j+') .values>.dept_box .id_dept_id').val() || $list_item.find('.condition_item:eq('+j+') .values>.dept_box .id_dept_id').val()==''){
-                        layer.msg('请选择部门~')
+                        layer.msg('{% trans "请选择部门" %}~')
                         return;
                     }
                 }
                 if($list_item.find('.condition_item:eq('+j+') .values>.week_box') && !$list_item.find('.condition_item:eq('+j+') .values>.week_box').hasClass('display-none')){
                     if(!$list_item.find('.condition_item:eq('+j+') .values>.week_box [name="start"]').val() || $list_item.find('.condition_item:eq('+j+') .values>.week_box [name="start"]').val()==''){
-                        layer.msg('请选择执行开始时间~')
+                        layer.msg('{% trans "请选择执行开始时间" %}~')
                         return;
                     }
                     if(!$list_item.find('.condition_item:eq('+j+') .values>.week_box [name="end"]').val() || $list_item.find('.condition_item:eq('+j+') .values>.week_box [name="end"]').val()==''){
-                        layer.msg('请选择执行截止时间~')
+                        layer.msg('{% trans "请选择执行截止时间" %}~')
                         return;
                     }
                     if($list_item.find('.condition_item:eq('+j+') .values>.week_box [name="day_start"]').val() > $list_item.find('.condition_item:eq('+j+') .values>.week_box [name="day_end"]').val() ){
-                        layer.msg('开始星期不能大于结束星期~')
+                        layer.msg('{% trans "开始星期不能大于结束星期" %}~')
                         return;
                     }
                     if($list_item.find('.condition_item:eq('+j+') .values>.week_box [name="day_start"]').val() == $list_item.find('.condition_item:eq('+j+') .values>.week_box [name="day_end"]').val() ){
                         if($list_item.find('.condition_item:eq('+j+') .values>.week_box [name="start"]').val() >= $list_item.find('.condition_item:eq('+j+') .values>.week_box [name="end"]').val() ){
-                            layer.msg('开始时间不能大于等于结束时间~')
+                            layer.msg('{% trans "开始时间不能大于等于结束时间" %}~')
                             return;
                         }
-                        
+
                     }
                 }
                 if($list_item.find('.condition_item:eq('+j+') .values>.date_box') && !$list_item.find('.condition_item:eq('+j+') .values>.date_box').hasClass('display-none')){
                     if(!$list_item.find('.condition_item:eq('+j+') .values>.date_box .start_time').val() || $list_item.find('.condition_item:eq('+j+') .values>.date_box .start_time').val()==''){
-                        layer.msg('请选择执行开始时间~')
+                        layer.msg('{% trans "请选择执行开始时间" %}~')
                         return;
                     }
                     if(!$list_item.find('.condition_item:eq('+j+') .values>.date_box .end_time').val() || $list_item.find('.condition_item:eq('+j+') .values>.date_box .end_time').val()==''){
-                        layer.msg('请选择执行截止时间~')
+                        layer.msg('{% trans "请选择执行截止时间" %}~')
                         return;
                     }
                     if($list_item.find('.condition_item:eq('+j+') .values>.date_box .start_time').val() >= $list_item.find('.condition_item:eq('+j+') .values>.date_box .end_time').val() ){
-                        layer.msg('开始时间不能大于等于结束时间~')
+                        layer.msg('{% trans "开始时间不能大于等于结束时间" %}~')
                         return;
                     }
                 }
@@ -1427,8 +1432,8 @@
             }
             if(!$list_item.find('.condition_item:eq(0) .values>.week_box').hasClass('display-none')){
                 obj.value = {}
-                obj.value.day_start = $list_item.find('.condition_item:eq(0) .values>.week_box [name="day_start"]').val();
-                obj.value.day_end = $list_item.find('.condition_item:eq(0) .values>.week_box [name="day_end"]').val();
+                obj.value.day_start = parseFloat( $list_item.find('.condition_item:eq(0) .values>.week_box [name="day_start"]').val());
+                obj.value.day_end = parseFloat( $list_item.find('.condition_item:eq(0) .values>.week_box [name="day_end"]').val());
                 obj.value.start = $list_item.find('.condition_item:eq(0) .values>.week_box [name="start"]').val();
                 obj.value.end = $list_item.find('.condition_item:eq(0) .values>.week_box [name="end"]').val();
             }
@@ -1456,8 +1461,8 @@
                 }
                 if(!$list_item.find('.condition_item:eq('+j+') .values>.week_box').hasClass('display-none')){
                     sub_obj.value = {}
-                    sub_obj.value.day_start = $list_item.find('.condition_item:eq('+j+') .values>.dept_box [name="day_start"]').val();
-                    sub_obj.value.day_end = $list_item.find('.condition_item:eq('+j+') .values>.week_box [name="day_end"]').val();
+                    sub_obj.value.day_start = parseFloat( $list_item.find('.condition_item:eq('+j+') .values>.dept_box [name="day_start"]').val());
+                    sub_obj.value.day_end = parseFloat( $list_item.find('.condition_item:eq('+j+') .values>.week_box [name="day_end"]').val());
                     sub_obj.value.start = $list_item.find('.condition_item:eq('+j+') .values>.week_box [name="start"]').val();
                     sub_obj.value.end = $list_item.find('.condition_item:eq('+j+') .values>.week_box [name="end"]').val();
                 }
@@ -1473,15 +1478,17 @@
         var is_forward_result = $('#is_save_forward').prop('checked')?true:false;
         var obj={
             action:[{
-                value:{value:$('#forward_body').val()},
-                action:'forward',
-                is_forward:is_forward_result
+                value:{
+                    value:$('#forward_body').val(),
+                    is_forward:is_forward_result
+                },
+                action:'forward'
             }],
             disabled:$('#status_checkbox_forward').prop('checked')==true?'-1':'1',
             logic:$('.logic_con [name="logic"]:checked').val(),
             condition: arr
         }
-            
+
         $.ajax({
             url:" {% url 'user_cfilter_mdf' %}",
             type:'POST',
@@ -1500,15 +1507,15 @@
                     initAddHtml()
                     $('#forward_body').val('')
                     add_condition_init();
-    
+
                 }else{
                     layer.msg(data.message || '')
                 }
-                
+
             }
         })
     })
-    
+
     //删除规则
     $('body').on('click','.delete_con_btn',function(){
         $.ajax({
@@ -1523,14 +1530,14 @@
             }
         })
     })
-    
+
     var deptArr = [
-        {id:1,parent:0,name:"部门1",child:2},
-        {id:2,parent:1,name:"部门2",child:1},
-        {id:3,parent:2,name:"部门3",child:0},
-        {id:4,parent:1,name:"部门4",child:0},
-        {id:5,parent:2,name:"部门5",child:0},
-        {id:6,parent:0,name:"部门6",child:0}
+        {id:1,parent:0,name:"{% trans "部门1" %}",child:2},
+        {id:2,parent:1,name:"{% trans "部门2" %}",child:1},
+        {id:3,parent:2,name:"{% trans "部门3" %}",child:0},
+        {id:4,parent:1,name:"{% trans "部门4" %}",child:0},
+        {id:5,parent:2,name:"{% trans "部门5" %}",child:0},
+        {id:6,parent:0,name:"{% trans "部门6" %}",child:0}
     ];
 
     $('body').on('change','[name="suboption"]',function(){
@@ -1569,74 +1576,74 @@
                                     '<div class="panel-heading" style="position:relative;">'+
                                         '<a href="#faq_'+index+'" data-toggle="collapse" class="accordion-toggle">'+
                                             '<i class="smaller-80 ace-icon fa fa-chevron-down" data-icon-hide="ace-icon fa fa-chevron-down align-top" data-icon-show="ace-icon fa fa-chevron-right"></i>&nbsp;'+
-                                            '<b>条件</b>'+
-                                            '<button type="button" class="delete_condition btn btn-sm btn-danger pull-right" data-id="id_option_'+index+'" style="position:absolute;top:-0;right:0;">删除条件</button>'+
+                                            '<b>{% trans "条件" %}</b>'+
+                                            '<button type="button" class="delete_condition btn btn-sm btn-danger pull-right" data-id="id_option_'+index+'" style="position:absolute;top:-0;right:0;">{% trans "删除条件" %}</button>'+
                                         '</a>'+
                                     '</div>'+
                                     '<div class="panel-collapse collapse in" id="faq_'+index+'">'+
                                         '<div class="panel-body">'+
                                             '<div >'+
-                                                '<span>子条件间关系：</span>'+
+                                                '<span>{% trans "子条件间关系：" %}</span>'+
                                                 '<div class="radio inline">'+
                                                     '<label>'+
                                                         '<input name="logic_'+index+'" type="radio" checked class="ace con_logic" value="all">'+
-                                                        '<span class="lbl"> 满足所有</span>'+
+                                                        '<span class="lbl"> {% trans "满足所有" %}</span>'+
                                                     '</label>'+
                                                 '</div>'+
                                                 '<div class="radio inline">'+
                                                     '<label>'+
                                                         '<input name="logic_'+index+'" type="radio" class="ace con_logic" value="one">'+
-                                                        '<span class="lbl middle"> 满足任意</span>'+
+                                                        '<span class="lbl middle"> {% trans "满足任意" %}</span>'+
                                                     '</label>'+
                                                 '</div>'+
-                                                '<button type="button" class="btn btn-xs btn-info add_sub_condition" dataindex="0" dataparentindex="'+index+'"  style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>新增子条件</button>'+
+                                                '<button type="button" class="btn btn-xs btn-info add_sub_condition" dataindex="0" dataparentindex="'+index+'"  style="margin-left:20px;"><i class="glyphicon glyphicon-plus"></i>{% trans "新增子条件" %}</button>'+
                                             '</div>'+
                                             '<ul>'+
                                                 '<li class="condition_item">'+
                                                     '<div class="hr"></div>'+
                                                     '<div class="row">'+
                                                         '<div class="col-sm-2 control-label">'+
-                                                            '子条件：'+
+                                                            '{% trans "子条件：" %}'+
                                                         '</div>'+
                                                         '<div class="col-sm-10">'+
                                                             '<div class="row">'+
                                                                 '<div class="col-sm-2 no-padding">'+
                                                                 '<select class="form-control" name="suboption" style="height: 34px;">'+
-                                                                    '<option value="all_mail">所有邮件</option>'+
-                                                                    '<option value="has_attach">有附件</option>'+
-                                                                    '<option value="attachments">附件名</option>'+
-                                                                    '<option value="sender">发信人</option>'+
-                                                                    '<option value="cc">抄送人</option>'+
-                                                                    '<option value="recipient">收信人</option>'+
-                                                                    '<option value="sender_dept">发信人部门</option>'+
-                                                                    '<option value="cc_dept">抄送人部门</option>'+
-                                                                    '<option value="rcpt_dept">收信人部门</option>'+
-                                                                    '<option value="subject">主题</option>'+
-                                                                    '<option value="body">邮件内容</option>'+
-                                                                    '<option value="mail_size">邮件大小(MB)</option>'+
-                                                                    '<option value="mail_size2">邮件大小(Byte)</option>'+
-                                                                    '<option value="content_size">邮件正文大小(Byte)</option>'+
-                                                                    '<option value="exec_date">执行时间</option>'+
+                                                                    '<option value="all_mail">{% trans "所有邮件" %}</option>'+
+                                                                    '<option value="has_attach">{% trans "有附件" %}</option>'+
+                                                                    '<option value="attachments">{% trans "附件名" %}</option>'+
+                                                                    '<option value="sender">{% trans "发信人" %}</option>'+
+                                                                    '<option value="cc">{% trans "抄送人" %}</option>'+
+                                                                    '<option value="recipient">{% trans "收信人" %}</option>'+
+                                                                    '<option value="sender_dept">{% trans "发信人部门" %}</option>'+
+                                                                    '<option value="cc_dept">{% trans "抄送人部门" %}</option>'+
+                                                                    '<option value="rcpt_dept">{% trans "收信人部门" %}</option>'+
+                                                                    '<option value="subject">{% trans "主题" %}</option>'+
+                                                                    '<option value="body">{% trans "邮件内容" %}</option>'+
+                                                                    '<option value="mail_size">{% trans "邮件大小(MB)" %}</option>'+
+                                                                    '<option value="mail_size2">{% trans "邮件大小(Byte)" %}</option>'+
+                                                                    '<option value="content_size">{% trans "邮件正文大小(Byte)" %}</option>'+
+                                                                    '<option value="exec_date">{% trans "执行时间" %}</option>'+
                                                                 '</select>'+
                                                             '</div>'+
                                                             '<div class="col-sm-10 no-padding">'+
                                                                 '<div class="col-sm-2 no-padding actions">'+
                                                                     '<select class="form-control display-none"  name="action_contain" style="height: 34px;">'+
-                                                                        '<option value="contains">包含</option>'+
-                                                                        '<option value="not_contains">不包含</option>'+
-                                                                        '<option value="==">等于</option>'+
+                                                                        '<option value="contains">{% trans "包含" %}</option>'+
+                                                                        '<option value="not_contains">{% trans "不包含" %}</option>'+
+                                                                        '<option value="==">{% trans "等于" %}</option>'+
                                                                     '</select>'+
                                                                     '<select class="form-control display-none" name="action_eq" style="height: 34px;">'+
-                                                                        '<option value=">=">大于等于</option>'+
-                                                                        '<option value="<=">小于等于</option>'+
+                                                                        '<option value=">=">{% trans "大于等于" %}</option>'+
+                                                                        '<option value="<=">{% trans "小于等于" %}</option>'+
                                                                     '</select>'+
                                                                     '<select class="form-control display-none" name="action_belong" style="height: 34px;">'+
-                                                                        '<option value="in">属于</option>'+
-                                                                        '<option value="not_in">不属于</option>'+
+                                                                        '<option value="in">{% trans "属于" %}</option>'+
+                                                                        '<option value="not_in">{% trans "不属于" %}</option>'+
                                                                     '</select>'+
                                                                     '<select class="form-control display-none" name="action_date" style="height: 34px;">'+
-                                                                        '<option value="week">星期</option>'+
-                                                                        '<option value="date">天</option>'+
+                                                                        '<option value="week">{% trans "星期" %}</option>'+
+                                                                        '<option value="date">{% trans "天" %}</option>'+
                                                                     '</select>'+
                                                                 '</div>'+
                                                                     '<div class="col-sm-8 no-padding values">'+
@@ -1645,7 +1652,7 @@
                                                                         '<div  class="col-xs-12 col-sm-12 no-padding  display-none dept_box">'+
                                                                             '<div class="input-group">'+
                                                                                 '<div id="input_box_'+index+'">'+
-                                                                                    '<input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">'+
+                                                                                    '<input type="text" value="" readonly placeholder="{% trans "点击选择部门" %}" class="form-control department_choice">'+
                                                                                     '<input type="hidden" class="id_dept_id" value="" name="option_value_dpt0">'+
                                                                                 '</div>'+
                                                                             '</div>'+
@@ -1658,22 +1665,22 @@
                                                                         '<div class="col-xs-12 col-sm-12 no-padding  display-none week_box clear">'+
                                                                             '<div style="float:left;">'+
                                                                                 '<select name="day_start">'+
-                                                                                    '<option value="1" selected>星期一</option>'+
-                                                                                    '<option value="2">星期二</option>'+
-                                                                                    '<option value="3">星期三</option>'+
-                                                                                    '<option value="4">星期四</option>'+
-                                                                                    '<option value="5">星期五</option>'+
-                                                                                    '<option value="6">星期六</option>'+
-                                                                                    '<option value="7">星期日</option>'+
+                                                                                    '<option value="1" selected>{% trans "星期一" %}</option>'+
+                                                                                    '<option value="2">{% trans "星期二" %}</option>'+
+                                                                                    '<option value="3">{% trans "星期三" %}</option>'+
+                                                                                    '<option value="4">{% trans "星期四" %}</option>'+
+                                                                                    '<option value="5">{% trans "星期五" %}</option>'+
+                                                                                    '<option value="6">{% trans "星期六" %}</option>'+
+                                                                                    '<option value="7">{% trans "星期日" %}</option>'+
                                                                                 '</select> --'+
                                                                                 '<select name="day_end"  style="margin-right:20px;" >'+
-                                                                                    '<option value="1">星期一</option>'+
-                                                                                    '<option value="2">星期二</option>'+
-                                                                                    '<option value="3">星期三</option>'+
-                                                                                    '<option value="4">星期四</option>'+
-                                                                                    '<option value="5">星期五</option>'+
-                                                                                    '<option value="6">星期六</option>'+
-                                                                                    '<option value="7" selected>星期日</option>'+
+                                                                                    '<option value="1">{% trans "星期一" %}</option>'+
+                                                                                    '<option value="2">{% trans "星期二" %}</option>'+
+                                                                                    '<option value="3">{% trans "星期三" %}</option>'+
+                                                                                    '<option value="4">{% trans "星期四" %}</option>'+
+                                                                                    '<option value="5">{% trans "星期五" %}</option>'+
+                                                                                    '<option value="6">{% trans "星期六" %}</option>'+
+                                                                                    '<option value="7" selected>{% trans "星期日" %}</option>'+
                                                                                 '</select>'+
                                                                             '</div>'+
                                                                             '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
@@ -1693,12 +1700,12 @@
 
                                                                     '</div>'+
                                                                 '</div>'+
-    
+
                                                             '</div>'+
                                                         '</div>'+
-    
+
                                                     '</div>'+
-    
+
                                                 '</li>'+
                                             '</ul>'+
                                         '</div>'+
@@ -1711,47 +1718,47 @@
                             '<div class="hr"></div>'+
                             '<div class="row">'+
                                 '<div class="col-sm-2 control-label">'+
-                                    '子条件：'+
+                                    '{% trans "子条件：" %}'+
                                 '</div>'+
                                 '<div class="col-sm-10">'+
                                     '<div class="row">'+
                                         '<div class="col-sm-2 no-padding">'+
                                         '<select class="form-control" name="suboption" style="height: 34px;">'+
-                                            '<option value="all_mail">所有邮件</option>'+
-                                            '<option value="has_attach">有附件</option>'+
-                                            '<option value="attachments">附件名</option>'+
-                                            '<option value="sender">发信人</option>'+
-                                            '<option value="cc">抄送人</option>'+
-                                            '<option value="recipient">收信人</option>'+
-                                            '<option value="sender_dept">发信人部门</option>'+
-                                            '<option value="cc_dept">抄送人部门</option>'+
-                                            '<option value="rcpt_dept">收信人部门</option>'+
-                                            '<option value="subject">主题</option>'+
-                                            '<option value="body">邮件内容</option>'+
-                                            '<option value="mail_size">邮件大小(MB)</option>'+
-                                            '<option value="mail_size2">邮件大小(Byte)</option>'+
-                                            '<option value="content_size">邮件正文大小(Byte)</option>'+
-                                            '<option value="exec_date">执行时间</option>'+
+                                            '<option value="all_mail">{% trans "所有邮件" %}</option>'+
+                                            '<option value="has_attach">{% trans "有附件" %}</option>'+
+                                            '<option value="attachments">{% trans "附件名" %}</option>'+
+                                            '<option value="sender">{% trans "发信人" %}</option>'+
+                                            '<option value="cc">{% trans "抄送人" %}</option>'+
+                                            '<option value="recipient">{% trans "收信人" %}</option>'+
+                                            '<option value="sender_dept">{% trans "发信人部门" %}</option>'+
+                                            '<option value="cc_dept">{% trans "抄送人部门" %}</option>'+
+                                            '<option value="rcpt_dept">{% trans "收信人部门" %}</option>'+
+                                            '<option value="subject">{% trans "主题" %}</option>'+
+                                            '<option value="body">{% trans "邮件内容" %}</option>'+
+                                            '<option value="mail_size">{% trans "邮件大小(MB)" %}</option>'+
+                                            '<option value="mail_size2">{% trans "邮件大小(Byte)" %}</option>'+
+                                            '<option value="content_size">{% trans "邮件正文大小(Byte)" %}</option>'+
+                                            '<option value="exec_date">{% trans "执行时间" %}</option>'+
                                         '</select>'+
                                     '</div>'+
                                     '<div class="col-sm-10 no-padding">'+
                                         '<div class="col-sm-2 no-padding actions">'+
                                             '<select class="form-control display-none"  name="action_contain" style="height: 34px;">'+
-                                                '<option value="contains">包含</option>'+
-                                                '<option value="not_contains">不包含</option>'+
-                                                '<option value="==">等于</option>'+
+                                                '<option value="contains">{% trans "包含" %}</option>'+
+                                                '<option value="not_contains">{% trans "不包含" %}</option>'+
+                                                '<option value="==">{% trans "等于" %}</option>'+
                                             '</select>'+
                                             '<select class="form-control display-none" name="action_eq" style="height: 34px;">'+
-                                                '<option value=">=">大于等于</option>'+
-                                                '<option value="<=">小于等于</option>'+
+                                                '<option value=">=">{% trans "大于等于" %}</option>'+
+                                                '<option value="<=">{% trans "小于等于" %}</option>'+
                                             '</select>'+
                                             '<select class="form-control display-none" name="action_belong" style="height: 34px;">'+
-                                                '<option value="in">属于</option>'+
-                                                '<option value="not_in">不属于</option>'+
+                                                '<option value="in">{% trans "属于" %}</option>'+
+                                                '<option value="not_in">{% trans "不属于" %}</option>'+
                                             '</select>'+
                                             '<select class="form-control display-none" name="action_date" style="height: 34px;">'+
-                                                '<option value="week">星期</option>'+
-                                                '<option value="date">天</option>'+
+                                                '<option value="week">{% trans "星期" %}</option>'+
+                                                '<option value="date">{% trans "天" %}</option>'+
                                             '</select>'+
                                         '</div>'+
                                             '<div class="col-sm-8 no-padding values">'+
@@ -1760,7 +1767,7 @@
                                                 '<div class="col-xs-12 col-sm-12 no-padding  display-none dept_box">'+
                                                     '<div class="input-group">'+
                                                         '<div id="input_box_'+parent_index+'_'+index+'">'+
-                                                            '<input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">'+
+                                                            '<input type="text" value="" readonly placeholder="{% trans "点击选择部门" %}" class="form-control department_choice">'+
                                                             '<input type="hidden" class="id_dept_id" value="" name="option_value_dpt0">'+
                                                         '</div>'+
                                                     '</div>'+
@@ -1772,22 +1779,22 @@
                                                 '<div class="display-none week_box">'+
                                                     '<div style="float:left;">'+
                                                         '<select name="day_start">'+
-                                                            '<option value="1" selected>星期一</option>'+
-                                                            '<option value="2">星期二</option>'+
-                                                            '<option value="3">星期三</option>'+
-                                                            '<option value="4">星期四</option>'+
-                                                            '<option value="5">星期五</option>'+
-                                                            '<option value="6">星期六</option>'+
-                                                            '<option value="7">星期日</option>'+
+                                                            '<option value="1" selected>{% trans "星期一" %}</option>'+
+                                                            '<option value="2">{% trans "星期二" %}</option>'+
+                                                            '<option value="3">{% trans "星期三" %}</option>'+
+                                                            '<option value="4">{% trans "星期四" %}</option>'+
+                                                            '<option value="5">{% trans "星期五" %}</option>'+
+                                                            '<option value="6">{% trans "星期六" %}</option>'+
+                                                            '<option value="7">{% trans "星期日" %}</option>'+
                                                         '</select> --'+
                                                         '<select name="day_end"  style="margin-right:20px;" >'+
-                                                            '<option value="1">星期一</option>'+
-                                                            '<option value="2">星期二</option>'+
-                                                            '<option value="3">星期三</option>'+
-                                                            '<option value="4">星期四</option>'+
-                                                            '<option value="5">星期五</option>'+
-                                                            '<option value="6">星期六</option>'+
-                                                            '<option value="7" selected>星期日</option>'+
+                                                            '<option value="1">{% trans "星期一" %}</option>'+
+                                                            '<option value="2">{% trans "星期二" %}</option>'+
+                                                            '<option value="3">{% trans "星期三" %}</option>'+
+                                                            '<option value="4">{% trans "星期四" %}</option>'+
+                                                            '<option value="5">{% trans "星期五" %}</option>'+
+                                                            '<option value="6">{% trans "星期六" %}</option>'+
+                                                            '<option value="7" selected>{% trans "星期日" %}</option>'+
                                                         '</select>'+
                                                     '</div>'+
                                                     '<div class="input-group bootstrap-timepicker" style="width: 120px;float:left">'+
@@ -1807,18 +1814,18 @@
 
 
                                             '</div>'+
-                                            '<div class="col-sm-1"><button type="button" class="delete_sub_condition btn btn-xs btn-warning" title="删除此子条件"><i class="glyphicon glyphicon-trash"></i></button></div>'+
+                                            '<div class="col-sm-1"><button type="button" class="delete_sub_condition btn btn-xs btn-warning" title="{% trans "删除此子条件" %}"><i class="glyphicon glyphicon-trash"></i></button></div>'+
                                         '</div>'+
-    
+
                                     '</div>'+
                                 '</div>'+
-    
+
                             '</div>'+
-    
+
                         '</li>'
             return html;
         }
-    
+
     function add_condition_init(){
         $('.add_condition').click(function(){
             $(".condition_box").append(getConditionNew(index));
@@ -1831,7 +1838,7 @@
     $('body').on('click','.delete_condition',function(){
         $(this).parents('.panel.panel-default').remove();
     })
-    
+
     function addsub(){
         $(".add_sub_condition").unbind();
         $('.add_sub_condition').click(function(){
@@ -1844,7 +1851,7 @@
         })
     }
     addsub();
-    
+
     $('body').on('click','.delete_sub_condition',function(){
         $(this).parents('.condition_item').remove();
     })

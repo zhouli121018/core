@@ -32,7 +32,7 @@ class SystemSetForm(DotDict):
         (u'login_domaincheck', '1'), # 登录域名检测
         (u'auto_backup', '-1'), # 数据备份
         (u'sys_search_mails', '-1'), # 数据
-        (u'sys_auto_backup_mail','-1'), # 自动转移到"旧邮件备份"目录
+        (u'sys_auto_backup_mail','-1'), # 自动转移到_(u"旧邮件备份")目录
         #邮箱共享
         #(u'relate','-1'),
     )
@@ -42,7 +42,7 @@ class SystemSetForm(DotDict):
         (u'sw_search_speedup', '-1'),
         (u'cf_search_speedup_cache', u'/usr/local/u-mail/data/app/cache_whoosh'), #搜索缓存存储地址
         (u'sw_mail_log_save_day', '15'), #邮件收发日志保存天数   core_domain_attr.sw_mail_log_save_day
-        (u'superadmintitle', u'U-Mail邮件系统--超级管理员后台'), #管理员首页名称 core_info
+        (u'superadmintitle', _(u'U-Mail邮件系统--超级管理员后台')), #管理员首页名称 core_info
         (u'view_webmail_url', ''), #Webmail地址和端口 core_info 应该放到 域管理设置
         #(u'view_attach_url', ''), #附件预览服务器域名 core_info 应该放到 域管理设置
         (u'cf_def_send_charset', 'utf-8'), #邮件发送编码 core_domain_attr.cf_def_send_charset
@@ -51,12 +51,12 @@ class SystemSetForm(DotDict):
     )
 
     SMSServiceList = (
-        (u'jiutian',      u'短信通道一（九天）'),
-        (u'zhutong',      u'短信通道二（助通）'),
+        (u'jiutian',      _(u'短信通道一（九天）')),
+        (u'zhutong',      _(u'短信通道二（助通）')),
     )
 
     EncodingList = (
-        (u'utf-8', u'UTF-8(默认)'),
+        (u'utf-8', _(u'UTF-8(默认)')),
         (u'gbk', u'GBK'),
     )
 
@@ -215,32 +215,32 @@ class CoreAliasForm(DotDict):
 
         if not self.instance and not validators.check_email_ordomain(u"@{}".format(self.source.value)):
             self.__valid = False
-            self.source.set_error(u"虚拟邮件域不正确")
+            self.source.set_error(_(u"虚拟邮件域不正确"))
             return
 
         if not validators.check_email_ordomain(u"@{}".format(self.target.value)):
             self.__valid = False
-            self.target.set_error(u"虚拟邮件域 不正确")
+            self.target.set_error(_(u"虚拟邮件域 不正确"))
             return
 
         obj = Domain.objects.filter(domain=self.target.value).first()
         if not obj:
             self.__valid = False
-            self.target.set_error(u"真实域名不存在，请重新选择")
+            self.target.set_error(_(u"真实域名不存在，请重新选择"))
             return
         else:
             self.domain_id = obj.id
 
         if not self.instance and Domain.objects.filter(domain=self.source.value).exists():
             self.__valid = False
-            self.source.set_error(u"虚拟邮件域 不能填写真实域名")
+            self.source.set_error(_(u"虚拟邮件域 不能填写真实域名"))
             return
 
         # 校验唯一性
         if not self.instance and CoreAlias.objects.filter(
                 source=u"@{}".format(self.source.value) ).exists():
             self.__valid = False
-            self.source.set_error(u"虚拟邮件域 已在域别名列表中")
+            self.source.set_error(_(u"虚拟邮件域 已在域别名列表中"))
             return
 
     def save(self):
@@ -277,10 +277,10 @@ class ExtCfilterRuleNewForm(object):
     # 动作有 action value 并下拉选择的
     Action_only_select = ("move_to", "copy_to")
     Action_only_slect_value = (
-        ("Spam", u"垃圾箱"),
-        ("Trash", u"废件箱"),
-        ("Inbox", u"收件箱"),
-        ("Sent", u"发件箱"),
+        ("Spam", _(u"垃圾箱")),
+        ("Trash", _(u"废件箱")),
+        ("Inbox", _(u"收件箱")),
+        ("Sent", _(u"发件箱")),
     )
     # 动作有 action value  整型输入框
     Action_only_int = ("jump_to", )
@@ -295,8 +295,8 @@ class ExtCfilterRuleNewForm(object):
     # 动作复杂 mail
     Action_only_mail = ("mail", ) # value = { 'sender':发信人,'recipient':收信人,'subject':主题,'content':内容,'content_type':plain or html }
     Action_only_mail_type = (
-        ("html", u"html内容"),
-        ("plain", u"纯文本"),
+        ("html", _(u"html内容")),
+        ("plain", _(u"纯文本")),
     )
 
     Action_only_smtptransfer = ("smtptransfer",) #value = { 'account':登录帐号,'server':服务器,'ssl':是否SSL,'auth':是否验证,'password':base64_encode(password) }
@@ -373,19 +373,19 @@ class ExtCfilterRuleNewForm(object):
         obj.deleteOptions()
         obj.deleteActions()
 
-        logListAction = [u'名称: {} 规则ID: {}'.format(self.__instance.name,self.__instance.id)]
+        logListAction = [_(u'名称: {} 规则ID: {}').format(self.__instance.name,self.__instance.id)]
         # 动作
         bulk_action = []
         for d in self.cfilteraction.value:
             bulk_action.append( ExtCfilterNewAction( rule_id=rule_id, action=d.action, value=d.json_value, sequence=d.sequence ))
             name = self.ACTION_NAME.get(d.action, d.action)
-            logListAction.append(u'动作: {} 参数: {} 序号: {}'.format(name,d.json_value,d.sequence))
+            logListAction.append(_(u'动作: {} 参数: {} 序号: {}').format(name,d.json_value,d.sequence))
         ExtCfilterNewAction.objects.bulk_create(bulk_action)
         api_create_admin_log(self.__request, self.__instance, u'cfiltercond',u"{}".format(u' || '.join(logListAction)))
 
         # 条件
         for d in self.cfilteroption.value:
-            logListOption = [u'名称: {} 规则ID: {}'.format(self.__instance.name,self.__instance.id)]
+            logListOption = [_(u'名称: {} 规则ID: {}').format(self.__instance.name,self.__instance.id)]
 
             option_obj = ExtCfilterNewCond.objects.create(
                 rule_id=rule_id, logic=d.logic, option=d.option,
@@ -433,7 +433,7 @@ class ExtCfilterRuleNewForm(object):
             error = None
             if not name:
                 self.__valid = False
-                error = u"规则名称不能为空"
+                error = _(u"规则名称不能为空")
             self.name = BaseFied(value=name, error=error)
             self.sequence = BaseFied(value=post.get("sequence", "999"), error=None)
             ltype = post.get("type", "-1").strip()
@@ -913,26 +913,26 @@ class ExtUserCfilterForm(object):
         mailbox_id = self.mailbox_id
         value = self.post
         if int(mailbox_id) <= 0:
-            return False, u"不存在的邮箱帐号: {}".format(mailbox_id)
+            return False, _(u"不存在的邮箱帐号: {}").format(mailbox_id)
         Box = Mailbox.objects.filter(id=mailbox_id).first()
         if not Box:
-            return False, u"不存在的邮箱帐号: {}".format(mailbox_id)
+            return False, _(u"不存在的邮箱帐号: {}").format(mailbox_id)
         extype = self.extype
         if not extype in ("re", "fw"):
-            return False, u"错误类型: '{}'".format(extype)
+            return False, _(u"错误类型: '{}'").format(extype)
         if not value:
-            return False, u"数据为空"
+            return False, _(u"数据为空")
         value = json.loads(value)
         cond_list = value.get("condition", [])
         if not cond_list:
-            return False, u"条件参数不完整"
+            return False, _(u"条件参数不完整")
         action_list = value.get("action", [])
         if not action_list:
-            return False, u"动作参数不完整"
+            return False, _(u"动作参数不完整")
         if self.rule_id > 0:
             obj_rule = ExtCfilterRuleNew.objects.filter(id=self.rule_id).first()
             if not obj_rule:
-                return False, u"需要修改的规则 '{}' 已经被删除".format(self.rule_id)
+                return False, _(u"需要修改的规则 '{}' 已经被删除").format(self.rule_id)
         return True, ""
 
     def save(self):
@@ -998,12 +998,17 @@ class ExtUserCfilterForm(object):
                 )
         action_list = value.get("action", [])
         for act in action_list:
+            action = act.get("action", "")
             act_value = act.get("value", {})
+            if action == "forward":
+                #is_forward是单独传过来，然后再存到value里面的
+                is_forward = value.get("is_forward", True)
+                act_value["is_forward"] = is_forward
             act_value = json.dumps(act_value)
             obj_act = ExtCfilterNewAction.objects.create(
                 rule_id = int(obj_rule.id),
                 sequence = act.get("sequence", 999),
-                action = act.get("action", ""),
+                action = u"{}".format(action),
                 value = u"{}".format(act_value),
             )
 
@@ -1192,13 +1197,13 @@ class PostTransferForm(DotDict):
     def __check(self):
         if not validators.check_email_ordomain(u"{}".format(self.mailbox.value)):
             self.__valid = False
-            self.mailbox.set_error(u"邮箱或域名格式不正确")
-            self.error_notify=u"邮箱或域名格式不正确"
+            self.mailbox.set_error(_(u"邮箱或域名格式不正确"))
+            self.error_notify=_(u"邮箱或域名格式不正确")
         if validators.check_email(u"{}".format(self.mailbox.value)):
             if not self.mailbox_id.value or int(self.mailbox_id.value) <= 0 :
                 self.__valid = False
-                self.mailbox.set_error(u"本地邮箱不存在")
-                self.error_notify=u"本地邮箱不存在"
+                self.mailbox.set_error(_(u"本地邮箱不存在"))
+                self.error_notify=_(u"本地邮箱不存在")
         #if self.account.value:
         #    if not validators.check_email_ordomain(u"{}".format(self.account.value)):
         #        self.__valid = False
@@ -1306,7 +1311,7 @@ class MailboxAliasForm(DotDict):
             mailbox_source = self.source.value
         if not validators.check_email(u"{}".format(mailbox_source)):
             self.__valid = False
-            self.source.set_error(u"虚拟地址不正确")
+            self.source.set_error(_(u"虚拟地址不正确"))
             return
         if not '@' in self.target.value:
             mailbox_target = self.target.value + '@' + self.domainname
@@ -1315,35 +1320,35 @@ class MailboxAliasForm(DotDict):
             mailbox_target = self.target.value
         if not validators.check_email(u"{}".format(mailbox_target)):
             self.__valid = False
-            self.target.set_error(u"真实地址不正确")
+            self.target.set_error(_(u"真实地址不正确"))
             return
         name, domain = mailbox_source.split('@')
         obj_d = Domain.objects.filter(domain=domain)
         if not obj_d:
             self.__valid = False
-            self.source.set_error(u"虚拟地址必须为本服务器的域名")
+            self.source.set_error(_(u"虚拟地址必须为本服务器的域名"))
             return
         obj = Mailbox.objects.filter(username=mailbox_source).first()
         if obj:
             self.__valid = False
-            self.source.set_error(u"不能用一个已存在的邮箱作为虚拟地址")
+            self.source.set_error(_(u"不能用一个已存在的邮箱作为虚拟地址"))
             return
 
         if not self.instance:
             obj = CoreAlias.objects.filter(source=mailbox_source).first()
             if obj:
                 self.__valid = False
-                self.source.set_error(u"虚拟地址已在别名列表存在")
+                self.source.set_error(_(u"虚拟地址已在别名列表存在"))
                 return
             obj = CoreAlias.objects.filter(target=mailbox_source).first()
             if obj:
                 self.__valid = False
-                self.source.set_error(u"虚拟地址已在别名列表存在")
+                self.source.set_error(_(u"虚拟地址已在别名列表存在"))
                 return
         obj = Mailbox.objects.filter(username=mailbox_target).first()
         if not obj:
             self.__valid = False
-            self.target.set_error(u"真实地址不存在")
+            self.target.set_error(_(u"真实地址不存在"))
             return
         return
 
@@ -1426,20 +1431,20 @@ class MailboxMonitorForm(DotDict):
     def __check(self):
         if not validators.check_email_ordomain(u"{}".format(self.forward.value)):
             self.__valid = False
-            self.forward.set_error(u"接收邮箱不正确")
+            self.forward.set_error(_(u"接收邮箱不正确"))
             return
         if not self.target.value and (not self.target_dept.value or int(self.target_dept.value)<=0):
             self.__valid = False
-            self.target.set_error(u"至少需要填写监控邮箱和监控部门两者中的一个")
+            self.target.set_error(_(u"至少需要填写监控邮箱和监控部门两者中的一个"))
             return
         domain_id = getattr(self,"domain_id",None)
         if not domain_id:
             self.__valid = False
-            self.target.set_error(u"无效的域名")
+            self.target.set_error(_(u"无效的域名"))
             return
         if int(domain_id.value)<=0:
             self.__valid = False
-            self.domain_id.set_error(u"无效的域名")
+            self.domain_id.set_error(_(u"无效的域名"))
             return
         return self.__valid
 

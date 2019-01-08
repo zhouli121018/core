@@ -39,7 +39,7 @@ def custom_kkserver_settings(request):
         form = CustomKKserverForm(instance=instance, post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改设置成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改设置成功'))
     return render(request, "custom/kkserver_settings.html", context={
         "form": form,
     })
@@ -53,7 +53,7 @@ def custom_kkserver_settings_old(request):
         form = CustomKKserverFormOld(instance=instance, post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改设置成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改设置成功'))
     return render(request, "custom/kkserver_settings_old.html", context={
         "form": form,
     })
@@ -70,23 +70,23 @@ def custom_kkserver_login(request):
     if action == 'import_file':
         f = request.FILES.get('file', '')
         if not f:
-            messages.add_message(request, messages.ERROR, u'请选择密钥文件导入')
+            messages.add_message(request, messages.ERROR, _(u'请选择密钥文件导入'))
         else:
             private_key = f.read()
             try:
                 private_key, public_key = generate_rsa(pkey=private_key)
             except:
-                messages.add_message(request, messages.ERROR, u'您导入的密钥格式不正确，请重新生成!')
+                messages.add_message(request, messages.ERROR, _(u'您导入的密钥格式不正确，请重新生成!'))
             else:
                 attr, _ = DomainAttr.objects.get_or_create(item='sw_custom_kkserver_rsakey', type='system', domain_id=0)
                 attr.value = private_key
                 attr.save()
-                messages.add_message(request, messages.SUCCESS, u'导入密钥成功')
+                messages.add_message(request, messages.SUCCESS, _(u'导入密钥成功'))
     else:
         form = CustomKKserverLoginForm(instance1=instance1, instance2=instance2, post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改设置成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改设置成功'))
     return render(request, "custom/kkserver_system.html", context={
         "form": form,
     })
@@ -99,7 +99,7 @@ def custom_kkserver_sms(request):
         form = CustomKKserverSmsForm(post=request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, u'修改设置成功')
+            messages.add_message(request, messages.SUCCESS, _(u'修改设置成功'))
     return render(request, "custom/kkserver_sms.html", context={
         "form": form,
     })
@@ -117,7 +117,7 @@ def custom_kkserver_token(request):
     if not mailbox or not key:
         rs = {
             "result"    :   1,
-            "reason"    :   u"数据不完整",
+            "reason"    :   _(u"数据不完整"),
         }
         return HttpResponse(json.dumps(rs), content_type="application/json")
 
@@ -125,7 +125,7 @@ def custom_kkserver_token(request):
     if not open_obj or open_obj.value != "1":
         rs = {
             "result"    :   5,
-            "reason"    :   u"服务器未开启验证",
+            "reason"    :   _(u"服务器未开启验证"),
         }
         return HttpResponse(json.dumps(rs), content_type="application/json")
 
@@ -133,7 +133,7 @@ def custom_kkserver_token(request):
     if not obj:
         rs = {
             "result"    :   2,
-            "reason"    :   u"无效用户",
+            "reason"    :   _(u"无效用户"),
         }
         return HttpResponse(json.dumps(rs), content_type="application/json")
 
@@ -142,7 +142,7 @@ def custom_kkserver_token(request):
     if not verify_token or not verify_token.value:
         rs = {
             "result"    :   3,
-            "reason"    :   u"服务器未设置验证口令",
+            "reason"    :   _(u"服务器未设置验证口令"),
         }
         return HttpResponse(json.dumps(rs), content_type="application/json")
 
@@ -150,7 +150,7 @@ def custom_kkserver_token(request):
     if key != verify_token:
         rs = {
             "result"    :   4,
-            "reason"    :   u"口令匹配失败",
+            "reason"    :   _(u"口令匹配失败"),
         }
         return HttpResponse(json.dumps(rs), content_type="application/json")
 
@@ -196,7 +196,7 @@ def custom_kkserver_token2(request):
     if not mailbox or not rsakey:
         rs = {
             "result"    :   1,
-            "reason"    :   u"数据不完整",
+            "reason"    :   _(u"数据不完整"),
         }
         return HttpResponse(json.dumps(rs), content_type="application/json")
 
@@ -204,7 +204,7 @@ def custom_kkserver_token2(request):
     if not private_key or not private_key.value:
         rs = {
             "result"    :   2,
-            "reason"    :   u"服务器未设置密钥",
+            "reason"    :   _(u"服务器未设置密钥"),
         }
         return HttpResponse(json.dumps(rs), content_type="application/json")
 
@@ -212,7 +212,7 @@ def custom_kkserver_token2(request):
     if not open_obj or open_obj.value != "1":
         rs = {
             "result"    :   3,
-            "reason"    :   u"服务器未开启验证",
+            "reason"    :   _(u"服务器未开启验证"),
         }
         return HttpResponse(json.dumps(rs), content_type="application/json")
 
@@ -220,7 +220,7 @@ def custom_kkserver_token2(request):
     if not verify_token or not verify_token.value:
         rs = {
             "result"    :   4,
-            "reason"    :   u"服务器未设置验证口令",
+            "reason"    :   _(u"服务器未设置验证口令"),
         }
         return HttpResponse(json.dumps(rs), content_type="application/json")
 
@@ -235,7 +235,7 @@ def custom_kkserver_token2(request):
     if decode_text != verify_token:
         rs = {
             "result"    :   5,
-            "reason"    :   u"口令匹配失败",
+            "reason"    :   _(u"口令匹配失败"),
         }
         return HttpResponse(json.dumps(rs), content_type="application/json")
 

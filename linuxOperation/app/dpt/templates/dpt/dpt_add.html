@@ -33,7 +33,7 @@
                                 <div class=" {% if parent_id_canchange %} input-group{% endif %}">
                                     <input type="text" class="form-control department_choice tip_dept" value="{{ form.parent_name|default_if_none:"" }}" name="parent_bak" id="id_parent_bak" placeholder="{% trans "点击选择上级部门" %}" readonly >
                                     {% if parent_id_canchange %}
-                                        <span class="input-group-btn"><button class="btn btn-sm btn-default" type="button" onclick="Clear()">清除</button></span>
+                                        <span class="input-group-btn"><button class="btn btn-sm btn-default" type="button" onclick="Clear()">{% trans "清除" %}</button></span>
                                     {% endif %}
                                 </div>
                                 {% if parent_id_canchange %}

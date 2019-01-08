@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load static %}
 
 <div class="hr hr-double hr-dotted hr18"></div>
@@ -17,8 +18,8 @@
 
                 {% if request.user.enable_remark %}
                 <div class="col-sm-2">
-                    <input type="button" class="btn btn-primary" value="编辑" onclick="edit_remark_base()" id="id_base_site_remark_button_edit">
-                    <input type="button" class="btn btn-primary" value="保存" onclick="save_remark_base()" id="id_base_site_remark_button_save">
+                    <input type="button" class="btn btn-primary" value="{% trans "编辑" %}" onclick="edit_remark_base()" id="id_base_site_remark_button_edit">
+                    <input type="button" class="btn btn-primary" value="{% trans "保存" %}" onclick="save_remark_base()" id="id_base_site_remark_button_save">
                 </div>
                 {% endif %}
 
@@ -27,5 +28,4 @@
 
     </div>
 </div>
-
 

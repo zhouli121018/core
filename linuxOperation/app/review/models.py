@@ -19,7 +19,7 @@ class Review(models.Model):
     master_review = models.ForeignKey(Mailbox, related_name='master_review', db_column='master_review',
                                     on_delete=models.SET_NULL, db_index=True, null=True, blank=True, verbose_name=_(u"主审"))
     assist_review = models.IntegerField(_(u'副审'), default=0, db_column='assist_review')
-    wait_next_time = models.IntegerField(_(u'自动转换等待时间'), default=0, help_text=u'自动把副审转换为审核人的等待时间，单位为分钟，=0为永不转移')
+    wait_next_time = models.IntegerField(_(u'自动转换等待时间'), default=0, help_text=_(u'自动把副审转换为审核人的等待时间，单位为分钟，=0为永不转移'))
 
     def __unicode__(self):
         return self.name
@@ -107,8 +107,8 @@ class ReviewRule(models.Model):
     cond_logic = models.CharField(_(u'逻辑条件'), max_length=20, choices=constants.REVIEWRULE_LOGIC, default='all')
     pre_action = models.CharField(_(u'审核预设'), max_length=20, null=True, blank=True, choices=constants.REVIEWRULE_PREACTION)
     # target_dept 目前作为兼容字段存在
-    target_dept = models.IntegerField(_(u'发信人部门'), default=0, help_text=u'需要审核的部门ID')
-    sequence = models.IntegerField(_(u'权重'), default=999, help_text=u'数值越小优先级越高,数值相等时主键越小优先级越高')
+    target_dept = models.IntegerField(_(u'发信人部门'), default=0, help_text=_(u'需要审核的部门ID'))
+    sequence = models.IntegerField(_(u'权重'), default=999, help_text=_(u'数值越小优先级越高,数值相等时主键越小优先级越高'))
     disabled = models.IntegerField(_(u'状态'), default=-1, choices=constants.REVIEWRULE_DISABLED)
 
     def __unicode__(self):
@@ -141,8 +141,8 @@ class ReviewRule(models.Model):
                 dept_id = int(dept_id) if (dept_id and str(dept_id).isdigit()) else -1
                 dept_name = Department.objects.filter(id=dept_id).first()
                 dept_name = dept_name.title if dept_name else u"已删除部门_{}".format(dept_id)
-                dept_sub = u"包含子部门" if v.get("sub","-1") == "1" else u"仅当前部门"
-                desc = dept_name + u" , " + dept_sub
+                dept_sub = _(u"包含子部门") if v.get("sub","-1") == "1" else _(u"仅当前部门")
+                desc = "%s,%s"%(dept_name, dept_sub)
                 value = (options.get(obj.option, ''), actions.get(obj.action, ''), desc)
             else:
                 value = ( options.get(obj.option, ''), actions.get(obj.action, ''), obj.value )
@@ -160,7 +160,7 @@ class ReviewRule(models.Model):
                 dept_id = value.get("id","-1")
                 dept_id = int(dept_id) if (dept_id and str(dept_id).isdigit()) else -1
                 dept_name = Department.objects.filter(id=dept_id).first()
-                dept_name = dept_name.title if dept_name else u"已删除部门_{}".format(dept_id)
+                dept_name = dept_name.title if dept_name else _(u"已删除部门_{}").format(dept_id)
                 desc = dept_name
             else:
                 try:
@@ -196,7 +196,7 @@ class ReviewRule(models.Model):
 class ReviewCondition(models.Model):
     rule = models.ForeignKey(ReviewRule, on_delete=models.CASCADE, db_index=True, null=False, blank=False, verbose_name=_(u"审核规则"))
     parent_id = models.IntegerField(blank=True, null=True, default=0, verbose_name=_(u"审核父条件"))
-    logic = models.CharField(u'子条件逻辑关系', max_length=20, choices=constants.REVIEWRULE_LOGIC, default='all')
+    logic = models.CharField(_(u'子条件逻辑关系'), max_length=20, choices=constants.REVIEWRULE_LOGIC, default='all')
     option = models.CharField(_(u'条件'), max_length=50, null=True, blank=True)
     action = models.CharField(_(u'匹配动作'), max_length=20, null=True, blank=True)
     value = models.CharField(_(u'参数'), max_length=250, null=True, blank=True)

@@ -224,8 +224,8 @@ class CustomKKserverLoginForm(DotDict):
 class CustomKKserverSmsForm(DotDict):
 
     SMSServiceList = (
-        (u'jiutian',      u'短信通道一（九天）'),
-        (u'zhutong',      u'短信通道二（助通）'),
+        (u'jiutian',      _(u'短信通道一（九天）')),
+        (u'zhutong',      _(u'短信通道二（助通）')),
     )
 
     @property

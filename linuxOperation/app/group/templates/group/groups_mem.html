@@ -35,11 +35,11 @@
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th>序号</th>
-                        <th>邮箱</th>
-                        <th>姓名</th>
-                        <th>备注</th>
-                        <th>操作</th>
+                        <th>{% trans "序号" %}</th>
+                        <th>{% trans "邮箱" %}</th>
+                        <th>{% trans "姓名" %}</th>
+                        <th>{% trans "备注" %}</th>
+                        <th>{% trans "操作" %}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -63,12 +63,12 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">加载中</h4>
+                    <h4 class="modal-title" id="myModalLabel">{% trans "加载中" %}</h4>
                 </div>
-                <div class="modal-body">页面加载中
+                <div class="modal-body">{% trans "页面加载中" %}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">关闭</button>
+                    <button type="button" id="modal_close" class="btn btn-default hidden" data-dismiss="modal">{% trans "关闭" %}</button>
                 </div>
             </div>
         </div>
