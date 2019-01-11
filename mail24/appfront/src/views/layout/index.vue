@@ -6,7 +6,7 @@
       </div>
 
       <aside class="lysidebar j-layout-nav" :class="skin_order"  v-if="!change_password">
-        <div class="icon j-switch-mainpage"  title="主页" @click="goHome"><i class="iconfont icon-iconhome"></i></div>
+        <div class="icon j-switch-mainpage"  :title="lan.SETTING_USER_HOMEPAGE" @click="goHome"><i class="iconfont icon-iconhome"></i></div>
         <div class="avatar">
           <el-popover
             placement="right"
@@ -24,8 +24,8 @@
                   <div>{{editform.email}}</div>
                   <div>{{editform.department}}</div>
                   <el-button-group style="margin-top:12px;">
-                    <el-button  size="mini" @click="goSetting">个人设置</el-button>
-                    <el-button  size="mini" @click="logout">退出登录</el-button>
+                    <el-button  size="mini" @click="goSetting">{{lan.LAYOUT_INDEX_PERSONAL_SETTINGS}}</el-button>
+                    <el-button  size="mini" @click="logout">{{lan.LAYOUT_INDEX_LOGOUT}}</el-button>
                   </el-button-group>
                 </td>
               </tr>
@@ -49,12 +49,12 @@
             <i class="iconfont" :class="t.iconclass"></i>
           </div>
 
-          <div role="toLunkr" class="icon j-lunkr lunkr" title="论客">
+          <div role="toLunkr" class="icon j-lunkr lunkr" :title="lan.LAYOUT_INDEX_SCHOLARS">
             <i class="iconfont iconlunkrlogo"></i>
             <span></span>
           </div>
         </div>
-        <div class="icon icon-help j-to-helpcenter "  title="帮助中心" @click="goToHelp">
+        <div class="icon icon-help j-to-helpcenter "  :title="lan.LAYOUT_INDEX_HELP_CENTER" @click="goToHelp">
           <i class="iconfont icon-iconhelp1"></i>
         </div>
         <div class="icon icon-bottom" :class="{active:activeTab==5}" data-trigger="setting" role="toggle" data-i18n="common/nav_setting" i18n-target="title" title="设置" @click="changeTab(5)">
@@ -70,60 +70,65 @@
                 <img :src="welcome_logo" alt="U-Mail" style=" height: 42px;">
               </a>
             </div>
-            <ul class="u-list u-list-horizontal">
-              <!--<li id="qqLi"><a href="#">QQ咨询</a></li>-->
-              <!--<li id="cloud">-->
-                <!--<a target="_blank" href="https://cloud.icoremail.net/icmcenter/expCenter/showEvaXT5?userid=1qfUTJjqUn7UT7jmUntU7UjgUexUfJjmUntUa7jWUerUr7UAU1fUrJULUnrUTJjl" style="color:red;font-weight: bold;" data-target="title" data-i18n="main.CommentAward">评价赢大奖</a>-->
-              <!--</li>-->
-              <li><a target="_blank" href="#" @click.prevent="goToAdmin" v-if="admin_is_active&&!isSharedUser">后台管理</a></li>
+            <ul class="u-list u-list-horizontal" style="position: absolute;right: 0;">
 
-              <li><a target="_blank" href="#" @click.prevent="goToSearch" >自助查询</a></li>
-              <li><a href="#" class="skin-primary-hover-color f-dn lunkr-bandage f-pr">移动端</a></li>
-              <li><a href="#" class="skin-primary-hover-color f-dn f-pr" >即时沟通</a></li>
-              <li><a href="#" class="skin-primary-hover-color f-dn j-migrate-mbox" >马上搬家</a></li>
-              <li class="hover_bg_box" style="cursor:pointer">
+              <li><a target="_blank" href="#" @click.prevent="goToAdmin" v-if="admin_is_active&&!isSharedUser">{{lan.LAYOUT_INDEX_BACK_STAGE_MANAGEMENT}}</a></li>
+
+              <li><a target="_blank" href="#" @click.prevent="goToSearch" >{{lan.LAYOUT_INDEX_SELF_QUERY}}</a></li>
+              <li><a href="#" class="skin-primary-hover-color f-dn lunkr-bandage f-pr">{{lan.LAYOUT_INDEX_MOBILE}}</a></li>
+              <li><a href="#" class="skin-primary-hover-color f-dn f-pr" >{{lan.LAYOUT_INDEX_INSTANT_COMMUNICATION}}</a></li>
+              <li><a href="#" class="skin-primary-hover-color f-dn j-migrate-mbox" >{{lan.LAYOUT_INDEX_MOVE_IMMEDIATELY}}</a></li>
+              <li class="hover_bg_box" style="cursor:pointer;">
                 <b v-if="sharedList.length==0&&!isSharedUser">{{this.$store.getters.userInfo.name}}</b>
                 <el-dropdown trigger="click" placement="bottom-start" @command="switchShared" v-if="sharedList.length>0||isSharedUser">
-                  <b class="el-dropdown-link" title="切换邮箱账号">
+                  <b class="el-dropdown-link" :title="lan.LAYOUT_INDEX_SWITCHING_MAILBOX">
                     {{userName}}<i class="el-icon-arrow-down el-icon--right"></i>
                   </b>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item disabled>关联共享邮箱</el-dropdown-item>
-                    <el-dropdown-item v-if="isSharedUser" command="back">返回我的邮箱{{ '<' + mainUsername + '>'}}</el-dropdown-item>
+                    <el-dropdown-item disabled>{{lan.LAYOUT_INDEX_ASSOCIATED_SHARED_MAILBOX}}</el-dropdown-item>
+                    <el-dropdown-item v-if="isSharedUser" command="back">{{lan.LAYOUT_INDEX_RETURN_TO_MAILBOX}}{{ '<' + mainUsername + '>'}}</el-dropdown-item>
                     <el-dropdown-item v-if="!isSharedUser" v-for="v in sharedList" :key="v.id" :command="v">{{v.realname + '<' + v.username + '>'}}</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </li>
+              <li class="" style="cursor:pointer;">
+                <el-select v-model="language" @change="changeLanguage" class="no_border" style="float:right;width:124px;">
+                  <el-option label="中文（简体）" value="zh"></el-option>
+                  <el-option label="中文（繁體）" value="zh-tw"></el-option>
+                  <el-option label="English" value="en"></el-option>
+                  <el-option label="Español" value="es" disabled></el-option>
+                </el-select>
+              </li>
               <li class="hover_bg_box" style="cursor:pointer">
-                <el-dropdown trigger="click" placement="bottom-start" @command="goToSetting">
-                  <span class="el-dropdown-link" title="设置">
-                    设置<i class="el-icon-arrow-down el-icon--right"></i>
+                <el-dropdown trigger="click" placement="bottom-start" @command="goToSetting" style="font-size:12px;">
+                  <span class="el-dropdown-link" :title="lan.LAYOUT_INDEX_SETTING">
+                    {{lan.LAYOUT_INDEX_SETTING}}<i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item command="skin">
                       <el-dropdown @command="changeSkin"  placement="right-start">
                         <span class="el-dropdown-link">
                           <b><i class="iconfont icon-icontie"></i> </b>
-                        换肤 <i class="el-icon-arrow-right el-icon--right"></i>
+                        {{lan.LAYOUT_INDEX_SKIN_PEELER}} <i class="el-icon-arrow-right el-icon--right"></i>
                         </span>
                           <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item  v-for="(s,k) in skins" :key="k" class="dropdown_item" :command="s" :class="{activeitem:s.url == $store.getters.getSkinOrder}">
                               <img :src="'/static/img/'+s.url+'_small.jpg'" style="width:40px;vertical-align: middle" alt=""> {{ s.title}}
                             </el-dropdown-item>
                             <el-dropdown-item class="dropdown_item" command="more">
-                              更多皮肤...
+                              {{lan.LAYOUT_INDEX_MORE_SKIN}}
                             </el-dropdown-item>
 
                           </el-dropdown-menu>
 
                       </el-dropdown>
                     </el-dropdown-item>
-                    <el-dropdown-item  command="user">个人设置</el-dropdown-item>
+                    <el-dropdown-item  command="user">{{lan.LAYOUT_INDEX_PERSONAL_SETTINGS}}</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </li>
-              <li><a href="#" class="skin-primary-hover-color" @click.prevent.stop="lockscreen">锁屏</a></li>
-              <li><a href="#" class="skin-primary-hover-color" @click.prevent="logout">退出</a></li>
+              <li><a href="#" class="skin-primary-hover-color" @click.prevent.stop="lockscreen">{{lan.LAYOUT_INDEX_LOCK_SCREEN}}</a></li>
+              <li><a href="#" class="skin-primary-hover-color" @click.prevent="logout">{{lan.LAYOUT_INDEX_LOGOUT}}</a></li>
               <li class="header-divider">
                 <a href="javascript:void(0);" class="skin-primary-hover-color history-notification-trigger j-history-notification-trigger unread">
                   <i class="iconfont icon-iconms"></i>
@@ -131,7 +136,7 @@
               </li>
               <li>
                 <div class="u-input-control">
-                  <input type="text" class="u-input" id="lyfullsearch" maxlength="50" disabledhotkey="true"  placeholder="邮件全文搜索" autocomplete="off">
+                  <input type="text" class="u-input" id="lyfullsearch" maxlength="50" disabledhotkey="true"  :placeholder="lan.LAYOUT_INDEX_SEARCH_OF_MAIL" autocomplete="off">
                   <span class="j-search u-search iconfont icon-iconsreachm"></span>
                 </div>
               </li>
@@ -193,7 +198,7 @@
                       <i class="el-icon-search" style="font-size:36px;"></i>
                     </td>
                     <td style="vertical-align:top;color:#00a6ff">
-                      <h3 class="" >您有 {{reviewUnseen }} 封邮件待审核，点击立即审核</h3>
+                      <h3 class="" >{{lan.LAYOUT_INDEX_YOU_HAVE}} {{reviewUnseen }} {{lan.LAYOUT_INDEX_AUDITED_EMAIL}}</h3>
 
                     </td>
                     </tr>
@@ -205,41 +210,38 @@
             </div>
           </transition>
 
-      <el-dialog title="密码强度弱，请修改密码" :visible.sync="change_password" width="450px" :close-on-click-modal="false" :show-close="false" :close-on-press-escape="false">
+      <el-dialog :title="lan.LAYOUT_INDEX_MODIFY_PASSWORD" :visible.sync="change_password" width="450px" :close-on-click-modal="false" :show-close="false" :close-on-press-escape="false">
           <el-form :model="passwordForm" size="small" :rules="passwordFormRules" ref="passwordForm">
 
-            <el-form-item label="原始密码" prop="password" :error="password_error">
+            <el-form-item :label="lan.COMMON_SRC_PASSWORD" prop="password" :error="password_error">
               <el-input v-model="passwordForm.password" type="password" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="新密码" prop="new_password" :error="new_password_error">
+            <el-form-item :label="lan.COMMON_NEW_PASSWORD" prop="new_password" :error="new_password_error">
               <el-input v-model="passwordForm.new_password" type="password" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="确认新密码" prop="confirm_password" :error="confirm_password_error">
+            <el-form-item :label="lan.COMMON_CONFIRM_PASSWORD" prop="confirm_password" :error="confirm_password_error">
               <el-input v-model="passwordForm.confirm_password" type="password" auto-complete="off"></el-input>
             </el-form-item>
-            <p style="color:#aaa;font-size:12px;padding-top:10px;" v-if="false">
-              <strong style="color: red">注：</strong> 密码长度为8到20位，需要大写和小写字母数字组合或者特殊字符字母数字组合； 不能连续重复、递增、递减的数或字母，可包含特殊字符；<br>例：如密码为8位，则Abcd2357、1111test、1234test、4321test均不符合要求。
-            </p>
             <div style="padding-top:10px;">
-              <strong style="color: red">密码必须满足以下条件：</strong>
+              <strong style="color: red">{{lan.COMMON_PASSWORD_NOTICE}}</strong>
               <ul style="margin-left: 26px;">
-                <li style="list-style-type:circle;">密码长度为{{passwordRules.passwd_size2}}至16位；</li>
-                <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;">必须包含两种字符（数字、大写字母、小写字母、特殊字符）；</li>
-                <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">必须包含三种字符（数字、大写字母、小写字母、特殊字符）；</li>
-                <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">必须包含四种字符（数字、大写字母、小写字母、特殊字符）；</li>
-                <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">连续3位及以上数字不能连号（例如：123、654）；</li>
-                <li v-if="passwordRules.passwd_name" style="list-style-type:circle;">密码不能包含账号；</li>
-                <li v-if="passwordRules.passwd_name2" style="list-style-type:circle;">密码不能包含用户姓名大小写全拼；</li>
-                <li v-if="passwordRules.passwd_letter" style="list-style-type:circle;">连续3位及以上字母不能连号（例如：abc、cba）；</li>
-                <li v-if="passwordRules.passwd_letter2" style="list-style-type:circle;">密码不能包含连续3个及以上相同字符（例如：aaa、rrr）；</li>
+                <li style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_1}}{{passwordRules.passwd_size2}} {{lan.COMMON_PASSWORD_NOTICE_2}}</li>
+                <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;"> {{lan.COMMON_PASSWORD_NOTICE_3}}</li>
+                <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_4}}</li>
+                <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_5}}</li>
+                <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_6}}/li>
+                <li v-if="passwordRules.passwd_name" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_7}}</li>
+                <li v-if="passwordRules.passwd_name2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_8}}</li>
+                <li v-if="passwordRules.passwd_letter" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_9}}</li>
+                <li v-if="passwordRules.passwd_letter2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_10}}</li>
               </ul>
             </div>
 
 
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="passeordFormSubmit">确 定</el-button>
-            <el-button type='' @click="backToLogin" >返 回</el-button>
+            <el-button type="primary" @click="passeordFormSubmit">{{lan.sure}}</el-button>
+            <el-button type='' @click="backToLogin" >{{lan.cancel}}</el-button>
           </div>
         </el-dialog>
 
@@ -254,41 +256,41 @@
   import store from '@/store'
   import router from '@/router'
   import cookie from '@/assets/js/cookie';
+  import lan from '@/assets/js/lan';
   import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome,settingUsersGet,settingUsersSetpassword,reviewShow,loginAfter,settingUsersGetpassword,setSkin } from '@/api/api'
   export default {
     data:function(){
+      let _this = this;
       var validatePass = (rule, value, callback) => {
           let reg =  /^(.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*)|(.*(?=.{6,})(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*? ]).*)$/;
          // let reg =  /^[\d]{6}$/;
         if (value === '') {
-          callback(new Error('请输入密码'));
+          callback(new Error(_this.lan.LAYOUT_INDEX_PASSWORD_RULE));
         }
-        // else if (reg.test(value) ) {
-        //   callback(new Error('请输入正确的格式'));
-        // }
         else{
           callback();
         }
       };
       var validatePass2 = (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('请再次输入密码'));
+          callback(new Error(_this.LAYOUT_INDEX_PASSWORD_RULE_AGAIN));
         } else if (value !== this.passwordForm.new_password) {
-          callback(new Error('两次输入密码不一致!'));
+          callback(new Error(_this.lan.LAYOUT_INDEX_TWO_INCONSISTENT_PASSWORDS));
         } else {
           callback();
         }
       };
       return {
+        language:'zh',
         admin_login_url:'',
         skins:[
-          {url:'jingdianlan',title:'经典蓝（默认）'},
-          {url:'chunzhihua',title:'春之花'},
-          {url:'yanyujiangnan',title:'烟雨江南'},
-          {url:'hetangyuese',title:'荷塘月色'},
-          {url:'qingxinlu',title:'清新绿'},
-          {url:'haishuilan',title:'海水蓝'},
-          {url:'zhongguofeng',title:'中国风'}
+          {url:'jingdianlan',title:''},
+          {url:'chunzhihua',title:''},
+          {url:'yanyujiangnan',title:''},
+          {url:'hetangyuese',title:''},
+          {url:'qingxinlu',title:''},
+          {url:'haishuilan',title:''},
+          {url:'zhongguofeng',title:''}
         ],
         welcome_logo:'',
         passwordRules:{
@@ -312,8 +314,8 @@
         },
         passwordFormRules: {
           password: [
-            { required: true, message: '请填写原始密码', trigger: 'blur' },
-            { min: 1, message: '长度必须大于 1 个字符', trigger: 'blur' }
+            { required: true, message: '', trigger: 'blur' },
+            { min: 1, message: '', trigger: 'blur' }
           ],
           new_password: [
             { validator:validatePass, trigger: 'blur' },
@@ -332,16 +334,21 @@
         mainUsername:'',
         activeTab:0,
         tabs:[
-          {id:0,title:'我的邮箱',iconclass:'icon-icon-email-copy'},
-          {id:1,title:'我的日程',iconclass:'icon-iconschedule'},
-          {id:2,title:'文件中心',iconclass:'icon-iconfiler'},
-          {id:3,title:'联系人',iconclass:'icon-iconcontacts1'},
+          {id:0,title:'',iconclass:'icon-icon-email-copy'},
+          {id:1,title:'',iconclass:'icon-iconschedule'},
+          {id:2,title:'',iconclass:'icon-iconfiler'},
+          {id:3,title:'',iconclass:'icon-iconcontacts1'},
           // {id:4,title:'应用中心',iconclass:'icon-iconmore'},
-          {id:6,title:'自助查询',iconclass:'icon-iconsreachm'},
+          {id:6,title:'',iconclass:'icon-iconsreachm'},
         ]
       }
     },
     methods:{
+      changeLanguage(val){
+        cookie.setCookie('webvue_language',val,365*10)
+        this.$store.dispatch('setLanguageA',val)
+        // router.go(0)
+      },
       goToHelp(){
         let href = window.location.origin+'/webmail/zh_hans/index.html'; //window.location.origin  'http://192.168.1.39:81'
         console.log(href)
@@ -356,7 +363,7 @@
             this.$store.dispatch('setSkinOrderA',m.url)
             this.$message({
               type:'success',
-              message:'邮箱皮肤设置成功！'
+              message:this.lan.LAYOUT_INDEX_SKIN_SETUP_SUCCESSFUL
             })
           }).catch(err=>{
             console.log(err)
@@ -410,12 +417,12 @@
         this.confirm_password_error = '';
         this.$refs.passwordForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.lan.COMMON_BUTTON_CONFIRM_SUBMIT, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               let para = Object.assign({}, this.passwordForm);
               settingUsersSetpassword(para).then((res) => {
                 cookie.setCookie('token',res.data.token, 7);
                 this.$refs['passwordForm'].resetFields();
-                this.$message({message: '密码修改成功', type: 'success'});
+                this.$message({message: this.lan.LAYOUT_INDEX_SUCCESSFUL_PASSWORD, type: 'success'});
                 this.$store.dispatch('setChangePwd',false);
               }, (data)=>{
                 if("password" in data) {
@@ -477,13 +484,13 @@
               this.newMsg = null;
               this.$message({
                 type:'success',
-                message: '邮件删除成功!'
+                message: this.lan.COMMON_DELETE_SUCCESS
               })
             }
           },(err)=>{
             this.$message({
                 type:'error',
-                message: '删除失败！!'
+                message: this.lan.COMMON_DELETE_FAILED
               })
           })
       },
@@ -584,9 +591,9 @@
         }
       },
       logout(){
-        this.$confirm('退出登录?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm(this.lan.LAYOUT_INDEX_LOGOUT_CONFIRM, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+          confirmButtonText: this.lan.sure,
+          cancelButtonText: this.lan.cancel,
           type: 'warning'
         }).then(() => {
           cookie.delCookie('token');
@@ -616,11 +623,11 @@
 
       },
       lockscreen() {
-        this.$confirm('<h3>您的邮箱将进入锁定状态</h3><p>邮箱将仍然保持在线</p><p>在输入正确的“邮箱密码”前任何人都无法动您的邮箱</p><p>可以更安全的保护您的隐私</p>', '锁屏提示', {
+        this.$confirm('<h3>'+this.lan.LAYOUT_INDEX_LOCK_SCREEN_NOTICE1+'</h3><p>'+this.lan.LAYOUT_INDEX_LOCK_SCREEN_NOTICE2+'</p><p>'+this.lan.LAYOUT_INDEX_LOCK_SCREEN_NOTICE3+'</p><p>'+this.lan.LAYOUT_INDEX_LOCK_SCREEN_NOTICE4+'</p>', this.lan.LAYOUT_INDEX_LOCK_SCREEN_TITLE, {
           dangerouslyUseHTMLString: true,
           distinguishCancelAndClose: true,
-          confirmButtonText: '确定锁屏',
-          cancelButtonText: '取消'
+          confirmButtonText: this.lan.LAYOUT_INDEX_LOCK_SCREEN_SURE,
+          cancelButtonText: this.lan.cancel
         })
           .then(() => {
             router.push('/lockscreen');
@@ -682,10 +689,10 @@
             _this.getShared();
             this.$router.push('/mailbox/welcome')
           },(err)=>{
-            let str = err.non_field_errors[0] || '切换共享邮箱出错！';
+            let str = err.non_field_errors[0] || this.lan.LAYOUT_INDEX_SWITCH_SHARE_MAILBOX;
             this.$router.push('/mailbox/welcome')
-            _this.$alert(str, '提示：', {
-              confirmButtonText: '确定'}
+            _this.$alert(str, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+              confirmButtonText: this.lan.sure}
             )
           })
         }
@@ -694,6 +701,32 @@
 
     },
     created(){
+      var lang = cookie.getCookie('webvue_language')
+      if(lang){
+        cookie.setCookie('webvue_language',lang,365*10)
+      }else{
+        let JsSrc =(navigator.language || navigator.browserLanguage).toLowerCase();
+        if(JsSrc.indexOf('zh')>=0)
+        {
+           // 假如浏览器语言是中文
+          cookie.setCookie('webvue_language','zh',365*10)
+          if(JsSrc=='zh-tw'){
+            cookie.setCookie('webvue_language','zh-tw',365*10)
+          }
+        }
+        else if(JsSrc.indexOf('en')>=0)
+        {
+            // 假如浏览器语言是英文
+          cookie.setCookie('webvue_language','en',365*10)
+        }
+        else
+        {
+           // 假如浏览器语言是其它语言
+          cookie.setCookie('webvue_language','zh',365*10)
+        }
+      }
+      this.$store.dispatch('setLanguageA',cookie.getCookie('webvue_language'))
+      this.language = cookie.getCookie('webvue_language');
       this.getReviewShow();
       this.getUser();
       this.getShared();
@@ -780,12 +813,60 @@
       skin_order:function(){
         return this.$store.getters.getSkinOrder;
       },
+      lan:function(){
+        let lang = lan.zh
+        if(this.$store.getters.getLanguage=='zh'){
+          lang = lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          lang = lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          lang = lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          lang = lan.zh
+        }else{
+          lang = lan.zh
+        }
+        this.skins = [
+          {url:'jingdianlan',title: lang.SETTING_SKIN_JINGDIANLAN},
+          {url:'chunzhihua',title: lang.SETTING_SKIN_CHUNZHIHUA},
+          {url:'yanyujiangnan',title: lang.SETTING_SKIN_YANYUJIANGNAN},
+          {url:'hetangyuese',title: lang.SETTING_SKIN_HETANGYUESE},
+          {url:'qingxinlu',title: lang.SETTING_SKIN_QINGXINLU},
+          {url:'haishuilan',title: lang.SETTING_SKIN_HAISHUILAN},
+          {url:'zhongguofeng',title: lang.SETTING_SKIN_ZHONGGUOFENG}
+        ]
+        this.passwordFormRules.password =  [
+          { required: true, message: lang.COMMON_SRC_PASSWORD_RULE, trigger: 'blur' },
+          { min: 1, message: lang.COMMON_SRC_PASSWORD_RULE_LEN, trigger: 'blur' }
+        ]
+        this.tabs = [
+          {id:0,title:lang.LAYOUT_INDEX_MY_MAILBOX,iconclass:'icon-icon-email-copy'},
+          {id:1,title:lang.LAYOUT_INDEX_MY_SCHEDULE,iconclass:'icon-iconschedule'},
+          {id:2,title:lang.LAYOUT_INDEX_FILE_CENTER,iconclass:'icon-iconfiler'},
+          {id:3,title:lang.LAYOUT_INDEX_CONTACTS,iconclass:'icon-iconcontacts1'},
+          // {id:4,title:'应用中心',iconclass:'icon-iconmore'},
+          {id:6,title:lang.LAYOUT_INDEX_SELF_QUERY,iconclass:'icon-iconsreachm'},
+        ]
+        return lang
+
+
+      }
 
     }
   }
 </script>
 
 <style>
+  .no_border .el-input__inner{
+    background: transparent;
+    color: #222;
+  }
+  li .no_border .el-input__inner{
+    font-size:12px;
+  }
+  .no_border.el-select .el-input .el-select__caret{
+    color:#222;
+  }
   .activeitem{
     background-color: #ecf5ff;
     color: #66b1ff;

@@ -20,8 +20,8 @@
         <el-row>
           <el-col :span="24" class="breadcrumb-container">
             <el-breadcrumb separator="/">
-              <el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item>
-              <el-breadcrumb-item><a href="#">公共通讯录</a></el-breadcrumb-item>
+              <el-breadcrumb-item :to="{ path: '/welcome' }">{{plang.COMMON_HOME_NAME}}</el-breadcrumb-item>
+              <el-breadcrumb-item><a href="#">{{plang.CONTANCT_INDEX_CAB}}</a></el-breadcrumb-item>
               <el-breadcrumb-item>&nbsp;{{cate_name}}</el-breadcrumb-item>
             </el-breadcrumb>
           </el-col>
@@ -32,11 +32,10 @@
           <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             <el-form :inline="true" :model="filters">
               <el-form-item>
-                <el-input v-model="filters.search" placeholder="邮箱或姓名" size="small"></el-input>
+                <el-input v-model="filters.search" :placeholder="plang.CONTACT_PAB_SEARCH" size="small"></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" v-on:click="searchCabMembers" size="small">查询</el-button>
-                <!--<el-button type="primary" v-on:click="getCabMembers" size="small">查询</el-button>-->
+                <el-button type="primary" v-on:click="searchCabMembers" size="small">{{plang.COMMON_SEARCH}}</el-button>
               </el-form-item>
             </el-form>
           </el-col>
@@ -44,12 +43,11 @@
 
         <!-- 普通列表 -->
         <section class="content content-list height100" >
-
           <el-row class="toolbar">
             <el-col :span="12">
-              <el-button type="primary" @click="$parent.sendMail_net('more',sels)" :disabled="this.sels.length===0" size="mini"> 发信给选择的人员</el-button>
-              <el-button type="success" @click="Oab_send_to_department" size="mini">发邮件给本机构人员</el-button>
-              <el-button type="info" @click="Oab_to_pab" :disabled="this.sels.length===0" size="mini"> 添加至个人通讯录</el-button>
+              <el-button type="primary" @click="$parent.sendMail_net('more',sels)" :disabled="this.sels.length===0" size="mini">{{plang.CONTACT_OAB_SEND}}</el-button>
+              <el-button type="success" @click="Oab_send_to_department" size="mini">{{plang.CONTACT_OAB_SENDO}}</el-button>
+              <el-button type="info" @click="Oab_to_pab" :disabled="this.sels.length===0" size="mini">{{plang.CONTACT_OAB_TOPAB}}</el-button>
             </el-col>
             <el-col :span="12">
               <el-pagination layout="total, sizes, prev, pager, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange"
@@ -62,17 +60,16 @@
           <el-table :data="listTables" highlight-current-row width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
             <el-table-column type="selection" width="50"></el-table-column>
             <el-table-column type="index" label="No." width="60"></el-table-column>
-            <el-table-column prop="fullname" label="姓名" ></el-table-column>
-            <el-table-column prop="pref_email" label="邮箱" width="250"></el-table-column>
-            <el-table-column prop="gender" label="性别" width="80"></el-table-column>
-            <el-table-column prop="birthday" label="生日" width="160"></el-table-column>
-            <el-table-column prop="pref_tel" label="移动号码" ></el-table-column>
-            <el-table-column prop="work_tel" label="工作号码" width="200"></el-table-column>
-            <el-table-column prop="home_tel" label="住宅电话" width="150"></el-table-column>
+            <el-table-column prop="fullname" :label="plang.COMMON_XINGMING"></el-table-column>
+            <el-table-column prop="pref_email" :label="plang.COMMON_EMAIL" width="250"></el-table-column>
+            <el-table-column prop="gender" :label="plang.COMMON_GENDER" width="80"></el-table-column>
+            <el-table-column prop="birthday" :label="plang.COMMON_BIRTHDAY" width="160"></el-table-column>
+            <el-table-column prop="pref_tel" :label="plang.COMMON_MOBILE2"></el-table-column>
+            <el-table-column prop="work_tel" :label="plang.COMMON_TELWORK" width="200"></el-table-column>
+            <el-table-column prop="home_tel" :label="plang.SETTING_USER_TELHOME" width="150"></el-table-column>
             <el-table-column prop="im_qq" label="QQ" width="150"></el-table-column>
             <el-table-column prop="im_msn" label="MSN" width="150"></el-table-column>
           </el-table>
-
           <el-col :span="24" class="toolbar"></el-col>
         </section>
 
@@ -86,7 +83,9 @@
   import { contactCabGroupsGet, contactCabMembersGet, contactPabMembersCabAdd ,getDeptMail} from '@/api/api'
   export default {
     data() {
+      let _self = this;
       return {
+        plang:_self.$parent.plang,
         asideWith:199,
         cab_cid: "",
         cate_name: "",
@@ -206,7 +205,7 @@
       Oab_send_to_select: function () {
         // var ids = this.sels.map(item => item.id).toString();
         var ids = this.sels.map(item => item.id);
-        this.$confirm('确认删除选中记录吗？', '提示', {
+        this.$confirm(this.plang.CONTACT_OAB_MSG2, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
             // this.listLoading = true;
@@ -227,7 +226,7 @@
       },
       Oab_send_to_department: function () {
         // var ids = this.sels.map(item => item.id).toString();
-        this.$confirm('发邮件给本机构人员？', '提示', {
+        this.$confirm(this.plang.CONTACT_OAB_MSG3, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           let param = {
@@ -240,14 +239,13 @@
             if(res.data && res.data.length==0){
               this.$message({
                 type:'error',
-                message:'未找到邮箱！'
+                message: this.plang.CONTACT_PAB_MSG6
               })
               return;
             }
             this.$parent.sendMail_net(res.data)
           }).catch(err=>{
             this.listLoading = false;
-            console.log('获取组邮箱错误！',err)
           })
         }).catch(() => {
         });
@@ -256,7 +254,7 @@
         let that = this;
         // var ids = this.sels.map(item => item.id).toString();
         var ids = this.sels.map(item => item.id);
-        this.$confirm('确定将选中成员添加到个人通讯录中？', '提示', {
+        this.$confirm(this.plang.CONTACT_OAB_MSG4, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           this.listLoading = true;
@@ -264,7 +262,7 @@
           contactPabMembersCabAdd(para).then((res) => {
             this.listLoading = false;
             //NProgress.done();
-            that.$message({ message: '已成功添加联系人到个人通讯录', type: 'success' });
+            that.$message({ message: this.plang.CONTACT_OAB_MSG5, type: 'success' });
           });
         }).catch((error) => {
           that.listLoading = false;

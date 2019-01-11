@@ -3,10 +3,10 @@
     <el-menu :default-active="activeIndex" class="el-menu-demo"  @select="handleSelect" mode="horizontal" background-color="#545c64"
              text-color="#fff"
              active-text-color="#ffd04b" >
-      <el-menu-item index="pab">个人通讯录</el-menu-item>
-      <el-menu-item index="oab">组织通讯录</el-menu-item>
-      <el-menu-item index="cab" v-if="webmail_cab_show">公共通讯录</el-menu-item>
-      <el-menu-item index="soab" v-if="webmail_soab_show">其它域通讯录</el-menu-item>
+      <el-menu-item index="pab">{{plang.CONTANCT_INDEX_PAB}}</el-menu-item>
+      <el-menu-item index="oab">{{plang.CONTANCT_INDEX_OAB}}</el-menu-item>
+      <el-menu-item index="cab" v-if="webmail_cab_show">{{plang.CONTANCT_INDEX_CAB}}</el-menu-item>
+      <el-menu-item index="soab" v-if="webmail_soab_show">{{plang.CONTANCT_INDEX_SOAB}}</el-menu-item>
     </el-menu>
 
     <router-view></router-view>
@@ -14,6 +14,7 @@
 </template>
 
 <script>
+  import lan from '@/assets/js/lan';
   import router from '@/router'
   import { getContactInfo } from '@/api/api'
   export default {
@@ -45,6 +46,21 @@
         //NProgress.done();
       });
     },
+    computed: {
+      plang(){
+        if(this.$store.getters.getLanguage=='zh'){
+          return lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          return lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          return lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          return lan.zh
+        }else{
+          return lan.zh
+        }
+      },
+    },
     methods: {
       toggleWidth(){
         if(this.asideWith == 199){
@@ -74,7 +90,7 @@
         }else{
           this.$message({
             type:'error',
-            message:'对于您登陆的共享邮箱，没有权限做此操作。'
+            message: this.plang.COMMON_PERMISSION_DESC,
           })
           return
         }
@@ -165,7 +181,7 @@
     padding-left: 12px;
   }
   /*.el-tabs__header{*/
-    /*margin:0;*/
+  /*margin:0;*/
   /*}*/
   .nopanel .el-tabs__content{
     display:none;

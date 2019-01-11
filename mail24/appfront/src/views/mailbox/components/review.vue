@@ -16,12 +16,12 @@
 
                 <el-row style="margin:12px 0 0;" class="toolbar">
                   <el-col :span="12">
-                    <el-button  v-if="status=='wait'" type="success" size="mini" @click="updateStatus('permit',sels)" :disabled="sels.length==0">审核通过</el-button>
-                    <el-button style="margin-right:12px;" v-if="status=='wait'"  type="warning" size="mini" @click="show_reject_dialog(sels)" :disabled="sels.length==0">拒绝通过</el-button>
+                    <el-button  v-if="status=='wait'" type="success" size="mini" @click="updateStatus('permit',sels)" :disabled="sels.length==0">{{lan.MAILBOX_COM_REVIEW_PASS}}</el-button>
+                    <el-button style="margin-right:12px;" v-if="status=='wait'"  type="warning" size="mini" @click="show_reject_dialog(sels)" :disabled="sels.length==0">{{lan.MAILBOX_COM_REVIEW_REJECT}}</el-button>
                     <el-button-group>
-                      <el-button class="status_btn" size="small" :class="{active:status=='wait'}"  @click="changeStatus('wait')">待审核列表</el-button>
-                      <el-button class="status_btn" size="small" :class="{active:status=='permit'}" @click="changeStatus('permit')">审核通过列表</el-button>
-                      <el-button class="status_btn" size="small" :class="{active:status=='reject'}" @click="changeStatus('reject')">拒绝通过列表</el-button>
+                      <el-button class="status_btn" size="small" :class="{active:status=='wait'}"  @click="changeStatus('wait')">{{lan.MAILBOX_COM_REVIEW_WAIT_LIST}}</el-button>
+                      <el-button class="status_btn" size="small" :class="{active:status=='permit'}" @click="changeStatus('permit')">{{lan.MAILBOX_COM_REVIEW_PASS_LIST}}</el-button>
+                      <el-button class="status_btn" size="small" :class="{active:status=='reject'}" @click="changeStatus('reject')">{{lan.MAILBOX_COM_REVIEW_REJECT_LIST}}</el-button>
                     </el-button-group>
 
                   </el-col>
@@ -32,7 +32,7 @@
                       :current-page="waitData.page"
                       :page-sizes="[10, 20, 50, 100]"
                       :page-size="waitData.page_size"
-                      layout="total, sizes, prev, pager, next "
+                      layout="total, sizes, prev, pager, next,jumper"
                       :total="waitData.total">
                     </el-pagination>
                   </el-col>
@@ -55,7 +55,7 @@
                   </el-table-column>
                   <el-table-column
                     prop="subject"
-                    label="主题"
+                    :label="lan.COMMON_SUBJECT2"
                     >
                     <template slot-scope="scope">
                       <div v-if="status!='wait'" class="nowrap" :title="scope.row.subject">{{scope.row.subject}}</div>
@@ -64,7 +64,7 @@
                   </el-table-column>
                   <el-table-column
                     prop="sender"
-                    label="发件人" width="180">
+                    :label="lan.COMMON_SENDER" width="180">
                     <template slot-scope="scope">
                       <div class="nowrap" :title="scope.row.sender">
                         {{scope.row.sender}}
@@ -73,7 +73,7 @@
                   </el-table-column>
                   <el-table-column
                     prop="recipient"
-                    label="收件人" width="180">
+                    :label="lan.COMMON_RECAIVER" width="180">
                     <template slot-scope="scope">
                       <div class="nowrap" :title="scope.row.recipient">
                         {{scope.row.recipient}}
@@ -84,7 +84,7 @@
 
                   <el-table-column
                     prop="datetime"
-                    label="日期" width="150">
+                    :label="lan.MAILBOX_COM_REVIEW_DATE" width="150">
                     <template slot-scope="scope">
                       <div class="nowrap" >
                         {{scope.row.datetime.replace('T',' ')}}
@@ -93,7 +93,7 @@
                   </el-table-column>
                   <el-table-column
                     prop="mailsize"
-                    label="大小" width="100">
+                    :label="lan.COMMON_SIZE" width="100">
                     <template slot-scope="scope">
                       <div>
                         {{scope.row.mailsize |mailsize}}
@@ -102,7 +102,7 @@
                   </el-table-column>
                   <el-table-column
                     prop="reason"
-                    label="其他">
+                    :label="lan.MAILBOX_COM_REVIEW_OTHER">
                     <template slot-scope="scope">
                       <div class="nowrap" :title="scope.row.reason">
                         {{scope.row.reason}}
@@ -110,12 +110,12 @@
                     </template>
                   </el-table-column>
                   <el-table-column
-                    label="操作" width="180" v-if="status=='wait'">
+                    :label="lan.COMMON_OPRATE" width="180" v-if="status=='wait'">
                     <template slot-scope="scope">
                       <div>
-                        <el-button type="text" size="small" @click.stop="updateStatus('permit',[scope.row])">通过</el-button>
-                        <el-button type="text" size="small" @click.stop="show_reject_dialog([scope.row])" style="color:#f56c6c;">拒绝</el-button>
-                        <el-button type="text" size="small" @click.stop="readMailReview(scope.row)">查看邮件</el-button>
+                        <el-button type="text" size="small" @click.stop="updateStatus('permit',[scope.row])">{{lan.MAILBOX_COM_REVIEW_PASS_ACTION}}</el-button>
+                        <el-button type="text" size="small" @click.stop="show_reject_dialog([scope.row])" style="color:#f56c6c;">{{lan.MAILBOX_COM_REVIEW_REJECT_ACTION}}</el-button>
+                        <el-button type="text" size="small" @click.stop="readMailReview(scope.row)">{{lan.MAILBOX_COM_REVIEW_VIEW_MAIL}}</el-button>
                       </div>
                     </template>
                   </el-table-column>
@@ -129,17 +129,17 @@
               </div>
             </el-tab-pane>
           </el-tabs>
-          <el-dialog title="拒绝审核"  :visible.sync="waitData.show_reason"  :append-to-body="true" width="520px">
+          <el-dialog :title="lan.MAILBOX_COM_REVIEW_REJECT_MAIL"  :visible.sync="waitData.show_reason"  :append-to-body="true" width="520px">
             <el-form :model="waitData.rejectForm" label-width="100px" :rules="waitData.rejectRule" ref="dbForm" size="small">
 
-              <el-form-item label="拒绝原因：" prop="reason" >
-                <el-input v-model="waitData.rejectForm.reason" placeholder="请输入拒绝原因" type="textarea" autosize></el-input>
+              <el-form-item :label="lan.MAILBOX_COM_REVIEW_REJECT_REASON" prop="reason" >
+                <el-input v-model="waitData.rejectForm.reason" :placeholder="lan.MAILBOX_COM_REVIEW_INPUT_REJECT_REASON" type="textarea" autosize></el-input>
               </el-form-item>
 
             </el-form>
             <div slot="footer" class="dialog-footer">
-              <el-button @click.native="waitData.show_reason = false" size="small">取消</el-button>
-              <el-button type="primary" @click.native="updateStatus('reject',waitData.rejectForm.reject_id)" size="small">确定</el-button>
+              <el-button @click.native="waitData.show_reason = false" size="small">{{lan.COMMON_BUTTON_CANCELL}}</el-button>
+              <el-button type="primary" @click.native="updateStatus('reject',waitData.rejectForm.reject_id)" size="small">{{lan.COMMON_BUTTON_CONFIRM}}</el-button>
             </div>
           </el-dialog>
         </div>
@@ -150,6 +150,7 @@
 </template>
 
 <script>
+  import lan from '@/assets/js/lan';
   import Readreview from './readreview'
   import cookie from '@/assets/js/cookie';
   import {mailReview,updateReview,uploadReviews} from '@/api/api'
@@ -391,6 +392,24 @@
         }
       },
     },
+    computed:{
+      lan:function(){
+        let lang = lan.zh
+        if(this.$store.getters.getLanguage=='zh'){
+          lang = lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          lang = lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          lang = lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          lang = lan.zh
+        }else{
+          lang = lan.zh
+        }
+
+        return lang
+      },
+    }
   }
 </script>
 

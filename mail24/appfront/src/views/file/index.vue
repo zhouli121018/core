@@ -1,47 +1,43 @@
 <template>
   <div>
-
     <section class="m-mail">
-
       <aside class="fl-g-sidebar">
         <div class="fl-m-nav-bg"></div>
         <ul class="fl-m-nav j-file-nav">
           <li>
-            <a class="fl-m-nav-trigger" :class="{'fl-nav-current':activeT=='pfile'}" href="#"  title="个人网盘"  @click.prevent.stop="jumpTo('pfile')">
+            <a class="fl-m-nav-trigger" :class="{'fl-nav-current':activeT=='pfile'}" href="#" :title="plang.FILE_INDEX_P"  @click.prevent.stop="jumpTo('pfile')">
                 <span>
                   <i class="menu_icon_box iconfont icon-iconmyfile"></i>
-                  <div>个人网盘</div>
+                  <div>{{plang.FILE_INDEX_P}}</div>
                 </span>
             </a>
           </li>
           <li>
-            <a class="fl-m-nav-trigger" href="#" :class="{'fl-nav-current':activeT=='cfile'}" title="企业网盘" @click.prevent.stop="jumpTo('cfile')">
+            <a class="fl-m-nav-trigger" href="#" :class="{'fl-nav-current':activeT=='cfile'}" :title="plang.FILE_INDEX_C" @click.prevent.stop="jumpTo('cfile')">
                 <span>
                   <i class="iconfont icon-iconcompanyfile menu_icon_box"></i>
-                  <div>企业网盘</div>
+                  <div>{{plang.FILE_INDEX_C}}</div>
                 </span>
             </a>
           </li>
           <li>
-            <a class="fl-m-nav-trigger" href="#" :class="{'fl-nav-current':activeT=='afile'}" title="文件中转站" @click.prevent.stop="jumpTo('afile')">
+            <a class="fl-m-nav-trigger" href="#" :class="{'fl-nav-current':activeT=='afile'}" :title="plang.FILE_INDEX_A" @click.prevent.stop="jumpTo('afile')">
                 <span>
                   <i class="iconfont icon-iconaccfile menu_icon_box"></i>
-                  <div>文件中转站</div>
+                  <div>{{plang.FILE_INDEX_A}}</div>
                 </span>
             </a>
           </li>
         </ul>
       </aside>
-
       <article class="fl-g-content">
         <router-view @sendMail_net="sendMail_net"></router-view>
       </article>
-
     </section>
-
   </div>
 </template>
 <script>
+  import lan from '@/assets/js/lan';
   import {getOpenoffice} from '@/api/api'
   export default {
     data() {
@@ -51,10 +47,23 @@
       };
     },
     components: {
-
     },
     created: function() {
-
+    },
+    computed: {
+      plang(){
+        if(this.$store.getters.getLanguage=='zh'){
+          return lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          return lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          return lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          return lan.zh
+        }else{
+          return lan.zh
+        }
+      },
     },
     mounted: function() {
       if(this.$route.path=='/file/afile'){
@@ -77,14 +86,14 @@
             type:'error',
             duration:6000,
             showClose:true,
-            message:'预览文件大于10M,请下载查看！'
+            message: this.plang.FILE_INDEX_MSG1
           })
           return;
         }
         let size = a.size||a.file_size;
         let suffix,name;
         if(a.name){
-         suffix = a.name.slice(a.name.lastIndexOf('.')+1)
+          suffix = a.name.slice(a.name.lastIndexOf('.')+1)
           name = a.name
         }else{
           suffix = a.filename.slice(a.filename.lastIndexOf('.')+1)
@@ -113,7 +122,7 @@
           if(err.non_field_errors){
             str = err.non_field_errors[0]
           }
-          ww.document.body.innerHTML="<h4>预览文件出错！"+str+'</h4>';
+          ww.document.body.innerHTML="<h4>"+this.plang.FILE_INDEX_MSG3+str+'</h4>';
         })
       },
       sendMail_net(row,sels,type){
@@ -122,7 +131,7 @@
         }else{
           this.$message({
             type:'error',
-            message:'对于您登陆的共享邮箱，没有权限做此操作。'
+            message: this.plang.MAILBOX_SHARE_POWER
           })
           return
         }
@@ -134,7 +143,7 @@
             if(val.nettype == 'folder'){
               this.$message({
                 type:'error',
-                message:'邮件发送不能包含文件夹！请重新选择！'
+                message: this.plang.FILE_INDEX_MSG2
               })
               check = false
               return;
@@ -177,15 +186,8 @@
           this.$store.dispatch('setFileJ',true)
           this.$router.push('/mailbox/innerbox/INBOX')
         }
-
-
       },
-
     },
-    computed: {
-
-    },
-
   }
 </script>
 <style>

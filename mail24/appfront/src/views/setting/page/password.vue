@@ -3,81 +3,87 @@
 
     <el-row class="" style="padding: 0px;">
       <el-col :span="24" class="breadcrumb-container">
-        <el-breadcrumb separator="/"><el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item><el-breadcrumb-item><a href="#">设置中心</a></el-breadcrumb-item><el-breadcrumb-item>密码修改</el-breadcrumb-item></el-breadcrumb>
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item :to="{ path: '/welcome' }">{{this.$parent.lan.COMMON_HOME_NAME}}</el-breadcrumb-item>
+          <el-breadcrumb-item><a href="#">{{this.$parent.lan.SETTING_INDEX_NAME}}</a></el-breadcrumb-item>
+          <el-breadcrumb-item>{{this.$parent.lan.SETTING_INDEX_PASSWORD_MENU}}</el-breadcrumb-item>
+        </el-breadcrumb>
       </el-col>
     </el-row>
 
     <section class="content content-list height100" style="background: #fff;background: rgba(255,255,255,0.9);padding-bottom: 13px;">
-      <el-form :model="passeordForm" label-width="100px" :rules="passeordFormRules" ref="passeordForm" size="mini" style="margin-left:13px;margin-right:13px;margin-top: 13px">
+      <el-form :model="passeordForm" label-width="180px" :rules="passeordFormRules" ref="passeordForm" size="mini" style="margin-left:13px;margin-right:13px;margin-top: 13px">
         <el-row>
-          <el-col :span="24"><div class="demo-block-control"><p style="margin-bottom: 3px; margin-left: 13px"> 修改密码</p></div></el-col>
-          <el-col :span="16"><el-form-item label="原始密码" prop="password" :error="password_error"><el-input type="password" v-model.trim="passeordForm.password" auto-complete="off"></el-input></el-form-item></el-col><br>
-          <el-col :span="16"><el-form-item label="新密码" prop="new_password" :error="new_password_error"><el-input type="password" v-model.trim="passeordForm.new_password" auto-complete="off"></el-input></el-form-item></el-col><br>
-          <el-col :span="16"><el-form-item label="确认密码" prop="confirm_password" :error="confirm_password_error"><el-input type="password" v-model.trim="passeordForm.confirm_password" auto-complete="off"></el-input></el-form-item></el-col>
+          <el-col :span="24"><div class="demo-block-control"><p style="margin-bottom: 3px; margin-left: 13px">{{this.$parent.lan.SETTING_INDEX_PASSWORD_MENU}}</p></div></el-col>
+          <el-col :span="16"><el-form-item :label="this.$parent.lan.COMMON_SRC_PASSWORD" prop="password" :error="password_error"><el-input type="password" v-model.trim="passeordForm.password" auto-complete="off"></el-input></el-form-item></el-col><br>
+          <el-col :span="16"><el-form-item :label="this.$parent.lan.COMMON_NEW_PASSWORD" prop="new_password" :error="new_password_error"><el-input type="password" v-model.trim="passeordForm.new_password" auto-complete="off"></el-input></el-form-item></el-col><br>
+          <el-col :span="16"><el-form-item :label="this.$parent.lan.COMMON_CONFIRM_PASSWORD" prop="confirm_password" :error="confirm_password_error"><el-input type="password" v-model.trim="passeordForm.confirm_password" auto-complete="off"></el-input></el-form-item></el-col>
         </el-row>
         <el-row><el-col :span="16">
           <div style="margin-left: 100px">
-            <strong style="color: red">密码必须满足以下条件：</strong>
+            <strong style="color: red">{{this.$parent.lan.COMMON_PASSWORD_NOTICE}}</strong>
             <ul style="margin-left: 26px;">
-              <li style="list-style-type:circle;">密码长度为{{passwordRules.passwd_size2}}至16位；</li>
-              <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;">必须包含两种字符（数字、大写字母、小写字母、特殊字符）；</li>
-              <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">必须包含三种字符（数字、大写字母、小写字母、特殊字符）；</li>
-              <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">必须包含四种字符（数字、大写字母、小写字母、特殊字符）；</li>
-              <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">连续3位及以上数字不能连号（例如：123、654）；</li>
-              <li v-if="passwordRules.passwd_name" style="list-style-type:circle;">密码不能包含账号；</li>
-              <li v-if="passwordRules.passwd_name2" style="list-style-type:circle;">密码不能包含用户姓名大小写全拼；</li>
-              <li v-if="passwordRules.passwd_letter" style="list-style-type:circle;">连续3位及以上字母不能连号（例如：abc、cba）；</li>
-              <li v-if="passwordRules.passwd_letter2" style="list-style-type:circle;">密码不能包含连续3个及以上相同字符（例如：aaa、rrr）；</li>
+              <li style="list-style-type:circle;">{{this.$parent.lan.COMMON_PASSWORD_NOTICE_1}}{{passwordRules.passwd_size2}}{{this.$parent.lan.COMMON_PASSWORD_NOTICE_2}}</li>
+              <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;">{{this.$parent.lan.COMMON_PASSWORD_NOTICE_3}}</li>
+              <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">{{this.$parent.lan.COMMON_PASSWORD_NOTICE_4}}</li>
+              <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">{{this.$parent.lan.COMMON_PASSWORD_NOTICE_5}}</li>
+              <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">{{this.$parent.lan.COMMON_PASSWORD_NOTICE_6}}</li>
+              <li v-if="passwordRules.passwd_name" style="list-style-type:circle;">{{this.$parent.lan.COMMON_PASSWORD_NOTICE_7}}</li>
+              <li v-if="passwordRules.passwd_name2" style="list-style-type:circle;">{{this.$parent.lan.COMMON_PASSWORD_NOTICE_8}}</li>
+              <li v-if="passwordRules.passwd_letter" style="list-style-type:circle;">{{this.$parent.lan.COMMON_PASSWORD_NOTICE_9}}</li>
+              <li v-if="passwordRules.passwd_letter2" style="list-style-type:circle;">{{this.$parent.lan.COMMON_PASSWORD_NOTICE_10}}</li>
             </ul>
           </div>
         </el-col>
         </el-row>
-        <el-row><el-col :span="24"><el-form-item style="margin-top: 13px;"><el-button type="primary" @click.native="passeordFormSubmit()" :loading="passeordFormLoading">修改</el-button></el-form-item></el-col></el-row>
+        <el-row><el-col :span="24"><el-form-item style="margin-top: 13px;"><el-button type="primary" @click.native="passeordFormSubmit()" :loading="passeordFormLoading">{{this.$parent.lan.COMMON_BUTTON_ALTER}}</el-button></el-form-item></el-col></el-row>
       </el-form>
 
       <el-form :model="securityForm" label-width="100px" :rules="securityFormRules" ref="securityForm" size="mini" style="margin-left:13px;margin-right:13px;margin-top: 13px">
-        <el-row><el-col :span="24"><div class="demo-block-control"><p style="margin-bottom: 3px; margin-left: 13px"> 设置密保</p></div></el-col></el-row>
+        <el-row><el-col :span="24"><div class="demo-block-control"><p style="margin-bottom: 3px; margin-left: 13px">{{this.$parent.lan.SETTING_PASSWORD_SECURITY_TITLE}}</p></div></el-col></el-row>
         <el-row>
           <el-col :span="16">
-            <el-form-item label="密保问题1" prop="security_question1" :error="security_question1_error">
-              <el-select v-model="securityForm.security_question1" placeholder="请选择密保问题" style="width: 100%">
+            <el-form-item :label="this.$parent.lan.SETTING_PASSWORD_SECURITY_Q1" prop="security_question1" :error="security_question1_error">
+              <el-select v-model="securityForm.security_question1" :placeholder="this.$parent.lan.SETTING_PASSWORD_SECURITY_QP" style="width: 100%">
                 <el-option v-for="item in security_questions" :key="item.value" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
           </el-col><br>
-          <el-col :span="16" v-if="securityForm.security_question1=='custom'"><el-form-item label="自定义问题" prop="security_custom1" :error="security_custom1_error"><el-input v-model.trim="securityForm.security_custom1" auto-complete="off"></el-input></el-form-item></el-col><br>
-          <el-col :span="16"><el-form-item label="答案" prop="security_answer1" :error="security_answer1_error"><el-input v-model.trim="securityForm.security_answer1" auto-complete="off"></el-input></el-form-item></el-col><br>
+          <el-col :span="16" v-if="securityForm.security_question1=='custom'">
+            <el-form-item :label="this.$parent.lan.SETTING_PASSWORD_SECURITY_QS" prop="security_custom1" :error="security_custom1_error"><el-input v-model.trim="securityForm.security_custom1" auto-complete="off"></el-input></el-form-item>
+          </el-col><br>
+          <el-col :span="16"><el-form-item :label="this.$parent.lan.SETTING_PASSWORD_SECURITY_QA" prop="security_answer1" :error="security_answer1_error"><el-input v-model.trim="securityForm.security_answer1" auto-complete="off"></el-input></el-form-item></el-col><br>
         </el-row>
 
         <el-row>
           <el-col :span="16">
-            <el-form-item label="密保问题2" prop="security_question2" :error="security_question2_error">
-              <el-select v-model="securityForm.security_question2" placeholder="请选择密保问题" style="width: 100%">
+            <el-form-item :label="this.$parent.lan.SETTING_PASSWORD_SECURITY_Q2" prop="security_question2" :error="security_question2_error">
+              <el-select v-model="securityForm.security_question2" :placeholder="this.$parent.lan.SETTING_PASSWORD_SECURITY_QP" style="width: 100%">
                 <el-option v-for="item in security_questions" :key="item.value" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
           </el-col><br>
-          <el-col :span="16" v-if="securityForm.security_question2=='custom'"><el-form-item label="自定义问题" prop="security_custom2" :error="security_custom2_error"><el-input v-model.trim="securityForm.security_custom2" auto-complete="off"></el-input></el-form-item></el-col><br>
-          <el-col :span="16"><el-form-item label="答案" prop="security_answer2" :error="security_answer2_error"><el-input v-model.trim="securityForm.security_answer2" auto-complete="off"></el-input></el-form-item></el-col><br>
+          <el-col :span="16" v-if="securityForm.security_question2=='custom'"><el-form-item :label="this.$parent.lan.SETTING_PASSWORD_SECURITY_QS" prop="security_custom2" :error="security_custom2_error"><el-input v-model.trim="securityForm.security_custom2" auto-complete="off"></el-input></el-form-item></el-col><br>
+          <el-col :span="16"><el-form-item :label="this.$parent.lan.SETTING_PASSWORD_SECURITY_QA" prop="security_answer2" :error="security_answer2_error"><el-input v-model.trim="securityForm.security_answer2" auto-complete="off"></el-input></el-form-item></el-col><br>
         </el-row>
 
         <el-row>
           <el-col :span="16">
-            <el-form-item label="密保问题3" prop="security_question3" :error="security_question3_error">
-              <el-select v-model="securityForm.security_question3" placeholder="请选择密保问题" style="width: 100%">
+            <el-form-item :label="this.$parent.lan.SETTING_PASSWORD_SECURITY_Q3" prop="security_question3" :error="security_question3_error">
+              <el-select v-model="securityForm.security_question3" :placeholder="this.$parent.lan.SETTING_PASSWORD_SECURITY_QP" style="width: 100%">
                 <el-option v-for="item in security_questions" :key="item.value" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
           </el-col><br>
-          <el-col :span="16" v-if="securityForm.security_question3=='custom'"><el-form-item label="自定义问题" prop="security_custom3" :error="security_custom3_error"><el-input v-model.trim="securityForm.security_custom3" auto-complete="off"></el-input></el-form-item></el-col><br>
-          <el-col :span="16"><el-form-item label="答案" prop="security_answer3" :error="security_answer3_error"><el-input v-model.trim="securityForm.security_answer3" auto-complete="off"></el-input></el-form-item></el-col><br>
+          <el-col :span="16" v-if="securityForm.security_question3=='custom'"><el-form-item :label="this.$parent.lan.SETTING_PASSWORD_SECURITY_QS" prop="security_custom3" :error="security_custom3_error"><el-input v-model.trim="securityForm.security_custom3" auto-complete="off"></el-input></el-form-item></el-col><br>
+          <el-col :span="16"><el-form-item :label="this.$parent.lan.SETTING_PASSWORD_SECURITY_QA" prop="security_answer3" :error="security_answer3_error"><el-input v-model.trim="securityForm.security_answer3" auto-complete="off"></el-input></el-form-item></el-col><br>
         </el-row>
 
 
         <el-row>
           <el-col :span="24">
             <el-form-item>
-              <el-button type="primary" @click.native="securityFormSubmit()" :loading="securityFormLoading">修改</el-button>
+              <el-button type="primary" @click.native="securityFormSubmit()" :loading="securityFormLoading">{{this.$parent.lan.COMMON_BUTTON_ALTER}}</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -123,16 +129,16 @@
         },
         passeordFormRules: {
           password: [
-            { required: true, message: '请填写原始密码', trigger: 'blur' },
-            { min: 1, message: '长度必须大于 1 个字符', trigger: 'blur' }
+            { required: true, message: this.$parent.lan.COMMON_SRC_PASSWORD_RULE, trigger: 'blur' },
+            { min: 1, message: this.$parent.lan.COMMON_SRC_PASSWORD_RULE_LEN, trigger: 'blur' }
           ],
           new_password: [
-            { required: true, message: '请填写新密码', trigger: 'blur' },
-            { min: 8, max: 20, message: '长度在 8 到 20 个字符', trigger: 'blur' }
+            { required: true, message: this.$parent.lan.COMMON_NEW_PASSWORD_RULE, trigger: 'blur' },
+            { min: 8, max: 20, message: this.$parent.lan.COMMON_PASSWORD_RULE_LEN, trigger: 'blur' }
           ],
           confirm_password: [
-            { required: true, message: '请填写确认密码', trigger: 'blur' },
-            { min: 8, max: 20, message: '长度在 8 到 20 个字符', trigger: 'blur' }
+            { required: true, message: this.$parent.lan.COMMON_CONFIRM_PASSWORD_RULE, trigger: 'blur' },
+            { min: 8, max: 20, message: this.$parent.lan.COMMON_PASSWORD_RULE_LEN, trigger: 'blur' }
           ]
         },
 
@@ -160,31 +166,31 @@
         securityFormRules:{},
         security_questions: [{
           value: '1',
-          label: '我最爱的人的名字'
+          label: this.$parent.lan.CONMON_PASSWORD_SECURITY_QD1
         }, {
           value: '2',
-          label: '我最喜欢的物品的名称'
+          label: this.$parent.lan.CONMON_PASSWORD_SECURITY_QD2
         }, {
           value: '3',
-          label: '我最爱的电影名称'
+          label: this.$parent.lan.CONMON_PASSWORD_SECURITY_QD3
         }, {
           value: '4',
-          label: '中学的校名'
+          label: this.$parent.lan.CONMON_PASSWORD_SECURITY_QD4
         }, {
           value: '5',
-          label: '我最喜欢的歌曲'
+          label: this.$parent.lan.CONMON_PASSWORD_SECURITY_QD5
         }, {
           value: '6',
-          label: '我最喜欢的食物'
+          label: this.$parent.lan.CONMON_PASSWORD_SECURITY_QD6
         }, {
           value: '7',
-          label: '我的初恋日期'
+          label: this.$parent.lan.CONMON_PASSWORD_SECURITY_QD7
         }, {
           value: '8',
-          label: '我妈妈的生日'
+          label: this.$parent.lan.CONMON_PASSWORD_SECURITY_QD8
         }, {
           value: 'custom',
-          label: '自定义问题'
+          label: this.$parent.lan.CONMON_PASSWORD_SECURITY_QS
         }],
 
 
@@ -213,14 +219,14 @@
         this.confirm_password_error = '';
         this.$refs.passeordForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.$parent.lan.COMMON_BUTTON_CONFIRM_SUBMIT, this.$parent.lan.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.passeordFormLoading = true;
               let para = Object.assign({}, this.passeordForm);
               settingUsersSetpassword(para).then((res) => {
                 cookie.setCookie('token',res.data.token, 7);
                 this.$refs['passeordForm'].resetFields();
                 this.passeordFormLoading = false;
-                this.$message({message: '密码修改成功', type: 'success'});
+                this.$message({message: this.$parent.lan.COMMON_ALTER_SUCCESS, type: 'success'});
               }, (data)=>{
                 console.log(data)
                 this.passeordFormLoading = false;
@@ -254,13 +260,13 @@
         this.security_answer3_error = '';
         this.$refs.securityForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.$parent.lan.COMMON_BUTTON_CONFIRM_SUBMIT, this.$parent.lan.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.securityFormLoading = true;
               let para = Object.assign({}, this.securityForm);
               settingUsersSetSecurity(para).then((res) => {
                 // this.$refs['securityForm'].resetFields();
                 this.securityFormLoading = false;
-                this.$message({message: '密保修改成功', type: 'success'});
+                this.$message({message: this.$parent.lan.COMMON_ALTER_SUCCESS, type: 'success'});
                 // this.getSecurity();
               }, (data)=>{
                 this.securityFormLoading = false;

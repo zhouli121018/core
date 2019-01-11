@@ -6,14 +6,14 @@
         <el-row>
           <el-col :span="12" style="text-align:left">
             <el-form-item style="margin-bottom: 0px!important;">
-              <el-button plain size="small" type="primary" icon="el-icon-download" :disabled="this.sels.length===0"  @click="zipDownload">下载</el-button>
-              <el-button plain size="small" type="primary" icon="el-icon-message" :disabled="this.sels.length===0" @click="$parent.sendMail_net('more',sels)">邮件发送</el-button>
-              <el-button plain size="small" type="primary" :disabled="this.sels.length===0" @click="moveFormShow">保存到个人网盘</el-button>
-              <el-button plain size="small" type="danger" icon="el-icon-delete" :disabled="this.sels.length===0" @click="deleteFiles">删除</el-button>
+              <el-button plain size="small" type="primary" icon="el-icon-download" :disabled="this.sels.length===0"  @click="zipDownload">{{plang.FILE_P_DOWNLOAD}}</el-button>
+              <el-button plain size="small" type="primary" icon="el-icon-message" :disabled="this.sels.length===0" @click="$parent.sendMail_net('more',sels)">{{plang.FILE_P_SEND}}</el-button>
+              <el-button plain size="small" type="primary" :disabled="this.sels.length===0" @click="moveFormShow">{{plang.FILE_A_TOP}}</el-button>
+              <el-button plain size="small" type="danger" icon="el-icon-delete" :disabled="this.sels.length===0" @click="deleteFiles">{{plang.COMMON_BUTTON_DELETE}}</el-button>
             </el-form-item>
 
             <el-form-item style="margin-bottom: 0px!important;">
-              <el-input placeholder="搜索来往附件" v-model.trim="filters.search" size="small" tyle="width:auto;"><i slot="suffix" class="el-input__icon el-icon-search" v-on:click="getTables"></i>
+              <el-input :placeholder="plang.FILE_A_SEARCH" v-model.trim="filters.search" size="small" tyle="width:auto;"><i slot="suffix" class="el-input__icon el-icon-search" v-on:click="getTables"></i>
               </el-input>
             </el-form-item>
             <a :href="blobUrl" download="" style="display:none;" ref="download"></a>
@@ -21,7 +21,7 @@
 
           <el-col :span="12" style="text-align:right;margin-top: 6px;">
             <el-pagination :current-page="page" :page-sizes="[10, 20, 50]" :page-size="page_size" :total="total"
-                           @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange" layout="total, sizes, prev, pager, next">
+                           @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange" layout="total, sizes, prev, pager, next,jumper">
             </el-pagination>
           </el-col>
         </el-row>
@@ -31,7 +31,7 @@
         <el-table :data="listTables" tooltip-effect="dark" style="width: 100%;max-width:100%;height: 100%" @selection-change="f_TableSelsChange" :header-cell-style="{background:'#f0f1f3'}" size="mini">
           <el-table-column type="selection" width="55">
           </el-table-column>
-          <el-table-column label="来往附件">
+          <el-table-column :label="plang.COMMON_NAME">
             <template slot-scope="scope">
               <el-row >
                 <el-col :span="1" style="width:42px;padding-top:8px;">
@@ -40,37 +40,39 @@
                 <el-col :span="20" style="font-size:16px;">
                   <div>{{scope.row.filename}}</div>
                   <div class="actions_a">
-                    <span @click="zipRowDownload(scope.row)">下载</span>
-                    <span @click="$parent.sendMail_net(scope.row)">发信</span>
-                    <span @click="moveFormShow2(scope.row)">保存到个人网盘</span>
-                    <span @click="renewalRowFile(scope.row)">续期</span>
-                    <span @click="$parent.preview(scope.row,'mail')" v-if="/.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|xls|xlsx|doc|docx|ppt|pptx|xml|csv|md|log)$/.test(scope.row.filename)">预览</span>
-                    <span @click="deleteRowFiles(scope.row)" style="color:#f56c6c;">删除</span>
+                    <span @click="zipRowDownload(scope.row)">{{plang.FILE_P_DOWNLOAD}}</span>
+                    <span @click="$parent.sendMail_net(scope.row)">{{plang.FILE_P_SEND2}}</span>
+                    <span @click="moveFormShow2(scope.row)">{{plang.FILE_A_TOP}}</span>
+                    <span @click="renewalRowFile(scope.row)">{{plang.FILE_A_XUQI}}</span>
+                    <span @click="$parent.preview(scope.row,'mail')" v-if="/.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|xls|xlsx|doc|docx|ppt|pptx|xml|csv|md|log)$/.test(scope.row.filename)">{{plang.COMMON_BUTTON_PREVIEW}}</span>
+                    <span @click="deleteRowFiles(scope.row)" style="color:#f56c6c;">{{plang.COMMON_BUTTON_DELETE}}</span>
                   </div>
                 </el-col>
               </el-row>
             </template>
           </el-table-column>
 
-          <el-table-column label="大小" width="100">
+          <el-table-column :label="plang.COMMON_SIZE" width="100">
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{scope.row.size| mailsize}}</span>
             </template>
           </el-table-column>
 
-          <el-table-column label="时间" width="200">
+          <el-table-column :label="plang.FILE_P_TIME" width="200">
             <template slot-scope="scope">
               <i class="el-icon-time"></i>
               <span style="margin-left: 10px">{{scope.row.created.replace('T',' ')}}</span>
             </template>
           </el-table-column>
 
-          <el-table-column label="有效时间" width="150">
+          <el-table-column :label="plang.FILE_A_TIME" width="170">
             <template slot-scope="scope">
-              <span style="margin-left: 10px">{{scope.row.left_timestamp| validateLeft}}</span>
+              <span style="margin-left: 10px" v-if="$store.getters.getLanguage=='zh'">{{scope.row.left_timestamp| validateLeft_zh}}</span>
+              <span style="margin-left: 10px" v-if="$store.getters.getLanguage=='zh-tw'">{{scope.row.left_timestamp| validateLeft_zh_tw}}</span>
+              <span style="margin-left: 10px" v-if="$store.getters.getLanguage=='en'">{{scope.row.left_timestamp| validateLeft_en}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="邮件主题" width="250">
+          <el-table-column :label="plang.COMMON_MAIL_SUBJECT" width="250">
             <template slot-scope="scope" >
               <div class="nowrap" :title="scope.row.subject">{{scope.row.subject}}</div>
             </template>
@@ -78,19 +80,19 @@
         </el-table>
       </el-row>
 
-      <el-dialog title="保存到个人网盘"  :visible.sync="moveFormVisible"  :close-on-click-modal="false" :append-to-body="true">
+      <el-dialog :title="plang.FILE_A_TOP"  :visible.sync="moveFormVisible"  :close-on-click-modal="false" :append-to-body="true">
         <el-form :model="moveForm" label-width="130px" :rules="moveFormRules" ref="moveForm">
 
-          <el-form-item label="文件保存位置" prop="folder_id" :error="folder_id_error">
-            <el-select v-model="moveForm.folder_id" placeholder="请选择文件夹保存位置" style="width: 100%">
+          <el-form-item :label="plang.FILE_A_PATH" prop="folder_id" :error="folder_id_error">
+            <el-select v-model="moveForm.folder_id" :placeholder="plang.FILE_A_PATH_PLACE" style="width: 100%">
               <el-option v-for="item in folder_fullpath" :key="item.id" :label="item.full_path" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
 
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="moveFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="moveFormSubmit()" :loading="moveFormLoading">提交</el-button>
+          <el-button @click.native="moveFormVisible = false">{{plang.COMMON_BUTTON_CANCELL}}</el-button>
+          <el-button type="primary" @click.native="moveFormSubmit()" :loading="moveFormLoading">{{plang.COMMON_BUTTON_SUBMIT}}</el-button>
         </div>
       </el-dialog>
 
@@ -100,10 +102,12 @@
 </template>
 
 <script>
+  import lan from '@/assets/js/lan';
   import {downloadAttach2, getAttach, moveAttach2Netdisk, downloadZipAttach, netdiskPathGet, mailAttachDelete, RenewalAttach } from '@/api/api'
 
   export default {
     data() {
+      let _self = this;
       return {
         sels: [],
         total: 0,
@@ -123,16 +127,37 @@
         moveFormLoading: false,
         moveFormRules: {
           to_folder_id: [
-            { required: true, message: '请选择移至文件夹位置', trigger: 'blur' },
+            { required: true, message: '', trigger: 'blur' },
           ]
         },
         moveForm:{ folder_id: -1, save_list: [] },
 
       }
     },
-
+    computed:{
+      plang(){
+        let lang = lan.zh
+        if(this.$store.getters.getLanguage=='zh'){
+          lang = lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          lang = lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          lang = lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          lang = lan.zh
+        }else{
+          lang = lan.zh
+        }
+        this.moveFormRules = {
+          to_folder_id: [
+            { required: true, message: lang.FILE_A_RULE, trigger: 'blur' },
+          ]
+        }
+        return lang
+      },
+    },
     filters: {
-      validateLeft: function (timestamp) {
+      validateLeft_zh: function (timestamp) {
         let shijiancha = timestamp*1000;
         var days    = shijiancha / 1000 / 60 / 60 / 24;
         var daysRound   = Math.floor(days);
@@ -143,7 +168,7 @@
         var seconds   = shijiancha/ 1000 - (24 * 60 * 60 * daysRound) - (60 * 60 * hoursRound) - (60 * minutesRound);
         let str = '';
         if(daysRound){
-          str += daysRound+'天 '
+          str += daysRound+ '天 '
         }
         if(hoursRound){
           str += hoursRound+'时 '
@@ -175,7 +200,95 @@
         minute = minute < 10 ? ('0' + minute) : minute;
         second = second < 10 ? ('0' + second) : second;
         return y + '-' + m + '-' + d + ' ' + '　' + h + ':' + minute + ':' + second;
-      }
+      },
+      validateLeft_zh_tw: function (timestamp) {
+        let shijiancha = timestamp*1000;
+        var days    = shijiancha / 1000 / 60 / 60 / 24;
+        var daysRound   = Math.floor(days);
+        var hours    = shijiancha/ 1000 / 60 / 60 - (24 * daysRound);
+        var hoursRound   = Math.floor(hours);
+        var minutes   = shijiancha / 1000 /60 - (24 * 60 * daysRound) - (60 * hoursRound);
+        var minutesRound  = Math.floor(minutes);
+        var seconds   = shijiancha/ 1000 - (24 * 60 * 60 * daysRound) - (60 * 60 * hoursRound) - (60 * minutesRound);
+        let str = '';
+        if(daysRound){
+          str += daysRound+ '天 '
+        }
+        if(hoursRound){
+          str += hoursRound+'时 '
+        }
+        if(minutesRound){
+          str += minutesRound+'分 '
+        }
+        if(!daysRound && !hoursRound){
+          return '即将过期'
+        }
+        if(daysRound>30 || (daysRound==30 && (hoursRound>0 ||minutesRound>0))){
+          return '永久'
+        }
+        return str;
+        return timestamp;
+        var day = timestamp/86400;
+        return day;
+
+        var date = new Date(inputTime);
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        m = m < 10 ? ('0' + m) : m;
+        var d = date.getDate();
+        d = d < 10 ? ('0' + d) : d;
+        var h = date.getHours();
+        h = h < 10 ? ('0' + h) : h;
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+        minute = minute < 10 ? ('0' + minute) : minute;
+        second = second < 10 ? ('0' + second) : second;
+        return y + '-' + m + '-' + d + ' ' + '　' + h + ':' + minute + ':' + second;
+      },
+      validateLeft_en: function (timestamp) {
+        let shijiancha = timestamp*1000;
+        var days    = shijiancha / 1000 / 60 / 60 / 24;
+        var daysRound   = Math.floor(days);
+        var hours    = shijiancha/ 1000 / 60 / 60 - (24 * daysRound);
+        var hoursRound   = Math.floor(hours);
+        var minutes   = shijiancha / 1000 /60 - (24 * 60 * daysRound) - (60 * hoursRound);
+        var minutesRound  = Math.floor(minutes);
+        var seconds   = shijiancha/ 1000 - (24 * 60 * 60 * daysRound) - (60 * 60 * hoursRound) - (60 * minutesRound);
+        let str = '';
+        if(daysRound){
+          str += daysRound+ ' day(s) '
+        }
+        if(hoursRound){
+          str += hoursRound+' hour(s) '
+        }
+        if(minutesRound){
+          str += minutesRound+' minute(s) '
+        }
+        if(!daysRound && !hoursRound){
+          return 'will expired'
+        }
+        if(daysRound>30 || (daysRound==30 && (hoursRound>0 ||minutesRound>0))){
+          return 'forever'
+        }
+        return str;
+        return timestamp;
+        var day = timestamp/86400;
+        return day;
+
+        var date = new Date(inputTime);
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        m = m < 10 ? ('0' + m) : m;
+        var d = date.getDate();
+        d = d < 10 ? ('0' + d) : d;
+        var h = date.getHours();
+        h = h < 10 ? ('0' + h) : h;
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+        minute = minute < 10 ? ('0' + minute) : minute;
+        second = second < 10 ? ('0' + second) : second;
+        return y + '-' + m + '-' + d + ' ' + '　' + h + ':' + minute + ':' + second;
+      },
     },
 
     mounted: function () {
@@ -221,14 +334,14 @@
       deleteFiles(){
         let that = this;
         var ids = this.sels.map(item => item.id);
-        this.$confirm('确认删除选中的文件？', '提示', {
+        this.$confirm(this.plang.FILE_A_MSG1, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           this.listLoading = true;
           let para = {ids: ids};
           mailAttachDelete(para).then((response)=> {
             this.listLoading = false;
-            that.$message({ message: '删除成功', type: 'success' });
+            that.$message({ message: this.plang.COMMON_DELETE_SUCCESS, type: 'success' });
             if((this.page-1)*this.page_size >= (this.total-ids.length)){
               this.page = 1;
             }
@@ -239,20 +352,20 @@
             if(err.detail){
               str = err.detail
             }
-            that.$message({ message: '删除失败！'+str,  type: 'error' });
+            that.$message({ message: this.plang.COMMON_DELETE_FAILED+ ' ' +str,  type: 'error' });
           });
         });
       },
       deleteRowFiles(row){
         let that = this;
-        this.$confirm('确认删除该文件？', '提示', {
+        this.$confirm(this.plang.FILE_A_MSG2, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           this.listLoading = true;
           let para = {ids: [row.id]};
           mailAttachDelete(para).then((response)=> {
             this.listLoading = false;
-            that.$message({ message: '删除成功', type: 'success' });
+            that.$message({ message: this.plang.COMMON_DELETE_SUCCESS, type: 'success' });
             if((this.page-1)*this.page_size >= (this.total-1)){
               this.page = 1;
             }
@@ -263,7 +376,7 @@
             if(err.detail){
               str = err.detail
             }
-            that.$message({ message: '删除失败! '+str,  type: 'error' });
+            that.$message({ message: this.plang.COMMON_DELETE_FAILED+ ' ' +str,  type: 'error' });
           });
         });
       },
@@ -273,7 +386,7 @@
         this.listLoading = true;
         RenewalAttach(row.id).then((response)=> {
           this.listLoading = false;
-          that.$message({ message: '文件续期成功', type: 'success' });
+          that.$message({ message: this.plang.FILE_A_MSG3, type: 'success' });
           this.getTables();
         }).catch(function (err) {
           this.listLoading = false;
@@ -281,7 +394,7 @@
           if(err.detail){
             str = err.detail
           }
-          that.$message({ message: '文件续期失败! '+str,  type: 'error' });
+          that.$message({ message: this.plang.FILE_A_MSG4+ ' ' +str,  type: 'error' });
           this.getTables();
         });
       },
@@ -292,7 +405,7 @@
       },
       zipRowDownload: function (row) {
         let that = this;
-        this.$confirm('确认下载来往附件？', '提示', {
+        this.$confirm(this.plang.FILE_A_MSG5, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           this.listLoading = true;
@@ -315,7 +428,7 @@
               document.body.appendChild(link);
               link.click();
             }
-            that.$message({ message: '导出成功', type: 'success' });
+            that.$message({ message: this.plang.COMMON_EXPORT_SUCCESS, type: 'success' });
             // this.getPabs();
           }).catch(function (err) {
             this.listLoading = false;
@@ -323,13 +436,13 @@
             if(err.detail){
               str = err.detail
             }
-            that.$message({ message: '导出失败! '+str,  type: 'error' });
+            that.$message({ message: this.plang.COMMON_EXPORT_FAILED+' '+str,  type: 'error' });
           });
         });
       },
       zipDownload: function(){
         let that = this;
-        this.$confirm('确认下载选中的来往附件？', '提示', {
+        this.$confirm(this.plang.FILE_A_MSG6, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           this.listLoading = true;
@@ -353,7 +466,7 @@
               document.body.appendChild(link);
               link.click();
             }
-            that.$message({ message: '导出成功', type: 'success' });
+            that.$message({ message: this.plang.COMMON_EXPORT_SUCCESS, type: 'success' });
             // this.getPabs();
           }).catch(function (err) {
             this.listLoading = false;
@@ -361,7 +474,7 @@
             if(err.detail){
               str = err.detail
             }
-            that.$message({ message: '导出失败! '+str,  type: 'error' });
+            that.$message({ message: this.plang.COMMON_EXPORT_FAILED+' '+str,  type: 'error' });
           });
         });
       },
@@ -392,7 +505,7 @@
         this.folder_id_error='';
         this.$refs.moveForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认保存到个人网盘吗？', '提示', {}).then(() => {
+            this.$confirm(this.plang.FILE_A_MSG7, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.moveFormLoading = true;
               let para = Object.assign({}, this.moveForm);
               moveAttach2Netdisk(para)
@@ -400,7 +513,7 @@
                   this.$refs['moveForm'].resetFields();
                   this.moveFormLoading = false;
                   this.moveFormVisible = false;
-                  this.$message({message: '提交成功', type: 'success'});
+                  this.$message({message: this.plang.COMMON_SUBMIT_SUCCESS, type: 'success'});
                   this.getTables();
                 }, (data) => {
                   if("non_field_errors" in data) {

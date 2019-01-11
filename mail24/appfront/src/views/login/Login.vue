@@ -166,7 +166,6 @@
   import router from '@/router'
   import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
   export default {
-
     data() {
       var validatePass = (rule, value, callback) => {
          // let reg =  /^(.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*)|(.*(?=.{6,})(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*? ]).*)$/;
@@ -233,9 +232,9 @@
           q1:'',
           q2:'',
           q3:'',
-          label_q1:'密保问题1',
-          label_q2:'密保问题2',
-          label_q3:'密保问题3',
+          label_q1:lan.SETTING_PASSWORD_SECURITY_Q1,
+          label_q2:lan.SETTING_PASSWORD_SECURITY_Q2,
+          label_q3:lan.SETTING_PASSWORD_SECURITY_Q3,
         }
 
         ,
@@ -363,21 +362,21 @@
       getLabel(c,b){
         let str = ''
         if(c==1){
-         str = '我最爱的人的名字'
+         str = this.lan.CONMON_PASSWORD_SECURITY_QD1
         }else if(c==2){
-          str = '我最喜欢的物品的名称'
+          str = this.lan.CONMON_PASSWORD_SECURITY_QD2
         }else if(c==3){
-          str = '我最爱的电影名称'
+          str = this.lan.CONMON_PASSWORD_SECURITY_QD3
         }else if(c==4){
-          str = '中学的校名'
+          str = this.lan.CONMON_PASSWORD_SECURITY_QD4
         }else if(c==5){
-          str = '我最喜欢的歌曲'
+          str = this.lan.CONMON_PASSWORD_SECURITY_QD5
         }else if(c==6){
-          str = '我最喜欢的食物'
+          str = this.lan.CONMON_PASSWORD_SECURITY_QD6
         }else if(c==7){
-          str = '我的初恋日期'
+          str = this.lan.CONMON_PASSWORD_SECURITY_QD7
         }else if(c==8){
-          str = '我妈妈的生日'
+          str = this.lan.CONMON_PASSWORD_SECURITY_QD8
         }else if(c=='custom'){
           str = b
         }
@@ -385,8 +384,8 @@
       },
       forget(){
         this.reset1_show = true;
-        this.$prompt('请输入邮箱', '重置密码', {
-          confirmButtonText: '确定',
+        this.$prompt('请输入邮箱', this.lan.reset_password, {
+          confirmButtonText: this.lan.sure,
           // dangerouslyUseHTMLString: true,
           cancelButtonText: '取消',
           inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
@@ -573,10 +572,6 @@
   }
 </script>
 <style>
-  #login_bg .no_border .el-input__inner{
-    border:none;
-    text-align: right;
-  }
   #login_bg .el-form-item__label{
     width:100%;
   }

@@ -5,7 +5,7 @@
       <div class="m-mlwelcome" data-view-cid="view-5" data-view-name="mail.welcome">
         <div class="container">
           <div class="header j-header">
-            <div class="panel-sbj"><div class="tag skin-primary-bg"></div>您 好, {{username}}</div>
+            <div class="panel-sbj"><div class="tag skin-primary-bg"></div>{{lan.MAILBOX_COM_HOME_HELLO}} {{username}}</div>
             <div class="panel-cnt">
               <div class="abstract">
                 <div class="avatar">
@@ -18,27 +18,24 @@
                 <div class="info">
                   <ul class="u-list u-list-horizontal j-link-trigger">
                     <li>
-                      <span class="headings">我的邮箱:</span>
-                      <a href="#" class="link" @click.prevent="viewMails" v-if="inboxUnread"><span class="mark">{{inboxUnread}}</span> 封未读邮件</a>
-                      <span v-if="!inboxUnread">没有未读邮件</span>
+                      <span class="headings">{{lan.LAYOUT_INDEX_MY_MAILBOX}}:</span>
+                      <a href="#" class="link" @click.prevent="viewMails" v-if="inboxUnread"><span class="mark">{{inboxUnread}}</span> {{lan.MAILBOX_COM_HOME_UNREAD}}</a>
+                      <span v-if="!inboxUnread">{{lan.MAILBOX_COM_HOME_NO_UNREAD}}</span>
                     </li>
                   </ul>
                   <ul class="u-list u-list-horizontal">
                     <li>
-                      <span>邮箱容量: </span>
+                      <span>{{lan.MAILBOX_COM_HOME_MAILBOX_CAPACITY}}: </span>
                       <div class="u-progress u-progress-success">
                         <div class="u-progress-bar" :style="{ width: userinfo.capacity_used_rate +'%'}"></div>
                       </div>
                       <span class="text-success">{{userinfo.capacity_used}} M / {{userinfo.capacity_total}} M</span>
                     </li>
-                    <li style="display:none;">
-                      <a href="javascript:void(0);" class="link" data-trigger="setting.folder.folder">管理</a>
-                    </li>
                   </ul>
                   <ul class="u-list u-list-horizontal">
-                    <li>最近登录: {{userinfo.last_login}}</li>
-                    <li>{{userinfo.login_ip}} ({{userinfo.login_isp}})</li>
-                    <li><a href="#" @click.prevent="search_details">详情</a></li>
+                    <li>{{lan.MAILBOX_COM_HOME_RECENT_LOGIN}}: {{userinfo.last_login}}</li>
+                    <li>{{userinfo.login_ip}} <span v-if="userinfo.login_isp">({{userinfo.login_isp}})</span></li>
+                    <li><a href="#" @click.prevent="search_details">{{lan.MAILBOX_COM_HOME_DETAILS}}</a></li>
                   </ul>
 
                 </div>
@@ -96,7 +93,7 @@
               </el-tabs>
               <div v-if="!loginAfterData.system_name && loginAfterData.welcome_links && loginAfterData.welcome_links.length == 0">
                 <div class="panel-sbj">
-                  <div class="tag skin-primary-bg"></div> 欢迎使用 Webmail
+                  <div class="tag skin-primary-bg"></div> {{lan.MAILBOX_COM_HOME_WELCOME_USER}}
                 </div>
                 <div style="padding:20px 10px;">
                   <el-carousel trigger="click" >
@@ -124,45 +121,43 @@
             <div class="features j-features">
               <div class="panel-sbj">
                 <div class="tag skin-primary-bg"></div>
-                邮箱功能介绍
+                {{lan.MAILBOX_COM_HOME_MAILBOX_FUNCTION}}
               </div>
               <div class="panel-cnt">
                 <ul class="u-list u-list-img">
                   <li>
                     <div class="u-img icon-feature icon-check"></div>
                     <div class="u-img-text">
-                      <a href="javascript:void(0);" class="u-img-title" @click="search_details">自助查询</a>
-                      <div class="u-img-desc">邮箱使用记录查询，支持邮件召回、异地登录提醒</div>
+                      <a href="javascript:void(0);" class="u-img-title" @click="search_details">{{lan.LAYOUT_INDEX_SELF_QUERY}}</a>
+                      <div class="u-img-desc">{{lan.MAILBOX_COM_HOME_MAILBOX_FUNCTION_QUERY}}</div>
                     </div>
                   </li>
                   <li>
                     <div class="u-img icon-feature icon-file"></div>
                     <div class="u-img-text">
-                      <a href="javascript:void(0);" class="u-img-title" @click="view_file">文件中心</a>
-                      <div class="u-img-desc">支持主流浏览器续传文件（支持Chrome，Safari）</div>
+                      <a href="javascript:void(0);" class="u-img-title" @click="view_file">{{lan.LAYOUT_INDEX_FILE_CENTER}}</a>
+                      <div class="u-img-desc">{{lan.MAILBOX_COM_HOME_MAILBOX_FUNCTION_FILE}}</div>
                     </div>
                   </li>
                   <li>
                     <div class="u-img icon-feature icon-schedule"></div>
                     <div class="u-img-text">
-                      <a href="javascript:void(0);" class="u-img-title" @click="view_calendar">会议与日程</a>
-                      <div class="u-img-desc">全新改版，高级版支持会议邀请和日程共享</div>
+                      <a href="javascript:void(0);" class="u-img-title" @click="view_calendar">{{lan.MAILBOX_COM_HOME_MAILBOX_SCHEDULE}}</a>
+                      <div class="u-img-desc">{{lan.MAILBOX_COM_HOME_MAILBOX_SCHEDULE_DESC}}</div>
                     </div>
                   </li>
                   <li>
                     <div class="u-img icon-feature icon-client"></div>
                     <div class="u-img-text">
-                      <!--<a href="http://software.icoremail.net/coremail-plugin/download.html" target="_blank" class="u-img-title">客户端插件</a>-->
-                      <a href="#" @click.prevent="view_contact" class="u-img-title">通讯录</a>
-                      <!--<div class="u-img-desc">可在Outlook，Foxmail中实现通讯录查询同步等功能</div>-->
-                      <div class="u-img-desc">可在Outlook，Foxmail中实现通讯录查询同步等功能</div>
+                      <a href="#" @click.prevent="view_contact" class="u-img-title">{{lan.MAILBOX_COM_HOME_CONTACTS}}</a>
+                      <div class="u-img-desc">{{lan.MAILBOX_COM_HOME_CONTACTS_DESC}}</div>
                     </div>
                   </li>
                   <li>
                     <div class="u-img icon-feature icon-lock"></div>
                     <div class="u-img-text">
-                      <a href="javascript:void(0);" class="u-img-title" @click="view_setting">设置中心</a>
-                      <div class="u-img-desc">个人资料、模板信、签名等设置</div>
+                      <a href="javascript:void(0);" class="u-img-title" @click="view_setting">{{lan.SETTING_INDEX_NAME}}</a>
+                      <div class="u-img-desc">{{lan.MAILBOX_COM_HOME_SETTINGS_DESC}}</div>
                     </div>
                   </li>
                 </ul>
@@ -200,6 +195,7 @@
 
 <script>
   import cookie from '@/assets/js/cookie';
+  import lan from '@/assets/js/lan';
   import {welcome} from '@/api/api'
   export default {
     name:'Home',
@@ -214,9 +210,9 @@
         origin:window.location.origin, // window.location.origin 'http://192.168.1.39:81'
         userinfo: {
           "capacity_used": 1,
-          "login_isp": "广东深圳电信",
+          "login_isp": "1",
           "capacity_used_rate": 0,
-          "last_login": "2018年8月9日星期二下午15点49分46秒",
+          "last_login": ".",
           "login_ip": "116.30.220.106",
           "unread": 10,
           "capacity_total": 1000
@@ -225,7 +221,7 @@
           "name":"77777umail",
           "title":"11111111111",
           "is_icp":true,
-          "icp_no":"粤ICP备11061369号-1",
+          "icp_no":".",
           "icp_link":"http://www.miitbeian.gov.cn/",
           "system_name":"aaaaaaaa",
           "system_remark":"aaaaaaaaaaaaa",
@@ -239,7 +235,7 @@
                 {"url":"","title":"","icon":"/media/logo_EBe3i_20181218094116_628.jpg","desc":"  "},
                 {"url":"","title":"","icon":"/media/logo_AU9PJ_20181218094116_629.jpg","desc":""}
                 ],
-              "title":"首页链接"
+              "title":"."
             },
             {"links":[
               {"url":"","desc":"  ","icon":"/media/logo_CG5XS_20181218093036_594.jpg","title":""},
@@ -247,7 +243,7 @@
                 {"url":"","desc":"  ","icon":"/media/logo_9AUO8_20181218093036_597.jpg","title":""},
                 {"url":"","desc":"","icon":"/media/logo_Syjgv_20181218093036_597.jpg","title":""}
                 ],
-              "title":"首页链接"
+              "title":"."
             },
             {"links":[
               {"url":"","desc":"  ","icon":"/media/logo_dIcl4_20181218094534_579.jpg","title":""},
@@ -255,7 +251,7 @@
                 {"url":"","desc":"  ","icon":"/media/logo_cVARr_20181218094534_580.jpg","title":""},
                 {"url":"","desc":"","icon":"/media/logo_XYvCu_20181218094534_581.jpg","title":""}
                 ],
-              "title":"首页链接"
+              "title":"."
             },
             {"links":[
               {"url":"","desc":"  ","icon":"/media/logo_AVeob_20181218094547_727.jpg","title":""},
@@ -263,7 +259,7 @@
                 {"url":"","desc":"  ","icon":"/media/logo_Xc8Wr_20181218094547_729.jpg","title":""},
                 {"url":"","desc":"","icon":"/media/logo_IHriA_20181218094547_729.jpg","title":""}
                 ],
-              "title":"首页链接"
+              "title":"."
             },
             {"links":[
               {"url":"","title":"","icon":"/media/logo_7LHtE_20181218094541_077.jpg","desc":"  "},
@@ -271,7 +267,7 @@
                 {"url":"","title":"","icon":"/media/logo_yz7xE_20181218094541_077.jpg","desc":"  "},
                 {"url":"","title":"","icon":"/media/logo_LEokC_20181218094541_077.jpg","desc":""}
                 ],
-              "title":"首页链接"
+              "title":"."
             }
           ],
           "welcome_ads":[
@@ -281,12 +277,12 @@
         weatherinfo:{
           has_weather:true,
           data:{
-            cityname:"深圳",
+            cityname:".",
             imgLocation1:'0 0',
             temLow:'0',
             temHigh:'0',
-            stateDetailed:'晴',
-            windState:'微风'
+            stateDetailed:'.',
+            windState:'.'
           }
         }
       }
@@ -352,6 +348,24 @@
       },
       loginAfterData(){
         return this.$store.getters.getLoginAfter
+      },
+      lan:function(){
+        let lang = lan.zh
+        if(this.$store.getters.getLanguage=='zh'){
+          lang = lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          lang = lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          lang = lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          lang = lan.zh
+        }else{
+          lang = lan.zh
+        }
+        this.rules = {
+            name:[{required:true,message:lang.MAILBOX_FOLDER_NAME_RULES,trigger:'blur'}]
+          }
+        return lang
       }
     },
     watch: {

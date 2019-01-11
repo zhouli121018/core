@@ -4,9 +4,6 @@
       <div class="mltabview-panel">
         <section class="m-read" v-show="!notFond" v-loading="loading">
           <div class="toolbar" style="background:#fff"
-               element-loading-text="请稍等..."
-               element-loading-spinner="el-icon-loading"
-               element-loading-background="rgba(0, 0, 0, 0.6)"
                >
 
             <!--<div id="pagination" class="f-fr">-->
@@ -18,22 +15,22 @@
                 <!--</div>-->
             <!--</div>-->
 
-            <el-button size="small" @click="recallMessage" v-if="msg.attrs" v-show="msg.attrs.is_canrecall" :disabled="msg.attrs.is_recall">{{msg.attrs.is_recall?'已召回':'召回邮件'}}</el-button>
+            <el-button size="small" @click="recallMessage" v-if="msg.attrs" v-show="msg.attrs.is_canrecall" :disabled="msg.attrs.is_recall">{{msg.attrs.is_recall? lan.MAILBOX_COM_READ_RECALLED: lan.COMMON_BUTTON_ZHAOHUI}}</el-button>
             <el-button-group >
-              <el-button size="small" @click="actionView(3)">回复</el-button>
-              <el-button size="small"  @click="actionView(4)">回复全部</el-button>
-              <el-button size="small"  @click="actionView(5)">转发</el-button>
+              <el-button size="small" @click="actionView(3)">{{lan.MAILBOX_COM_INNERBOX_RECOVER}}</el-button>
+              <el-button size="small"  @click="actionView(4)">{{lan.MAILBOX_COM_INNERBOX_RECOVER_ALL}}</el-button>
+              <el-button size="small"  @click="actionView(5)">{{lan.MAILBOX_COM_INNERBOX_FORWARD}}</el-button>
             </el-button-group>
 
 
 
-            <el-button size="small"  @click="print">打印</el-button>
+            <el-button size="small"  @click="print">{{lan.MAILBOX_COM_READ_PRINT}}</el-button>
 
 
 
             <el-dropdown @command="moveHandleCommand" trigger="click">
                 <el-button  size="small" plain>
-                <span>移动到</span>
+                <span>{{lan.MAILBOX_COM_INNERBOX_MOVE_TO}}</span>
                 <i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
@@ -46,7 +43,7 @@
 
             <el-dropdown @command="signHandleCommand" trigger="click">
               <el-button  size="small" plain >
-                  <span>标记为</span>
+                  <span>{{lan.MAILBOX_COM_INNERBOX_MARKED_AS}}</span>
                   <i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
               <el-dropdown-menu slot="dropdown">
@@ -75,7 +72,7 @@
 
             <el-dropdown @command="moreHandleCommand" trigger="click">
               <el-button  size="small" plain>
-              <span>更多</span>
+              <span>{{lan.MAILBOX_COM_INNERBOX_MORE}}</span>
               <i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
               <el-dropdown-menu slot="dropdown">
@@ -85,8 +82,8 @@
                   {{ item.text}}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-            <el-button size="small"  @click="closeTab(tagName)">关闭</el-button>
-            <el-button size="small" type="danger" plain @click="deleteMail">删除</el-button>
+            <el-button size="small"  @click="closeTab(tagName)">{{lan.COMMON_CLOSE}}</el-button>
+            <el-button size="small" type="danger" plain @click="deleteMail">{{lan.COMMON_BUTTON_DELETE}}</el-button>
 
 
           </div>
@@ -103,7 +100,7 @@
                                     <!--<i class="el-icon-arrow-down"></i>-->
                                 <!--<ul class="u-menu u-menu-hidden"><li value="mark:flagged"><i class="iconfont left icon-iconflatcolor flagged label0-0"></i><a href="javascript:void(0);" tabindex="-1">红旗</a></li><li class="divider"></li><li value="mark:noflagged"><a href="javascript:void(0);" tabindex="-1">取消标记</a></li></ul></span>-->
                       <el-dropdown trigger="click" @command="signHandleCommand">
-                        <span class="el-dropdown-link" :title="flagged?'设置标记':'取消标记'">
+                        <span class="el-dropdown-link" :title="flagged?this.lan.MAILBOX_COM_READ_SET_FLAG:this.lan.MAILBOX_COM_READ_DELETE_FLAG">
                           <i class="iconfont icon-iconflat" v-if="!flagged"></i><i class="iconfont icon-iconflatcolor" v-if="flagged" style="color:#c00;" :class="flag_color"></i><i class="el-icon-arrow-down el-icon--right"></i>
                         </span>
                         <el-dropdown-menu slot="dropdown">
@@ -114,11 +111,11 @@
                         </el-dropdown-menu>
                       </el-dropdown>
 
-                      <a class="iconfont icon-iconemailcontacts" href="javascript:void(0)" title="查看邮件往来" @click="mail_contact"></a>
+                      <a class="iconfont icon-iconemailcontacts" href="javascript:void(0)" :title="lan.MAILBOX_COM_READ_CHECK_EXCHANGES" @click="mail_contact"></a>
 
-                      <a class="iconfont icon-iconnewtab" href="./detach.jsp?sid=BAcpKTaaYBZiTuHsrlaaUOhLUZiBhfEu#mail.read?mid=1:1tbiAQAJEFXEqdgAXgADsl&amp;fid=1&amp;mboxa=&amp;start=2" target="_blank" title="在新窗口打开" v-if="false"></a>
+                      <a class="iconfont icon-iconnewtab" href="./detach.jsp?sid=BAcpKTaaYBZiTuHsrlaaUOhLUZiBhfEu#mail.read?mid=1:1tbiAQAJEFXEqdgAXgADsl&amp;fid=1&amp;mboxa=&amp;start=2" target="_blank" :title="lan.MAILBOX_COM_READ_NEW_WINDOW" v-if="false"></a>
 
-                      <a href="javascript:void(0)" title="发起会议" @click.prevent="mail_event">发起会议</a>
+                      <a href="javascript:void(0)" :title="lan.MAILBOX_COM_READ_CONFERENCE" @click.prevent="mail_event">{{lan.MAILBOX_COM_READ_CONFERENCE}}</a>
                     </div>
                     <div class="f-tar">
                         <span>{{time?time.replace('T',' '):''}}</span>
@@ -127,18 +124,18 @@
                 <div class="mail-top-info" style="min-height: 42px;">
                     <h3 class="mail-subject j-mail-subject " :class="[{redcolor:flagged},flag_color]" style="font-size:18px;">
                         <!--<span class="icon"><i class="j-sourceIcon iconfont state-icon icon-SYSTEM" title="系统认证可信任来源"></i></span>-->
-                         {{subject?subject:'无主题'}}
+                         {{subject?subject:this.lan.MAILBOX_NO_SUBJECT}}
                     </h3>
                     <div class="short-info f-ellipsis j-short-info" v-show="!showDetails" v-if="mfrom || to.length>0">
                         <a class="j-u-email" href="javascript:void(0);" >{{mfrom}}</a>
-                        <span>发送给</span>
+                        <span>{{lan.MAILBOX_COM_READ_SEND_TO}}</span>
                         <a class="j-u-email" href="javascript:void(0)" v-for="(t,k) in to" :key="k">{{t}}; </a>
 
                     </div>
                     <div class="full-info j-full-info" v-show="showDetails">
                         <table class="u-table u-table-row">
                             <tbody><tr v-if="mfrom">
-                                <td class="info-item">发件人 :</td>
+                                <td class="info-item">{{lan.COMMON_SENDER}} :</td>
                                 <td>
                                      <span class="u-email j-u-email">
                                         <span class="name">{{mfrom}}</span>
@@ -148,7 +145,7 @@
                                 </td>
                             </tr>
                             <tr v-if="to.length>0">
-                                <td class="info-item">收件人 :</td>
+                                <td class="info-item">{{lan.COMMON_RECAIVER}} :</td>
                                 <td>
 
                                     <div class="j-contacts ">
@@ -160,7 +157,7 @@
                                 </td>
                             </tr>
                             <tr v-if="msg.cc">
-                                <td class="info-item">抄 送:</td>
+                                <td class="info-item">{{lan.MAILBOX_COM_READ_CC}} :</td>
                                 <td>
 
                                     <div class="j-contacts ">
@@ -172,12 +169,12 @@
                                 </td>
                             </tr>
                             <tr v-if="msg.attachments && msg.attachments.length>0">
-                                <td class="info-item">附 件:</td>
+                                <td class="info-item">{{lan.MAILBOX_COM_READ_ATTACH}} :</td>
                                 <td>
-                                  <b type="text">{{msg.attachments.length}}</b> 个(
+                                  <b type="text">{{msg.attachments.length}}</b> {{lan.MAILBOX_COM_READ_COUNT}}(
                                   <span>{{msg.attachments[0].name}}</span>
-                                  <span v-if="msg.attachments.length>1">...等</span>)
-                                  <el-button type="text" @click="seeAttach" style="padding:0;margin-left:10px;"> 查看全部附件</el-button>
+                                  <span v-if="msg.attachments.length>1">{{lan.MAILBOX_COM_READ_AND_SO}}</span>)
+                                  <el-button type="text" @click="seeAttach" style="padding:0;margin-left:10px;"> {{lan.MAILBOX_COM_READ_SEE_ALL_ATTACH}}</el-button>
                                 </td>
                             </tr>
 
@@ -196,45 +193,45 @@
             <div class="mail-cipher-encrypted j-mailCipherEncrypted" v-if="is_password &&  password">
               <div class="decryption-success">
                   <span class="iconfont icon-iconunlock"></span>
-                  邮件已解密，以下是解密后的邮件内容：
+                  {{lan.MAILBOX_COM_READ_ENCRYPTED_DESC}}
               </div>
             </div>
             <div class="u-alert u-alert-warning" v-if="msg.attrs && msg.attrs.is_notify" style="margin-bottom:0;padding: 2px 12px;">
               <div class="decryption-success">
-                  发件人希望得到您的回执，是否发送？  
-                <el-button type="text"  style="padding:0" @click="sendNotifyMessage">发送</el-button>
-                <el-button type="text"  style="padding:0" @click="msg.attrs.is_notify=false">取消</el-button>
+                  {{lan.MAILBOX_COM_READ_IS_NOTIFY_DESC}}
+                <el-button type="text"  style="padding:0" @click="sendNotifyMessage">{{lan.MAILBOX_COM_READ_SENT}}</el-button>
+                <el-button type="text"  style="padding:0" @click="msg.attrs.is_notify=false">{{lan.COMMON_BUTTON_CANCELL}}</el-button>
               </div>
             </div>
             <div class="mail-cipher-encrypted j-mailCipherEncrypted" v-if="msg.attrs && msg.attrs.is_burn">
               <div class="decryption-success" style="color:#e6a23c">
                   <span class="el-icon-warning"></span>
-                  这是一封阅后即焚的邮件！
+                  {{lan.MAILBOX_COM_READ_IS_BURN_DESC}}
               </div>
             </div>
             <div class="mail-cipher-encrypted j-mailCipherEncrypted" v-if="msg.attrs && msg.attrs.is_calendar">
               <div class="decryption-success" style="color:#e6a23c">
                   <span class="el-icon-warning"></span>
-                  这是一封日程共享提醒邮件!
+                  {{lan.MAILBOX_COM_READ_IS_CALENDAR_DESC}}
               </div>
             </div>
             <div class="mail-cipher-encrypted j-mailCipherEncrypted" v-if="msg.attrs && msg.attrs.is_calendar_event && !msg.attrs.is_calendar_event_deleted ">
               <div class="decryption-success" style="color:#e6a23c">
                   <span class="el-icon-warning"></span>
-                  这是一封日程事件提醒邮件!
+                  {{lan.MAILBOX_COM_READ_IS_CALENDAR_EVENT_DESC}}
               </div>
               <div v-if="msg.attrs.calendar_event_id">
                 <div class="decryption-success" style="font-size:14px;margin-top:10px;" v-if="msg.attrs.calendar_eventer_status!='start'">
                   <span class="el-icon-star-on"></span>
-                  您已 <b>{{msg.attrs.calendar_eventer_status=='pass'?'接受':msg.attrs.calendar_eventer_status=='reject'?'拒绝':'待办'}}</b> 该邀请！
-                  <el-button type="text" style="margin-left:20px;" v-if="msg.attrs.calendar_eventer_status && msg.attrs.calendar_eventer_status!='start'" @click="show_change_btn = !show_change_btn">{{show_change_btn?'隐藏':'修改'}}</el-button>
+                   <b>{{msg.attrs.calendar_eventer_status=='pass'? lan.MAILBOX_COM_READ_PASS:msg.attrs.calendar_eventer_status=='reject'? this.lan.MAILBOX_COM_READ_REJECT: lan.MAILBOX_COM_READ_WAIT}}</b>
+                  <el-button type="text" style="margin-left:20px;" v-if="msg.attrs.calendar_eventer_status && msg.attrs.calendar_eventer_status!='start'" @click="show_change_btn = !show_change_btn">{{show_change_btn? lan.MAILBOX_COM_READ_HIDE: lan.COMMON_BUTTON_ALTER}}</el-button>
                 </div>
                 <div style="margin-top:10px;padding-left:18px;" v-show="show_change_btn">
-                  <span style="font-size:14px;color:#777;"><i class="el-icon-info"></i> <b>是否接受该邀请？</b></span>
+                  <span style="font-size:14px;color:#777;"><i class="el-icon-info"></i> <b>{{lan.MAILBOX_COM_READ_IS_RECIPT}}</b></span>
                   <span>
-                    <el-button type="success" @click="changeStatus('pass')" v-if="msg.attrs.calendar_eventer_status!='pass'" size="mini"> 接 受 </el-button>
-                    <el-button type="info" @click="changeStatus('wait')" v-if="msg.attrs.calendar_eventer_status!='wait'" size="mini"> 待 办 </el-button>
-                    <el-button type="danger" @click="changeStatus('reject')" v-if="msg.attrs.calendar_eventer_status!='reject'" size="mini"> 拒 绝 </el-button>
+                    <el-button type="success" @click="changeStatus('pass')" v-if="msg.attrs.calendar_eventer_status!='pass'" size="mini"> {{lan.MAILBOX_COM_READ_IS_PASS}} </el-button>
+                    <el-button type="info" @click="changeStatus('wait')" v-if="msg.attrs.calendar_eventer_status!='wait'" size="mini"> {{lan.MAILBOX_COM_READ_IS_WAIT}} </el-button>
+                    <el-button type="danger" @click="changeStatus('reject')" v-if="msg.attrs.calendar_eventer_status!='reject'" size="mini"> {{lan.MAILBOX_COM_READ_IS_REJECT}} </el-button>
                   </span>
                 </div>
               </div>
@@ -243,23 +240,23 @@
             <div class="mail-cipher-encrypted j-mailCipherEncrypted" v-if="msg.attrs && msg.attrs.is_calendar_event_deleted">
               <div class="decryption-success" style="color:#e6a23c">
                   <span class="el-icon-warning"></span>
-                  此事件已从您的日程中删除！
+                  {{lan.MAILBOX_COM_READ_IS_DELETE}}
               </div>
             </div>
             <div class="mail-sent-state j-sent-state" v-if="is_sender">
               <div class="" >
                   <span :class="show_result?'el-icon-caret-bottom':'el-icon-caret-right'" style="font-size: 16px;cursor:pointer;" @click="show_result=!show_result"></span>
                   {{send_desc }}
-                <el-button type="text" style="padding:0;" @click="seeStatus" v-if="!show_result">[查看详情]</el-button>
-                <el-button type="text" style="padding:0;" @click="show_result=false" v-if="show_result">[隐藏详情]</el-button>
-                <el-button type="text" style="padding:0;" v-if="show_result" @click="refreshStatus">[刷新]</el-button>
-                共发给 {{mail_results.length}} 个收件人，其中
-                <span v-if="undeliverCount">{{undeliverCount}} 个信件 未投递，</span>
-                <span v-if="reviewCount">{{reviewCount}} 个信件 审核中，</span>
-                <span v-if="sequesterCount">{{sequesterCount}} 个信件 隔离中，</span>
-                <span v-if="deliverCount">{{deliverCount}} 个信件 已投递，</span>
-                <span v-if="readedCount">{{readedCount}} 个信件 已读，</span>
-                <span v-if="deliver_failCount" style="color:red;">{{deliver_failCount}} 个信件 投递失败</span>
+                <el-button type="text" style="padding:0;" @click="seeStatus" v-if="!show_result">[{{lan.MAILBOX_COM_READ_VIEW_DETAILS}}]</el-button>
+                <el-button type="text" style="padding:0;" @click="show_result=false" v-if="show_result">[{{lan.MAILBOX_COM_READ_HIDE_DETAILS}}]</el-button>
+                <el-button type="text" style="padding:0;" v-if="show_result" @click="refreshStatus">[{{lan.MAILBOX_COM_READ_REFRESH}}]</el-button>
+                {{lan.MAILBOX_COM_READ_IS_SENDER_1}} {{mail_results.length}} {{lan.MAILBOX_COM_READ_IS_SENDER_2}}
+                <span v-if="undeliverCount">{{undeliverCount}} {{lan.MAILBOX_COM_READ_IS_SENDER_3}}</span>
+                <span v-if="reviewCount">{{reviewCount}} {{lan.MAILBOX_COM_READ_IS_SENDER_4}}</span>
+                <span v-if="sequesterCount">{{sequesterCount}} {{lan.MAILBOX_COM_READ_IS_SENDER_5}}</span>
+                <span v-if="deliverCount">{{deliverCount}} {{lan.MAILBOX_COM_READ_IS_SENDER_6}}</span>
+                <span v-if="readedCount">{{readedCount}} {{lan.MAILBOX_COM_READ_IS_SENDER_7}}</span>
+                <span v-if="deliver_failCount" style="color:red;">{{deliver_failCount}} {{lan.MAILBOX_COM_READ_IS_SENDER_8}}</span>
               </div>
               <div class="" v-show="show_result">
                 <el-table
@@ -271,7 +268,7 @@
                   style="width: 100%;margin:10px 0;">
                   <el-table-column
                     prop="email"
-                    label="收件人"
+                    :label="lan.COMMON_RECAIVER"
                     >
                     <template slot-scope="scope">
                       {{scope.row.recipient}}
@@ -280,27 +277,27 @@
 
                   <el-table-column
                     prop="status"
-                    label="状态" >
+                    :label="lan.COMMON_STATUS" >
                     <template slot-scope="scope">
                       {{scope.row.status_info}}
                     </template>
                   </el-table-column>
                   <el-table-column
                     prop="recall_status"
-                    label="召回状态" >
+                    :label="lan.CENTER_SEND_STATUS" >
                     <template slot-scope="scope">
                       {{scope.row.recall_status_info}}
                     </template>
                   </el-table-column>
                   <el-table-column
                     prop="inform"
-                    label="详情" >
+                    :label="lan.MAILBOX_COM_HOME_DETAILS" >
                     <template slot-scope="scope">
                       <span :class="{red:scope.row.is_red}">{{scope.row.inform}}</span>
                     </template>
                   </el-table-column>
                   <el-table-column
-                    label="操作" >
+                    :label="lan.COMMON_OPRATE" >
                     <template slot-scope="scope">
                       <el-button type="text" size="small" v-if="!scope.row.is_zhaohui" @click="recall_single(scope.row)">召回邮件</el-button>
                     </template>
@@ -318,14 +315,14 @@
                         <input type="text" placeholder="输入密码" class="u-input" v-model="de_password" maxlength="6">
                     </div>
                     <div class="decryption-msg">
-                        <span class="j-decryption-error decryption-error" v-show="decryption_error">密码错误，请重新输入</span>
+                        <span class="j-decryption-error decryption-error" v-show="decryption_error">{{lan.MAILBOX_COM_READ_PASSWORD_ERROR}}</span>
                     </div>
 
                     <div class="action-item">
-                        <span class="u-btn u-btn-primary j-decrypt-submit" @click="mailDecodeFn">确 定</span>
+                        <span class="u-btn u-btn-primary j-decrypt-submit" @click="mailDecodeFn">{{lan.COMMON_BUTTON_CONFIRM}}</span>
                     </div>
-                    <div class="label-item">这是一封由 <span class="highlight ">{{mfrom}}</span> 发出的加密邮件。</div>
-                    <div class="label-item">输入发件人提供给您的密码，即可查阅完整邮件。</div>
+                    <div class="label-item">{{lan.MAILBOX_COM_READ_THIS}} <span class="highlight ">{{mfrom}}</span> {{lan.MAILBOX_COM_READ_SECRET_MAIL}}</div>
+                    <div class="label-item">{{lan.MAILBOX_COM_READ_VIEW_DESC}}</div>
                 </div>
             </div>
             <div class="mail-content" ref="companyStyle" >
@@ -334,7 +331,7 @@
 
               <iframe   :id="'show-iframe'+readId" frameborder="0" scrolling="100%" height="auto" width="100%"></iframe>
               <el-collapse v-model="activeNames" v-if="attachments.length>0" class="attach_box">
-                <el-collapse-item :title="'附件 ('+attachments.length+' 个)'" name="1">
+                <el-collapse-item :title=" lan.MAILBOX_COM_READ_ATTACH+ ' ('+attachments.length+ lan.MAILBOX_COM_READ_COUNT +' )'" name="1">
 
                   <div v-for="(a,k) in attachments" :key="k" >
                     <el-popover
@@ -344,17 +341,17 @@
                       <div>
                         <div style="margin-bottom:10px;width:100%;" class="f-ellipsis">{{a.name}}</div>
                         <el-row>
-                          <el-col class="text-center cursorP" :span="8" title="下载"  @click.native="downloadAttach(a.sid,a.name)">
+                          <el-col class="text-center cursorP" :span="8" :title="lan.FILE_P_DOWNLOAD"  @click.native="downloadAttach(a.sid,a.name)">
                             <i class="el-icon-download"></i>
-                            <p>下载</p>
+                            <p>{{lan.FILE_P_DOWNLOAD}}</p>
                           </el-col>
-                          <el-col v-if="/.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|xls|xlsx|doc|docx|ppt|pptx|xml|csv|md|log)$/.test(a.name)" class="text-center cursorP" :span="8" title="预览" @click.native="preview(a)">
+                          <el-col v-if="/.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|xls|xlsx|doc|docx|ppt|pptx|xml|csv|md|log)$/.test(a.name)" class="text-center cursorP" :span="8" :title="lan.COMMON_BUTTON_PREVIEW" @click.native="preview(a)">
                             <i class="el-icon-view"></i>
-                            <p>预览</p>
+                            <p>{{lan.COMMON_BUTTON_PREVIEW}}</p>
                           </el-col>
-                          <el-col class="text-center cursorP" :span="8" title="保存到个人网盘" @click.native="save_attach(a)">
+                          <el-col class="text-center cursorP" :span="8" :title="lan.FILE_A_TOP" @click.native="save_attach(a)">
                             <i class="el-icon-star-off" ></i>
-                            <p>保存</p>
+                            <p>{{lan.COMMON_BUTTON_SAVE}}</p>
                           </el-col>
                         </el-row>
                       </div>
@@ -377,7 +374,7 @@
             </div>
           </div>
           <footer class="quick-reply j-quick-reply " style="padding-top:0" v-if="mfrom || to.length>0">
-            <div class="quick-reply-default quick-reply-item j-reply-default" v-if="before_replying" @click="ready_reply">快捷回复给所有人
+            <div class="quick-reply-default quick-reply-item j-reply-default" v-if="before_replying" @click="ready_reply">{{lan.MAILBOX_COM_READ_FAST_AN}}
             </div>
 
             <form class="quick-reply-form quick-reply-item j-reply-form tran" v-show="replying">
@@ -390,20 +387,20 @@
               <!--</editor>-->
               <textarea  v-if="replying":id="'editor_id_fast_'+readId+readFolderId" :ref="'editor_id_fast_'+readId+readFolderId" style="width:100%;height:200px;" v-model="content"></textarea>
               <div style="height:4px"></div>
-              <span class="u-btn u-btn-primary" @click="reply" >发送</span>
-              <span class="u-btn u-btn-default" @click="cancel_reply" >取消</span>
-              <span class="f-fr"><a href="javascript:void(0)" @click="actionView(4)">切换到完整写信模式</a></span>
+              <span class="u-btn u-btn-primary" @click="reply" >{{lan.MAILBOX_COM_READ_SENT}}</span>
+              <span class="u-btn u-btn-default" @click="cancel_reply" >{{lan.COMMON_BUTTON_CANCELL}}</span>
+              <span class="f-fr"><a href="javascript:void(0)" @click="actionView(4)">{{lan.MAILBOX_COM_READ_FULL_AN}}</a></span>
             </form>
 
 
             <div class="quick-reply-item  j-reply-sending" v-if="center_replying">
-                <span class="reply-state reply-sending">邮件发送中...</span>
+                <span class="reply-state reply-sending">{{lan.MAILBOX_COM_READ_SENDING}}</span>
             </div>
             <div class="quick-reply-item  j-reply-result" v-if="after_replying">
-                <span class="reply-state reply-success j-reply-success">信件发送成功</span>
-                <span class="reply-state reply-fail j-reply-fail">信件发送失败</span>
-                <a href="javascript:void(0)" data-type="open-quick-reply">再回一封邮件</a>
-                <a class="f-dn" href="javascript:void(0)" data-type="compose">切换到完整写信模式</a>
+                <span class="reply-state reply-success j-reply-success">{{lan.MAILBOX_COM_READ_SEND_SUC}}</span>
+                <span class="reply-state reply-fail j-reply-fail">{{lan.MAILBOX_COM_READ_SEND_FAIL}}</span>
+                <a href="javascript:void(0)" data-type="open-quick-reply">{{lan.MAILBOX_COM_READ_SEND_AGAIN}}</a>
+                <a class="f-dn" href="javascript:void(0)" data-type="compose">{{lan.MAILBOX_COM_READ_FULL_AN}}</a>
             </div>
 
             <div class="j-footer-btn j-toolbar-footer u-btns f-fr f-dn"></div>
@@ -412,16 +409,9 @@
 
         </section>
         <div v-show="notFond">
-          <h3 style="margin:30px 0 0 20px;font-size:24px;font-weight:normal;">  邮件没找到！是否已移动到其他文件夹？</h3>
+          <h3 style="margin:30px 0 0 20px;font-size:24px;font-weight:normal;">  {{lan.MAILBOX_COM_READ_NOT_FOND}}</h3>
         </div>
       </div>
-      <el-dialog title="预览" :visible.sync="show_pic" :append-to-body="true" width="80%">
-        <div style="text-align:center;overflow: auto;">
-          <img :src="prev_src" alt="">
-        </div>
-
-      </el-dialog>
-
 
     </div>
 
@@ -429,7 +419,7 @@
 </template>
 
 <script>
-
+  import lan from '@/assets/js/lan';
   import {readMail,downloadAttach,mailDecode,moveMails,messageFlag,rejectMessage,zipMessage,pruneMessage,emlMessage,pabMessage,deleteMail,getMessageStatus,messageRecall,notifyRecall,notifyMessage,replayMessage,saveNetAttach,setStatus,getOpenoffice,logRecall} from '@/api/api';
   export default  {
     name:'Read',
@@ -446,7 +436,6 @@
         passwordType:'text',
         show_change_btn:true,
         prev_src:'',
-        show_pic:false,
         toolbarItems:
         ['source', '|','formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
         'italic', 'underline',  'lineheight', '|',  'justifyleft', 'justifycenter', 'justifyright',
@@ -469,16 +458,16 @@
         readedCount:0,
         deliver_failCount:0,
         flagsData:[
-          {flags:'\\flagged',action:'add',text:'红旗',classN:'redcolor'},
-          {flags:'umail-green',action:'add',text:'绿旗',classN:'flag-green'},
-          {flags:'umail-orange',action:'add',text:'橙旗',classN:'flag-orange'},
-          {flags:'umail-blue',action:'add',text:'蓝旗',classN:'flag-blue'},
-          {flags:'umail-pink',action:'add',text:'粉旗',classN:'flag-pink'},
-          {flags:'umail-cyan',action:'add',text:'青旗',classN:'flag-cyan'},
-          {flags:'umail-yellow',action:'add',text:'黄旗',classN:'flag-yellow'},
-          {flags:'umail-purple',action:'add',text:'紫旗',classN:'flag-purple'},
-          {flags:'umail-gray',action:'add',text:'灰旗',classN:'flag-gray'},
-          {flags:'\\flagged',text:'取消旗帜',action:'remove'},
+          {flags:'\\flagged',action:'add',text:'',classN:'redcolor'},
+          {flags:'umail-green',action:'add',text:'',classN:'flag-green'},
+          {flags:'umail-orange',action:'add',text:'',classN:'flag-orange'},
+          {flags:'umail-blue',action:'add',text:'',classN:'flag-blue'},
+          {flags:'umail-pink',action:'add',text:'',classN:'flag-pink'},
+          {flags:'umail-cyan',action:'add',text:'',classN:'flag-cyan'},
+          {flags:'umail-yellow',action:'add',text:'',classN:'flag-yellow'},
+          {flags:'umail-purple',action:'add',text:'',classN:'flag-purple'},
+          {flags:'umail-gray',action:'add',text:'',classN:'flag-gray'},
+          {flags:'\\flagged',text:'',action:'remove'},
         ],
         flagged:false,
         flag_color:'',
@@ -494,41 +483,38 @@
         msg:'',
         showDetails:true,
         iframeState:false,
-        subject:'主题',
+        subject:'',
         time:'',
         mfrom:'',
         to:'',
         moveCheckIndex:'',
         moreCheckIndex:'',
         moreItems:[
-            // {id:0,text:'回复',divided:false,checkone:true},
-            // {id:1,text:'回复全部',divided:false,checkone:true},
-            // {id:2,text:'转发',divided:true,checkone:true,classN:'iconfont icon-Forward'},
-            {id:3,text:'附件方式转发',divided:false,checkone:true},
-            {id:8,text:'全部添加到个人通讯录',divided:false,classN:'iconfont icon-iconcontacts1'},
-            {id:9,text:'邮件下载',divided:false,classN:'el-icon-download'},
-            {id:4,text:'拒收邮件',divided:true,checkone:false},
-            {id:5,text:'再次发送',divided:true,checkone:true},
+            {id:3,text:'',divided:false,checkone:true},
+            {id:8,text:'',divided:false,classN:'iconfont icon-iconcontacts1'},
+            {id:9,text:'',divided:false,classN:'el-icon-download'},
+            {id:4,text:'',divided:true,checkone:false},
+            {id:5,text:'',divided:true,checkone:true},
             // {id:6,text:'打包下载',divided:false,checkone:false},
-            {id:7,text:'彻底删除',divided:false,checkone:false},
-            {id:10,text:'查看信头',divided:true,checkone:true},
-            {id:11,text:'查看原文',divided:false,checkone:true},
+            {id:7,text:'',divided:false,checkone:false},
+            {id:10,text:'',divided:true,checkone:true},
+            {id:11,text:'',divided:false,checkone:true},
 
           ],
         signItems:[
             // {id:1,flags:'\\Seen',text:'未读邮件',divided:false,action:'remove'},
-            {id:2,flags:'\\flagged',text:'红旗',divided:false,action:'add',classN:'iconfont icon-iconflatcolor redcolor'},
-            {id:3,text:'其他旗帜',divided:false,children:[
-                {flags:'umail-green',action:'add',text:'绿旗',classN:{'flag-green':true}},
-                {flags:'umail-orange',action:'add',text:'橙旗',classN:{'flag-orange':true}},
-                {flags:'umail-blue',action:'add',text:'蓝旗',classN:{'flag-blue':true}},
-                {flags:'umail-pink',action:'add',text:'粉旗',classN:{'flag-pink':true}},
-                {flags:'umail-cyan',action:'add',text:'青旗',classN:{'flag-cyan':true}},
-                {flags:'umail-yellow',action:'add',text:'黄旗',classN:{'flag-yellow':true}},
-                {flags:'umail-purple',action:'add',text:'紫旗',classN:{'flag-purple':true}},
-                {flags:'umail-gray',action:'add',text:'灰旗',classN:{'flag-gray':true}}
+            {id:2,flags:'\\flagged',text:'',divided:false,action:'add',classN:'iconfont icon-iconflatcolor redcolor'},
+            {id:3,text:'',divided:false,children:[
+                {flags:'umail-green',action:'add',text:'',classN:{'flag-green':true}},
+                {flags:'umail-orange',action:'add',text:'',classN:{'flag-orange':true}},
+                {flags:'umail-blue',action:'add',text:'',classN:{'flag-blue':true}},
+                {flags:'umail-pink',action:'add',text:'',classN:{'flag-pink':true}},
+                {flags:'umail-cyan',action:'add',text:'',classN:{'flag-cyan':true}},
+                {flags:'umail-yellow',action:'add',text:'',classN:{'flag-yellow':true}},
+                {flags:'umail-purple',action:'add',text:'',classN:{'flag-purple':true}},
+                {flags:'umail-gray',action:'add',text:'',classN:{'flag-gray':true}}
               ]},
-            {id:4,flags:'\\flagged',text:'取消旗帜',divided:false,action:'remove'},
+            {id:4,flags:'\\flagged',text:'',divided:false,action:'remove'},
           ],
         print_html:''
       }
@@ -548,9 +534,9 @@
        this.createEditor.html(val);
       },
       recall_single(row){
-        this.$confirm('<p>确定召回此邮件吗？</p>', '召回邮件', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm('<p>'+this.lan.CENTER_SEND_MSG1+'</p>', this.lan.COMMON_BUTTON_ZHAOHUI, {
+          confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+          cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
           dangerouslyUseHTMLString: true,
           type: 'warning'
         }).then(() => {
@@ -568,16 +554,13 @@
               str = err.detail
             }
             this.$message({
-              message: '邮件召回失败！'+str,
+              message: this.lan.COMMON_OPRATE_FAILED +str,
               type: 'error'
             })
             this.getMessageStatus();
           })
         }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消召回'
-          });
+
         });
       },
       changeType(){
@@ -591,7 +574,7 @@
         setStatus(this.msg.attrs.calendar_event_id,a).then(res=>{
           this.msg.attrs.calendar_eventer_status = a;
           this.show_change_btn = false;
-          this.$message({message:'操作成功！',type:'success'});
+          this.$message({message:this.lan.COMMON_OPRATE_SUCCESS,type:'success'});
         },err=>{
           let str = '';
             if(err.detail){
@@ -600,7 +583,7 @@
             if(err.non_field_errors){
               str = err.non_field_errors[0]
             }
-          this.$message({message:'操作失败！'+str,type:'error'});
+          this.$message({message:this.lan.COMMON_OPRATE_FAILED +str,type:'error'});
         })
       },
       mail_event(){
@@ -665,7 +648,7 @@
         saveNetAttach(param).then(res=>{
           this.$message({
             type:'success',
-            message:'保存成功！'
+            message:this.lan.COMMON_SAVE_SUCCESS
           })
           this.loading = false;
         }).catch(err=>{
@@ -675,7 +658,7 @@
           }
           this.$message({
             type:'error',
-            message:'保存失败！'+str
+            message:this.lan.COMMON_SAVE_FAILED +str
           })
           this.loading = false;
         })
@@ -706,7 +689,7 @@
         if(!this.content){
           this.$message({
             type:'error',
-            message:'请填写邮件内容！'
+            message:this.lan.MAILBOX_COM_READ_INPUT_CONTENT
           })
           return;
         }
@@ -720,7 +703,7 @@
         replayMessage(param).then(res=>{
           this.$message({
             type:'success',
-            message:'信件发送成功！！'
+            message:this.lan.MAILBOX_COM_READ_SEND_SUC
           })
           this.center_replying = false;
           this.before_replying = true;
@@ -733,7 +716,7 @@
           }
           this.$message({
             type:'error',
-            message:'信件发送失败！'+str
+            message: this.lan.MAILBOX_COM_READ_SEND_FAIL +str
           })
           this.center_replying = false;
           this.before_replying = true;
@@ -747,17 +730,17 @@
         let to = '';
         let cc = '';
         if(this.mfrom){
-          mfrom += '<p>发件人：'+this.mfrom+'</p>'
+          mfrom += '<p>'+this.lan.COMMON_SENDER+'：'+this.mfrom+'</p>'
         }
         if(this.msg.to && this.msg.to.length>0){
-          to += '<p>收件人：'
+          to += '<p>'+this.lan.COMMON_SENDER+'：'
           for(let i=0;i<this.msg.to.length;i++){
             to += this.msg.to[i][1] + '&lt;'+this.msg.to[i][0]+'&gt;;'
           }
           to += '</p>'
         }
         if(this.msg.cc&&this.msg.cc.length>0){
-          cc += '<p>抄 送：'
+          cc += '<p>'+this.lan.MAILBOX_COM_READ_CC+'：'
           for(let j=0;j<this.msg.cc.length;j++){
             let t = this.msg.cc[j];
             cc += `${t[1]+'&lt;'+t[0]+ '&gt; '}`
@@ -766,11 +749,11 @@
         }
         let print_main = `
         <div>
-        <p>U-Mail 企业邮箱</p>
+        <p>${this.lan.MAILBOX_COM_READ_PRINT_TITLE}</p>
         <div style="border-top:1px solid #7CACDB;border-bottom:1px solid #7CACDB;padding:4px 0;margin-bottom:16px;font-size:12px;">
-            <h3>${this.subject||'无主题'}</h3>
+            <h3>${this.subject|| this.lan.MAILBOX_NO_SUBJECT }</h3>
             ${mfrom}
-            <p>时&nbsp;&nbsp;间：${this.time.replace('T',' ')}</p>
+            <p>${this.lan.COMMON_TIME}：${this.time.replace('T',' ')}</p>
             ${to}
             ${cc}
         </div>
@@ -784,10 +767,10 @@
 
 
 
-        var wind = window.open('',"新窗口");
+        var wind = window.open('',this.lan.MAILBOX_COM_READ_NEW_W);
 
 
-        wind.document.head.innerHTML = '<title>U-Mail企业邮箱-邮件打印</title>'
+        wind.document.head.innerHTML = '<title>'+this.lan.MAILBOX_COM_READ_PRINT_TITLE_PAGE+'</title>'
         wind.document.body.innerHTML = printHtml;
         wind.print();
       },
@@ -799,7 +782,7 @@
         notifyMessage(param).then(res=>{
           this.$message({
             type:'success',
-            message:'回执发送成功！'
+            message:this.lan.MAILBOX_COM_READ_NOTICE_SEND_SUC
           })
           this.msg.attrs.is_notify = false;
         }).catch(err=>{
@@ -809,7 +792,7 @@
           }
           this.$message({
             type:'error',
-            message:'回执发送失败！'+str
+            message:this.lan.MAILBOX_COM_READ_NOTICE_SEND_FAIL +str
           })
           this.msg.attrs.is_notify = false;
         })
@@ -825,7 +808,7 @@
           let str = res.data.results[0].inform || res.data.results[0].recall_status_info
           this.$message({
             type:'success',
-            message:'操作成功！'+ str
+            message: this.lan.COMMON_OPRATE_SUCCESS + str
           })
           this.getReadMail();
         }).catch(err=>{
@@ -839,7 +822,7 @@
           }
           this.$message({
             type:'error',
-            message:'操作失败！'+str
+            message:this.lan.COMMON_OPRATE_FAILED +str
           })
           this.getReadMail();
         })
@@ -891,9 +874,9 @@
               f++;
             }
             if(d>0){
-              this.send_desc = '部分发送失败'
+              this.send_desc = this.lan.MAILBOX_COM_READ_PART_SEND_FAIL
             }else{
-              this.send_desc = '发送成功'
+              this.send_desc = this.lan.MAILBOX_COM_READ_SEND_SUC
             }
           }
           this.undeliverCount = a;
@@ -953,7 +936,7 @@
               to: [],
               cc: [],
               subject: '',
-              secret:'非密',
+              secret:'',
               is_save_sent:true,
               is_confirm_read:true,
               is_schedule:false,
@@ -1017,7 +1000,7 @@
           rejectMessage(param).then(res=>{
             this.loading = false;
             this.$message(
-              {type:'success',message:'邮件拒收成功！'}
+              {type:'success',message: this.lan.MAILBOX_COM_READ_MAIL_REJECT_SUC}
             )
           })
             .catch(err=>{
@@ -1027,20 +1010,20 @@
               str = err.detail
             }
             this.$message(
-              {type:'error',message:'邮件拒收失败！'+str}
+              {type:'error',message: this.lan.MAILBOX_COM_READ_MAIL_REJECT_FAIL+str}
             )
           })
         }else if(item.id == 7){//彻底删除
-          this.$confirm('彻底删除此邮件, 是否继续?', '系统信息', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+          this.$confirm( this.lan.MAILBOX_COM_READ_DELETE_THROU_CONTINUE, this.lan.MAILBOX_COM_READ_SYSTEM_NOTICE, {
+            confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+            cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
             type: 'warning'
           }).then(() => {
             this.loading = true;
             pruneMessage(param).then(res=>{
               this.loading = false;
               this.$message(
-                {type:'success',message:'彻底删除邮件成功！'}
+                {type:'success',message: this.lan.COMMON_DELETE_SUCCESS}
               )
               this.$parent.$parent.$parent.removeTab(this.$parent.$parent.$parent.editableTabsValue2);
               pp.getFloderfn();
@@ -1053,14 +1036,11 @@
               }
               this.$message({
                 type:'error',
-                message:'彻底删除失败！'+str
+                message:this.lan.COMMON_DELETE_FAILED +str
               })
             })
           }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消彻底删除'
-            });
+
           });
 
         }else if(item.id==8){//添加到通讯录
@@ -1068,7 +1048,7 @@
           pabMessage(pa).then(res=>{
             this.loading = false;
             this.$message(
-              {type:'success',message:'添加到通讯录成功！'}
+              {type:'success',message: this.lan.COMMON_OPRATE_SUCCESS}
             )
           }).catch(err=>{
             this.loading = false;
@@ -1077,7 +1057,7 @@
               str = err.detail
             }
             this.$message(
-              {type:'error',message:'添加到通讯录失败！'+str}
+              {type:'error',message: this.lan.COMMON_OPRATE_FAILED +str}
             )
           })
         }else if(item.id==9){
@@ -1101,7 +1081,7 @@
               link.click();
             }
             this.$message(
-              {type:'success',message:'邮件下载成功！'}
+              {type:'success',message: this.lan.COMMON_DOWNLOAD_SUCCESS}
             )
           }).catch(err=>{
             this.loading = false;
@@ -1111,7 +1091,7 @@
               str = err.detail
             }
             this.$message(
-              {type:'error',message:'邮件下载失败！'+str}
+              {type:'error',message: this.lan.COMMON_DOWNLOAD_FAILED +str}
             )
           })
         }
@@ -1121,9 +1101,9 @@
           uids:[this.readId],
           folder:this.readFolderId,
         };
-        this.$confirm('删除此邮件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm(this.lan.MAILBOX_COM_READ_DELETE_CONTINUE, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+          confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+          cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
           type: 'warning'
         }).then(() => {
           this.loading = true;
@@ -1132,7 +1112,7 @@
             if(suc.data.msg=='success'){
               this.$message({
                 type:'success',
-                message: '邮件删除成功!'
+                message: this.lan.COMMON_DELETE_SUCCESS
               })
               this.$parent.$parent.$parent.removeTab(this.$parent.$parent.$parent.editableTabsValue2);
               this.$parent.$parent.$children[1].$children[0].getMessageList()
@@ -1145,14 +1125,11 @@
             }
             this.$message({
                 type:'error',
-                message: '删除失败！'+str
+                message: this.lan.COMMON_DELETE_FAILED +str
               })
           })
         }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
+
         });
 
       },
@@ -1174,7 +1151,7 @@
               to: [["512167072@qq.com",'zhouli']],
               cc: [],
               subject: '',
-              secret:'非密',
+              secret:'',
               is_save_sent:true,
               is_confirm_read:true,
               is_schedule:false,
@@ -1278,7 +1255,7 @@
             document.body.appendChild(link);
             link.click();
           }
-          this.$message({ message: '下载成功！', type: 'success' });
+          this.$message({ message: this.lan.COMMON_DOWNLOAD_SUCCESS, type: 'success' });
         },err=>{
           console.log(err);
           this.loading = false;
@@ -1286,7 +1263,7 @@
           if(err.detail){
             str = err.detail
           }
-          this.$message({ message: '下载失败！'+str, type: 'error' });
+          this.$message({ message: this.lan.COMMON_DOWNLOAD_FAILED +str, type: 'error' });
         })
 
       },
@@ -1296,7 +1273,7 @@
             type:'error',
             duration:6000,
             showClose:true,
-            message:'预览文件大于10M,请下载查看！'
+            message:this.lan.FILE_INDEX_MSG1
           })
           return;
         }
@@ -1324,7 +1301,7 @@
           this.loading = false;
           this.$message({
               type:'success',
-              message: '邮件移动成功!'
+              message: this.lan.MAILBOX_COM_INNERBOX_MAIL_MOVE_SUCCESSFUL
             })
           this.readFolderId = index;
           // this.$parent.$parent.$parent.getFloderfn();
@@ -1332,7 +1309,7 @@
           this.loading = false;
           this.$message({
               type:'error',
-              message: '邮件移动失败!'
+              message: this.lan.MAILBOX_COM_INNERBOX_MAIL_MOVE_FAILED
             })
         }).catch(err=>{
           this.loading = false;
@@ -1342,7 +1319,7 @@
           }
           this.$message({
               type:'error',
-              message: '邮件移动失败! '+str
+              message: this.lan.MAILBOX_COM_INNERBOX_MAIL_MOVE_FAILED +str
             })
         })
       },
@@ -1359,7 +1336,7 @@
         messageFlag(param).then((suc)=>{
           this.$message({
               type:'success',
-              message: '邮件标记成功!'
+              message: this.lan.MAILBOX_COM_INNERBOX_MAIL_MARKUP_SUCCESSFUL
             })
           if(item.action == 'add'){
             this.flagged = true;
@@ -1393,7 +1370,7 @@
             }
           this.$message({
               type:'error',
-              message: '邮件标记失败! '+str
+              message: this.lan.MAILBOX_COM_INNERBOX_MAIL_MARKUP_FAILED +str
             })
         })
       },
@@ -1402,9 +1379,9 @@
         let min_ss = time.slice(2);
         let flag = ''
         if(theHour>=12){
-          flag = " 下午 "
+          flag = this.lan.MAILBOX_COM_INNERBOX_AFTERNOON
         }else{
-          flag = ' 上午 '
+          flag = this.lan.MAILBOX_COM_INNERBOX_MORNING
         }
         if (theHour > 12) {
            theHour = theHour-12
@@ -1481,11 +1458,15 @@
           oIframe.style.height = 'auto';
           oIframe.style.width = '100%';
           if(data.data.is_html){
-            oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = data.data.html_text||data.data.plain_text;
+            // oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = data.data.html_text||data.data.plain_text;
+            // oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = data.data.html_text||data.data.plain_text;
+            var aa = data.data.html_text||data.data.plain_text
+            $('#show-iframe'+rid).contents().find("body").html(aa)
             this.print_html =  data.data.html_text
           }else{
             let bhtml = data.data.html_text||data.data.plain_text;
-            oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = '<pre>'+bhtml+'</pre>';
+            // oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = '<pre>'+bhtml+'</pre>';
+            $('#show-iframe'+rid).contents().find("body").html('<pre>'+bhtml+'</pre>')
             this.print_html =  '<pre>'+bhtml+'</pre>'
           }
 
@@ -1546,6 +1527,58 @@
       },
       uploadJson:function(){
         return this.$store.state.uploadJson;
+      },
+      lan:function(){
+        let lang = lan.zh
+        if(this.$store.getters.getLanguage=='zh'){
+          lang = lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          lang = lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          lang = lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          lang = lan.zh
+        }else{
+          lang = lan.zh
+        }
+        this.flagsData = [
+          {flags:'\\flagged',action:'add',text:lang.MAILBOX_COM_INNERBOX_RED_FLAG,classN:'redcolor'},
+          {flags:'umail-green',action:'add',text:lang.MAILBOX_COM_INNERBOX_GREEN_FLAG,classN:'flag-green'},
+          {flags:'umail-orange',action:'add',text:lang.MAILBOX_COM_INNERBOX_ORANGE_FLAG,classN:'flag-orange'},
+          {flags:'umail-blue',action:'add',text:lang.MAILBOX_COM_INNERBOX_BLUE_FLAG,classN:'flag-blue'},
+          {flags:'umail-pink',action:'add',text:lang.MAILBOX_COM_INNERBOX_PINK_FLAG,classN:'flag-pink'},
+          {flags:'umail-cyan',action:'add',text:lang.MAILBOX_COM_INNERBOX_CYAN_FLAG,classN:'flag-cyan'},
+          {flags:'umail-yellow',action:'add',text:lang.MAILBOX_COM_INNERBOX_YELLOW_FLAG,classN:'flag-yellow'},
+          {flags:'umail-purple',action:'add',text:lang.MAILBOX_COM_INNERBOX_PURPLE_FLAG,classN:'flag-purple'},
+          {flags:'umail-gray',action:'add',text:lang.MAILBOX_COM_INNERBOX_GREY_FLAG,classN:'flag-gray'},
+          {flags:'\\flagged',text:lang.MAILBOX_COM_INNERBOX_CANCEL_FLAG,action:'remove'},
+        ]
+        this.moreItems = [
+          {id:3,text:lang.MAILBOX_COM_INNERBOX_ANNEX_FORWARDING,divided:false,checkone:true},
+          {id:8,text:lang.CONTACT_OAB_TOPAB,divided:false,classN:'iconfont icon-iconcontacts1'},
+          {id:9,text:lang.MAILBOX_COM_READ_MAIL_DOWNLOAD,divided:false,classN:'el-icon-download'},
+          {id:4,text:lang.MAILBOX_COM_INNERBOX_REJECTED_MAIL,divided:true,checkone:false},
+          {id:5,text:lang.MAILBOX_COM_INNERBOX_SEND_AGAIN,divided:true,checkone:true},
+          {id:7,text:lang.MAILBOX_COM_INNERBOX_DELETE_THOROUGHLY,divided:false,checkone:false},
+          {id:10,text:lang.MAILBOX_COM_READ_LETTER_HEAD,divided:true,checkone:true},
+          {id:11,text:lang.MAILBOX_COM_READ_ORIGINAL_TEXT,divided:false,checkone:true},
+
+        ]
+        this.signItems = [
+          {id:2,flags:'\\flagged',text:lang.MAILBOX_COM_INNERBOX_RED_FLAG,divided:false,action:'add',classN:'iconfont icon-iconflatcolor redcolor'},
+          {id:3,text:lang.MAILBOX_COM_INNERBOX_OTHER_FLAG,divided:false,children:[
+              {flags:'umail-green',action:'add',text:lang.MAILBOX_COM_INNERBOX_GREEN_FLAG,classN:{'flag-green':true}},
+              {flags:'umail-orange',action:'add',text:lang.MAILBOX_COM_INNERBOX_ORANGE_FLAG,classN:{'flag-orange':true}},
+              {flags:'umail-blue',action:'add',text:lang.MAILBOX_COM_INNERBOX_BLUE_FLAG,classN:{'flag-blue':true}},
+              {flags:'umail-pink',action:'add',text:lang.MAILBOX_COM_INNERBOX_PINK_FLAG,classN:{'flag-pink':true}},
+              {flags:'umail-cyan',action:'add',text:lang.MAILBOX_COM_INNERBOX_CYAN_FLAG,classN:{'flag-cyan':true}},
+              {flags:'umail-yellow',action:'add',text:lang.MAILBOX_COM_INNERBOX_YELLOW_FLAG,classN:{'flag-yellow':true}},
+              {flags:'umail-purple',action:'add',text:lang.MAILBOX_COM_INNERBOX_PURPLE_FLAG,classN:{'flag-purple':true}},
+              {flags:'umail-gray',action:'add',text:lang.MAILBOX_COM_INNERBOX_GREY_FLAG,classN:{'flag-gray':true}}
+            ]},
+          {id:4,flags:'\\flagged',text:lang.MAILBOX_COM_INNERBOX_CANCEL_FLAG,divided:false,action:'remove'},
+        ]
+        return lang
       },
     },
     mounted(){

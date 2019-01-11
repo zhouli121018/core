@@ -10,105 +10,100 @@
 
             <el-menu-item index="/setting/user" style="text-align: left">
               <img src="./img/op_userinfo.gif" style="width:20px;">
-              <span slot="title" :title="lan.SETTING_INDEX_PERSONAL_MENU_TITLE">{{lan.SETTING_INDEX_PERSONAL_MENU}}</span>
+              <span slot="title" :title="lan.SETTING_INDEX_PERSONAL_MENU">{{lan.SETTING_INDEX_PERSONAL_MENU}}</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/password" style="text-align: left" v-show="setting_password_show && menuShow.setting_password_show">
               <img src="./img/op_password.gif" style="width:20px;">
-              <span slot="title" title="重新设定邮箱密码">密码</span>
+              <span slot="title" :title="lan.SETTING_INDEX_PASSWORD_MENU_TITLE">{{lan.SETTING_INDEX_PASSWORD_MENU}}</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/twofactor" style="text-align: left" >
               <img src="./img/op_password.gif" style="width:20px;">
-              <span slot="title" title="安全中心">安全中心</span>
+              <span slot="title" :title="lan.SETTING_INDEX_TWOFACTOR_MENU">{{lan.SETTING_INDEX_TWOFACTOR_MENU}}</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/param" style="text-align: left">
               <img src="./img/op_prefs.gif" style="width:20px;">
-              <span slot="title" title="设置收发邮件时的一些显示参数">参数设置</span>
+              <span slot="title" :title="lan.SETTING_INDEX_PARAM_MENU_TITLE">{{lan.SETTING_INDEX_PARAM_MENU}}</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/skin" style="text-align: left">
-              <!--<img src="./img/op_signature.gif" style="width:20px;">-->
               <i class="iconfont icon-icontie"></i>
-              <span slot="title" title="皮肤中心">皮肤中心</span>
+              <span slot="title" :title="lan.SETTING_INDEX_SKIN_MENU">{{lan.SETTING_INDEX_SKIN_MENU}}</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/signature" style="text-align: left">
               <img src="./img/op_signature.gif" style="width:20px;">
-              <span slot="title" title="检查或修改发件时的签名">签名</span>
+              <span slot="title" :title="lan.COMMON_SIGNATURA">{{lan.COMMON_SIGNATURA}}</span>
             </el-menu-item>
-
-
 
             <el-menu-item index="/setting/template" style="text-align: left">
               <img src="./img/op_signature.gif" style="width:20px;">
-              <span slot="title" title="模板信设置">模板信</span>
+              <span slot="title" :title="lan.COMMON_TEMPLATE">{{lan.COMMON_TEMPLATE}}</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/autoreply" style="text-align: left" v-show="menuShow.setting_filter_show">
               <img src="./img/op_autoreply.gif" style="width:20px;">
-              <span slot="title" title="检查或重新设置自动回复">自动回复</span>
+              <span slot="title" :title="lan.SETTING_INDEX_RE_MENU">{{lan.SETTING_INDEX_RE_MENU}}</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/autoforward" style="text-align: left" v-show="menuShow.setting_filter_show">
               <img src="./img/op_autoforward.gif" style="width:20px;">
-              <span slot="title" title="检查或重新设置自动转发">自动转发</span>
+              <span slot="title" :title="lan.SETTING_INDEX_FW_MENU">{{lan.SETTING_INDEX_FW_MENU}}</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/whitelist" style="text-align: left" v-show="menuShow.setting_bwlist_show">
               <img src="./img/op_userfeedback.gif" style="width:20px;">
-              <span slot="title" title="管理白名单，让好友邮件畅行无阻">白名单</span>
+              <span slot="title" :title="lan.SETTING_INDEX_WHITE_MENU_TITLE">{{lan.SETTING_INDEX_WHITE_MENU}}</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/blacklist" style="text-align: left" v-show="menuShow.setting_bwlist_show">
               <img src="./img/userblist.gif" style="width:20px;">
-              <span slot="title" title="设置黑名单，自行过滤垃圾邮件">黑名单</span>
+              <span slot="title" :title="lan.SETTING_INDEX_BLACK_MENU_TITLE">{{lan.SETTING_INDEX_BLACK_MENU}}</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/mailboxmove" style="text-align: left" v-show="menuShow.setting_mailboxmove_show">
               <img src="./img/userwlist.gif" style="width:20px;">
-              <span slot="title" title="将其它邮箱的邮件数据迁移过来">邮箱搬家</span>
+              <span slot="title" :title="lan.SETTING_INDEX_MOVE_MENU_TITLE">{{lan.SETTING_INDEX_MOVE_MENU}}</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/sms" style="text-align: left" v-show="menuShow.setting_sms_show">
               <img src="./img/o_sms.png" style="width:20px;">
-              <span slot="title" title="将其它邮箱的邮件数据迁移过来">收件短信通知</span>
+              <span slot="title" :title="lan.SETTING_INDEX_SMS_MENU">{{lan.SETTING_INDEX_SMS_MENU}}</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/feedback" style="text-align: left" v-show="menuShow.setting_feedback_show">
               <img src="./img/op_userfeedback.gif" style="width:20px;">
-              <span slot="title" title="您对邮箱功能有任何建议请在这里提出">邮箱意见反馈</span>
+              <span slot="title" :title="lan.SETTING_INDEX_FEEDBACK_MENU">{{lan.SETTING_INDEX_FEEDBACK_MENU}}</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/zhaohui" style="text-align: left" v-show="menuShow.setting_zhaohui_show">
               <img src="./img/op_autoforward.gif" style="width:20px;">
-              <span slot="title" title="查看邮件召回结果">邮件召回记录</span>
+              <span slot="title" :title="lan.SETTING_INDEX_ZHAOHUI_MENU">{{lan.SETTING_INDEX_ZHAOHUI_MENU}}</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/filter" style="text-align: left" v-show="menuShow.setting_filter_show">
               <img src="./img/op_filters.gif" style="width:20px;">
-              <span slot="title" title="邮件过滤规则">邮件过滤</span>
+              <span slot="title" :title="lan.SETTING_INDEX_FILTER_MENU_TITLE">{{lan.SETTING_INDEX_FILTER_MENU}}</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/relatelist" style="text-align: left" v-show="setting_relatelist_show && menuShow.setting_relatelist_show">
               <img src="./img/op_sharemailbox.gif" style="width:20px;">
-              <span slot="title" title="把邮箱关联共享给其他用户">关联共享邮箱</span>
+              <span slot="title" :title="lan.SETTING_INDEX_REFER_MENU_TITLE">{{lan.SETTING_INDEX_REFER_MENU}}</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/transfer" style="text-align: left" v-show="menuShow.setting_transfer_show">
               <img src="./img/op_autoforward.gif" style="width:20px;">
-              <span slot="title" title="利用其他邮件服务器代发出站邮件">SMTP外发代理</span>
+              <span slot="title" :title="lan.SETTING_INDEX_SMTP_MENU_TITLE">{{lan.SETTING_INDEX_SMTP_MENU}}</span>
             </el-menu-item>
 
             <el-menu-item index="/setting/accountcancel" style="text-align: left" v-show="menuShow.setting_accountcancel_show">
               <img src="./img/op_accountcancel.jpg" style="width:20px;">
-              <span slot="title" title="利用其他邮件服务器代发出站邮件">申请注销用户</span>
+              <span slot="title" :title="lan.SETTING_INDEX_ACCCANCEL_MENU">{{lan.SETTING_INDEX_ACCCANCEL_MENU}}</span>
             </el-menu-item>
 
           </el-menu>
-
-
         </div>
       </aside>
 

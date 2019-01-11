@@ -5,7 +5,7 @@
       <div class="wrapper u-scroll top0">
         <input type="hidden" v-model="soab_domain_cid"/>
         <input type="hidden" v-model="soab_cid"/>
-        <el-select v-model="soab_domain_cid" placeholder="请选择" @change="soabChangeDomain">
+        <el-select v-model="soab_domain_cid" :placeholder="plang.SETTING_RE_ADD_PLACEHODER" @change="soabChangeDomain">
           <el-option v-for="item in soab_domain_options" :key="item.id" :label="item.label" :value="item.id"></el-option>
         </el-select>
         <el-tree class="filter-tree" :data="oab_departs" :props="oab_defaultProps" :render-after-expand="true" :highlight-current="true" node-key="id" :indent="13"
@@ -24,9 +24,9 @@
         <el-row>
           <el-col :span="24" class="breadcrumb-container">
             <el-breadcrumb separator="/">
-              <el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item>
-              <el-breadcrumb-item><a href="#">组织通讯录</a></el-breadcrumb-item>
-              <el-breadcrumb-item>当前部门：&nbsp;{{department_name}}</el-breadcrumb-item>
+              <el-breadcrumb-item :to="{ path: '/welcome' }">{{plang.COMMON_HOME_NAME}}</el-breadcrumb-item>
+              <el-breadcrumb-item><a href="#">{{plang.CONTANCT_INDEX_SOAB}}</a></el-breadcrumb-item>
+              <el-breadcrumb-item>{{plang.CONTACT_OAB_CUR}}&nbsp;{{department_name}}</el-breadcrumb-item>
             </el-breadcrumb>
           </el-col>
         </el-row>
@@ -36,10 +36,10 @@
           <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             <el-form :inline="true" :model="filters">
               <el-form-item>
-                <el-input v-model="filters.search" placeholder="邮箱或姓名" size="small"></el-input>
+                <el-input v-model="filters.search" :placeholder="plang.CONTACT_PAB_SEARCH" size="small"></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" v-on:click="searchSoabMembers" size="small">查询</el-button>
+                <el-button type="primary" v-on:click="searchSoabMembers" size="small">{{plang.COMMON_SEARCH}}</el-button>
               </el-form-item>
             </el-form>
           </el-col>
@@ -50,9 +50,9 @@
 
           <el-row class="toolbar">
             <el-col :span="12">
-              <el-button type="primary" @click="$parent.sendMail_net('more',sels)" :disabled="this.sels.length===0" size="mini"> 发信给选择的人员</el-button>
-              <el-button type="success" @click="Oab_send_to_department" size="mini">发邮件给本机构人员</el-button>
-              <el-button type="info" @click="Oab_to_pab" :disabled="this.sels.length===0" size="mini"> 添加至个人通讯录</el-button>
+              <el-button type="primary" @click="$parent.sendMail_net('more',sels)" :disabled="this.sels.length===0" size="mini"> {{plang.CONTACT_OAB_SEND}}</el-button>
+              <el-button type="success" @click="Oab_send_to_department" size="mini">{{plang.CONTACT_OAB_SENDO}}</el-button>
+              <el-button type="info" @click="Oab_to_pab" :disabled="this.sels.length===0" size="mini"> {{plang.CONTACT_OAB_TOPAB}}</el-button>
             </el-col>
             <el-col :span="12">
               <el-pagination layout="total, sizes, prev, pager, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange"
@@ -66,13 +66,13 @@
             <!--<el-table :data="listTables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
             <el-table-column type="selection" width="50"></el-table-column>
             <el-table-column type="index" label="No." width="60"></el-table-column>
-            <el-table-column prop="name" label="姓名" width="200"></el-table-column>
-            <el-table-column prop="username" label="邮箱" width="250"></el-table-column>
-            <el-table-column prop="mobile" label="移动号码" width="150"></el-table-column>
-            <el-table-column prop="tel_work" label="工作号码/分机号" width="200"></el-table-column>
-            <el-table-column prop="department" label="部门" ></el-table-column>
-            <el-table-column prop="position" label="职务" width="200"></el-table-column>
-            <el-table-column prop="tel_group" label="集团号" width="150"></el-table-column>
+            <el-table-column prop="name" :label="plang.COMMON_XINGMING" width="200"></el-table-column>
+            <el-table-column prop="username" :label="plang.COMMON_EMAIL" width="250"></el-table-column>
+            <el-table-column prop="mobile" :label="plang.COMMON_MOBILE2" width="150"></el-table-column>
+            <el-table-column prop="tel_work" :label="plang.CONTACT_OAB_WORKTEL" width="200"></el-table-column>
+            <el-table-column prop="department" :label="plang.COMMON_DEPARTMENT"></el-table-column>
+            <el-table-column prop="position" :label="plang.COMMON_POSITION" width="200"></el-table-column>
+            <el-table-column prop="tel_group" label="plang.COMMON_TELGROUP" width="150"></el-table-column>
           </el-table>
 
           <el-col :span="24" class="toolbar"></el-col>
@@ -88,7 +88,9 @@
   import { contactSoabDomainsGet, contactSoabGroupsGet, contactSoabMembersGet, contactPabMembersSoabAdd ,getDeptMail} from '@/api/api'
   export default {
     data() {
+      let _self = this;
       return {
+        plang:_self.$parent.plang,
         asideWith:199,
         soab_domain_options: "",
         soab_domain_cid: "",
@@ -101,7 +103,6 @@
           children: 'children',
           label: 'label'
         },
-
 
         filters: {
           search: ''
@@ -233,7 +234,7 @@
       },
       Oab_send_to_select: function () {
         var ids = this.sels.map(item => item.id).toString();
-        this.$confirm('确认删除选中记录吗？', '提示', {
+        this.$confirm(this.plang.CONTACT_OAB_MSG2, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
             // this.listLoading = true;
@@ -253,7 +254,7 @@
         });
       },
       Oab_send_to_department: function () {
-        this.$confirm('发邮件给本机构人员？', '提示', {
+        this.$confirm(this.plang.CONTACT_OAB_MSG3, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           let domain = '';
@@ -272,7 +273,7 @@
         let that = this;
         // var ids = this.sels.map(item => item.id).toString();
         var ids = this.sels.map(item => item.id);
-        this.$confirm('确定将选中成员添加到个人通讯录中？', '提示', {
+        this.$confirm(this.plang.CONTACT_OAB_MSG4, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           this.listLoading = true;
@@ -280,7 +281,7 @@
           contactPabMembersSoabAdd(para).then((res) => {
             this.listLoading = false;
             //NProgress.done();
-            that.$message({ message: '已成功添加联系人到个人通讯录', type: 'success' });
+            that.$message({ message: this.plang.CONTACT_OAB_MSG5, type: 'success' });
           });
         }).catch(function (error) {
           console.log(error);

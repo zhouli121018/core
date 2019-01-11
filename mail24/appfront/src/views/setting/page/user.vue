@@ -4,37 +4,37 @@
     <el-row class="" style="padding: 0px;">
       <el-col :span="24" class="breadcrumb-container">
         <el-breadcrumb separator="/">
-          <el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item><a href="#">设置中心</a></el-breadcrumb-item>
-          <el-breadcrumb-item>个人资料</el-breadcrumb-item>
+          <el-breadcrumb-item :to="{ path: '/welcome' }">{{this.$parent.lan.COMMON_HOME_NAME}}</el-breadcrumb-item>
+          <el-breadcrumb-item><a href="#">{{this.$parent.lan.SETTING_INDEX_NAME}}</a></el-breadcrumb-item>
+          <el-breadcrumb-item>{{this.$parent.lan.SETTING_INDEX_PERSONAL_MENU}}</el-breadcrumb-item>
         </el-breadcrumb>
       </el-col>
     </el-row>
 
-    <el-alert title="提示：修改申请已提交，请等待审核" type="warning" :closable="false" v-if="need_alert"></el-alert>
+    <el-alert :title="this.$parent.lan.SETTING_USER_NOTICE" type="warning" :closable="false" v-if="need_alert"></el-alert>
 
     <section class="content content-list height100" style="background: #fff;background: rgba(255,255,255,0.9);padding-bottom: 13px;">
-      <el-form :model="editform" :rules="formRules" ref="editform" label-width="100px" style="margin-left:13px;margin-right:13px;margin-top: 13px" size="mini">
+      <el-form :model="editform" :rules="formRules" ref="editform" label-width="150px" style="margin-left:13px;margin-right:13px;margin-top: 13px" size="mini">
 
         <el-row>
           <el-col :span="24">
             <div class="demo-block-control">
-              <p style="margin-bottom: 3px; margin-left: 13px"> 基本资料</p>
+              <p style="margin-bottom: 3px; margin-left: 13px">{{this.$parent.lan.SETTING_USER_TITLE_1}}</p>
             </div>
           </el-col>
-          <el-col :span="8"><el-form-item label="姓名：" prop="realname"><el-input v-model.trim="editform.realname" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="英文名："><el-input v-model.trim="editform.engname" auto-complete="off" :disabled="!can_modify" ></el-input></el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="工号："><el-input v-model.trim="editform.eenumber" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="邮箱地址："><span>{{editform.email}}</span></el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="部门："><span>{{editform.department}}</span></el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="职位："><span>{{editform.position}}</span></el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="移动电话："><el-input v-model.trim="editform.tel_mobile" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
-          <el-col :span="8"><el-form-item label="生日："><el-date-picker type="date" placeholder="选择日期" v-model="editform.birthday" style="width: 100%;" value-format="yyyy-MM-dd" auto-complete="off" :disabled="!can_modify"></el-date-picker></el-form-item></el-col>
+          <el-col :span="8"><el-form-item :label="this.$parent.lan.COMMON_XINGMING" prop="realname"><el-input v-model.trim="editform.realname" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
+          <el-col :span="8"><el-form-item :label="this.$parent.lan.SETTING_USER_ENGNAME"><el-input v-model.trim="editform.engname" auto-complete="off" :disabled="!can_modify" ></el-input></el-form-item></el-col>
+          <el-col :span="8"><el-form-item :label="this.$parent.lan.SETTING_USER_EENUMBER"><el-input v-model.trim="editform.eenumber" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
+          <el-col :span="8"><el-form-item :label="this.$parent.lan.COMMON_EMAIL2"><span>{{editform.email}}</span></el-form-item></el-col>
+          <el-col :span="8"><el-form-item :label="this.$parent.lan.COMMON_DEPARTMENT"><span>{{editform.department}}</span></el-form-item></el-col>
+          <el-col :span="8"><el-form-item :label="this.$parent.lan.COMMON_POSITION"><span>{{editform.position}}</span></el-form-item></el-col>
+          <el-col :span="8"><el-form-item :label="this.$parent.lan.COMMON_MOBILE2"><el-input v-model.trim="editform.tel_mobile" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
+          <el-col :span="8"><el-form-item :label="this.$parent.lan.COMMON_BIRTHDAY"><el-date-picker type="date" :placeholder="this.$parent.lan.COMMON_SELECT_DATE" v-model="editform.birthday" style="width: 100%;" value-format="yyyy-MM-dd" auto-complete="off" :disabled="!can_modify"></el-date-picker></el-form-item></el-col>
           <el-col :span="8">
-            <el-form-item label="性别：">
+            <el-form-item :label="this.$parent.lan.COMMON_GENDER">
               <el-radio-group v-model="editform.gender" :disabled="!can_modify">
-                <el-radio label="male">男</el-radio>
-                <el-radio label="female">女</el-radio>
+                <el-radio label="male">{{this.$parent.lan.COMMON_GENDER_M}}</el-radio>
+                <el-radio label="female">{{this.$parent.lan.COMMON_GENDER_F}}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -43,7 +43,7 @@
 
         <div class="demo-block-control-ext-top" @click="extendInfoShow=!extendInfoShow" v-if="!extendInfoShow">
           <i :class="[extendInfoShow ? 'el-icon-caret-top':'el-icon-caret-bottom']"></i>
-          <span>{{extendInfoShow?'隐藏更多信息':'显示更多信息'}}</span>
+          <span>{{extendInfoShow?this.$parent.lan.SETTING_USER_BUTTON_HIDE:this.$parent.lan.SETTING_USER_BUTTON_SHOW}}</span>
           <button type="button" class="el-button control-button el-tooltip el-button--text el-button--small" style="display: none;" aria-describedby="el-tooltip-7026" tabindex="0"></button>
         </div>
 
@@ -51,52 +51,52 @@
           <el-row>
             <el-col :span="24">
               <div class="demo-block-control">
-                <p style="margin-bottom: 3px; margin-left: 13px"> 电话/即时通讯ID</p>
+                <p style="margin-bottom: 3px; margin-left: 13px">{{this.$parent.lan.SETTING_USER_TITLE_2}}</p>
               </div>
             </el-col>
-            <el-col :span="8"><el-form-item label="工作电话："><el-input v-model.trim="editform.tel_work" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
-            <el-col :span="8"><el-form-item label="分机号："><el-input v-model.trim="editform.tel_work_ext" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
-            <el-col :span="8"><el-form-item label="集团号："><el-input v-model.trim="editform.tel_group" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
-            <el-col :span="8"><el-form-item label="住宅电话："><el-input v-model.trim="editform.tel_home" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
-            <el-col :span="8"><el-form-item label="QQ："><el-input v-model.trim="editform.im_qq" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
-            <el-col :span="8"><el-form-item label="MSN："><el-input v-model.trim="editform.im_msn" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
-            <el-col :span="16"><el-form-item label="主页："><el-input v-model.trim="editform.homepage" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
+            <el-col :span="8"><el-form-item :label="this.$parent.lan.COMMON_TELWORK"><el-input v-model.trim="editform.tel_work" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
+            <el-col :span="8"><el-form-item :label="this.$parent.lan.COMMON_TELWORKEXT"><el-input v-model.trim="editform.tel_work_ext" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
+            <el-col :span="8"><el-form-item :label="this.$parent.lan.COMMON_TELGROUP"><el-input v-model.trim="editform.tel_group" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
+            <el-col :span="8"><el-form-item :label="this.$parent.lan.SETTING_USER_TELHOME"><el-input v-model.trim="editform.tel_home" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
+            <el-col :span="8"><el-form-item label="QQ"><el-input v-model.trim="editform.im_qq" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
+            <el-col :span="8"><el-form-item label="MSN"><el-input v-model.trim="editform.im_msn" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
+            <el-col :span="16"><el-form-item :label="this.$parent.lan.SETTING_USER_HOMEPAGE"><el-input v-model.trim="editform.homepage" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
           </el-row>
 
           <el-row>
             <el-col :span="24">
               <div class="demo-block-control">
-                <p style="margin-bottom: 3px; margin-left: 13px"> 联系地址</p>
+                <p style="margin-bottom: 3px; margin-left: 13px">{{this.$parent.lan.SETTING_USER_TITLE_3}}</p>
               </div>
             </el-col>
 
-            <el-col :span="8"><el-form-item label="国家："><el-input v-model.trim="editform.addr_country" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
-            <el-col :span="8"><el-form-item label="省份/地区："><el-input v-model.trim="editform.addr_state" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
-            <el-col :span="8"><el-form-item label="城市："><el-input v-model.trim="editform.addr_city" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
-            <el-col :span="8"><el-form-item label="邮编："><el-input v-model.trim="editform.addr_zip" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
-            <el-col :span="16"><el-form-item label="详细地址："><el-input v-model.trim="editform.addr_address" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
+            <el-col :span="8"><el-form-item :label="this.$parent.lan.SETTING_USER_CONTRY"><el-input v-model.trim="editform.addr_country" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
+            <el-col :span="8"><el-form-item :label="this.$parent.lan.SETTING_USER_STATE"><el-input v-model.trim="editform.addr_state" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
+            <el-col :span="8"><el-form-item :label="this.$parent.lan.SETTING_USER_CITY"><el-input v-model.trim="editform.addr_city" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
+            <el-col :span="8"><el-form-item :label="this.$parent.lan.SETTING_USER_ZIP"><el-input v-model.trim="editform.addr_zip" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
+            <el-col :span="16"><el-form-item :label="this.$parent.lan.SETTING_USER_ADDRESS"><el-input v-model.trim="editform.addr_address" auto-complete="off" :disabled="!can_modify"></el-input></el-form-item></el-col>
           </el-row>
 
           <el-row>
             <el-col :span="24">
               <div class="demo-block-control">
-                <p style="margin-bottom: 3px; margin-left: 13px">备注</p>
+                <p style="margin-bottom: 3px; margin-left: 13px">{{this.$parent.lan.COMMON_REMARK}}</p>
               </div>
             </el-col>
-            <el-col :span="16"><el-form-item label="备注："><el-input type="textarea" v-model.trim="editform.remark" :disabled="!can_modify"></el-input></el-form-item></el-col>
+            <el-col :span="16"><el-form-item :label="this.$parent.lan.COMMON_REMARK"><el-input type="textarea" v-model.trim="editform.remark" :disabled="!can_modify"></el-input></el-form-item></el-col>
           </el-row>
         </div>
 
         <div class="demo-block-control-ext-bottom" @click="extendInfoShow=!extendInfoShow"  v-if="extendInfoShow">
           <i :class="[extendInfoShow ? 'el-icon-caret-top':'el-icon-caret-bottom']"></i>
-          <span>{{extendInfoShow?'隐藏更多信息':'显示更多信息'}}</span>
+          <span>{{extendInfoShow?this.$parent.lan.SETTING_USER_BUTTON_HIDE:this.$parent.lan.SETTING_USER_BUTTON_SHOW}}</span>
           <button type="button" class="el-button control-button el-tooltip el-button--text el-button--small" style="display: none;" aria-describedby="el-tooltip-7026" tabindex="0"></button>
         </div>
 
         <el-row>
           <el-col :span="24">
             <el-form-item>
-              <el-button type="primary" @click.native="onSubmit()" v-if="can_modify" :loading="saveFormLoading">{{need_review?'提交审核':'保存'}}</el-button>
+              <el-button type="primary" @click.native="onSubmit()" v-if="can_modify" :loading="saveFormLoading">{{need_review?this.$parent.lan.SETTING_USER_BUTTON_SHENHE:this.$parent.lan.COMMON_BUTTON_SAVE}}</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -145,8 +145,8 @@
         },
         formRules: {
           realname: [
-            { required: true, message: this.$parent.lan.SETTING_USER_RULE_NAME, trigger: 'blur' },
-            { min: 1, max: 35, message: this.$parent.lan.SETTING_USER_RULE_NAME_LEN, trigger: 'blur' }
+            { required: true, message: this.$parent.lan.SETTING_USER_NAME_RULE, trigger: 'blur' },
+            { min: 1, max: 35, message: this.$parent.lan.SETTING_USER_NAME_RULE_LEN, trigger: 'blur' }
           ]
         },
 
@@ -169,7 +169,7 @@
       onSubmit: function () {
         this.$refs.editform.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.$parent.lan.COMMON_BUTTON_CONFIRM_SUBMIT, this.$parent.lan.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.saveFormLoading = true;
               let para = Object.assign({}, this.editform);
               para.birthday = (!para.birthday || para.birthday == '') ? null : para.birthday;
@@ -177,11 +177,11 @@
                 this.saveFormLoading = false;
                 let status = res.data.status;
                 if (status==1){
-                  this.$message({message: '修改申请已提交，请等待审核', type: 'success'});
+                  this.$message({message: this.$parent.lan.SETTING_USER_MESSAGE_1, type: 'success'});
                 } else if (status==2){
-                  this.$message({message: '个人资料未做任何修改', type: 'warning'});
+                  this.$message({message: this.$parent.lan.SETTING_USER_MESSAGE_2, type: 'warning'});
                 } else if (status==3){
-                  this.$message({message: '修改成功', type: 'success'});
+                  this.$message({message: this.$parent.lan.COMMON_ALTER_SUCCESS, type: 'success'});
                 }
                 this.getUserInfo();
               }).catch(function (error) {

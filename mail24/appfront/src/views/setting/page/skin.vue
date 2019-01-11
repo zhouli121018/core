@@ -3,13 +3,17 @@
 
     <el-row class="" style="padding: 0px;">
       <el-col :span="24" class="breadcrumb-container">
-        <el-breadcrumb separator="/"><el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item><el-breadcrumb-item><a href="#">设置中心</a></el-breadcrumb-item><el-breadcrumb-item>换肤</el-breadcrumb-item></el-breadcrumb>
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item :to="{ path: '/welcome' }">{{this.$parent.lan.COMMON_HOME_NAME}}</el-breadcrumb-item>
+          <el-breadcrumb-item><a href="#">{{this.$parent.lan.SETTING_INDEX_NAME}}</a></el-breadcrumb-item>
+          <el-breadcrumb-item>{{this.$parent.lan.SETTING_INDEX_SKIN_MENU}}</el-breadcrumb-item>
+        </el-breadcrumb>
       </el-col>
     </el-row>
 
     <section class="content content-list height100" style="background-color: rgba(255,255,255,0.3);;padding-bottom: 13px;">
         <div style="padding-left:10px;">
-          <div class="hC0">主题皮肤</div>
+          <div class="hC0">{{this.$parent.lan.SETTING_SKIN_TITLE}}</div>
           <div v-for="(m,k) in imgs" :key="k" class="rp0"  :class="{il0:m.url == $store.getters.getSkinOrder}" @click="checkImg(m)" :style="{background:'url(/static/img/'+m.url+'_small.jpg)'}">
             <a class="nd0">
               <b class="ng0 mN1"></b>
@@ -38,13 +42,13 @@
     data() {
       return {
         imgs:[
-          {url:'jingdianlan',title:'经典蓝（默认）'},
-          {url:'chunzhihua',title:'春之花'},
-          {url:'yanyujiangnan',title:'烟雨江南'},
-          {url:'hetangyuese',title:'荷塘月色'},
-          {url:'qingxinlu',title:'清新绿'},
-          {url:'haishuilan',title:'海水蓝'},
-          {url:'zhongguofeng',title:'中国风'},
+          {url:'jingdianlan',title: this.$parent.lan.SETTING_SKIN_JINGDIANLAN},
+          {url:'chunzhihua',title: this.$parent.lan.SETTING_SKIN_CHUNZHIHUA},
+          {url:'yanyujiangnan',title: this.$parent.lan.SETTING_SKIN_YANYUJIANGNAN},
+          {url:'hetangyuese',title: this.$parent.lan.SETTING_SKIN_HETANGYUESE},
+          {url:'qingxinlu',title: this.$parent.lan.SETTING_SKIN_QINGXINLU},
+          {url:'haishuilan',title: this.$parent.lan.SETTING_SKIN_HAISHUILAN},
+          {url:'zhongguofeng',title: this.$parent.lan.SETTING_SKIN_ZHONGGUOFENG},
         ]
       }
     },
@@ -60,7 +64,7 @@
           this.$store.dispatch('setSkinOrderA',m.url)
           this.$message({
             type:'success',
-            message:'邮箱皮肤设置成功！'
+            message: this.$parent.lan.SETTING_SKIN_MSG
           })
         }).catch(err=>{
           console.log(err)

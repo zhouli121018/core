@@ -232,7 +232,7 @@
                         </div>
 
                         <el-autocomplete  class="no_padding"  v-model.trim="state1" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox"
-                        @blur="addMailbox" @focus="insertMailbox=1" placeholder="" @select="handleSelect" :trigger-on-focus="false" style="float:left">
+                        @blur="addMailbox" @focus="insertMailbox=1" placeholder="" @select="handleSelect" @keyup.native="keyupfn" :trigger-on-focus="false" style="float:left">
 
                           <!--<template slot-scope="{ item }" :trigger-on-focus="false">-->
                             <!--<div class="name" style="width:300px;">{{ item.value }}</div>-->
@@ -270,7 +270,7 @@
                         <i class="el-icon-close" @click="deleteMailboxForKey_copyer(k,v)"></i>
                       </div>
                       <el-autocomplete  class="no_padding" v-model.trim="state_copyer" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox_copyer"
-                        @blur="addMailbox_copyer" @focus="insertMailbox=2" placeholder=""  @select="handleSelect_copyer" :trigger-on-focus="false" style="float:left"></el-autocomplete>
+                        @blur="addMailbox_copyer" @focus="insertMailbox=2" placeholder="" @keyup.native="keyupfn_cc"  @select="handleSelect_copyer" :trigger-on-focus="false" style="float:left"></el-autocomplete>
                     </div>
                   </el-form-item>
                   <el-form-item label="密   送:" prop="bcc" v-if="ruleForm2.is_bcc" v-show="!ruleForm2.is_partsend">
@@ -301,7 +301,7 @@
                         <i class="el-icon-close" @click="deleteMailboxForKey_bcc(k,v)"></i>
                       </div>
                       <el-autocomplete  class="no_padding" v-model.trim="state_bcc" :fetch-suggestions="querySearch" @keydown.8.native="deleteMailbox_bcc"
-                        @blur="addMailbox_bcc" @focus="insertMailbox=3" placeholder=""  @select="handleSelect_bcc" :trigger-on-focus="false" style="float:left"></el-autocomplete>
+                        @blur="addMailbox_bcc" @focus="insertMailbox=3" placeholder="" @keyup.native="keyupfn_bcc"  @select="handleSelect_bcc" :trigger-on-focus="false" style="float:left"></el-autocomplete>
                     </div>
                   </el-form-item>
                   <el-form-item label="主  题:" prop="subject">
@@ -994,7 +994,6 @@
             chunk.preprocessFinished();
           },
           processParams:function(param){
-            console.log('param')
             param = {
               chunkNumber:param.chunkNumber,
               fileMd5:param.identifier
@@ -1210,6 +1209,27 @@
       };
     },
     methods:{
+      keyupfn(event){
+        let code = event.code;
+        if(code == 'Semicolon' || code == 'Comma' ){
+          this.state1 = this.state1.slice(0,this.state1.length-1)
+          this.addMailbox()
+        }
+      },
+      keyupfn_cc(event){
+        let code = event.code;
+        if(code == 'Semicolon' || code == 'Comma' ){
+          this.state_copyer = this.state_copyer.slice(0,this.state_copyer.length-1)
+          this.addMailbox_copyer()
+        }
+      },
+      keyupfn_bcc(event){
+        let code = event.code;
+        if(code == 'Semicolon' || code == 'Comma' ){
+          this.state_bcc = this.state_bcc.slice(0,this.state_bcc.length-1)
+          this.addMailbox_bcc()
+        }
+      },
       createEditor(){
         let options = {
           items:this.toolbarItems,
@@ -1381,7 +1401,6 @@
         this.dbFormVisible = true;
       },
       loadingContact(tab){
-        console.log(tab)
         if(tab.name == 'first'){
           if(this.contactList.length==0){
             this.getRightContact();
@@ -1394,28 +1413,17 @@
         });
       },
       fileSuccess(rootFile, file, message, chunk){
-        console.log('successsss')
-        console.log(file)
-        console.log(message)
-        console.log(chunk.xhr.status)
         let md5 = file.uniqueIdentifier
-        console.log(md5)
 
         let result = this.bigUploadSuccess(file.file,md5,file.id);
-        console.log('progress:'+file.progress);
-        console.log(result)
       },
       beforeUpload(file){
-        console.log('before')
-        console.log(file)
-        console.log(this.bigList)
         let result = true;
         for(let i=0;i<this.bigList.length-1;i++){
           if(file.name == this.bigList[i].name){
             result = false;
           }
         }
-        console.log(result)
         if(!result){
           return result;
         }
@@ -1474,7 +1482,6 @@
          this.$refs.bigUpload.submit();
       },
       bigUploadSuccess(file,fileMd5,fileId){
-        console.log(file)
         let param ={
           'fileMd5':fileMd5,
           'upload_type':'mail',
@@ -1725,30 +1732,9 @@
           loadNext();
       },
       filesAdded(files, fileList, event){
-        console.log('adds')
-        // netdiskCapacityGet().then(res=>{
-        //   this.folder_capacity = res.data;
-        //   let count = 0;
-        //   for(let i=0;i<files.length;i++){
-        //     count += files[i].size;
-        //   }
-        //   console.log(count)
-        //   console.log(res.data.rtotal-res.data.rused)
-        //
-        //   if(count>(res.data.rtotal-res.data.rused)){
-        //     this.$message({
-        //       type:'error',
-        //       message:'所选文件容量超出网盘剩余容量！'
-        //     })
-        //     files.forEach(val=>{
-        //       val.cancel();
-        //     })
-        //     return false;
-        //   }
-        // });
+
       },
       fileAdded(file){
-        console.log('add')
         if(file.size==0){
           file.cancel();
           return false;
@@ -2193,8 +2179,6 @@
         this.signCheck = '';
         // this.content = this.htmlToText(this.editoraaa.text());
         this.content = this.htmlDecodeByRegExp(this.htmlToText(this.editoraaa.text()));
-        console.log(this.editoraaa)
-        console.log(this.editoraaa.html())
         $('#'+this.editor_id).val(this.content);
         $('#compose'+this.rid+' .ke-container.ke-container-default').hide()
         $('#editor_id'+this.rid).show()
@@ -2732,7 +2716,6 @@
         }else if(data.keyId.indexOf('lab')==0){
           sessionStorage['curKey'] = 'lab';
         }
-        console.log(sessionStorage['curKey'])
         sessionStorage['openGroup'] = sessionStorage['curKey'];
         if(sessionStorage['curKey'] == 'soab'){
           this.expand_soab = true
@@ -2783,10 +2766,8 @@
           }
 
         }else if(sessionStorage['openGroup']=='cab'){
-          console.log('cab')
           this.getCabMembers();
         }else if(sessionStorage['openGroup']=='soab'){
-          console.log('soab')
           this.getSoabMembers();
         }
         return;
@@ -3063,7 +3044,6 @@
             children:[]
           })
           _this.transform_menu = arr;
-          console.log(_this.transform_menu)
           _this.$nextTick(()=>{
             if(sessionStorage['curKey']){
               _this.default_expanded = [];
@@ -3085,7 +3065,6 @@
                 _this.getPabMembers();
               }else if(sessionStorage['openGroup']=='oab'){
                 let data = _this.transform_menu[1].children[0];
-                console.log(_this.transform_menu[1].children[0])
                 let str = _this.$store.getters.userInfo.name;
                 let index = str.lastIndexOf('@');
                 let domain = str.slice(index+1)
@@ -3113,10 +3092,8 @@
                 }
 
               }else if(sessionStorage['openGroup']=='cab'){
-                console.log('cab')
                 _this.getCabMembers();
               }else if(sessionStorage['openGroup']=='soab'){
-                console.log('soab')
                 _this.getSoabMembers();
               }
             }else{
@@ -3316,16 +3293,12 @@
       },
       onContentChange (val) {
 
-        // console.log(this.$refs[this.editor_id].$data.outContent)
         this.content = this.$refs[this.editor_id].$data.outContent;
         // this.$refs[this.editor_id].editor.html(this.content);
-        // $('#editor_id'+this.rid).val()
-
       },
 
 
       preview(){
-        //ke-toolbar-icon ke-toolbar-icon-url ke-icon-preview
         let btn = document.querySelector('#compose'+this.rid+' .ke-toolbar-icon.ke-toolbar-icon-url.ke-icon-preview');
         btn.click();
       },
@@ -3378,22 +3351,24 @@
           this.state1 = '';
         }else{
           if(this.state1){
-            if(this.hashMail[this.state1]){
+            let arr = this.state1.split(/[,;，；]/);
+            arr.forEach(val=>{
+              if(this.hashMail[val] || val == ''){
 
-            }else{
-              this.hashMail[this.state1] = true;
-              let obj = {};
-              obj.value = this.state1;
-              obj.email = this.state1;
-              obj.fullname = '';
-              if(emailReg.test(this.state1)){
-                obj.status = true;
               }else{
-                obj.status = false;
-              }
-              this.maillist.push(obj);
-              this.state1 = '';
-            }
+                this.hashMail[val] = true;
+                let obj = {};
+                obj.value = val;
+                obj.email = val;
+                obj.fullname = '';
+                if(emailReg.test(val)){
+                  obj.status = true;
+                }else{
+                  obj.status = false;
+                }
+                this.maillist.push(obj);
+                }
+            })
           }
           this.state1 = '';
         }
@@ -3439,22 +3414,24 @@
           this.state_copyer = '';
         }else{
           if(this.state_copyer){
-            if(this.hashMail_copyer[this.state_copyer]){
+            let arr = this.state_copyer.split(/[,;，；]/);
+            arr.forEach(val=>{
+              if(this.hashMail_copyer[val] || val == ''){
 
-            }else{
-              this.hashMail_copyer[this.state_copyer] = true;
-              let obj = {};
-              obj.value = this.state_copyer;
-              obj.email = this.state_copyer;
-              obj.fullname = '';
-              if(emailReg.test(this.state_copyer)){
-                obj.status = true;
               }else{
-                obj.status = false;
-              }
-              this.maillist_copyer.push(obj);
-              this.state_copyer = '';
-            }
+                this.hashMail_copyer[val] = true;
+                let obj = {};
+                obj.value = val;
+                obj.email = val;
+                obj.fullname = '';
+                if(emailReg.test(val)){
+                  obj.status = true;
+                }else{
+                  obj.status = false;
+                }
+                this.maillist_copyer.push(obj);
+                }
+            })
           }
           this.state_copyer = '';
         }
@@ -3473,22 +3450,24 @@
           this.state_bcc = '';
         }else{
           if(this.state_bcc){
-            if(this.hashMail_bcc[this.state_bcc]){
+            let arr = this.state_bcc.split(/[,;，；]/);
+            arr.forEach(val=>{
+              if(this.hashMail_bcc[val] || val == ''){
 
-            }else{
-              this.hashMail_bcc[this.state_bcc] = true;
-              let obj = {};
-              obj.value = this.state_bcc;
-              obj.email = this.state_bcc;
-              obj.fullname = '';
-              if(emailReg.test(this.state_bcc)){
-                obj.status = true;
               }else{
-                obj.status = false;
-              }
-              this.maillist_bcc.push(obj);
-              this.state_bcc = '';
-            }
+                this.hashMail_bcc[val] = true;
+                let obj = {};
+                obj.value = val;
+                obj.email = val;
+                obj.fullname = '';
+                if(emailReg.test(val)){
+                  obj.status = true;
+                }else{
+                  obj.status = false;
+                }
+                this.maillist_bcc.push(obj);
+                }
+            })
           }
           this.state_bcc = '';
         }
@@ -3538,8 +3517,6 @@
         let count = 1;
         let arr = [];
         function getResult(page){
-          console.log('page')
-          console.log(page)
           let param = {
             "page": page,
             "page_size": 10,
@@ -3558,7 +3535,6 @@
               obj.status = true;
               arr.push(obj);
             }
-            console.log(count<Math.ceil(suc.data.count/10))
             if(count<Math.ceil(suc.data.count/10)){
               count ++;
               getResult(count);
@@ -3758,13 +3734,9 @@
           }
       },
       changeShowIndex(k){
-        console.log(k)
-        console.log(this.contactList[k].show)
         if(this.contactList[k].show){
           this.contactList[k].show = false;
-          console.log('123')
         }else{
-          console.log('1sdfa23')
           for(let i=0;i<this.contactList.length;i++){
             if(i==k){
               this.contactList[i].show = true;
@@ -3782,7 +3754,6 @@
 
     },
     mounted() {
-      console.log(this.type)
        this.$nextTick(() => {
         // window.uploader = this.$refs.uploader.uploader
 

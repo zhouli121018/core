@@ -2,13 +2,17 @@
   <div class="j-module-content j-maillist mllist-list height100 ">
     <el-row class="" style="padding: 0px;">
       <el-col :span="24" class="breadcrumb-container">
-        <el-breadcrumb separator="/"><el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item><el-breadcrumb-item><a href="#">设置中心</a></el-breadcrumb-item><el-breadcrumb-item>SMTP外发代理</el-breadcrumb-item></el-breadcrumb>
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item :to="{ path: '/welcome' }">{{plang.COMMON_HOME_NAME}}</el-breadcrumb-item>
+          <el-breadcrumb-item><a href="#">{{plang.SETTING_INDEX_NAME}}</a></el-breadcrumb-item>
+          <el-breadcrumb-item>{{plang.SETTING_INDEX_SMTP_MENU}}</el-breadcrumb-item>
+        </el-breadcrumb>
       </el-col>
     </el-row>
     <section class="content content-list height100" style="background-color: #fff;background: rgba(255,255,255,0.9);padding-bottom: 13px;" v-loading="listLoading">
 
       <el-row class="toolbar">
-        <el-col :span="12"><el-button type="primary" @click="createFormShow" size="mini">添加</el-button></el-col>
+        <el-col :span="12"><el-button type="primary" @click="createFormShow" size="mini">{{plang.COMMON_BUTTON_ADD}}</el-button></el-col>
         <el-col :span="12" >
           <el-pagination layout="total, sizes, prev, pager, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange"
                          :page-sizes="[10, 20, 50, 100]" :current-page="page" :page-size="page_size" v-if="total>0" :total="total" style="float: right">
@@ -19,116 +23,116 @@
       <el-table :data="listTables" highlight-current-row width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
         <el-table-column type="selection" width="60"></el-table-column>
         <el-table-column type="index" label="No." width="80"></el-table-column>
-        <el-table-column prop="server" label="SMTP服务器"></el-table-column>
-        <el-table-column prop="account" label="帐号"></el-table-column>
-        <el-table-column label="验证密码">
+        <el-table-column prop="server" :label="plang.SETTING_SMTP_SERVER"></el-table-column>
+        <el-table-column prop="account" :label="plang.SETTING_SMTP_ACC"></el-table-column>
+        <el-table-column :label="plang.SETTING_SMTP_PASSWD">
           <template slot-scope="scope">
             <i class="el-alert--success el-alert__icon el-icon-success" v-if="scope.row.auth==1"></i>
             <i class="el-alert--error el-alert__icon el-icon-error" v-if="scope.row.auth==-1"></i>
           </template>
         </el-table-column>
-        <el-table-column label="使用ssl验证">
+        <el-table-column :label="plang.SETTING_SMTP_SSL">
           <template slot-scope="scope">
             <i class="el-alert--success el-alert__icon el-icon-success" v-if="scope.row.ssl==1"></i>
             <i class="el-alert--error el-alert__icon el-icon-error" v-if="scope.row.ssl==-1"></i>
           </template>
         </el-table-column>
-        <el-table-column label="状态">
+        <el-table-column :label="plang.COMMON_STATUS">
           <template slot-scope="scope">
             <i class="el-alert--success el-alert__icon el-icon-success" v-if="scope.row.disabled=='-1'"></i>
             <i class="el-alert--error el-alert__icon el-icon-error" v-if="scope.row.disabled=='1'"></i>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column :label="plang.COMMON_OPRATE">
           <template slot-scope="scope">
-            <el-button size="mini" @click="updateFormShow(scope.$index, scope.row)">修改</el-button>
-            <el-button type="danger" size="mini" @click="deleteRow(scope.$index, scope.row)">删除</el-button>
+            <el-button size="mini" @click="updateFormShow(scope.$index, scope.row)">{{plang.COMMON_BUTTON_ALTER}}</el-button>
+            <el-button type="danger" size="mini" @click="deleteRow(scope.$index, scope.row)">{{plang.COMMON_BUTTON_DELETE}}</el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-col :span="24" class="toolbar"></el-col>
 
       <!--新增 -->
-      <el-dialog title="添加"  :visible.sync="createFormVisible" :close-on-click-modal="false" :append-to-body="true">
+      <el-dialog :title="plang.COMMON_BUTTON_ADD"  :visible.sync="createFormVisible" :close-on-click-modal="false" :append-to-body="true">
         <el-form :model="createForm" label-width="130px" :rules="createFormRules" ref="createForm" size="mini">
-          <el-form-item label="SMTP服务器地址" prop="server">
+          <el-form-item :label="plang.SETTING_SMTP_SERVER" prop="server">
             <el-input v-model.trim="createForm.server" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="帐号名称" prop="account" :error="account_error">
+          <el-form-item :label="plang.SETTING_SMTP_ACC" prop="account" :error="account_error">
             <el-input v-model.trim="createForm.account" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="帐号密码" prop="password">
+          <el-form-item :label="plang.SETTING_SMTP_PASSWD" prop="password">
             <el-input v-model.trim="createForm.password" auto-complete="off" type="password"></el-input>
-            <small>请输入以上邮箱对应的密码，有些邮件服务商只允许第三方客户端用"授权码"登录，则需要改为输入该服务商提供的"授权码"</small>
+            <small>{{plang.SETTING_MOVE_ADD_PASSWORD_DESC}}</small>
           </el-form-item>
-          <el-form-item label="需要验证">
+          <el-form-item :label="plang.SETTING_SMTP_AUTH">
             <el-radio-group v-model="createForm.auth">
-              <el-radio label="1">是</el-radio>
-              <el-radio label="-1">否</el-radio>
+              <el-radio label="1">{{plang.COMMON_STATUS_SHI}}</el-radio>
+              <el-radio label="-1">{{plang.COMMON_STATUS_FOU}}</el-radio>
             </el-radio-group>
-            <br><small>除非在对方服务器开启了免密码验证，否则必须勾选</small>
+            <br><small>{{plang.SETTING_SMTP_AUTH_DESC}}</small>
           </el-form-item>
-          <el-form-item label="ssl方式登录">
+          <el-form-item :label="plang.SETTING_SMTP_SSL">
             <el-radio-group v-model="createForm.ssl">
-              <el-radio label="1">是</el-radio>
-              <el-radio label="-1">否</el-radio>
+              <el-radio label="1">{{plang.COMMON_STATUS_SHI}}</el-radio>
+              <el-radio label="-1">{{plang.COMMON_STATUS_FOU}}</el-radio>
             </el-radio-group>
-            <br><small>ssl方式登录，是否勾选此项请咨询对方服务器商了解设置要求</small>
+            <br><small>{{plang.SETTING_MOVE_ADD_SSL_DESC}}</small>
           </el-form-item>
-          <el-form-item label="备注">
+          <el-form-item :label="plang.COMMON_REMARK">
             <span style="font-size: 12px;">
-              提交的时候会验证，可能需要耐心等待3-10秒，超时请重新验证。
-              <br>QQ邮箱的登录需要开启"授权码"，无法使用密码直接登录。详情请访问 此页面了解"邮箱授权码设置"。
-              <br>刚设置的帐号会登录目标服务器执行一次验证，若验证失败则无法设置数据。
-              <br>当邮件出站时，若设置的中转服务器无法完成验证或发送，会改为由本站出站，同时会有一封邮件说明（每2小时只投递一次）
+              {{plang.SETTING_SMTP_REMARK1}}
+              <br>{{plang.SETTING_SMTP_REMARK2}}
+              <br>{{plang.SETTING_SMTP_REMARK3}}
+              <br>{{plang.SETTING_SMTP_REMARK4}}
             </span>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="createFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">提交</el-button>
+          <el-button @click.native="createFormVisible = false">{{plang.COMMON_BUTTON_CANCELL}}</el-button>
+          <el-button type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">{{plang.COMMON_BUTTON_SUBMIT}}</el-button>
         </div>
       </el-dialog>
 
       <!--修改 -->
-      <el-dialog title="修改"  :visible.sync="updateFormVisible" :close-on-click-modal="false" :append-to-body="true">
+      <el-dialog :title="plang.COMMON_BUTTON_ALTER" :visible.sync="updateFormVisible" :close-on-click-modal="false" :append-to-body="true">
         <el-form :model="updateForm" label-width="130px" :rules="updateFormRules" ref="updateForm" size="mini">
-          <el-form-item label="SMTP服务器地址" prop="server">
+          <el-form-item :label="plang.SETTING_SMTP_SERVER" prop="server">
             <el-input v-model.trim="updateForm.server" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="帐号名称" prop="account" :error="account_error">
+          <el-form-item :label="plang.SETTING_SMTP_ACC" prop="account" :error="account_error">
             <el-input v-model.trim="updateForm.account" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="帐号密码" prop="password">
+          <el-form-item :label="plang.SETTING_SMTP_PASSWD" prop="password">
             <el-input v-model.trim="updateForm.password" auto-complete="off" type="password"></el-input>
-            <small>请输入以上邮箱对应的密码，有些邮件服务商只允许第三方客户端用"授权码"登录，则需要改为输入该服务商提供的"授权码"</small>
+            <small>{{plang.SETTING_MOVE_ADD_PASSWORD_DESC}}</small>
           </el-form-item>
-          <el-form-item label="需要验证">
+          <el-form-item :label="plang.SETTING_SMTP_AUTH">
             <el-radio-group v-model="updateForm.auth">
-              <el-radio label="1">是</el-radio>
-              <el-radio label="-1">否</el-radio>
+              <el-radio label="1">{{plang.COMMON_STATUS_SHI}}</el-radio>
+              <el-radio label="-1">{{plang.COMMON_STATUS_FOU}}</el-radio>
             </el-radio-group>
-            <br><small>除非在对方服务器开启了免密码验证，否则必须勾选</small>
+            <br><small>{{plang.SETTING_SMTP_AUTH_DESC}}</small>
           </el-form-item>
-          <el-form-item label="ssl方式登录">
+          <el-form-item :label="plang.SETTING_SMTP_SSL">
             <el-radio-group v-model="updateForm.ssl">
-              <el-radio label="1">是</el-radio>
-              <el-radio label="-1">否</el-radio>
+              <el-radio label="1">{{plang.COMMON_STATUS_SHI}}</el-radio>
+              <el-radio label="-1">{{plang.COMMON_STATUS_FOU}}</el-radio>
             </el-radio-group>
-            <br><small>ssl方式登录，是否勾选此项请咨询对方服务器商了解设置要求</small>
+            <br><small>{{plang.SETTING_MOVE_ADD_SSL_DESC}}</small>
           </el-form-item>
-          <el-form-item label="备注">
+          <el-form-item :label="plang.COMMON_REMARK">
             <span style="font-size: 12px;">
-              提交的时候会验证，可能需要耐心等待3-10秒，超时请重新验证。
-              <br>QQ邮箱的登录需要开启"授权码"，无法使用密码直接登录。详情请访问 此页面了解"邮箱授权码设置"。
-              <br>刚设置的帐号会登录目标服务器执行一次验证，若验证失败则无法设置数据。
-              <br>当邮件出站时，若设置的中转服务器无法完成验证或发送，会改为由本站出站，同时会有一封邮件说明（每2小时只投递一次）
+              {{plang.SETTING_SMTP_REMARK1}}
+              <br>{{plang.SETTING_SMTP_REMARK2}}
+              <br>{{plang.SETTING_SMTP_REMARK3}}
+              <br>{{plang.SETTING_SMTP_REMARK4}}
             </span>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="updateFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">提交</el-button>
+          <el-button @click.native="updateFormVisible = false">{{plang.COMMON_BUTTON_CANCELL}}</el-button>
+          <el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">{{plang.COMMON_BUTTON_SUBMIT}}</el-button>
         </div>
       </el-dialog>
 
@@ -140,7 +144,9 @@
 
   export default {
     data() {
+      let _self = this;
       return {
+        plang:_self.$parent.lan,
         total: 0,
         page: 1,
         page_size: 10,
@@ -153,18 +159,18 @@
         createFormLoading: false,
         createForm: { server: '', account: '', password: '', auth: '1', ssl: '-1' },
         createFormRules: {
-          server: [ { required: true, message: '请填写SMTP服务器地址', trigger: 'blur' } ],
-          account: [ { required: true, message: '请填写帐号名称', trigger: 'blur' } ],
-          password: [ { required: true, message: '请填写帐号密码', trigger: 'blur' } ],
+          server: [ { required: true, message: _self.$parent.lan.SETTING_SMTP_SERVER_RULE, trigger: 'blur' } ],
+          account: [ { required: true, message: _self.$parent.lan.SETTING_SMTP_ACC_RULE, trigger: 'blur' } ],
+          password: [ { required: true, message: _self.$parent.lan.SETTING_SMTP_PASSWD_RULE, trigger: 'blur' } ],
         },
 
         updateFormVisible: false,
         updateFormLoading: false,
         updateForm: { server: '', account: '', password: '', auth: '1', ssl: '-1' },
         updateFormRules: {
-          server: [ { required: true, message: '请填写SMTP服务器地址', trigger: 'blur' } ],
-          account: [ { required: true, message: '请填写帐号名称', trigger: 'blur' } ],
-          password: [ { required: true, message: '请填写帐号密码', trigger: 'blur' } ],
+          server: [ { required: true, message: _self.$parent.lan.SETTING_SMTP_SERVER_RULE, trigger: 'blur' } ],
+          account: [ { required: true, message: _self.$parent.lan.SETTING_SMTP_ACC_RULE, trigger: 'blur' } ],
+          password: [ { required: true, message: _self.$parent.lan.SETTING_SMTP_PASSWD_RULE, trigger: 'blur' } ],
         },
 
       }
@@ -214,12 +220,12 @@
         this.account_error='';
         this.$refs.createForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.plang.COMMON_BUTTON_CONFIRM_SUBMIT, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.createFormLoading = true;
               let para = Object.assign({}, this.createForm);
               settingTransferCreate(para)
                 .then((res) => {
-                  this.$message({message: '添加成功', type: 'success'});
+                  this.$message({message: this.plang.COMMON_ADD_SUCCESS, type: 'success'});
                   this.$refs['createForm'].resetFields();
                   this.createFormVisible = false;
                   this.createFormLoading = false;
@@ -254,12 +260,12 @@
         this.account_error='';
         this.$refs.updateForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.plang.COMMON_BUTTON_CONFIRM_SUBMIT, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.updateFormLoading = true;
               let para = Object.assign({}, this.updateForm);
               settingTransferUpdate(para.id, para)
                 .then((res) => {
-                  this.$message({message: '修改成功', type: 'success'});
+                  this.$message({message: this.plang.COMMON_ALTER_SUCCESS, type: 'success'});
                   this.$refs['updateForm'].resetFields();
                   this.updateFormVisible = false;
                   this.updateFormLoading = false;
@@ -280,19 +286,19 @@
       },
       deleteRow: function (index, row) {
         let that = this;
-        this.$confirm('确认删除吗?', '提示', {
+        this.$confirm(this.plang.COMMON_BUTTON_DELETE_SUBMIT, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           settingTransferDelete(row.id)
             .then((response)=> {
-              that.$message({ message: '删除成功', type: 'success' });
+              that.$message({ message: this.plang.COMMON_DELETE_SUCCESS, type: 'success' });
               if((this.page-1)*this.page_size >= (this.total-1)){
                 this.page = 1;
               }
               this.getTables();
             })
             .catch(function (error) {
-              that.$message({ message: '删除失败',  type: 'error' });
+              that.$message({ message: this.plang.COMMON_DELETE_FAILED,  type: 'error' });
             });
         });
       },

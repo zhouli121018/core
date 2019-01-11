@@ -5,9 +5,9 @@
             <aside class="mlsidebar">
                 <div class="mlsidebar-bg"></div>
                 <div class="u-btns" style="width:100%;margin:0;padding:12px 12px 0;box-sizing: border-box">
-                    <button class="u-btn u-btn-default u-btn-large btn-compose j-mlsb" title="写信" type="button" @click="goToCompose" :disabled="disabledCompose" style="width:60%;box-sizing: border-box"><i class="iconfont icon-iconcreate"></i> <span class="title">写 信</span></button>
-                  <button class="u-btn u-btn-default u-btn-large btn-inbox j-mlsb" type="button" @click="showDialog" title="添加文件夹" style="width:20%;box-sizing: border-box"><i class="el-icon-plus"></i></button>
-                    <button class="u-btn u-btn-default u-btn-large btn-inbox j-mlsb" title="刷新邮件列表" type="button" @click="reloadMails" style="width:20%;box-sizing: border-box"><i class="iconfont icon-iconinbox"></i></button>
+                    <button class="u-btn u-btn-default u-btn-large btn-compose j-mlsb" :title="lan.MAILBOX_WRITE_LETTERS" type="button" @click="goToCompose" :disabled="disabledCompose" style="width:60%;box-sizing: border-box"><i class="iconfont icon-iconcreate"></i> <span class="title">{{lan.MAILBOX_WRITE_LETTERS}}</span></button>
+                  <button class="u-btn u-btn-default u-btn-large btn-inbox j-mlsb" type="button" @click="showDialog" :title="lan.MAILBOX_ADD_FOLDERS" style="width:20%;box-sizing: border-box"><i class="el-icon-plus"></i></button>
+                    <button class="u-btn u-btn-default u-btn-large btn-inbox j-mlsb" :title="lan.MAILBOX_REFRESH_MAILING_LIST" type="button" @click="reloadMails" style="width:20%;box-sizing: border-box"><i class="iconfont icon-iconinbox"></i></button>
                 </div>
 
                 <div class="wrapper u-scroll">
@@ -27,33 +27,33 @@
                           <el-button v-if="false"
                             type="text"
                             size="mini"
-                            @click.stop.prevent="() => showDialog(data)" title="新建文件夹">
+                            @click.stop.prevent="() => showDialog(data)" :title="lan.MAILBOX_NEW_FOLDER">
                             <i class="el-icon-plus"></i>
                           </el-button>
                           <el-button
                             type="text"
                             size="mini"
                             v-if="!data.is_default"
-                            @click.stop="() => remove(node, data)" title="删除">
+                            @click.stop="() => remove(node, data)" :title="lan.COMMON_BUTTON_DELETE">
                             <i class="el-icon-delete"></i>
                           </el-button>
                         </span>
                       </span>
                     </el-tree>
                     <div v-if="review_show" @click="goReview" class="review_style" :class="{active:review_active}"  style="border-top:2px solid #ddd;text-align:left;padding-left:24px;height:36px;line-height:36px;">
-                      邮件审核 <span  v-if="reviewUnseen"  style="color:#f56c6c;">({{reviewUnseen}})</span><el-badge v-if="false" :value="reviewUnseen" type="primary"/>
+                      {{lan.MAILBOX_MAIL_AUDIT}} <span  v-if="reviewUnseen"  style="color:#f56c6c;">({{reviewUnseen}})</span><el-badge v-if="false" :value="reviewUnseen" type="primary"/>
                     </div>
                 </div>
-                      <el-dialog title="新建文件夹" :visible.sync="dialogFormVisible" :append-to-body="true">
+                      <el-dialog :title="lan.MAILBOX_NEW_FOLDER" :visible.sync="dialogFormVisible" :append-to-body="true">
                     <el-form :model="form" :rules="rules" ref="ruleForm">
-                      <el-form-item label="文件夹名称" :label-width="formLabelWidth" prop="name">
+                      <el-form-item :label="lan.MAILBOX_FOLDER_NAME" :label-width="formLabelWidth" prop="name">
                         <el-input v-model="form.name" auto-complete="off"></el-input>
                       </el-form-item>
 
                     </el-form>
                     <div slot="footer" class="dialog-footer">
-                      <el-button @click="dialogFormVisible = false">取 消</el-button>
-                      <el-button type="primary" @click="append">确 定</el-button>
+                      <el-button @click="dialogFormVisible = false">{{lan.cancel}}</el-button>
+                      <el-button type="primary" @click="append">{{lan.sure}}</el-button>
                     </div>
                   </el-dialog>
 
@@ -79,7 +79,7 @@
                       </el-tab-pane>
                       <el-tab-pane class="testaaa" name="closeAll">
                         <!--style="color:#f56c6c"-->
-                         <span slot="label" style="padding:0" class="no_close" title="关闭所有标签页">
+                         <span slot="label" style="padding:0" class="no_close" :title="lan.MAILBOX_CLOSE_ALL_TABS">
                             <i class="iconfont icon-iconcloseall closeall" ></i>
                          </span>
                       </el-tab-pane>
@@ -96,6 +96,7 @@
 </template>
 <script>
 import router from '@/router'
+import lan from '@/assets/js/lan';
 import MailAside from './components/MailAside'
 import {getMailMessage,getFloder,creatFolder,deleteFolder,reviewShow } from "@/api/api"
 import Innerbox from './components/innerbox'
@@ -133,7 +134,7 @@ export default {
           to: [],
           cc: [],
           subject: '',
-          secret:'非密',
+          secret:'',
           is_save_sent:true,
           is_confirm_read:true,
           is_schedule:false,
@@ -152,7 +153,7 @@ export default {
         tab_content_height:'',
         editableTabsValue2: '1',
         editableTabs2: [{
-          title: '收件箱',
+          title: '',
           name: '1',
           fid:'INBOX'
         }],
@@ -164,9 +165,9 @@ export default {
         activeTab:0,
         readId:'',
         readFolderId:'',
-        curr_folder:'收件箱',
+        curr_folder:'',
         unseencount:0,
-        tab1:{id:0,url:'home',text:'收件箱'},
+        tab1:{id:0,url:'home',text:''},
         tabList:[],
         titleHash:[],
         boxId:'INBOX',
@@ -184,7 +185,7 @@ export default {
           region: '',
         },
         rules:{
-          name:[{required:true,message:'请填写文件夹名称！',trigger:'blur'}]
+          name:[{required:true,message:'',trigger:'blur'}]
         },
         formLabelWidth: '120px',
         rootFloder:''
@@ -236,7 +237,7 @@ export default {
       }else{
         this.$message({
           type:'error',
-          message:'对于您登陆的共享邮箱，没有权限做此操作。'
+          message:this.lan.MAILBOX_SHARE_POWER
         })
         return
       }
@@ -253,7 +254,7 @@ export default {
           to: [],
           cc: [],
           subject: '',
-          secret:'非密',
+          secret:'',
           is_save_sent:true,
           is_confirm_read:true,
           is_schedule:false,
@@ -286,7 +287,7 @@ export default {
           to: [],
           cc: [],
           subject: '',
-          secret:'非密',
+          secret:'',
           is_save_sent:true,
           is_confirm_read:true,
           is_schedule:false,
@@ -322,7 +323,7 @@ export default {
           to: [],
           cc: [],
           subject: '',
-          secret:'非密',
+          secret:'',
           is_save_sent:true,
           is_confirm_read:true,
           is_schedule:false,
@@ -354,7 +355,7 @@ export default {
         let newTabName = ++this.tabIndex + '';
         this.hashTab[type+rid+fid+''] = newTabName;
         this.editableTabs2.push({
-          title: subject||'无主题',
+          title: subject|| this.lan.MAILBOX_NO_SUBJECT,
           name: newTabName,
           content: 'New Tab content',
           rid:rid,
@@ -458,7 +459,7 @@ export default {
       }else{
         this.titleHash['compose']=true;
         this.$store.commit('setIsCompose',true)
-        this.tabList.push({id:'compose',text:'写信'})
+        this.tabList.push({id:'compose',text:this.lan.MAILBOX_WRITE_LETTERS})
       }
       this.activeTab = 'compose';
     },
@@ -515,7 +516,7 @@ export default {
             this.form.name='';
             this.$message({
               type: 'success',
-              message: '添加成功!'
+              message: this.lan.COMMON_ADD_SUCCESS
             });
           },(err)=>{
             let str = '';
@@ -524,7 +525,7 @@ export default {
             }
             this.$message({
               type: 'error',
-              message: '添加失败！'+str
+              message: this.lan.COMMON_ADD_FAILED + str
             });
             console.log(err);
           })
@@ -541,20 +542,20 @@ export default {
       const parent = node.parent;
       const children = parent.data.children || parent.data;
       const index = children.findIndex(d => d.id === data.id);
-      this.$confirm('确认删除 "'+data.label+'" 文件夹？执行后邮件将被彻底删除，此操作不可恢复，是否执行?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm( this.lan.MAILBOX_CONFIRM_DELETION1+' "'+data.label+'" '+ this.lan.MAILBOX_CONFIRM_DELETION2, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+        confirmButtonText: this.lan.sure,
+        cancelButtonText: this.lan.cancel,
         type: 'warning'
       }).then(() => {
         deleteFolder(data.id).then((suc)=>{
           this.getFloderfn();
           if(this.$route.path!='/mailbox/welcome' && this.checkNodes[0] == data.id){
             this.$router.push('/mailbox/innerbox/INBOX')
-            sessionStorage['checkNodeLabel'] = '收件箱'
+            sessionStorage['checkNodeLabel'] = this.lan.MAILBOX_INBOX
           }
           this.$message({
             type: 'success',
-            message: '删除成功!'
+            message: this.lan.COMMON_DELETE_SUCCESS
           });
         },(err)=>{
           console.log(err)
@@ -564,14 +565,11 @@ export default {
           }
           this.$message({
             type: 'error',
-            message: '删除失败! '+str
+            message:  this.lan.COMMON_DELETE_FAILED +str
           });
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
+
       });
 
     },
@@ -590,7 +588,7 @@ export default {
       if(this.$route.name != 'innerbox'){
         this.$router.push('/mailbox/innerbox/INBOX')
       }
-      this.addTab('compose','写信')
+      this.addTab('compose',this.lan.MAILBOX_WRITE_LETTERS)
       setTimeout(()=>{
         this.disabledCompose = false;
       },1500)
@@ -626,14 +624,6 @@ export default {
           obj['unseen'] = this.$store.getters.getUnseenCount[folder[i]['raw_name']];
           arr.push(obj);
         }
-
-        // let obj={};
-        //   obj['label'] = '邮件审核';
-        //   obj['id'] = 'review';
-        //   obj['flags'] = '';
-        //   obj['unseen'] = 1;
-        //   obj['is_default'] = true;
-        //   arr.push(obj);
         return arr;
       },
     newCount(){
@@ -641,24 +631,43 @@ export default {
     },
     sharedStatus(){
       return this.$store.getters.getSharedStatus;
+    },
+    lan:function(){
+      let lang = lan.zh
+      if(this.$store.getters.getLanguage=='zh'){
+        lang = lan.zh
+      }else if(this.$store.getters.getLanguage=='zh-tw'){
+        lang = lan.zh_tw
+      }else if(this.$store.getters.getLanguage=='en'){
+        lang = lan.en
+      }else if(this.$store.getters.getLanguage=='es'){
+        lang = lan.zh
+      }else{
+        lang = lan.zh
+      }
+      this.rules = {
+          name:[{required:true,message:lang.MAILBOX_FOLDER_NAME_RULES,trigger:'blur'}]
+        }
+      return lang
     }
   },
   created(){
+    this.editableTabs2[0].title = this.lan.MAILBOX_INBOX
+    this.curr_folder = this.lan.MAILBOX_INBOX
     this.getReviewShow();
     if(this.$route.name == 'innerbox'){
       this.showTabIndex = 1;
-      // this.getData({id:'INBOX',label:'收件箱'})
       this.setCurrentKey(this.$route.params)
       if(this.$store.getters.getFileJump){
-        this.addTab('compose_net_atta','写信');
+        this.addTab('compose_net_atta',this.lan.MAILBOX_WRITE_LETTERS);
         this.$store.dispatch('setFileJ',false)
       }
       if(this.$store.getters.getFileJumpEvent){
-        this.addTab('compose_net_atta_event','写信');
+        this.addTab('compose_net_atta_event',this.lan.MAILBOX_WRITE_LETTERS);
         this.$store.dispatch('setFileJEvent',false)
       }
       if(this.$store.getters.getContactJump){
-        this.addTab('compose_to_list','写信')
+        this.addTab('compose_to_list',this.lan.MAILBOX_WRITE_LETTERS)
         this.$store.dispatch('setContactJ',false)
       }
       this.review_active = false;
@@ -767,9 +776,9 @@ export default {
         next();
         return;
       }
-      this.$confirm('您正在写信中，是否离开写信页面？', '系统信息', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.lan.MAILBOX_WRITING, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+        confirmButtonText: this.lan.sure,
+        cancelButtonText: this.lan.cancel,
         dangerouslyUseHTMLString: true,
         type: 'warning'
       }).then(() => {

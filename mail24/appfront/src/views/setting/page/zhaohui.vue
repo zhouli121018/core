@@ -2,7 +2,11 @@
   <div class="j-module-content j-maillist mllist-list height100 ">
     <el-row class="" style="padding: 0px;">
       <el-col :span="24" class="breadcrumb-container">
-        <el-breadcrumb separator="/"><el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item><el-breadcrumb-item><a href="#">设置中心</a></el-breadcrumb-item><el-breadcrumb-item>邮件召回记录</el-breadcrumb-item></el-breadcrumb>
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item :to="{ path: '/welcome' }">{{plang.COMMON_HOME_NAME}}</el-breadcrumb-item>
+          <el-breadcrumb-item><a href="#">{{plang.SETTING_INDEX_NAME}}</a></el-breadcrumb-item>
+          <el-breadcrumb-item>{{plang.SETTING_INDEX_BLACK_MENU}}</el-breadcrumb-item>
+        </el-breadcrumb>
       </el-col>
     </el-row>
     <section class="content content-list height100" style="background-color: #fff;background: rgba(255,255,255,0.9);padding-bottom: 13px;" v-loading="listLoading">
@@ -15,10 +19,10 @@
         </el-col>
       </el-row>
 
-      <el-table :data="listTables" highlight-current-row width="100%" style="width: 100%;max-width:100%;" size="mini" border>
+      <el-table :data="listTables" highlight-current-row width="100%" style="width: 100%;max-width:100%;" size="mini" :empty-text="plang.COMMON_NODATA" border>
         <el-table-column type="index" label="No." width="80"></el-table-column>
-        <el-table-column prop="description" label="描述"></el-table-column>
-        <el-table-column prop="datetime" label="时间" width="200"></el-table-column>
+        <el-table-column prop="description" :label="plang.COMMON_DESCIPTION"></el-table-column>
+        <el-table-column prop="datetime" :label="plang.COMMON_TIME" width="200"></el-table-column>
       </el-table>
 
       <el-col :span="24" class="toolbar"></el-col>
@@ -31,7 +35,9 @@
 
   export default {
     data() {
+      let _self = this;
       return {
+        plang:_self.$parent.lan,
         total: 0,
         page: 1,
         page_size: 10,

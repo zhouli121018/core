@@ -5,16 +5,16 @@
       <div style="padding:4px 0 4px 4px;">
         <el-form :inline="true" :model="filters">
           <el-form-item style="margin-bottom: 0px!important;">
-            <el-button size="small" type="primary" icon="el-icon-d-arrow-left" v-if="current_name.parent_id" @click="changeParentFolder()">返回上层</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-upload" @click="uploadFormShow" v-if="this.permisson_type == '1' || this.permisson_type == '2' || this.permisson_type == '4'">上传</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-edit" @click="createFolderFormShow" v-if="this.is_supercompany || this.permisson_type == '1'">新建文件夹</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-download" :disabled="this.sels.length===0"  @click="zipDownload" v-if="this.permisson_type == '1' || this.permisson_type == '3' || this.permisson_type == '4'">下载</el-button>
-            <el-button plain size="small" type="danger" icon="el-icon-delete" :disabled="this.sels.length===0" @click="deleteFolders" v-if="this.is_supercompany || this.permisson_type == '1'">删除</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-remove" :disabled="this.sels.length===0" @click="moveFolderFormShow" v-if="this.is_supercompany || this.permisson_type == '1'">移动</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-message" :disabled="this.sels.length===0" @click="sendMail_net('more',sels)">邮件发送</el-button>
-            <el-button plain size="small" type="primary" icon="el-icon-setting" :disabled="this.sels.length===0" v-if="this.is_supercompany || this.permisson_type == '1'" @click="showAddDialog('more')">添加权限</el-button>
-            <el-button @click="showPermDialog" plain size="small" type="primary" icon="el-icon-view" v-if="this.is_supercompany || this.permisson_type == '1'">权限管理</el-button>
-            <el-button @click="showAllDialog" plain size="small" type="primary" icon="el-icon-plus" v-if="this.is_supercompany && this.current_folder_id==-1">赋予网盘管理员</el-button>
+            <el-button size="small" type="primary" icon="el-icon-d-arrow-left" v-if="current_name.parent_id" @click="changeParentFolder()">{{plang.FILE_P_PRE}}</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-upload" @click="uploadFormShow" v-if="this.permisson_type == '1' || this.permisson_type == '2' || this.permisson_type == '4'">{{plang.FILE_P_UPLOAD}}</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-edit" @click="createFolderFormShow" v-if="this.is_supercompany || this.permisson_type == '1'">{{plang.MAILBOX_NEW_FOLDER}}</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-download" :disabled="this.sels.length===0"  @click="zipDownload" v-if="this.permisson_type == '1' || this.permisson_type == '3' || this.permisson_type == '4'">{{plang.FILE_P_DOWNLOAD}}</el-button>
+            <el-button plain size="small" type="danger" icon="el-icon-delete" :disabled="this.sels.length===0" @click="deleteFolders" v-if="this.is_supercompany || this.permisson_type == '1'">{{plang.COMMON_BUTTON_DELETE}}</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-remove" :disabled="this.sels.length===0" @click="moveFolderFormShow" v-if="this.is_supercompany || this.permisson_type == '1'">{{plang.FILE_P_MOVE}}</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-message" :disabled="this.sels.length===0" @click="sendMail_net('more',sels)">{{plang.FILE_P_SEND}}</el-button>
+            <el-button plain size="small" type="primary" icon="el-icon-setting" :disabled="this.sels.length===0" v-if="this.is_supercompany || this.permisson_type == '1'" @click="showAddDialog('more')">{{plang.FILE_C_ADDPERM}}</el-button>
+            <el-button @click="showPermDialog" plain size="small" type="primary" icon="el-icon-view" v-if="this.is_supercompany || this.permisson_type == '1'">{{plang.FILE_C_MPERM}}</el-button>
+            <el-button @click="showAllDialog" plain size="small" type="primary" icon="el-icon-plus" v-if="this.is_supercompany && this.current_folder_id==-1">{{plang.FILE_C_PUTM}}</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -23,8 +23,8 @@
         <el-col>
           <div style="padding:0px 0 10px 14px;">
             <b>{{this.current_name.name}}</b>
-            <span style="font-size:12px;color:#bbb;margin:0 20px;">{{folder_count}} 个文件夹，{{file_count}} 个文件 </span>
-            <span style="font-size:12px;color:#bbb;"> 容量：</span>
+            <span style="font-size:12px;color:#bbb;margin:0 20px;">{{folder_count}} {{plang.FILE_P_FOLDERS}} {{file_count}} {{plang.FILE_P_FILES}} </span>
+            <span style="font-size:12px;color:#bbb;"> {{plang.FILE_P_CAP}} </span>
             <el-progress :percentage="folder_capacity.capacity" style="width:200px;display: inline-block;"></el-progress>
             <span style="font-size:12px;color:#409eff;margin-left: -49px;"> {{folder_capacity.used}} / {{folder_capacity.total}}</span>
           </div>
@@ -35,13 +35,13 @@
       <el-row>
         <el-col :span="12" style="padding-left:6px;">&nbsp;
           <span>
-            <span>路径：</span>
+            <span>{{plang.FILE_P_PATH}}</span>
             <span v-for="(item,k) in folder_names" :key="k" :title="item.name" :class="{clickable:k!=folder_names.length-1}" @click="changeFolderTables(item)">{{item.name}} <i v-if="k!=folder_names.length-1" style="color:#333;"> / </i></span>
           </span>
         </el-col>
         <el-col :span="12" style="text-align:right">
           <el-pagination :current-page="page" :page-sizes="[10, 20, 50]" :page-size="page_size" :total="total"
-                         @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange" layout="total, sizes, prev, pager, next">
+                         @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange" layout="total, sizes, prev, pager, next,jumper">
           </el-pagination>
         </el-col>
       </el-row>
@@ -49,7 +49,7 @@
         <el-table :data="listTables" tooltip-effect="dark" style="width: 100%;max-width:100%;height: 100%" @selection-change="f_TableSelsChange" :header-cell-style="{background:'#f0f1f3'}" size="mini">
           <el-table-column type="selection" width="55">
           </el-table-column>
-          <el-table-column label="名称">
+          <el-table-column :label="plang.COMMON_NAME">
             <template slot-scope="scope">
               <el-row >
                 <el-col :span="1" style="width:42px;padding-top:8px;">
@@ -60,34 +60,34 @@
                   <div v-if="scope.row.nettype=='file'">{{scope.row.name}}</div>
                   <a :href="blobUrl" download="" style="display:none;" ref="download"></a>
                   <div class="actions_a">
-                    <span @click="zipRowDownload(scope.row)" v-if="scope.row.is_own || permisson_type=='1' || permisson_type=='3' || permisson_type=='4'">下载</span>
-                    <span v-if="scope.row.nettype=='file'" @click="sendMail_net(scope.row)">发信</span>
+                    <span @click="zipRowDownload(scope.row)" v-if="scope.row.is_own || permisson_type=='1' || permisson_type=='3' || permisson_type=='4'">{{plang.FILE_P_DOWNLOAD}}</span>
+                    <span v-if="scope.row.nettype=='file'" @click="sendMail_net(scope.row)">{{plang.FILE_P_SEND2}}</span>
                     <!--<span>共享</span>-->
-                    <span @click="resetRowNameShow(scope.row)" v-if="scope.row.is_own || is_supercompany || permisson_type=='1'">重命名</span>
-                    <span @click="showAddDialog(scope.row)" v-if="scope.row.nettype=='folder' &&  permisson_type=='1'">添加权限</span>
-                    <span @click="$parent.preview(scope.row,'company',current_folder_id)" v-if="scope.row.nettype=='file' && /.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|xls|xlsx|doc|docx|ppt|pptx|xml|csv|md|log)$/.test(scope.row.name)">预览</span>
-                    <span @click="deleteRowFolders(scope.row)" v-if="is_supercompany || permisson_type=='1'" style="color:#f56c6c;">删除</span>
-                    <span @click="changeFolderTables(scope.row)" class="folder_type" v-if="scope.row.nettype=='folder' && permisson_type=='0'">访问</span>
+                    <span @click="resetRowNameShow(scope.row)" v-if="scope.row.is_own || is_supercompany || permisson_type=='1'">{{plang.FILE_P_RENAME}}</span>
+                    <span @click="showAddDialog(scope.row)" v-if="scope.row.nettype=='folder' &&  permisson_type=='1'">{{plang.FILE_C_ADDPERM}}</span>
+                    <span @click="$parent.preview(scope.row,'company',current_folder_id)" v-if="scope.row.nettype=='file' && /.(gif|jpg|jpeg|png|bmp|svg|pdf|html|txt|xls|xlsx|doc|docx|ppt|pptx|xml|csv|md|log)$/.test(scope.row.name)">{{plang.COMMON_BUTTON_PREVIEW}}</span>
+                    <span @click="deleteRowFolders(scope.row)" v-if="is_supercompany || permisson_type=='1'" style="color:#f56c6c;">{{plang.COMMON_BUTTON_DELETE}}</span>
+                    <span @click="changeFolderTables(scope.row)" class="folder_type" v-if="scope.row.nettype=='folder' && permisson_type=='0'">{{plang.FILE_C_VISIT}}</span>
                   </div>
                 </el-col>
               </el-row>
             </template>
           </el-table-column>
 
-          <el-table-column label="大小" width="120">
+          <el-table-column :label="plang.COMMON_SIZE" width="120">
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{scope.row.file_size|mailsize }}</span>
             </template>
           </el-table-column>
 
-          <el-table-column label="上传时间" width="250">
+          <el-table-column :label="plang.FILE_P_TIME" width="250">
             <template slot-scope="scope">
               <i class="el-icon-time"></i>
               <span style="margin-left: 10px">{{scope.row.created}}</span>
             </template>
           </el-table-column>
 
-          <el-table-column label="文件上传者" width="250">
+          <el-table-column :label="plang.FILE_C_UPLOADER" width="250">
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{scope.row.create_name}}</span>
             </template>
@@ -97,91 +97,85 @@
       </el-row>
 
 
-      <el-dialog title="新建文件夹"  :visible.sync="createFolderFormVisible"  :close-on-click-modal="false" :append-to-body="true">
+      <el-dialog :title="plang.MAILBOX_NEW_FOLDER"   :visible.sync="createFolderFormVisible"  :close-on-click-modal="false" :append-to-body="true">
         <el-form :model="createFolderForm" label-width="130px" :rules="createFolderFormRules" ref="createFolderForm">
 
-          <el-form-item label="文件夹上传位置" prop="folder_id">
-            <el-select v-model="createFolderForm.folder_id" placeholder="请选择文件夹上传位置" style="width: 100%">
+          <el-form-item :label="plang.FILE_P_UPPATH" prop="folder_id">
+            <el-select v-model="createFolderForm.folder_id" :placeholder="plang.FILE_P_UPPATH_PLACE" style="width: 100%">
               <el-option v-for="item in folder_fullpath" :key="item.id" :label="item.full_path" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
 
-          <el-form-item label="文件夹名称" prop="caption" :error="folder_id_error">
+          <el-form-item :label="plang.MAILBOX_FOLDER_NAME" prop="name" :error="folder_id_error">
             <el-input v-model.trim="createFolderForm.name" auto-complete="off"></el-input>
           </el-form-item>
 
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="createFolderFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="createFolderFormSubmit()" :loading="createFolderFormLoading">提交</el-button>
+          <el-button @click.native="createFolderFormVisible = false">{{plang.COMMON_BUTTON_CANCELL}}</el-button>
+          <el-button type="primary" @click.native="createFolderFormSubmit()" :loading="createFolderFormLoading">{{plang.COMMON_BUTTON_SUBMIT}}</el-button>
         </div>
       </el-dialog>
 
 
-      <el-dialog title="重命名"  :visible.sync="updateFormVisible"  :close-on-click-modal="false" :append-to-body="true">
+      <el-dialog :title="plang.FILE_P_RENAME"  :visible.sync="updateFormVisible"  :close-on-click-modal="false" :append-to-body="true">
         <el-form :model="updateForm" label-width="120px" :rules="updateFormRules" ref="updateForm">
 
-          <el-form-item label="名称" prop="name" :error="folder_name_error">
+          <el-form-item :label="plang.COMMON_NAME" prop="name" :error="folder_name_error">
             <el-input v-model.trim="updateForm.name" auto-complete="off"></el-input>
           </el-form-item>
 
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="updateFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">提交</el-button>
+          <el-button @click.native="updateFormVisible = false">{{plang.COMMON_BUTTON_CANCELL}}</el-button>
+          <el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">{{plang.COMMON_BUTTON_SUBMIT}}</el-button>
         </div>
       </el-dialog>
 
 
-      <el-dialog title="移动位置"  :visible.sync="moveFolderFormVisible"  :close-on-click-modal="false" :append-to-body="true">
+      <el-dialog :title="plang.FILE_P_MOVEPATH"  :visible.sync="moveFolderFormVisible"  :close-on-click-modal="false" :append-to-body="true">
         <el-form :model="moveFolderForm" label-width="130px" :rules="moveFolderFormRules" ref="moveFolderForm">
 
-          <el-form-item label="文件夹上传位置" prop="to_folder_id" :error="folder_id_error">
-            <el-select v-model="moveFolderForm.to_folder_id" placeholder="请选择文件夹上传位置" style="width: 100%">
+          <el-form-item :label="plang.FILE_P_MOVEPATH" prop="to_folder_id" :error="folder_id_error">
+            <el-select v-model="moveFolderForm.to_folder_id" :placeholder="plang.FILE_P_MOVEPATH_PLACE" style="width: 100%">
               <el-option v-for="item in folder_fullpath" :key="item.id" :label="item.full_path" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
 
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="moveFolderFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="moveFolderFormSubmit()" :loading="moveFolderFormLoading">提交</el-button>
+          <el-button @click.native="moveFolderFormVisible = false">{{plang.COMMON_BUTTON_CANCELL}}</el-button>
+          <el-button type="primary" @click.native="moveFolderFormSubmit()" :loading="moveFolderFormLoading">{{plang.COMMON_BUTTON_SUBMIT}}</el-button>
         </div>
       </el-dialog>
 
 
-      <el-dialog title="上传文件"  :visible.sync="uploadFormVisible"  :close-on-click-modal="false" :append-to-body="true">
+      <el-dialog :title="plang.CONTACT_PAB_ADD_FILE"  :visible.sync="uploadFormVisible"  :close-on-click-modal="false" :append-to-body="true">
         <el-form :model="uploadForm" label-width="130px" :rules="uploadFormRules" ref="uploadForm"
-
-                 element-loading-text="正在上传文件，请稍候..."
+                 :element-loading-text="plang.FILE_P_FILEUPING"
                  element-loading-spinner="el-icon-loading" >
-
-          <el-form-item label="上传位置" prop="folder_id">
+          <el-form-item :label="plang.FILE_P_UPPATH2" prop="folder_id">
             <el-select v-model="uploadForm.folder_id" style="width: 100%">
               <el-option v-for="item in folder_fullpath" :key="item.id" :label="item.full_path" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
-
           <el-form-item label=" ">
-
             <!--<el-upload action="" :http-request="uploadFile" multiple  :file-list="uploadForm.fileList" ref="uploadFile">-->
-              <!--<el-button size="small" type="primary"  plain icon="el-icon-upload" :on-success="uploadSuccess">点击上传</el-button>-->
-              <!--&lt;!&ndash;<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>&ndash;&gt;-->
+            <!--<el-button size="small" type="primary"  plain icon="el-icon-upload" :on-success="uploadSuccess">点击上传</el-button>-->
+            <!--&lt;!&ndash;<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>&ndash;&gt;-->
             <!--</el-upload>-->
-
             <uploader :options="options" class="uploader-example" :autoStart="false" :fileStatusText="fileStatusText"
-               @file-success="fileSuccess"
-               @file-added="fileAdded" >
+                      @file-success="fileSuccess"
+                      @file-added="fileAdded" >
               <uploader-unsupport></uploader-unsupport>
               <uploader-drop>
                 <!--<p>Drop files here to upload or</p>-->
                 <uploader-btn>上传文件</uploader-btn>
               </uploader-drop>
               <uploader-list v-loading="loading2"
-      element-loading-text="正在扫描文件..."
-      element-loading-spinner="el-icon-loading"
-      element-loading-background="rgba(0, 0, 0, 0.6)">
-
+                             :element-loading-text="plang.FILE_P_FILESCAN"
+                             element-loading-spinner="el-icon-loading"
+                             element-loading-background="rgba(0, 0, 0, 0.6)">
               </uploader-list>
 
             </uploader>
@@ -190,62 +184,61 @@
 
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="uploadFormVisible = false">取消</el-button>
+          <el-button @click.native="uploadFormVisible = false">{{plang.COMMON_BUTTON_CANCELL}}</el-button>
         </div>
 
       </el-dialog>
 
-      <el-dialog title="添加权限"  :visible.sync="addFormVisible"  :append-to-body="true" width="80%">
+      <el-dialog :title="plang.FILE_C_ADDPERM"  :visible.sync="addFormVisible"  :append-to-body="true" width="80%">
         <Contact @getData="getData"></Contact>
         <div style="text-align:right;">
-          操作权限：
-          <el-select v-model="perm" placeholder="请选择操作权限" size="small">
-            <el-option label="管理权限" value="1"></el-option>
-            <el-option label="上传权限" value="2"></el-option>
-            <el-option label="下载权限" value="3"></el-option>
-            <el-option label="上传和下载权限" value="4"></el-option>
+          {{plang.FILE_C_PERM_DESC}}
+          <el-select v-model="perm" :placeholder="plang.FILE_C_PERM_PLACE" size="small">
+            <el-option :label="plang.FILE_C_PERM1" value="1"></el-option>
+            <el-option :label="plang.FILE_C_PERM2" value="2"></el-option>
+            <el-option :label="plang.FILE_C_PERM3" value="3"></el-option>
+            <el-option :label="plang.FILE_C_PERM4" value="4"></el-option>
           </el-select>
         </div>
 
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="addFormVisible = false" size="small">取消</el-button>
-          <el-button type="primary" @click.native="addPerm" size="small">添加权限</el-button>
+          <el-button @click.native="addFormVisible = false" size="small">{{plang.COMMON_BUTTON_CANCELL}}</el-button>
+          <el-button type="primary" @click.native="addPerm" size="small">{{plang.FILE_C_ADDPERM}}</el-button>
         </div>
       </el-dialog>
 
-      <el-dialog title="赋予网盘管理员-网盘管理员对整个企业网盘具有管理权限哟~"  :visible.sync="allFormVisible" :append-to-body="true" width="80%">
+      <el-dialog :title="plang.FILE_C_PERM_TITLE"  :visible.sync="allFormVisible" :append-to-body="true" width="80%">
         <div slot="title">
-          <span>赋予网盘管理员</span> <span style="font-size:10px;font-weight: normal;margin-left:10px;"> <i class="el-icon-info"></i>网盘管理员对整个企业网盘具有管理权限哟~</span>
+          <span>{{plang.FILE_C_PUTM}}</span> <span style="font-size:10px;font-weight: normal;margin-left:10px;"> <i class="el-icon-info"></i>{{plang.FILE_C_PERM_TITLE2}}</span>
         </div>
         <Contact @getData="getData_all"></Contact>
         <div>
-          <span style="color:#999;">操作权限：</span><span>管理权限</span>
+          <span style="color:#999;">{{plang.FILE_C_PERM_DESC}}</span><span>{{plang.FILE_C_PERM1}}</span>
           <span style="margin:0 22px;">|</span>
-          <span style="color:#999;">权限范围：</span><span>企业网盘</span>
+          <span style="color:#999;">{{plang.FILE_C_PERM_DESC2}}</span><span>{{plang.FILE_INDEX_C}}</span>
 
         </div>
 
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="allFormVisible = false" size="small">取消</el-button>
-          <el-button type="primary" @click.native="addSuper" size="small">赋予网盘管理员</el-button>
+          <el-button @click.native="allFormVisible = false" size="small">{{plang.COMMON_BUTTON_CANCELL}}</el-button>
+          <el-button type="primary" @click.native="addSuper" size="small">{{plang.FILE_C_PUTM}}</el-button>
         </div>
       </el-dialog>
 
-      <el-dialog title="权限管理"  :visible.sync="permFormVisible" :append-to-body="true" width="80%">
+      <el-dialog :title="plang.FILE_C_MPERM"  :visible.sync="permFormVisible" :append-to-body="true" width="80%">
 
         <el-row :gutter="10" style="margin-bottom:10px;">
           <el-col style="text-align: right" :offset="6" :span="18">
-            <el-button size="small" @click="deletePerms" type="danger" plain>删除权限</el-button>
-            <span style="margin-left:18px;">搜索：</span>
-            <el-select v-model="search_perm" placeholder="请选择操作权限" size="small">
-              <el-option label="所有权限" value=""></el-option>
-              <el-option label="管理权限" :value="1"></el-option>
-              <el-option label="上传权限" :value="2"></el-option>
-              <el-option label="下载权限" :value="3"></el-option>
-              <el-option label="上传和下载权限" :value="4"></el-option>
+            <el-button size="small" @click="deletePerms" type="danger" plain>{{plang.FILE_C_PERMDELETE}}</el-button>
+            <span style="margin-left:18px;">{{plang.FILE_C_SEARCH}}</span>
+            <el-select v-model="search_perm" :placeholder="plang.FILE_C_PERM_PLACE" size="small">
+              <el-option :label="plang.FILE_C_PERM" value=""></el-option>
+              <el-option :label="plang.FILE_C_PERM1" value="1"></el-option>
+              <el-option :label="plang.FILE_C_PERM2" value="2"></el-option>
+              <el-option :label="plang.FILE_C_PERM3" value="3"></el-option>
+              <el-option :label="plang.FILE_C_PERM4" value="4"></el-option>
             </el-select>
-
-            <el-input placeholder="请输入关键字搜索" v-model="perm_search" class="input-with-select" size="small" style="width:auto">
+            <el-input :placeholder="plang.FILE_C_SEARCH2" v-model="perm_search" class="input-with-select" size="small" style="width:auto">
               <el-button slot="append" icon="el-icon-search"  @click="perm_searchfn" ></el-button>
             </el-input>
           </el-col>
@@ -269,8 +262,6 @@
                 </span>
               </el-tree>
             </div>
-
-
           </el-col>
           <el-col :span="18">
             <el-table
@@ -284,23 +275,23 @@
                 type="selection"
                 width="35">
               </el-table-column>
-              <el-table-column  label="部门 / 成员">
+              <el-table-column :label="plang.FILE_C_OBJNAME">
                 <template slot-scope="scope">
                   {{scope.row.object_name}}
                 </template>
               </el-table-column>
-              <el-table-column  label="被赋予权限的文件夹">
+              <el-table-column :label="plang.FILE_C_FOLDER">
                 <template slot-scope="scope">
                   {{scope.row.folder_name}}
                 </template>
               </el-table-column>
-              <el-table-column  label="操作权限" width="200">
+              <el-table-column :label="plang.FILE_C_PERM_DESC1" width="200">
                 <template slot-scope="scope">
-                  <el-select v-model="scope.row.perm" placeholder="请选择操作权限" size="small" @change="editPerm($event,scope.row)">
-                    <el-option label="管理权限" :value="1"></el-option>
-                    <el-option label="上传权限" :value="2"></el-option>
-                    <el-option label="下载权限" :value="3"></el-option>
-                    <el-option label="上传和下载权限" :value="4"></el-option>
+                  <el-select v-model="scope.row.perm" :placeholder="plang.FILE_C_PERM_PLACE" size="small" @change="editPerm($event,scope.row)">
+                    <el-option :label="plang.FILE_C_PERM1" :value="1"></el-option>
+                    <el-option :label="plang.FILE_C_PERM2" :value="2"></el-option>
+                    <el-option :label="plang.FILE_C_PERM3" :value="3"></el-option>
+                    <el-option :label="plang.FILE_C_PERM4" :value="4"></el-option>
                   </el-select>
                 </template>
               </el-table-column>
@@ -320,17 +311,17 @@
                            :current-page="page_perm"
                            :page-sizes="[10, 20,50,100]"
                            :page-size="page_size_perm"
-                           layout="total,prev, pager, next,sizes"
+                           layout="total,prev, pager, next,sizes,jumper"
                            :total="total_perm">
             </el-pagination>
           </el-col>
         </el-row>
 
       </el-dialog>
-      <el-dialog title="系统提示" :visible.sync="show_error" :append-to-body="true"  style="padding:0 50px;">
+      <el-dialog :title="plang.COMMON_BUTTON_SYSTEM_NOTICE" :visible.sync="show_error" :append-to-body="true"  style="padding:0 50px;">
         <el-table :data="error_list"  border>
-          <el-table-column property="object_name" label="部门/成员"></el-table-column>
-          <el-table-column property="error_message" label="详情" width="200"></el-table-column>
+          <el-table-column property="object_name" :label="plang.FILE_C_OBJNAME"></el-table-column>
+          <el-table-column property="error_message" :label="plang.CENTER_SEND_DETAIL" width="200"></el-table-column>
         </el-table>
       </el-dialog>
     </section>
@@ -338,6 +329,7 @@
 </template>
 
 <script>
+  import lan from '@/assets/js/lan';
   // import {Contact} from '@/components/Contact'
   import cookie from '@/assets/js/cookie';
   import SparkMD5 from 'spark-md5'
@@ -349,14 +341,15 @@
 
   export default {
     data() {
+      let _self = this;
       return {
         loading2:false,
         fileStatusText:{
-           success: '成功',
-            error: '失败',
-            uploading: '上传中...',
-            paused: '暂停',
-            waiting: '等待'
+          success: '',
+          error: '',
+          uploading: '',
+          paused: '',
+          waiting: '',
         },
         options: {
           // https://github.com/simple-uploader/Uploader/tree/develop/samples/Node.js
@@ -400,11 +393,11 @@
           },
           parseTimeRemaining: function (timeRemaining, parsedTimeRemaining) {
             return parsedTimeRemaining
-              .replace(/\syears?/, '年')
-              .replace(/\days?/, '天')
-              .replace(/\shours?/, '小时')
-              .replace(/\sminutes?/, '分钟')
-              .replace(/\sseconds?/, '秒')
+              .replace(/\syears?/, _self.plang.FILE_P_YEAR)
+              .replace(/\days?/, _self.plang.FILE_P_DAY)
+              .replace(/\shours?/, _self.plang.FILE_P_HOUR)
+              .replace(/\sminutes?/, _self.plang.FILE_P_MIN)
+              .replace(/\sseconds?/,_self.plang.FILE_P_SEC)
           },
         },
         show_error:false,
@@ -473,22 +466,22 @@
         createFolderFormLoading: false,
         createFolderFormRules: {
           name: [
-            { required: true, message: '请输入文件夹名称', trigger: 'blur' },
-            { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+            { required: true, message: '', trigger: 'blur' },
+            { min: 1, max: 20, message: '', trigger: 'blur' }
           ],
           folder_id: [
-            { required: true, message: '请选择文件夹上传位置', trigger: 'blur' },
+            { required: true, message: '', trigger: 'blur' },
           ]
         },
-        createFolderForm:{ name: "我的网盘",  folder_id: "" },
+        createFolderForm:{ name: '',  folder_id: "" },
 
         folder_name_error: '',
         updateFormVisible: false,//编辑界面是否显示
         updateFormLoading: false,
         updateFormRules: {
           name: [
-            { required: true, message: '请输入名称', trigger: 'blur' },
-            { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+            { required: true, message: '', trigger: 'blur' },
+            { min: 1, max: 20, message: '', trigger: 'blur' }
           ]
         },
         updateForm:{ name: "" },
@@ -497,7 +490,7 @@
         moveFolderFormLoading: false,
         moveFolderFormRules: {
           to_folder_id: [
-            { required: true, message: '请选择移至文件夹位置', trigger: 'blur' },
+            { required: true, message: '', trigger: 'blur' },
           ]
         },
         moveFolderForm:{ to_folder_id: "" },
@@ -506,7 +499,7 @@
         uploadFormLoading: false,
         uploadFormRules: {
           folder_id: [
-            { required: true, message: '请选择文件夹ID', trigger: 'blur' },
+            { required: true, message: '', trigger: 'blur' },
           ]
         },
         uploadForm:{ fileList: [], folder_id: -1, },
@@ -518,36 +511,37 @@
     created: function () {
       this.getTables();
       this.getCapacity();
+      this.createFolderForm = { name: this.plang.FILE_C_RULE1,  folder_id: "" }
     },
     methods: {
       calcMD56(file,callback){
-          // this.upstate="MD5计算中...";
-          // this.percent=0;
-          let chunkSize=2097152,
+        // this.upstate="MD5计算中...";
+        // this.percent=0;
+        let chunkSize=2097152,
           chunks=Math.ceil(file.size/chunkSize),
           currentChunk=0,
           spark=new SparkMD5.ArrayBuffer(),
           fileReader=new FileReader();
-          fileReader.onload=(e)=>{
-              //对于读取的文件计算hash码。
-              spark.append(e.target.result);
-              currentChunk++;
-              // this.percent=((currentChunk/chunks)*100).toFixed(2)-0;
-              if(currentChunk<chunks){
-                  loadNext();
-              }else{
-                let str = spark.end();
-                callback(str)
-                return str;
-              }
+        fileReader.onload=(e)=>{
+          //对于读取的文件计算hash码。
+          spark.append(e.target.result);
+          currentChunk++;
+          // this.percent=((currentChunk/chunks)*100).toFixed(2)-0;
+          if(currentChunk<chunks){
+            loadNext();
+          }else{
+            let str = spark.end();
+            callback(str)
+            return str;
           }
-          //分次读取大文件的内容，
-          function loadNext(){
-              let start=currentChunk*chunkSize,
-                  end=((start+chunkSize)>=file.size)?file.size:start+chunkSize;
-                  fileReader.readAsArrayBuffer(file.slice(start,end));
-          }
-          loadNext();
+        }
+        //分次读取大文件的内容，
+        function loadNext(){
+          let start=currentChunk*chunkSize,
+            end=((start+chunkSize)>=file.size)?file.size:start+chunkSize;
+          fileReader.readAsArrayBuffer(file.slice(start,end));
+        }
+        loadNext();
       },
       fileAdded(file){
         if(file.size==0){
@@ -560,7 +554,7 @@
             let fname = file.name;
             this.$message({
               type:'error',
-              message:fname+'上传失败！上传文件已超过个人网盘剩余容量！'
+              message:fname+ this.plang.FILE_C_MSG1
             })
             file.cancel();
             return false;
@@ -596,15 +590,14 @@
           this.getCapacity();
           this.getTables();
         }).catch(err=>{
-          this.tip = '服务器错误！'
+          this.tip = this.plang.FILE_P_SERVERERR;
           if(err.non_field_errors){
             this.tip = err.non_field_errors[0]
           }
           this.$message({
             type:"error",
-            message:' '+file.name+"上传失败！"+this.tip
+            message:' '+file.name+this.plang.FILE_P_UPFAILED+this.tip
           });
-          console.log('merge错误！',err)
         })
       },
       fileSuccess(rootFile, file, message, chunk){
@@ -630,7 +623,7 @@
         updatePerm(row.id,param).then(res=>{
           this.$message({
             type:'success',
-            message:'修改权限成功！'
+            message: this.plang.FILE_C_MSG2
           })
         }).catch(err=>{
           let str = '';
@@ -639,21 +632,21 @@
           }
           this.$message({
             type:'error',
-            message:'修改权限失败！'+str
+            message:this.plang.FILE_C_MSG3+str
           })
         })
       },
       deletePermById(row){
-        this.$confirm('删除权限，确定？', '系统信息', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm(this.plang.FILE_C_MSG4, this.plang.COMMON_BUTTON_SYSTEM_NOTICE, {
+          confirmButtonText: this.plang.COMMON_BUTTON_CONFIRM,
+          cancelButtonText: this.plang.COMMON_BUTTON_CANCELL,
           dangerouslyUseHTMLString: true,
           type: 'warning'
         }).then(() => {
           deletePerm(row.id).then(res=>{
             this.$message({
               type:'success',
-              message:'删除权限成功！'
+              message: this.plang.FILE_C_MSG5
             })
             this.getPermList();
           }).catch(err=>{
@@ -667,7 +660,7 @@
           }
           this.$message({
             type:'error',
-            message:'删除权限失败！'+str
+            message:this.plang.FILE_C_MSG6+str
           })
         });
 
@@ -676,9 +669,9 @@
         this.perm_sels = selection;
       },
       deletePerms(){
-        this.$confirm('删除选中的权限，确定？', '系统信息', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm(this.plang.FILE_C_MSG7, this.plang.COMMON_BUTTON_SYSTEM_NOTICE, {
+          confirmButtonText: this.plang.COMMON_BUTTON_CONFIRM,
+          cancelButtonText: this.plang.COMMON_BUTTON_CANCELL,
           dangerouslyUseHTMLString: true,
           type: 'warning'
         }).then(() => {
@@ -692,7 +685,7 @@
           batchDelete(param).then(res=>{
             this.$message({
               type:'success',
-              message:'删除权限成功！'
+              message:this.plang.FILE_C_MSG5
             })
             this.getPermList();
           }).catch(err=>{
@@ -729,7 +722,7 @@
           }
           this.$message({
             type:'error',
-            message:'获取权限成员列表失败! '+str
+            message:this.plang.FILE_C_MSG8+str
           })
           this.permFormLoading = false;
         })
@@ -740,7 +733,7 @@
             {
               "children":  res.data.results,
               "id": -1,
-              "label": "企业网盘"
+              "label": this.plang.FILE_INDEX_C
             }
           ]
           this.$nextTick(()=>{
@@ -782,7 +775,7 @@
           this.allFormLoading = false;
           this.$message({
             type:'success',
-            message:'赋予管理员权限成功！'
+            message:this.plang.FILE_C_MSG9
           })
         }).catch(err=>{
           let str = '';
@@ -794,7 +787,7 @@
           }
           this.$message({
             type:'error',
-            message:'赋予管理员权限失败！'+str
+            message:this.plang.FILE_C_MSG10+str
           })
           this.allFormLoading = false;
         })
@@ -832,7 +825,7 @@
           this.addFormLoading = false;
           this.$message({
             type:'success',
-            message:'添加权限成功！'
+            message:this.plang.FILE_C_MSG11
           })
         }).catch(err=>{
           let str = '';
@@ -841,7 +834,7 @@
           }
           this.$message({
             type:'error',
-            message:'企业网盘添加权限失败！'+str
+            message:this.plang.FILE_C_MSG12+str
           })
           this.addFormLoading = false;
         })
@@ -872,7 +865,7 @@
           if(selectedArr.length == 0){
             this.$message({
               type:'error',
-              message:'请选择文件夹！'
+              message:this.plang.FILE_C_MSG13
             });
             return;
           }
@@ -928,6 +921,15 @@
       },
       getCapacity: function(){
         companyDiskCapacityGet().then(res=>{
+          if(res.data.capacity =='0%'){
+            res.data.capacity = 0
+          }
+          if(res.data.capacity > 100){
+            res.data.capacity = 100
+          }
+          if(res.data.capacity < 0){
+            res.data.capacity = 0
+          }
           this.folder_capacity = res.data;
         });
       },
@@ -960,12 +962,12 @@
         this.folder_id_error='';
         this.$refs.createFolderForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.plang.COMMON_BUTTON_CONFIRM_SUBMIT, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.createFolderFormLoading = true;
               let para = Object.assign({}, this.createFolderForm);
               companyDiskFolderCreate(para)
                 .then((res) => {
-                  this.$message({message: '添加成功', type: 'success'});
+                  this.$message({message: this.plang.COMMON_ADD_SUCCESS, type: 'success'});
                   this.$refs['createFolderForm'].resetFields();
                   this.createFolderFormVisible = false;
                   this.createFolderFormLoading = false;
@@ -1009,7 +1011,7 @@
         this.folder_name_error = '';
         this.$refs.updateForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.plang.COMMON_BUTTON_CONFIRM_SUBMIT, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.updateFormLoading = true;
               let para = Object.assign({}, this.updateForm);
               let nettype = para.nettype;
@@ -1019,7 +1021,7 @@
                     this.$refs['updateForm'].resetFields();
                     this.updateFormLoading = false;
                     this.updateFormVisible = false;
-                    this.$message({message: '提交成功', type: 'success'});
+                    this.$message({message: this.plang.COMMON_SUBMIT_SUCCESS, type: 'success'});
                     this.getTables();
                   }, (data) => {
                     if ("non_field_errors" in data) {
@@ -1046,7 +1048,7 @@
                     this.$refs['updateForm'].resetFields();
                     this.updateFormLoading = false;
                     this.updateFormVisible = false;
-                    this.$message({message: '提交成功', type: 'success'});
+                    this.$message({message: this.plang.COMMON_SUBMIT_SUCCESS, type: 'success'});
                     this.getTables();
                   }, (data) => {
                     if("non_field_errors" in data) {
@@ -1070,13 +1072,9 @@
                     this.updateFormLoading = false;
                   });
               }
-
             });
           }
         });
-
-
-
       },
       moveFolderFormShow: function(){
         this.folder_id_error = '';
@@ -1093,7 +1091,7 @@
         this.folder_id_error = '';
         this.$refs.moveFolderForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认移动选中的文件以及文件夹吗？', '提示', {}).then(() => {
+            this.$confirm(this.plang.FILE_P_MSG2, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.moveFolderFormLoading = true;
               let para = Object.assign({}, this.moveFolderForm);
               var file_ids = [];
@@ -1114,7 +1112,7 @@
                   this.$refs['moveFolderForm'].resetFields();
                   this.moveFolderFormLoading = false;
                   this.moveFolderFormVisible = false;
-                  this.$message({message: '移动成功', type: 'success'});
+                  this.$message({message: this.plang.FILE_P_MSG3, type: 'success'});
                   this.getTables();
                 }, (data) => {
                   this.moveFolderFormLoading = false;
@@ -1130,7 +1128,7 @@
                       this.$message({ message: data.detail,  type: 'error' });
 
                     } else {
-                      that.$message({ message: '移动失败，请重试',  type: 'error' });
+                      that.$message({ message: this.plang.FILE_C_MSG14,  type: 'error' });
                       this.moveFolderFormVisible = false;
                     }
                   }
@@ -1139,7 +1137,6 @@
                   console.log(error);
                   this.moveFolderFormLoading = false;
                 });
-
             });
           }
         });
@@ -1163,7 +1160,7 @@
           }
         }
         // this.sels.map(item=>{ zip_list.push({'folder_id':item.id,'nettype':item.nettype}) });
-        this.$confirm('确认删除选中的文件以及文件夹？', '提示', {
+        this.$confirm(this.plang.FILE_P_MSG4, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           this.deleteCommonFolders(that, this.current_folder_id, file_ids, folder_ids);
@@ -1178,7 +1175,7 @@
         } else {
           folder_ids.push(row.id);
         }
-        this.$confirm('确认删除当前文件或文件夹？', '提示', {
+        this.$confirm(this.plang.FILE_P_MSG5, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           this.deleteCommonFolders(that, this.current_folder_id, file_ids, folder_ids);
@@ -1189,7 +1186,7 @@
         let para = {folder_id: folder_id, file_ids: file_ids, folder_ids: folder_ids};
         companyDiskBatchDelete(para).then((response)=> {
           that.listLoading = false;
-          that.$message({ message: '删除成功', type: 'success' });
+          that.$message({ message: this.plang.COMMON_DELETE_SUCCESS, type: 'success' });
           if((this.page-1)*this.page_size >= (this.total-file_ids.length - folder_ids.length)){
             this.page = 1;
           }
@@ -1203,7 +1200,7 @@
           } else if ("detail" in data) {
             that.$message({ message: data.detail,  type: 'error' });
           } else {
-            that.$message({ message: '删除失败，请重试',  type: 'error' });
+            that.$message({ message: this.plang.COMMON_DELETE_FAILED,  type: 'error' });
           }
           that.listLoading = false;
           that.getTables();
@@ -1219,7 +1216,7 @@
           folders.push(row.id);
         }
         // let zip_list = [{'folder_id':row.id,'nettype':row.nettype} ];
-        this.$confirm('确认下载当前文件或文件夹？', '提示', {
+        this.$confirm(this.plang.FILE_P_MSG6, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           if ( row.nettype == "file" ) {
@@ -1250,14 +1247,14 @@
             document.body.appendChild(link);
             link.click();
           }
-          that.$message({ message: '导出成功', type: 'success' });
+          that.$message({ message: this.plang.COMMON_EXPORT_SUCCESS, type: 'success' });
           // this.getPabs();
         }).catch(function (err) {
           let str = '';
           if(err.detail){
             str = err.detail
           }
-          that.$message({ message: '导出失败！'+str,  type: 'error' });
+          that.$message({ message: this.plang.COMMON_EXPORT_FAILED+' '+str,  type: 'error' });
           this.listLoading = false;
         });
       },
@@ -1276,7 +1273,7 @@
         }
         // let zip_list = [];
         // this.sels.map(item=>{ zip_list.push({'folder_id':item.id,'nettype':item.nettype}) });
-        this.$confirm('确认下载选中文件以及文件夹？', '提示', {
+        this.$confirm(this.plang.FILE_P_MSG7, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           this.zipCommonDownload(that, files, folders);
@@ -1305,14 +1302,14 @@
             link.click();
             link.remove();
           }
-          that.$message({ message: '导出成功', type: 'success' });
+          that.$message({ message: this.plang.COMMON_EXPORT_SUCCESS, type: 'success' });
           // this.getPabs();
         }).catch(function (err) {
           let str = '';
           if(err.detail){
             str = err.detail
           }
-          that.$message({ message: '导出失败！'+str,  type: 'error' });
+          that.$message({ message: this.plang.COMMON_EXPORT_FAILED+' '+str,  type: 'error' });
           this.listLoading = false;
         });
       },
@@ -1343,7 +1340,7 @@
           _this.fileloading = false;
           param.file.percent = 1*100;
           param.onProgress(param.file);
-          this.$message({message: '上传成功', type: 'success'});
+          this.$message({message: this.plang.FILE_P_SUCCESS, type: 'success'});
           this.listLoading = false;
           this.getCapacity();
           this.getTables();
@@ -1369,16 +1366,62 @@
           }else if("detail" in data) {
             this.$message({ message: data.detail,  type: 'error' });
           } else {
-            this.$message({ message: '上传失败，请重试',  type: 'error' });
+            this.$message({ message: this.plang.FILE_P_UPFAILED,  type: 'error' });
           }
         });
-
         return true;
-
-
       },
 
     },
+    computed:{
+      plang(){
+        let lang = lan.zh
+        if(this.$store.getters.getLanguage=='zh'){
+          lang = lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          lang = lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          lang = lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          lang = lan.zh
+        }else{
+          lang = lan.zh
+        }
+        this.fileStatusText = {
+          success: lang.FILE_P_UPSTATUS_SUCCESS,
+          error: lang.FILE_P_UPSTATUS_FAILED,
+          uploading: lang.FILE_P_UPSTATUS_UP,
+          paused: lang.FILE_P_UPSTATUS_PAUSE,
+          waiting: lang.FILE_P_UPSTATUS_WAIT,
+        }
+        this.createFolderFormRules = {
+          name: [
+            { required: true, message: lang.FILE_P_RULE1, trigger: 'blur' },
+            { min: 1, max: 20, message: lang.FILE_P_RULE2, trigger: 'blur' }
+          ],
+          folder_id: [
+            { required: true, message: lang.FILE_P_UPPATH_PLACE, trigger: 'blur' },
+          ]
+        }
+        this.updateFormRules = {
+          name: [
+            { required: true, message: lang.FILE_P_RULE4, trigger: 'blur' },
+            { min: 1, max: 20, message: lang.FILE_P_RULE2, trigger: 'blur' }
+          ]
+        }
+        this.moveFolderFormRules = {
+          to_folder_id: [
+            { required: true, message:lang.FILE_P_MOVEPATH_PLACE, trigger: 'blur' },
+          ]
+        }
+        this.uploadFormRules = {
+          folder_id: [
+            { required: true, message: lang.FILE_P_RULE5, trigger: 'blur' },
+          ]
+        }
+        return lang
+      },
+    }
 
 
   }

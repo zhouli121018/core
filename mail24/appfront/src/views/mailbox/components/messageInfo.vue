@@ -25,7 +25,7 @@
           let reg = new RegExp("\r\n", "g");//g,表示全部替换
           this.message = value;
         }).catch(err=>{
-          console.log('获取信头或原文数据出错了！',err)
+          console.log(err)
         })
 
       }

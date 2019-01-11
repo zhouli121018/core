@@ -4,7 +4,7 @@
                 <div class="m-mllist" v-loading="fullscreenLoading">
                     <div class="list-bg"></div>
                     <div class="m-mllist-row">
-                        <div class="toolbar" style="background:#fff;" element-loading-text="请稍等..."
+                        <div class="toolbar" style="background:#fff;"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(0, 0, 0, 0.6)" >
                             <span class=" f-fr j-setting">
@@ -18,7 +18,7 @@
                             <!--排序-->
                             <el-dropdown @command="orderHandleCommand" placement="bottom-start" trigger="click">
                                 <el-button  size="small" plain>
-                                    <span>排序</span>
+                                    <span>{{lan.MAILBOX_COM_INNERBOX_SORT}}</span>
                                     <i class="el-icon-arrow-down el-icon--right"></i>
                                 </el-button>
                                 <el-dropdown-menu slot="dropdown">
@@ -33,7 +33,7 @@
 
                             <el-dropdown @command="viewHandleCommand" trigger="click">
                                 <el-button  size="small" plain >
-                                    <span>查看</span>
+                                    <span>{{lan.MAILBOX_COM_INNERBOX_SEE}}</span>
                                     <i class="el-icon-arrow-down el-icon--right"></i>
                                 </el-button>
                                 <el-dropdown-menu slot="dropdown">
@@ -63,12 +63,12 @@
                             <!-- 更多按钮 -->
                             <div v-if="multipleSelection.length>0" class="inline_block">
                                 <el-button  size="small" plain @click="deleteMailById">
-                                    删除
+                                    {{lan.COMMON_BUTTON_DELETE}}
                                 </el-button>
 
                                 <el-dropdown @command="moveHandleCommand" trigger="click" v-if="boxId!='Drafts'">
                                     <el-button  size="small" plain>
-                                    <span>移动到</span>
+                                    <span>{{lan.MAILBOX_COM_INNERBOX_MOVE_TO}}</span>
                                     <i class="el-icon-arrow-down el-icon--right"></i>
                                     </el-button>
                                     <el-dropdown-menu slot="dropdown">
@@ -81,7 +81,7 @@
 
                                 <el-dropdown @command="signHandleCommand" trigger="click">
                                     <el-button  size="small" plain >
-                                        <span>标记为</span>
+                                        <span>{{lan.MAILBOX_COM_INNERBOX_MARKED_AS}}</span>
                                         <i class="el-icon-arrow-down el-icon--right"></i>
                                     </el-button>
                                     <el-dropdown-menu slot="dropdown">
@@ -110,7 +110,7 @@
 
                                 <el-dropdown @command="moreHandleCommand" trigger="click">
                                     <el-button  size="small" plain>
-                                    <span>更多</span>
+                                    <span>{{lan.MAILBOX_COM_INNERBOX_MORE}}</span>
                                     <i class="el-icon-arrow-down el-icon--right"></i>
                                     </el-button>
                                     <el-dropdown-menu slot="dropdown">
@@ -125,24 +125,24 @@
 
                             <!--刷新-->
                             <el-button  size="small" plain @click="refresh">
-                                刷新  <!-- <i class="el-icon-refresh el-icon--right"></i> -->
+                                {{lan.MAILBOX_COM_INNERBOX_REFRESH}}  <!-- <i class="el-icon-refresh el-icon--right"></i> -->
                             </el-button>
-                            <el-button v-show="!moreSearch" @click="moreSearch=true" size="small">更多搜索</el-button>
+                            <el-button v-show="!moreSearch" @click="moreSearch=true" size="small">{{lan.MAILBOX_COM_INNERBOX_MORE_SEARCH}}</el-button>
 
                             <div v-show="moreSearch">
                               <el-form :inline="true" :model="searchForm" ref="searchForm" class="demo-form-inline" size="small">
-                                <el-form-item label="发件人">
-                                  <el-input v-model="searchForm.from" placeholder="发件人"></el-input>
+                                <el-form-item :label="lan.COMMON_SENDER">
+                                  <el-input v-model="searchForm.from" :placeholder="lan.COMMON_SENDER"></el-input>
                                 </el-form-item>
-                                <el-form-item label="邮件主题">
-                                  <el-input v-model="searchForm.subject" placeholder="邮件主题"></el-input>
+                                <el-form-item :label="lan.COMMON_MAIL_SUBJECT">
+                                  <el-input v-model="searchForm.subject" :placeholder="lan.COMMON_MAIL_SUBJECT"></el-input>
                                 </el-form-item>
-                                <el-form-item label="邮件内容">
-                                  <el-input v-model="searchForm.body" placeholder="邮件内容"></el-input>
+                                <el-form-item :label="lan.SETTING_RE_LOGIC_CONTENT">
+                                  <el-input v-model="searchForm.body" :placeholder="lan.SETTING_RE_LOGIC_CONTENT"></el-input>
                                 </el-form-item>
                                 <el-form-item>
-                                  <el-button type="primary" @click="moreSearchfn">查询</el-button>
-                                  <el-button v-show="moreSearch" @click="moreSearch=false" size="small">隐藏</el-button>
+                                  <el-button type="primary" @click="moreSearchfn">{{lan.COMMON_SEARCH}}</el-button>
+                                  <el-button v-show="moreSearch" @click="moreSearch=false" size="small">{{lan.MAILBOX_COM_INNERBOX_HIDE}}</el-button>
                                 </el-form-item>
                               </el-form>
                             </div>
@@ -152,10 +152,9 @@
                     <div class="mail-totals j-mail-totals" v-if="multipleSelection.length==0" style="line-height: 36px;">
                         <div class="totals-info">
                         {{curr_folder}}(
-                        <!--<span class="all-mail">共<span class="number">{{totalAllCount}}</span>封</span>-->
-                        <span class="unread-mail"><span class="number">{{unseen_count_new}}</span>封</span>
-                        <a href="#" @click.prevent="viewHandleCommand('unseen')">未读</a>
-                        <a href="#" v-if="unreadCount" @click.prevent="readAll">，全部设为已读</a>
+                        <span class="unread-mail"><span class="number">{{unseen_count_new}}</span>{{lan.MAILBOX_COM_INNERBOX_SEAL}}</span>
+                        <a href="#" @click.prevent="viewHandleCommand('unseen')">{{lan.MAILBOX_COM_INNERBOX_UNREAD}}</a>
+                        <a href="#" v-if="unreadCount" @click.prevent="readAll">{{lan.MAILBOX_COM_INNERBOX_ALL_READ}}</a>
                         )
 
                           <el-pagination style="float:right;text-align:right;padding:4px;height:32px;"
@@ -172,8 +171,8 @@
                         </div>
                     </div>
                     <div class="j-select-count select-count" v-if="multipleSelection.length>0" style="line-height: 36px;">
-                        <span class="j-desc desc">已选择 {{multipleSelection.length}} 封</span>
-                        <a class="j-cancel cancel" href="#" @click="noSelect">取消</a>
+                        <span class="j-desc desc">{{lan.MAILBOX_COM_INNERBOX_HAVE_CHOSEN}} {{multipleSelection.length}} {{lan.MAILBOX_COM_INNERBOX_SEAL}}</span>
+                        <a class="j-cancel cancel" href="#" @click="noSelect">{{lan.COMMON_BUTTON_CANCELL}}</a>
 
                       <el-pagination style="float:right;text-align:right;padding:4px;height:32px;"
                         @size-change="handleSizeChange"
@@ -199,7 +198,7 @@
                             <el-table-column
                               type="selection"
                               width="46"
-                              label="全选"
+                              label=""
                               :selectable="selectablee"
                             >
                             </el-table-column>
@@ -208,10 +207,10 @@
 
                                 <div class="mainMsg" :class="{hoverStyle:scope.row.uid==hoverIndex}" v-if="!scope.row.is_header">
                                   <span class="read_bg" :class="scope.row.flagbg_class" :title="scope.row.flagStr"></span>
-                                  <i title="附件" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-attach')>=0" class="iconfont icon-attachment" style="color:#777;"></i>
-                                  <b class="is_red" title="紧急邮件" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-emergent')>=0">!</b>
+                                  <i :title="lan.MAILBOX_COM_INNERBOX_ENCLOSURE" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-attach')>=0" class="iconfont icon-attachment" style="color:#777;"></i>
+                                  <b class="is_red" :title="lan.MAILBOX_COM_INNERBOX_URGENT_MAIL" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-emergent')>=0">!</b>
                                   <el-dropdown trigger="click" @command="signHandleCommand_new($event,scope.row)">
-                                      <span class="el-dropdown-link" title="设置旗帜">
+                                      <span class="el-dropdown-link" :title="lan.MAILBOX_COM_INNERBOX_SET_FLAG">
 
                                         <i class="iconfont icon-iconflat" v-if="!scope.row.flagged" style="cursor:pointer;"></i><i class="iconfont icon-iconflatcolor" v-if="scope.row.flagged" style="color:#c00;cursor:pointer;" :class="scope.row.color"></i><i class="el-icon-arrow-down el-icon--right" style="cursor:pointer;"></i>
                                       </span>
@@ -241,7 +240,7 @@
                               <!--</template>-->
                             <!--</el-table-column>-->
 
-                            <el-table-column width="160" label="发件人">
+                            <el-table-column width="160" :label="lan.COMMON_SENDER">
                               <template slot-scope="scope">
                                  <div class="info-summary" :class="scope.row.color">
                                   <p class="summary-text">
@@ -255,22 +254,17 @@
                               </template>
                             </el-table-column>
 
-                            <el-table-column prop="subject"  label="主题" >
+                            <el-table-column prop="subject"  :label="lan.COMMON_SUBJECT2" >
                               <template slot-scope="scope">
                                 <div class="clear mainMsg" style="font-size:16px;" :class="[{flagged:scope.row.flagged,unseen:!scope.row.isread},scope.row.color]">
 
-                                  <span class="fl_l subject_hover" style="width:96%;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" @click.stop.prevent="readMail(scope.row)" :title="scope.row.subject||''">{{scope.row.subject||'无主题'}}</span>
-                                  <span class="fl_r">
-                                    <!--<i :title="scope.row.flagged?'点击取消旗帜':'设为红旗'" @click.stop="changeFlags(scope.row)" class="iconfont" :class="{'icon-iconflatcolor':scope.row.flagged||scope.row.color,'icon-iconflat':!scope.row.flagged&&!scope.row.color}" style="cursor:pointer;"></i>-->
-                                  </span>
+                                  <span class="fl_l subject_hover" style="width:96%;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" @click.stop.prevent="readMail(scope.row)" :title="scope.row.subject||''">{{scope.row.subject|| lan.MAILBOX_NO_SUBJECT}}</span>
+
                                 </div>
                                 <div class="info-summary" :class="scope.row.color" v-if="false">
                                   <p class="summary-text">
                                     <span class="fromto from" v-if="scope.row.mfrom">{{scope.row.mfrom[1]}} <{{scope.row.mfrom[0]}}></span>
-                                    <!--<span class="fromto">:</span>-->
-                                    <!--<span class="summary">-->
-                                      <!--sdajpofjsdfhup测试-->
-                                    <!--</span>-->
+
                                   </p>
                                 </div>
                               </template>
@@ -279,7 +273,7 @@
 
 
 
-                            <el-table-column class="plan_style" prop="date" label="时间"   :width="$store.getters.getIsSwtime?180:160"  >
+                            <el-table-column class="plan_style" prop="date" :label="lan.COMMON_TIME"   :width="$store.getters.getIsSwtime?180:160"  >
                               <template slot-scope="scope">
                                 <div class="plan_style" v-if="!scope.row.is_header">
                                   {{(scope.row.date ||scope.row.internaldate).replace('T',' ')}}
@@ -288,7 +282,7 @@
 
                               </template>
                             </el-table-column>
-                            <el-table-column class="plan_style" prop="size" label="大小"   width="100">
+                            <el-table-column class="plan_style" prop="size" :label="lan.COMMON_SIZE"   width="100">
                               <template slot-scope="scope">
                                 <div class="plan_style">
                                   {{scope.row.size | mailsize}}
@@ -309,12 +303,11 @@
                     </div>
                 </div>
             </div>
-            <div v-if="false" class="mltabview-panel">
-               <h3 style="margin:30px 0 0 20px;font-size:24px;font-weight:normal;"> "{{curr_folder}}" 没有邮件</h3>
-            </div>
+
         </div>
 </template>
 <script>
+  import lan from '@/assets/js/lan';
   import {getMailMessage,moveMails,getFloder,getFloderMsg,deleteMail,messageFlag,readMail,rejectMessage,pruneMessage,zipMessage,messageExpunge} from "@/api/api";
 
   import router from '@/router'
@@ -348,7 +341,7 @@
           fullscreenLoading:false,
           reject_is_delete:false,
           boxId:'INBOX',
-          curr_folder:'收件箱',
+          curr_folder:'',
           moreSearch:false,
           searchForm: {
             from: '',
@@ -369,74 +362,74 @@
           checkIndex:'',
           checkAll:false,
           checkItems:[
-            {id:0,text:'所有',divided:false},
-            {id:1,text:'当前页',divided:true},
-            {id:2,text:'未读',divided:false},
-            {id:3,text:'已读',divided:false},
-            {id:4,text:'反选',divided:false},
-            {id:5,text:'不选',divided:false},
+            {id:0,text:'',divided:false},
+            {id:1,text:'',divided:true},
+            {id:2,text:'',divided:false},
+            {id:3,text:'',divided:false},
+            {id:4,text:'',divided:false},
+            {id:5,text:'',divided:false},
           ],
           orderCheckIndex:'',
           orderItems:[
-            {id:0,text:'按时间从新到旧',divided:false,sort:'REVERSE ARRIVAL'},
-            {id:1,text:'按时间从旧到新',divided:false,sort:'ARRIVAL'},
-            {id:3,text:'按发件人升序',divided:true,sort:'FROM'},
-            {id:2,text:'按发件人降序',divided:false,sort:'REVERSE FROM'},
-            {id:4,text:'按邮件主题降序',divided:true,sort:'REVERSE SUBJECT '},
-            {id:5,text:'按邮件主题升序',divided:false,sort:'SUBJECT '},
-            {id:8,text:'按邮件大小（从小到大）',divided:true,sort:'SIZE'},
-            {id:9,text:'按邮件大小（从大到小）',divided:false,sort:'REVERSE SIZE'},
+            {id:0,text:'',divided:false,sort:'REVERSE ARRIVAL'},
+            {id:1,text:'',divided:false,sort:'ARRIVAL'},
+            {id:3,text:'',divided:true,sort:'FROM'},
+            {id:2,text:'',divided:false,sort:'REVERSE FROM'},
+            {id:4,text:'',divided:true,sort:'REVERSE SUBJECT '},
+            {id:5,text:'',divided:false,sort:'SUBJECT '},
+            {id:8,text:'',divided:true,sort:'SIZE'},
+            {id:9,text:'',divided:false,sort:'REVERSE SIZE'},
           ],
 
           viewCheckIndex:'',
           viewItems:[
-            {id:'',text:'全部邮件',divided:false},
-            {id:'unseen',text:'未读邮件',divided:false},
-            {id:'seen',text:'已读邮件',divided:false},
-            {id:'flagged',text:'已标记邮件',divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
-            {id:'other',text:'其他标记',divided:false,children:[
-                {id:'KEYWORD umail-green',text:'绿旗',classN:'flag-green'},
-                {id:'KEYWORD umail-orange',text:'橙旗',classN:'flag-orange'},
-                {id:'KEYWORD umail-blue',text:'蓝旗',classN:'flag-blue'},
-                {id:'KEYWORD umail-pink',text:'粉旗',classN:'flag-pink'},
-                {id:'KEYWORD umail-cyan',text:'青旗',classN:'flag-cyan'},
-                {id:'KEYWORD umail-yellow',text:'黄旗',classN:'flag-yellow'},
-                {id:'KEYWORD umail-purple',text:'紫旗',classN:'flag-purple'},
-                {id:'KEYWORD umail-gray',text:'灰旗',classN:'flag-gray'}
+            {id:'',text:'',divided:false},
+            {id:'unseen',text:'',divided:false},
+            {id:'seen',text:'',divided:false},
+            {id:'flagged',text:'',divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
+            {id:'other',text:'',divided:false,children:[
+                {id:'KEYWORD umail-green',text:'',classN:'flag-green'},
+                {id:'KEYWORD umail-orange',text:'',classN:'flag-orange'},
+                {id:'KEYWORD umail-blue',text:'',classN:'flag-blue'},
+                {id:'KEYWORD umail-pink',text:'',classN:'flag-pink'},
+                {id:'KEYWORD umail-cyan',text:'',classN:'flag-cyan'},
+                {id:'KEYWORD umail-yellow',text:'',classN:'flag-yellow'},
+                {id:'KEYWORD umail-purple',text:'',classN:'flag-purple'},
+                {id:'KEYWORD umail-gray',text:'',classN:'flag-gray'}
               ]},
-            {id:'unflagged',text:'未标记邮件',divided:false,classN:'iconfont icon-iconflat'},
-            {id:'ANSWERED',text:'已回复',divided:true,classN:'iconfont icon-iconback greencolor'},
-            {id:'KEYWORD umail-forword',text:'已转发',divided:false,classN:'iconfont icon-Forward greencolor'},
+            {id:'unflagged',text:'',divided:false,classN:'iconfont icon-iconflat'},
+            {id:'ANSWERED',text:'',divided:true,classN:'iconfont icon-iconback greencolor'},
+            {id:'KEYWORD umail-forword',text:'',divided:false,classN:'iconfont icon-Forward greencolor'},
           ],
           moveCheckIndex:'',
 
           signItems:[
-            {id:0,flags:'\\Seen',text:'已读邮件',divided:false,action:'add'},
-            {id:1,flags:'\\Seen',text:'未读邮件',divided:false,action:'remove'},
-            {id:2,flags:'\\flagged',text:'红旗',divided:true,action:'add',classN:'iconfont icon-iconflatcolor redcolor'},
-            {id:3,text:'其他旗帜',divided:false,children:[
-                {flags:'umail-green',action:'add',text:'绿旗',classN:{'flag-green':true}},
-                {flags:'umail-orange',action:'add',text:'橙旗',classN:{'flag-orange':true}},
-                {flags:'umail-blue',action:'add',text:'蓝旗',classN:{'flag-blue':true}},
-                {flags:'umail-pink',action:'add',text:'粉旗',classN:{'flag-pink':true}},
-                {flags:'umail-cyan',action:'add',text:'青旗',classN:{'flag-cyan':true}},
-                {flags:'umail-yellow',action:'add',text:'黄旗',classN:{'flag-yellow':true}},
-                {flags:'umail-purple',action:'add',text:'紫旗',classN:{'flag-purple':true}},
-                {flags:'umail-gray',action:'add',text:'灰旗',classN:{'flag-gray':true}}
+            {id:0,flags:'\\Seen',text:'',divided:false,action:'add'},
+            {id:1,flags:'\\Seen',text:'',divided:false,action:'remove'},
+            {id:2,flags:'\\flagged',text:'',divided:true,action:'add',classN:'iconfont icon-iconflatcolor redcolor'},
+            {id:3,text:'',divided:false,children:[
+                {flags:'umail-green',action:'add',text:'',classN:{'flag-green':true}},
+                {flags:'umail-orange',action:'add',text:'',classN:{'flag-orange':true}},
+                {flags:'umail-blue',action:'add',text:'',classN:{'flag-blue':true}},
+                {flags:'umail-pink',action:'add',text:'',classN:{'flag-pink':true}},
+                {flags:'umail-cyan',action:'add',text:'',classN:{'flag-cyan':true}},
+                {flags:'umail-yellow',action:'add',text:'',classN:{'flag-yellow':true}},
+                {flags:'umail-purple',action:'add',text:'',classN:{'flag-purple':true}},
+                {flags:'umail-gray',action:'add',text:'',classN:{'flag-gray':true}}
               ]},
-            {id:4,flags:'\\flagged',text:'取消旗帜',divided:false,action:'remove'},
+            {id:4,flags:'\\flagged',text:'',divided:false,action:'remove'},
           ],
           moreCheckIndex:'',
           moreItems:[
-            {id:0,text:'回复',divided:false,checkone:true},
-            {id:1,text:'回复全部',divided:false,checkone:true},
-            {id:2,text:'转发',divided:true,checkone:true},
-            {id:3,text:'附件方式转发',divided:false,checkone:true},
-            {id:4,text:'拒收邮件',divided:true,checkone:false},
-            {id:5,text:'再次发送',divided:true,checkone:true},
-            {id:6,text:'打包下载',divided:false,checkone:false},
-            {id:7,text:'彻底删除',divided:true,checkone:false},
-            {id:8,text:'清空文件夹',divided:false,checkone:false},
+            {id:0,text:'',divided:false,checkone:true},
+            {id:1,text:'',divided:false,checkone:true},
+            {id:2,text:'',divided:true,checkone:true},
+            {id:3,text:'',divided:false,checkone:true},
+            {id:4,text:'',divided:true,checkone:false},
+            {id:5,text:'',divided:true,checkone:true},
+            {id:6,text:'',divided:false,checkone:false},
+            {id:7,text:'',divided:true,checkone:false},
+            {id:8,text:'',divided:false,checkone:false},
           ],
           activeNames: [0],
           activeLi:[0,0],
@@ -501,7 +494,7 @@
         messageFlag(param).then((suc)=>{
           this.$message({
               type:'success',
-              message: '邮件标记成功!'
+              message: this.lan.MAILBOX_COM_INNERBOX_MAIL_MARKUP_SUCCESSFUL
             })
           this.getMessageList();
         },(err)=>{
@@ -513,7 +506,7 @@
             }
           this.$message({
               type:'error',
-              message: '邮件标记失败! '+str
+              message: this.lan.MAILBOX_COM_INNERBOX_MAIL_MARKUP_FAILED +str
             })
         })
       },
@@ -523,8 +516,6 @@
             this.readMail(row)
           }
           if(row.is_header){
-            console.log(row)
-            console.log('sdlkf')
           }
         }else{
           // this.$refs.innerTable.toggleRowSelection(row)
@@ -646,7 +637,7 @@
               to: [],
               cc: [],
               subject: '',
-              secret:'非密',
+              secret:'',
               is_save_sent:true,
               is_confirm_read:true,
               is_schedule:false,
@@ -714,19 +705,8 @@
       },
       handleSelectionChange(val) {
         this.multipleSelection = [];
-        let check = true;
         this.multipleSelection = val
-        // this.$refs.innerTable.forEach(val=>{
-        //   if(val.selection.length < val.data.length){
-        //     check = false;
-        //   }
-        //   this.multipleSelection = this.multipleSelection.concat(val.selection)
-        // })
-        // if(check){
-        //   this.is_checked = true
-        // }else{
-        //   this.is_checked = false
-        // }
+
       },
       formatter(row, column) {
         return row.date.replace('T','  ');
@@ -773,7 +753,7 @@
           if(suc.data.msg=='success'){
             this.$message({
               type:'success',
-              message: '邮件移动成功!'
+              message: this.lan.MAILBOX_COM_INNERBOX_MAIL_MOVE_SUCCESSFUL
             })
             this.getMessageList();
             this.$parent.$parent.$parent.getFloderfn();
@@ -789,7 +769,7 @@
           }
           this.$message({
             type:"error",
-            message:'邮件移动失败！ '+str
+            message: this.lan.MAILBOX_COM_INNERBOX_MAIL_MOVE_FAILED +str
           })
         })
       },
@@ -819,9 +799,9 @@
           uids:this.checkedMails,
           folder:this.boxId,
         };
-        this.$confirm('删除此邮件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm( this.lan.MAILBOX_COM_INNERBOX_DELETE_MAIL + this.lan.MAILBOX_COM_INNERBOX_CONTINUE, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+          confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+          cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
           type: 'warning'
         }).then(() => {
           this.fullscreenLoading = true;
@@ -830,7 +810,7 @@
             if(suc.data.msg=='success'){
               this.$message({
                 type:'success',
-                message: '邮件删除成功!'
+                message: this.lan.COMMON_DELETE_SUCCESS
               })
               if((this.currentPage-1)*this.pageSize >= this.totalCount-this.checkedMails.length){
                 this.currentPage = 1;
@@ -846,21 +826,17 @@
             this.fullscreenLoading = false
             this.$message({
                 type:'error',
-                message: '删除失败！'+str
+                message: this.lan.COMMON_DELETE_FAILED +str
               })
           })
         }).catch(() => {
           this.fullscreenLoading = false;
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
         });
 
       },
       moreHandleCommand:function(item){
         if(item.checkone && this.checkedMails.length > 1){
-          this.$alert('您只能选择一封邮件进行 '+item.text+' !','提示');
+          this.$alert( this.lan.MAILBOX_COM_INNERBOX_ONLY_ONE+item.text+' !',this.lan.COMMON_BUTTON_CONFIRM_NOTICE);
           return;
         }
         let pp = this.$parent.$parent.$parent;
@@ -895,7 +871,7 @@
               to: [],
               cc: [],
               subject: '',
-              secret:'非密',
+              secret:'',
               is_save_sent:true,
               is_confirm_read:true,
               is_schedule:false,
@@ -969,9 +945,9 @@
 
         }else if(item.id==4){ //拒收邮件
 
-          this.$confirm('<p>添加黑名单将无法收到对方发来的邮件。</p><p style="margin-bottom:20px;">您真的要拒收吗？</p> <input type="checkbox" id="is_delete"> 拒收同时删除邮件', '系统信息', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+          this.$confirm('<p>'+this.lan.MAILBOX_COM_INNERBOX_REJECT_MAIL_1+'</p><p style="margin-bottom:20px;">'+this.lan.MAILBOX_COM_INNERBOX_REJECT_MAIL_2+'</p> <input type="checkbox" id="is_delete"> '+this.lan.MAILBOX_COM_INNERBOX_REJECT_MAIL_3, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+            confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+            cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
             dangerouslyUseHTMLString: true,
 
           }).then(() => {
@@ -982,7 +958,7 @@
             rejectMessage(param).then(res=>{
               this.fullscreenLoading = false;
               this.$message(
-                {type:'success',message:'邮件拒收成功！'}
+                {type:'success',message:this.lan.COMMON_OPRATE_SUCCESS}
               )
               this.getMessageList();
             })
@@ -993,14 +969,11 @@
                 }
                 this.fullscreenLoading = false;
                 this.$message(
-                {type:'error',message:'邮件拒收失败！'+str}
+                {type:'error',message: this.lan.COMMON_OPRATE_FAILED+str}
               )
             })
           }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消邮件拒收'
-            });
+
           });
 
         }else if(item.id==6){//打包下载
@@ -1025,7 +998,7 @@
               link.click();
             }
             this.$message(
-              {type:'success',message:'打包下载邮件成功！'}
+              {type:'success',message:this.lan.COMMON_DOWNLOAD_SUCCESS}
             )
           }).catch(err=>{
             let str = '';
@@ -1034,21 +1007,21 @@
             }
             this.fullscreenLoading = false;
             this.$message(
-              {type:'error',message:'打包下载邮件失败！'+str}
+              {type:'error',message:this.lan.COMMON_DOWNLOAD_FAILED +str}
             )
           })
 
         }else if(item.id == 7){//彻底删除
-          this.$confirm('彻底删除此邮件, 是否继续?', '系统信息', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+          this.$confirm(this.lan.MAILBOX_COM_INNERBOX_DELETE_MAIL + this.lan.MAILBOX_COM_INNERBOX_CONTINUE, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+            confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+            cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
             type: 'warning'
           }).then(() => {
             this.fullscreenLoading = true;
             pruneMessage(param).then(res=>{
               this.fullscreenLoading = false;
               this.$message(
-                {type:'success',message:'彻底删除邮件成功！'}
+                {type:'success',message:this.lan.COMMON_DELETE_SUCCESS}
               )
               pp.getFloderfn();
               this.getMessageList();
@@ -1060,27 +1033,24 @@
               }
               this.$message({
                 type:'error',
-                message:'彻底删除邮件失败！'+str
+                message:this.lan.COMMON_DELETE_FAILED+str
               })
             })
           }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消彻底删除'
-            });
+
           });
 
         }else if(item.id == 8){//清空文件夹
-          this.$confirm('执行后邮件将被彻底删除，此操作不可恢复，是否执行?', '系统信息', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+          this.$confirm( this.lan.MAILBOX_COM_INNERBOX_DELETE_DESC , this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+            confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+            cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
             type: 'warning'
           }).then(() => {
             this.fullscreenLoading = true;
             messageExpunge(param).then(res=>{
               this.fullscreenLoading = false;
               this.$message(
-                {type:'success',message:'清空文件夹成功！'}
+                {type:'success',message:this.lan.COMMON_OPRATE_SUCCESS}
               )
               pp.getFloderfn();
               this.getMessageList();
@@ -1092,14 +1062,11 @@
               }
               this.$message({
                 type:'error',
-                message:'清空文件夹失败！'+str
+                message:this.lan.COMMON_OPRATE_FAILED+str
               })
             })
           }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消清空文件夹'
-            });
+
           });
 
         }
@@ -1194,9 +1161,9 @@
 
             }
             let flagbg_class = '';
-            let flagStr = '已读';
+            let flagStr = this.lan.MAILBOX_COM_INNERBOX_ALREADY_READ;
             if(!items[i].isread){
-              flagStr = '未读';
+              flagStr = this.lan.MAILBOX_COM_INNERBOX_UNREAD;
               flagbg_class = 'unseen';
             }
             // if(items[i].flags.join('').indexOf('umail-deliver')>=0){
@@ -1204,19 +1171,19 @@
             //   flagbg_class = 'sendsuc';
             // }
             if(items[i].flags.join('').indexOf('Answered')>=0 && items[i].flags.join('').indexOf('umail-forword')>= 0){
-              flagStr = '已回复并已转发';
+              flagStr = this.lan.MAILBOX_COM_INNERBOX_RECOVERED_AND_FORWARDED;
               flagbg_class = 'reandfw';
             }
             if(items[i].flags.join('').indexOf('umail-forword')>=0 && items[i].flags.join('').indexOf('Answered')==-1){
-              flagStr = '已转发';
+              flagStr = this.lan.MAILBOX_COM_INNERBOX_FORWARDED;
               flagbg_class = 'forward';
             }
             if(items[i].flags.join('').indexOf('Answered')>=0 && items[i].flags.join('').indexOf('umail-forword') == -1){
-              flagStr = '已回复';
+              flagStr = this.lan.MAILBOX_COM_INNERBOX_RECOVERED;
               flagbg_class = 'answered';
             }
             if(items[i].flags.join('').indexOf('umail-schedule')>=0){
-              flagStr = '定时邮件';
+              flagStr = this.lan.MAILBOX_COM_INNERBOX_REGULAR_MAIL;
               flagbg_class = 'schedule';
             }
             items[i].flagbg_class = flagbg_class
@@ -1226,7 +1193,7 @@
 
           let result = [];
           let result_new = [];
-          let today = {title:'今天 ',arr:[],show:true},yestoday = {title:'昨天 ',arr:[],show:true},beforeYesdoday = {title:'前天 ',arr:[],show:true},earlier = {title:'更早 ',arr:[],show:true};
+          let today = {title:this.lan.MAILBOX_COM_INNERBOX_TODAY,arr:[],show:true},yestoday = {title:this.lan.MAILBOX_COM_INNERBOX_YESTODAY,arr:[],show:true},beforeYesdoday = {title:this.lan.MAILBOX_COM_INNERBOX_BEFOREYESTODAY,arr:[],show:true},earlier = {title:this.lan.MAILBOX_COM_INNERBOX_EARLIER,arr:[],show:true};
           items.forEach(val=>{
             if(val.date){
               let date = new Date(val.date.slice(0,10));
@@ -1259,7 +1226,7 @@
           if(today.arr.length>0){
             result.push(today)
             let obj = [].concat(today.arr[0])
-            obj.title = '今天'
+            obj.title = this.lan.MAILBOX_COM_INNERBOX_TODAY
             obj.count = today.arr.length
             obj.is_header = true
             result_new.push(obj)
@@ -1268,7 +1235,7 @@
           if(yestoday.arr.length>0){
             result.push(yestoday)
             let obj = [].concat(yestoday.arr[0])
-            obj.title = '昨天'
+            obj.title = this.lan.MAILBOX_COM_INNERBOX_YESTODAY
             obj.count = yestoday.arr.length
             obj.is_header = true
             result_new.push(obj)
@@ -1277,7 +1244,7 @@
           if(beforeYesdoday.arr.length>0){
             result.push(beforeYesdoday)
             let obj = [].concat(beforeYesdoday.arr[0])
-            obj.title = '前天'
+            obj.title = this.lan.MAILBOX_COM_INNERBOX_BEFOREYESTODAY
             obj.count = beforeYesdoday.arr.length
             obj.is_header = true
             result_new.push(obj)
@@ -1286,7 +1253,7 @@
           if(earlier.arr.length>0){
             result.push(earlier)
             let obj = [].concat(earlier.arr[0])
-            obj.title = '更早'
+            obj.title = this.lan.MAILBOX_COM_INNERBOX_EARLIER
             obj.count = earlier.arr.length
             obj.is_header = true
             result_new.push(obj)
@@ -1308,9 +1275,9 @@
         let min_ss = time.slice(2);
         let flag = ''
         if(theHour>=12){
-          flag = " 下午 "
+          flag = this.lan.MAILBOX_COM_INNERBOX_AFTERNOON
         }else{
-          flag = ' 上午 '
+          flag = this.lan.MAILBOX_COM_INNERBOX_MORNING
         }
         if (theHour > 12) {
            theHour = theHour-12
@@ -1364,10 +1331,89 @@
       unseen_count_new:function(){
         return this.$store.getters.getUnseenCount[this.boxId]
       },
+      lan:function(){
+        let lang = lan.zh
+        if(this.$store.getters.getLanguage=='zh'){
+          lang = lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          lang = lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          lang = lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          lang = lan.zh
+        }else{
+          lang = lan.zh
+        }
+        this.checkItems = [
+          {id:0,text:lang.MAILBOX_COM_INNERBOX_ALL,divided:false},
+          {id:1,text:lang.MAILBOX_COM_INNERBOX_CURRENT_PAGE,divided:true},
+          {id:2,text:lang.MAILBOX_COM_INNERBOX_UNREAD,divided:false},
+          {id:3,text:lang.MAILBOX_COM_INNERBOX_ALREADY_READ,divided:false},
+          {id:4,text:lang.MAILBOX_COM_INNERBOX_REVERSE_ELECTION,divided:false},
+          {id:5,text:lang.MAILBOX_COM_INNERBOX_NO_ELECTION,divided:false},
+        ]
+        this.orderItems = [
+          {id:0,text:lang.MAILBOX_COM_INNERBOX_NEW_TO_OLD,divided:false,sort:'REVERSE ARRIVAL'},
+          {id:1,text:lang.MAILBOX_COM_INNERBOX_OLD_TO_NEW,divided:false,sort:'ARRIVAL'},
+          {id:3,text:lang.MAILBOX_COM_INNERBOX_UPGRADE_BY_SENDER,divided:true,sort:'FROM'},
+          {id:2,text:lang.MAILBOX_COM_INNERBOX_DESCEND_BY_SENDER,divided:false,sort:'REVERSE FROM'},
+          {id:4,text:lang.MAILBOX_COM_INNERBOX_DESCEND_BY_SUBJECT,divided:true,sort:'REVERSE SUBJECT '},
+          {id:5,text:lang.MAILBOX_COM_INNERBOX_UPGRADE_BY_SUBJECT,divided:false,sort:'SUBJECT '},
+          {id:8,text:lang.MAILBOX_COM_INNERBOX_SMALL_TO_BIG,divided:true,sort:'SIZE'},
+          {id:9,text:lang.MAILBOX_COM_INNERBOX_BIG_TO_SMALL,divided:false,sort:'REVERSE SIZE'},
+        ]
+        this.viewItems = [
+          {id:'',text:lang.MAILBOX_COM_INNERBOX_ALL_MAIL,divided:false},
+          {id:'unseen',text:lang.MAILBOX_COM_INNERBOX_UNREAD_MAIL,divided:false},
+          {id:'seen',text:lang.MAILBOX_COM_INNERBOX_READ_MAIL,divided:false},
+          {id:'flagged',text:lang.MAILBOX_COM_INNERBOX_MARKED_MAIL,divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
+          {id:'other',text:lang.MAILBOX_COM_INNERBOX_OTHER_MARKERS,divided:false,children:[
+              {id:'KEYWORD umail-green',text:lang.MAILBOX_COM_INNERBOX_GREEN_FLAG,classN:'flag-green'},
+              {id:'KEYWORD umail-orange',text:lang.MAILBOX_COM_INNERBOX_ORANGE_FLAG,classN:'flag-orange'},
+              {id:'KEYWORD umail-blue',text:lang.MAILBOX_COM_INNERBOX_BLUE_FLAG,classN:'flag-blue'},
+              {id:'KEYWORD umail-pink',text:lang.MAILBOX_COM_INNERBOX_PINK_FLAG,classN:'flag-pink'},
+              {id:'KEYWORD umail-cyan',text:lang.MAILBOX_COM_INNERBOX_CYAN_FLAG,classN:'flag-cyan'},
+              {id:'KEYWORD umail-yellow',text:lang.MAILBOX_COM_INNERBOX_YELLOW_FLAG,classN:'flag-yellow'},
+              {id:'KEYWORD umail-purple',text:lang.MAILBOX_COM_INNERBOX_PURPLE_FLAG,classN:'flag-purple'},
+              {id:'KEYWORD umail-gray',text:lang.MAILBOX_COM_INNERBOX_GREY_FLAG,classN:'flag-gray'}
+            ]},
+          {id:'unflagged',text:lang.MAILBOX_COM_INNERBOX_UNMARKED_MAIL,divided:false,classN:'iconfont icon-iconflat'},
+          {id:'ANSWERED',text:lang.MAILBOX_COM_INNERBOX_RECOVERED,divided:true,classN:'iconfont icon-iconback greencolor'},
+          {id:'KEYWORD umail-forword',text:lang.MAILBOX_COM_INNERBOX_FORWARDED,divided:false,classN:'iconfont icon-Forward greencolor'},
+        ]
+        this.signItems = [
+          {id:0,flags:'\\Seen',text:lang.MAILBOX_COM_INNERBOX_READ_MAIL,divided:false,action:'add'},
+          {id:1,flags:'\\Seen',text:lang.MAILBOX_COM_INNERBOX_UNREAD_MAIL,divided:false,action:'remove'},
+          {id:2,flags:'\\flagged',text:lang.MAILBOX_COM_INNERBOX_RED_FLAG,divided:true,action:'add',classN:'iconfont icon-iconflatcolor redcolor'},
+          {id:3,text:lang.MAILBOX_COM_INNERBOX_OTHER_FLAG,divided:false,children:[
+              {flags:'umail-green',action:'add',text:lang.MAILBOX_COM_INNERBOX_GREEN_FLAG,classN:{'flag-green':true}},
+              {flags:'umail-orange',action:'add',text:lang.MAILBOX_COM_INNERBOX_ORANGE_FLAG,classN:{'flag-orange':true}},
+              {flags:'umail-blue',action:'add',text:lang.MAILBOX_COM_INNERBOX_BLUE_FLAG,classN:{'flag-blue':true}},
+              {flags:'umail-pink',action:'add',text:lang.MAILBOX_COM_INNERBOX_PINK_FLAG,classN:{'flag-pink':true}},
+              {flags:'umail-cyan',action:'add',text:lang.MAILBOX_COM_INNERBOX_CYAN_FLAG,classN:{'flag-cyan':true}},
+              {flags:'umail-yellow',action:'add',text:lang.MAILBOX_COM_INNERBOX_YELLOW_FLAG,classN:{'flag-yellow':true}},
+              {flags:'umail-purple',action:'add',text:lang.MAILBOX_COM_INNERBOX_PURPLE_FLAG,classN:{'flag-purple':true}},
+              {flags:'umail-gray',action:'add',text:lang.MAILBOX_COM_INNERBOX_GREY_FLAG,classN:{'flag-gray':true}}
+            ]},
+          {id:4,flags:'\\flagged',text:lang.MAILBOX_COM_INNERBOX_CANCEL_FLAG,divided:false,action:'remove'},
+        ]
+        this.moreItems = [
+          {id:0,text:lang.MAILBOX_COM_INNERBOX_RECOVER,divided:false,checkone:true},
+          {id:1,text:lang.MAILBOX_COM_INNERBOX_RECOVER_ALL,divided:false,checkone:true},
+          {id:2,text:lang.MAILBOX_COM_INNERBOX_FORWARD,divided:true,checkone:true},
+          {id:3,text:lang.MAILBOX_COM_INNERBOX_ANNEX_FORWARDING,divided:false,checkone:true},
+          {id:4,text:lang.MAILBOX_COM_INNERBOX_REJECTED_MAIL,divided:true,checkone:false},
+          {id:5,text:lang.MAILBOX_COM_INNERBOX_SEND_AGAIN,divided:true,checkone:true},
+          {id:6,text:lang.MAILBOX_COM_INNERBOX_PACKAGE_DOWNLOAD,divided:false,checkone:false},
+          {id:7,text:lang.MAILBOX_COM_INNERBOX_DELETE_THOROUGHLY,divided:true,checkone:false},
+          {id:8,text:lang.MAILBOX_COM_INNERBOX_EMPTY_FOLDER,divided:false,checkone:false},
+        ]
+        return lang
+      }
     },
     created(){
       this.boxId = this.$route.params.boxId || 'INBOX'
-      this.curr_folder = sessionStorage['checkNodeLabel'] || '收件箱'
+      this.curr_folder = sessionStorage['checkNodeLabel'] || this.lan.MAILBOX_INBOX
 
       this.getMessageList();
     },
@@ -1389,41 +1435,41 @@
           this.getMessageList();
           if(newValue == 'Drafts'){
             this.viewItems = [
-              {id:'',text:'全部邮件',divided:false},
-              {id:'unseen',text:'未读邮件',divided:false},
-              {id:'seen',text:'已读邮件',divided:false},
-              {id:'flagged',text:'已标记邮件',divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
-              {id:'other',text:'其他标记',divided:false,children:[
-                  {id:'KEYWORD umail-green',text:'绿旗',classN:'flag-green'},
-                  {id:'KEYWORD umail-orange',text:'橙旗',classN:'flag-orange'},
-                  {id:'KEYWORD umail-blue',text:'蓝旗',classN:'flag-blue'},
-                  {id:'KEYWORD umail-pink',text:'粉旗',classN:'flag-pink'},
-                  {id:'KEYWORD umail-cyan',text:'青旗',classN:'flag-cyan'},
-                  {id:'KEYWORD umail-yellow',text:'黄旗',classN:'flag-yellow'},
-                  {id:'KEYWORD umail-purple',text:'紫旗',classN:'flag-purple'},
-                  {id:'KEYWORD umail-gray',text:'灰旗',classN:'flag-gray'}
+              {id:'',text:this.lan.MAILBOX_COM_INNERBOX_ALL_MAIL,divided:false},
+              {id:'unseen',text:this.lan.MAILBOX_COM_INNERBOX_UNREAD_MAIL,divided:false},
+              {id:'seen',text:this.lan.MAILBOX_COM_INNERBOX_READ_MAIL,divided:false},
+              {id:'flagged',text:this.lan.MAILBOX_COM_INNERBOX_MARKED_MAIL,divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
+              {id:'other',text:this.lan.MAILBOX_COM_INNERBOX_OTHER_MARKERS,divided:false,children:[
+                  {id:'KEYWORD umail-green',text:this.lan.MAILBOX_COM_INNERBOX_GREEN_FLAG,classN:'flag-green'},
+                  {id:'KEYWORD umail-orange',text:this.lan.MAILBOX_COM_INNERBOX_ORANGE_FLAG,classN:'flag-orange'},
+                  {id:'KEYWORD umail-blue',text:this.lan.MAILBOX_COM_INNERBOX_BLUE_FLAG,classN:'flag-blue'},
+                  {id:'KEYWORD umail-pink',text:this.lan.MAILBOX_COM_INNERBOX_PINK_FLAG,classN:'flag-pink'},
+                  {id:'KEYWORD umail-cyan',text:this.lan.MAILBOX_COM_INNERBOX_CYAN_FLAG,classN:'flag-cyan'},
+                  {id:'KEYWORD umail-yellow',text:this.lan.MAILBOX_COM_INNERBOX_YELLOW_FLAG,classN:'flag-yellow'},
+                  {id:'KEYWORD umail-purple',text:this.lan.MAILBOX_COM_INNERBOX_PURPLE_FLAG,classN:'flag-purple'},
+                  {id:'KEYWORD umail-gray',text:this.lan.MAILBOX_COM_INNERBOX_GREY_FLAG,classN:'flag-gray'}
                 ]},
-              {id:'unflagged',text:'未标记邮件',divided:false,classN:'iconfont icon-iconflat'}
+              {id:'unflagged',text:this.lan.MAILBOX_COM_INNERBOX_UNMARKED_MAIL,divided:false,classN:'iconfont icon-iconflat'}
             ]
           }else{
             this.viewItems = [
-              {id:'',text:'全部邮件',divided:false},
-              {id:'unseen',text:'未读邮件',divided:false},
-              {id:'seen',text:'已读邮件',divided:false},
-              {id:'flagged',text:'已标记邮件',divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
-              {id:'other',text:'其他标记',divided:false,children:[
-                  {id:'KEYWORD umail-green',text:'绿旗',classN:'flag-green'},
-                  {id:'KEYWORD umail-orange',text:'橙旗',classN:'flag-orange'},
-                  {id:'KEYWORD umail-blue',text:'蓝旗',classN:'flag-blue'},
-                  {id:'KEYWORD umail-pink',text:'粉旗',classN:'flag-pink'},
-                  {id:'KEYWORD umail-cyan',text:'青旗',classN:'flag-cyan'},
-                  {id:'KEYWORD umail-yellow',text:'黄旗',classN:'flag-yellow'},
-                  {id:'KEYWORD umail-purple',text:'紫旗',classN:'flag-purple'},
-                  {id:'KEYWORD umail-gray',text:'灰旗',classN:'flag-gray'}
+              {id:'',text:this.lan.MAILBOX_COM_INNERBOX_ALL_MAIL,divided:false},
+              {id:'unseen',text:this.lan.MAILBOX_COM_INNERBOX_UNREAD_MAIL,divided:false},
+              {id:'seen',text:this.lan.MAILBOX_COM_INNERBOX_READ_MAIL,divided:false},
+              {id:'flagged',text:this.lan.MAILBOX_COM_INNERBOX_MARKED_MAIL,divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
+              {id:'other',text:this.lan.MAILBOX_COM_INNERBOX_OTHER_MARKERS,divided:false,children:[
+                  {id:'KEYWORD umail-green',text:this.lan.MAILBOX_COM_INNERBOX_GREEN_FLAG,classN:'flag-green'},
+                  {id:'KEYWORD umail-orange',text:this.lan.MAILBOX_COM_INNERBOX_ORANGE_FLAG,classN:'flag-orange'},
+                  {id:'KEYWORD umail-blue',text:this.lan.MAILBOX_COM_INNERBOX_BLUE_FLAG,classN:'flag-blue'},
+                  {id:'KEYWORD umail-pink',text:this.lan.MAILBOX_COM_INNERBOX_PINK_FLAG,classN:'flag-pink'},
+                  {id:'KEYWORD umail-cyan',text:this.lan.MAILBOX_COM_INNERBOX_CYAN_FLAG,classN:'flag-cyan'},
+                  {id:'KEYWORD umail-yellow',text:this.lan.MAILBOX_COM_INNERBOX_YELLOW_FLAG,classN:'flag-yellow'},
+                  {id:'KEYWORD umail-purple',text:this.lan.MAILBOX_COM_INNERBOX_PURPLE_FLAG,classN:'flag-purple'},
+                  {id:'KEYWORD umail-gray',text:this.lan.MAILBOX_COM_INNERBOX_GREY_FLAG,classN:'flag-gray'}
                 ]},
-              {id:'unflagged',text:'未标记邮件',divided:false,classN:'iconfont icon-iconflat'},
-              {id:'ANSWERED',text:'已回复',divided:true,classN:'iconfont icon-iconback greencolor'},
-              {id:'KEYWORD umail-forword',text:'已转发',divided:false,classN:'iconfont icon-Forward greencolor'},
+              {id:'unflagged',text:this.lan.MAILBOX_COM_INNERBOX_UNMARKED_MAIL,divided:false,classN:'iconfont icon-iconflat'},
+              {id:'ANSWERED',text:this.lan.MAILBOX_COM_INNERBOX_RECOVERED,divided:true,classN:'iconfont icon-iconback greencolor'},
+              {id:'KEYWORD umail-forword',text:this.lan.MAILBOX_COM_INNERBOX_FORWARDED,divided:false,classN:'iconfont icon-Forward greencolor'},
             ]
           }
         },
@@ -1431,7 +1477,7 @@
       },
       $route(v,o){
         this.boxId = this.$route.params.boxId;
-        this.curr_folder = sessionStorage['checkNodeLabel'] || '收件箱'
+        this.curr_folder = sessionStorage['checkNodeLabel'] || this.lan.MAILBOX_INBOX
       },
 
     },

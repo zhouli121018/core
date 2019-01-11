@@ -2,30 +2,30 @@
   <div style="box-sizing: border-box" id="search">
     <el-tabs v-model="activeName" @tab-click="handleClick">
 
-      <el-tab-pane label="登录查询" name="login" v-loading="loginData.loading">
+      <el-tab-pane :label="plang.CENTER_LOGIN" name="login" v-loading="loginData.loading">
         <el-row style="padding-bottom:10px;">
           <el-col :span="12">
-            <el-date-picker type="date" placeholder="查询日期" v-model="loginfilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchLoginDate"></el-date-picker>
+            <el-date-picker type="date" :placeholder="plang.COMMON_SEARCH_DATE" v-model="loginfilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchLoginDate"></el-date-picker>
           </el-col>
           <el-col :span="12" style="text-align:right;">
             <el-pagination style="text-align: right;" @size-change="sizeChange($event,'login')" @current-change="currentChange($event,'login')" :current-page="loginData.page" :page-sizes="[10, 20, 50, 100]" :page-size="loginData.page_size" layout="total, sizes, prev, pager, next " :total="loginData.total"></el-pagination>
           </el-col>
         </el-row>
-        <el-table :data="loginData.tableData" stripe :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}" size="mini" style="width: 100%">
-          <el-table-column prop="created" label="登录时间" width="180">
+        <el-table :data="loginData.tableData" stripe :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}" size="mini" style="width: 100%" :empty-text="plang.COMMON_NODATA">
+          <el-table-column prop="created" :label="plang.CENTER_LOGIN_TIME" width="180">
             <template slot-scope="scope"><div>{{scope.row.created.replace('T',' ')}}</div></template>
           </el-table-column>
-          <el-table-column prop="client_ip" label="IP地址" width="200"></el-table-column>
-          <el-table-column prop="area" label="登录地区" width="300">
+          <el-table-column prop="client_ip" :label="plang.CENTER_LOGIN_IP" width="200"></el-table-column>
+          <el-table-column prop="area" :label="plang.CENTER_LOGIN_AREA" width="300">
             <template slot-scope="scope" >
               <div class="nowrap" :title="scope.row.area">{{scope.row.area}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="type" label="登录方式" width="100"></el-table-column>
-          <el-table-column prop="remark" label="登录结果" width="150">
+          <el-table-column prop="type" :label="plang.CENTER_LOGIN_MODE" width="150"></el-table-column>
+          <el-table-column prop="remark" :label="plang.CENTER_LOGIN_REMARK" width="150">
             <template slot-scope="scope"><div><span style="color:#45AB19;"> {{scope.row.remark }} </span></div></template>
           </el-table-column>
-          <el-table-column prop="browser" label="设备 / 系统 / 浏览器">
+          <el-table-column prop="browser" :label="plang.CENTER_LOGIN_BROWSER">
             <template slot-scope="scope" >
               <div class="nowrap" :title="scope.row.browser">{{scope.row.browser}}</div>
             </template>
@@ -33,10 +33,10 @@
         </el-table>
       </el-tab-pane>
 
-      <el-tab-pane label="发信查询" name="send" v-loading="sendData.loading">
+      <el-tab-pane :label="plang.CENTER_SEND" name="send" v-loading="sendData.loading">
         <el-row style="padding-bottom:10px;">
           <el-col :span="12">
-            <el-date-picker type="date" placeholder="查询日期" v-model="sendfilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchSendDate"></el-date-picker>
+            <el-date-picker type="date" :placeholder="plang.COMMON_SEARCH_DATE" v-model="sendfilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchSendDate"></el-date-picker>
           </el-col>
           <el-col :span="12" style="text-align:right;">
             <el-pagination style="text-align: right;" @size-change="sizeChange($event,'send')" @current-change="currentChange($event,'send')" :current-page="sendData.page" :page-sizes="[10, 20, 50, 100]" :page-size="sendData.page_size" layout="total, sizes, prev, pager, next " :total="sendData.total"></el-pagination>
@@ -53,25 +53,25 @@
                   <span style="color:#45AB19;" :class="{is_red:r.is_red}"> {{r.inform||''}}</span>
                 </el-col>
                 <el-col :style="{width:expand_table.col3+'px'}" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;box-sizing:border-box;padding-left:10px;">
-                  <el-button type="text" size="mini" v-if="!r.is_zhaohui" @click="recall(props.row,'single',r.recipient)">召回邮件</el-button>
+                  <el-button type="text" size="mini" v-if="!r.is_zhaohui" @click="recall(props.row,'single',r.recipient)">{{plang.COMMON_BUTTON_ZHAOHUI}}</el-button>
                 </el-col>
               </el-row>
             </template>
           </el-table-column>
-          <el-table-column prop="send_time" label="时间" width="180">
+          <el-table-column prop="send_time" :label="plang.COMMON_TIME" width="180">
             <template slot-scope="scope">
               <div>{{scope.row.send_time.replace('T',' ')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="subject" label="邮件主题">
+          <el-table-column prop="subject" :label="plang.COMMON_MAIL_SUBJECT">
             <template slot-scope="scope" >
               <div class="nowrap" :title="scope.row.subject">{{scope.row.subject}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="" label="收件人">
+          <el-table-column prop="" :label="plang.COMMON_RECAIVER">
             <template slot-scope="scope">
               <div v-if="scope.row.details.length>1">
-                <el-button type="text" size="mini" icon="el-icon-arrow-up" @click="changeExpand(scope.row)"> 所有收件人{{'（'+scope.row.details.length+'）'}}</el-button>
+                <el-button type="text" size="mini" icon="el-icon-arrow-up" @click="changeExpand(scope.row)"> {{plang.CENTER_SEND_ALLRCP}} {{'（'+scope.row.details.length+'）'}}</el-button>
               </div>
               <div v-if="scope.row.details.length==1">
                 <span v-if="scope.row.details[0].name">{{scope.row.details[0].name+' '}} &lt;</span>
@@ -81,7 +81,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="details" label="状态">
+          <el-table-column prop="details" :label="plang.COMMON_STATUS">
             <template slot-scope="scope" >
               <div v-if="scope.row.details.length==1">
                 <span style="color:#45AB19;" :class="{is_red:scope.row.details[0].is_red}"> {{scope.row.details[0].inform||''}} </span>
@@ -89,55 +89,55 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="操作" width="150">
+          <el-table-column :label="plang.COMMON_OPRATE" width="150">
             <template slot-scope="scope">
               <div>
-                <el-button type="text" size="mini" v-if="scope.row.details.length == 1 && !scope.row.details[0].is_zhaohui" @click="recall(scope.row)">召回邮件</el-button>
-                <el-button type="text" size="mini" v-if="show_recall_all(scope.row)" @click="recall(scope.row)">召回全部邮件</el-button>
+                <el-button type="text" size="mini" v-if="scope.row.details.length == 1 && !scope.row.details[0].is_zhaohui" @click="recall(scope.row)">{{plang.COMMON_BUTTON_ZHAOHUI}}</el-button>
+                <el-button type="text" size="mini" v-if="show_recall_all(scope.row)" @click="recall(scope.row)">{{plang.CENTER_SEND_ZHAOHUI_ALL}}</el-button>
               </div>
             </template>
           </el-table-column>
         </el-table>
       </el-tab-pane>
 
-      <el-tab-pane label="收信查询" name="mail" v-loading="mailData.loading">
+      <el-tab-pane :label="plang.CENTER_RCPT" name="mail" v-loading="mailData.loading">
         <el-row style="padding-bottom:10px;">
           <el-col :span="12">
             <el-button-group>
-              <el-button class="status_btn" size="mini" :class="{active:mailData.status == ''}" @click="changeStatus('')">全部来信</el-button>
-              <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'success'}" @click="changeStatus('success')">收件箱和个人文件夹</el-button>
-              <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'spam-flag'}" @click="changeStatus('spam-flag')">垃圾邮件</el-button>
-              <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'virus'}" @click="changeStatus('virus')">病毒拦截</el-button>
-              <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'spam'}" @click="changeStatus('spam')">垃圾拦截</el-button>
+              <el-button class="status_btn" size="mini" :class="{active:mailData.status == ''}" @click="changeStatus('')">{{plang.CENTER_RCPT_ACT1}}</el-button>
+              <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'success'}" @click="changeStatus('success')">{{plang.CENTER_RCPT_ACT2}}</el-button>
+              <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'spam-flag'}" @click="changeStatus('spam-flag')">{{plang.CENTER_RCPT_ACT3}}</el-button>
+              <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'virus'}" @click="changeStatus('virus')">{{plang.CENTER_RCPT_ACT4}}</el-button>
+              <el-button class="status_btn" size="mini" :class="{active:mailData.status == 'spam'}" @click="changeStatus('spam')">{{plang.CENTER_RCPT_ACT5}}</el-button>
             </el-button-group>
-            <el-date-picker type="date" placeholder="查询日期" v-model="receivefilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchReceiveDate"></el-date-picker>
+            <el-date-picker type="date" :placeholder="plang.COMMON_SEARCH_DATE" v-model="receivefilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchReceiveDate"></el-date-picker>
           </el-col>
           <el-col :span="12" style="text-align:right;">
             <el-pagination style="text-align: right;" @size-change="sizeChange($event,'mail')" @current-change="currentChange($event,'mail')" :current-page="mailData.page" :page-sizes="[10, 20, 50, 100]" :page-size="mailData.page_size" layout="total, sizes, prev, pager, next " :total="mailData.total"></el-pagination>
           </el-col>
         </el-row>
         <el-table :data="mailData.tableData" stripe :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}" size="mini" style="width: 100%">
-          <el-table-column prop="logtime" label="时间" width="180">
+          <el-table-column prop="logtime" :label="plang.COMMON_TIME" width="180">
             <template slot-scope="scope">
               <div>{{scope.row.logtime.replace('T',' ')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="subject" label="邮件主题">
+          <el-table-column prop="subject" :label="plang.COMMON_MAIL_SUBJECT">
             <template slot-scope="scope" >
               <div class="nowrap" :title="scope.row.subject">{{scope.row.subject}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="send_mail" label="发件人" width="250">
+          <el-table-column prop="send_mail" :label="plang.COMMON_SENDER" width="250">
             <template slot-scope="scope" >
               <div class="nowrap" :title="scope.row.send_mail">{{scope.row.send_mail}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="folder" label="存储位置" width="250">
+          <el-table-column prop="folder" :label="plang.CENTER_RCPT_LOC" width="250">
             <template slot-scope="scope">
               <div class="nowrap" :title="scope.row.folder">{{scope.row.folder }} </div>
             </template>
           </el-table-column>
-          <el-table-column prop="remark" label="备注" width="300">
+          <el-table-column prop="remark" :label="plang.COMMON_REMARK" width="300">
             <template slot-scope="scope">
               <div><span> {{scope.row.remark }} </span></div>
             </template>
@@ -145,43 +145,43 @@
         </el-table>
       </el-tab-pane>
 
-      <el-tab-pane label="删信查询" name="delete" v-loading="deleteData.loading">
+      <el-tab-pane :label="plang.CENTER_DELETE" name="delete" v-loading="deleteData.loading">
         <el-row style="padding-bottom:10px;">
           <el-col :span="12">
             <el-button-group>
-              <el-button class="status_btn" size="mini" :class="{active:deleteData.status == ''}" @click="changeType('')">全部删信</el-button>
-              <el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'web'}" @click="changeType('web')">网页删信</el-button>
-              <el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'system'}" @click="changeType('system')">自动清理</el-button>
-              <el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'client'}" @click="changeType('client')">客户端删信</el-button>
+              <el-button class="status_btn" size="mini" :class="{active:deleteData.status == ''}" @click="changeType('')">{{plang.CENTER_DELETE_ACT1}}</el-button>
+              <el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'web'}" @click="changeType('web')">{{plang.CENTER_DELETE_ACT2}}</el-button>
+              <el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'system'}" @click="changeType('system')">{{plang.CENTER_DELETE_ACT3}}</el-button>
+              <el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'client'}" @click="changeType('client')">{{plang.CENTER_DELETE_ACT4}}</el-button>
             </el-button-group>
-            <el-date-picker type="date" placeholder="查询日期" v-model="deleletfilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchDeleteDate"></el-date-picker>
+            <el-date-picker type="date" :placeholder="plang.COMMON_SEARCH_DATE" v-model="deleletfilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchDeleteDate"></el-date-picker>
           </el-col>
           <el-col :span="12">
             <el-pagination style="text-align: right;" @size-change="sizeChange($event,'delete')" @current-change="currentChange($event,'delete')" :current-page="deleteData.page" :page-sizes="[10, 20, 50, 100]" :page-size="deleteData.page_size" layout="total, sizes, prev, pager, next " :total="deleteData.total"></el-pagination>
           </el-col>
         </el-row>
         <el-table :data="deleteData.tableData" stripe :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}" size="mini" style="width: 100%">
-          <el-table-column prop="created" label="删除时间" width="180">
+          <el-table-column prop="created" :label="plang.CENTER_DELETE_TIME" width="180">
             <template slot-scope="scope">
               <div>{{scope.row.created.replace('T',' ')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="subject" label="邮件主题">
+          <el-table-column prop="subject" :label="plang.COMMON_MAIL_SUBJECT">
             <template slot-scope="scope" >
               <div class="nowrap" :title="scope.row.subject">{{scope.row.subject}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="send_mail" label="发件人 / 操作人" width="250">
+          <el-table-column prop="send_mail" :label="plang.CENTER_DELETE_SENDER" width="250">
             <template slot-scope="scope" >
               <div class="nowrap" :title="scope.row.send_mail">{{scope.row.send_mail}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="type_show" label="删除信息" width="200">
+          <el-table-column prop="type_show" :label="plang.CENTER_DELETE_INFO" width="200">
             <template slot-scope="scope">
               <div><span> {{scope.row.type_show }} </span></div>
             </template>
           </el-table-column>
-          <el-table-column prop="folder" label="删除位置" width="250">
+          <el-table-column prop="folder" :label="plang.CENTER_DELETE_LOC" width="250">
             <template slot-scope="scope">
               <div class="nowrap" :title="scope.row.folder">{{scope.row.folder }} </div>
             </template>
@@ -190,11 +190,11 @@
       </el-tab-pane>
     </el-tabs>
 
-    <el-dialog title="邮件召回" :visible.sync="recallTableVisible" :append-to-body="true" size="mini">
+    <el-dialog :title="plang.CENTER_SEND_ZHAOHUI_TITLE" :visible.sync="recallTableVisible" :append-to-body="true" size="mini">
       <el-table :data="recallData">
-        <el-table-column property="recipient" label="收件人"></el-table-column>
-        <el-table-column property="recall_status_info" label="召回状态" width="200"></el-table-column>
-        <el-table-column prop="" label="详情">
+        <el-table-column property="recipient" :label="plang.COMMON_RECAIVER"></el-table-column>
+        <el-table-column property="recall_status_info" :label="plang.CENTER_SEND_STATUS" width="200"></el-table-column>
+        <el-table-column prop="" :label="plang.CENTER_SEND_DETAIL">
           <template slot-scope="scope">
             <span style="color:#45AB19;" v-if="!scope.row.is_red"> {{scope.row.inform||''}}</span>
             <span style="color:#45AB19;" v-if="scope.row.is_red" class="is_red"> {{scope.row.inform||''}}</span>
@@ -206,7 +206,7 @@
 </template>
 
 <script>
-
+  import lan from '@/assets/js/lan';
   import {getLoginList,getSendlog,getMaillog,getDeletellog,sendRecall,logRecall} from '@/api/api'
   export default {
     data() {
@@ -261,6 +261,21 @@
 
       };
     },
+    computed: {
+      plang(){
+        if(this.$store.getters.getLanguage=='zh'){
+          return lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          return lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          return lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          return lan.zh
+        }else{
+          return lan.zh
+        }
+      },
+    },
     methods: {
       searchLoginDate(val){
         this.loginfilterdate = val;
@@ -301,9 +316,9 @@
         })
       },
       recall(row,type,r){
-        this.$confirm('<p>确定召回此邮件吗？</p>', '召回邮件', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm(this.plang.CENTER_SEND_MSG1, this.plang.COMMON_BUTTON_ZHAOHUI, {
+          confirmButtonText: this.plang.COMMON_BUTTON_CONFIRM,
+          cancelButtonText: this.plang.COMMON_BUTTON_CANCELL,
           dangerouslyUseHTMLString: true,
           type: 'warning'
         }).then(() => {
@@ -327,7 +342,7 @@
                 str = err.detail
               }
               this.$message({
-                message: '邮件召回失败！'+str,
+                message: str,
                 type: 'error'
               })
             })
@@ -349,17 +364,15 @@
                 str = err.detail
               }
               this.$message({
-                message: '邮件召回失败！'+str,
+                message: str,
                 type: 'error'
               })
             })
           }
-
-
         }).catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消召回'
+            message: this.plang.CENTER_SEND_MSG2
           });
         });
       },
@@ -433,7 +446,6 @@
           this.loginData.tableData = res.data.results;
           this.loginData.loading = false;
         }).catch(err=>{
-          console.log('获取登录日志错误！',err)
           this.loginData.loading = false;
         })
       },
@@ -452,7 +464,6 @@
             this.resetWidth()
           })
         }).catch(err=>{
-          console.log('获取发信日志错误！',err)
           this.sendData.loading = false;
         })
       },
@@ -471,7 +482,6 @@
           this.mailData.tableData = res.data.results;
           this.mailData.loading = false;
         }).catch(err=>{
-          console.log('获取收信日志错误！',err)
           this.mailData.loading = false;
         })
       },
@@ -490,7 +500,6 @@
           this.deleteData.tableData = res.data.results;
           this.deleteData.loading = false;
         }).catch(err=>{
-          console.log('获取删信日志错误！',err)
           this.deleteData.loading = false;
         })
       }
@@ -521,8 +530,6 @@
         this.activeName = 'login';
         this.getLogin();
       }
-
-
     },
   };
 </script>

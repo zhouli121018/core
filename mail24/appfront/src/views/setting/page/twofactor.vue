@@ -3,129 +3,124 @@
 
     <el-row class="" style="padding: 0px;">
       <el-col :span="24" class="breadcrumb-container">
-        <el-breadcrumb separator="/"><el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item><el-breadcrumb-item><a href="#">设置中心</a></el-breadcrumb-item><el-breadcrumb-item>安全中心</el-breadcrumb-item></el-breadcrumb>
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item :to="{ path: '/welcome' }">{{this.$parent.lan.COMMON_HOME_NAME}}</el-breadcrumb-item>
+          <el-breadcrumb-item><a href="#">{{this.$parent.lan.SETTING_INDEX_NAME}}</a></el-breadcrumb-item>
+          <el-breadcrumb-item>{{this.$parent.lan.SETTING_INDEX_TWOFACTOR_MENU}}</el-breadcrumb-item>
+        </el-breadcrumb>
       </el-col>
     </el-row>
 
     <section class="content content-list" style="background-color: rgba(255,255,255,0.3);padding-bottom: 13px;">
       <div style="padding:0 10px;">
-        <p>二次验证：为增强邮箱安全性，您可以在登录邮箱前要求身份验证</p>
-        <el-alert style="margin:10px 0;" title="双因素验证可以使您的账号提高一个安全级别，我们强烈建议您绑定双因素验证。" type="warning" :closable="false" v-if="!showList.has_totp && !showList.has_phone"></el-alert>
+        <p>{{this.$parent.lan.SETTING_TWOFACTOR_TITLE}}</p>
+        <el-alert style="margin:10px 0;" :title="this.$parent.lan.SETTING_TWOFACTOR_ALERT" type="warning" :closable="false" v-if="!showList.has_totp && !showList.has_phone"></el-alert>
         <el-card class="box-card" >
           <div slot="header" class="clearfix">
             <span class="img_icon img_google"></span>
-            <b>谷歌验证</b>
+            <b>{{this.$parent.lan.COMMON_TWOFACTOR_GOOGLE}}</b>
             <div>
-              <!--<el-alert style="margin:10px 0;"  v-if="!showList.has_totp" title="为了您的账号安全，我们强烈建议您开启手机谷歌验证。" show-icon type="warning" :closable="false"></el-alert>-->
-              <!--<el-alert style="margin:10px 0;" v-if="showList.has_totp" title="您已开启谷歌登录验证。" show-icon type="success" :closable="false"></el-alert>-->
-              <span v-if="!showList.has_totp">您的帐户未启用谷歌身份验证，请启用谷歌身份验证以增强帐户安全性。</span>
-              <span v-if="showList.has_totp">您的帐户已启用谷歌身份验证。</span>
+              <span v-if="!showList.has_totp">{{this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_DISABLE_TITLE}}</span>
+              <span v-if="showList.has_totp">{{this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_ENABLE_TITLE}}</span>
             </div>
-            <el-button @click="show_google_set = !show_google_set" size="small" :type="showList.has_totp?'danger':'success'">{{showList.has_totp?'关闭谷歌验证':'开启谷歌验证'}}</el-button>
+            <el-button @click="show_google_set = !show_google_set" size="small" :type="showList.has_totp?'danger':'success'">
+              {{showList.has_totp?this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_DISABLE:this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_ENABLE}}</el-button>
           </div>
           <div  class="text item" v-if="show_google_set">
 
             <el-form v-if="showList.has_totp" :model="goggleForm" :rules="goggleRules"  label-width="100px" size="small">
-              <el-form-item label="谷歌验证码" prop="code">
-                <el-input v-model="goggleForm.code" style="width:300px;" placeholder="请输入谷歌验证码"></el-input>
+              <el-form-item :label="this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_CODE" prop="code">
+                <el-input v-model="goggleForm.code" style="width:300px;" :placeholder="this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_CODE_PLACE"></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button @click="googleReleaseFn">关闭谷歌验证</el-button>
+                <el-button @click="googleReleaseFn">{{this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_DISABLE}}</el-button>
               </el-form-item>
             </el-form>
 
             <el-tabs v-if="!showList.has_totp" v-model="activeName" type="card" @tab-click="" class="safe_box" style="max-width:900px">
-              <el-tab-pane label="1. 下载App" name="first" class="safecontent">
+              <el-tab-pane :label="this.$parent.lan.SETTING_TWOFACTOR_STEP1" name="first" class="safecontent">
                 <div class="first">
                   <div class="first-step">
-                    <span class="stepNum ng-binding">步骤 ①</span>
-                    <h4 class="ng-binding" style="margin-bottom: 5px;">下载并安装验证器APP</h4>
+                    <span class="stepNum ng-binding">{{this.$parent.lan.SETTING_TWOFACTOR_STEP}} ①</span>
+                    <h4 class="ng-binding" style="margin-bottom: 5px;">{{this.$parent.lan.SETTING_TWOFACTOR_STEP1_TITLE}}</h4>
                     <div class="item-body downloads ">
-                      <p>方法一：手机应用市场搜索“身份宝 ”并下载App，或<a href="http://otp.aliyun.com/shenfenbao.html" target="_blank">扫码下载</a></p>
-                      <p>方法二：手机应用市场搜索“宁盾令牌 ”并下载App</p>
-                      <p>方法三：手机应用市场搜索“Google Authenticator ”并下载App，或<br>
+                      <p>{{this.$parent.lan.SETTING_TWOFACTOR_STEP1_METHOD1}}<a href="http://otp.aliyun.com/shenfenbao.html" target="_blank">{{this.$parent.lan.SETTING_TWOFACTOR_STEP1_METHOD10}}</a></p>
+                      <p>{{this.$parent.lan.SETTING_TWOFACTOR_STEP1_METHOD2}}</p>
+                      <p>{{this.$parent.lan.SETTING_TWOFACTOR_STEP1_METHOD3}}<br>
                         <a class="f-fl" href="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8" target="_blank"><i style="margin-bottom: 5px" class="icon-googleAuthen icon-googleAuthen-ios"></i></a>
                         <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank"><i class="icon-googleAuthen icon-googleAuthen-play"></i></a>
                       </p>
-                      <!--<a class="f-fl" href="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8" target="_blank"><i style="margin-bottom: 5px" class="icon-googleAuthen icon-googleAuthen-ios"></i></a>-->
-                      <!--<a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank"><i class="icon-googleAuthen icon-googleAuthen-play"></i></a>-->
                     </div>
 
                   </div>
-                  <div class="option1"><a  class="f-fr next-step ng-binding" @click.prevent="changeTab('second')" style="cursor:pointer;">下一步 &gt;</a><span class="f-fr ng-binding">我已安装好APP</span>
+                  <div class="option1"><a  class="f-fr next-step ng-binding" @click.prevent="changeTab('second')" style="cursor:pointer;">
+                    {{this.$parent.lan.SETTING_TWOFACTOR_STEP_NEXT}} &gt;</a><span class="f-fr ng-binding">{{this.$parent.lan.SETTING_TWOFACTOR_STEP1_FOOTER}}</span>
                   </div>
                 </div>
               </el-tab-pane>
-              <el-tab-pane label="2. 扫描二维码" name="second" class="safecontent">
+              <el-tab-pane :label="this.$parent.lan.SETTING_TWOFACTOR_STEP2" name="second" class="safecontent">
                 <div class="second">
                   <div class="second-step">
-                    <span class="stepNum ng-binding">步骤 ②</span>
+                    <span class="stepNum ng-binding">{{this.$parent.lan.SETTING_TWOFACTOR_STEP}} ②</span>
                     <div class="code">
                       <div class="ewm" id="ewm">
-                        <!--<canvas width="109" height="109"></canvas>-->
                         <div v-html="qrsvg" class="svg_box"></div>
                       </div>
-                      <p class="ng-binding">使用谷歌验证器APP扫描该二维码</p>
+                      <p class="ng-binding">{{this.$parent.lan.SETTING_TWOFACTOR_STEP2_TITLE}}</p>
                     </div>
                     <div class="secretkey">
                       <div class="key">
                         <b>{{secret_key}}</b>
                       </div>
-                      <p class="ng-binding">如果您无法扫描二维码，可以将该16位密钥手动输入到谷歌验证APP中</p>
+                      <p class="ng-binding">{{this.$parent.lan.SETTING_TWOFACTOR_STEP2_MID}}</p>
                     </div>
                   </div>
-                  <div class="option2"><a class="f-fl prev-step ng-binding" @click.prevent="changeTab('first')" style="cursor:pointer;">&lt; 上一步</a><a  class="f-fr next-step ng-binding" @click.prevent="changeTab('third')" style="cursor:pointer;">下一步 &gt;</a><span class="f-fr ng-binding">我已经完成二维码扫描</span></div>
-
+                  <div class="option2"><a class="f-fl prev-step ng-binding" @click.prevent="changeTab('first')" style="cursor:pointer;">
+                    &lt; {{this.$parent.lan.SETTING_TWOFACTOR_STEP_PRE}}</a><a  class="f-fr next-step ng-binding" @click.prevent="changeTab('third')" style="cursor:pointer;">
+                    {{this.$parent.lan.SETTING_TWOFACTOR_STEP_NEXT}} &gt;</a><span class="f-fr ng-binding">{{this.$parent.lan.SETTING_TWOFACTOR_STEP2_FOOTER}}</span></div>
                 </div>
               </el-tab-pane>
-              <el-tab-pane label="3. 备份密钥" name="third" class="safecontent">
+              <el-tab-pane :label="this.$parent.lan.SETTING_TWOFACTOR_STEP3" name="third" class="safecontent">
                 <div class="third">
                   <div class="third-step">
-                    <span class="stepNum ng-binding">步骤 ③</span>
+                    <span class="stepNum ng-binding">{{this.$parent.lan.SETTING_TWOFACTOR_STEP}} ③</span>
                     <div class="keepkey">
                       <b style="padding-left:12px">{{secret_key}}</b>
                     </div>
                     <div class="backupkey">
-                      <p class="ng-binding">请将16位密钥记录在纸上，并保存在安全的地方。如遇手机丢失，你可以通过该密钥恢复你的谷歌验证。</p>
-                      <p style="color: #ff0000;margin-top: 15px" class="ng-binding">也通过联系管理员清除您的谷歌验证。</p>
+                      <p class="ng-binding">{{this.$parent.lan.SETTING_TWOFACTOR_STEP3_TITLE}}</p>
+                      <p style="color: #ff0000;margin-top: 15px" class="ng-binding">{{this.$parent.lan.SETTING_TWOFACTOR_STEP3_MID}}</p>
                     </div>
 
                   </div>
-                  <div class="option3"><a  class="f-fl prev-step ng-binding" @click.prevent="changeTab('second')" style="cursor:pointer;">&lt; 上一步</a><a class="f-fr next-step ng-binding" @click.prevent="changeTab('fourth')" style="cursor:pointer;">下一步 &gt;</a><span class="f-fr ng-binding">我已经写下了16位密钥</span></div>
+                  <div class="option3"><a  class="f-fl prev-step ng-binding" @click.prevent="changeTab('second')" style="cursor:pointer;">
+                    &lt; {{this.$parent.lan.SETTING_TWOFACTOR_STEP_PRE}}</a><a class="f-fr next-step ng-binding" @click.prevent="changeTab('fourth')" style="cursor:pointer;">
+                    {{this.$parent.lan.SETTING_TWOFACTOR_STEP_NEXT}} &gt;</a><span class="f-fr ng-binding">{{this.$parent.lan.SETTING_TWOFACTOR_STEP3_FOOTER}}</span></div>
 
                 </div>
               </el-tab-pane>
-              <el-tab-pane label="4. 开启谷歌验证" name="fourth" class="safecontent">
+              <el-tab-pane :label="this.$parent.lan.SETTING_TWOFACTOR_STEP4" name="fourth" class="safecontent">
                 <div class="fourth">
                   <div class="fourth-step">
-                    <span class="stepNum ng-binding">步骤 ④</span>
+                    <span class="stepNum ng-binding">{{this.$parent.lan.SETTING_TWOFACTOR_STEP}} ④</span>
                     <form id="googleAuthen-form" autocomplete="off" class="ng-pristine ng-valid">
                       <input type="hidden" name="secretKey" value="KF3NDTJAI4PYSZ35">
-                      <!--<div class="item-body">-->
-                      <!--<div class="faCode">-->
-                      <!--<label class="item-title ng-binding">登录密码: </label>-->
-
-                      <!--<input id="pwd" type="password" autocomplete="off" datatype="*" nullmsg="登录密码不能为空">-->
-                      <!--<input type="hidden" name="password" id="loginPwd">-->
-                      <!--<p class="f-nomargin Validform_checktip"></p>-->
-                      <!--</div>-->
-                      <!--<div id="errorMsg"></div>-->
-                      <!--</div>-->
                       <div class="item-body">
                         <div class="faCode">
                           <el-form :model="goggleForm" :rules="goggleRules"  label-width="100px" size="small">
-                            <el-form-item label="谷歌验证码" prop="code">
-                              <el-input v-model="goggleForm.code" style="width:300px;" placeholder="请输入谷歌验证码"></el-input>
+                            <el-form-item :label="this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_CODE" prop="code">
+                              <el-input v-model="goggleForm.code" style="width:300px;" :placeholder="this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_CODE_PLACE"></el-input>
                             </el-form-item>
                           </el-form>
                         </div>
                       </div>
-                      <div style="display: none" class="btns"><span class="btn btn-orange ng-binding" id="googleAuthen-btn">完成绑定</span></div>
+                      <div style="display: none" class="btns"><span class="btn btn-orange ng-binding" id="googleAuthen-btn">{{this.$parent.lan.SETTING_TWOFACTOR_STEP4_TITLE}}</span></div>
                     </form>
 
 
                   </div>
-                  <div class="option4"><a class="f-fl prev-step ng-binding" @click.prevent="changeTab('third')" style="cursor:pointer;">&lt; 上一步</a><a class="f-fr enable ng-binding" @click.prevent="googleVerifyFn" style="cursor:pointer;">开启谷歌验证</a></div>
+                  <div class="option4"><a class="f-fl prev-step ng-binding" @click.prevent="changeTab('third')" style="cursor:pointer;">
+                    &lt; {{this.$parent.lan.SETTING_TWOFACTOR_STEP_PRE}}</a><a class="f-fr enable ng-binding" @click.prevent="googleVerifyFn" style="cursor:pointer;">{{this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_ENABLE}}</a></div>
 
                 </div>
               </el-tab-pane>
@@ -137,33 +132,31 @@
         <el-card class="box-card" style="margin-top:20px;" v-if="showList.has_permisson">
           <div slot="header" class="clearfix">
             <span class="img_icon img_mobile"></span>
-            <b>手机验证</b>
+            <b>{{this.$parent.lan.COMMON_TWOFACTOR_PHONE}}</b>
             <div>
-              <!--<el-alert style="margin:10px 0;" v-if="!showList.has_phone" title="为了您的账号安全，我们强烈建议您开启手机登录验证。" type="warning" :closable="false" show-icon></el-alert>-->
-              <!--<el-alert style="margin:10px 0;" v-if="showList.has_phone" title="您已开启手机登录验证。" show-icon type="success" :closable="false"></el-alert>-->
-              <span v-if="!showList.has_phone">您的帐户未启用手机验证，请启用手机验证以增强帐户安全性。</span>
-              <span v-if="showList.has_phone">您的帐户已启用手机验证。</span>
+              <span v-if="!showList.has_phone">{{this.$parent.lan.SETTING_TWOFACTOR_PHONE_DISABLE_TITLE}}</span>
+              <span v-if="showList.has_phone">{{this.$parent.lan.SETTING_TWOFACTOR_PHONE_ENABLE_TITLE}}</span>
             </div>
-            <el-button @click="show_phone_set = !show_phone_set" size="small" :type="showList.has_phone?'danger':'success'">{{showList.has_phone?'关闭手机验证':'开启手机验证'}}</el-button>
+            <el-button @click="show_phone_set = !show_phone_set" size="small" :type="showList.has_phone?'danger':'success'">
+              {{showList.has_phone?this.$parent.lan.SETTING_TWOFACTOR_PHONE_DISABLE:this.$parent.lan.SETTING_TWOFACTOR_PHONE_ENABLE}}</el-button>
 
           </div>
           <div class="text item" v-if="show_phone_set">
 
             <el-form :model="phoneForm" :rules="phoneRules" ref="phoneForm" label-width="100px" size="small" class="demo-ruleForm"  style="max-width:900px">
-              <el-form-item label="手机号" prop="tel">
+              <el-form-item :label="this.$parent.lan.COMMON_MOBILE" prop="tel">
                 <el-input v-model="phoneForm.tel" style="width:204px;" v-if="!showList.has_phone"></el-input>
                 <el-input v-model="showList.phone" style="width:204px;" v-if="showList.has_phone" disabled></el-input>
 
-                <el-button @click="sentSms" :disabled="getcodeDisabled" v-if="!showList.has_phone"> 获取验证码 <span v-if="getcodeDisabled">({{ss}} 秒)</span> </el-button>
-                <el-button @click="releaseSmsFn" :disabled="getcodeDisabled" v-if="showList.has_phone"> 获取验证码 <span v-if="getcodeDisabled">({{ss}} 秒)</span></el-button>
+                <el-button @click="sentSms" :disabled="getcodeDisabled" v-if="!showList.has_phone"> {{this.$parent.lan.COMMON_FETCH_VERIFICATION_CODE}} <span v-if="getcodeDisabled">({{ss}} {{this.$parent.lan.SETTING_TWOFACTOR_PHONE_SECOND}})</span> </el-button>
+                <el-button @click="releaseSmsFn" :disabled="getcodeDisabled" v-if="showList.has_phone"> {{this.$parent.lan.COMMON_FETCH_VERIFICATION_CODE}} <span v-if="getcodeDisabled">({{ss}} 秒)</span></el-button>
               </el-form-item>
-              <el-form-item label="短信验证码" prop="code">
+              <el-form-item :label="this.$parent.lan.SETTING_TWOFACTOR_PHONE_CODE" prop="code">
                 <el-input v-model="phoneForm.code" style="width:300px;"></el-input>
               </el-form-item>
-
             </el-form>
-            <el-button v-if="!showList.has_phone" type="warning" size="small" style="margin-left:100px;" @click="phoneVerifyFn"> 开启手机验证 </el-button>
-            <el-button v-if="showList.has_phone" type="danger" size="small" style="margin-left:100px;" @click="phoneReleaseFn"> 关闭手机验证 </el-button>
+            <el-button v-if="!showList.has_phone" type="warning" size="small" style="margin-left:100px;" @click="phoneVerifyFn">{{this.$parent.lan.SETTING_TWOFACTOR_PHONE_ENABLE}}</el-button>
+            <el-button v-if="showList.has_phone" type="danger" size="small" style="margin-left:100px;" @click="phoneReleaseFn">{{this.$parent.lan.SETTING_TWOFACTOR_PHONE_DISABLE}}</el-button>
           </div>
 
         </el-card>
@@ -190,7 +183,7 @@
         getcodeDisabled:false,
         ss:60,
         qrsvg:'',
-        showList:{"has_totp":false,"phone":null,"has_permisson":true,"has_phone":false},
+        showList:{"has_totp":false,"phone":null,"has_permisson":false,"has_phone":false},
         secret_key:'',
         activeName:'first',
         phoneForm:{
@@ -198,12 +191,12 @@
           code:''
         },
         phoneRules:{
-          tel:[{ required: true, message: '请输入手机号码~', trigger: 'blur' }],
-          code:[{ required: true, message: '请输入短信验证码~', trigger: 'blur' }],
+          tel:[{ required: true, message: this.$parent.lan.SETTING_TWOFACTOR_PHONE_RULE, trigger: 'blur' }],
+          code:[{ required: true, message: this.$parent.lan.SETTING_TWOFACTOR_PHONE_CODE_RULE, trigger: 'blur' }],
         },
         goggleForm:{code:''},
         goggleRules:{
-          code:[{ required: true, message: '请输入谷歌验证码~', trigger: 'blur' }],
+          code:[{ required: true, message: this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_CODE_RULE, trigger: 'blur' }],
         },
 
       }
@@ -227,7 +220,7 @@
           let str = '';
           this.$message({
             type:'success',
-            message:'解除谷歌验证成功！'+str
+            message:this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_RELEASE_S,
           })
           this.goggleForm.code = ''
         }).catch(err=>{
@@ -237,7 +230,7 @@
           }
           this.$message({
             type:'error',
-            message:'解除谷歌验证失败！'+str
+            message:this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_RELEASE_F+str
           })
         })
       },
@@ -271,7 +264,7 @@
           }
           this.$message({
             type:'error',
-            message:'操作失败！'+str
+            message: str
           })
         })
       },
@@ -279,17 +272,10 @@
         if(!this.phoneForm.tel || this.phoneForm.tel ==''){
           this.$message({
             type:'error',
-            message:'请输入手机号码！'
+            message: this.$parent.lan.SETTING_TWOFACTOR_PHONE_RULE,
           })
           return ;
         }
-        // if(!(/^1[345678]\d{9}$/).test(this.phoneForm.tel)){
-        //   this.$message({
-        //     type:'error',
-        //     message:'请输入正确的手机号码！'
-        //   })
-        //   return ;
-        // }
 
         this.getcodeDisabled = true;
         let _this = this;
@@ -323,7 +309,7 @@
           }
           this.$message({
             type:'error',
-            message:'操作失败！'+str
+            message: str
           })
         })
       },
@@ -339,7 +325,7 @@
           }
           this.$message({
             type:'success',
-            message:'绑定手机验证成功！'+str
+            message:this.$parent.lan.SETTING_TWOFACTOR_PHONE_BOUND_S,
           })
           this.phoneForm.tel = ''
           this.phoneForm.code = ''
@@ -363,7 +349,7 @@
           }
           this.$message({
             type:'error',
-            message:'绑定手机验证失败！'+str
+            message:this.$parent.lan.SETTING_TWOFACTOR_PHONE_BOUND_S+str
           })
         })
       },
@@ -378,7 +364,7 @@
           }
           this.$message({
             type:'success',
-            message:'解除手机验证成功！'+str
+            message:this.$parent.lan.SETTING_TWOFACTOR_PHONE_RELEASE_S
           })
           this.phoneForm.tel = ''
           this.phoneForm.code = ''
@@ -399,7 +385,7 @@
           }
           this.$message({
             type:'error',
-            message:'解除手机验证失败！'+str
+            message:this.$parent.lan.SETTING_TWOFACTOR_PHONE_RELEASE_F+str
           })
         })
       },
@@ -446,7 +432,7 @@
           let str = '';
           this.$message({
             type:'success',
-            message:'绑定谷歌验证成功！'+str
+            message:this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_BOUND_S
           })
           this.goggleForm.code = ''
         }).catch(err=>{
@@ -457,7 +443,7 @@
           }
           this.$message({
             type:'error',
-            message:'绑定谷歌验证失败！'+str
+            message:this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_BOUND_F+str
           })
         })
       }

@@ -2,42 +2,42 @@
   <div class="j-module-content j-maillist mllist-list height100 ">
     <el-row class="" style="padding: 0px;">
       <el-col :span="24" class="breadcrumb-container">
-        <el-breadcrumb separator="/"><el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item><el-breadcrumb-item><a href="#">设置中心</a></el-breadcrumb-item><el-breadcrumb-item>收件短信通知</el-breadcrumb-item></el-breadcrumb>
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item :to="{ path: '/welcome' }">{{plang.COMMON_HOME_NAME}}</el-breadcrumb-item>
+          <el-breadcrumb-item><a href="#">{{plang.SETTING_INDEX_NAME}}</a></el-breadcrumb-item>
+          <el-breadcrumb-item>{{plang.SETTING_INDEX_SMS_MENU}}</el-breadcrumb-item>
+        </el-breadcrumb>
       </el-col>
     </el-row>
     <section class="content content-list height100" style="background-color: #fff;background: rgba(255,255,255,0.9);padding-bottom: 13px;">
 
-      <el-col :span="24"><div class="demo-block-control"><p style="margin-bottom: 3px; margin-left: 13px"> 收件短信通知设置</p></div></el-col>
+      <el-col :span="24"><div class="demo-block-control"><p style="margin-bottom: 3px; margin-left: 13px"> {{plang.SETTING_INDEX_SMS_MENU}}</p></div></el-col>
 
       <el-form :model="createForm" :rules="createFormRules" ref="createForm" :inline="true" label-width="140px" style="margin-left:13px;margin-right:13px;margin-top: 13px" size="mini">
 
         <el-row>
           <el-col :span="24">
-            <el-form-item label="收件短信通知模式" prop="recvsms">
+            <el-form-item :label="plang.SETTING_SMS_MODE" prop="recvsms">
               <el-radio-group v-model="createForm.recvsms">
-                <el-radio label="-1">对所有收到的邮件都不通知</el-radio>
-                <el-radio label="1">对所有收到的邮件都通知</el-radio>
-                <el-radio label="0">发件人在白名单中时通知</el-radio>
+                <el-radio label="-1">{{plang.SETTING_SMS_MODE1}}</el-radio>
+                <el-radio label="1">{{plang.SETTING_SMS_MODE2}}</el-radio>
+                <el-radio label="0">{{plang.SETTING_SMS_MODE3}}</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-button type="primary" @click.native="createFormSubmit()" size="mini">提交</el-button>
+            <el-button type="primary" @click.native="createFormSubmit()" size="mini">{{plang.COMMON_BUTTON_SUBMIT}}</el-button>
           </el-col>
         </el-row>
       </el-form>
-
-
-
-
       <div v-if="white_list_show">
         <el-row>
-          <el-col :span="24"><div class="demo-block-control"><p style="margin-bottom: 3px; margin-left: 13px"> 收件短信通知白名单</p></div></el-col>
+          <el-col :span="24"><div class="demo-block-control"><p style="margin-bottom: 3px; margin-left: 13px">{{plang.SETTING_SMS_MODE3_TITLE}}</p></div></el-col>
         </el-row>
 
-        <el-alert title="功能说明：您可以添加一个邮箱地址或者是一个域，例如：zhangsan@example.com 或 @example.com。" type="success" :closable="false"></el-alert>
+        <el-alert :title="plang.SETTING_SMS_MODE3_DESC" type="success" :closable="false"></el-alert>
 
         <el-row class="toolbar">
           <el-col :span="12">
-            <el-button type="primary" @click="createWhiter" size="mini">添加白名单</el-button>
+            <el-button type="primary" @click="createWhiter" size="mini">{{plang.COMMON_BUTTON_ADD}}</el-button>
           </el-col>
           <el-col :span="12" >
             <el-pagination layout="total, sizes, prev, pager, next, jumper"
@@ -51,21 +51,21 @@
           </el-col>
         </el-row>
 
-        <el-table :data="listTables" highlight-current-row width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
+        <el-table :data="listTables" highlight-current-row width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" :empty-text="plang.COMMON_NODATA" border>
           <el-table-column type="selection" width="60"></el-table-column>
           <el-table-column type="index" label="No." width="80"></el-table-column>
-          <el-table-column prop="email" label="邮箱"></el-table-column>
-          <el-table-column label="状态">
+          <el-table-column prop="email" :label="plang.COMMON_EMAIL"></el-table-column>
+          <el-table-column :label="plang.COMMON_STATUS">
             <template slot-scope="scope">
               <i class="el-alert--success el-alert__icon el-icon-success" v-if="scope.row.enabled=='1'"></i>
               <i class="el-alert--error el-alert__icon el-icon-error" v-if="scope.row.enabled=='-1'"></i>
             </template>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column :label="plang.COMMON_OPRATE">
             <template slot-scope="scope">
-              <el-button size="mini" @click="editWhiter(scope.$index, scope.row)" type="warning" v-if="scope.row.enabled=='1'">禁用</el-button>
-              <el-button size="mini" @click="editWhiter(scope.$index, scope.row)" type="primary" v-if="scope.row.enabled=='-1'">启用</el-button>
-              <el-button type="danger" size="mini" @click="delWhiter(scope.$index, scope.row)">删除</el-button>
+              <el-button size="mini" @click="editWhiter(scope.$index, scope.row)" type="warning" v-if="scope.row.enabled=='1'">{{plang.COMMON_STATUS_DISABLE}}</el-button>
+              <el-button size="mini" @click="editWhiter(scope.$index, scope.row)" type="primary" v-if="scope.row.enabled=='-1'">{{plang.COMMON_STATUS_ENABLE}}</el-button>
+              <el-button type="danger" size="mini" @click="delWhiter(scope.$index, scope.row)">{{plang.COMMON_BUTTON_DELETE}}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -73,21 +73,21 @@
         <el-col :span="24" class="toolbar"></el-col>
 
         <!--新增 签名-->
-        <el-dialog title="添加白名单"  :visible.sync="createFormVisible2"  :close-on-click-modal="false" :append-to-body="true">
+        <el-dialog :title="plang.COMMON_BUTTON_ADD"  :visible.sync="createFormVisible2"  :close-on-click-modal="false" :append-to-body="true">
           <el-form :model="createForm2" label-width="100px" :rules="createFormRules2" ref="createForm2">
-            <el-form-item label="邮箱" prop="email" :error="email_error">
+            <el-form-item :label="plang.COMMON_EMAIL" prop="email" :error="email_error">
               <el-input v-model.trim="createForm2.email" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="状态">
+            <el-form-item :label="plang.COMMON_STATUS">
               <el-radio-group v-model="createForm2.enabled">
-                <el-radio label="1">启用</el-radio>
-                <el-radio label="-1">禁用</el-radio>
+                <el-radio label="1">{{plang.COMMON_STATUS_ENABLE}}</el-radio>
+                <el-radio label="-1">{{plang.COMMON_STATUS_DISABLE}}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button @click.native="createFormVisible2 = false">取消</el-button>
-            <el-button type="primary" @click.native="createFormSubmit2()">提交</el-button>
+            <el-button @click.native="createFormVisible2 = false">{{plang.COMMON_BUTTON_CANCELL}}</el-button>
+            <el-button type="primary" @click.native="createFormSubmit2()">{{plang.COMMON_BUTTON_SUBMIT}}</el-button>
           </div>
         </el-dialog>
 
@@ -102,17 +102,18 @@
 
   export default {
     data() {
+      let _self = this;
       var isEmail = function(rule,value,callback){
         let m1 = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/.test(value) == true;
         let m2 = /^\@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/.test(value) == true;
         if(m1 || m2){
           callback();
         }else{
-          callback(new Error("请输入正确的邮箱"));
+          callback(new Error(_self.$parent.lan.SETTING_WHITE_EMAIL_RULE2));
         }
       };
       return {
-
+        plang:_self.$parent.lan,
         total: 0,
         page: 1,
         page_size: 15,
@@ -124,7 +125,7 @@
         createFormLoading: false,
         createForm: {recvsms: '-1'},
         createFormRules: {
-          recvsms: [ { required: true, message: '请选择', trigger: 'blur' } ]
+          recvsms: [ { required: true, message: _self.$parent.lan.SETTING_RE_ADD_PLACEHODER, trigger: 'blur' } ]
         },
 
         email_error: '',
@@ -133,10 +134,10 @@
         createForm2: {email: '',  enabled: '1'},
         createFormRules2: {
           email: [
-            { required: true, message: '请填写邮箱', trigger: 'blur' },
+            { required: true, message: _self.$parent.lan.SETTING_WHITE_EMAIL_RULE1, trigger: 'blur' },
             {validator: isEmail, trigger: 'blur'}
           ],
-          enabled: [{ required: true, message: '请选择', trigger: 'blur' }],
+          enabled: [{ required: true, message: _self.$parent.lan.SETTING_RE_ADD_PLACEHODER, trigger: 'blur' }],
         },
 
       }
@@ -165,12 +166,12 @@
       createFormSubmit: function () {
         this.$refs.createForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.plang.COMMON_BUTTON_CONFIRM_SUBMIT, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.createFormLoading = true;
               let para = Object.assign({}, this.createForm);
               settingSmsSet(para)
                 .then((res) => {
-                  this.$message({message: '设置成功', type: 'success'});
+                  this.$message({message: this.plang.COMMON_SET_SUCCESS, type: 'success'});
                   // this.$refs['createForm'].resetFields();
                   this.createFormLoading = false;
                   this.getForms();
@@ -213,12 +214,12 @@
         this.email_error='';
         this.$refs.createForm2.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.plang.COMMON_BUTTON_CONFIRM_SUBMIT, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.createFormLoading2 = true;
               let para = Object.assign({}, this.createForm2);
               settingSmsWhiterCreate(para)
                 .then((res) => {
-                  this.$message({message: '添加成功', type: 'success'});
+                  this.$message({message: this.plang.COMMON_ADD_SUCCESS, type: 'success'});
                   this.$refs['createForm2'].resetFields();
                   this.createFormVisible2 = false;
                   this.createFormLoading2 = false;
@@ -238,41 +239,43 @@
       },
       editWhiter: function (index, row) {
         let that = this;
-        var msg, enabled, message;
-        if (row.enabled == '1') {
-          msg = '确认禁用该白名单吗?';
-          enabled = '-1';
-          message = '禁用成功'
+        var msg, disabled, message1, message2;
+        if (row.disabled == '-1') {
+          msg = this.plang.COMMON_BUTTON_DISABLE_SUBMIT;
+          disabled = '1';
+          message1 = this.plang.COMMON_DISABLE_SUCCESS;
+          message2 = this.plang.COMMON_DISABLE_FAILED;
         } else {
-          msg = '确认启用该白名单吗?';
-          enabled = '1';
-          message = '启用成功'
+          msg = this.plang.COMMON_BUTTON_ENABLE_SUBMIT;
+          disabled = '-1';
+          message1 = this.plang.COMMON_ENABLE_SUCCESS;
+          message2 = this.plang.COMMON_ENABLE_FAILED;
         }
-        this.$confirm(msg, '提示', {
+        this.$confirm(msg,this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           settingSmsWhiterStatusSet(row.id, {enabled: enabled})
             .then((response)=> {
-              that.$message({ message: message, type: 'success' });
+              that.$message({ message: message1, type: 'success' });
               this.getTables();
             })
             .catch(function (error) {
-              that.$message({ message: '操作失败',  type: 'error' });
+              that.$message({ message: message2,  type: 'error' });
             });
         });
       },
       delWhiter: function (index, row) {
         let that = this;
-        this.$confirm('确认删除该白名单吗?', '提示', {
+        this.$confirm(this.plang.COMMON_BUTTON_DELETE_SUBMIT, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           settingSmsWhiterDelete(row.id)
             .then((response)=> {
-              that.$message({ message: '删除成功', type: 'success' });
+              that.$message({ message: this.plang.COMMON_DELETE_SUCCESS, type: 'success' });
               this.getTables();
             })
             .catch(function (error) {
-              that.$message({ message: '删除失败',  type: 'error' });
+              that.$message({ message: this.plang.COMMON_DELETE_FAILED,  type: 'error' });
             });
         });
       },

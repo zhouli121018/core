@@ -15,18 +15,14 @@
     </aside>
 
     <article class="mlmain mltabview overflow_auto" :style="{left:($parent.asideWith+1)+'px'}">
-      <div  class="j-module-content j-maillist mllist-list height100 "  v-loading="listLoading"
-      >
-        <!--element-loading-text="拼命加载中"-->
-    <!--element-loading-spinner="el-icon-loading"-->
-    <!--element-loading-background="rgba(0, 0, 0, 0.8)"-->
+      <div  class="j-module-content j-maillist mllist-list height100 "  v-loading="listLoading">
 
         <el-row>
           <el-col :span="24" class="breadcrumb-container">
             <el-breadcrumb separator="/">
-              <el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item>
-              <el-breadcrumb-item><a href="#">组织通讯录</a></el-breadcrumb-item>
-              <el-breadcrumb-item>当前部门：&nbsp;{{department_name}}</el-breadcrumb-item>
+              <el-breadcrumb-item :to="{ path: '/welcome' }">{{plang.COMMON_HOME_NAME}}</el-breadcrumb-item>
+              <el-breadcrumb-item><a href="#">{{plang.CONTANCT_INDEX_OAB}}</a></el-breadcrumb-item>
+              <el-breadcrumb-item>{{plang.CONTACT_OAB_CUR}}&nbsp;{{department_name}}</el-breadcrumb-item>
             </el-breadcrumb>
           </el-col>
         </el-row>
@@ -36,16 +32,16 @@
           <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             <el-form :inline="true" :model="filters">
               <el-form-item>
-                <el-input v-model="filters.search" placeholder="邮箱或姓名" size="small"></el-input>
+                <el-input v-model="filters.search" :placeholder="plang.CONTACT_PAB_SEARCH" size="small"></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" v-on:click="searchOabMembers" size="small">查询</el-button>
-                <el-button type="success" @click="Oab_export_group" size="small" v-if="webmail_oabdump_show">导出联系人</el-button>
+                <el-button type="primary" v-on:click="searchOabMembers" size="small">{{plang.COMMON_SEARCH}}</el-button>
+                <el-button type="success" @click="Oab_export_group" size="small" v-if="webmail_oabdump_show">{{plang.CONTACT_PAB_EXPC}}</el-button>
                 <a :href="blobUrl" download="" style="display:none;" ref="download"></a>
-                <el-button type="primary" @click="Oab_export_foxmail" size="small" v-if="webmail_oabdump_show">导出为Foxmail格式</el-button>
-                <el-button type="success" @click="Oab_export_outlook" size="small" v-if="webmail_oabdump_show">导出为outlook格式</el-button>
+                <el-button type="primary" @click="Oab_export_foxmail" size="small" v-if="webmail_oabdump_show">{{plang.CONTACT_OAB_EXPCF}}</el-button>
+                <el-button type="success" @click="Oab_export_outlook" size="small" v-if="webmail_oabdump_show">{{plang.CONTACT_OAB_EXPCO}}</el-button>
                 <span v-show="webmail_oabdump_show">
-                  （<el-button type="button" class="el-button control-button el-tooltip el-button--text el-button--small" @click="Oab_export_tutorial">客户端工具导入企业通讯录教程</el-button>）
+                  （<el-button type="button" class="el-button control-button el-tooltip el-button--text el-button--small" @click="Oab_export_tutorial">{{plang.CONTACT_OAB_EXPCT}}</el-button>）
                 </span>
               </el-form-item>
             </el-form>
@@ -54,12 +50,11 @@
 
         <!-- 普通列表 -->
         <section class="content content-list height100">
-
           <el-row class="toolbar">
             <el-col :span="12">
-              <el-button type="primary" :disabled="this.sels.length===0" size="mini" @click="$parent.sendMail_net('more',sels)"> 发信给选择的人员</el-button>
-              <el-button type="success" @click="Oab_send_to_department" size="mini">发邮件给本机构人员</el-button>
-              <el-button type="info" @click="Oab_to_pab" :disabled="this.sels.length===0" size="mini"> 添加至个人通讯录</el-button>
+              <el-button type="primary" :disabled="this.sels.length===0" size="mini" @click="$parent.sendMail_net('more',sels)">{{plang.CONTACT_OAB_SEND}}</el-button>
+              <el-button type="success" @click="Oab_send_to_department" size="mini">{{plang.CONTACT_OAB_SENDO}}</el-button>
+              <el-button type="info" @click="Oab_to_pab" :disabled="this.sels.length===0" size="mini"> {{plang.CONTACT_OAB_TOPAB}}</el-button>
             </el-col>
             <el-col :span="12">
               <el-pagination layout="total, sizes, prev, pager, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange"
@@ -72,15 +67,14 @@
           <el-table :data="listTables" highlight-current-row width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
             <el-table-column type="selection" width="50"></el-table-column>
             <el-table-column type="index" label="No." width="60"></el-table-column>
-            <el-table-column prop="name" label="姓名" width="200"></el-table-column>
-            <el-table-column prop="username" label="邮箱" width="250"></el-table-column>
-            <el-table-column prop="mobile" label="移动号码" width="150"></el-table-column>
-            <el-table-column prop="tel_work" label="工作号码/分机号" width="200"></el-table-column>
-            <el-table-column prop="department" label="部门" ></el-table-column>
-            <el-table-column prop="position" label="职务" width="200"></el-table-column>
-            <el-table-column prop="tel_group" label="集团号" width="150"></el-table-column>
+            <el-table-column prop="name" :label="plang.COMMON_XINGMING" width="200"></el-table-column>
+            <el-table-column prop="username" :label="plang.COMMON_EMAIL" width="250"></el-table-column>
+            <el-table-column prop="mobile" :label="plang.COMMON_MOBILE2" width="150"></el-table-column>
+            <el-table-column prop="tel_work" :label="plang.CONTACT_OAB_WORKTEL" width="200"></el-table-column>
+            <el-table-column prop="department" :label="plang.COMMON_DEPARTMENT"></el-table-column>
+            <el-table-column prop="position" :label="plang.COMMON_POSITION" width="200"></el-table-column>
+            <el-table-column prop="tel_group" :label="plang.COMMON_TELGROUP" width="150"></el-table-column>
           </el-table>
-
           <el-col :span="24" class="toolbar"></el-col>
         </section>
 
@@ -103,7 +97,9 @@
 
   export default {
     data() {
+      let _self = this;
       return {
+        plang:_self.$parent.plang,
         asideWith:199,
         oab_cid: "",
         blobUrl: "",
@@ -238,7 +234,7 @@
       // 导出联系人
       Oab_export_group: function(){
         let that = this;
-        this.$confirm('确认导出该部门联系人吗?', '提示', {
+        this.$confirm(this.plang.CONTACT_OAB_MSG1, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           this.listLoading = true;
@@ -262,7 +258,7 @@
               document.body.appendChild(link);
               link.click();
             }
-            that.$message({ message: '导出成功', type: 'success' });
+            that.$message({ message: this.plang.COMMON_EXPORT_SUCCESS, type: 'success' });
             // this.getPabs();
           }).catch(function (err) {
             that.listLoading = false;
@@ -270,13 +266,13 @@
             if(err.detail){
               str = err.detail;
             }
-            that.$message({ message: '导出失败! '+str,  type: 'error' });
+            that.$message({ message: this.plang.COMMON_EXPORT_FAILED+' '+str,  type: 'error' });
           });
         });
       },
       Oab_export_foxmail: function(){
         let that = this;
-        this.$confirm('确认导出该部门联系人吗?', '提示', {
+        this.$confirm(this.plang.CONTACT_OAB_MSG1, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           this.listLoading = true;
@@ -300,7 +296,7 @@
               document.body.appendChild(link);
               link.click();
             }
-            that.$message({ message: '导出成功', type: 'success' });
+            that.$message({ message: this.plang.COMMON_EXPORT_SUCCESS, type: 'success' });
             // this.getPabs();
           }).catch(function (err) {
             that.listLoading = false;
@@ -308,13 +304,13 @@
             if(err.detail){
               str = err.detail;
             }
-            that.$message({ message: '导出失败! '+str,  type: 'error' });
+            that.$message({ message: this.plang.COMMON_EXPORT_FAILED+' '+str,  type: 'error' });
           });
         });
       },
       Oab_export_outlook: function(){
         let that = this;
-        this.$confirm('确认导出该部门联系人吗?', '提示', {
+        this.$confirm(this.plang.CONTACT_OAB_MSG1, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           this.listLoading = true;
@@ -338,7 +334,7 @@
               document.body.appendChild(link);
               link.click();
             }
-            that.$message({ message: '导出成功', type: 'success' });
+            that.$message({ message: this.plang.COMMON_EXPORT_SUCCESS, type: 'success' });
             // this.getPabs();
           }).catch(function (err) {
             that.listLoading = false;
@@ -346,7 +342,7 @@
             if(err.detail){
               str = err.detail;
             }
-            that.$message({ message: '导出失败! '+str,  type: 'error' });
+            that.$message({ message: this.plang.COMMON_EXPORT_FAILED+' '+ str,  type: 'error' });
           });
         });
       },
@@ -371,21 +367,21 @@
             document.body.appendChild(link);
             link.click();
           }
-          that.$message({ message: '导出成功', type: 'success' });
+          that.$message({ message: this.plang.COMMON_EXPORT_SUCCESS, type: 'success' });
           // this.getPabs();
         }).catch(function (err) {
           let str = '';
-            if(err.detail){
-              str = err.detail;
-            }
-          that.$message({ message: '导出失败! '+str,  type: 'error' });
+          if(err.detail){
+            str = err.detail;
+          }
+          that.$message({ message: this.plang.COMMON_EXPORT_FAILED+' '+str,  type: 'error' });
         });
       },
 
       Oab_send_to_select: function () {
         // var ids = this.sels.map(item => item.id).toString();
         var ids = this.sels.map(item => item.id);
-        this.$confirm('确认删除选中记录吗？', '提示', {
+        this.$confirm(this.plang.CONTACT_OAB_MSG2, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
             // this.listLoading = true;
@@ -407,15 +403,15 @@
       Oab_send_to_department: function () {
         // var ids = this.sels.map(item => item.id).toString();
         // var ids = this.sels.map(item => item.id);
-        this.$confirm('发邮件给本机构人员？', '提示', {
+        this.$confirm(this.plang.CONTACT_OAB_MSG3, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
-          let str = this.$store.getters.userInfo.name;
-          let index = str.lastIndexOf('@');
-          let domain = str.slice(index)
-          let arr = ['dept_'+this.oab_cid+domain,this.department_name]
-          if(this.oab_cid == 0){ arr = ['everyone'+domain,'everyone']}
-          this.$parent.sendMail_net([arr])
+            let str = this.$store.getters.userInfo.name;
+            let index = str.lastIndexOf('@');
+            let domain = str.slice(index)
+            let arr = ['dept_'+this.oab_cid+domain,this.department_name]
+            if(this.oab_cid == 0){ arr = ['everyone'+domain,'everyone']}
+            this.$parent.sendMail_net([arr])
           }
         ).catch(() => {
         });
@@ -424,20 +420,18 @@
         let that = this;
         // var ids = this.sels.map(item => item.id).toString();
         var ids = this.sels.map(item => item.id);
-        this.$confirm('确定将选中成员添加到个人通讯录中？', '提示', {
+        this.$confirm(this.plang.CONTACT_OAB_MSG4, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           this.listLoading = true;
           let para = {ids: ids};
           contactPabMembersOabAdd(para).then((res) => {
             this.listLoading = false;
-            //NProgress.done();
-            that.$message({ message: '已成功添加联系人到个人通讯录', type: 'success' });
+            that.$message({ message: this.plang.CONTACT_OAB_MSG5, type: 'success' });
           }).catch(()=>{
             this.listLoading = false;
           });
         }).catch((error) => {
-          // that.$message({ message: '操作失败，请重试',  type: 'error' });
         });
       }
     }

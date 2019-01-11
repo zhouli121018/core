@@ -2,15 +2,17 @@
   <div class="j-module-content j-maillist mllist-list height100 ">
     <el-row class="" style="padding: 0px;">
       <el-col :span="24" class="breadcrumb-container">
-        <el-breadcrumb separator="/"><el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item><el-breadcrumb-item><a href="#">设置中心</a></el-breadcrumb-item><el-breadcrumb-item>关联共享邮箱</el-breadcrumb-item></el-breadcrumb>
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item :to="{ path: '/welcome' }">{{plang.COMMON_HOME_NAME}}</el-breadcrumb-item>
+          <el-breadcrumb-item><a href="#">{{plang.SETTING_INDEX_NAME}}</a></el-breadcrumb-item>
+          <el-breadcrumb-item>{{plang.SETTING_INDEX_REFER_MENU}}</el-breadcrumb-item>
+        </el-breadcrumb>
       </el-col>
     </el-row>
     <section class="content content-list height100" style="background-color: #fff;background: rgba(255,255,255,0.9);padding-bottom: 13px;">
-
-
       <el-row class="toolbar">
         <el-col :span="12">
-          <el-button type="primary" @click="createFormShow" size="mini">添加关联共享邮箱</el-button>
+          <el-button type="primary" @click="createFormShow" size="mini">{{plang.COMMON_BUTTON_ADD}}</el-button>
         </el-col>
         <el-col :span="12" >
           <el-pagination layout="total, sizes, prev, pager, next, jumper"
@@ -24,48 +26,38 @@
           </el-pagination>
         </el-col>
       </el-row>
-
-      <el-table :data="listTables" highlight-current-row  width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
+      <el-table :data="listTables" highlight-current-row  width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" :empty-text="plang.COMMON_NODATA" border>
         <el-table-column type="selection" width="60"></el-table-column>
-        <el-table-column prop="realname" label="用户名"></el-table-column>
-        <el-table-column prop="username" label="关联邮箱"></el-table-column>
-        <el-table-column prop="access_display" label="权限"></el-table-column>
-        <el-table-column label="操作">
+        <el-table-column prop="realname" :label="plang.USERNAME"></el-table-column>
+        <el-table-column prop="username" :label="plang.SETTING_REFER_EMAIL"></el-table-column>
+        <el-table-column prop="access_display" :label="plang.COMMON_PERMISSION"></el-table-column>
+        <el-table-column :label="plang.COMMON_OPRATE">
           <template slot-scope="scope">
-            <el-button type="danger" size="mini" @click="deleteRow(scope.$index, scope.row)">删除</el-button>
+            <el-button type="danger" size="mini" @click="deleteRow(scope.$index, scope.row)">{{plang.COMMON_BUTTON_DELETE}}</el-button>
           </template>
         </el-table-column>
       </el-table>
-
       <el-col :span="24" class="toolbar"></el-col>
-
-
       <!--新增 签名-->
-      <el-dialog title="添加关联共享邮箱"  :visible.sync="createFormVisible"  :close-on-click-modal="false" :append-to-body="true" class="add_share_mail" width="60%">
+      <el-dialog :title="plang.COMMON_BUTTON_ADD"  :visible.sync="createFormVisible"  :close-on-click-modal="false" :append-to-body="true" class="add_share_mail" width="60%">
         <el-form :model="createForm" label-width="100px" :rules="createFormRules" ref="createForm" size="small"
-
-          element-loading-text="正在导入文件..."
-          element-loading-spinner="el-icon-loading"
-        >
-          <el-form-item label="添加方式：" >
+                 :element-loading-text="plang.SETTING_REFER_IMPORT_LOADING"
+                 element-loading-spinner="el-icon-loading">
+          <el-form-item :label="plang.SETTING_REFER_MODE" >
             <el-radio-group v-model="addType">
-              <el-radio :label="0">输入或从通讯录中选择</el-radio>
-              <el-radio :label="2">导入excel</el-radio>
+              <el-radio :label="0">{{plang.SETTING_REFER_MODE1}}</el-radio>
+              <el-radio :label="2">{{plang.SETTING_REFER_MODE2}}</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="权限：">
+          <el-form-item :label="plang.COMMON_PERMISSION">
             <el-radio-group v-model="createForm.access">
-              <el-radio label="read">只读</el-radio>
-              <el-radio label="edit">读写</el-radio>
-              <el-radio label="send">代理发送</el-radio>
-              <el-radio label="all">完全控制</el-radio>
+              <el-radio label="read">{{plang.SETTING_REFER_PERM1}}</el-radio>
+              <el-radio label="edit">{{plang.SETTING_REFER_PERM2}}</el-radio>
+              <el-radio label="send">{{plang.SETTING_REFER_PERM3}}</el-radio>
+              <el-radio label="all">{{plang.SETTING_REFER_PERM4}}</el-radio>
             </el-radio-group>
           </el-form-item>
-          <!--<el-form-item v-show="addType == '1'" label="邮箱：" prop="email" :error="email_error">-->
-          <!--<el-input v-model.trim="createForm.email" auto-complete="off"></el-input>-->
-          <!--<br><small>邮箱必须在系统中存在</small>-->
-          <!--</el-form-item>-->
-          <el-form-item v-show="addType == '0'" label="邮箱：">
+          <el-form-item v-show="addType == '0'" :label="plang.COMMON_EMAIL">
             <div style="min-height:80px;border:1px solid #dcdfe6;max-width:460px;padding:4px 10px;margin-bottom:4px;max-height:400px;overflow:auto;">
               <el-row v-for="(v,k) in selectedMailbox" :key="k">
                 <el-col :span="18">
@@ -74,29 +66,26 @@
                 <el-col :span="6" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="deleteMailbox(k)" type="warning" plain></el-button></el-col>
               </el-row>
             </div>
-            <el-input type="textarea" v-if="false" autosize v-model="selectedMailbox" placeholder="支持多个邮箱，请用分号( ; )隔开"></el-input>
-            <el-input placeholder="输入邮箱" v-model="addmailbox" style="width:auto;" type="email"></el-input><el-button @click="addMailbox">添加</el-button>
-            <el-button @click="deleteAll" type="danger" plain>清空添加的邮箱</el-button>
-            <el-button @click="showChoice=!showChoice">{{showChoice?"隐藏通讯录":"打开通讯录"}}</el-button>
+            <el-input type="textarea" v-if="false" autosize v-model="selectedMailbox" :placeholder="plang.SETTING_REFERE_EMAIL_DESC1"></el-input>
+            <el-input :placeholder="plang.SETTING_REFERE_EMAIL_DESC2" v-model="addmailbox" style="width:auto;" type="email"></el-input><el-button @click="addMailbox">{{plang.COMMON_BUTTON_ADD}}</el-button>
+            <el-button @click="deleteAll" type="danger" plain>{{plang.SETTING_REFERE_EMAIL_DESC3}}</el-button>
+            <el-button @click="showChoice=!showChoice">{{showChoice?plang.ADDRBOOK_HIDE:plang.ADDRBOOK_SHOW}}</el-button>
 
           </el-form-item>
-          <el-form-item v-show="addType == '0'&&showChoice" label="选择邮箱：">
-
+          <el-form-item v-show="addType == '0'&&showChoice" :label="plang.SETTING_REFERE_EMAIL_SELECT">
             <el-row style="margin-bottom:6px;">
               <el-col :span="16">
                 <el-cascader  change-on-select style="width:100%"
-                                 :options="deptOptions" @change="menu_change" placeholder="请选择部门">
+                              :options="deptOptions" @change="menu_change" :placeholder="plang.SETTING_RE_ADD_SELECTDPT_PLACE">
                 </el-cascader>
               </el-col>
               <el-col :span="5" :offset="1">
-                <el-input v-model="searchMailbox" size="small" placeholder="请输入内容"></el-input>
-
+                <el-input v-model="searchMailbox" size="small" :placeholder="plang.SETTING_RE_ADD_CONTENT_RULE"></el-input>
               </el-col>
               <el-col :span="2" style="text-align:right">
-                <el-button size="small" type="primary" @click="searchOabMembers(1)">搜索</el-button>
+                <el-button size="small" type="primary" @click="searchOabMembers(1)">{{plang.COMMON_SEARCH2}}</el-button>
               </el-col>
             </el-row>
-
             <el-table
               :data="contactData"
               tooltip-effect="dark"
@@ -106,12 +95,12 @@
                 type="selection"
                 width="55">
               </el-table-column>
-              <el-table-column prop="name" label="姓名&邮箱">
+              <el-table-column prop="name" :label="plang.SETTING_REFERE_EMAIL_NAME">
                 <template slot-scope="scope">
                   <span>{{ scope.row.name +'<' +scope.row.username +'>'}}</span>
                 </template>
               </el-table-column>
-              <el-table-column  label="部门">
+              <el-table-column  :label="plang.COMMON_DEPARTMENT">
                 <template slot-scope="scope">
                   <span>{{scope.row.department}}</span>
                 </template>
@@ -127,9 +116,7 @@
               :total="totalCount">
             </el-pagination>
           </el-form-item>
-
-
-          <el-form-item v-show="addType == '2'" label="请选择：">
+          <el-form-item v-show="addType == '2'" :label="plang.SETTING_RE_ADD_PLACEHODER">
             <el-col :span="12">
               <el-upload
                 action=""
@@ -138,30 +125,22 @@
                 style="display:inline-block"
                 :auto-upload="false"
                 :on-change="changeFile"
-                accept=".csv,.xls,.xlsx"
-              >
-                <el-button slot="trigger" size="small" type="primary"><i class="el-icon-upload"></i>选取文件</el-button>
+                accept=".csv,.xls,.xlsx">
+                <el-button slot="trigger" size="small" type="primary"><i class="el-icon-upload"></i>{{plang.SETTING_REFERE_FILE}}</el-button>
                 <div slot="tip" class="el-upload__tip"></div>
               </el-upload>
             </el-col>
             <el-col :span="12">
-              <el-button plan size="small" @click="checkModel">查看模板excel</el-button>
+              <el-button plan size="small" @click="checkModel">{{plang.SETTING_REFERE_TEMPLATE}}</el-button>
             </el-col>
-
-
           </el-form-item>
-
-
-
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="createFormVisible = false">关闭</el-button>
-          <el-button v-if="addType == '0'" type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">提交</el-button>
-          <el-button v-if="addType == '2'" type="primary" @click.native="submitFile" :loading="fileloading">提交</el-button>
+          <el-button @click.native="createFormVisible = false">{{plang.COMMON_CLOSE}}</el-button>
+          <el-button v-if="addType == '0'" type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">{{plang.COMMON_BUTTON_SUBMIT}}</el-button>
+          <el-button v-if="addType == '2'" type="primary" @click.native="submitFile" :loading="fileloading">{{plang.COMMON_BUTTON_SUBMIT}}</el-button>
         </div>
       </el-dialog>
-
-
     </section>
   </div>
 </template>
@@ -173,14 +152,16 @@
 
   export default {
     data() {
+      let _self = this;
       var isEmail = function(rule,value,callback){
         if(/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/.test(value) == true){
           callback();
         }else{
-          callback(new Error("请输入正确的邮箱"));
+          callback(new Error(_self.$parent.lan.SETTING_WHITE_EMAIL_RULE2));
         }
       };
       return {
+        plang:_self.$parent.lan,
         fileloading:false,
         deptOptions:[],
         totalCount:0,
@@ -190,16 +171,8 @@
         oab_cid:0,
         showChoice:false,
         contactList:[
-          {contact_id:1,email:'lw@test.com1',fullname:'李威1'},
-          {contact_id:2,email:'lw@test.com2',fullname:'李威2'},
-          {contact_id:3,email:'lw@test.com3',fullname:'李威3'},
-          {contact_id:4,email:'lw@test.com4',fullname:'李威4'},
         ],
         contactData:[
-          {contact_id:1,email:'lw@test.com1',fullname:'李威1'},
-          {contact_id:2,email:'lw@test.com2',fullname:'李威2'},
-          {contact_id:3,email:'lw@test.com3',fullname:'李威3'},
-          {contact_id:4,email:'lw@test.com4',fullname:'李威4'},
         ],
         selectedMailbox:[],
         hashMailbox:[],
@@ -219,21 +192,19 @@
         createForm: {emails: '', access: 'read'},
         createFormRules: {
           emails: [
-            { required: true, message: '请填写邮箱', trigger: 'blur' },
+            { required: true, message: _self.$parent.lan.SETTING_WHITE_EMAIL_RULE1, trigger: 'blur' },
             {validator: isEmail, trigger: 'blur'}
           ],
-          disabled: [{ required: true, message: '请选择', trigger: 'blur' }],
+          disabled: [{ required: true, message: _self.$parent.lan.SETTING_RE_ADD_PLACEHODER, trigger: 'blur' }],
         },
 
       }
     },
-
     mounted: function () {
       this.getTables();
       this.getContactList();
       this.searchOabMembers();
     },
-
     methods: {
       changeFile(file,filelist){
         filelist.splice(0,filelist.length-1)
@@ -257,19 +228,17 @@
             document.body.appendChild(link);
             link.click();
           }
-          this.$message({ message: '下载成功！', type: 'success' });
+          this.$message({ message: this.plang.COMMON_DOWNLOAD_SUCCESS, type: 'success' });
         },err=>{
           console.log(err);
-          this.$message({ message: '下载失败！', type: 'error' });
+          this.$message({ message: this.plang.COMMON_DOWNLOAD_FAILED, type: 'error' });
         })
-
       },
       deleteAll(){
         this.selectedMailbox = [];
         this.hashMailbox = [];
       },
       addMailbox(){
-
         if(this.addmailbox){
           if(emailReg.test(this.addmailbox)){
             if(!this.hashMailbox[this.addmailbox]){
@@ -278,9 +247,8 @@
               this.addmailbox = '';
             }
           }else{
-            this.$alert('邮箱格式不正确！')
+            this.$alert(this.plang.SETTING_WHITE_EMAIL_RULE2)
           }
-
         }
       },
       deleteMailbox(k){
@@ -312,7 +280,6 @@
         },err=>{
           console.log(err);
         })
-
       },
       rowClick(row,e,col){
         this.$refs.contactTable.toggleRowSelection(row)
@@ -358,7 +325,7 @@
           this.$refs.uploadFile.clearFiles();
           _this.fileloading = false;
           this.createFormVisible = false;
-          _this.$message({message: '导入成功', type: 'success'});
+          _this.$message({message: this.plang.COMMON_IMPORT_SUCCESS, type: 'success'});
         }).catch((err)=>{
           _this.fileloading = false;
           _this.$message({ message: err.error,  type: 'error' });
@@ -414,13 +381,13 @@
         this.email_error='';
         this.$refs.createForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.plang.COMMON_BUTTON_CONFIRM_SUBMIT, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.createFormLoading = true;
               this.createForm.emails = this.selectedMailbox;
               let para = Object.assign({}, this.createForm);
               settingRelateCreate(para)
                 .then((res) => {
-                  this.$message({message: '添加成功', type: 'success'});
+                  this.$message({message: this.plang.COMMON_ADD_SUCCESS, type: 'success'});
                   this.$refs['createForm'].resetFields();
                   this.createFormVisible = false;
                   this.createFormLoading = false;
@@ -442,28 +409,26 @@
       },
       deleteRow: function (index, row) {
         let that = this;
-        this.$confirm('确认删除该关联吗?', '提示', {
+        this.$confirm(this.plang.COMMON_BUTTON_DELETE_SUBMIT, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           settingRelateDelete(row.id)
             .then((response)=> {
-              that.$message({ message: '删除成功', type: 'success' });
+              that.$message({ message: this.plang.COMMON_DELETE_SUCCESS, type: 'success' });
               if((this.page-1)*this.page_size >= (this.total-1)){
                 this.page = 1;
               }
               this.getTables();
             })
             .catch(function (error) {
-              that.$message({ message: '删除失败',  type: 'error' });
+              that.$message({ message: this.plang.COMMON_DELETE_FAILED,  type: 'error' });
             });
         });
       },
 
     },
     computed:{
-
     }
-
   }
 </script>
 <style>

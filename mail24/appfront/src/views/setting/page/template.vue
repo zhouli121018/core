@@ -2,14 +2,18 @@
   <div class="j-module-content j-maillist mllist-list height100 ">
     <el-row class="" style="padding: 0px;">
       <el-col :span="24" class="breadcrumb-container">
-        <el-breadcrumb separator="/"><el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item><el-breadcrumb-item><a href="#">设置中心</a></el-breadcrumb-item><el-breadcrumb-item>模板信</el-breadcrumb-item></el-breadcrumb>
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item :to="{ path: '/welcome' }">{{this.$parent.lan.COMMON_HOME_NAME}}</el-breadcrumb-item>
+          <el-breadcrumb-item><a href="#">{{this.$parent.lan.SETTING_INDEX_NAME}}</a></el-breadcrumb-item>
+          <el-breadcrumb-item>{{this.$parent.lan.COMMON_TEMPLATE}}</el-breadcrumb-item>
+        </el-breadcrumb>
       </el-col>
     </el-row>
     <section class="content content-list height100" style="background-color: #fff;background: rgba(255,255,255,0.9);padding-bottom: 13px;" v-loading="listLoading">
 
       <el-row class="toolbar">
         <el-col :span="12">
-          <el-button type="primary" @click="createFormShow" size="mini">添加模板信</el-button>
+          <el-button type="primary" @click="createFormShow" size="mini">{{this.$parent.lan.SETTING_TEMPLATE_ADD}}</el-button>
         </el-col>
         <el-col :span="12">
           <!--<el-pagination layout="total, sizes, prev, pager, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange"
@@ -20,11 +24,11 @@
       <el-table :data="listTables" highlight-current-row width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
         <el-table-column type="selection" width="60"></el-table-column>
         <el-table-column type="index" label="No." width="80"></el-table-column>
-        <el-table-column prop="caption" label="模板信标题"></el-table-column>
-        <el-table-column label="操作" width="250">
+        <el-table-column prop="caption" :label="this.$parent.lan.SETTING_TEMPLATE_SUBJECT"></el-table-column>
+        <el-table-column :label="this.$parent.lan.COMMON_OPRATE" width="250">
           <template slot-scope="scope">
-            <el-button size="mini" @click="updateFormShow(scope.$index, scope.row)">修改</el-button>
-            <el-button type="danger" size="mini" @click="deleteRow(scope.$index, scope.row)">删除</el-button>
+            <el-button size="mini" @click="updateFormShow(scope.$index, scope.row)">{{$parent.lan.COMMON_BUTTON_ALTER}}</el-button>
+            <el-button type="danger" size="mini" @click="deleteRow(scope.$index, scope.row)">{{$parent.lan.COMMON_BUTTON_DELETE}}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -32,41 +36,37 @@
       <el-col :span="24" class="toolbar"></el-col>
 
       <!--新增 签名-->
-      <el-dialog title="新增模板信"  :visible.sync="createFormVisible" :close-on-click-modal="false" :append-to-body="true">
+      <el-dialog :title="this.$parent.lan.SETTING_TEMPLATE_ADD"  :visible.sync="createFormVisible" :close-on-click-modal="false" :append-to-body="true">
         <el-form :model="createForm" label-width="100px" :rules="createFormRules" ref="createForm">
-          <el-form-item label="标题" prop="caption">
+          <el-form-item :label="this.$parent.lan.COMMON_SUBJECT" prop="caption">
             <el-input v-model.trim="createForm.caption" auto-complete="off"></el-input>
           </el-form-item>
 
-          <el-form-item label="内容" prop="content">
-            <!--<editor v-if="createFormVisible" id="editor_id3" ref="editor_id3" height="400px" maxWidth="100%" width="100%" :content="createForm.content"-->
-                    <!--pluginsPath="/static/kindeditor/plugins/" :loadStyleMode="false" :uploadJson="uploadJson"  :items="toolbarItems" @on-content-change="createContentChange"></editor>-->
+          <el-form-item :label="this.$parent.lan.COMMON_CONTENT" prop="content">
             <textarea  id="createEditor" style="width:100%;height:400px;" v-model="createForm.content"></textarea>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="createFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">提交</el-button>
+          <el-button @click.native="createFormVisible = false">{{this.$parent.lan.COMMON_BUTTON_CANCELL}}</el-button>
+          <el-button type="primary" @click.native="createFormSubmit()" :loading="createFormLoading">{{this.$parent.lan.COMMON_BUTTON_SUBMIT}}</el-button>
         </div>
       </el-dialog>
 
 
       <!--更新 签名-->
-      <el-dialog title="修改模板信"  :visible.sync="updateFormVisible" :close-on-click-modal="false" :append-to-body="true">
+      <el-dialog :title="this.$parent.lan.SETTING_TEMPLATE_UPDATE"  :visible.sync="updateFormVisible" :close-on-click-modal="false" :append-to-body="true">
         <el-form :model="updateForm" label-width="100px" :rules="updateFormRules" ref="updateForm">
-          <el-form-item label="签名标题" prop="caption">
+          <el-form-item :label="this.$parent.lan.COMMON_SUBJECT" prop="caption">
             <el-input v-model.trim="updateForm.caption" auto-complete="off"></el-input>
           </el-form-item>
 
-          <el-form-item label="签名内容" prop="content">
-            <!--<editor v-if="updateFormVisible" id="editor_id4" ref="editor_id4" height="400px" maxWidth="100%" width="100%" :content="updateForm.content"-->
-                    <!--pluginsPath="/static/kindeditor/plugins/" :uploadJson="uploadJson"  :loadStyleMode="false" :items="toolbarItems" @on-content-change="editContentChange"></editor>-->
+          <el-form-item :label="this.$parent.lan.COMMON_CONTENT" prop="content">
             <textarea  id="updateEditor"  style="width:100%;height:400px;"></textarea>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="updateFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">提交</el-button>
+          <el-button @click.native="updateFormVisible = false">{{this.$parent.lan.COMMON_BUTTON_CANCELL}}</el-button>
+          <el-button type="primary" @click.native="updateFormSubmit()" :loading="updateFormLoading">{{this.$parent.lan.COMMON_BUTTON_SUBMIT}}</el-button>
         </div>
       </el-dialog>
 
@@ -101,16 +101,16 @@
         createFormLoading: false,
         createForm: {caption: '', content: ''},
         createFormRules: {
-          caption: [{ required: true, message: '请填写模板信标题', trigger: 'blur' }],
-          content: [{ required: true, message: '请填写模板信内容', trigger: 'blur' }],
+          caption: [{ required: true, message: this.$parent.lan.SETTING_TEMPLATE_SUBJECT_RULE, trigger: 'blur' }],
+          content: [{ required: true, message: this.$parent.lan.SETTING_TEMPLATE_CONTENT_RULE, trigger: 'blur' }],
         },
 
         updateFormVisible: false,
         updateFormLoading: false,
         updateForm: {caption: '', content: ''},
         updateFormRules: {
-          caption: [{ required: true, message: '请填写模板信标题', trigger: 'blur' }],
-          content: [{ required: true, message: '请填写模板信内容', trigger: 'blur' }],
+          caption: [{ required: true, message: this.$parent.lan.SETTING_TEMPLATE_SUBJECT_RULE, trigger: 'blur' }],
+          content: [{ required: true, message: this.$parent.lan.SETTING_TEMPLATE_CONTENT_RULE, trigger: 'blur' }],
         },
 
       }
@@ -192,12 +192,12 @@
         this.createForm.content = this.createEditor.html();
         this.$refs.createForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.$parent.lan.COMMON_BUTTON_CONFIRM_SUBMIT, this.$parent.lan.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.createFormLoading = true;
               let para = Object.assign({}, this.createForm);
               settingTemplateCreate(para)
                 .then((res) => {
-                  this.$message({message: '添加成功', type: 'success'});
+                  this.$message({message: this.$parent.lan.COMMON_ADD_SUCCESS, type: 'success'});
                   this.$refs['createForm'].resetFields();
                   this.createFormVisible = false;
                   this.createFormLoading = false;
@@ -237,7 +237,7 @@
         this.updateForm.content = this.updateEditor.html();
         this.$refs.updateForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.$parent.lan.COMMON_BUTTON_CONFIRM_SUBMIT, this.$parent.lan.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.updateFormLoading = true;
               let para = Object.assign({}, this.updateForm);
               settingTemplateUpdate(para.id, para)
@@ -245,7 +245,7 @@
                   this.$refs['updateForm'].resetFields();
                   this.updateFormLoading = false;
                   this.updateFormVisible = false;
-                  this.$message({message: '提交成功', type: 'success'});
+                  this.$message({message: this.$parent.lan.COMMON_ALTER_SUCCESS, type: 'success'});
                   this.getTables();
                 }, (data)=>{
                   console.log(data);
@@ -262,12 +262,12 @@
 
       deleteRow: function (index, row) {
         let that = this;
-        this.$confirm('确认删除该签名吗?', '提示', {
+        this.$confirm(this.$parent.lan.COMMON_BUTTON_DELETE_SUBMIT, this.$parent.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           settingTemplateDelete(row.id)
             .then((response)=> {
-              that.$message({ message: '删除成功', type: 'success' });
+              that.$message({ message: this.$parent.lan.COMMON_DELETE_SUCCESS, type: 'success' });
               this.getTables();
             })
             .catch(function (err) {
@@ -275,7 +275,7 @@
               if(err.detail){
                 str = err.detail
               }
-              that.$message({ message: '删除失败! '+str,  type: 'error' });
+              that.$message({ message: this.$parent.lan.COMMON_DELETE_FAILED+str,  type: 'error' });
             });
         });
       },

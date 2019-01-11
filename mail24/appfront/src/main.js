@@ -73,7 +73,7 @@ Date.prototype.Format = function (fmt) { //author: meizz
 }
 
 /* eslint-disable no-new */
-new Vue({
+var VM =new Vue({
   el: '#app',
   router,
   store,

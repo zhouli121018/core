@@ -5,13 +5,12 @@
       <div class="wrapper u-scroll top0">
         <div class="el-row" style="background: #f2f2f2;border-bottom: 1px solid #dfe6ec;">
           <div class="el-col el-col-12">
-            <div class="pab-header">联系组</div>
+            <div class="pab-header">{{plang.CONTACT_PAB_TITLE}}</div>
           </div>
           <div class="el-col el-col-12">
             <div style="text-align:right;">
-              <i class="el-icon-plus add_btn_style"  title="添加联系组"  @click="handlePabAdd"></i>
+              <i class="el-icon-plus add_btn_style" :title="plang.CONTACT_PAB_ADD"  @click="handlePabAdd"></i>
             </div>
-
           </div>
         </div>
 
@@ -25,19 +24,15 @@
                 <td style="">({{ data.count }})</td>
                 <td style="text-align:right;">
                   <span style="margin-left: 10px;" class="hide_btn" v-if="!data.is_sysname">
-                    <el-button type="text" size="mini" @click.stop.prevent="() => handlePabEdit(data)" title="编辑"><i class="el-icon-edit"></i></el-button>
-                    <el-button type="text" size="mini" @click.stop="() => handlePabDel(node, data)" title="删除" style="margin-left: 0px!important;"><i class="el-icon-delete"></i></el-button>
+                    <el-button type="text" size="mini" @click.stop.prevent="() => handlePabEdit(data)" :title="plang.COMMON_BUTTON_ALTER"><i class="el-icon-edit"></i></el-button>
+                    <el-button type="text" size="mini" @click.stop="() => handlePabDel(node, data)" :title="plang.COMMON_BUTTON_DELETE" style="margin-left: 0px!important;"><i class="el-icon-delete"></i></el-button>
                   </span>
                 </td>
               </tr>
             </table>
           </el-tree>
         </el-row>
-
-        <el-row style="text-align: left; margin-left: 13px;">
-
-          <!--<el-button type="success" @click="handlePabAdd" size="mini">添加联系组</el-button>-->
-        </el-row>
+        <el-row style="text-align: left; margin-left: 13px;"></el-row>
       </div>
       <div class="navbar-expand contact_sidebar" @click="$parent.toggleWidth">
         <i v-if="$parent.asideWith==199" class="el-icon-arrow-right"></i>
@@ -46,15 +41,13 @@
     </aside>
 
     <article class="mlmain mltabview overflow_auto" :style="{left:($parent.asideWith+1)+'px'}">
-      <div  class="j-module-content j-maillist mllist-list height100" v-loading="listLoading"
-      >
-
+      <div  class="j-module-content j-maillist mllist-list height100" v-loading="listLoading">
         <el-row>
           <el-col :span="24" class="breadcrumb-container">
             <el-breadcrumb separator="/">
-              <el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item>
-              <el-breadcrumb-item><a href="#">个人通讯录</a></el-breadcrumb-item>
-              <el-breadcrumb-item>当前联系人组：&nbsp;{{pab_cname}}</el-breadcrumb-item>
+              <el-breadcrumb-item :to="{ path: '/welcome' }">{{plang.COMMON_HOME_NAME}}</el-breadcrumb-item>
+              <el-breadcrumb-item><a href="#">{{plang.CONTANCT_INDEX_PAB}}</a></el-breadcrumb-item>
+              <el-breadcrumb-item>{{plang.CONTACT_PAB_BREADCRUM}}&nbsp;{{pab_cname}}</el-breadcrumb-item>
             </el-breadcrumb>
           </el-col>
         </el-row>
@@ -63,34 +56,32 @@
         <el-row class="toolbar">
           <el-col :span="24" class="" style="padding-bottom: 0px;">
             <el-form :inline="true" :model="filters" size="small">
-              <el-form-item label="邮箱:">
-                <el-input v-model="filters.search" placeholder="邮箱或姓名" size="small"></el-input>
+              <el-form-item :label="plang.COMMON_EMAIL">
+                <el-input v-model="filters.search" :placeholder="plang.CONTACT_PAB_SEARCH" size="small"></el-input>
               </el-form-item>
-              <el-form-item v-if="filters_options_show" label="是否分组:">
-                <el-select v-model="filters.search2" placeholder="请选择" size="small">
+              <el-form-item v-if="filters_options_show" :label="plang.CONTACT_PAB_SEARCH2">
+                <el-select v-model="filters.search2" size="small">
                   <el-option v-for="item in filters_options" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" v-on:click="searchPabMembers" size="small">查询</el-button>
-                <el-button type="success" @click="handlePabMemberAdd" size="small">添加联系人</el-button>
-                <el-button type="primary" @click="Oab_import_to_group" size="small"> 导入联系人</el-button>
-                <el-button type="success" @click="Oab_export_group" size="mini">导出联系人</el-button>
+                <el-button type="primary" v-on:click="searchPabMembers" size="small">{{plang.COMMON_SEARCH}}</el-button>
+                <el-button type="success" @click="handlePabMemberAdd" size="small">{{plang.CONTACT_PAB_ADDC}}</el-button>
+                <el-button type="primary" @click="Oab_import_to_group" size="small">{{plang.CONTACT_PAB_IMPC}}</el-button>
+                <el-button type="success" @click="Oab_export_group" size="mini">{{plang.CONTACT_PAB_EXPC}}</el-button>
                 <a :href="blobUrl" download="" style="display:none;" ref="download"></a>
               </el-form-item>
             </el-form>
           </el-col>
         </el-row>
-
         <!-- 普通列表 -->
         <section class="content content-list height100" >
-
           <el-row class="toolbar">
             <el-col :span="12" >
-              <el-button type="success" @click="Oab_select_to_add" :disabled="this.sels.length===0" size="mini" v-if="pab_iscan_distribute">添加至组</el-button>
-              <el-button type="primary" @click="$parent.sendMail_net('more',sels)" :disabled="this.sels.length===0" size="mini"> 选中发信</el-button>
-              <el-button type="success" @click="Oab_send_to_group" size="mini" > 发邮件给组 </el-button>
-              <el-button type="danger" @click="Oab_delete_select" :disabled="this.sels.length===0" size="mini"> 批量删除</el-button>
+              <el-button type="success" @click="Oab_select_to_add" :disabled="this.sels.length===0" size="mini" v-if="pab_iscan_distribute">{{plang.CONTACT_PAB_ADDG}}</el-button>
+              <el-button type="primary" @click="$parent.sendMail_net('more',sels)" :disabled="this.sels.length===0" size="mini"> {{plang.CONTACT_PAB_SEND}}</el-button>
+              <el-button type="success" @click="Oab_send_to_group" size="mini" > {{plang.CONTACT_PAB_SENDG}} </el-button>
+              <el-button type="danger" @click="Oab_delete_select" :disabled="this.sels.length===0" size="mini">{{plang.CONTACT_PAB_BDEL}}</el-button>
             </el-col>
             <el-col :span="12" >
               <el-pagination layout="total, sizes, prev, pager, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange"
@@ -98,86 +89,82 @@
               </el-pagination>
             </el-col>
           </el-row>
-
           <!--列表-->
           <el-table :data="listTables" highlight-current-row width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>
             <!--<el-table :data="listTables" highlight-current-row  v-loading.fullscreen.lock="listLoading" width="100%" @selection-change="f_TableSelsChange" style="width: 100%;max-width:100%;" size="mini" border>-->
             <el-table-column type="selection" width="60"></el-table-column>
             <el-table-column type="index" label="No." width="80"></el-table-column>
-            <el-table-column prop="fullname" label="姓名"></el-table-column>
-            <el-table-column prop="email" label="邮箱"></el-table-column>
-            <el-table-column prop="groups" label="联系组"></el-table-column>
-            <el-table-column prop="mobile" label="手机号码"></el-table-column>
-            <el-table-column prop="birthday" label="生日"></el-table-column>
-            <el-table-column label="操作" width="250">
+            <el-table-column prop="fullname" :label="plang.COMMON_XINGMING"></el-table-column>
+            <el-table-column prop="email" :label="plang.COMMON_EMAIL"></el-table-column>
+            <el-table-column prop="groups" :label="plang.CONTACT_PAB_TITLE"></el-table-column>
+            <el-table-column prop="mobile" :label="plang.COMMON_MOBILE"></el-table-column>
+            <el-table-column prop="birthday" :label="plang.COMMON_BIRTHDAY"></el-table-column>
+            <el-table-column :label="plang.COMMON_OPRATE" width="250">
               <template slot-scope="scope">
-                <el-button size="mini" @click="handlePabMemberEdit(scope.$index, scope.row)">修改</el-button>
-                <el-button type="danger" size="mini" @click="handlePabMemberDel(scope.$index, scope.row, false)" v-if=" filters_options_show ">删除</el-button>
-                <el-button type="danger" size="mini" @click="handlePabMemberDel(scope.$index, scope.row, true)" v-if=" !filters_options_show ">删除</el-button>
+                <el-button size="mini" @click="handlePabMemberEdit(scope.$index, scope.row)">{{plang.COMMON_BUTTON_ALTER}}</el-button>
+                <el-button type="danger" size="mini" @click="handlePabMemberDel(scope.$index, scope.row, false)" v-if=" filters_options_show ">{{plang.COMMON_BUTTON_DELETE}}</el-button>
+                <el-button type="danger" size="mini" @click="handlePabMemberDel(scope.$index, scope.row, true)" v-if=" !filters_options_show ">{{plang.COMMON_BUTTON_DELETE}}</el-button>
               </template>
             </el-table-column>
           </el-table>
 
           <el-row class="toolbar"><el-col :span="24"></el-col></el-row>
         </section>
-
       </div>
     </article>
 
-
     <input type="hidden" v-model="pab_cid"/>
-
     <!--修改 个人联系人组 界面-->
-    <el-dialog title="修改联系组"  :visible.sync="editPabFormVisible" :close-on-click-modal="false" :append-to-body="true">
+    <el-dialog :title="plang.CONTACT_PAB_ALT_GTITLE"  :visible.sync="editPabFormVisible" :close-on-click-modal="false" :append-to-body="true">
       <el-form :model="editPabForm" label-width="100px" :rules="editPabFormRules" ref="editPabForm">
-        <el-form-item label="联系组名称" prop="groupname" :error="pab_groupname_error">
+        <el-form-item :label="plang.COMMON_NAME" prop="groupname" :error="pab_groupname_error">
           <el-input v-model.trim="editPabForm.groupname" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click.native="editPabFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="editPabSubmit()" :loading="editPabLoading">提交</el-button>
+        <el-button @click.native="editPabFormVisible = false">{{plang.COMMON_BUTTON_CANCELL}}</el-button>
+        <el-button type="primary" @click.native="editPabSubmit()" :loading="editPabLoading">{{plang.COMMON_BUTTON_SUBMIT}}</el-button>
       </div>
     </el-dialog>
 
     <!--新增 个人联系人组 界面-->
-    <el-dialog title="新增联系组"  :visible.sync="addPabFormVisible" :close-on-click-modal="false" :append-to-body="true">
+    <el-dialog :title="plang.CONTACT_PAB_ADD_GTITLE"  :visible.sync="addPabFormVisible" :close-on-click-modal="false" :append-to-body="true">
       <el-form :model="addPabForm" label-width="100px" :rules="addPabFormRules" ref="addPabForm">
-        <el-form-item label="联系组名称" prop="groupname" :error="pab_groupname_error">
+        <el-form-item :label="plang.COMMON_NAME" prop="groupname" :error="pab_groupname_error">
           <el-input v-model.trim="addPabForm.groupname" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click.native="addPabFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="addPabSubmit()" :loading="addPabLoading">提交</el-button>
+        <el-button @click.native="addPabFormVisible = false">{{plang.COMMON_BUTTON_CANCELL}}</el-button>
+        <el-button type="primary" @click.native="addPabSubmit()" :loading="addPabLoading">{{plang.COMMON_BUTTON_SUBMIT}}</el-button>
       </div>
     </el-dialog>
 
     <!--修改 个人联系人组成员 界面-->
-    <el-dialog title="修改联系人"  :visible.sync="editPabMerberFormVisible" :close-on-click-modal="false" :append-to-body="true">
+    <el-dialog :title="plang.CONTACT_PAB_ALT_CTITLE"  :visible.sync="editPabMerberFormVisible" :close-on-click-modal="false" :append-to-body="true">
       <el-form :model="editPabMerberForm" label-width="100px" :rules="editPabMerberFormRules" ref="editPabMerberForm" size="mini">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="邮箱" prop="email" :error="pab_email_error"><el-input v-model.trim="editPabMerberForm.email" auto-complete="off"></el-input></el-form-item>
+            <el-form-item :label="plang.COMMON_EMAIL" prop="email" :error="pab_email_error"><el-input v-model.trim="editPabMerberForm.email" auto-complete="off"></el-input></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="姓名" prop="fullname"><el-input v-model.trim="editPabMerberForm.fullname" auto-complete="off"></el-input></el-form-item>
+            <el-form-item :label="plang.COMMON_XINGMING" prop="fullname"><el-input v-model.trim="editPabMerberForm.fullname" auto-complete="off"></el-input></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="手机号码" prop="mobile"><el-input v-model.trim="editPabMerberForm.mobile" auto-complete="off"></el-input></el-form-item>
+            <el-form-item :label="plang.COMMON_MOBILE" prop="mobile"><el-input v-model.trim="editPabMerberForm.mobile" auto-complete="off"></el-input></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="生日" prop="birthday"><el-date-picker type="date" placeholder="选择日期" v-model="editPabMerberForm.birthday" style="width: 100%;" value-format="yyyy-MM-dd"></el-date-picker></el-form-item>
+            <el-form-item :label="plang.COMMON_BIRTHDAY" prop="birthday"><el-date-picker type="date" :placeholder="plang.COMMON_SELECT_DATE" v-model="editPabMerberForm.birthday" style="width: 100%;" value-format="yyyy-MM-dd"></el-date-picker></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="单位电话" prop="work_tel"><el-input v-model.trim="editPabMerberForm.work_tel" auto-complete="off"></el-input></el-form-item>
+            <el-form-item :label="plang.CONTACT_PAB_WORKTEL" prop="work_tel"><el-input v-model.trim="editPabMerberForm.work_tel" auto-complete="off"></el-input></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="住宅电话" prop="home_tel"><el-input v-model.trim="editPabMerberForm.home_tel" auto-complete="off"></el-input></el-form-item>
+            <el-form-item :label="plang.SETTING_USER_TELHOME" prop="home_tel"><el-input v-model.trim="editPabMerberForm.home_tel" auto-complete="off"></el-input></el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="所属联系人组" >
-          <el-select v-model="editPabMerberForm.groups_selected" multiple placeholder="请选择" style="width: 100%">
+        <el-form-item :label="plang.CONTACT_PAB_ADD_G" >
+          <el-select v-model="editPabMerberForm.groups_selected" multiple :placeholder="plang.SETTING_RE_ADD_PLACEHODER" style="width: 100%">
             <el-option
               v-for="item in pab_contact_groups"
               :key="item.id"
@@ -187,9 +174,9 @@
           </el-select>
         </el-form-item>
 
-        <a style="color: #2d59b0;text-decoration: underline;" @click="pab_show=!pab_show">{{pab_show?'隐藏更多详细信息':'显示更多详细信息'}}</a>
+        <a style="color: #2d59b0;text-decoration: underline;" @click="pab_show=!pab_show">{{pab_show?plang.SETTING_USER_BUTTON_HIDE:plang.SETTING_USER_BUTTON_SHOW}}</a>
         <div v-show="pab_show">
-          <p><strong>电话/即时通讯ID</strong></p>
+          <p><strong>{{plang.SETTING_USER_TITLE_2}}</strong></p>
           <el-row>
             <el-col :span="12">
               <el-form-item label="QQ" prop="im_qq"><el-input v-model.trim="editPabMerberForm.im_qq" auto-complete="off"></el-input></el-form-item>
@@ -199,85 +186,83 @@
             </el-col>
           </el-row>
 
-          <el-form-item label="个人主页" prop="homepage"><el-input v-model.trim="editPabMerberForm.homepage" auto-complete="off"></el-input></el-form-item>
+          <el-form-item :label="plang.SETTING_USER_HOMEPAGE" prop="homepage"><el-input v-model.trim="editPabMerberForm.homepage" auto-complete="off"></el-input></el-form-item>
 
-
-          <p><strong>家庭资料</strong></p>
+          <p><strong>{{plang.CONTACT_PAB_JIATING}}</strong></p>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="国家或地区" prop="home_country"><el-input v-model.trim="editPabMerberForm.home_country" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.CONTACT_PAB_CONTRY" prop="home_country"><el-input v-model.trim="editPabMerberForm.home_country" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="省份或地区" prop="home_state"><el-input v-model.trim="editPabMerberForm.home_state" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.CONTACT_PAB_STATE" prop="home_state"><el-input v-model.trim="editPabMerberForm.home_state" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="城市" prop="home_city"><el-input v-model.trim="editPabMerberForm.home_city" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.SETTING_USER_CITY" prop="home_city"><el-input v-model.trim="editPabMerberForm.home_city" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="邮政编码" prop="home_zip"><el-input v-model.trim="editPabMerberForm.home_zip" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.SETTING_USER_ZIP" prop="home_zip"><el-input v-model.trim="editPabMerberForm.home_zip" auto-complete="off"></el-input></el-form-item>
             </el-col>
           </el-row>
 
-          <el-form-item label="详细地址" prop="home_address"><el-input v-model.trim="editPabMerberForm.home_address" auto-complete="off"></el-input></el-form-item>
+          <el-form-item :label="plang.SETTING_USER_ADDRESS" prop="home_address"><el-input v-model.trim="editPabMerberForm.home_address" auto-complete="off"></el-input></el-form-item>
 
-
-          <p><strong>单位/公司</strong></p>
+          <p><strong>{{plang.CONTACT_PAB_DANWEI}}</strong></p>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="单位名称" prop="work_name"><el-input v-model.trim="editPabMerberForm.work_name" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.CONTACT_PAB_DANWEI_NAME" prop="work_name"><el-input v-model.trim="editPabMerberForm.work_name" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="部门" prop="work_dept"><el-input v-model.trim="editPabMerberForm.work_dept" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.COMMON_DEPARTMENT" prop="work_dept"><el-input v-model.trim="editPabMerberForm.work_dept" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="职位" prop="work_position"><el-input v-model.trim="editPabMerberForm.work_position" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.COMMON_POSITION" prop="work_position"><el-input v-model.trim="editPabMerberForm.work_position" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="详细地址" prop="work_address"><el-input v-model.trim="editPabMerberForm.work_address" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.SETTING_USER_ADDRESS" prop="work_address"><el-input v-model.trim="editPabMerberForm.work_address" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="邮政编码" prop="work_zip"><el-input v-model.trim="editPabMerberForm.work_zip" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.SETTING_USER_ZIP" prop="work_zip"><el-input v-model.trim="editPabMerberForm.work_zip" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="传真号码" prop="work_fax"><el-input v-model.trim="editPabMerberForm.work_fax" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.CONTACT_PAB_FAX" prop="work_fax"><el-input v-model.trim="editPabMerberForm.work_fax" auto-complete="off"></el-input></el-form-item>
             </el-col>
           </el-row>
 
-          <el-form-item label="备注" prop="remark"><el-input v-model.trim="editPabMerberForm.remark" auto-complete="off"></el-input></el-form-item>
+          <el-form-item :label="plang.COMMON_REMARK" prop="remark"><el-input v-model.trim="editPabMerberForm.remark" auto-complete="off"></el-input></el-form-item>
         </div>
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click.native="editPabMerberFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="editPabMerberSubmit()" :loading="editPabMerberLoading">提交</el-button>
+        <el-button @click.native="editPabMerberFormVisible = false">{{plang.COMMON_BUTTON_CANCELL}}</el-button>
+        <el-button type="primary" @click.native="editPabMerberSubmit()" :loading="editPabMerberLoading">{{plang.COMMON_BUTTON_SUBMIT}}</el-button>
       </div>
     </el-dialog>
 
     <!--添加 个人联系人组成员 界面-->
-    <el-dialog title="添加联系人"  :visible.sync="addPabMerberFormVisible" :close-on-click-modal="false" :append-to-body="true">
-      <el-form :model="addPabMerberForm" label-width="100px" :rules="addPabMerberFormRules" ref="addPabMerberForm" size="mini">
+    <el-dialog :title="plang.CONTACT_PAB_ADD_CTITLE"  :visible.sync="addPabMerberFormVisible" :close-on-click-modal="false" :append-to-body="true" width="60%">
+      <el-form :model="addPabMerberForm" label-width="180px" :rules="addPabMerberFormRules" ref="addPabMerberForm" size="mini">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="邮箱" prop="email" :error="pab_email_error"><el-input v-model.trim="addPabMerberForm.email" auto-complete="off"></el-input></el-form-item>
+            <el-form-item :label="plang.COMMON_EMAIL" prop="email" :error="pab_email_error"><el-input v-model.trim="addPabMerberForm.email" auto-complete="off"></el-input></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="姓名" prop="fullname"><el-input v-model.trim="addPabMerberForm.fullname" auto-complete="off"></el-input></el-form-item>
+            <el-form-item :label="plang.COMMON_XINGMING" prop="fullname"><el-input v-model.trim="addPabMerberForm.fullname" auto-complete="off"></el-input></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="手机号码" prop="mobile"><el-input v-model.trim="addPabMerberForm.mobile" auto-complete="off"></el-input></el-form-item>
+            <el-form-item :label="plang.COMMON_MOBILE" prop="mobile"><el-input v-model.trim="addPabMerberForm.mobile" auto-complete="off"></el-input></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="生日" prop="birthday"><el-date-picker type="date" placeholder="选择日期" v-model="addPabMerberForm.birthday" style="width: 100%;" value-format="yyyy-MM-dd"></el-date-picker></el-form-item>
+            <el-form-item :label="plang.COMMON_BIRTHDAY" prop="birthday"><el-date-picker type="date" :placeholder="plang.COMMON_SELECT_DATE" v-model="addPabMerberForm.birthday" style="width: 100%;" value-format="yyyy-MM-dd"></el-date-picker></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="单位电话" prop="work_tel"><el-input v-model.trim="addPabMerberForm.work_tel" auto-complete="off"></el-input></el-form-item>
+            <el-form-item :label="plang.CONTACT_PAB_WORKTEL" prop="work_tel"><el-input v-model.trim="addPabMerberForm.work_tel" auto-complete="off"></el-input></el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="住宅电话" prop="home_tel"><el-input v-model.trim="addPabMerberForm.home_tel" auto-complete="off"></el-input></el-form-item>
+            <el-form-item :label="plang.SETTING_USER_TELHOME" prop="home_tel"><el-input v-model.trim="addPabMerberForm.home_tel" auto-complete="off"></el-input></el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="所属联系人组" >
-          <el-select v-model="addPabMerberForm.groups_selected" multiple placeholder="请选择" style="width: 100%">
+        <el-form-item :label="plang.CONTACT_PAB_ADD_G" >
+          <el-select v-model="addPabMerberForm.groups_selected" multiple :placeholder="plang.SETTING_RE_ADD_PLACEHODER" style="width: 100%">
             <el-option
               v-for="item in pab_contact_groups"
               :key="item.id"
@@ -287,9 +272,9 @@
           </el-select>
         </el-form-item>
 
-        <a style="color: #2d59b0;text-decoration: underline;" @click="pab_show=!pab_show">{{pab_show?'隐藏更多详细信息':'显示更多详细信息'}}</a>
+        <a style="color: #2d59b0;text-decoration: underline;" @click="pab_show=!pab_show">{{pab_show?plang.SETTING_USER_BUTTON_HIDE:plang.SETTING_USER_BUTTON_SHOW}}</a>
         <div v-show="pab_show">
-          <p><strong>电话/即时通讯ID</strong></p>
+          <p><strong>{{plang.SETTING_USER_TITLE_2}}</strong></p>
           <el-row>
             <el-col :span="12">
               <el-form-item label="QQ" prop="im_qq"><el-input v-model.trim="addPabMerberForm.im_qq" auto-complete="off"></el-input></el-form-item>
@@ -299,63 +284,63 @@
             </el-col>
           </el-row>
 
-          <el-form-item label="个人主页" prop="homepage"><el-input v-model.trim="addPabMerberForm.homepage" auto-complete="off"></el-input></el-form-item>
+          <el-form-item :label="plang.SETTING_USER_HOMEPAGE" prop="homepage"><el-input v-model.trim="addPabMerberForm.homepage" auto-complete="off"></el-input></el-form-item>
 
-          <p><strong>家庭资料</strong></p>
+          <p><strong>{{plang.CONTACT_PAB_JIATING}}</strong></p>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="国家或地区" prop="home_country"><el-input v-model="addPabMerberForm.home_country" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.CONTACT_PAB_CONTRY" prop="home_country"><el-input v-model="addPabMerberForm.home_country" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="省份或地区" prop="home_state"><el-input v-model="addPabMerberForm.home_state" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.CONTACT_PAB_STATE" prop="home_state"><el-input v-model="addPabMerberForm.home_state" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="城市" prop="home_city"><el-input v-model="addPabMerberForm.home_city" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.SETTING_USER_CITY" prop="home_city"><el-input v-model="addPabMerberForm.home_city" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="邮政编码" prop="home_zip"><el-input v-model="addPabMerberForm.home_zip" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.SETTING_USER_ZIP" prop="home_zip"><el-input v-model="addPabMerberForm.home_zip" auto-complete="off"></el-input></el-form-item>
             </el-col>
           </el-row>
 
-          <el-form-item label="详细地址" prop="home_address"><el-input v-model.trim="addPabMerberForm.home_address" auto-complete="off"></el-input></el-form-item>
+          <el-form-item :label="plang.SETTING_USER_ADDRESS" prop="home_address"><el-input v-model.trim="addPabMerberForm.home_address" auto-complete="off"></el-input></el-form-item>
 
-          <p><strong>单位/公司</strong></p>
+          <p><strong>{{plang.CONTACT_PAB_DANWEI}}</strong></p>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="单位名称" prop="work_name"><el-input v-model="addPabMerberForm.work_name" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.CONTACT_PAB_DANWEI_NAME" prop="work_name"><el-input v-model="addPabMerberForm.work_name" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="部门" prop="work_dept"><el-input v-model="addPabMerberForm.work_dept" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.COMMON_DEPARTMENT" prop="work_dept"><el-input v-model="addPabMerberForm.work_dept" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="职位" prop="work_position"><el-input v-model="addPabMerberForm.work_position" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.COMMON_POSITION" prop="work_position"><el-input v-model="addPabMerberForm.work_position" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="详细地址" prop="work_address"><el-input v-model="addPabMerberForm.work_address" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.SETTING_USER_ADDRESS" prop="work_address"><el-input v-model="addPabMerberForm.work_address" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="邮政编码" prop="work_zip"><el-input v-model="addPabMerberForm.work_zip" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.SETTING_USER_ZIP" prop="work_zip"><el-input v-model="addPabMerberForm.work_zip" auto-complete="off"></el-input></el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="传真号码" prop="work_fax"><el-input v-model="addPabMerberForm.work_fax" auto-complete="off"></el-input></el-form-item>
+              <el-form-item :label="plang.CONTACT_PAB_FAX" prop="work_fax"><el-input v-model="addPabMerberForm.work_fax" auto-complete="off"></el-input></el-form-item>
             </el-col>
           </el-row>
 
-          <el-form-item label="备注" prop="remark"><el-input v-model.trim="addPabMerberForm.remark" auto-complete="off"></el-input></el-form-item>
+          <el-form-item :label="plang.COMMON_REMARK" prop="remark"><el-input v-model.trim="addPabMerberForm.remark" auto-complete="off"></el-input></el-form-item>
         </div>
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click.native="addPabMerberFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="addPabMerberSubmit()" :loading="addPabMerberLoading">提交</el-button>
+        <el-button @click.native="addPabMerberFormVisible = false">{{plang.COMMON_BUTTON_CANCELL}}</el-button>
+        <el-button type="primary" @click.native="addPabMerberSubmit()" :loading="addPabMerberLoading">{{plang.COMMON_BUTTON_SUBMIT}}</el-button>
       </div>
     </el-dialog>
 
     <!--添加 将联系人添加到分组 界面-->
-    <el-dialog title="将选中的联系人添加至联系组"  :visible.sync="distributePabFormVisible" :close-on-click-modal="false" :append-to-body="true">
+    <el-dialog :title="plang.CONTACT_PAB_ADD_TOGTITLE"  :visible.sync="distributePabFormVisible" :close-on-click-modal="false" :append-to-body="true">
       <el-form :model="distributePabForm" label-width="100px" :rules="distributePabFormRules" ref="distributePabForm">
-        <el-form-item label="联系组" prop="group_id">
-          <el-select v-model="distributePabForm.group_id" placeholder="请选择" style="width: 100%">
+        <el-form-item :label="plang.CONTACT_PAB_TITLE" prop="group_id">
+          <el-select v-model="distributePabForm.group_id" :placeholder="plang.SETTING_RE_ADD_PLACEHODER" style="width: 100%">
             <el-option
               v-for="item in pab_contact_groups"
               :key="item.id"
@@ -366,35 +351,35 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click.native="distributePabFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="distributePabSubmit()" :loading="distributePabLoading">提交</el-button>
+        <el-button @click.native="distributePabFormVisible = false">{{plang.COMMON_BUTTON_CANCELL}}</el-button>
+        <el-button type="primary" @click.native="distributePabSubmit()" :loading="distributePabLoading">{{plang.COMMON_BUTTON_SUBMIT}}</el-button>
       </div>
     </el-dialog>
 
     <!--上传文件 界面-->
-    <el-dialog title="导入联系人"  :visible.sync="importPabFormVisible" :close-on-click-modal="false" :append-to-body="true">
+    <el-dialog :title="plang.CONTACT_PAB_ADD_IGTITLE"  :visible.sync="importPabFormVisible" :close-on-click-modal="false" :append-to-body="true">
       <el-form :model="importPabForm" label-width="130px" :rules="importPabFormRules" ref="importPabForm" enctype="multipart/form-data">
 
-        <el-form-item label="上传文件" prop="file" ref="fileUpload" :error="fileUpload_error">
+        <el-form-item :label="plang.CONTACT_PAB_ADD_FILE" prop="file" ref="fileUpload" :error="fileUpload_error">
           <el-input v-model="importPabForm.file" auto-complete="off" type="file" @change="fileChange(this)" id="fileUpload" ></el-input>
         </el-form-item>
 
-        <el-form-item label="把联系人导入到" prop="group_id" style="margin-top: 20px;">
-          <el-select v-model="importPabForm.group_id" placeholder="请选择" style="width: 100%">
+        <el-form-item :label="plang.CONTACT_PAB_ADD_IMPTO" prop="group_id" style="margin-top: 20px;">
+          <el-select v-model="importPabForm.group_id" :placeholder="plang.SETTING_RE_ADD_PLACEHODER" style="width: 100%">
             <el-option v-for="item in pab_contact_groups" :key="item.id" :label="item.label" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="重复地址处理方式" prop="import_mode">
-          <el-select v-model="importPabForm.import_mode" placeholder="请选择" style="width: 100%">
+        <el-form-item :label="plang.CONTACT_PAB_ADD_IMPMODE" prop="import_mode">
+          <el-select v-model="importPabForm.import_mode" :placeholder="plang.SETTING_RE_ADD_PLACEHODER" style="width: 100%">
             <el-option v-for="item in import_mode_groups" :key="item.id" :label="item.label" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click.native="importPabFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="importPabSubmit()" :loading="importPabLoading">提交</el-button>
+        <el-button @click.native="importPabFormVisible = false">{{plang.COMMON_BUTTON_CANCELL}}</el-button>
+        <el-button type="primary" @click.native="importPabSubmit()" :loading="importPabLoading">{{plang.COMMON_BUTTON_SUBMIT}}</el-button>
       </div>
     </el-dialog>
 
@@ -422,14 +407,16 @@
 
   export default {
     data() {
+      let _self = this;
       var isEmail = function(rule,value,callback){
         if(/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/.test(value) == false){
-          callback(new Error("请输入正确的邮箱"));
+          callback(new Error(_self.$parent.plang.SETTING_WHITE_EMAIL_RULE2));
         }else{
           callback();
         }
       };
       return {
+        plang:_self.$parent.plang,
         fullscreenLoading:false,
         filters: {
           search: '',
@@ -438,21 +425,21 @@
         filters_options_show: false,
         filters_options: [{
           value: '',
-          label: '全部'
+          label: _self.$parent.plang.CONTACT_PAB_SEARCH21
         }, {
           value: '1',
-          label: '已分组',
+          label: _self.$parent.plang.CONTACT_PAB_SEARCH22
         }, {
           value: '0',
-          label: '未分组'
+          label: _self.$parent.plang.CONTACT_PAB_SEARCH23
         }],
 
 
         blobUrl:'',
         pab_contact_groups: [],
         import_mode_groups: [
-          {'id': 'ignore', label: '忽略'},
-          {'id': 'override', label: '覆盖'},
+          {'id': 'ignore', label: _self.$parent.plang.CONTACT_PAB_ADD_IMPMODE1},
+          {'id': 'override', label: _self.$parent.plang.CONTACT_PAB_ADD_IMPMODE2},
         ],
         distribute_groups_value: '',
         pab_iscan_distribute: false,
@@ -497,8 +484,8 @@
         editPabLoading: false,
         editPabFormRules: {
           groupname: [
-            { required: true, message: '请输入联系组名称', trigger: 'blur' },
-            { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur' }
+            { required: true, message: _self.$parent.plang.CONTACT_PAB_RULE1, trigger: 'blur' },
+            { min: 1, max: 50, message: _self.$parent.plang.CONTACT_PAB_RULE2, trigger: 'blur' }
           ]
         },
         //编辑界面数据
@@ -512,8 +499,8 @@
         addPabLoading: false,
         addPabFormRules: {
           groupname: [
-            { required: true, message: '请输入联系组名称', trigger: 'blur' },
-            { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur' }
+            { required: true, message: _self.$parent.plang.CONTACT_PAB_RULE1, trigger: 'blur' },
+            { min: 1, max: 50, message: _self.$parent.plang.CONTACT_PAB_RULE2, trigger: 'blur' }
           ]
         },
         //新增界面数据
@@ -531,11 +518,11 @@
         editPabMerberLoading: false,
         editPabMerberFormRules: {
           fullname: [
-            { required: true, message: '请输入姓名', trigger: 'blur' },
-            { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+            { required: true, message: _self.$parent.plang.SETTING_USER_NAME_RULE, trigger: 'blur' },
+            { min: 1, max: 35, message: _self.$parent.plang.SETTING_USER_NAME_RULE_LEN, trigger: 'blur' }
           ],
           email: [
-            { required: true, message: '请输入邮箱', trigger: 'blur' },
+            { required: true, message: _self.$parent.plang.SETTING_WHITE_EMAIL_RULE1, trigger: 'blur' },
             {validator: isEmail, trigger: 'blur'}
           ]
         },
@@ -549,11 +536,11 @@
         addPabMerberLoading: false,
         addPabMerberFormRules: {
           fullname: [
-            { required: true, message: '请输入姓名', trigger: 'blur' },
-            { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+            { required: true, message: _self.$parent.plang.SETTING_USER_NAME_RULE, trigger: 'blur' },
+            { min: 1, max: 35, message: _self.$parent.plang.SETTING_USER_NAME_RULE_LEN, trigger: 'blur' }
           ],
           email: [
-            { required: true, message: '请输入邮箱', trigger: 'blur' },
+            { required: true, message: _self.$parent.plang.SETTING_WHITE_EMAIL_RULE1, trigger: 'blur' },
             {validator: isEmail, trigger: 'blur'}
           ]
         },
@@ -572,7 +559,7 @@
         distributePabLoading: false,
         distributePabFormRules: {
           group_id: [
-            { required: true, message: '请选择联系组', trigger: 'blur' },
+            { required: true, message: _self.$parent.plang.CONTACT_PAB_RULE3, trigger: 'blur' },
           ]
         },
         //编辑界面数据
@@ -591,7 +578,7 @@
         importPabLoading: false,
         importPabFormRules: {
           file: [
-            { required: true, message: '请选择文件', trigger: 'blur' },
+            { required: true, message: _self.$parent.plang.CONTACT_PAB_RULE4, trigger: 'blur' },
           ]
         },
         //编辑界面数据
@@ -742,13 +729,13 @@
         var ids = this.sels.map(item => item.contact_id);
         this.$refs.distributePabForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.plang.COMMON_BUTTON_CONFIRM_SUBMIT, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.distributePabLoading = true;
               let para = Object.assign({ids: ids}, this.distributePabForm);
               contactPabMembersDistribute(para).then((res) => {
                 this.$refs['distributePabForm'].resetFields();
                 this.distributePabLoading = false;
-                this.$message({message: '提交成功', type: 'success'});
+                this.$message({message: this.plang.COMMON_SUBMIT_SUCCESS, type: 'success'});
                 this.distributePabFormVisible = false;
                 this.getPabs();
               }, (data)=>{
@@ -765,7 +752,7 @@
       Oab_send_to_select: function () {
         // var ids = this.sels.map(item => item.id).toString();
         var ids = this.sels.map(item => item.id);
-        this.$confirm('确认删除选中记录吗？', '提示', {
+        this.$confirm(this.plang.COMMON_BUTTON_DELETE_SUBMIT, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
             //NProgress.start();
@@ -810,16 +797,16 @@
         var ids = this.sels.map(item => item.contact_id);
         if ( Number(this.pab_cid) == 0 ){
           let para = {ids: ids};
-          this.$confirm('<p>确定从所有联系人组中彻底删除所选联系人？</p><p style="margin-bottom:20px;font-size: 12px;">该操作将把联系人从所有联系人组中删除。</p>', '系统提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+          this.$confirm('<p>'+this.plang.CONTACT_PAB_MSG1+'</p><p style="margin-bottom:20px;font-size: 12px;">'+this.plang.CONTACT_PAB_MSG2+'</p>', this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
+            confirmButtonText: this.plang.COMMON_BUTTON_CONFIRM,
+            cancelButtonText: this.plang.COMMON_BUTTON_CANCELL,
             dangerouslyUseHTMLString: true,
           }).then(() => {
             this.fullscreenLoading = true;
             contactPabMembersBatchDelete(para).then(res=>{
               this.fullscreenLoading = false;
               this.$message(
-                {type:'success',message:'删除成功！'}
+                {type:'success',message:this.plang.COMMON_DELETE_SUCCESS}
               )
               if((this.page-1)*this.page_size >= (this.total-ids.length)){
                 this.page = 1;
@@ -833,13 +820,13 @@
                 str = err.detail;
               }
               this.$message(
-                {type:'error',message:'删除失败！'+str}
+                {type:'error',message:this.plang.COMMON_DELETE_FAILED + ' ' +str}
               );
             })
           }).catch(() => {
             this.$message({
               type: 'info',
-              message: '已取消删除'
+              message: this.plang.CONTACT_PAB_CANCELL
             });
           });
         } else {
@@ -848,9 +835,9 @@
             group_id: this.pab_cid,
             ref_delete: true,
           };
-          this.$confirm('<p>确定将选中的联系人移出？</p><div><input type="checkbox" id="is_delete" style="margin-top: 20px;"> 并从通讯录中彻底删除</div>', '系统提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+          this.$confirm('<p>'+this.plang.CONTACT_PAB_MSG3+'</p><div><input type="checkbox" id="is_delete" style="margin-top: 20px;"> '+this.plang.CONTACT_PAB_MSG4+'</div>', this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
+            confirmButtonText: this.plang.COMMON_BUTTON_CONFIRM,
+            cancelButtonText: this.plang.COMMON_BUTTON_CANCELL,
             dangerouslyUseHTMLString: true,
           }).then(() => {
             this.fullscreenLoading = true;
@@ -862,7 +849,7 @@
             contactPabMembersBatchDelete(para).then(res=>{
               this.fullscreenLoading = false;
               this.$message(
-                {type:'success',message:'删除成功！'}
+                {type:'success',message:this.plang.COMMON_DELETE_SUCCESS}
               )
               if((this.page-1)*this.page_size >= (this.total-ids.length)){
                 this.page = 1;
@@ -876,13 +863,13 @@
                 str = err.detail;
               }
               this.$message(
-                {type:'error',message:'删除失败！'+str}
+                {type:'error',message:this.plang.COMMON_DELETE_FAILED + ' ' +str}
               );
             })
           }).catch(() => {
             this.$message({
               type: 'info',
-              message: '已取消删除'
+              message: this.plang.CONTACT_PAB_CANCELL
             });
           });
         }
@@ -890,7 +877,7 @@
       },
       // 发邮件给联系组
       Oab_send_to_group: function(){
-        this.$confirm('发邮件给组?', '提示', {
+        this.$confirm(this.plang.CONTACT_PAB_MSG5, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           let param = {
@@ -903,7 +890,7 @@
             if(res.data && res.data.length==0){
               this.$message({
                 type:'error',
-                message:'未找到邮箱！'
+                message: this.plang.CONTACT_PAB_MSG6
               })
               return;
             }
@@ -927,7 +914,7 @@
         let that = this;
         this.$refs.importPabForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.plang.COMMON_BUTTON_CONFIRM_SUBMIT, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.importPabLoading = true;
               let selectedFile = document.getElementById('fileUpload').files[0];
               let para = Object.assign({}, this.importPabForm);
@@ -939,7 +926,7 @@
                 this.$refs['importPabForm'].resetFields();
                 this.importPabLoading = false;
                 this.importPabFormVisible = false;
-                that.$message({message: '导入成功', type: 'success'});
+                that.$message({message: this.plang.COMMON_IMPORT_SUCCESS, type: 'success'});
                 this.getPabs();
               }, (data)=>{
                 this.importPabLoading = false;
@@ -952,7 +939,7 @@
                 if(err.detail){
                   str = err.detail;
                 }
-                that.$message({ message: '导入失败！'+str,  type: 'error' });
+                that.$message({ message: this.plang.COMMON_IMPORT_FAILED+' '+str,  type: 'error' });
               });
 
             });
@@ -972,17 +959,12 @@
             ext = imgName.substr(idx+1).toUpperCase();
             ext = ext.toLowerCase( );
             if (ext != 'xls' && ext != 'xlsx' && ext != 'csv' ){
-              this.fileUpload_error = '只能上传.xls  .xlsx  .csv  类型的文件!';
+              this.fileUpload_error = this.plang.CONTACT_PAB_MSG7;
               this.$refs['fileUpload'].resetField();
-              // this.$alert('只能上传.xls  .xlsx  .csv  类型的文件!', '提示：', {
-              //   confirmButtonText: '确定',});
-              // this.$refs['importPabForm'].resetField();
               return;
             }
           } else {
-            // this.$alert('只能上传.xls  .xlsx  .csv  类型的文件!', '提示：', {
-            //   confirmButtonText: '确定',});
-            this.fileUpload_error = '只能上传.xls  .xlsx  .csv  类型的文件!';
+            this.fileUpload_error = this.plang.CONTACT_PAB_MSG7;
             this.$refs['fileUpload'].resetField();
             // this.$refs['importPabForm'].resetField();
             return;
@@ -1005,7 +987,7 @@
         if(size>(1024*1024*10)){
           // this.$alert('文件大小不能超过10M！', '提示：', {
           //   confirmButtonText: '确定',});
-          this.fileUpload_error = '文件大小不能超过10M！';
+          this.fileUpload_error = this.plang.CONTACT_PAB_MSG8;
           this.$refs['fileUpload'].resetField();
           return;
         }else{
@@ -1021,7 +1003,7 @@
       // 导出联系人
       Oab_export_group: function(){
         let that = this;
-        this.$confirm('确认导出该联系人组吗?', '提示', {
+        this.$confirm(this.plang.CONTACT_PAB_MSG9, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           this.listLoading = true;
@@ -1045,7 +1027,7 @@
               document.body.appendChild(link);
               link.click();
             }
-            that.$message({ message: '导出成功', type: 'success' });
+            that.$message({ message: this.plang.COMMON_EXPORT_SUCCESS, type: 'success' });
             // this.getPabs();
           }).catch(function (err) {
             this.listLoading = false;
@@ -1053,7 +1035,7 @@
             if(err.detail){
               str = err.detail;
             }
-            that.$message({ message: '导出失败! '+str,  type: 'error' });
+            that.$message({ message: this.plang.COMMON_EXPORT_FAILED + ' '+str,  type: 'error' });
           });
         });
       },
@@ -1072,7 +1054,7 @@
         if (ppab_cid==pab_cid){
           this.pab_cid = 0;
         }
-        this.$confirm('确认删除该联系组吗?', '提示', {
+        this.$confirm(this.plang.CONTACT_PAB_MSG10, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           contactPabGroupsDelete(data.id).then((response)=> {
@@ -1081,14 +1063,14 @@
               window.sessionStorage['pab_cid']=this.pab_cid;
               this.getPabMembers();
             }
-            that.$message({ message: '删除成功', type: 'success' });
+            that.$message({ message: this.plang.COMMON_DELETE_SUCCESS, type: 'success' });
           }).catch(function (err) {
             this.pab_cid = ppab_cid;
             let str = '';
             if(err.detail){
               str = err.detail;
             }
-            that.$message({ message: '删除失败! '+str,  type: 'error' });
+            that.$message({ message: this.plang.COMMON_DELETE_FAILED+' '+str,  type: 'error' });
           });
         });
       },
@@ -1103,12 +1085,12 @@
         this.pab_groupname_error = '';
         this.$refs.editPabForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.plang.COMMON_BUTTON_CONFIRM_SUBMIT, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.editPabLoading = true;
               let para = Object.assign({}, this.editPabForm);
               contactPabGroupsUpdate(para.id, para).then((res) => {
                 this.editPabLoading = false;
-                this.$message({message: '提交成功', type: 'success'});
+                this.$message({message: this.plang.COMMON_SUBMIT_SUCCESS, type: 'success'});
                 this.$refs['editPabForm'].resetFields();
                 this.editPabFormVisible = false;
                 this.pab_groupname_error='';
@@ -1139,13 +1121,13 @@
         this.pab_groupname_error = '';
         this.$refs.addPabForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.plang.COMMON_BUTTON_CONFIRM_SUBMIT, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.addPabLoading = true;
               let para = Object.assign({}, this.addPabForm);
               contactPabGroupsCreate(para).then((res) => {
                 this.$refs['addPabForm'].resetFields();
                 this.addPabLoading = false;
-                this.$message({message: '提交成功', type: 'success'});
+                this.$message({message: this.plang.COMMON_SUBMIT_SUCCESS, type: 'success'});
                 this.addPabFormVisible = false;
                 this.pab_groupname_error='';
                 this.getPabs();
@@ -1189,16 +1171,16 @@
         var ids = [row.contact_id];
         if ( Number(this.pab_cid) == 0 ){
           let para = {ids: ids};
-          this.$confirm('<p>确定从所有联系人组中彻底删除所选联系人？</p><p style="margin-bottom:20px;font-size: 12px;">该操作将把联系人从所有联系人组中删除。</p>', '系统提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+          this.$confirm('<p>'+this.plang.CONTACT_PAB_MSG1+'</p><p style="margin-bottom:20px;font-size: 12px;">'+this.plang.CONTACT_PAB_MSG2+'</p>', this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
+            confirmButtonText: this.plang.COMMON_BUTTON_CONFIRM,
+            cancelButtonText: this.plang.COMMON_BUTTON_CANCELL,
             dangerouslyUseHTMLString: true,
           }).then(() => {
             this.fullscreenLoading = true;
             contactPabMembersBatchDelete(para).then(res=>{
               this.fullscreenLoading = false;
               this.$message(
-                {type:'success',message:'删除成功！'}
+                {type:'success',message:this.plang.COMMON_DELETE_SUCCESS}
               )
               if((this.page-1)*this.page_size >= (this.total-ids.length)){
                 this.page = 1;
@@ -1212,13 +1194,13 @@
                 str = err.detail;
               }
               this.$message(
-                {type:'error',message:'删除失败！'+str}
+                {type:'error',message:this.plang.COMMON_DELETE_SUCCESS+' '+str}
               );
             })
           }).catch(() => {
             this.$message({
               type: 'info',
-              message: '已取消删除'
+              message: this.plang.CONTACT_PAB_CANCELL
             });
           });
         } else {
@@ -1227,7 +1209,7 @@
             group_id: this.pab_cid,
             ref_delete: true,
           };
-          this.$confirm('<p>确定将选中的联系人移出？</p><div><input type="checkbox" id="is_delete" style="margin-top: 20px;"> 并从通讯录中彻底删除</div>', '系统提示', {
+          this.$confirm('<p>'+this.plang.CONTACT_PAB_MSG3+'</p><div><input type="checkbox" id="is_delete" style="margin-top: 20px;"> '+this.plang.CONTACT_PAB_MSG4+'</div>', this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             dangerouslyUseHTMLString: true,
@@ -1241,7 +1223,7 @@
             contactPabMembersBatchDelete(para).then(res=>{
               this.fullscreenLoading = false;
               this.$message(
-                {type:'success',message:'删除成功！'}
+                {type:'success',message:this.plang.COMMON_DELETE_SUCCESS}
               )
               if((this.page-1)*this.page_size >= (this.total-ids.length)){
                 this.page = 1;
@@ -1255,13 +1237,13 @@
                 str = err.detail;
               }
               this.$message(
-                {type:'error',message:'删除失败！'+str}
+                {type:'error',message:this.plang.COMMON_DELETE_SUCCESS+' '+str}
               );
             })
           }).catch(() => {
             this.$message({
               type: 'info',
-              message: '已取消删除'
+              message: this.plang.CONTACT_PAB_CANCELL
             });
           });
         }
@@ -1278,13 +1260,13 @@
         this.pab_email_error = '';
         this.$refs.editPabMerberForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.plang.COMMON_BUTTON_CONFIRM_SUBMIT, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.editPabMerberLoading = true;
               let para = Object.assign({}, this.editPabMerberForm);
               para.birthday = (!para.birthday || para.birthday == '') ? null : para.birthday;
               contactPabMembersUpdate(para.contact_id, para).then((res) => {
                 this.editPabMerberLoading = false;
-                this.$message({message: '提交成功', type: 'success'});
+                this.$message({message: this.plang.COMMON_SUBMIT_SUCCESS, type: 'success'});
                 this.$refs['editPabMerberForm'].resetFields();
                 this.editPabMerberFormVisible = false;
                 this.pab_email_error = '';
@@ -1318,13 +1300,13 @@
         this.pab_email_error = '';
         this.$refs.addPabMerberForm.validate((valid) => {
           if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.$confirm(this.plang.COMMON_BUTTON_CONFIRM_SUBMIT, this.plang.COMMON_BUTTON_CONFIRM_NOTICE, {}).then(() => {
               this.addPabMerberLoading = true;
               let para = Object.assign({}, this.addPabMerberForm);
               para.birthday = (!para.birthday || para.birthday == '') ? null : para.birthday;
               contactPabMembersCreate(para).then((res) => {
                 this.addPabMerberLoading = false;
-                this.$message({message: '提交成功', type: 'success'});
+                this.$message({message: this.plang.COMMON_SUBMIT_SUCCESS, type: 'success'});
                 this.$refs['addPabMerberForm'].resetFields();
                 this.addPabMerberFormVisible = false;
                 this.pab_email_error = '';
