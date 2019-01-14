@@ -7,10 +7,10 @@
         <div class="fl-m-nav-bg"></div>
         <ul class="fl-m-nav j-file-nav">
           <li>
-            <a class="fl-m-nav-trigger" :class="{'fl-nav-current':selectedIndex == 0}"  href="#"  title="日程管理"  @click.prevent.stop="jumpTo('/calendar/set',{id:0})">
+            <a class="fl-m-nav-trigger" :class="{'fl-nav-current':selectedIndex == 0}"  href="#"  :title="lan.CALENDAR_INDEX_CAL_MANAGER"  @click.prevent.stop="jumpTo('/calendar/set',{id:0})">
                 <span>
                   <i class="menu_icon_box iconfont icon-iconsetschedule"></i>
-                  <div>日程管理</div>
+                  <div>{{lan.CALENDAR_INDEX_CAL_MANAGER}}</div>
                 </span>
             </a>
           </li>
@@ -47,6 +47,7 @@
   </div>
 </template>
 <script>
+  import lan from '@/assets/js/lan';
   import {contactOabDepartsGet,contactOabMembersGet,getCalendarsList} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
@@ -111,7 +112,21 @@
 
     },
     computed: {
-
+      lan:function(){
+        let lang = lan.zh
+        if(this.$store.getters.getLanguage=='zh'){
+          lang = lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          lang = lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          lang = lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          lang = lan.zh
+        }else{
+          lang = lan.zh
+        }
+        return lang
+      }
     },
 
   }

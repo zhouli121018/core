@@ -171,7 +171,7 @@
                         </div>
                     </div>
                     <div class="j-select-count select-count" v-if="multipleSelection.length>0" style="line-height: 36px;">
-                        <span class="j-desc desc">{{lan.MAILBOX_COM_INNERBOX_HAVE_CHOSEN}} {{multipleSelection.length}} {{lan.MAILBOX_COM_INNERBOX_SEAL}}</span>
+                        <span class="j-desc desc">{{lan.MAILBOX_COM_INNERBOX_HAVE_CHOSEN}} {{multipleSelection.length}} {{lan.MAILBOX_COM_INNERBOX_SEAL_SELECTED}}</span>
                         <a class="j-cancel cancel" href="#" @click="noSelect">{{lan.COMMON_BUTTON_CANCELL}}</a>
 
                       <el-pagination style="float:right;text-align:right;padding:4px;height:32px;"

@@ -129,7 +129,7 @@
 
 
       <el-dialog :title="plang.COMMON_BUTTON_ADD"  :visible.sync="createFormVisible" :append-to-body="true" width="75%" top="10vh" >
-        <el-form :model="createForm" label-width="100px" ref="createForm" size="small">
+        <el-form :model="createForm" label-width="150px" ref="createForm" size="small">
 
           <el-form-item :label="plang.COMMON_STATUS" prop="disabled">
             <el-radio-group v-model="createForm.disabled">
@@ -442,7 +442,7 @@
         </div>
       </el-dialog>
       <el-dialog :title="plang.COMMON_BUTTON_ALTER"  :visible.sync="updateFormVisible" :append-to-body="true" width="75%" top="10vh">
-        <el-form :model="updateForm" label-width="100px" ref="updateForm" size="small">
+        <el-form :model="updateForm" label-width="150px" ref="updateForm" size="small">
 
           <el-form-item :label="plang.COMMON_STATUS" prop="disabled">
             <el-radio-group v-model="updateForm.disabled">

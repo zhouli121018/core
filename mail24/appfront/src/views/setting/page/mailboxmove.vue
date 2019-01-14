@@ -31,13 +31,13 @@
         <el-table-column prop="account" :label="plang.COMMON_EMAIL2"></el-table-column>
         <el-table-column prop="protocol" :label="plang.SETTING_MOVE_PROTOCOL" width="80"></el-table-column>
         <el-table-column prop="desc" :label="plang.SETTING_MOVE_TASK" width="100"></el-table-column>
-        <el-table-column :label="plang.SETTING_MOVE_STATUS" width="70">
+        <el-table-column :label="plang.SETTING_MOVE_STATUS" width="120">
           <template slot-scope="scope">
             <i class="el-alert--success el-alert__icon el-icon-success" v-if="scope.row.disabled=='-1'"></i>
             <i class="el-alert--error el-alert__icon el-icon-error" v-if="scope.row.disabled=='1'">
             </i></template>
         </el-table-column>
-        <el-table-column prop="status" :label="plang.SETTING_MOVE_STATUS2" width="100"></el-table-column>
+        <el-table-column prop="status" :label="plang.SETTING_MOVE_STATUS2" width="120"></el-table-column>
         <el-table-column prop="updated" :label="plang.SETTING_MOVE_UPDATED"></el-table-column>
         <el-table-column :label="plang.COMMON_OPRATE">
           <template slot-scope="scope">

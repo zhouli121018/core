@@ -65,7 +65,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column :label="plang.FILE_A_TIME" width="170">
+          <el-table-column :label="plang.FILE_A_TIME" width="220">
             <template slot-scope="scope">
               <span style="margin-left: 10px" v-if="$store.getters.getLanguage=='zh'">{{scope.row.left_timestamp| validateLeft_zh}}</span>
               <span style="margin-left: 10px" v-if="$store.getters.getLanguage=='zh-tw'">{{scope.row.left_timestamp| validateLeft_zh_tw}}</span>

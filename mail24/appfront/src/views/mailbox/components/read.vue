@@ -135,7 +135,7 @@
                     <div class="full-info j-full-info" v-show="showDetails">
                         <table class="u-table u-table-row">
                             <tbody><tr v-if="mfrom">
-                                <td class="info-item">{{lan.COMMON_SENDER}} :</td>
+                                <td class="info-item">{{lan.MAILBOX_COM_READ_SENDER}}</td>
                                 <td>
                                      <span class="u-email j-u-email">
                                         <span class="name">{{mfrom}}</span>
@@ -145,7 +145,7 @@
                                 </td>
                             </tr>
                             <tr v-if="to.length>0">
-                                <td class="info-item">{{lan.COMMON_RECAIVER}} :</td>
+                                <td class="info-item">{{lan.MAILBOX_COM_READ_RECIPENT}} </td>
                                 <td>
 
                                     <div class="j-contacts ">
@@ -157,7 +157,7 @@
                                 </td>
                             </tr>
                             <tr v-if="msg.cc">
-                                <td class="info-item">{{lan.MAILBOX_COM_READ_CC}} :</td>
+                                <td class="info-item">{{lan.MAILBOX_COM_READ_CC}}</td>
                                 <td>
 
                                     <div class="j-contacts ">
@@ -169,7 +169,7 @@
                                 </td>
                             </tr>
                             <tr v-if="msg.attachments && msg.attachments.length>0">
-                                <td class="info-item">{{lan.MAILBOX_COM_READ_ATTACH}} :</td>
+                                <td class="info-item">{{lan.MAILBOX_COM_READ_ATTACH}}</td>
                                 <td>
                                   <b type="text">{{msg.attachments.length}}</b> {{lan.MAILBOX_COM_READ_COUNT}}(
                                   <span>{{msg.attachments[0].name}}</span>

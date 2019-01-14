@@ -194,4 +194,7 @@
       display:none !important;
     }
   }
+  section.m-read .full-info table .info-item, .m-thread .full-info table .info-item{
+    width: 62px;
+  }
 </style>

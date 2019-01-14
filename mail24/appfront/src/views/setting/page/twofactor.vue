@@ -107,7 +107,7 @@
                       <input type="hidden" name="secretKey" value="KF3NDTJAI4PYSZ35">
                       <div class="item-body">
                         <div class="faCode">
-                          <el-form :model="goggleForm" :rules="goggleRules"  label-width="100px" size="small">
+                          <el-form :model="goggleForm" :rules="goggleRules"  label-width="200px" size="small">
                             <el-form-item :label="this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_CODE" prop="code">
                               <el-input v-model="goggleForm.code" style="width:300px;" :placeholder="this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_CODE_PLACE"></el-input>
                             </el-form-item>
@@ -143,7 +143,7 @@
           </div>
           <div class="text item" v-if="show_phone_set">
 
-            <el-form :model="phoneForm" :rules="phoneRules" ref="phoneForm" label-width="100px" size="small" class="demo-ruleForm"  style="max-width:900px">
+            <el-form :model="phoneForm" :rules="phoneRules" ref="phoneForm" label-width="190px" size="small" class="demo-ruleForm"  style="max-width:900px">
               <el-form-item :label="this.$parent.lan.COMMON_MOBILE" prop="tel">
                 <el-input v-model="phoneForm.tel" style="width:204px;" v-if="!showList.has_phone"></el-input>
                 <el-input v-model="showList.phone" style="width:204px;" v-if="showList.has_phone" disabled></el-input>
@@ -155,8 +155,8 @@
                 <el-input v-model="phoneForm.code" style="width:300px;"></el-input>
               </el-form-item>
             </el-form>
-            <el-button v-if="!showList.has_phone" type="warning" size="small" style="margin-left:100px;" @click="phoneVerifyFn">{{this.$parent.lan.SETTING_TWOFACTOR_PHONE_ENABLE}}</el-button>
-            <el-button v-if="showList.has_phone" type="danger" size="small" style="margin-left:100px;" @click="phoneReleaseFn">{{this.$parent.lan.SETTING_TWOFACTOR_PHONE_DISABLE}}</el-button>
+            <el-button v-if="!showList.has_phone" type="warning" size="small" style="margin-left:200px;" @click="phoneVerifyFn">{{this.$parent.lan.SETTING_TWOFACTOR_PHONE_ENABLE}}</el-button>
+            <el-button v-if="showList.has_phone" type="danger" size="small" style="margin-left:200px;" @click="phoneReleaseFn">{{this.$parent.lan.SETTING_TWOFACTOR_PHONE_DISABLE}}</el-button>
           </div>
 
         </el-card>
@@ -349,7 +349,7 @@
           }
           this.$message({
             type:'error',
-            message:this.$parent.lan.SETTING_TWOFACTOR_PHONE_BOUND_S+str
+            message:this.$parent.lan.SETTING_TWOFACTOR_PHONE_BOUND_F+str
           })
         })
       },

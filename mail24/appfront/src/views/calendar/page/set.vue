@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h3 class="calendar_title">日程管理</h3>
+    <h3 class="calendar_title">{{lan.CALENDAR_INDEX_CAL_MANAGER}}</h3>
     <div class="calendar_set_main">
       <div>
-        <h4 class="calendar_title">我的日程表</h4>
+        <h4 class="calendar_title">{{lan.CALENDAR_PAGE_SET_MY_LIST}}</h4>
         <el-button size="small" type="primary" style="margin:20px 0;"
-          @click="show_new_calendar">新建日程</el-button>
+          @click="show_new_calendar">{{lan.CALENDAR_PAGE_SET_NEW_SCHEDULE}}</el-button>
         <el-table
           type="expand"
           :header-cell-style="{background:'#f0f1f3'}"
@@ -14,24 +14,24 @@
           style="width: 100%">
           <el-table-column
             prop="name"
-            label="日程"
+            :label="lan.CALENDAR_PAGE_SET_SCHEDULE"
             >
           </el-table-column>
 
           <el-table-column
             prop="address"
-            label="操作" width="300">
+            :label="lan.COMMON_OPRATE" width="300">
             <template slot-scope="scope">
-              <el-button  type="text" size="small" @click="readCalendar(scope.row)">设置与共享</el-button>
-              <el-button type="text" size="small" v-if="!scope.row.is_default" @click="deleteCalendarById(scope.row)">移除</el-button>
+              <el-button  type="text" size="small" @click="readCalendar(scope.row)">{{lan.CALENDAR_PAGE_SET_SET_AND_SHARE}}</el-button>
+              <el-button type="text" size="small" v-if="!scope.row.is_default" @click="deleteCalendarById(scope.row)">{{lan.CALENDAR_PAGE_SET_REMOVE}}</el-button>
             </template>
           </el-table-column>
         </el-table>
 
       </div>
       <div>
-        <h4 class="calendar_title">我的日程表</h4>
-        <div style="padding:12px 0;"><i class="header-icon el-icon-info" style="color:#00c713"></i> 隐藏共享日程后将不会在您的日程中显示此日程，但被隐藏的日程内容仍然保持同步</div>
+        <h4 class="calendar_title">{{lan.CALENDAR_PAGE_SET_MY_LIST}}</h4>
+        <div style="padding:12px 0;"><i class="header-icon el-icon-info" style="color:#00c713"></i> {{lan.CALENDAR_PAGE_SET_HIDE_DESC}}</div>
         <el-table
           :header-cell-style="{background:'#f0f1f3'}"
           :row-style="tableRowStyle"
@@ -39,44 +39,44 @@
           style="width: 100%">
           <el-table-column
             prop="name"
-            label="共享给我的日程"
+            :label="lan.CALENDAR_PAGE_SET_SHARE_TO_MYSCHEDULE"
             width="200"
             >
           </el-table-column>
           <el-table-column
             prop="username"
-            label="共享者"
+            :label="lan.CALENDAR_PAGE_SET_SHARER"
             >
           </el-table-column>
           <el-table-column
             prop="address"
-            label="操作" width="300">
+            :label="lan.COMMON_OPRATE" width="300">
             <template slot-scope="scope">
-              <el-button  type="text" size="small" @click="show_calendar(scope.row)">{{scope.row.is_show==true?"隐藏":"显示"}}</el-button>
-              <el-button type="text" size="small" @click="deleteInvitorCalendarById(scope.row)">移除</el-button>
+              <el-button  type="text" size="small" @click="show_calendar(scope.row)">{{scope.row.is_show==true? lan.MAILBOX_COM_INNERBOX_HIDE : lan.CALENDAR_PAGE_SET_SHOW}}</el-button>
+              <el-button type="text" size="small" @click="deleteInvitorCalendarById(scope.row)">{{lan.CALENDAR_PAGE_SET_REMOVE}}</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
 
     </div>
-    <el-dialog title="新建日程" :visible.sync="addFormVisible" :modal-append-to-body="false" width="60%">
+    <el-dialog :title="lan.CALENDAR_PAGE_SET_NEW_SCHEDULE" :visible.sync="addFormVisible" :modal-append-to-body="false" width="60%">
       <el-form :model="addForm" :rules="add_rules" ref="addForm" label-width="100px" size="small">
-        <el-form-item label="日程名称：" prop="name">
+        <el-form-item :label="lan.CALENDAR_PAGE_SET_SCHEDULE_NAME" prop="name">
           <el-input v-model="addForm.name"></el-input>
         </el-form-item>
 
 
-        <el-form-item label="共享给：" prop="shares">
+        <el-form-item :label="lan.CALENDAR_PAGE_SET_SHARE_TO" prop="shares">
           <div style="min-height:80px;border:1px solid #dcdfe6;width:80%;padding:4px 10px;max-height:400px;overflow: auto;margin-bottom:6px;">
             <el-row v-for="(v,k) in addForm.shares" :key="k">
               <el-col :span="15">
                 <div class="nowrap_elipse" :title="v.label">{{v.label}}</div>
               </el-col>
               <el-col :span="6">
-                <el-select v-model="v.permmisson"  placeholder="请选择权限" size="mini">
-                  <el-option label="查看权限（只读）" :value="1"></el-option>
-                  <el-option label="编辑权限" :value="2"></el-option>
+                <el-select v-model="v.permmisson"  :placeholder="lan.CALENDAR_PAGE_SET_CHOOSE_PERMISSION" size="mini">
+                  <el-option :label="lan.CALENDAR_PAGE_SET_PERMISSION_READ" :value="1"></el-option>
+                  <el-option :label="lan.CALENDAR_PAGE_SET_PERMISSION_EDIT" :value="2"></el-option>
                 </el-select>
               </el-col>
               <el-col :span="3" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="delete_invite(k,v)" type="warning" plain></el-button></el-col>
@@ -96,25 +96,25 @@
               <!--:value="item.value">-->
             <!--</el-option>-->
           <!--</el-select>-->
-          <el-input placeholder="输入邀请人" style="width:auto;" v-model.trim="addemail"></el-input>
-          <el-button @click="addEmail">添加</el-button>
-          <el-button @click="showChoice = !showChoice">{{showChoice?"隐藏通讯录":"打开通讯录"}}</el-button>
+          <el-input :placeholder="lan.CALENDAR_PAGE_SET_INPUT_VISIT" style="width:auto;" v-model.trim="addemail"></el-input>
+          <el-button @click="addEmail">{{lan.COMMON_BUTTON_ADD}}</el-button>
+          <el-button @click="showChoice = !showChoice">{{showChoice? lan.ADDRBOOK_HIDE : lan.ADDRBOOK_SHOW}}</el-button>
         </el-form-item>
 
-        <el-form-item v-show="showChoice" label="选择邮箱：">
+        <el-form-item v-show="showChoice" :label="lan.CALENDAR_PAGE_SET_CHOOSE_MAILBOX">
 
             <el-row style="margin-bottom:6px;">
               <el-col :span="16">
                 <el-cascader  change-on-select style="width:100%"
-                                 :options="deptOptions" @change="menu_change" placeholder="请选择部门">
+                                 :options="deptOptions" @change="menu_change" :placeholder="lan.SETTING_RE_ADD_SELECTDPT_PLACE">
                 </el-cascader>
               </el-col>
               <el-col :span="5" :offset="1">
-                <el-input v-model="searchMailbox" size="small" placeholder="请输入内容"></el-input>
+                <el-input v-model="searchMailbox" size="small" :placeholder="lan.SETTING_RE_ADD_CONTENT_RULE"></el-input>
 
               </el-col>
               <el-col :span="2" style="text-align:right">
-                <el-button size="small" type="primary" @click="searchOabMembers(1)">搜索</el-button>
+                <el-button size="small" type="primary" @click="searchOabMembers(1)">{{lan.COMMON_SEARCH2}}</el-button>
               </el-col>
             </el-row>
 
@@ -127,12 +127,12 @@
                 type="selection"
                 width="55">
               </el-table-column>
-              <el-table-column prop="name" label="姓名&邮箱">
+              <el-table-column prop="name" :label="lan.SETTING_REFERE_EMAIL_NAME">
                 <template slot-scope="scope">
                   <span>{{ scope.row.name +'<' +scope.row.username +'>'}}</span>
                 </template>
               </el-table-column>
-              <el-table-column  label="部门">
+              <el-table-column  :label="lan.COMMON_DEPARTMENT">
                 <template slot-scope="scope">
                   <span>{{scope.row.department}}</span>
                 </template>
@@ -152,28 +152,28 @@
       </el-form>
 
         <div slot="footer" class="dialog-footer">
-          <el-button @click="addFormVisible = false" size="small">取 消</el-button>
-          <el-button type="primary"  size="small" @click="create_calendar('addForm')">创建日程</el-button>
+          <el-button @click="addFormVisible = false" size="small">{{lan.COMMON_BUTTON_CANCELL}}</el-button>
+          <el-button type="primary"  size="small" @click="create_calendar('addForm')">{{lan.CALENDAR_PAGE_SET_CREATE_SCHEDULE}}</el-button>
         </div>
       </el-dialog>
 
-    <el-dialog title="编辑日程" :visible.sync="editFormVisible" :modal-append-to-body="false">
+    <el-dialog :title="lan.CALENDAR_PAGE_SET_EDIT_SCHEDULE" :visible.sync="editFormVisible" :modal-append-to-body="false">
       <el-form :model="editForm" :rules="edit_rules" ref="editForm" label-width="100px" size="small">
-        <el-form-item label="日程名称：" prop="name">
+        <el-form-item :label="lan.CALENDAR_PAGE_SET_SCHEDULE_NAME" prop="name">
           <el-input v-model="editForm.name"></el-input>
         </el-form-item>
 
 
-        <el-form-item label="共享给：" prop="shares">
+        <el-form-item :label="lan.CALENDAR_PAGE_SET_SHARE_TO" prop="shares">
           <div style="min-height:80px;border:1px solid #dcdfe6;width:80%;padding:4px 10px;max-height:400px;overflow: auto;margin-bottom:6px;">
             <el-row v-for="(v,k) in editForm.shares" :key="k">
               <el-col :span="15">
                 <div class="nowrap_elipse" :title="v.label||(v.target_name+'<'+v.target+'>')">{{v.label||(v.target_name+'<'+v.target+'>')}}</div>
               </el-col>
               <el-col :span="6">
-                <el-select v-model="v.permmisson"  placeholder="请选择权限" size="mini">
-                  <el-option label="查看权限（只读）" :value="1"></el-option>
-                  <el-option label="编辑权限" :value="2"></el-option>
+                <el-select v-model="v.permmisson"  :placeholder="lan.CALENDAR_PAGE_SET_CHOOSE_PERMISSION" size="mini">
+                  <el-option :label="lan.CALENDAR_PAGE_SET_PERMISSION_READ" :value="1"></el-option>
+                  <el-option :label="lan.CALENDAR_PAGE_SET_PERMISSION_EDIT" :value="2"></el-option>
                 </el-select>
               </el-col>
               <el-col :span="3" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="delete_invite_edit(k,v)" type="warning" plain></el-button></el-col>
@@ -183,7 +183,7 @@
             v-model.trim="editemail"
             filterable
             remote
-            placeholder="请输入邮箱"
+            :placeholder="lan.MAILBOX_COM_COMPOSE_INPUT_EMAIL"
             :remote-method="remoteMethod"
             ref="selectItem_edit">
             <el-option
@@ -193,24 +193,24 @@
               :value="item.value">
             </el-option>
           </el-select>
-          <el-button @click="addEmail_edit">添加</el-button>
-          <el-button @click="showChoice = !showChoice">{{showChoice?"隐藏通讯录":"打开通讯录"}}</el-button>
+          <el-button @click="addEmail_edit">{{lan.COMMON_BUTTON_ADD}}</el-button>
+          <el-button @click="showChoice = !showChoice">{{showChoice? lan.ADDRBOOK_HIDE : lan.ADDRBOOK_SHOW}}</el-button>
         </el-form-item>
 
-        <el-form-item v-show="showChoice" label="选择邮箱：">
+        <el-form-item v-show="showChoice" :label="lan.CALENDAR_PAGE_SET_CHOOSE_MAILBOX">
 
             <el-row style="margin-bottom:6px;">
               <el-col :span="16">
                 <el-cascader  change-on-select style="width:100%"
-                                 :options="deptOptions" @change="menu_change" placeholder="请选择部门">
+                                 :options="deptOptions" @change="menu_change" :placeholder="lan.SETTING_RE_ADD_SELECTDPT_PLACE">
                 </el-cascader>
               </el-col>
               <el-col :span="5" :offset="1">
-                <el-input v-model="searchMailbox" size="small" placeholder="请输入内容"></el-input>
+                <el-input v-model="searchMailbox" size="small" :placeholder="lan.SETTING_RE_ADD_CONTENT_RULE"></el-input>
 
               </el-col>
               <el-col :span="2" style="text-align:right">
-                <el-button size="small" type="primary" @click="searchOabMembers(1)">搜索</el-button>
+                <el-button size="small" type="primary" @click="searchOabMembers(1)">{{lan.COMMON_SEARCH2}}</el-button>
               </el-col>
             </el-row>
 
@@ -223,12 +223,12 @@
                 type="selection"
                 width="55">
               </el-table-column>
-              <el-table-column prop="name" label="姓名&邮箱">
+              <el-table-column prop="name" :label="lan.SETTING_REFERE_EMAIL_NAME">
                 <template slot-scope="scope">
                   <span>{{ scope.row.name +'<' +scope.row.username +'>'}}</span>
                 </template>
               </el-table-column>
-              <el-table-column  label="部门">
+              <el-table-column  :label="lan.COMMON_DEPARTMENT">
                 <template slot-scope="scope">
                   <span>{{scope.row.department}}</span>
                 </template>
@@ -248,13 +248,14 @@
       </el-form>
 
         <div slot="footer" class="dialog-footer">
-          <el-button @click="editFormVisible = false" size="small">退出编辑</el-button>
-          <el-button type="primary"  size="small" @click="update_calendar('editForm')">确定修改</el-button>
+          <el-button @click="editFormVisible = false" size="small">{{lan.CALENDAR_PAGE_SET_QUIT_EDIT}}</el-button>
+          <el-button type="primary"  size="small" @click="update_calendar('editForm')">{{lan.CALENDAR_PAGE_SET_SURE_EDIT}}</el-button>
         </div>
       </el-dialog>
   </div>
 </template>
 <script>
+  import lan from '@/assets/js/lan';
   import {contactOabDepartsGet,contactOabMembersGet,getCalendarsList,createCalendar,deleteCalendar,getCalendarById,updateCalendar,showCalendar,deleteInvitorCalendar,getTargetId} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
@@ -296,8 +297,8 @@
         },
         add_rules:{
           name:[
-            {required: true, message: '请输入日程名称', trigger: 'blur'},
-            { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+            {required: true, message: '', trigger: 'blur'},
+            { min: 1, max: 20, message: '', trigger: 'blur' }
           ]
         },
         editFormVisible:false,
@@ -308,8 +309,8 @@
         },
         edit_rules:{
           name:[
-            {required: true, message: '请输入日程名称', trigger: 'blur'},
-            { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+            {required: true, message: '', trigger: 'blur'},
+            { min: 1, max: 20, message: '', trigger: 'blur' }
           ]
         },
         showChoice: false,
@@ -354,9 +355,9 @@
         })
       },
       deleteCalendarById(row){
-         this.$confirm('<p>确认要删除 "'+row.name+'" 日程吗？</p>删除后对所有共享人永久删除此日程.', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+         this.$confirm('<p>'+this.lan.CALENDAR_PAGE_SET_SURE_DELETE1+'"'+row.name+'"'+this.lan.CALENDAR_PAGE_SET_SURE_DELETE2+'</p>'+this.lan.CALENDAR_PAGE_SET_SURE_DELETE3, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+            confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+            cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
            dangerouslyUseHTMLString: true,
             type: 'warning'
          }).then(() => {
@@ -366,7 +367,7 @@
              this.$parent.getCalendars();
              this.$message({
                 type: 'success',
-                message: '删除成功!'
+                message: this.lan.COMMON_DELETE_SUCCESS
              });
            },err=>{
              let str = '';
@@ -375,7 +376,7 @@
               }
               this.$message({
                 type:'error',
-                message:'删除失败！'+str
+                message: this.lan.COMMON_DELETE_FAILED +str
               })
            }).catch(err=>{
              let str = '';
@@ -384,21 +385,18 @@
               }
               this.$message({
                 type:'error',
-                message:'删除失败！'+str
+                message: this.lan.COMMON_DELETE_FAILED +str
               })
            })
 
          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除'
-            });
+
          });
       },
       deleteInvitorCalendarById(row){
-         this.$confirm('<p>确认要删除 "'+row.name+'" 日程吗？</p>删除后对所有共享人永久删除此日程.', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+         this.$confirm('<p>'+this.lan.CALENDAR_PAGE_SET_SURE_DELETE1+'"'+row.name+'"'+this.lan.CALENDAR_PAGE_SET_SURE_DELETE2+'</p>'+this.lan.CALENDAR_PAGE_SET_SURE_DELETE3, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+            confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+            cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
            dangerouslyUseHTMLString: true,
             type: 'warning'
          }).then(() => {
@@ -408,7 +406,7 @@
              this.$parent.getCalendars();
              this.$message({
                 type: 'success',
-                message: '删除成功!'
+                message: this.lan.COMMON_DELETE_SUCCESS
              });
            },err=>{
              let str = '';
@@ -417,7 +415,7 @@
              }
              this.$message({
                type:'error',
-               message:'删除失败！'+str
+               message:this.lan.COMMON_DELETE_FAILED+str
              })
            }).catch(err=>{
              let str = '';
@@ -426,15 +424,12 @@
              }
              this.$message({
                type:'error',
-               message:'删除失败！'+str
+               message: this.lan.COMMON_DELETE_FAILED +str
              })
            })
 
          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除'
-            });
+
          });
       },
       readCalendar(row){
@@ -468,7 +463,7 @@
               _this.addFormVisible = false;
               this.$message({
                 type: 'success',
-                message: '创建成功!'
+                message: this.lan.CALENDAR_PAGE_SET_CREATE_SUC
               });
               _this.$refs[formName].resetFields();
               _this.getCalendars();
@@ -483,7 +478,7 @@
               }
               this.$message({
                 type: 'error',
-                message: '创建失败！'+str
+                message: this.lan.CALENDAR_PAGE_SET_CREATE_FAIL +str
               });
               console.log(err);
             })
@@ -501,7 +496,7 @@
               _this.editFormVisible = false;
               this.$message({
                 type: 'success',
-                message: '修改成功!'
+                message: this.lan.COMMON_ALTER_SUCCESS
               });
               _this.$refs[formName].resetFields();
               _this.getCalendars();
@@ -513,7 +508,7 @@
               }
               this.$message({
                 type: 'error',
-                message: '创建失败！'+str
+                message: this.lan.COMMON_ALTER_FAILED +str
               });
             }).catch(err=>{
               let str = '';
@@ -522,7 +517,7 @@
               }
               this.$message({
                 type: 'error',
-                message: '创建失败！'+str
+                message: this.lan.COMMON_ALTER_FAILED +str
               });
             })
           } else {
@@ -652,7 +647,7 @@
                 }else{
                   this.$message({
                     type:'error',
-                    message:'不能添加不是系统的邮箱! 请重新输入！'
+                    message:this.lan.CALENDAR_PAGE_SET_NOT_SYS_NOTICE
                   })
                 }
 
@@ -660,7 +655,7 @@
                 console.log('获取target_id有误! ',err)
               })
           }else{
-            this.$message({message:'邮箱格式不正确！',type:'error'})
+            this.$message({message:this.lan.CALENDAR_PAGE_SET_MAIL_TYPE ,type:'error'})
           }
           // if(!this.hashMailbox[this.addemail]){
           //   let v = this.$refs.selectItem.$data.selectedLabel;
@@ -703,7 +698,33 @@
       },
     },
     computed: {
-
+      lan:function(){
+        let lang = lan.zh
+        if(this.$store.getters.getLanguage=='zh'){
+          lang = lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          lang = lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          lang = lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          lang = lan.zh
+        }else{
+          lang = lan.zh
+        }
+        this.add_rules = {
+          name:[
+            {required: true, message: lang.CALENDAR_PAGE_SET_SCHEDULE_NAME_RULES1, trigger: 'blur'},
+            { min: 1, max: 20, message: lang.CALENDAR_PAGE_SET_SCHEDULE_NAME_RULES2, trigger: 'blur' }
+          ]
+        }
+        this.edit_rules = {
+          name:[
+            {required: true, message: lang.CALENDAR_PAGE_SET_SCHEDULE_NAME_RULES1, trigger: 'blur'},
+            { min: 1, max: 20, message: lang.CALENDAR_PAGE_SET_SCHEDULE_NAME_RULES2, trigger: 'blur' }
+          ]
+        }
+        return lang
+      }
     },
 
   }

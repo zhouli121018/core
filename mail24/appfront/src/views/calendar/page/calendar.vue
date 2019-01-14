@@ -8,9 +8,9 @@
 
     ></full-calendar>
 
-    <el-dialog title="新建事件" :visible.sync="newEventDialog" :modal-append-to-body="false" width="100%" style="padding:0 142px;box-sizing: border-box" top="45px">
+    <el-dialog :title="lan.CALENDAR_PAGE_CAL_NEW_EVENT" :visible.sync="newEventDialog" :modal-append-to-body="false" width="100%" style="padding:0 142px;box-sizing: border-box" top="45px">
       <el-form :model="newForm" :rules="rules" ref="newForm" label-width="100px" class="demo-ruleForm" size="small">
-        <el-form-item label="标 题" prop="title">
+        <el-form-item :label="lan.COMMON_SUBJECT" prop="title">
           <el-row>
             <el-col :span="20">
               <el-input v-model="newForm.title"></el-input>
@@ -22,31 +22,31 @@
                   <span style="display:inline-block;width:15px;height:15px" :style="{background:newForm.color}"></span><i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="#D50000"  title="番茄红"><span style="background:#D50000;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                  <el-dropdown-item command="#E67C73"  title="红鹤色"><span style="background:#E67C73;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                  <el-dropdown-item command="#F4511E"  title="橘红"><span style="background:#F4511E;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                  <el-dropdown-item command="#F6BF26"  title="香蕉黄"><span style="background:#F6BF26;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                  <el-dropdown-item command="#33B679"  title="鼠尾草绿"><span style="background:#33B679;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                  <el-dropdown-item command="#0B8043"  title="罗勒绿"><span style="background:#0B8043;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                  <el-dropdown-item command="#039BE5"  title="孔雀蓝"><span style="background:#039BE5;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                  <el-dropdown-item command="#3F51B5"  title="蓝莓色"><span style="background:#3F51B5;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                  <el-dropdown-item command="#7986CB"  title="薰衣草色"><span style="background:#7986CB;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                  <el-dropdown-item command="#8E24AA"  title="葡萄紫"><span style="background:#8E24AA;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                  <el-dropdown-item command="#616161"  title="石墨黑"><span style="background:#616161;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                  <el-dropdown-item command="#D50000"  :title="lan.CALENDAR_PAGE_CAL_TOMATO_RED"><span style="background:#D50000;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                  <el-dropdown-item command="#E67C73"  :title="lan.CALENDAR_PAGE_CAL_RED_CRANE_COLOR"><span style="background:#E67C73;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                  <el-dropdown-item command="#F4511E"  :title="lan.CALENDAR_PAGE_CAL_TANGERINE"><span style="background:#F4511E;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                  <el-dropdown-item command="#F6BF26"  :title="lan.CALENDAR_PAGE_CAL_BANANA_YELLOW"><span style="background:#F6BF26;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                  <el-dropdown-item command="#33B679"  :title="lan.CALENDAR_PAGE_CAL_SALVIA_GREEN"><span style="background:#33B679;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                  <el-dropdown-item command="#0B8043"  :title="lan.CALENDAR_PAGE_CAL_BASIL_GREEN"><span style="background:#0B8043;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                  <el-dropdown-item command="#039BE5"  :title="lan.CALENDAR_PAGE_CAL_PEACOCK_BLUE"><span style="background:#039BE5;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                  <el-dropdown-item command="#3F51B5"  :title="lan.CALENDAR_PAGE_CAL_BLUEBERRY_COLOR"><span style="background:#3F51B5;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                  <el-dropdown-item command="#7986CB"  :title="lan.CALENDAR_PAGE_CAL_LAVENDER"><span style="background:#7986CB;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                  <el-dropdown-item command="#8E24AA"  :title="lan.CALENDAR_PAGE_CAL_GRAPE_PURPLE"><span style="background:#8E24AA;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                  <el-dropdown-item command="#616161"  :title="lan.CALENDAR_PAGE_CAL_GRAPHITE_BLACK"><span style="background:#616161;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </el-col>
           </el-row>
         </el-form-item>
 
-        <el-form-item label="开始截止时间">
+        <el-form-item :label="lan.CALENDAR_PAGE_CAL_TIME">
           <el-date-picker
             v-model="newForm.start_day"
             format="yyyy-MM-dd" value-format="yyyy-MM-dd"
             :picker-options="pickerBeginDateBefore"
             type="date"
             @change="pickBeginDate"
-            placeholder="请选择开始日期"  style="width:180px;">
+            :placeholder="lan.CALENDAR_PAGE_CAL_INPUT_START_TIME"  style="width:180px;">
           </el-date-picker>
           <!--<span  v-if="!newForm.allday"> - </span>-->
           <el-time-picker  v-if="!newForm.allday"
@@ -55,15 +55,15 @@
             :picker-options="{
               selectableRange: '00:00:00 - 23:59:59'
             }"
-            placeholder="请选择时间点" style="width:100px;">
+            :placeholder="lan.CALENDAR_PAGE_CAL_CHOOSE_TIME" style="width:100px;">
           </el-time-picker>
-          至
+          ——
           <el-date-picker
             format="yyyy-MM-dd" value-format="yyyy-MM-dd"
             :picker-options="pickerBeginDateAfter"
             v-model="newForm.end_day"
             type="date"
-            placeholder="选择截止日期"  style="width:180px;">
+            :placeholder="lan.CALENDAR_PAGE_CAL_INPUT_END_TIME"  style="width:180px;">
           </el-date-picker>
             <!--<span  v-if="!newForm.allday"> - </span>-->
           <el-time-picker  v-if="!newForm.allday"
@@ -72,22 +72,22 @@
             :picker-options="{
               selectableRange: '00:00:00 - 23:59:59'
             }"
-            placeholder="请选择时间点"  style="width:100px;">
+            :placeholder="lan.CALENDAR_PAGE_CAL_CHOOSE_TIME"  style="width:100px;">
           </el-time-picker>
-          <el-checkbox v-model="newForm.allday" style="margin-left:20px;">全天事件</el-checkbox>
+          <el-checkbox v-model="newForm.allday" style="margin-left:20px;">{{lan.CALENDAR_PAGE_CAL_DAY_EVENT}}</el-checkbox>
         </el-form-item>
 
-        <el-form-item label="重复事件" prop="cycle_mode">
-          <el-checkbox v-model="newForm.is_copy">是否重复</el-checkbox>
+        <el-form-item :label="lan.CALENDAR_PAGE_CAL_REPEAT_EVENT" prop="cycle_mode">
+          <el-checkbox v-model="newForm.is_copy">{{lan.CALENDAR_PAGE_CAL_IS_REPEAT}}</el-checkbox>
           <br>
-           <span v-if="newForm.is_copy">重复频率：每</span>
+           <span v-if="newForm.is_copy">{{lan.CALENDAR_PAGE_CAL_REPEAT_COUNT}}</span>
             <el-input v-if="newForm.is_copy" v-model="newForm.cycle_frequency" type="number" style="width:80px;" min="1"></el-input>
-          <el-select v-if="newForm.is_copy" v-model="newForm.cycle_mode" placeholder="请选择重复事件">
+          <el-select v-if="newForm.is_copy" v-model="newForm.cycle_mode" :placeholder="lan.CALENDAR_PAGE_CAL_CHOOSE_REPEAT_EVENT">
             <!--<el-option label="不重复" value="0"></el-option>-->
-            <el-option label="请选择" value="0" disabled></el-option>
-            <el-option label="天" value="1"></el-option>
-            <el-option label="周" value="2"></el-option>
-            <el-option label="月" value="3"></el-option>
+            <el-option :label="lan.SETTING_RE_ADD_PLACEHODER" value="0" disabled></el-option>
+            <el-option :label="lan.FILE_P_DAY" value="1"></el-option>
+            <el-option :label="lan.CALENDAR_PAGE_CAL_WEEK" value="2"></el-option>
+            <el-option :label="lan.CALENDAR_PAGE_CAL_MONTH" value="3"></el-option>
             <el-option label="年" value="4"></el-option>
           </el-select>
             <span v-if="newForm.is_copy">重复</span>
@@ -552,6 +552,7 @@
   </div>
 </template>
 <script>
+  import lan from '@/assets/js/lan';
   import {contactOabDepartsGet,contactOabMembersGet,getCalendarsList,getEvents,createEvent,getEventById,updateEvent,deleteEvent,cancelInvitorEvent,setStatus,eventsIcs} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
@@ -1400,7 +1401,35 @@
         this.getEventList();
       }
     },
-
+    computed:{
+      lan:function(){
+        let lang = lan.zh
+        if(this.$store.getters.getLanguage=='zh'){
+          lang = lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          lang = lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          lang = lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          lang = lan.zh
+        }else{
+          lang = lan.zh
+        }
+        this.add_rules = {
+          name:[
+            {required: true, message: lang.CALENDAR_PAGE_SET_SCHEDULE_NAME_RULES1, trigger: 'blur'},
+            { min: 1, max: 20, message: lang.CALENDAR_PAGE_SET_SCHEDULE_NAME_RULES2, trigger: 'blur' }
+          ]
+        }
+        this.edit_rules = {
+          name:[
+            {required: true, message: lang.CALENDAR_PAGE_SET_SCHEDULE_NAME_RULES1, trigger: 'blur'},
+            { min: 1, max: 20, message: lang.CALENDAR_PAGE_SET_SCHEDULE_NAME_RULES2, trigger: 'blur' }
+          ]
+        }
+        return lang
+      }
+    }
   }
 </script>
 <style>

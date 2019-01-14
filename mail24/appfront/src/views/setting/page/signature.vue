@@ -48,7 +48,7 @@
 
       <!-- 默认签名设置 -->
       <el-dialog :title="this.$parent.lan.SETTING_SIG_BUTTON_DEFAULT"  :visible.sync="defaultSigFormVisible"  :close-on-click-modal="false" :append-to-body="true">
-        <el-form :model="defaultSigForm" label-width="100px" :rules="defaultSigFormRules" ref="defaultSigForm">
+        <el-form :model="defaultSigForm" label-width="150px" :rules="defaultSigFormRules" ref="defaultSigForm">
           <el-form-item :label="this.$parent.lan.SETTING_SIG_DEFAULT_MAIL">
             <el-select v-model="defaultSigForm.default" clearable  style="width: 100%" :placeholder="this.$parent.lan.SETTING_SIG_SIG_DEFAULT_MAIL">
               <el-option v-for="item in listTables" :key="item.id" :label="item.caption" :value="item.id"></el-option>

@@ -164,7 +164,7 @@
         reviewLoading:false,
         hashTab:[],
         tableTabs: [{
-          title: '邮件审核列表',
+          title: '',
           name: '1',
         }],
         tabIndex: 1,
@@ -196,7 +196,7 @@
           },
           rejectRule:{
             reason:[
-              { required: true, message: '请输入拒绝原因！', trigger: 'blur' },
+              { required: true, message: '', trigger: 'blur' },
             ]
           },
           show_reason:false
@@ -213,7 +213,7 @@
           let newTabName = ++this.tabIndex + '';
           this.hashTab[rid] = newTabName;
           this.tableTabs.push({
-            title: subject||'无主题',
+            title: subject|| this.lan.MAILBOX_NO_SUBJECT,
             name: newTabName,
             id:rid,
           });
@@ -270,9 +270,9 @@
           reason:this.waitData.rejectForm.reason
         }
         if(status == 'permit'){
-          this.$confirm('<p>审核通过选中邮件?</p>', '系统信息', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+          this.$confirm('<p>'+this.lan.MAILBOX_COM_REVIEW_IS_PASS+'</p>', this.lan.MAILBOX_COM_READ_SYSTEM_NOTICE, {
+            confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+            cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
             dangerouslyUseHTMLString: true,
             type: 'warning'
           }).then(() => {
@@ -280,16 +280,16 @@
             uploadReviews(param).then(res=>{
               this.$message({
                 type:'success',
-                message:'操作成功！'
+                message:this.lan.COMMON_OPRATE_SUCCESS
               })
               this.waitData.page = 1;
               this.getWait('wait');
               this.$parent.getReviewShow();
             }).catch(err=>{
-              console.log('更新审核状态出错！',err)
+              console.log(err)
               this.$message({
                 type:'error',
-                message:'操作失败！'
+                message:this.lan.COMMON_OPRATE_FAILED
               })
             })
           }).catch(() => {
@@ -299,7 +299,7 @@
           if(!this.waitData.rejectForm.reason){
             this.$message({
               type:'error',
-              message:'请输入拒绝原因！'
+              message:this.lan.MAILBOX_COM_REVIEW_INPUT_REJECT_REASON
             })
             return;
           }
@@ -312,14 +312,14 @@
             this.$parent.getReviewShow();
             this.$message({
               type:'success',
-              message:'操作成功！'
+              message:this.lan.COMMON_OPRATE_SUCCESS
             })
           }).catch(err=>{
             this.$message({
               type:'error',
-              message:'操作失败！'
+              message:this.lan.COMMON_OPRATE_FAILED
             })
-            console.log('更新审核状态出错2！',err)
+            console.log(err)
           })
         }
       },
@@ -359,7 +359,7 @@
           this.waitData.tableData = res.data.results;
         }).catch(err=>{
           this.reviewLoading = false;
-          console.log('getWait错误',err)
+          console.log(err)
         })
       },
     },
@@ -406,7 +406,15 @@
         }else{
           lang = lan.zh
         }
-
+        this.tableTabs[0] = {
+          title: lang.MAILBOX_COM_REVIEW_TITLE_NAME,
+          name: '1',
+        }
+        this.rejectRule = {
+          reason:[
+            { required: true, message: lang.MAILBOX_COM_REVIEW_INPUT_REJECT_REASON, trigger: 'blur' },
+          ]
+        }
         return lang
       },
     }

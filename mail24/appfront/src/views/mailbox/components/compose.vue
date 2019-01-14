@@ -5,20 +5,20 @@
           <div class="toolbar" style="background: #fff">
             <div id="pagination" class="f-fr">
                 <div class="" @click="show_contact = !show_contact">
-                    <el-button size="small">通讯录</el-button>
+                    <el-button size="small">{{lan.MAILBOX_COM_HOME_CONTACTS}}</el-button>
                 </div>
             </div>
 
             <el-button size="small" type="primary" @click="sentMail('sent')" :loading="sendLoading"
 
-    >{{ruleForm2.is_schedule?"定时发送":"发送"}}</el-button>
+    >{{ruleForm2.is_schedule? lan.MAILBOX_COM_COMPOSE_SEND_SCHEDULE : lan.MAILBOX_COM_READ_SENT}}</el-button>
             <el-button-group >
-              <el-button size="small" @click="preview">预览</el-button>
-              <el-button size="small" @click="sentMail('save_draft')">存草稿</el-button>
+              <el-button size="small" @click="preview">{{lan.COMMON_BUTTON_PREVIEW}}</el-button>
+              <el-button size="small" @click="sentMail('save_draft')">{{lan.MAILBOX_COM_COMPOSE_SAVE_DRAFTS}}</el-button>
             </el-button-group>
 
              <el-button  size="small" plain @click="closeTab">
-                关闭
+                {{lan.COMMON_CLOSE}}
             </el-button>
             <!--<el-button type="warning" size="small" @click="open_notify">消息提醒</el-button>-->
           </div>
@@ -26,10 +26,10 @@
             <div class="mn-aside right_menu" :class="{show_contact:show_contact}" :style="{'min-height':main_min_height+'px'}">
               <el-tabs v-model="activeName" @tab-click="loadingContact">
                 <!--个人通讯录-->
-                <el-tab-pane label="个人通讯录" name="first" v-loading="contact_loading">
+                <el-tab-pane :label="lan.CONTANCT_INDEX_PAB" name="first" v-loading="contact_loading">
                   <!--<el-input  placeholder="搜索" prefix-icon="el-icon-search" v-model="filterText" size="small" style="margin:6px 0;">-->
                   <!--</el-input>-->
-                  <el-input placeholder="请输入内容" v-model="right_search" class="input-with-select" @keyup.native="getRightContact">
+                  <el-input :placeholder="lan.SETTING_RE_ADD_CONTENT_RULE" v-model="right_search" class="input-with-select" @keyup.native="getRightContact">
                     <el-button slot="append" icon="el-icon-search" @click="getRightContact" style="border-right: 1px solid #dcdfe6;border-radius: 0;"></el-button>
                     <el-button slot="append" icon="el-icon-refresh" @click="refresh_right"></el-button>
                   </el-input>
@@ -70,10 +70,10 @@
                         </div>
                       </div>
                       <div v-if="m.show && m.count>10" style="text-align: center;margin:10px 0;">
-                        <el-button type="primary" size="mini" @click="plus(false,m)" title="上一页" :disabled="m.page<=1" circle><i class="el-icon-arrow-left"></i></el-button>
+                        <el-button type="primary" size="mini" @click="plus(false,m)" :title="lan.MAILBOX_COM_COMPOSE_PREV" :disabled="m.page<=1" circle><i class="el-icon-arrow-left"></i></el-button>
                         <!--<el-button  type="text" size="small"><b>{{m.page}}</b></el-button>-->
-                        第 <el-input @change="changePage($event,m)" min="1" :max="Math.ceil(m.count/10)" type="number" v-model="m.page" style="width:50px;" class="no-padding" size="mini"></el-input>页
-                        <el-button size="mini" title="下一页" @click="plus(true,m)" type="primary" :disabled="m.page>= Math.ceil(m.count/10)" circle><i class="el-icon-arrow-right"></i></el-button>
+                        {{lan.MAILBOX_COM_COMPOSE_ORDER}} <el-input @change="changePage($event,m)" min="1" :max="Math.ceil(m.count/10)" type="number" v-model="m.page" style="width:50px;" class="no-padding" size="mini"></el-input> {{lan.MAILBOX_COM_COMPOSE_PAGE}}
+                        <el-button size="mini" :title="lan.MAILBOX_COM_COMPOSE_NEXT" @click="plus(true,m)" type="primary" :disabled="m.page>= Math.ceil(m.count/10)" circle><i class="el-icon-arrow-right"></i></el-button>
                       </div>
 
                     </div>
@@ -110,7 +110,7 @@
                 </el-tab-pane>
 
                 <!--信纸-->
-                <el-tab-pane label="信纸" name="second" class="page">
+                <el-tab-pane :label="lan.MAILBOX_COM_COMPOSE_LETTER" name="second" class="page">
                   <ul >
                     <li><a href="#" @click="checkBgFn('noBg')">
                       <img src="../img/none_zh.png" alt="">
@@ -128,7 +128,7 @@
                     <!--</a></li>-->
                   </ul>
                 </el-tab-pane>
-                <el-tab-pane label="模板信" name="third">
+                <el-tab-pane :label="lan.COMMON_TEMPLATE" name="third">
                   <div class="template_box" style="padding-top:4px;">
                     <ul class="template_ul">
                       <li class="f-csp" style="text-align: center" :class="{selected:selectId===''}" @click="deleteTemplate">
@@ -138,8 +138,8 @@
                       <li class="f-csp" :class="{selected:selectId===t.id}" v-for="(t,k) in templateList" :key="k" @click="selectTemplate(t)">
                         <span class="wrapper">{{t.caption}} <i class="el-icon-success choose"></i></span>
                       </li>
-                      <li @click="getTemplateListfn" style="border:none;text-align:center;" v-if="showLoadMore"><el-button size="mini" plain type="success">加载更多模板</el-button></li>
-                      <li @click="setTemplate" title="设置模板信" class="f-csp" style="text-align: center;font-size:32px;font-weight:bold;color:#868686"><span class="el-icon-plus"></span></li>
+                      <li @click="getTemplateListfn" style="border:none;text-align:center;" v-if="showLoadMore"><el-button size="mini" plain type="success">{{lan.MAILBOX_COM_COMPOSE_LOADING_MORE_TEMPLATE}}</el-button></li>
+                      <li @click="setTemplate" :title="lan.MAILBOX_COM_COMPOSE_SET_TEMPLATE" class="f-csp" style="text-align: center;font-size:32px;font-weight:bold;color:#868686"><span class="el-icon-plus"></span></li>
 
                     </ul>
                   </div>
@@ -149,23 +149,23 @@
             <form class="u-form mn-form box_height"  :class="{right0:show_contact}" :style="{'min-height':main_min_height+'px'}">
               <div class="form-tt compose_title title_height">
                 <el-form size="mini" inline-message :model="ruleForm2" status-icon ref="ruleForm2" label-width="90px" class="demo-ruleForm" style="font-size:16px;">
-                  <el-form-item label="发件人:">
+                  <el-form-item :label="lan.MAILBOX_COM_COMPOSE_SENDER">
                     <el-col :span="12">
                       <el-input type="text" :value="this.$parent.$parent.$parent.username" readonly auto-complete="off"></el-input>
                     </el-col>
                     <el-col :span="12" style="text-align:right;">
-                      <el-button v-show="!ruleForm2.is_partsend" type="text"  @click="changeCc">{{ruleForm2.is_cc?"取消抄送":"抄送"}} &nbsp;&nbsp;|</el-button>
-                      <el-button v-show="!ruleForm2.is_partsend" type="text"  @click="changeBcc">{{ruleForm2.is_bcc?"取消密送":"显示密送"}} &nbsp;&nbsp;|</el-button>
-                      <el-button type="text" @click="ruleForm2.is_partsend = !ruleForm2.is_partsend">{{ruleForm2.is_partsend?"取消群发单显":"群发单显"}} |</el-button>
-                      <el-button type="text" @click="changeReply">{{show_replay_to?"取消指定回复人":"指定回复人"}}</el-button>
+                      <el-button v-show="!ruleForm2.is_partsend" type="text"  @click="changeCc">{{ruleForm2.is_cc? lan.MAILBOX_COM_COMPOSE_CANCEL_CC : lan.MAILBOX_COM_COMPOSE_CC}} &nbsp;&nbsp;|</el-button>
+                      <el-button v-show="!ruleForm2.is_partsend" type="text"  @click="changeBcc">{{ruleForm2.is_bcc? lan.MAILBOX_COM_COMPOSE_CANCEL_BCC :lan.MAILBOX_COM_COMPOSE_SHOW_BCC}} &nbsp;&nbsp;|</el-button>
+                      <el-button type="text" @click="ruleForm2.is_partsend = !ruleForm2.is_partsend">{{ruleForm2.is_partsend? lan.MAILBOX_COM_COMPOSE_CANCEL_PART: lan.MAILBOX_COM_COMPOSE_PART}} |</el-button>
+                      <el-button type="text" @click="changeReply">{{show_replay_to? lan.MAILBOX_COM_COMPOSE_CANCEL_REPLY_TO: lan.MAILBOX_COM_COMPOSE_REPLY_TO}}</el-button>
                     </el-col>
 
                   </el-form-item>
 
-                  <el-form-item label="收件人:" >
+                  <el-form-item :label="lan.MAILBOX_COM_COMPOSE_RECIVER" >
                     <label slot="label">
                       <template>
-                        <span @click="show_contact_fn('to')" class="show_contact_style">{{ruleForm2.is_partsend?"群发单显":"收件人"}}:</span>
+                        <span @click="show_contact_fn('to')" class="show_contact_style">{{ruleForm2.is_partsend? lan.MAILBOX_COM_COMPOSE_PART: lan.MAILBOX_COM_COMPOSE_RECIVER}}</span>
                       </template>
                     </label>
                     <div class="padding_15">
@@ -195,13 +195,13 @@
                             width="240"
                             v-model="v.show">
                             <div>
-                              <el-input placeholder="请输入邮箱" v-model="v.email">
-                                <template slot="prepend" style="padding:0"><span style="font-weight:bold;color:red;">*</span>邮箱</template>
+                              <el-input :placeholder="lan.MAILBOX_COM_COMPOSE_INPUT_EMAIL" v-model="v.email">
+                                <template slot="prepend" style="padding:0"><span style="font-weight:bold;color:red;">*</span>{{lan.COMMON_EMAIL}}</template>
                               </el-input>
                             </div>
                             <div style="margin-top:8px;">
-                              <el-input placeholder="请输入姓名" v-model="v.fullname">
-                                <template slot="prepend"><span style="font-weight:bold;visibility: hidden">*</span>姓名</template>
+                              <el-input :placeholder="lan.SETTING_USER_NAME_RULE" v-model="v.fullname">
+                                <template slot="prepend"><span style="font-weight:bold;visibility: hidden">*</span>{{lan.COMMON_XINGMING}}</template>
                               </el-input>
                             </div>
                             <el-button type="text" slot="reference" style="color:#222"><b>{{ v.fullname?(v.fullname+' <'+v.email+'>'):('<'+v.email+'>') }}</b></el-button>
@@ -216,13 +216,13 @@
                             width="240"
                             v-model="v.show">
                             <div>
-                              <el-input placeholder="请输入邮箱" v-model="v.email">
-                                <template slot="prepend" style="padding:0"><span style="font-weight:bold;color:red;">*</span>邮箱</template>
+                              <el-input :placeholder="lan.MAILBOX_COM_COMPOSE_INPUT_EMAIL" v-model="v.email">
+                                <template slot="prepend" style="padding:0"><span style="font-weight:bold;color:red;">*</span>{{lan.COMMON_EMAIL}}</template>
                               </el-input>
                             </div>
                             <div style="margin-top:8px;">
-                              <el-input placeholder="请输入姓名" v-model="v.fullname">
-                                <template slot="prepend"><span style="font-weight:bold;visibility: hidden">*</span>姓名</template>
+                              <el-input :placeholder="lan.SETTING_USER_NAME_RULE" v-model="v.fullname">
+                                <template slot="prepend"><span style="font-weight:bold;visibility: hidden">*</span>{{lan.COMMON_XINGMING}}</template>
                               </el-input>
                             </div>
                             <el-button type="text" slot="reference" style="color:#222"><b>{{ v.fullname?(v.fullname+' <'+v.email+'>'):('<'+v.email+'>') }}</b></el-button>
@@ -242,10 +242,10 @@
                     </div>
 
                   </el-form-item>
-                  <el-form-item label="抄   送:" prop="cc" v-if="ruleForm2.is_cc" v-show="!ruleForm2.is_partsend">
+                  <el-form-item label="" prop="cc" v-if="ruleForm2.is_cc" v-show="!ruleForm2.is_partsend">
                     <label slot="label">
                       <template>
-                        <span @click="show_contact_fn('cc')" class="show_contact_style">抄送人:</span>
+                        <span @click="show_contact_fn('cc')" class="show_contact_style">{{lan.MAILBOX_COM_COMPOSE_CCER}}</span>
                       </template>
                     </label>
                     <div class="padding_15">
@@ -255,13 +255,13 @@
                           width="240"
                           v-model="v.show">
                           <div>
-                            <el-input placeholder="请输入邮箱" v-model="v.email">
-                              <template slot="prepend" style="padding:0"><span style="font-weight:bold;color:red;">*</span>邮箱</template>
+                            <el-input :placeholder="lan.MAILBOX_COM_COMPOSE_INPUT_EMAIL" v-model="v.email">
+                              <template slot="prepend" style="padding:0"><span style="font-weight:bold;color:red;">*</span>{{lan.COMMON_EMAIL}}</template>
                             </el-input>
                           </div>
                           <div style="margin-top:8px;">
-                            <el-input placeholder="请输入姓名" v-model="v.fullname">
-                              <template slot="prepend"><span style="font-weight:bold;visibility: hidden">*</span>姓名</template>
+                            <el-input :placeholder="lan.SETTING_USER_NAME_RULE" v-model="v.fullname">
+                              <template slot="prepend"><span style="font-weight:bold;visibility: hidden">*</span>{{lan.COMMON_XINGMING}}</template>
                             </el-input>
                           </div>
                           <el-button type="text" slot="reference" style="color:#222"><b>{{ v.fullname?(v.fullname+' <'+v.email+'>'):('<'+v.email+'>') }}</b></el-button>
@@ -273,10 +273,10 @@
                         @blur="addMailbox_copyer" @focus="insertMailbox=2" placeholder="" @keyup.native="keyupfn_cc"  @select="handleSelect_copyer" :trigger-on-focus="false" style="float:left"></el-autocomplete>
                     </div>
                   </el-form-item>
-                  <el-form-item label="密   送:" prop="bcc" v-if="ruleForm2.is_bcc" v-show="!ruleForm2.is_partsend">
+                  <el-form-item label="" prop="bcc" v-if="ruleForm2.is_bcc" v-show="!ruleForm2.is_partsend">
                     <label slot="label">
                       <template>
-                        <span @click="show_contact_fn('bcc')" class="show_contact_style">密送人:</span>
+                        <span @click="show_contact_fn('bcc')" class="show_contact_style">{{lan.MAILBOX_COM_COMPOSE_BCC}}</span>
                       </template>
                     </label>
                     <div class="padding_15">
@@ -286,13 +286,13 @@
                           width="240"
                           v-model="v.show">
                           <div>
-                            <el-input placeholder="请输入邮箱" v-model="v.email">
-                              <template slot="prepend" style="padding:0"><span style="font-weight:bold;color:red;">*</span>邮箱</template>
+                            <el-input :placeholder="lan.MAILBOX_COM_COMPOSE_INPUT_EMAIL" v-model="v.email">
+                              <template slot="prepend" style="padding:0"><span style="font-weight:bold;color:red;">*</span>{{lan.COMMON_EMAIL}}</template>
                             </el-input>
                           </div>
                           <div style="margin-top:8px;">
-                            <el-input placeholder="请输入姓名" v-model="v.fullname">
-                              <template slot="prepend"><span style="font-weight:bold;visibility: hidden">*</span>姓名</template>
+                            <el-input :placeholder="lan.SETTING_USER_NAME_RULE" v-model="v.fullname">
+                              <template slot="prepend"><span style="font-weight:bold;visibility: hidden">*</span>{{lan.COMMON_XINGMING}}</template>
                             </el-input>
                           </div>
                           <el-button type="text" slot="reference" style="color:#222"><b>{{ v.fullname?(v.fullname+' <'+v.email+'>'):('<'+v.email+'>') }}</b></el-button>
@@ -304,36 +304,33 @@
                         @blur="addMailbox_bcc" @focus="insertMailbox=3" placeholder="" @keyup.native="keyupfn_bcc"  @select="handleSelect_bcc" :trigger-on-focus="false" style="float:left"></el-autocomplete>
                     </div>
                   </el-form-item>
-                  <el-form-item label="主  题:" prop="subject">
+                  <el-form-item :label="lan.MAILBOX_COM_COMPOSE_SUBJECT" prop="subject">
                     <el-input v-model="ruleForm2.subject"></el-input>
                   </el-form-item>
 
-                  <el-form-item label="指定回复人:" prop="reply_to" v-show="show_replay_to">
+                  <el-form-item :label="lan.MAILBOX_COM_COMPOSE_REPLYTO" prop="reply_to" v-show="show_replay_to">
                     <el-input v-model.trim="ruleForm2.reply_to" type="email" :placeholder="this.$parent.$parent.$parent.username"></el-input>
                   </el-form-item>
-                  <el-form-item label="密  级:" prop="secret" v-if="false">
-                    <el-input v-model.number="ruleForm2.secret" readonly></el-input>
-                  </el-form-item>
 
-                  <el-form-item v-show="fileList.length>0" label="附  件:" prop="attach">
+                  <el-form-item v-show="fileList.length>0" :label="lan.MAILBOX_COM_COMPOSE_ATTACH" prop="attach">
                     <el-row style="line-height: 30px;padding: 2px 12px;margin: 10px 0;border: 1px solid #d4d7d9;background: #f0f1f3;border-radius: 3px;">
                       <el-col :span="14">
-                        {{fileList.length}} 个文件，共 {{totalAttach | mailsize}}
+                        {{fileList.length}} {{lan.MAILBOX_COM_COMPOSE_COUNT }} {{lan.MAILBOX_COM_COMPOSE_TOTAL_COUNT}} {{totalAttach | mailsize}}
                       </el-col>
                       <el-col :span="10" style="text-align:right;">
-                        <el-button type="text" @click="remove_all_attach" style="color:rgb(245, 108, 108)">删除所有附件</el-button> |<el-button type="text" @click="show_all_attach = !show_all_attach">{{show_all_attach?'隐藏附件':'展开附件'}}</el-button>
+                        <el-button type="text" @click="remove_all_attach" style="color:rgb(245, 108, 108)">{{lan.MAILBOX_COM_COMPOSE_DEL_ALL_ATTACH}}</el-button> |<el-button type="text" @click="show_all_attach = !show_all_attach">{{show_all_attach? lan.MAILBOX_COM_COMPOSE_HIDE_ATTACH : lan.MAILBOX_COM_COMPOSE_SHOW_ATTACH}}</el-button>
                       </el-col>
                     </el-row>
                     <div  class="attach_list_style" v-if="show_all_attach">
                       <div  v-for="(f,k) in fileList" :key="f.id" class="attach_box" @mouseenter="attach_hoverfn(f.id)" @mouseleave="remove_attach_hover" :class="{attach_hover:attachIndex == f.id}">
                         <span>{{k+1}}. </span>
                         <i class="el-icon-document"></i>
-                        <span >[非密] {{f.filename||f.name}}</span>
+                        <span >[{{lan.MAILBOX_COM_COMPOSE_NO_SECRET}}] {{f.filename||f.name}}</span>
                         <i class="el-icon-check" style="margin:0 5px;color:#26af1e;font-weight:bold;"></i>
                         <span class="plan_style" v-if="f.size">{{f.size | mailsize }}</span>
                         <span class="plan_style" v-if="!f.size">{{f.file_size | mailsize }}</span>
                         <span class="attach_actions">
-                          <el-button size="mini" type="text" plain @click="delete_attach(f.id,k)">删除</el-button>
+                          <el-button size="mini" type="text" plain @click="delete_attach(f.id,k)">{{lan.COMMON_BUTTON_DELETE}}</el-button>
                           <!--<el-button size="mini" type="text" plain>下载</el-button>-->
                         </span>
                       </div>
@@ -344,7 +341,7 @@
                     <el-col :span="18">
 
                       <!--<el-input type="file" id="file"></el-input>-->
-                      <el-button size="small" type="text" @click="showBigDialog" id="addAttachBtn"><i class="el-icon-upload"></i> 添加附件</el-button>
+                      <el-button size="small" type="text" @click="showBigDialog" id="addAttachBtn"><i class="el-icon-upload"></i> {{lan.MAILBOX_COM_COMPOSE_ADD_ATTACH}}</el-button>
 
                       <el-upload v-if="false"
                           class="upload-demo"
@@ -352,27 +349,27 @@
                           :http-request="uploadFile"
                           :show-file-list="false"
                           multiple :on-progress="uploadProgress" :on-success="sucUpload">
-                          <el-button size="small" type="text" id="addAttachBtn"><i class="el-icon-upload"></i> 添加附件</el-button>
+                          <el-button size="small" type="text" id="addAttachBtn"><i class="el-icon-upload"></i> {{lan.MAILBOX_COM_COMPOSE_ADD_ATTACH}}</el-button>
                           <div slot="tip" class="el-upload__tip"></div>
                       </el-upload>
                       <el-dropdown  placement="bottom" @command="selectUpload" style="margin-right:20px;" trigger="click">
                           <i class="el-icon-caret-bottom"></i>
                         <el-dropdown-menu slot="dropdown">
-                          <el-dropdown-item  command="filecore">从文件中心添加</el-dropdown-item>
-                          <el-dropdown-item  command="upload">上传到文件中转站</el-dropdown-item>
+                          <el-dropdown-item  command="filecore">{{lan.MAILBOX_COM_COMPOSE_FROM_FILE}}</el-dropdown-item>
+                          <el-dropdown-item  command="upload">{{lan.MAILBOX_COM_COMPOSE_FROM_LOCAL}}</el-dropdown-item>
                         </el-dropdown-menu>
                       </el-dropdown>
 
                       <el-dropdown trigger="click" placement="bottom-start" @command="checkSignatrue">
                         <el-button type="text" size="small">
-                          签名<i class="el-icon-caret-bottom el-icon--right"></i>
+                          {{lan.COMMON_SIGNATURA}}<i class="el-icon-caret-bottom el-icon--right"></i>
                         </el-button>
                         <el-dropdown-menu slot="dropdown">
-                          <el-dropdown-item command="removeSign">不使用签名档</el-dropdown-item>
+                          <el-dropdown-item command="removeSign">{{lan.MAILBOX_COM_COMPOSE_NO_SIGN}}</el-dropdown-item>
                           <el-dropdown-item v-for="(s,k) in signatureList" :key="k" :divided="k==0" :command="s" :class="{ blue_color: signCheck===s.id }">
                             <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: signCheck===s.id }"></i> </b>
                             {{ s.caption}}</el-dropdown-item>
-                          <el-dropdown-item divided command="editSign">编辑签名档</el-dropdown-item>
+                          <el-dropdown-item divided command="editSign">{{lan.MAILBOX_COM_COMPOSE_EDIT_SIGN}}</el-dropdown-item>
                         </el-dropdown-menu>
                       </el-dropdown>
 
@@ -385,7 +382,7 @@
                       <!--</el-upload>-->
                     </el-col>
                     <el-col :span="6" style="text-align: right;">
-                      <el-button type="text" @click="changeIsHtml" size="">{{ruleForm2.is_html?"纯文本":"多媒体文本"}}</el-button>
+                      <el-button type="text" @click="changeIsHtml" size="">{{ruleForm2.is_html? lan.MAILBOX_COM_COMPOSE_ALL_TEXT : lan.MAILBOX_COM_COMPOSE_HTML_TEXT}}</el-button>
                     </el-col>
                   </el-row>
 
@@ -415,20 +412,20 @@
               <!-- form-toolbar compose_footer -->
               <div class=" footer_height" style="padding-left: 10px;">
                 <div class="bt-hd-wrap">
-                  <el-checkbox v-model="ruleForm2.is_save_sent">保存到"已发送"</el-checkbox>
-                  <el-checkbox v-model="ruleForm2.is_priority">设为"紧急"</el-checkbox>
-                  <el-checkbox v-model="ruleForm2.is_confirm_read">已读回执</el-checkbox>
-                  <el-checkbox v-model="ruleForm2.is_password" :disabled="ruleForm2.is_schedule||ruleForm2.is_burn" @change="changeBottom">邮件加密</el-checkbox>
-                  <el-checkbox v-model="ruleForm2.is_schedule" :disabled="ruleForm2.is_password||ruleForm2.is_burn" @change="changeBottom('sch')">定时发送</el-checkbox>
-                  <el-checkbox v-model="ruleForm2.is_burn" :disabled="ruleForm2.is_password||ruleForm2.is_schedule" @change="changeBottom('burn')">阅后即焚</el-checkbox>
+                  <el-checkbox v-model="ruleForm2.is_save_sent">{{lan.MAILBOX_COM_COMPOSE_SAVE_SENDBOX}}</el-checkbox>
+                  <el-checkbox v-model="ruleForm2.is_priority">{{lan.MAILBOX_COM_COMPOSE_SET_PRIORITY}}</el-checkbox>
+                  <el-checkbox v-model="ruleForm2.is_confirm_read">{{lan.MAILBOX_COM_COMPOSE_CONFIRM_READ}}</el-checkbox>
+                  <el-checkbox v-model="ruleForm2.is_password" :disabled="ruleForm2.is_schedule||ruleForm2.is_burn" @change="changeBottom">{{lan.MAILBOX_COM_COMPOSE_IS_PASSWORD}}</el-checkbox>
+                  <el-checkbox v-model="ruleForm2.is_schedule" :disabled="ruleForm2.is_password||ruleForm2.is_burn" @change="changeBottom('sch')">{{lan.MAILBOX_COM_COMPOSE_SEND_SCHEDULE}}</el-checkbox>
+                  <el-checkbox v-model="ruleForm2.is_burn" :disabled="ruleForm2.is_password||ruleForm2.is_schedule" @change="changeBottom('burn')">{{lan.MAILBOX_COM_COMPOSE_IS_BURN}}</el-checkbox>
 
                 </div>
                 <div >
                   <div class="bt-cnt" v-show="ruleForm2.is_password||ruleForm2.is_schedule||ruleForm2.is_burn">
                   <div v-show="ruleForm2.is_password">
-                    <p ><b>邮件加密 </b> 收信人需要密码才能查看邮件</p>
+                    <p ><b>{{lan.MAILBOX_COM_COMPOSE_IS_PASSWORD}} </b> {{lan.MAILBOX_COM_COMPOSE_IS_PASSWORD_DESC}}</p>
                     <div style="border-top:1px dashed #e3e4e5;padding:12px 0;">
-                      设置查看密码：<el-input style="width:auto;" size="mini" v-model.trim="ruleForm2.password" auto-complete="off"></el-input> <span style="font-size:12px;color:#aaa;">(请输入6个字符，数字或英文字母，字母区分大小写，首尾不能有空格)</span>
+                      {{lan.MAILBOX_COM_COMPOSE_SET_PASSWORD}}<el-input style="width:auto;" size="mini" v-model.trim="ruleForm2.password" auto-complete="off"></el-input> <span style="font-size:12px;color:#aaa;">{{lan.MAILBOX_COM_COMPOSE_SET_PASSWORD_RULE}}</span>
                     </div>
                   </div>
 
@@ -439,28 +436,28 @@
                         type="datetime" size="small"
                         value-format="yyyy-MM-dd HH:mm" format="yyyy-MM-dd HH:mm"
                         :picker-options="pickerBeginDateBefore"
-                        placeholder="选择定时发送的时间">
+                        :placeholder="lan.MAILBOX_COM_COMPOSE_SET_SCHEDULE">
                       </el-date-picker>
-                      <p style="margin-top:10px;" v-if="ruleForm2.schedule_day"><b>本邮件将在 {{ruleForm2.schedule_day.toLocaleString()}} 投递到对方邮箱</b></p>
+                      <p style="margin-top:10px;" v-if="ruleForm2.schedule_day"><b>{{lan.MAILBOX_COM_COMPOSE_SET_SCHEDULE_DESC1}} {{ruleForm2.schedule_day.toLocaleString()}} {{lan.MAILBOX_COM_COMPOSE_SET_SCHEDULE_DESC2}}</b></p>
                     </div>
                   </div>
 
                   <div v-show="ruleForm2.is_burn">
-                    <p><b>阅后即焚 </b> 超过阅读次数或限定时间后，该邮件将自动销毁</p>
+                    <p><b>{{lan.MAILBOX_COM_COMPOSE_IS_BURN}} </b> {{lan.MAILBOX_COM_COMPOSE_IS_BURN_DESC}}</p>
                     <div style="border-top:1px dashed #e3e4e5;padding:12px 0;">
                       <div>
-                        限定阅读次数：<el-input style="width:auto;" size="mini" type="number" v-model="ruleForm2.burn_limit"></el-input> <span style="font-size:12px;color:#aaa;">（可统一向每个收件人设置1~99次，超出阅读次数后读信链接将自动失效）</span>
+                        {{lan.MAILBOX_COM_COMPOSE_IS_BURN_DESC1}}<el-input style="width:auto;" size="mini" type="number" v-model="ruleForm2.burn_limit"></el-input> <span style="font-size:12px;color:#aaa;">{{lan.MAILBOX_COM_COMPOSE_IS_BURN_DESC2}}</span>
                       </div>
                       <div style="padding-top:12px;">
-                        邮件销毁时间：
+                        {{lan.MAILBOX_COM_COMPOSE_IS_BURN_DESC3}}
                         <el-date-picker
                           v-model="ruleForm2.burn_day"
                           format="yyyy-MM-dd" value-format="yyyy-MM-dd"
                           :picker-options="pickerBeginDateBefore"
                           type="date" style="display:inline-block"
-                          placeholder="选择日期" size="mini">
+                          :placeholder="lan.COMMON_SELECT_DATE" size="mini">
                         </el-date-picker>
-                        <span style="font-size:12px;color:#aaa;">（邮件在所设日期当天24时自动销毁）</span>
+                        <span style="font-size:12px;color:#aaa;">{{lan.MAILBOX_COM_COMPOSE_IS_BURN_DESC4}}</span>
                       </div>
                     </div>
                   </div>
@@ -477,24 +474,24 @@
             <div class="suc-title j-suc-title">
                 <div class="h2">
                   <i class="el-icon-success" style="color:#26af1e"></i>
-                    {{sendResult.type=='schedule'?"邮件将于 "+sendResult.schedule_day+" 发送，暂时保存到草稿箱":"邮件已发送"}}
+                    {{sendResult.type=='schedule'? lan.MAILBOX_COM_COMPOSE_SENDER_TIME1+sendResult.schedule_day+ lan.MAILBOX_COM_COMPOSE_SENDER_TIME2: lan.MAILBOX_COM_COMPOSE_ALREADY_SEND}}
                 </div>
-                <el-button type="text" @click="change_show_result" v-if="sendResult.type=='send'">{{show_result?'[隐藏发送状态]':'[显示发送状态]'}}</el-button>
-                <el-button type="text" @click="getMessageStatus" v-if="sendResult.type=='send' && show_result">[刷新]</el-button>
-                <el-button type="text" @click="recall" v-if="sendResult.type=='send'">[召回邮件]</el-button>
-                <el-button type="text" @click="goEdit" v-if="sendResult.type=='schedule'">[继续编辑邮件]</el-button>
+                <el-button type="text" @click="change_show_result" v-if="sendResult.type=='send'">{{show_result? lan.MAILBOX_COM_COMPOSE_HIDE_STATUS : lan.MAILBOX_COM_COMPOSE_SHOW_STATUS}}</el-button>
+                <el-button type="text" @click="getMessageStatus" v-if="sendResult.type=='send' && show_result">{{lan.MAILBOX_COM_COMPOSE_REFRESH}}</el-button>
+                <el-button type="text" @click="recall" v-if="sendResult.type=='send'">{{lan.MAILBOX_COM_COMPOSE_RECALL}}</el-button>
+                <el-button type="text" @click="goEdit" v-if="sendResult.type=='schedule'">{{lan.MAILBOX_COM_COMPOSE_CONTINUE_EDIT}}</el-button>
             </div>
             <div class="suc-content">
               <div style="margin-bottom:10px;">
                 <el-alert v-if="sendResult.is_password"
-                  :title="'邮件已加密，密码为：'+sendResult.password"
+                  :title=" lan.MAILBOX_COM_COMPOSE_IS_PASSWORD_AND_PASSWORD +sendResult.password"
                   type="warning"
-                  description="需要密码才能查看，您可以通过其他方式告知对方。"
+                  :description="lan.MAILBOX_COM_COMPOSE_PASSWORD_DESC"
                           show-icon
                   >
                 </el-alert>
                 <el-alert v-if="sendResult.is_burn"
-                  title="这是一封阅后即焚的邮件"
+                  :title="lan.MAILBOX_COM_READ_IS_BURN_DESC"
                   type="warning"
                   description=""
                           show-icon
@@ -509,33 +506,33 @@
                   style="width: 100%">
                   <el-table-column
                     prop="recipient"
-                    label="收件人"
+                    :label="lan.COMMON_RECAIVER"
                     >
                   </el-table-column>
 
                   <el-table-column
                     prop="status"
-                    label="发送状态">
+                    :label="lan.MAILBOX_COM_COMPOSE_SEND_STATUS">
                     <template slot-scope="scope">
                       {{scope.row.status_info}}
                     </template>
                   </el-table-column>
                   <el-table-column
                     prop="recall_status"
-                    label="召回状态" >
+                    :label="lan.CENTER_SEND_STATUS" >
                     <template slot-scope="scope">
                       {{scope.row.recall_status_info}}
                     </template>
                   </el-table-column>
-                  <el-table-column label="详情">
+                  <el-table-column :label="lan.MAILBOX_COM_HOME_DETAILS">
                     <template slot-scope="scope">
                       <span style="color: #f56c6c;" v-if="scope.row.is_red">{{scope.row.inform}}</span>
                       <span v-if="!scope.row.is_red">{{scope.row.inform}}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column label="操作">
+                  <el-table-column :label="lan.COMMON_OPRATE">
                     <template slot-scope="scope">
-                      <el-button type="text" size="small" v-if="!scope.row.is_zhaohui" @click="recall_single(scope.row)">召回邮件</el-button>
+                      <el-button type="text" size="small" v-if="!scope.row.is_zhaohui" @click="recall_single(scope.row)">{{lan.COMMON_BUTTON_ZHAOHUI}}</el-button>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -544,14 +541,14 @@
               <div class="desc  j-autosave-desc" v-if="!is_save_contact">
 
                 <p class="autosave">
-                  如要自动保存联系人，您可以 设置 <el-button type="text" @click="autoSave">自动保存</el-button>
+                  {{lan.MAILBOX_COM_COMPOSE_SAVE_AUTO_DESC}} <el-button type="text" @click="autoSave">{{lan.MAILBOX_COM_COMPOSE_SAVE_AUTO}}</el-button>
                 </p>
               </div>
             </div>
             <div class="suc-content">
                 <div class="more-action u-btns j-more-action">
-                  <el-button type="info" plain size="small" @click="backToBox(0)">返回邮箱</el-button>
-                  <el-button type="primary" size="small" @click="backToBox(1)">继续写信</el-button>
+                  <el-button type="info" plain size="small" @click="backToBox(0)">{{lan.MAILBOX_COM_COMPOSE_RETURN_TO_MAILBOX}}</el-button>
+                  <el-button type="primary" size="small" @click="backToBox(1)">{{lan.MAILBOX_COM_COMPOSE_CONTINUE_WRITE}}</el-button>
                 </div>
             </div>
         </div>
@@ -559,7 +556,7 @@
       </div>
 
 
-      <el-dialog title="添加发送地址" :visible.sync="transform_dialog" :append-to-body="true" width="80%" :close-on-click-modal="false" @close="">
+      <el-dialog :title="lan.MAILBOX_COM_COMPOSE_ADD_ADDRESS" :visible.sync="transform_dialog" :append-to-body="true" width="80%" :close-on-click-modal="false" @close="">
         <!--<tree-transfer :title="tree_title" :from_data='fromData' :to_data='toData' :defaultProps="{label:'label'}" @addBtn='add' @removeBtn='remove' :mode='mode' height='540px' filter openAll>-->
     <!--</tree-transfer>-->
         <el-row :gutter="10" style="margin-bottom:10px;">
@@ -569,14 +566,14 @@
           <el-col :span="4">
             <div v-if="webmail_soab_show && expand_soab">
               <input type="hidden" v-model="soab_domain_cid"/>
-              域名：
-              <el-select v-model="soab_domain_cid" placeholder="请选择" @change="soabChangeDomain" size="mini">
+              {{lan.MAILBOX_COM_COMPOSE_SOAB_NAME}}
+              <el-select v-model="soab_domain_cid" :placeholder="lan.please_choose" @change="soabChangeDomain" size="mini">
                 <el-option v-for="item in soab_domain_options" :key="item.id" :label="item.label" :value="item.id"></el-option>
               </el-select>
             </div>
           </el-col>
           <el-col :span="4">
-            <el-input placeholder="请输入内容" v-model="contact_search" class="input-with-select" size="small">
+            <el-input :placeholder="lan.SETTING_RE_ADD_CONTENT_RULE" v-model="contact_search" class="input-with-select" size="small">
               <el-button slot="append" icon="el-icon-search"  @click="search_dept"></el-button>
             </el-input>
           </el-col>
@@ -623,23 +620,23 @@
                 type="selection"
                 width="55">
               </el-table-column>
-              <el-table-column prop="fullname" label="姓名">
+              <el-table-column prop="fullname" :label="lan.COMMON_XINGMING">
                 <template slot-scope="scope">
-                  <i v-if="scope.row.is_dept" style="color:red;" title="部门" class="iconfont icon-icongroup"></i>
+                  <i v-if="scope.row.is_dept" style="color:red;" :title="lan.COMMON_DEPARTMENT" class="iconfont icon-icongroup"></i>
                   <i v-if="!scope.row.is_dept" style="color:#2976A8;" class="iconfont icon-icon-gender-man"></i>
                   <span>{{ scope.row.fullname|| scope.row.name}}</span>
                 </template>
               </el-table-column>
-              <el-table-column  label="邮件地址">
+              <el-table-column  :label="lan.MAILBOX_COM_COMPOSE_MAIL_ADDRESS">
                 <template slot-scope="scope">
                   <span>{{scope.row.email || scope.row.pref_email || scope.row.username}}</span>
-                  <span v-if="scope.row.is_dept" style="color:red;">(部门邮箱)</span>
+                  <span v-if="scope.row.is_dept" style="color:red;">({{lan.MAILBOX_COM_COMPOSE_DEPART_MAIL}})</span>
                 </template>
               </el-table-column>
             </el-table>
           </el-col>
           <el-col :span="6" style="height:420px;">
-            收件人：(<b>{{toList.length}}</b>)
+            {{lan.MAILBOX_COM_COMPOSE_RECIVER}}(<b>{{toList.length}}</b>)
             <div class="address_box" :class="{active:active_box=='to'}" @click="switch_to('to',toList)">
               <el-row v-for="(t,k) in toList" :key="k" class="hover_show_box">
                 <el-col :span="22" style="overflow: hidden;white-space: nowrap" :title="t.username||t.email">{{t.name||t.fullname}} &lt;{{t.username||t.email}} &gt;</el-col>
@@ -648,7 +645,7 @@
                 </el-col>
               </el-row>
             </div>
-            抄送人：(<b>{{ccList.length}}</b>)
+            {{lan.MAILBOX_COM_COMPOSE_CCER}}(<b>{{ccList.length}}</b>)
             <div class="address_box" :class="{active:active_box=='cc'}" @click="switch_to('cc',ccList)">
               <el-row v-for="(t,k) in ccList" :key="k" class="hover_show_box">
                 <el-col :span="22" style="overflow: hidden;white-space: nowrap" :title="t.username||t.email">{{t.name||t.fullname}} &lt;{{t.username||t.email}} &gt;</el-col>
@@ -658,7 +655,7 @@
               </el-row>
             </div>
 
-            密送人：(<b>{{bccList.length}}</b>)
+            {{lan.MAILBOX_COM_COMPOSE_BCC}}(<b>{{bccList.length}}</b>)
             <div class="address_box" :class="{active:active_box=='bcc'}" @click="switch_to('bcc',bccList)">
               <el-row v-for="(t,k) in bccList" :key="k" class="hover_show_box">
                 <el-col :span="22" style="overflow: hidden;white-space: nowrap" :title="t.username||t.email">{{t.name||t.fullname}} &lt;{{t.username||t.email}} &gt;</el-col>
@@ -684,14 +681,14 @@
           </el-col>
         </el-row>
         <div slot="footer" class="dialog-footer" >
-          <el-button @click="cancelAddress">取 消</el-button>
-          <el-button type="primary" @click="sureAddress">确 定</el-button>
+          <el-button @click="cancelAddress">{{lan.COMMON_BUTTON_CANCELL}}</el-button>
+          <el-button type="primary" @click="sureAddress">{{lan.COMMON_BUTTON_CONFIRM}}</el-button>
         </div>
       </el-dialog>
 
-      <el-dialog title="文件中心" :visible.sync="coreFileDialog" :modal-append-to-body="false">
+      <el-dialog :title="lan.LAYOUT_INDEX_FILE_CENTER" :visible.sync="coreFileDialog" :modal-append-to-body="false">
         <el-tabs v-model="activeName_file" @tab-click="switch_file" style="min-height:200px;">
-          <el-tab-pane label="文件中转站" name="first">
+          <el-tab-pane :label="lan.FILE_INDEX_A" name="first">
             <el-pagination class="margin-bottom-5"
               @size-change="attachSizeChange"
               @current-change="attachCurrentChange"
@@ -706,8 +703,8 @@
               ref="afileTable" :data="coreFileList" tooltip-effect="dark" style="width: 100%"
               >
               <el-table-column type="selection"  width="55"></el-table-column>
-              <el-table-column prop="filename" label="文件名" ></el-table-column>
-              <el-table-column prop="size" label="文件大小" width="100" >
+              <el-table-column prop="filename" :label="lan.MAILBOX_COM_COMPOSE_FILENAME" ></el-table-column>
+              <el-table-column prop="size" :label="lan.MAILBOX_COM_COMPOSE_FILESIZE" width="100" >
                 <template slot-scope="scope">
                     <span  class="plan_style">{{scope.row.size | mailsize}}</span>
                 </template>
@@ -715,9 +712,9 @@
             </el-table>
 
           </el-tab-pane>
-          <el-tab-pane label="个人网盘" name="second">
+          <el-tab-pane :label="lan.FILE_INDEX_P" name="second">
             <div style="padding:0 0 8px 4px;">
-              路径：<span v-for="(fn,k) in folder_names" :key="k"><b style="cursor: pointer;color:blue;" @click="getNetfile(fn.id)">{{fn.name}}</b> / </span>
+              {{lan.FILE_P_PATH}}<span v-for="(fn,k) in folder_names" :key="k"><b style="cursor: pointer;color:blue;" @click="getNetfile(fn.id)">{{fn.name}}</b> / </span>
             </div>
             <el-pagination class="margin-bottom-5"
               @size-change="attachSizeChange_net"
@@ -733,22 +730,22 @@
 
               >
               <el-table-column type="selection"  width="55" :selectable="selectablee"></el-table-column>
-              <el-table-column prop="name" label="文件名" >
+              <el-table-column prop="name" :label="lan.MAILBOX_COM_COMPOSE_FILENAME" >
                 <template slot-scope="scope">
                     <div v-if="scope.row.nettype=='folder'"><span @click="getNetfile(scope.row.id)" style="color:blue;text-decoration: underline;font-weight:bold;cursor:pointer;">{{scope.row.name}}</span></div>
                     <div v-if="scope.row.nettype!='folder'"><span>{{scope.row.name}}</span></div>
                 </template>
               </el-table-column>
-              <el-table-column prop="file_size" label="文件大小" width="100" >
+              <el-table-column prop="file_size" :label="lan.MAILBOX_COM_COMPOSE_FILESIZE" width="100" >
                 <template slot-scope="scope">
                     <span  class="plan_style">{{scope.row.file_size |mailsize}}</span>
                 </template>
               </el-table-column>
             </el-table>
           </el-tab-pane>
-          <el-tab-pane label="企业网盘" name="third">
+          <el-tab-pane :label="lan.FILE_INDEX_C" name="third">
             <div style="padding:0 0 8px 4px;">
-              路径：<span v-for="(fn,k) in folder_names_company" :key="k"><b style="cursor: pointer;color:blue;" @click="getNetfile_company(fn.id)">{{fn.name}}</b> / </span>
+              {{lan.FILE_P_PATH}}<span v-for="(fn,k) in folder_names_company" :key="k"><b style="cursor: pointer;color:blue;" @click="getNetfile_company(fn.id)">{{fn.name}}</b> / </span>
             </div>
             <el-pagination class="margin-bottom-5"
               @size-change="attachSizeChange_company"
@@ -764,13 +761,13 @@
 
               >
               <el-table-column type="selection"  width="55" :selectable="selectablee"></el-table-column>
-              <el-table-column prop="name" label="文件名" >
+              <el-table-column prop="name" :label="lan.MAILBOX_COM_COMPOSE_FILENAME" >
                 <template slot-scope="scope">
                     <div v-if="scope.row.nettype=='folder'"><span @click="getNetfile_company(scope.row.id)" style="color:blue;text-decoration: underline;font-weight:bold;cursor:pointer;">{{scope.row.name}}</span></div>
                     <div v-if="scope.row.nettype!='folder'"><span>{{scope.row.name}}</span></div>
                 </template>
               </el-table-column>
-              <el-table-column prop="file_size" label="文件大小" width="100" >
+              <el-table-column prop="file_size" :label="lan.MAILBOX_COM_COMPOSE_FILESIZE" width="100" >
                 <template slot-scope="scope">
                     <span  class="plan_style">{{scope.row.file_size |mailsize}}</span>
                 </template>
@@ -779,15 +776,15 @@
           </el-tab-pane>
         </el-tabs>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="coreFileDialog = false" size="small">取 消</el-button>
-          <el-button type="primary" @click="addAttachfn" size="small">确 定</el-button>
+          <el-button @click="coreFileDialog = false" size="small">{{lan.COMMON_BUTTON_CANCELL}}</el-button>
+          <el-button type="primary" @click="addAttachfn" size="small">{{lan.COMMON_BUTTON_CONFIRM}}</el-button>
         </div>
       </el-dialog>
 
-      <el-dialog title="邮件召回" :visible.sync="recallTableVisible" :append-to-body="true">
+      <el-dialog :title="lan.CENTER_SEND_ZHAOHUI_TITLE" :visible.sync="recallTableVisible" :append-to-body="true">
         <el-table :data="recallData">
-          <el-table-column property="recipient" label="收件人"></el-table-column>
-          <el-table-column property="inform" label="详情">
+          <el-table-column property="recipient" :label="lan.COMMON_RECAIVER"></el-table-column>
+          <el-table-column property="inform" :label="lan.CENTER_SEND_DETAIL">
             <template slot-scope="scope">
               <span style="color: #f56c6c;" v-if="scope.row.is_red">{{scope.row.inform}}</span>
               <span v-if="!scope.row.is_red">{{scope.row.inform}}</span>
@@ -796,7 +793,7 @@
         </el-table>
       </el-dialog>
 
-      <el-dialog title="附件上传" :visible.sync="bigUploadVisible" :append-to-body="true" class="bigUpload" @close="bigClose" :close-on-click-modal="false">
+      <el-dialog :title="lan.MAILBOX_COM_COMPOSE_UPLOAD_ATTACH" :visible.sync="bigUploadVisible" :append-to-body="true" class="bigUpload" @close="bigClose" :close-on-click-modal="false">
         <div style="min-height:300px;">
           <!--:autoStart="false"-->
           <uploader :options="options" class="uploader-example" :autoStart="false" :fileStatusText="fileStatusText"
@@ -807,10 +804,10 @@
             <uploader-unsupport></uploader-unsupport>
             <uploader-drop>
               <!--<p>Drop files here to upload or</p>-->
-              <uploader-btn>上传文件</uploader-btn>
+              <uploader-btn>{{lan.CONTACT_PAB_ADD_FILE}}</uploader-btn>
             </uploader-drop>
             <uploader-list v-loading="loading2"
-    element-loading-text="正在扫描文件..."
+    :element-loading-text="lan.FILE_P_FILESCAN"
     element-loading-spinner="el-icon-loading"
     element-loading-background="rgba(0, 0, 0, 0.6)">
 
@@ -829,39 +826,40 @@
             :on-change="bigListSucess"
             :before-upload="beforeUpload"
             >
-            <el-button slot="trigger" size="small" type="primary" :loading="bigLoading" :disabled="bigLoading">上传文件</el-button>
+            <el-button slot="trigger" size="small" type="primary" :loading="bigLoading" :disabled="bigLoading">{{lan.CONTACT_PAB_ADD_FILE}}</el-button>
             <!--<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>-->
             <div slot="tip" class="el-upload__tip" style="color:#f56c6c">{{tip}}</div>
           </el-upload>
 
         </div>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="bigUploadVisible = false" >取 消</el-button>
+          <el-button @click="bigUploadVisible = false" >{{lan.COMMON_BUTTON_CANCELL}}</el-button>
           <!--<el-button @click="submitUpload" type="primary">上 传</el-button>-->
-          <el-button @click="addBigAttach" type="primary" :loading="bigLoading">确 定</el-button>
+          <el-button @click="addBigAttach" type="primary" :loading="bigLoading">{{lan.COMMON_BUTTON_CONFIRM}}</el-button>
         </div>
       </el-dialog>
 
-      <el-dialog title="修改邮箱"  :visible.sync="dbFormVisible"  :append-to-body="true" width="420px">
+      <el-dialog :title="lan.MAILBOX_COM_COMPOSE_EDIT_EMAIL"  :visible.sync="dbFormVisible"  :append-to-body="true" width="420px">
         <el-form :model="dbForm" label-width="80px" :rules="dbFormRules" ref="dbForm">
 
-          <el-form-item label="姓名" prop="fullname" >
+          <el-form-item :label="lan.COMMON_XINGMING" prop="fullname" >
             <el-input v-model="dbForm.fullname"></el-input>
           </el-form-item>
-          <el-form-item label="邮箱" prop="email" >
+          <el-form-item :label="lan.COMMON_EMAIL" prop="email" >
             <el-input v-model="dbForm.email"></el-input>
           </el-form-item>
 
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="dbFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="editEmail" >确定</el-button>
+          <el-button @click.native="dbFormVisible = false">{{lan.COMMON_BUTTON_CANCELL}}</el-button>
+          <el-button type="primary" @click.native="editEmail" >{{lan.COMMON_BUTTON_CONFIRM}}</el-button>
         </div>
       </el-dialog>
     </div>
 </template>
 
 <script>
+  import lan from '@/assets/js/lan';
   import axios from 'axios';
   import cookie from '@/assets/js/cookie';
   import SparkMD5 from 'spark-md5'
@@ -882,7 +880,7 @@
           to: [["512167072@qq.com",'zhouli']],
           cc: [],
           subject: '',
-          secret:'非密',
+          secret:'',
           is_save_sent:true,
           is_confirm_read:true,
           is_schedule:false,
@@ -918,14 +916,14 @@
     },
 
     data(){
+      let _this = this;
       const isEmail = function(rule,value,callback){
         if(emailReg.test(value) == false){
-          callback(new Error("请输入正确的邮箱"));
+          callback(new Error(_this.lan.SETTING_WHITE_EMAIL_RULE2));
         }else{
           callback();
         }
       };
-      let _this = this;
       return {
         editoraaa:'',
         expand_soab:false,
@@ -945,8 +943,8 @@
         dbForm:{fullname:'',email:''},
         dbFormRules:{
           email: [
-            { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-            { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+            { required: true, message: '', trigger: 'blur' },
+            { type: 'email', message: '', trigger: ['blur', 'change'] }
           ]
         },
         folder_capacity:{},
@@ -964,11 +962,11 @@
           fileName:'filename'  //文件名称
         },
         fileStatusText:{
-           success: '成功',
-            error: '失败',
-            uploading: '上传中...',
-            paused: '暂停',
-            waiting: '等待'
+           success: '',
+            error: '',
+            uploading: '',
+            paused: '',
+            waiting: ''
         },
         options: {
           // https://github.com/simple-uploader/Uploader/tree/develop/samples/Node.js
@@ -1012,11 +1010,11 @@
           },
           parseTimeRemaining: function (timeRemaining, parsedTimeRemaining) {
             return parsedTimeRemaining
-              .replace(/\syears?/, '年')
-              .replace(/\days?/, '天')
-              .replace(/\shours?/, '小时')
-              .replace(/\sminutes?/, '分钟')
-              .replace(/\sseconds?/, '秒')
+              .replace(/\syears?/, _this.lan.FILE_P_YEAR)
+              .replace(/\days?/, _this.lan.FILE_P_DAY)
+              .replace(/\shours?/, _this.lan.FILE_P_HOUR)
+              .replace(/\sminutes?/, _this.lan.FILE_P_MIN)
+              .replace(/\sseconds?/, _this.lan.FILE_P_SEC)
           },
         },
         webmail_cab_show: false,
@@ -1026,22 +1024,6 @@
         member_page:1,
         member_group_id:0,
         selected_group_id:0,
-        contact_groups:[
-          {id:1,groupname:'组名1',count:10,is_sysname:false},
-          {id:2,groupname:'组名2',count:12,is_sysname:false},
-          {id:3,groupname:'组名3',count:15,is_sysname:false}
-        ],
-        memberList:[
-          {username:'512167072@qq.com512167072',name:'周莉'},
-          {username:'512167072@qq.com',name:'周莉'},
-          {username:'512167072@qq.com',name:'周莉'},
-          {username:'512167072@qq.com',name:'周莉'},
-          {username:'512167072@qq.com',name:'周莉'},
-          {username:'512167072@qq.com',name:'周莉'},
-          {username:'512167072@qq.com',name:'周莉'},
-          {username:'512167072@qq.com',name:'周莉'},
-          {username:'512167072@qq.com',name:'周莉'},
-        ],
         sendLoading:false,
         oabchildren:[],
         contactSelection:[],
@@ -1087,7 +1069,7 @@
           to: [["512167072@qq.com",'zhouli']],
           cc: [],
           subject: '',
-          secret:'非密',
+          secret:'',
           is_save_sent:true,
           is_confirm_read:true,
           is_schedule:false,
@@ -1115,19 +1097,6 @@
         send_suc:false,
         editor_height:300,
         active_box:'to',
-        checkedList:[
-          {
-            department:"万国城店C组",
-            id:1246,
-            mailbox:1246,
-            mobile:'',
-            name:'王巧月',
-            position:'买卖顾问',
-            tel_group:null,
-            tell_work:'None / None',
-            username:"wangqiaoyue@test.com"
-          }
-        ],
         allSeclect: [],
         toList:[],
         hashTo:[],
@@ -1257,9 +1226,9 @@
 
       },
       recall_single(row){
-        this.$confirm('<p>确定召回此邮件吗？</p>', '召回邮件', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm('<p>'+this.lan.CENTER_SEND_MSG1+'</p>', this.lan.COMMON_BUTTON_ZHAOHUI, {
+          confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+          cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
           dangerouslyUseHTMLString: true,
           type: 'warning'
         }).then(() => {
@@ -1282,17 +1251,14 @@
               str = err.detail
             }
             this.$message({
-              message: '邮件召回失败！'+str,
+              message: this.lan.MAILBOX_COM_COMPOSE_RECALL_FAIL +str,
               type: 'error'
             })
           })
 
 
         }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消召回'
-          });
+
         });
       },
       htmlDecodeByRegExp:function (str){
@@ -1307,9 +1273,9 @@
         return s;
       },
       remove_all_attach(){
-        this.$confirm('<p>取消所有已添加的附件?</p>', '系统信息', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm('<p>'+this.lan.MAILBOX_COM_COMPOSE_CANCEL_ALL_ATTACH+'</p>', this.lan.MAILBOX_COM_READ_SYSTEM_NOTICE, {
+          confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+          cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
           dangerouslyUseHTMLString: true,
           type: 'warning'
         }).then(() => {
@@ -1331,9 +1297,9 @@
       },
       changeReply(){
         if(this.show_replay_to && this.ruleForm2.reply_to){
-          this.$confirm('<p>取消并清空指定回复人地址?</p>', '系统信息', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+          this.$confirm('<p>'+this.lan.MAILBOX_COM_COMPOSE_CANCEL_REPLY_TO_ADDRESS+'</p>', this.lan.MAILBOX_COM_READ_SYSTEM_NOTICE, {
+            confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+            cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
             dangerouslyUseHTMLString: true,
             type: 'warning'
           }).then(() => {
@@ -1467,10 +1433,7 @@
         this.getCapacity();
       },
       handleRemove(file){
-        // this.$message({
-        //   type:'info',
-        //   message:'已删除'
-        // })
+
         for(let i=0;i<this.fileList_big.length;i++){
           if(file.name == this.fileList_big[i].name){
             this.fileList_big.splice(i,1);
@@ -1501,15 +1464,15 @@
           this.bigLoading = false;
           this.tip = ''
         }).catch(err=>{
-          this.tip = '服务器错误！'
+          this.tip = this.lan.FILE_P_SERVERERR
           if(err.non_field_errors){
             this.tip = err.non_field_errors[0]
           }
           this.$message({
             type:"error",
-            message:' '+file.name+"上传失败！"+this.tip
+            message:' '+file.name+ this.lan.FILE_P_UPFAILED +this.tip
           });
-          console.log('merge错误！',err)
+          console.log(err)
           this.bigLoading = false;
         })
       },
@@ -1656,14 +1619,14 @@
                   this.bigLoading = false;
               }
             }).catch(err=>{
-              console.log('网络异常，请稍后再试！',err)
+              console.log(err)
               this.bigLoading = false;
             })
           });
         }else{
           this.$message({
             type:'error',
-            message:'请选择文件！'
+            message: this.lan.CONTACT_PAB_RULE4
           })
         }
 
@@ -1745,7 +1708,7 @@
             let fname = file.name;
             this.$message({
               type:'error',
-              message:fname+'上传失败！上传文件已超过个人网盘剩余容量！'
+              message:fname+ this.lan.FILE_P_MSG1
             })
             file.cancel();
             return false;
@@ -1783,7 +1746,7 @@
               to: [],
               cc: [],
               subject: '',
-              secret:'非密',
+              secret:'',
               is_save_sent:true,
               is_confirm_read:true,
               is_schedule:false,
@@ -1860,7 +1823,7 @@
           }
           contactPabMembersGet(param).then(res=>{
           }).catch(err=>{
-            console.log('获取所有联系人错误',err);
+            console.log(err);
           })
         }else{
           let param = {
@@ -1905,7 +1868,7 @@
           if(err.detail == '无效页面。'){
             this.$message({
               type:'info',
-              message:'已加载全部模板信！'
+              message: this.lan.MAILBOX_COM_COMPOSE_ALL_TEMPLATE_NOTICE
             })
             this.showLoadMore = false;
           }
@@ -1914,10 +1877,10 @@
 
       selectTemplate(t){
         if(this.editoraaa.html()){
-          this.$confirm('切换模板后, 已输入内容将清空,继续切换或者存草稿？', '系统信息', {
+          this.$confirm(this.lan.MAILBOX_COM_COMPOSE_CHANGE_TEMPLATE_NOTICE, this.lan.MAILBOX_COM_READ_SYSTEM_NOTICE, {
           distinguishCancelAndClose: true,
-          confirmButtonText: '存草稿再切换',
-          cancelButtonText: '直接切换'
+          confirmButtonText: this.lan.MAILBOX_COM_COMPOSE_CHANGE_TEMPLATE_SAVE,
+          cancelButtonText: this.lan.MAILBOX_COM_COMPOSE_CHANGE_TEMPLATE
         })
           .then(() => {
             this.sentMail('save_draft')
@@ -2047,7 +2010,7 @@
         }else{
           this.$message({
             type:'error',
-            message:'使用信纸请切换到多媒体文本编辑！'
+            message: this.lan.MAILBOX_COM_COMPOSE_CHANGE_PAPER_NOTICE
           })
         }
         
@@ -2149,33 +2112,12 @@
         var p = /<p(([\s\S])*?)<\/p>/g;
         var dd=html.replace(/<\/?.+?>/g,"");
 
-
-        // html = html.replace(/<p>([\s\S]*?)<\/p>/ig, '$1<br/>')
-        // html = html.replace(/<div>([\s\S]*?)<\/div>/ig, '$1<br/>')
-        // html = html.replace(/<h1>([\s\S]*?)<\/h1>/ig, '$1<br/>')
-        // html = html.replace(/<h2>([\s\S]*?)<\/h2>/ig, '$1<br/>')
-        // html = html.replace(/<h3>([\s\S]*?)<\/h3>/ig, '$1<br/>')
-        // html = html.replace(/<h4>([\s\S]*?)<\/h4>/ig, '$1<br/>')
-        // html = html.replace(/<h5>([\s\S]*?)<\/h5>/ig, '$1<br/>')
-        // html = html.replace(/<h6>([\s\S]*?)<\/h6>/ig, '$1<br/>')
-        // html = html.replace(/<ul>([\s\S]*?)<\/ul>/ig, '$1<br/>')
-        // html = html.replace(/<li>([\s\S]*?)<\/li>/ig, '$1<br/>')
-
         // return html.replace(htmlTagReg,'');
         return dd.replace(/ /g,"");
 
       },
       no_html(){
-        // let text = this.htmlToText(this.content)
-        // this.content = text;
-        // $('#compose'+this.rid+' .ke-outline').addClass('ke-disabled')
-        // $('#compose'+this.rid+' .ke-outline').css({'opacity':0.5})
 
-        // $('#compose'+this.rid+' .ke-outline[data-name="preview"]').removeClass('ke-disabled')
-        // $('#compose'+this.rid+' .ke-outline[data-name="fullscreen"]').css({'opacity':1})
-
-
-        // $('#compose'+this.rid+' .ke-toolbar').hide()
         this.signCheck = '';
         // this.content = this.htmlToText(this.editoraaa.text());
         this.content = this.htmlDecodeByRegExp(this.htmlToText(this.editoraaa.text()));
@@ -2187,9 +2129,9 @@
       changeIsHtml(){
         if(this.ruleForm2.is_html){
           if(this.editoraaa.html()){
-            this.$confirm('切换到纯文本编辑方式将丢失当前文本的格式，确定？', '系统信息', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
+            this.$confirm( this.lan.MAILBOX_COM_COMPOSE_HTML_TO_TEXT , this.lan.MAILBOX_COM_READ_SYSTEM_NOTICE , {
+              confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+              cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
               dangerouslyUseHTMLString: true,
               type: 'warning'
             }).then(() => {
@@ -2225,9 +2167,9 @@
       },
       changeCc(){
         if(this.ruleForm2.is_cc && this.maillist_copyer.length>0){
-          this.$confirm('<p>要删除已经存在的所有抄送地址?</p>', '系统信息', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+          this.$confirm('<p>'+this.lan.MAILBOX_COM_COMPOSE_DELETE_ALL_CC+'</p>', this.lan.MAILBOX_COM_READ_SYSTEM_NOTICE , {
+            confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+            cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
             dangerouslyUseHTMLString: true,
             type: 'warning'
           }).then(() => {
@@ -2248,9 +2190,9 @@
       },
       changeBcc(){
         if(this.ruleForm2.is_bcc && this.maillist_bcc.length>0){
-          this.$confirm('<p>要删除已经存在的所有密送地址?</p>', '系统信息', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+          this.$confirm('<p>'+this.lan.MAILBOX_COM_COMPOSE_DELETE_ALL_bCC+'</p>', this.lan.MAILBOX_COM_READ_SYSTEM_NOTICE, {
+            confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+            cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
             dangerouslyUseHTMLString: true,
             type: 'warning'
           }).then(() => {
@@ -2272,7 +2214,7 @@
       backToBox(compose){
         this.$parent.$parent.$parent.removeTab(this.$parent.$parent.$parent.editableTabsValue2);
         if(compose){
-          this.$parent.$parent.$parent.addTab('compose','写信')
+          this.$parent.$parent.$parent.addTab('compose',this.lan.MAILBOX_COM_COMPOSE_WRITE)
         }else{
           this.$parent.$parent.$parent.editableTabsValue2 = '1';
         }
@@ -2281,9 +2223,9 @@
         if(this.isRecall){
           this.recallTableVisible = true;
         }else {
-          this.$confirm('<p>确定召回此邮件吗？</p>确定召回，系统将邮件通知您召回结果。', '召回邮件', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
+          this.$confirm('<p>'+this.lan.CENTER_SEND_MSG1+'</p>'+this.lan.MAILBOX_COM_COMPOSE_SURE_RECALL, this.lan.COMMON_BUTTON_ZHAOHUI, {
+            confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+            cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
             dangerouslyUseHTMLString: true,
             type: 'warning'
           }).then(() => {
@@ -2308,15 +2250,12 @@
                 str = err.detail
               }
               this.$message({
-                message: '邮件召回失败！'+str,
+                message: this.lan.MAILBOX_COM_COMPOSE_RECALL_FAIL+str,
                 type: 'error'
               })
             })
           }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消召回'
-            });
+
           });
         }
       },
@@ -2864,11 +2803,11 @@
           this.format(this.maillist_bcc,this.ruleForm2.bcc)
         }
         if(type=='sent'&&this.ruleForm2.to.length<=0){
-          this.$alert('请输入收件人！');
+          this.$alert(this.lan.MAILBOX_COM_COMPOSE_ALERT_INPUT_RECIVER);
           return;
         }
         if(type=='sent' && !this.ruleForm2.subject){
-          this.$alert('请填写邮件主题！');
+          this.$alert(this.lan.MAILBOX_COM_COMPOSE_ALERT_INPUT_SUBJECT);
           return;
         }
         if(type=='sent' && !this.ruleForm2.subject&& this.fileList.length>0){
@@ -2878,18 +2817,18 @@
         }
         let a = this.editoraaa.html();
         if(type=='sent' && !a){
-          this.$alert('请填写邮件内容！');
+          this.$alert(this.lan.MAILBOX_COM_COMPOSE_ALERT_INPUT_CONTENT);
           return;
         }
         if(type=='sent'&& this.ruleForm2.is_password){
           let reg = /^[0-9a-zA-Z]{6}$/;
           if(!reg.test(this.ruleForm2.password)){
-            this.$alert('密码格式不正确！请重新填写');
+            this.$alert(this.lan.MAILBOX_COM_COMPOSE_ALERT_PASSWORD);
             return;
           }
         }
         if(type=='sent'&& this.ruleForm2.reply_to && !emailReg.test(this.ruleForm2.reply_to)){
-          this.$alert('指定回复人格式不正确！请重新填写！（不填则回复给发件人）');
+          this.$alert(this.lan.MAILBOX_COM_COMPOSE_ALERT_REPLY_TO);
           return;
         }
         if(this.ruleForm2.is_html){
@@ -2920,7 +2859,7 @@
         mailSent(param).then(res=>{
           this.sendLoading = false;
           if(this.$store.getters.getTimer){clearInterval(this.$store.getters.getTimer)}
-          let info = type=='sent'?"发送成功！":"保存草稿成功！";
+          let info = type=='sent'? this.lan.MAILBOX_COM_COMPOSE_SEND_SUCCESS : this.lan.MAILBOX_COM_COMPOSE_SAVE_SUCCESS;
           this.$message({
              message:info,
              type:'success'
@@ -2958,7 +2897,7 @@
             str = err.detail
           }
           this.$message({
-             message:"操作失败！"+str,
+             message: this.lan.COMMON_OPRATE_FAILED +str,
              type:'error'
           })
         }).catch(err=>{
@@ -2974,7 +2913,7 @@
             str = err.detail
           }
           this.$message({
-             message:"操作失败！"+str,
+             message: this.lan.COMMON_OPRATE_FAILED +str,
              type:'error'
           })
         })
@@ -3007,7 +2946,7 @@
           })
           arr.push({
             id:'pab',
-            label:'个人通讯录',
+            label:_this.lan.CONTANCT_INDEX_PAB,
             keyId:'pab',
             children:arguments[0].data.results
           })
@@ -3016,7 +2955,7 @@
           arr.push({
             id:'oab',
             keyId:'oab',
-            label:'组织通讯录',
+            label: _this.lan.CONTANCT_INDEX_OAB,
             children:arguments[1].data.results
           })
           if(_this.webmail_cab_show){
@@ -3024,7 +2963,7 @@
             arr.push({
               id:'cab',
               keyId:'cab',
-              label:'公共通讯录',
+              label: _this.lan.CONTANCT_INDEX_CAB,
               children:arguments[2].data.results
             })
           }
@@ -3033,14 +2972,14 @@
             arr.push({
               id:'soab',
               keyId:'soab',
-              label:'其他域通讯录',
+              label: _this.lan.CONTANCT_INDEX_SOAB,
               children:arguments[arguments.length-1].data.results
             })
           }
           arr.push({
             id:'lab',
             keyId:'lab',
-            label:'邮件列表',
+            label: _this.lan.MAILBOX_COM_COMPOSE_MAIL_LIST,
             children:[]
           })
           _this.transform_menu = arr;
@@ -3233,7 +3172,7 @@
           this.fileList.push(res.data)
           this.setSubject();
          this.$message({
-             message:"上传成功",
+             message: this.lan.FILE_P_SUCCESS,
              type:'success'
          })
         },(err)=>{
@@ -3242,7 +3181,7 @@
             str = err.detail
           }
           this.$message({
-               message:"上传失败! "+str,
+               message: this.lan.FILE_P_UPFAILED +str,
                type:'error'
           })
         })
@@ -3265,14 +3204,14 @@
             const isLt2M = file.size / 1024 / 1024 < 10;
 
             if (!isJPG && !isGIF && !isPNG && !isBMP) {
-                this.$alert('上传图片必须是JPG/GIF/PNG/BMP 格式!', '提示：', {
-                  confirmButtonText: '确定'
+                this.$alert(this.lan.MAILBOX_COM_COMPOSE_IMG_TYPE, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+                  confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM
                 });
                 return;
             }
             if (!isLt2M) {
-                this.$alert('上传图片大小不能超过 10MB!', '提示：', {
-                  confirmButtonText: '确定'
+                this.$alert( this.lan.MAILBOX_COM_COMPOSE_IMG_SIZE , this.lan.COMMON_BUTTON_CONFIRM_NOTICE , {
+                  confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM
                 });
                 return;
             }
@@ -3597,7 +3536,7 @@
             resultArr.push({label:ob.label,id:ob.id,children:[]})
           }
           axiosArr.push(contactPabMembersGet({"page":1,"page_size":total,"group_id":0,"is_group":0,"search":''}))
-          resultArr.push({label:'未分组联系人',id:0,children:[]})
+          resultArr.push({label:this.lan.MAILBOX_COM_COMPOSE_NO_GROUP_NAME,id:0,children:[]})
 
           axios.all(axiosArr).then(axios.spread(function () {
             // 所有请求现在都执行完成
@@ -3887,9 +3826,34 @@
         }
         return total;
       },
-
-
-
+      lan:function(){
+        let lang = lan.zh
+        if(this.$store.getters.getLanguage=='zh'){
+          lang = lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          lang = lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          lang = lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          lang = lan.zh
+        }else{
+          lang = lan.zh
+        }
+        this.dbFormRules = {
+          email: [
+            { required: true, message: lang.MAILBOX_COM_COMPOSE_INPUT_MAIL_ADDRESS, trigger: 'blur' },
+            { type: 'email', message: lang.MAILBOX_COM_COMPOSE_INPUT_MAIL_ADDRESS_RIGHT, trigger: ['blur', 'change'] }
+          ]
+        }
+        this.fileStatusText = {
+          success: lang.FILE_P_UPSTATUS_SUCCESS,
+          error: lang.FILE_P_UPSTATUS_FAILED,
+          uploading: lang.FILE_P_UPSTATUS_UP,
+          paused: lang.FILE_P_UPSTATUS_PAUSE,
+          waiting: lang.FILE_P_UPSTATUS_WAIT,
+        }
+        return lang
+      },
     },
     watch: {
       filterText(val) {

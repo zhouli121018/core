@@ -5,7 +5,7 @@
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/welcome' }">{{plang.COMMON_HOME_NAME}}</el-breadcrumb-item>
           <el-breadcrumb-item><a href="#">{{plang.SETTING_INDEX_NAME}}</a></el-breadcrumb-item>
-          <el-breadcrumb-item>{{plang.SETTING_INDEX_BLACK_MENU}}</el-breadcrumb-item>
+          <el-breadcrumb-item>{{plang.SETTING_INDEX_ZHAOHUI_MENU}}</el-breadcrumb-item>
         </el-breadcrumb>
       </el-col>
     </el-row>

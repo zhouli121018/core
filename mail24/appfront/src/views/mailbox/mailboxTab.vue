@@ -645,6 +645,7 @@ export default {
       }else{
         lang = lan.zh
       }
+      this.editableTabs2[0].title = lang.MAILBOX_INBOX
       this.rules = {
           name:[{required:true,message:lang.MAILBOX_FOLDER_NAME_RULES,trigger:'blur'}]
         }

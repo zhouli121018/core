@@ -13,7 +13,7 @@
 
       <el-col :span="24"><div class="demo-block-control"><p style="margin-bottom: 3px; margin-left: 13px"> {{plang.SETTING_INDEX_SMS_MENU}}</p></div></el-col>
 
-      <el-form :model="createForm" :rules="createFormRules" ref="createForm" :inline="true" label-width="140px" style="margin-left:13px;margin-right:13px;margin-top: 13px" size="mini">
+      <el-form :model="createForm" :rules="createFormRules" ref="createForm" :inline="true" label-width="180px" style="margin-left:13px;margin-right:13px;margin-top: 13px" size="mini">
 
         <el-row>
           <el-col :span="24">
