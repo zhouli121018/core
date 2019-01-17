@@ -808,12 +808,19 @@
 
     methods: {
       createEditorFn(val){
+        let language = 'zh_CN';
+        if(this.$store.getters.getLanguage == 'en'){
+          language = 'en';
+        }else if(this.$store.getters.getLanguage == 'zh-tw'){
+          language = 'zh_TW';
+        }
         let options = {
           items:this.toolbarItems,
           uploadJson:this.uploadJson,
           filterMode:false,
           resizeType:1,
           indentChar:"",
+          langType : language,
           loadStyleMode:false,
           autoHeightMode:false
         }
@@ -821,12 +828,19 @@
         this.createEditor.html(val);
       },
       updateEditorFn(val){
+        let language = 'zh_CN';
+        if(this.$store.getters.getLanguage == 'en'){
+          language = 'en';
+        }else if(this.$store.getters.getLanguage == 'zh-tw'){
+          language = 'zh_TW';
+        }
         let options = {
           items:this.toolbarItems,
           uploadJson:this.uploadJson,
           filterMode:false,
           resizeType:1,
           indentChar:"",
+          langType :language,
           loadStyleMode:false,
           autoHeightMode:false
         }
@@ -943,7 +957,7 @@
             _this.$message({message: this.plang.SETTING_RE_ADD_RULE_2,type:'error'});
             return false;
           }
-          if(o.suboption!='all_mail'&&o.suboption!='has_attach'&&!o.value){
+          if(o.suboption!='all_mail'&&o.suboption!='has_attach'&&!o.value&& o.value!=0){
             _this.$message({message: this.plang.SETTING_RE_ADD_RULE_3,type:'error'});
             return false;
           }
@@ -982,7 +996,7 @@
                 _this.$message({message:this.plang.SETTING_RE_ADD_RULE_2,type:'error'});
                 return false;
               }
-              if(subO.suboption!='all_mail'&&subO.suboption!='has_attach'&&!subO.value){
+              if(subO.suboption!='all_mail'&&subO.suboption!='has_attach'&&!subO.value && subO.value!=0){
                 _this.$message({message:this.plang.SETTING_RE_ADD_RULE_3,type:'error'});
                 return false;
               }
@@ -1139,6 +1153,7 @@
         }
         this.$refs.updateForm.validate((valid) => {
           if (valid) {
+            console.log(this.updateForm)
             if(!this.confirmation(this.updateForm)){
               return;
             }

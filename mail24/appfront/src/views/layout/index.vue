@@ -1,251 +1,245 @@
 <template>
-    <section class="m-layout">
-      <div class="u-lmask j-layout-loading" style="display: none;">
-        <div class="u-lmask-floater"></div>
-        <div class="u-lmask-content"><div class="u-lmask-loading"></div></div>
+  <section class="m-layout">
+    <div class="u-lmask j-layout-loading" style="display: none;">
+      <div class="u-lmask-floater"></div>
+      <div class="u-lmask-content"><div class="u-lmask-loading"></div></div>
+    </div>
+
+    <aside class="lysidebar j-layout-nav" :class="skin_order"  v-if="!change_password">
+      <div class="icon j-switch-mainpage"  :title="lan.SETTING_USER_HOMEPAGE" @click="goHome"><i class="iconfont icon-iconhome"></i></div>
+      <div class="avatar">
+        <el-popover
+          placement="right"
+          width="300"
+          :offset="40"
+          trigger="hover">
+          <table>
+            <tr>
+              <td style="width:72px;vertical-align:top">
+                <img style="width:100%;border-radius:50%;" alt="avatar" v-if="editform.gender == 'male'" src="@/assets/img/man.png">
+                <img style="width:100%;border-radius:50%;" alt="avatar" v-if="editform.gender != 'male'" src="@/assets/img/woman.png">
+              </td>
+              <td style="padding-left:10px;font-size:12px;color:#777;line-height:22px;">
+                <div style="color:#555;font-size:14px;">{{editform.realname}}</div>
+                <div>{{editform.email}}</div>
+                <div>{{editform.department}}</div>
+                <el-button-group style="margin-top:12px;">
+                  <el-button  size="mini" @click="goSetting">{{lan.LAYOUT_INDEX_PERSONAL_SETTINGS}}</el-button>
+                  <el-button  size="mini" @click="logout">{{lan.LAYOUT_INDEX_LOGOUT}}</el-button>
+                </el-button-group>
+              </td>
+            </tr>
+            <!--<i class="iconfont icon-man1"></i>-->
+
+
+          </table>
+          <el-button slot="reference" type="text" circle style="padding:0;">
+            <a href="#" class="u-img u-img-round"  @click.prevent="visible2=!visible2">
+              <img class="j-avatar" alt="avatar"  v-if="editform.gender == 'male'" src="@/assets/img/man.png">
+              <img class="j-avatar" alt="avatar"  v-if="editform.gender != 'male'" src="@/assets/img/woman.png">
+            </a>
+          </el-button>
+        </el-popover>
+
       </div>
+      <div class="divider"></div>
+      <div class="j-wrapper">
 
-      <aside class="lysidebar j-layout-nav" :class="skin_order"  v-if="!change_password">
-        <div class="icon j-switch-mainpage"  :title="lan.SETTING_USER_HOMEPAGE" @click="goHome"><i class="iconfont icon-iconhome"></i></div>
-        <div class="avatar">
-          <el-popover
-            placement="right"
-            width="300"
-            :offset="40"
-            trigger="hover">
-            <table>
-              <tr>
-                <td style="width:72px;vertical-align:top">
-                  <img style="width:100%;border-radius:50%;" alt="avatar" v-if="editform.gender == 'male'" src="@/assets/img/man.png">
-                  <img style="width:100%;border-radius:50%;" alt="avatar" v-if="editform.gender != 'male'" src="@/assets/img/woman.png">
-                </td>
-                <td style="padding-left:10px;font-size:12px;color:#777;line-height:22px;">
-                  <div style="color:#555;font-size:14px;">{{editform.realname}}</div>
-                  <div>{{editform.email}}</div>
-                  <div>{{editform.department}}</div>
-                  <el-button-group style="margin-top:12px;">
-                    <el-button  size="mini" @click="goSetting">{{lan.LAYOUT_INDEX_PERSONAL_SETTINGS}}</el-button>
-                    <el-button  size="mini" @click="logout">{{lan.LAYOUT_INDEX_LOGOUT}}</el-button>
-                  </el-button-group>
-                </td>
-              </tr>
-              <!--<i class="iconfont icon-man1"></i>-->
-
-
-            </table>
-            <el-button slot="reference" type="text" circle style="padding:0;">
-              <a href="#" class="u-img u-img-round"  @click.prevent="visible2=!visible2">
-            <img class="j-avatar" alt="avatar"  v-if="editform.gender == 'male'" src="@/assets/img/man.png">
-            <img class="j-avatar" alt="avatar"  v-if="editform.gender != 'male'" src="@/assets/img/woman.png">
-          </a>
-            </el-button>
-          </el-popover>
-
+        <div class="icon" :class="{active:activeTab==t.id}" v-for="t in tabs" :key="t.id" :title="t.title" @click="changeTab(t.id)">
+          <i class="iconfont" :class="t.iconclass"></i>
         </div>
-        <div class="divider"></div>
-        <div class="j-wrapper">
 
-          <div class="icon" :class="{active:activeTab==t.id}" v-for="t in tabs" :key="t.id" :title="t.title" @click="changeTab(t.id)">
-            <i class="iconfont" :class="t.iconclass"></i>
+        <div role="toLunkr" class="icon j-lunkr lunkr" :title="lan.LAYOUT_INDEX_SCHOLARS">
+          <i class="iconfont iconlunkrlogo"></i>
+          <span></span>
+        </div>
+      </div>
+      <div class="icon icon-help j-to-helpcenter "  :title="lan.LAYOUT_INDEX_HELP_CENTER" @click="goToHelp">
+        <i class="iconfont icon-iconhelp1"></i>
+      </div>
+      <div class="icon icon-bottom" :class="{active:activeTab==5}" data-trigger="setting" role="toggle" data-i18n="common/nav_setting" i18n-target="title" title="设置" @click="changeTab(5)">
+        <i class="iconfont icon-iconsetupcenter"></i>
+      </div>
+    </aside>
+
+    <article class="lymain" v-if="!change_password">
+      <section>
+        <header class="lyheader" :class="skin_order">
+          <div class="logo">
+            <a href="javascript:void(0);" class="u-img j-lylogo" data-trigger="mail.welcome">
+              <img :src="welcome_logo" alt="U-Mail" style=" height: 42px;">
+            </a>
           </div>
-
-          <div role="toLunkr" class="icon j-lunkr lunkr" :title="lan.LAYOUT_INDEX_SCHOLARS">
-            <i class="iconfont iconlunkrlogo"></i>
-            <span></span>
-          </div>
-        </div>
-        <div class="icon icon-help j-to-helpcenter "  :title="lan.LAYOUT_INDEX_HELP_CENTER" @click="goToHelp">
-          <i class="iconfont icon-iconhelp1"></i>
-        </div>
-        <div class="icon icon-bottom" :class="{active:activeTab==5}" data-trigger="setting" role="toggle" data-i18n="common/nav_setting" i18n-target="title" title="设置" @click="changeTab(5)">
-          <i class="iconfont icon-iconsetupcenter"></i>
-        </div>
-      </aside>
-
-      <article class="lymain" v-if="!change_password">
-        <section>
-          <header class="lyheader" :class="skin_order">
-            <div class="logo">
-              <a href="javascript:void(0);" class="u-img j-lylogo" data-trigger="mail.welcome">
-                <img :src="welcome_logo" alt="U-Mail" style=" height: 42px;">
-              </a>
-            </div>
-            <ul class="u-list u-list-horizontal" style="position: absolute;right: 0;">
-
-              <li><a target="_blank" href="#" @click.prevent="goToAdmin" v-if="admin_is_active&&!isSharedUser">{{lan.LAYOUT_INDEX_BACK_STAGE_MANAGEMENT}}</a></li>
-
-              <li><a target="_blank" href="#" @click.prevent="goToSearch" >{{lan.LAYOUT_INDEX_SELF_QUERY}}</a></li>
-              <li><a href="#" class="skin-primary-hover-color f-dn lunkr-bandage f-pr">{{lan.LAYOUT_INDEX_MOBILE}}</a></li>
-              <li><a href="#" class="skin-primary-hover-color f-dn f-pr" >{{lan.LAYOUT_INDEX_INSTANT_COMMUNICATION}}</a></li>
-              <li><a href="#" class="skin-primary-hover-color f-dn j-migrate-mbox" >{{lan.LAYOUT_INDEX_MOVE_IMMEDIATELY}}</a></li>
-              <li class="hover_bg_box" style="cursor:pointer;">
-                <b v-if="sharedList.length==0&&!isSharedUser">{{this.$store.getters.userInfo.name}}</b>
-                <el-dropdown trigger="click" placement="bottom-start" @command="switchShared" v-if="sharedList.length>0||isSharedUser">
-                  <b class="el-dropdown-link" :title="lan.LAYOUT_INDEX_SWITCHING_MAILBOX">
-                    {{userName}}<i class="el-icon-arrow-down el-icon--right"></i>
-                  </b>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item disabled>{{lan.LAYOUT_INDEX_ASSOCIATED_SHARED_MAILBOX}}</el-dropdown-item>
-                    <el-dropdown-item v-if="isSharedUser" command="back">{{lan.LAYOUT_INDEX_RETURN_TO_MAILBOX}}{{ '<' + mainUsername + '>'}}</el-dropdown-item>
-                    <el-dropdown-item v-if="!isSharedUser" v-for="v in sharedList" :key="v.id" :command="v">{{v.realname + '<' + v.username + '>'}}</el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
-              </li>
-              <li class="" style="cursor:pointer;">
-                <el-select v-model="language" @change="changeLanguage" class="no_border" style="float:right;width:124px;">
-                  <el-option label="中文（简体）" value="zh"></el-option>
-                  <el-option label="中文（繁體）" value="zh-tw"></el-option>
-                  <el-option label="English" value="en"></el-option>
-                  <el-option label="Español" value="es" disabled></el-option>
-                </el-select>
-              </li>
-              <li class="hover_bg_box" style="cursor:pointer">
-                <el-dropdown trigger="click" placement="bottom-start" @command="goToSetting" style="font-size:12px;">
+          <ul class="u-list u-list-horizontal" style="position: absolute;right: 0;">
+            <li class="hover_bg_box" style="cursor:pointer">
+              <el-dropdown trigger="click" placement="bottom-start" @command="goToSetting" style="font-size:12px;">
                   <span class="el-dropdown-link" :title="lan.LAYOUT_INDEX_SETTING">
                     {{lan.LAYOUT_INDEX_SETTING}}<i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="skin">
-                      <el-dropdown @command="changeSkin"  placement="right-start">
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="skin">
+                    <el-dropdown @command="changeSkin"  placement="right-start">
                         <span class="el-dropdown-link">
                           <b><i class="iconfont icon-icontie"></i> </b>
                         {{lan.LAYOUT_INDEX_SKIN_PEELER}} <i class="el-icon-arrow-right el-icon--right"></i>
                         </span>
-                          <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item  v-for="(s,k) in skins" :key="k" class="dropdown_item" :command="s" :class="{activeitem:s.url == $store.getters.getSkinOrder}">
-                              <img :src="'/static/img/'+s.url+'_small.jpg'" style="width:40px;vertical-align: middle" alt=""> {{ s.title}}
-                            </el-dropdown-item>
-                            <el-dropdown-item class="dropdown_item" command="more">
-                              {{lan.LAYOUT_INDEX_MORE_SKIN}}
-                            </el-dropdown-item>
+                      <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item  v-for="(s,k) in skins" :key="k" class="dropdown_item" :command="s" :class="{activeitem:s.url == $store.getters.getSkinOrder}">
+                          <img :src="'/static/img/'+s.url+'_small.jpg'" style="width:40px;vertical-align: middle" alt=""> {{ s.title}}
+                        </el-dropdown-item>
+                        <el-dropdown-item class="dropdown_item" command="more">
+                          {{lan.LAYOUT_INDEX_MORE_SKIN}}
+                        </el-dropdown-item>
+                      </el-dropdown-menu>
+                    </el-dropdown>
+                  </el-dropdown-item>
+                  <el-dropdown-item  command="user">{{lan.LAYOUT_INDEX_PERSONAL_SETTINGS}}</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </li>
+            <li class="" style="cursor:pointer;">
+              <el-select v-model="language" @change="changeLanguage" class="no_border" style="float:right;width:118px;">
+                <el-option label="中文（简体）" value="zh-hans"></el-option>
+                <el-option label="中文（繁體）" value="zh-tw"></el-option>
+                <el-option label="English" value="en"></el-option>
+                <!--<el-option label="Español" value="es" disabled></el-option>-->
+              </el-select>
+            </li>
+            <li class="hover_bg_box" style="cursor:pointer;">
+              <b v-if="sharedList.length==0&&!isSharedUser">{{this.$store.getters.userInfo.name}}</b>
+              <el-dropdown trigger="click" placement="bottom-start" @command="switchShared" v-if="sharedList.length>0||isSharedUser">
+                <b class="el-dropdown-link" :title="lan.LAYOUT_INDEX_SWITCHING_MAILBOX">
+                  {{userName}}<i class="el-icon-arrow-down el-icon--right"></i>
+                </b>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item disabled>{{lan.LAYOUT_INDEX_ASSOCIATED_SHARED_MAILBOX}}</el-dropdown-item>
+                  <el-dropdown-item v-if="isSharedUser" command="back">{{lan.LAYOUT_INDEX_RETURN_TO_MAILBOX}}{{ '<' + mainUsername + '>'}}</el-dropdown-item>
+                  <el-dropdown-item v-if="!isSharedUser" v-for="v in sharedList" :key="v.id" :command="v">{{v.realname + '<' + v.username + '>'}}</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </li>
+            <li><a target="_blank" href="#" @click.prevent="goToSearch" >{{lan.LAYOUT_INDEX_SELF_QUERY}}</a></li>
+            <li><a target="_blank" href="#" @click.prevent="goToAdmin" v-if="admin_is_active&&!isSharedUser">{{lan.LAYOUT_INDEX_BACK_STAGE_MANAGEMENT}}</a></li>
+            <li><a href="#" class="skin-primary-hover-color f-dn lunkr-bandage f-pr">{{lan.LAYOUT_INDEX_MOBILE}}</a></li>
+            <li><a href="#" class="skin-primary-hover-color f-dn f-pr" >{{lan.LAYOUT_INDEX_INSTANT_COMMUNICATION}}</a></li>
+            <li><a href="#" class="skin-primary-hover-color f-dn j-migrate-mbox" >{{lan.LAYOUT_INDEX_MOVE_IMMEDIATELY}}</a></li>
+            <li><a href="#" class="skin-primary-hover-color" @click.prevent.stop="lockscreen">{{lan.LAYOUT_INDEX_LOCK_SCREEN}}</a></li>
+            <li><a href="#" class="skin-primary-hover-color" @click.prevent="logout">{{lan.LAYOUT_INDEX_LOGOUT}}</a></li>
+            <li class="header-divider">
+              <a href="javascript:void(0);" class="skin-primary-hover-color history-notification-trigger j-history-notification-trigger unread">
+                <i class="iconfont icon-iconms"></i>
+              </a>
+            </li>
+            <li>
+              <div class="u-input-control">
+                <input type="text" class="u-input" id="lyfullsearch" maxlength="50" disabledhotkey="true"  :placeholder="lan.LAYOUT_INDEX_SEARCH_OF_MAIL" autocomplete="off">
+                <span class="j-search u-search iconfont icon-iconsreachm"></span>
+              </div>
+            </li>
+          </ul>
+        </header>
+        <div class="lybg">
+          <div class="bg1"></div>
+          <div class="bg2"></div>
+          <div class="bg3"></div>
+          <div class="bg4"></div>
+          <div class="bg5" v-if="skin_order && (skin_order=='jingdianlan' || skin_order == '')"></div>
+          <div class="bg5" v-if="skin_order && skin_order!='jingdianlan'" style="background-size:cover;" :style="{'background-image':'url(/static/img/'+skin_order+'.jpg)'}"></div>
 
-                          </el-dropdown-menu>
+        </div>
+        <div class="lycontent">
+          <router-view></router-view>
+        </div>
 
-                      </el-dropdown>
-                    </el-dropdown-item>
-                    <el-dropdown-item  command="user">{{lan.LAYOUT_INDEX_PERSONAL_SETTINGS}}</el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
-              </li>
-              <li><a href="#" class="skin-primary-hover-color" @click.prevent.stop="lockscreen">{{lan.LAYOUT_INDEX_LOCK_SCREEN}}</a></li>
-              <li><a href="#" class="skin-primary-hover-color" @click.prevent="logout">{{lan.LAYOUT_INDEX_LOGOUT}}</a></li>
-              <li class="header-divider">
-                <a href="javascript:void(0);" class="skin-primary-hover-color history-notification-trigger j-history-notification-trigger unread">
-                  <i class="iconfont icon-iconms"></i>
-                </a>
-              </li>
-              <li>
-                <div class="u-input-control">
-                  <input type="text" class="u-input" id="lyfullsearch" maxlength="50" disabledhotkey="true"  :placeholder="lan.LAYOUT_INDEX_SEARCH_OF_MAIL" autocomplete="off">
-                  <span class="j-search u-search iconfont icon-iconsreachm"></span>
-                </div>
-              </li>
-            </ul>
-          </header>
-          <div class="lybg">
-            <div class="bg1"></div>
-            <div class="bg2"></div>
-            <div class="bg3"></div>
-            <div class="bg4"></div>
-            <div class="bg5" v-if="skin_order && (skin_order=='jingdianlan' || skin_order == '')"></div>
-            <div class="bg5" v-if="skin_order && skin_order!='jingdianlan'" style="background-size:cover;" :style="{'background-image':'url(/static/img/'+skin_order+'.jpg)'}"></div>
+      </section>
+      <form v-show="false" id="id_ssl_form" :action="admin_login_url" method="post" target="_blank">
+        <input v-model="token" name="token"  type="hidden">
+      </form>
+    </article>
+    <transition name="fade" v-if="!change_password">
+      <div v-if="newMsg" class="test">
+        <div role="alert" class="el-notification right" style="bottom: 16px; z-index: 2000;border: 1px solid #ddd;box-shadow: 0 0 10px #aaa;"><!----><div class="el-notification__group"><h2 class="el-notification__title">{{this.$store.getters.userInfo.name}}</h2>
+          <div class="el-notification__content">
+            <table style="margin:0 12px;cursor:pointer;" @click="readNewMsg">
+              <tr>
+                <td style="vertical-align:top;padding-right:10px;">
+                  <i class="el-icon-message" style="font-size:36px;"></i>
+                </td>
+                <td style="vertical-align:top;">
+                  <h3 class="hide_row" :title="newMsg.subject">{{newMsg.subject }}</h3>
+                  <h3 class="hide_row"><span style="color:#5EB509">{{newMsg.mfrom?newMsg.mfrom[1]:''}}</span><span style="color:#aaa;font-size:12px;"> &lt; {{newMsg.mfrom?newMsg.mfrom[0]:''}} &gt;</span></h3>
+                  <p class="hide_row2">{{newMsg.abstract}}</p>
+                </td>
+              </tr>
+            </table>
+            <div style="margin-top:10px;width:100%;height:2px;background:linear-gradient(to right, #409EFF , #fff);"></div>
+            <table style="width:100%;">
+              <tr>
+                <td style="padding:2px 12px 0;color:#409EFF;cursor:pointer;" @click=""></td>
+                <td style="text-align:right;padding:2px 12px 0"> <i class="el-icon-caret-left" style="cursor:pointer;" @click="preNew"></i> {{newIndex+1}}/{{newList.length}} <i @click="nextNew" class="el-icon-caret-right" style="cursor:pointer;"></i></td>
+              </tr>
+            </table>
+          </div>
+          <div class="el-notification__closeBtn el-icon-close" @click="newList=[]"></div></div></div>
+      </div>
+    </transition>
+
+    <transition name="fade" v-if="!change_password">
+      <div v-if="reviewUnseen>0&&show_review" class="test" :class="{has_newMsg:newMsg}">
+        <div role="alert" class="el-notification right" style="bottom: 16px; z-index: 2000;border: 1px solid #ddd;box-shadow: 0 0 10px #aaa;"><!----><div class="el-notification__group"><h2 class="el-notification__title">{{this.$store.getters.userInfo.name}}</h2>
+          <div class="el-notification__content">
+            <table style="margin:0 12px;cursor:pointer;height:80px;" @click="reviewMail">
+              <tr>
+                <td style="vertical-align:top;padding-right:10px;">
+                  <i class="el-icon-search" style="font-size:36px;"></i>
+                </td>
+                <td style="vertical-align:top;color:#00a6ff">
+                  <h3 class="" >{{lan.LAYOUT_INDEX_YOU_HAVE}} {{reviewUnseen }} {{lan.LAYOUT_INDEX_AUDITED_EMAIL}}</h3>
+                </td>
+              </tr>
+            </table>
+            <div style="margin-top:10px;width:100%;height:2px;background:linear-gradient(to right, #409EFF , #fff);"></div>
 
           </div>
-          <div class="lycontent">
-            <router-view></router-view>
-          </div>
+          <div class="el-notification__closeBtn el-icon-close" @click="show_review=false"></div></div></div>
+      </div>
+    </transition>
 
-        </section>
-        <form v-show="false" id="id_ssl_form" :action="admin_login_url" method="post" target="_blank">
-          <input v-model="token" name="token"  type="hidden">
-        </form>
-      </article>
-      <transition name="fade" v-if="!change_password">
-            <div v-if="newMsg" class="test">
-              <div role="alert" class="el-notification right" style="bottom: 16px; z-index: 2000;border: 1px solid #ddd;box-shadow: 0 0 10px #aaa;"><!----><div class="el-notification__group"><h2 class="el-notification__title">{{this.$store.getters.userInfo.name}}</h2>
-                <div class="el-notification__content">
-                  <table style="margin:0 12px;cursor:pointer;" @click="readNewMsg">
-                    <tr>
-                    <td style="vertical-align:top;padding-right:10px;">
-                      <i class="el-icon-message" style="font-size:36px;"></i>
-                    </td>
-                    <td style="vertical-align:top;">
-                      <h3 class="hide_row" :title="newMsg.subject">{{newMsg.subject }}</h3>
-                      <h3 class="hide_row"><span style="color:#5EB509">{{newMsg.mfrom?newMsg.mfrom[1]:''}}</span><span style="color:#aaa;font-size:12px;"> &lt; {{newMsg.mfrom?newMsg.mfrom[0]:''}} &gt;</span></h3>
-                      <p class="hide_row2">{{newMsg.abstract}}</p>
-                    </td>
-                    </tr>
-                  </table>
-                  <div style="margin-top:10px;width:100%;height:2px;background:linear-gradient(to right, #409EFF , #fff);"></div>
-                <table style="width:100%;">
-                  <tr>
-                    <td style="padding:2px 12px 0;color:#409EFF;cursor:pointer;" @click=""></td>
-                    <td style="text-align:right;padding:2px 12px 0"> <i class="el-icon-caret-left" style="cursor:pointer;" @click="preNew"></i> {{newIndex+1}}/{{newList.length}} <i @click="nextNew" class="el-icon-caret-right" style="cursor:pointer;"></i></td>
-                  </tr>
-                </table>
-                </div>
-                <div class="el-notification__closeBtn el-icon-close" @click="newList=[]"></div></div></div>
-            </div>
-          </transition>
+    <el-dialog :title="lan.LAYOUT_INDEX_MODIFY_PASSWORD" :visible.sync="change_password" width="450px" :close-on-click-modal="false" :show-close="false" :close-on-press-escape="false">
+      <el-form :model="passwordForm" size="small" :rules="passwordFormRules" ref="passwordForm">
 
-      <transition name="fade" v-if="!change_password">
-            <div v-if="reviewUnseen>0&&show_review" class="test" :class="{has_newMsg:newMsg}">
-              <div role="alert" class="el-notification right" style="bottom: 16px; z-index: 2000;border: 1px solid #ddd;box-shadow: 0 0 10px #aaa;"><!----><div class="el-notification__group"><h2 class="el-notification__title">{{this.$store.getters.userInfo.name}}</h2>
-                <div class="el-notification__content">
-                  <table style="margin:0 12px;cursor:pointer;height:80px;" @click="reviewMail">
-                    <tr>
-                    <td style="vertical-align:top;padding-right:10px;">
-                      <i class="el-icon-search" style="font-size:36px;"></i>
-                    </td>
-                    <td style="vertical-align:top;color:#00a6ff">
-                      <h3 class="" >{{lan.LAYOUT_INDEX_YOU_HAVE}} {{reviewUnseen }} {{lan.LAYOUT_INDEX_AUDITED_EMAIL}}</h3>
-
-                    </td>
-                    </tr>
-                  </table>
-                  <div style="margin-top:10px;width:100%;height:2px;background:linear-gradient(to right, #409EFF , #fff);"></div>
-
-                </div>
-                <div class="el-notification__closeBtn el-icon-close" @click="show_review=false"></div></div></div>
-            </div>
-          </transition>
-
-      <el-dialog :title="lan.LAYOUT_INDEX_MODIFY_PASSWORD" :visible.sync="change_password" width="450px" :close-on-click-modal="false" :show-close="false" :close-on-press-escape="false">
-          <el-form :model="passwordForm" size="small" :rules="passwordFormRules" ref="passwordForm">
-
-            <el-form-item :label="lan.COMMON_SRC_PASSWORD" prop="password" :error="password_error">
-              <el-input v-model="passwordForm.password" type="password" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item :label="lan.COMMON_NEW_PASSWORD" prop="new_password" :error="new_password_error">
-              <el-input v-model="passwordForm.new_password" type="password" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item :label="lan.COMMON_CONFIRM_PASSWORD" prop="confirm_password" :error="confirm_password_error">
-              <el-input v-model="passwordForm.confirm_password" type="password" auto-complete="off"></el-input>
-            </el-form-item>
-            <div style="padding-top:10px;">
-              <strong style="color: red">{{lan.COMMON_PASSWORD_NOTICE}}</strong>
-              <ul style="margin-left: 26px;">
-                <li style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_1}}{{passwordRules.passwd_size2}} {{lan.COMMON_PASSWORD_NOTICE_2}}</li>
-                <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;"> {{lan.COMMON_PASSWORD_NOTICE_3}}</li>
-                <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_4}}</li>
-                <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_5}}</li>
-                <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_6}}/li>
-                <li v-if="passwordRules.passwd_name" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_7}}</li>
-                <li v-if="passwordRules.passwd_name2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_8}}</li>
-                <li v-if="passwordRules.passwd_letter" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_9}}</li>
-                <li v-if="passwordRules.passwd_letter2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_10}}</li>
-              </ul>
-            </div>
+        <el-form-item :label="lan.COMMON_SRC_PASSWORD" prop="password" :error="password_error">
+          <el-input v-model="passwordForm.password" type="password" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item :label="lan.COMMON_NEW_PASSWORD" prop="new_password" :error="new_password_error">
+          <el-input v-model="passwordForm.new_password" type="password" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item :label="lan.COMMON_CONFIRM_PASSWORD" prop="confirm_password" :error="confirm_password_error">
+          <el-input v-model="passwordForm.confirm_password" type="password" auto-complete="off"></el-input>
+        </el-form-item>
+        <div style="padding-top:10px;">
+          <strong style="color: red">{{lan.COMMON_PASSWORD_NOTICE}}</strong>
+          <ul style="margin-left: 26px;">
+            <li style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_1}}{{passwordRules.passwd_size2}} {{lan.COMMON_PASSWORD_NOTICE_2}}</li>
+            <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;"> {{lan.COMMON_PASSWORD_NOTICE_3}}</li>
+            <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_4}}</li>
+            <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_5}}</li>
+            <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_6}}/li>
+            <li v-if="passwordRules.passwd_name" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_7}}</li>
+            <li v-if="passwordRules.passwd_name2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_8}}</li>
+            <li v-if="passwordRules.passwd_letter" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_9}}</li>
+            <li v-if="passwordRules.passwd_letter2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_10}}</li>
+          </ul>
+        </div>
 
 
-          </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="passeordFormSubmit">{{lan.sure}}</el-button>
-            <el-button type='' @click="backToLogin" >{{lan.cancel}}</el-button>
-          </div>
-        </el-dialog>
-
-    </section>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="passeordFormSubmit">{{lan.sure}}</el-button>
+        <el-button type='' @click="backToLogin" >{{lan.cancel}}</el-button>
+      </div>
+    </el-dialog>
+  </section>
 
 
 
@@ -262,8 +256,8 @@
     data:function(){
       let _this = this;
       var validatePass = (rule, value, callback) => {
-          let reg =  /^(.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*)|(.*(?=.{6,})(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*? ]).*)$/;
-         // let reg =  /^[\d]{6}$/;
+        let reg =  /^(.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*)|(.*(?=.{6,})(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*? ]).*)$/;
+        // let reg =  /^[\d]{6}$/;
         if (value === '') {
           callback(new Error(_this.lan.LAYOUT_INDEX_PASSWORD_RULE));
         }
@@ -347,7 +341,17 @@
       changeLanguage(val){
         cookie.setCookie('webvue_language',val,365*10)
         this.$store.dispatch('setLanguageA',val)
-        // router.go(0)
+        router.go(0)
+        // this.$confirm(this.lan.MAILBOX_WRITING, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+        //   confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+        //   cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
+        //   type: 'warning'
+        // }).then(() => {
+        //
+        // }).catch(() => {
+        //
+        // });
+
       },
       goToHelp(){
         let href = window.location.origin+'/webmail/zh_hans/index.html'; //window.location.origin  'http://192.168.1.39:81'
@@ -381,6 +385,20 @@
           this.passwordRules = res.data;
         });
       },
+      title_scroll(){
+        let _this = this
+        function func(){
+          let  s= $('title').text().split("");
+          if(s.join("") == _this.$store.getters.getLoginAfter.title){
+            clearInterval(aaa)
+            return;
+          }
+            s.push(s[0]); //方法可向数组的末尾添加一个或多个元素，并返回新的长度
+            s.shift();// 去掉数组的第一个元素
+            $('title').text(s.join(""))
+        }
+		    var aaa = setInterval(func,1000);
+      },
       getLoginAfter(){
         loginAfter().then(res=>{
           console.log(res)
@@ -390,7 +408,9 @@
           }
           let origin = window.location.origin  //  window.location.origin  'http://192.168.1.39:81'
           this.welcome_logo = origin + res.data.welcome_logo
-          $('title').text(res.data.title)
+          // $('title').text(res.data.title)
+           $('title').text(this.$store.getters.getLoginAfter.title)
+          this.title_scroll();
         }).catch(err=>{
           console.log(err)
         })
@@ -480,64 +500,68 @@
           folder:this.newMsg.folder
         }
         deleteMail(params).then((suc)=>{
-            if(suc.data.msg=='success'){
-              this.newMsg = null;
-              this.$message({
-                type:'success',
-                message: this.lan.COMMON_DELETE_SUCCESS
-              })
-            }
-          },(err)=>{
+          if(suc.data.msg=='success'){
+            this.newMsg = null;
             this.$message({
-                type:'error',
-                message: this.lan.COMMON_DELETE_FAILED
-              })
+              type:'success',
+              message: this.lan.COMMON_DELETE_SUCCESS
+            })
+          }
+        },(err)=>{
+          this.$message({
+            type:'error',
+            message: this.lan.COMMON_DELETE_FAILED
           })
+        })
       },
       readNewMsg(){
         let _this = this;
-          console.log(_this)
-          this.$router.push('/mailbox/innerbox/'+this.newMsg.folder);
+        console.log(_this)
+        this.$router.push('/mailbox/innerbox/'+this.newMsg.folder);
 
-          this.$nextTick(() =>{
-            console.log(_this)
-            if(_this.$children[0].addTab){
-              _this.$children[0].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
-            }else if(_this.$children[1].addTab){
-              _this.$children[1].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
-            }else if(_this.$children[2].addTab){
-              _this.$children[2].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
-            }else if(_this.$children[3].addTab){
-              _this.$children[3].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
-            }
-            _this.newList.splice(_this.newIndex,1);
-            _this.newIndex = 0;
-          })
+        this.$nextTick(() =>{
+          console.log(_this)
+          if(_this.$children[0].addTab){
+            _this.$children[0].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
+          }else if(_this.$children[1].addTab){
+            _this.$children[1].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
+          }else if(_this.$children[2].addTab){
+            _this.$children[2].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
+          }else if(_this.$children[3].addTab){
+            _this.$children[3].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
+          }
+          _this.newList.splice(_this.newIndex,1);
+          _this.newIndex = 0;
+        })
       },
       open_notify(){
         let _this = this;
         newMessage().then(res=>{
-            if(res.data.length>0){
-              this.newIndex = 0;
-              _this.newList = res.data;
-              if(_this.$store.getters.getNewMsgClear){clearTimeout(_this.$store.getters.getNewMsgClear)}
-              _this.$store.dispatch('setNewMsgClearTimer',setTimeout(function(){
-                _this.newList = [];
-              },15*60*1000))
-              if(_this.$children[1].getFloderfn){
-                _this.$children[1].getFloderfn();
-                if(_this.$children[1].$refs['innerbox'] && _this.$children[1].$refs['innerbox'][0]){
-                  _this.$children[1].$refs['innerbox'][0].getMessageList();
-                };
-              }
+          if(res.data.length>0){
+            $('title').text('您有'+res.data.length+'封新邮件到达了！')
+            this.newIndex = 0;
+            _this.newList = res.data;
+            if(_this.$store.getters.getNewMsgClear){clearTimeout(_this.$store.getters.getNewMsgClear)}
+            _this.$store.dispatch('setNewMsgClearTimer',setTimeout(function(){
+              _this.newList = [];
+            },15*60*1000))
+            if(_this.$children[1].getFloderfn){
+              _this.$children[1].getFloderfn();
+              if(_this.$children[1].$refs['innerbox'] && _this.$children[1].$refs['innerbox'][0]){
+                _this.$children[1].$refs['innerbox'][0].getMessageList();
+              };
             }
-          }).catch(err=>{
-            console.log('获取新邮件1失败！',err)
-          })
+          }else{
+             $('title').text(_this.$store.getters.getLoginAfter.title)
+          }
+        }).catch(err=>{
+          console.log('获取新邮件1失败！',err)
+        })
         if(this.$store.getters.getNewMsgTimer){clearInterval(this.$store.getters.getNewMsgTimer)}
         this.$store.dispatch('setNewMsgTimer',setInterval(function(){
           newMessage().then(res=>{
             if(res.data.length>0){
+              $('title').text('您有'+res.data.length+'封新邮件到达了！')
               _this.newList = res.data;
               if(_this.$store.getters.getNewMsgClear){clearTimeout(_this.$store.getters.getNewMsgClear)}
               _this.$store.dispatch('setNewMsgClearTimer',setTimeout(function(){
@@ -558,6 +582,8 @@
                 "date":"2018-10-29T17:04:45",
                 "abstract":"dsaf"}
               ;
+            }else{
+              $('title').text(_this.$store.getters.getLoginAfter.title)
             }
 
           }).catch(err=>{
@@ -608,11 +634,16 @@
           if(this.$store.getters.getLoginAfter && this.$store.getters.getLoginAfter.logout_url ){
             // let href = window.location.origin+'/#/messageInfo/'+this.readId+'?folder='+encodeURIComponent(this.readFolderId)+'&view='+view;
             let href = this.$store.getters.getLoginAfter.logout_url;
-            router.push('/login')
-            let newWindow = window.open()
-            setTimeout(()=>{
-              newWindow.location.href = href
-            },500)
+            let link = document.createElement("a");
+            link.setAttribute("href", href);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            // router.push('/login')
+            // let newWindow = window.open()
+            // setTimeout(()=>{
+            //   newWindow.location.href = href
+            // },500)
           }else{
             router.push('/login')
           }
@@ -708,21 +739,21 @@
         let JsSrc =(navigator.language || navigator.browserLanguage).toLowerCase();
         if(JsSrc.indexOf('zh')>=0)
         {
-           // 假如浏览器语言是中文
-          cookie.setCookie('webvue_language','zh',365*10)
+          // 假如浏览器语言是中文
+          cookie.setCookie('webvue_language','zh-hans',365*10)
           if(JsSrc=='zh-tw'){
             cookie.setCookie('webvue_language','zh-tw',365*10)
           }
         }
         else if(JsSrc.indexOf('en')>=0)
         {
-            // 假如浏览器语言是英文
+          // 假如浏览器语言是英文
           cookie.setCookie('webvue_language','en',365*10)
         }
         else
         {
-           // 假如浏览器语言是其它语言
-          cookie.setCookie('webvue_language','zh',365*10)
+          // 假如浏览器语言是其它语言
+          cookie.setCookie('webvue_language','zh-hans',365*10)
         }
       }
       this.$store.dispatch('setLanguageA',cookie.getCookie('webvue_language'))
@@ -732,40 +763,40 @@
       this.getShared();
       this.getLoginAfter();
       if(this.$route.path.indexOf('/mailbox')==0){
-          this.activeTab = 0;
-        }else if(this.$route.path.indexOf('/calendar')==0){
-          this.activeTab = 1;
-        }else if(this.$route.path.indexOf('/file')==0){
-          this.activeTab = 2;
-        }else if(this.$route.path.indexOf('/contact')==0){
-          this.activeTab = 3;
-        }else if(this.$route.path.indexOf('/appcenter')==0){
-          this.activeTab = 4;
-        }else if(this.$route.path.indexOf('/setting')==0){
-          this.activeTab = 5;
-        }else if(this.$route.path.indexOf('/search')==0){
-          this.activeTab = 6;
-        }
-        this.open_notify();
+        this.activeTab = 0;
+      }else if(this.$route.path.indexOf('/calendar')==0){
+        this.activeTab = 1;
+      }else if(this.$route.path.indexOf('/file')==0){
+        this.activeTab = 2;
+      }else if(this.$route.path.indexOf('/contact')==0){
+        this.activeTab = 3;
+      }else if(this.$route.path.indexOf('/appcenter')==0){
+        this.activeTab = 4;
+      }else if(this.$route.path.indexOf('/setting')==0){
+        this.activeTab = 5;
+      }else if(this.$route.path.indexOf('/search')==0){
+        this.activeTab = 6;
+      }
+      this.open_notify();
       welcome().then(res=>{
         this.userinfo = res.data.userinfo;
 
       })
       if(this.$route.path.indexOf('/mailbox')==0){
-          this.activeTab = 0;
-        }else if(this.$route.path.indexOf('/calendar')==0){
-          this.activeTab = 1;
-        }else if(this.$route.path.indexOf('/file')==0){
-          this.activeTab = 2;
-        }else if(this.$route.path.indexOf('/contact')==0){
-          this.activeTab = 3;
-        }else if(this.$route.path.indexOf('/appcenter')==0){
-          this.activeTab = 4;
-        }else if(this.$route.path.indexOf('/setting')==0){
-          this.activeTab = 5;
-        }else if(this.$route.path.indexOf('/search')==0){
-          this.activeTab = 6;
-        }
+        this.activeTab = 0;
+      }else if(this.$route.path.indexOf('/calendar')==0){
+        this.activeTab = 1;
+      }else if(this.$route.path.indexOf('/file')==0){
+        this.activeTab = 2;
+      }else if(this.$route.path.indexOf('/contact')==0){
+        this.activeTab = 3;
+      }else if(this.$route.path.indexOf('/appcenter')==0){
+        this.activeTab = 4;
+      }else if(this.$route.path.indexOf('/setting')==0){
+        this.activeTab = 5;
+      }else if(this.$route.path.indexOf('/search')==0){
+        this.activeTab = 6;
+      }
     },
     mounted(){
       this.admin_login_url = window.location.origin + '/operation/ZmE2MmIxYzMwM2Fm'
@@ -808,14 +839,14 @@
         return this.$store.getters.get_change_password
       },
       reviewUnseen:function(){
-          return this.$store.getters.getReviewCount;
+        return this.$store.getters.getReviewCount;
       },
       skin_order:function(){
         return this.$store.getters.getSkinOrder;
       },
       lan:function(){
         let lang = lan.zh
-        if(this.$store.getters.getLanguage=='zh'){
+        if(this.$store.getters.getLanguage=='zh-hans'){
           lang = lan.zh
         }else if(this.$store.getters.getLanguage=='zh-tw'){
           lang = lan.zh_tw
@@ -881,18 +912,18 @@
     right:10px;
   }
   .fade-enter-active, .fade-leave-active {
-  transition: all .8s;
+    transition: all .8s;
 
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-  width:0px;
-}
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+    width:0px;
+  }
   .hide_row{
     overflow: hidden;
- text-overflow: ellipsis;
- white-space: nowrap;
- width: 260px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 260px;
   }
   .hide_row2{
     width:260px;
@@ -907,24 +938,24 @@
     -webkit-line-clamp:2;
   }
   .el-notification__closeBtn{
-  top:4px;
-  right:8px;
+    top:4px;
+    right:8px;
     color:#2F72B1;
     font-weight:bold;
-}
-.el-notification__group{
-  margin-left:0;
-  width:100%;
-}
-.el-notification__title{
-  font-size:12px;
-  padding:4px 12px;
-  background:#409EFF;
-  background: linear-gradient(#409EFF, #fff);
-}
-.el-notification{
-  padding: 0 0 8px;
-}
+  }
+  .el-notification__group{
+    margin-left:0;
+    width:100%;
+  }
+  .el-notification__title{
+    font-size:12px;
+    padding:4px 12px;
+    background:#409EFF;
+    background: linear-gradient(#409EFF, #fff);
+  }
+  .el-notification{
+    padding: 0 0 8px;
+  }
   .hover_bg_box .el-dropdown-link{
     padding: 4px;
     color: #333;
@@ -1014,13 +1045,13 @@
   }
 
   /*.shiguangshalou{*/
-    /*background-color:#F5E519 !important;*/
+  /*background-color:#F5E519 !important;*/
   /*}*/
   /*.lysidebar.shiguangshalou .icon{*/
-    /*color:#222;*/
+  /*color:#222;*/
   /*}*/
   /*.lysidebar.shiguangshalou .icon:hover,.lysidebar.shiguangshalou .icon.active{*/
-    /*background-color:#fff;*/
+  /*background-color:#fff;*/
   /*}*/
 
   ul,li{

@@ -80,11 +80,6 @@ export const rou = [
         ]
       },
       {
-        path: 'appcenter',
-        component: _import('appcenter/index'),
-
-      },
-      {
         path: 'setting',
         component: _import('setting/index'),
         children:[
@@ -114,21 +109,8 @@ export const rou = [
         path:'search',
         component:_import('search/index')
       }
-
-
     ]
   },
-  // {
-  //   path: '/calendar',
-  //   component: Layout1,
-  //   redirect: '/calendar/index',
-  //   children: [{
-  //     path: 'index',
-  //     component: _import('calendar/index'),
-  //     name: 'calendar',
-  //     meta: { title: 'U-Mail calendar'}
-  //   }]
-  // },
   {
     path:'/',component:Layout1,
     children: [

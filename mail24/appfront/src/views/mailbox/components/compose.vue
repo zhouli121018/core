@@ -971,7 +971,7 @@
         options: {
           // https://github.com/simple-uploader/Uploader/tree/develop/samples/Node.js
           // target: '/api/netdisk/upload/chunk/',
-          target: '/api/netdisk/uploadnew/',
+          target: '/api/netdisk/uploadnew/?t='+new Date().getTime(),
           testChunks: true,
           headers:{
             Authorization :`JWT ${cookie.getCookie('token')}`
@@ -1200,6 +1200,13 @@
         }
       },
       createEditor(){
+        let language = 'zh_CN';
+        if(this.$store.getters.getLanguage == 'en'){
+          language = 'en';
+        }else if(this.$store.getters.getLanguage == 'zh-tw'){
+          language = 'zh_TW';
+        }
+        console.log(language)
         let options = {
           items:this.toolbarItems,
           uploadJson:this.uploadJson,
@@ -1208,6 +1215,7 @@
           indentChar:"",
           loadStyleMode:false,
           autoHeightMode:false,
+          langType : language,
           afterCreate:this.afterChange
         }
        this.editoraaa = KindEditor.create('#'+this.editor_id,options);
@@ -1865,7 +1873,7 @@
           }
         }).catch(err=>{
           console.log('模板列表获取异常！',err)
-          if(err.detail == '无效页面。'){
+          if(err.detail == '无效页面。' || err.detail == 'Invalid page.'){
             this.$message({
               type:'info',
               message: this.lan.MAILBOX_COM_COMPOSE_ALL_TEMPLATE_NOTICE
@@ -2071,23 +2079,23 @@
           this.signatureList = res.data.results;
           if(this.type == 'compose' ||this.type == 'compose_to_list' || this.type == 'compose_net_atta'){
             let sign_content = res.data.defaults.default_content;
-            sign_content = this.htmlDecodeByRegExp(sign_content)
+            if(sign_content)sign_content = this.htmlDecodeByRegExp(sign_content)
             if(this.ruleForm2.is_html){
               this.signCheck = res.data.defaults.default;
               // let html = this.$refs[this.editor_id].editor.html();
               let html = $('#'+this.editor_id).val();
               // this.$refs[this.editor_id].editor.html('<p><br><br></p><div id="sign">'+'<br><br>'+ sign_content +'</div><br>' + html)
-              this.editoraaa.html('<p><br><br></p><div id="sign">'+'<br><br>'+ sign_content +'</div><br>' + html)
+              if(sign_content)this.editoraaa.html('<p><br><br></p><div id="sign">'+'<br><br>'+ sign_content +'</div><br>' + html)
             }
           }else if(this.type == 'compose3 '||this.type == 'compose4 '|| this.type == 'compose5 '||this.type == 'compose6 '||this.type == 'compose_net_atta_event'){
             let sign_content = res.data.defaults.refw_default_content;
-            sign_content = this.htmlDecodeByRegExp(sign_content)
+            if(sign_content){sign_content = this.htmlDecodeByRegExp(sign_content)}
             if(this.ruleForm2.is_html){
               this.signCheck = res.data.defaults.refw_default;
               // let html = this.$refs[this.editor_id].editor.html();
               let html = $('#'+this.editor_id).val();
               // this.$refs[this.editor_id].editor.html('<p><br><br></p><div id="sign">'+'<br><br>'+ sign_content +'</div><br>' + html)
-              this.editoraaa.html('<p><br><br></p><div id="sign">'+'<br><br>'+ sign_content +'</div><br>' + html)
+              if(sign_content){this.editoraaa.html('<p><br><br></p><div id="sign">'+'<br><br>'+ sign_content +'</div><br>' + html)}
             }
           }
         });
@@ -3828,7 +3836,7 @@
       },
       lan:function(){
         let lang = lan.zh
-        if(this.$store.getters.getLanguage=='zh'){
+        if(this.$store.getters.getLanguage=='zh-hans'){
           lang = lan.zh
         }else if(this.$store.getters.getLanguage=='zh-tw'){
           lang = lan.zh_tw

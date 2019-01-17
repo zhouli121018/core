@@ -67,7 +67,7 @@
 
           <el-table-column :label="plang.FILE_A_TIME" width="220">
             <template slot-scope="scope">
-              <span style="margin-left: 10px" v-if="$store.getters.getLanguage=='zh'">{{scope.row.left_timestamp| validateLeft_zh}}</span>
+              <span style="margin-left: 10px" v-if="$store.getters.getLanguage=='zh-hans'">{{scope.row.left_timestamp| validateLeft_zh}}</span>
               <span style="margin-left: 10px" v-if="$store.getters.getLanguage=='zh-tw'">{{scope.row.left_timestamp| validateLeft_zh_tw}}</span>
               <span style="margin-left: 10px" v-if="$store.getters.getLanguage=='en'">{{scope.row.left_timestamp| validateLeft_en}}</span>
             </template>
@@ -137,7 +137,7 @@
     computed:{
       plang(){
         let lang = lan.zh
-        if(this.$store.getters.getLanguage=='zh'){
+        if(this.$store.getters.getLanguage=='zh-hans'){
           lang = lan.zh
         }else if(this.$store.getters.getLanguage=='zh-tw'){
           lang = lan.zh_tw

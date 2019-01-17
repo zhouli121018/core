@@ -1,12 +1,10 @@
 <template>
   <div class="relat">
-    <el-menu :default-active="activeIndex" class="el-menu-demo"  @select="handleSelect" mode="horizontal" background-color="#545c64"
-             text-color="#fff"
-             active-text-color="#ffd04b" >
-      <el-menu-item index="pab">{{plang.CONTANCT_INDEX_PAB}}</el-menu-item>
-      <el-menu-item index="oab">{{plang.CONTANCT_INDEX_OAB}}</el-menu-item>
-      <el-menu-item index="cab" v-if="webmail_cab_show">{{plang.CONTANCT_INDEX_CAB}}</el-menu-item>
-      <el-menu-item index="soab" v-if="webmail_soab_show">{{plang.CONTANCT_INDEX_SOAB}}</el-menu-item>
+    <el-menu :default-active="activeIndex" class="el-menu-demo" @select="handleSelect" mode="horizontal" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" >
+      <el-menu-item index="/contact/pab">{{plang.CONTANCT_INDEX_PAB}}</el-menu-item>
+      <el-menu-item index="/contact/oab">{{plang.CONTANCT_INDEX_OAB}}</el-menu-item>
+      <el-menu-item index="/contact/cab" v-if="webmail_cab_show">{{plang.CONTANCT_INDEX_CAB}}</el-menu-item>
+      <el-menu-item index="/contact/soab" v-if="webmail_soab_show">{{plang.CONTANCT_INDEX_SOAB}}</el-menu-item>
     </el-menu>
 
     <router-view></router-view>
@@ -21,7 +19,7 @@
     data() {
       return {
         asideWith:199,
-        activeIndex:'pab',
+        activeIndex:'',
         webmail_oab_show: true,
         webmail_cab_show: false,
         webmail_soab_show: false,
@@ -48,7 +46,7 @@
     },
     computed: {
       plang(){
-        if(this.$store.getters.getLanguage=='zh'){
+        if(this.$store.getters.getLanguage=='zh-hans'){
           return lan.zh
         }else if(this.$store.getters.getLanguage=='zh-tw'){
           return lan.zh_tw
@@ -73,16 +71,17 @@
         router.push(path);
       },
       handleSelect(key, keyPath) {
-        var index = key;
-        if (index == "pab") {
-          this.jumpTo('/contact/pab');
-        } else if (index == "oab") {
-          this.jumpTo('/contact/oab');
-        } else if (index == "cab") {
-          this.jumpTo('/contact/cab');
-        } else if (index == "soab") {
-          this.jumpTo('/contact/soab');
-        }
+        this.jumpTo(key);
+        // var index = key;
+        // if (index == "/contact/pab") {
+        //   this.jumpTo('/contact/pab');
+        // } else if (index == "oab") {
+        //   this.jumpTo('/contact/oab');
+        // } else if (index == "cab") {
+        //   this.jumpTo('/contact/cab');
+        // } else if (index == "soab") {
+        //   this.jumpTo('/contact/soab');
+        // }
       },
       sendMail_net(row,sels){
         if(this.$store.getters.getSharedStatus.shareuser_all || this.$store.getters.getSharedStatus.shareuser_post ||this.$store.getters.getSharedStatus.shareuser_send){
@@ -131,17 +130,22 @@
         this.$router.push('/mailbox/innerbox/INBOX')
       },
     },
-
+    watch:{
+      $route(nv,ov){
+        this.activeIndex = this.$route.path;
+      },
+    },
     mounted() {
-      if (this.$route.path.indexOf('/pab') >= 0) {
-        this.activeIndex = "pab";
-      } else if (this.$route.path.indexOf('/oab') >= 0) {
-        this.activeIndex = "oab";
-      } else if (this.$route.path.indexOf('/cab') >= 0) {
-        this.activeIndex = "cab";
-      } else if (this.$route.path.indexOf('/soab') >= 0) {
-        this.activeIndex = "soab";
-      }
+      this.activeIndex = this.$route.path;
+      // if(this.$route.path=='/contact/pab'){
+      //   this.activeT='pab';
+      // }else if(this.$route.path=='/contact/oab'){
+      //   this.activeT='oab';
+      // }else if(this.$route.path=='/contact/cab'){
+      //   this.activeT='cab';
+      // }else if (this.$route.path=='/contact/soab') {
+      //   this.activeIndex = "soab";
+      // }
     }
 
   }

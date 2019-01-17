@@ -1,310 +1,302 @@
 <template>
-        <div class="mltabview-content">
-            <div  class="mltabview-panel">
-                <div class="m-mllist" v-loading="fullscreenLoading">
-                    <div class="list-bg"></div>
-                    <div class="m-mllist-row">
-                        <div class="toolbar" style="background:#fff;"
-    element-loading-spinner="el-icon-loading"
-    element-loading-background="rgba(0, 0, 0, 0.6)" >
+  <div class="mltabview-content">
+    <div  class="mltabview-panel">
+      <div class="m-mllist" v-loading="fullscreenLoading">
+        <div class="list-bg"></div>
+        <div class="m-mllist-row">
+          <div class="toolbar" style="background:#fff;"
+               element-loading-spinner="el-icon-loading"
+               element-loading-background="rgba(0, 0, 0, 0.6)" >
                             <span class=" f-fr j-setting">
                             <el-button  icon="el-icon-setting" circle></el-button></span>
 
-                            <!--<el-button size="mini" @click="selectAll" type="primary">-->
-                              <!--{{is_checked?'取消全选':'全选'}}-->
-                              <!--&lt;!&ndash;<el-checkbox @change="selectAll" :checked="is_checked" class="check_btn"></el-checkbox>&ndash;&gt;-->
-                            <!--</el-button>-->
+            <!--<el-button size="mini" @click="selectAll" type="primary">-->
+            <!--{{is_checked?'取消全选':'全选'}}-->
+            <!--&lt;!&ndash;<el-checkbox @change="selectAll" :checked="is_checked" class="check_btn"></el-checkbox>&ndash;&gt;-->
+            <!--</el-button>-->
 
-                            <!--排序-->
-                            <el-dropdown @command="orderHandleCommand" placement="bottom-start" trigger="click">
-                                <el-button  size="small" plain>
-                                    <span>{{lan.MAILBOX_COM_INNERBOX_SORT}}</span>
-                                    <i class="el-icon-arrow-down el-icon--right"></i>
-                                </el-button>
-                                <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-for="item in orderItems" :key="item.id" class="dropdown_item" :class="{ active: orderCheckIndex===item.id }"
-                                    :divided="item.divided" :command="item">
-                                    <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: orderCheckIndex===item.id }"></i> </b>
-                                    {{ item.text}}</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
+            <!--排序-->
+            <el-dropdown @command="orderHandleCommand" placement="bottom-start" trigger="click">
+              <el-button  size="small" plain>
+                <span>{{lan.MAILBOX_COM_INNERBOX_SORT}}</span>
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item v-for="item in orderItems" :key="item.id" class="dropdown_item" :class="{ active: orderCheckIndex===item.id }"
+                                  :divided="item.divided" :command="item">
+                  <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: orderCheckIndex===item.id }"></i> </b>
+                  {{ item.text}}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
 
-                            <!--查看-->
+            <!--查看-->
 
-                            <el-dropdown @command="viewHandleCommand" trigger="click">
-                                <el-button  size="small" plain >
-                                    <span>{{lan.MAILBOX_COM_INNERBOX_SEE}}</span>
-                                    <i class="el-icon-arrow-down el-icon--right"></i>
-                                </el-button>
-                                <el-dropdown-menu slot="dropdown">
-                                  <el-dropdown-item v-if="!item.children" v-for="(item,k) in viewItems" :key="k" class="dropdown_item"
-                                   :command="item.id" :divided="item.divided" :class="{ active: viewCheckIndex===item.id }">
-                                      <b><i class="el-icon-check vibility_hide" v-if="!item.classN" :class="{ vibility_show: viewCheckIndex===item.id }"></i> </b><i :class="item.classN"></i>
-                                      {{ item.text}}
-                                  </el-dropdown-item>
-                                  <el-dropdown-item class="dropdown_item" v-else="item.children" :divided="item.divided">
-                                    <el-dropdown @command="viewHandleCommand"  placement="right-start">
+            <el-dropdown @command="viewHandleCommand" trigger="click">
+              <el-button  size="small" plain >
+                <span>{{lan.MAILBOX_COM_INNERBOX_SEE}}</span>
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item v-if="!item.children" v-for="(item,k) in viewItems" :key="k" class="dropdown_item"
+                                  :command="item.id" :divided="item.divided" :class="{ active: viewCheckIndex===item.id }">
+                  <b><i class="el-icon-check vibility_hide" v-if="!item.classN" :class="{ vibility_show: viewCheckIndex===item.id }"></i> </b><i :class="item.classN"></i>
+                  {{ item.text}}
+                </el-dropdown-item>
+                <el-dropdown-item class="dropdown_item" v-else="item.children" :divided="item.divided">
+                  <el-dropdown @command="viewHandleCommand"  placement="right-start">
                                       <span class="el-dropdown-link">
                                         <b><i class="el-icon-check vibility_hide" :class="item.classN"></i> </b>
                                       {{item.text}}<i class="el-icon-arrow-right el-icon--right"></i>
                                       </span>
-                                        <el-dropdown-menu slot="dropdown">
-                                          <el-dropdown-item  v-for="(c,k) in item.children" :key="k" class="dropdown_item" :command="c.id">
-                                              <i class="iconfont icon-iconflatcolor" :class="c.classN"></i> {{c.text}}
-                                          </el-dropdown-item>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item  v-for="(c,k) in item.children" :key="k" class="dropdown_item" :command="c.id">
+                        <i class="iconfont icon-iconflatcolor" :class="c.classN"></i> {{c.text}}
+                      </el-dropdown-item>
 
-                                        </el-dropdown-menu>
+                    </el-dropdown-menu>
 
-                                    </el-dropdown>
-                                  </el-dropdown-item>
-                                </el-dropdown-menu>
-                            </el-dropdown>
+                  </el-dropdown>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
 
-                            <!-- 更多按钮 -->
-                            <div v-if="multipleSelection.length>0" class="inline_block">
-                                <el-button  size="small" plain @click="deleteMailById">
-                                    {{lan.COMMON_BUTTON_DELETE}}
-                                </el-button>
+            <!-- 更多按钮 -->
+            <div v-if="multipleSelection.length>0" class="inline_block">
+              <el-button  size="small" plain @click="deleteMailById">
+                {{lan.COMMON_BUTTON_DELETE}}
+              </el-button>
 
-                                <el-dropdown @command="moveHandleCommand" trigger="click" v-if="boxId!='Drafts'">
-                                    <el-button  size="small" plain>
-                                    <span>{{lan.MAILBOX_COM_INNERBOX_MOVE_TO}}</span>
-                                    <i class="el-icon-arrow-down el-icon--right"></i>
-                                    </el-button>
-                                    <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-for="item in moveItems" :key="item.id" class="dropdown_item" :class="{ active: moveCheckIndex===item.id }"
+              <el-dropdown @command="moveHandleCommand" trigger="click" v-if="boxId!='Drafts'">
+                <el-button  size="small" plain>
+                  <span>{{lan.MAILBOX_COM_INNERBOX_MOVE_TO}}</span>
+                  <i class="el-icon-arrow-down el-icon--right"></i>
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item v-for="item in moveItems" :key="item.id" class="dropdown_item" :class="{ active: moveCheckIndex===item.id }"
                                     :divided="item.divided" :command="item.id">
-                                        <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moveCheckIndex===item.id }"></i> </b>
-                                        {{ item.text}}</el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </el-dropdown>
+                    <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moveCheckIndex===item.id }"></i> </b>
+                    {{ item.text}}</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
 
-                                <el-dropdown @command="signHandleCommand" trigger="click">
-                                    <el-button  size="small" plain >
-                                        <span>{{lan.MAILBOX_COM_INNERBOX_MARKED_AS}}</span>
-                                        <i class="el-icon-arrow-down el-icon--right"></i>
-                                    </el-button>
-                                    <el-dropdown-menu slot="dropdown">
-                                      <el-dropdown-item v-if="!item.children" v-for="item in signItems" :key="item.id" class="dropdown_item"
-                                       :command="item" :divided="item.divided">
-                                          <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
-                                          {{ item.text}}
-                                      </el-dropdown-item>
-                                      <el-dropdown-item class="dropdown_item" v-else="item.children" :divided="item.divided">
-                                        <el-dropdown @command="signHandleCommand"  placement="right-start">
+              <el-dropdown @command="signHandleCommand" trigger="click">
+                <el-button  size="small" plain >
+                  <span>{{lan.MAILBOX_COM_INNERBOX_MARKED_AS}}</span>
+                  <i class="el-icon-arrow-down el-icon--right"></i>
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item v-if="!item.children" v-for="item in signItems" :key="item.id" class="dropdown_item"
+                                    :command="item" :divided="item.divided">
+                    <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
+                    {{ item.text}}
+                  </el-dropdown-item>
+                  <el-dropdown-item class="dropdown_item" v-else="item.children" :divided="item.divided">
+                    <el-dropdown @command="signHandleCommand"  placement="right-start">
                                           <span class="el-dropdown-link">
                                             <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
                                           {{item.text}}<i class="el-icon-arrow-right el-icon--right"></i>
                                           </span>
-                                            <el-dropdown-menu slot="dropdown">
-                                              <el-dropdown-item  v-for="(c,k) in item.children" :key="k" class="dropdown_item" :command="c">
-                                                  <i class="iconfont icon-iconflatcolor" :class="c.classN"></i> {{c.text}}
-                                              </el-dropdown-item>
+                      <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item  v-for="(c,k) in item.children" :key="k" class="dropdown_item" :command="c">
+                          <i class="iconfont icon-iconflatcolor" :class="c.classN"></i> {{c.text}}
+                        </el-dropdown-item>
 
-                                            </el-dropdown-menu>
+                      </el-dropdown-menu>
 
-                                        </el-dropdown>
-                                      </el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </el-dropdown>
+                    </el-dropdown>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
 
-                                <el-dropdown @command="moreHandleCommand" trigger="click">
-                                    <el-button  size="small" plain>
-                                    <span>{{lan.MAILBOX_COM_INNERBOX_MORE}}</span>
-                                    <i class="el-icon-arrow-down el-icon--right"></i>
-                                    </el-button>
-                                    <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item v-if="boxId!='Drafts'||item.id==6||item.id==7||item.id==8" v-for="item in moreItems" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }"
+              <el-dropdown @command="moreHandleCommand" trigger="click">
+                <el-button  size="small" plain>
+                  <span>{{lan.MAILBOX_COM_INNERBOX_MORE}}</span>
+                  <i class="el-icon-arrow-down el-icon--right"></i>
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item v-if="boxId!='Drafts'||item.id==6||item.id==7||item.id==8" v-for="item in moreItems" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }"
                                     :divided="item.divided" :command="item">
-                                        <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moreCheckIndex===item.id }"></i> </b>
-                                        {{ item.text}}</el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </el-dropdown>
+                    <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moreCheckIndex===item.id }"></i> </b>
+                    {{ item.text}}</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
 
-                            </div>
+            </div>
 
-                            <!--刷新-->
-                            <el-button  size="small" plain @click="refresh">
-                                {{lan.MAILBOX_COM_INNERBOX_REFRESH}}  <!-- <i class="el-icon-refresh el-icon--right"></i> -->
-                            </el-button>
-                            <el-button v-show="!moreSearch" @click="moreSearch=true" size="small">{{lan.MAILBOX_COM_INNERBOX_MORE_SEARCH}}</el-button>
+            <!--刷新-->
+            <el-button  size="small" plain @click="refresh">
+              {{lan.MAILBOX_COM_INNERBOX_REFRESH}}  <!-- <i class="el-icon-refresh el-icon--right"></i> -->
+            </el-button>
+            <el-button v-show="!moreSearch" @click="moreSearch=true" size="small">{{lan.MAILBOX_COM_INNERBOX_MORE_SEARCH}}</el-button>
 
-                            <div v-show="moreSearch">
-                              <el-form :inline="true" :model="searchForm" ref="searchForm" class="demo-form-inline" size="small">
-                                <el-form-item :label="lan.COMMON_SENDER">
-                                  <el-input v-model="searchForm.from" :placeholder="lan.COMMON_SENDER"></el-input>
-                                </el-form-item>
-                                <el-form-item :label="lan.COMMON_MAIL_SUBJECT">
-                                  <el-input v-model="searchForm.subject" :placeholder="lan.COMMON_MAIL_SUBJECT"></el-input>
-                                </el-form-item>
-                                <el-form-item :label="lan.SETTING_RE_LOGIC_CONTENT">
-                                  <el-input v-model="searchForm.body" :placeholder="lan.SETTING_RE_LOGIC_CONTENT"></el-input>
-                                </el-form-item>
-                                <el-form-item>
-                                  <el-button type="primary" @click="moreSearchfn">{{lan.COMMON_SEARCH}}</el-button>
-                                  <el-button v-show="moreSearch" @click="moreSearch=false" size="small">{{lan.MAILBOX_COM_INNERBOX_HIDE}}</el-button>
-                                </el-form-item>
-                              </el-form>
-                            </div>
+            <div v-show="moreSearch">
+              <el-form :inline="true" :model="searchForm" ref="searchForm" class="demo-form-inline" size="small">
+                <el-form-item :label="lan.COMMON_SENDER">
+                  <el-input v-model="searchForm.from" :placeholder="lan.COMMON_SENDER"></el-input>
+                </el-form-item>
+                <el-form-item :label="lan.COMMON_MAIL_SUBJECT">
+                  <el-input v-model="searchForm.subject" :placeholder="lan.COMMON_MAIL_SUBJECT"></el-input>
+                </el-form-item>
+                <el-form-item :label="lan.SETTING_RE_LOGIC_CONTENT">
+                  <el-input v-model="searchForm.body" :placeholder="lan.SETTING_RE_LOGIC_CONTENT"></el-input>
+                </el-form-item>
+                <el-form-item>
+                  <el-button type="primary" @click="moreSearchfn">{{lan.COMMON_SEARCH}}</el-button>
+                  <el-button v-show="moreSearch" @click="moreSearch=false" size="small">{{lan.MAILBOX_COM_INNERBOX_HIDE}}</el-button>
+                </el-form-item>
+              </el-form>
+            </div>
 
-                        </div>
+          </div>
 
-                    <div class="mail-totals j-mail-totals" v-if="multipleSelection.length==0" style="line-height: 36px;">
-                        <div class="totals-info">
-                        {{curr_folder}}(
-                        <span class="unread-mail"><span class="number">{{unseen_count_new}}</span>{{lan.MAILBOX_COM_INNERBOX_SEAL}}</span>
-                        <a href="#" @click.prevent="viewHandleCommand('unseen')">{{lan.MAILBOX_COM_INNERBOX_UNREAD}}</a>
-                        <a href="#" v-if="unreadCount" @click.prevent="readAll">{{lan.MAILBOX_COM_INNERBOX_ALL_READ}}</a>
-                        )
+          <div class="mail-totals j-mail-totals" v-if="multipleSelection.length==0" style="line-height: 36px;">
+            <div class="totals-info">
+              {{curr_folder}}(
+              <span class="unread-mail"><span class="number">{{unseen_count_new}}</span>{{lan.MAILBOX_COM_INNERBOX_SEAL}}</span>
+              <a href="#" @click.prevent="viewHandleCommand('unseen')">{{lan.MAILBOX_COM_INNERBOX_UNREAD}}</a>
+              <a href="#" v-if="unreadCount" @click.prevent="readAll">{{lan.MAILBOX_COM_INNERBOX_ALL_READ}}</a>
+              )
 
-                          <el-pagination style="float:right;text-align:right;padding:4px;height:32px;"
-                              @size-change="handleSizeChange"
-                              @current-change="handleCurrentChange"
-                              background
-                              :current-page="currentPage"
-                              :page-sizes="[10, 20, 50,100]"
-                              :page-size="pageSize"
-                              layout="total, sizes, prev, pager, next, jumper"
-                              :total="totalCount">
-                            </el-pagination>
+              <el-pagination style="float:right;text-align:right;padding:4px;height:32px;"
+                             @size-change="handleSizeChange"
+                             @current-change="handleCurrentChange"
+                             background
+                             :current-page="currentPage"
+                             :page-sizes="[10, 20, 50,100]"
+                             :page-size="pageSize"
+                             layout="total, sizes, prev, pager, next, jumper"
+                             :total="totalCount">
+              </el-pagination>
 
-                        </div>
-                    </div>
-                    <div class="j-select-count select-count" v-if="multipleSelection.length>0" style="line-height: 36px;">
-                        <span class="j-desc desc">{{lan.MAILBOX_COM_INNERBOX_HAVE_CHOSEN}} {{multipleSelection.length}} {{lan.MAILBOX_COM_INNERBOX_SEAL_SELECTED}}</span>
-                        <a class="j-cancel cancel" href="#" @click="noSelect">{{lan.COMMON_BUTTON_CANCELL}}</a>
+            </div>
+          </div>
+          <div class="j-select-count select-count" v-if="multipleSelection.length>0" style="line-height: 36px;">
+            <span class="j-desc desc">{{lan.MAILBOX_COM_INNERBOX_HAVE_CHOSEN}} {{multipleSelection.length}} {{lan.MAILBOX_COM_INNERBOX_SEAL_SELECTED}}</span>
+            <a class="j-cancel cancel" href="#" @click="noSelect">{{lan.COMMON_BUTTON_CANCELL}}</a>
 
-                      <el-pagination style="float:right;text-align:right;padding:4px;height:32px;"
-                        @size-change="handleSizeChange"
-                        @current-change="handleCurrentChange"
-                        background
-                        :current-page="currentPage"
-                        :page-sizes="[10, 20, 50,100]"
-                        :page-size="pageSize"
-                        layout="total, sizes, prev, pager, next, jumper"
-                        :total="totalCount">
-                      </el-pagination>
-                    </div>
-                    </div>
-                    <div class="m-mllist-row mllist-list-row">
-                      <div class="j-module-content j-maillist mllist-list u-scroll">
-                        <div class="table_box" style="height:100%">
-                           <el-table  :show-header="true" ref="innerTable" height="100%" :data="listData_new" style="width: 100%;height:100%;background:transparent" class="vertical_align_top maillist" v-loading="loading"
-                              highlight-current-row  @cell-mouse-enter="hoverfn" @cell-mouse-leave="noHover" @row-click="rowClick" @cell-click="cellClick"
-                                @select-all="selectAllTable"    @selection-change="handleSelectionChange"  :header-cell-style="{background:'#f0f1f3'}"
-                                :span-method="arraySpanMethod"
-                            >
-                                <!--:span-method="arraySpanMethod"-->
-                            <el-table-column
-                              type="selection"
-                              width="46"
-                              label=""
-                              :selectable="selectablee"
-                            >
-                            </el-table-column>
-                            <el-table-column width="110" class-name="flag_btn">
-                              <template slot-scope="scope">
+            <el-pagination style="float:right;text-align:right;padding:4px;height:32px;"
+                           @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"
+                           background
+                           :current-page="currentPage"
+                           :page-sizes="[10, 20, 50,100]"
+                           :page-size="pageSize"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="totalCount">
+            </el-pagination>
+          </div>
+        </div>
+        <div class="m-mllist-row mllist-list-row">
+          <div class="j-module-content j-maillist mllist-list u-scroll">
+            <div class="table_box" style="height:100%">
+              <el-table  :show-header="true" ref="innerTable" height="100%" :data="listData_new" style="width: 100%;height:100%;background:transparent" class="vertical_align_top maillist" v-loading="loading"
+                         highlight-current-row  @cell-mouse-enter="hoverfn" @cell-mouse-leave="noHover" @row-click="rowClick" @cell-click="cellClick"
+                         @select-all="selectAllTable"    @selection-change="handleSelectionChange"  :header-cell-style="{background:'#f0f1f3'}"
+                         :span-method="arraySpanMethod"
+              >
+                <!--:span-method="arraySpanMethod"-->
+                <el-table-column
+                  type="selection"
+                  width="46"
+                  label=""
+                  :selectable="selectablee"
+                >
+                </el-table-column>
+                <el-table-column width="110" class-name="flag_btn">
+                  <template slot-scope="scope">
 
-                                <div class="mainMsg" :class="{hoverStyle:scope.row.uid==hoverIndex}" v-if="!scope.row.is_header">
-                                  <span class="read_bg" :class="scope.row.flagbg_class" :title="scope.row.flagStr"></span>
-                                  <i :title="lan.MAILBOX_COM_INNERBOX_ENCLOSURE" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-attach')>=0" class="iconfont icon-attachment" style="color:#777;"></i>
-                                  <b class="is_red" :title="lan.MAILBOX_COM_INNERBOX_URGENT_MAIL" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-emergent')>=0">!</b>
-                                  <el-dropdown trigger="click" @command="signHandleCommand_new($event,scope.row)">
+                    <div class="mainMsg" :class="{hoverStyle:scope.row.uid==hoverIndex}" v-if="!scope.row.is_header">
+                      <span class="read_bg" :class="scope.row.flagbg_class" :title="scope.row.flagStr"></span>
+                      <i :title="lan.MAILBOX_COM_INNERBOX_ENCLOSURE" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-attach')>=0" class="iconfont icon-attachment" style="color:#777;"></i>
+                      <b class="is_red" :title="lan.MAILBOX_COM_INNERBOX_URGENT_MAIL" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-emergent')>=0">!</b>
+                      <el-dropdown trigger="click" @command="signHandleCommand_new($event,scope.row)">
                                       <span class="el-dropdown-link" :title="lan.MAILBOX_COM_INNERBOX_SET_FLAG">
 
                                         <i class="iconfont icon-iconflat" v-if="!scope.row.flagged" style="cursor:pointer;"></i><i class="iconfont icon-iconflatcolor" v-if="scope.row.flagged" style="color:#c00;cursor:pointer;" :class="scope.row.color"></i><i class="el-icon-arrow-down el-icon--right" style="cursor:pointer;"></i>
                                       </span>
-                                      <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item  v-for="(c,k) in flagsData" :key="k" class="dropdown_item" :command="c">
-                                            <i class="iconfont icon-iconflatcolor" :class="[c.classN,{'icon-iconflat':k==flagsData.length-1}]" ></i> {{c.text}}
-                                        </el-dropdown-item>
+                        <el-dropdown-menu slot="dropdown">
+                          <el-dropdown-item  v-for="(c,k) in flagsData" :key="k" class="dropdown_item" :command="c">
+                            <i class="iconfont icon-iconflatcolor" :class="[c.classN,{'icon-iconflat':k==flagsData.length-1}]" ></i> {{c.text}}
+                          </el-dropdown-item>
 
-                                      </el-dropdown-menu>
-                                    </el-dropdown>
-
-                                </div>
-                                <div v-if="scope.row.is_header" style="cursor:pointer;">
-                                  <div style="font-weight:bold;font-size:14px;">
-                                    <span>{{scope.row.title}}</span>
-                                    <span>({{scope.row.count}})</span>
-                                  </div>
-                                </div>
-                              </template>
-                            </el-table-column>
-
-                            <!--<el-table-column width="80">-->
-                              <!--<template slot-scope="scope">-->
-                                <!--<b class="is_red" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-emergent')>=0">!</b>-->
-                                <!--<i v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-attach')>=0" class="iconfont icon-attachment" style="color:#777;"></i>-->
-                                <!--<span class="read_bg" :class="{unseen:!scope.row.isread,answered:scope.row.flags.join().indexOf('Answered')>=0,forward:scope.row.flags.join().indexOf('umail-forword')>=0}" :title="scope.row.flagStr"></span>-->
-                              <!--</template>-->
-                            <!--</el-table-column>-->
-
-                            <el-table-column width="160" :label="lan.COMMON_SENDER">
-                              <template slot-scope="scope">
-                                 <div class="info-summary" :class="scope.row.color">
-                                  <p class="summary-text">
-                                    <span class="fromto from" v-if="scope.row.mfrom" :class="{flagged:scope.row.flagged,unseen:!scope.row.isread}" :title="scope.row.mfrom[1]+' <'+scope.row.mfrom[0]+'>'" style="font-size:14px;">{{scope.row.mfrom[1]}} <{{scope.row.mfrom[0]}}></span>
-                                    <!--<span class="fromto">:</span>-->
-                                    <!--<span class="summary">-->
-                                      <!--sdajpofjsdfhup测试-->
-                                    <!--</span>-->
-                                  </p>
-                                </div>
-                              </template>
-                            </el-table-column>
-
-                            <el-table-column prop="subject"  :label="lan.COMMON_SUBJECT2" >
-                              <template slot-scope="scope">
-                                <div class="clear mainMsg" style="font-size:16px;" :class="[{flagged:scope.row.flagged,unseen:!scope.row.isread},scope.row.color]">
-
-                                  <span class="fl_l subject_hover" style="width:96%;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" @click.stop.prevent="readMail(scope.row)" :title="scope.row.subject||''">{{scope.row.subject|| lan.MAILBOX_NO_SUBJECT}}</span>
-
-                                </div>
-                                <div class="info-summary" :class="scope.row.color" v-if="false">
-                                  <p class="summary-text">
-                                    <span class="fromto from" v-if="scope.row.mfrom">{{scope.row.mfrom[1]}} <{{scope.row.mfrom[0]}}></span>
-
-                                  </p>
-                                </div>
-                              </template>
-                            </el-table-column>
-
-
-
-
-                            <el-table-column class="plan_style" prop="date" :label="lan.COMMON_TIME"   :width="$store.getters.getIsSwtime?180:160"  >
-                              <template slot-scope="scope">
-                                <div class="plan_style" v-if="!scope.row.is_header">
-                                  {{(scope.row.date ||scope.row.internaldate).replace('T',' ')}}
-
-                                </div>
-
-                              </template>
-                            </el-table-column>
-                            <el-table-column class="plan_style" prop="size" :label="lan.COMMON_SIZE"   width="100">
-                              <template slot-scope="scope">
-                                <div class="plan_style">
-                                  {{scope.row.size | mailsize}}
-                                  <!--<p style="padding-left:10px" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-attach')>=0" >-->
-                                    <!--<i class="iconfont icon-attachment"></i>-->
-                                  <!--</p>-->
-                                </div>
-                              </template>
-                            </el-table-column>
-                          </el-table>
-
-
-
-
-                        </div>
-                      </div>
+                        </el-dropdown-menu>
+                      </el-dropdown>
 
                     </div>
-                </div>
+                    <div v-if="scope.row.is_header" style="cursor:pointer;">
+                      <div style="font-weight:bold;font-size:14px;">
+                        <span>{{scope.row.title}}</span>
+                        <span>({{scope.row.count}})</span>
+                      </div>
+                    </div>
+                  </template>
+                </el-table-column>
+
+                <!--<el-table-column width="80">-->
+                <!--<template slot-scope="scope">-->
+                <!--<b class="is_red" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-emergent')>=0">!</b>-->
+                <!--<i v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-attach')>=0" class="iconfont icon-attachment" style="color:#777;"></i>-->
+                <!--<span class="read_bg" :class="{unseen:!scope.row.isread,answered:scope.row.flags.join().indexOf('Answered')>=0,forward:scope.row.flags.join().indexOf('umail-forword')>=0}" :title="scope.row.flagStr"></span>-->
+                <!--</template>-->
+                <!--</el-table-column>-->
+
+                <el-table-column width="180" :label="lan.COMMON_SENDER">
+                  <template slot-scope="scope">
+                    <div class="info-summary" :class="scope.row.color">
+                      <p class="summary-text">
+                        <span class="fromto from" v-if="scope.row.mfrom" :class="{flagged:scope.row.flagged,unseen:!scope.row.isread}" :title="scope.row.mfrom[1]+' <'+scope.row.mfrom[0]+'>'" style="font-size:14px;">{{scope.row.mfrom[1]}} <{{scope.row.mfrom[0]}}></span>
+                        <!--<span class="fromto">:</span>-->
+                        <!--<span class="summary">-->
+                        <!--sdajpofjsdfhup测试-->
+                        <!--</span>-->
+                      </p>
+                    </div>
+                  </template>
+                </el-table-column>
+
+                <el-table-column prop="subject"  :label="lan.COMMON_SUBJECT2" >
+                  <template slot-scope="scope">
+                    <div class="clear mainMsg" style="font-size:16px;" :class="[{flagged:scope.row.flagged,unseen:!scope.row.isread},scope.row.color]">
+                                  <span class="fl_l subject_hover" style="width:96%;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" @click.stop.prevent="readMail(scope.row)" :title="scope.row.subject||''">
+                                    <span v-if="scope.row.flags.join().indexOf('umail-burn')>=0">{{lan.MAILBOX_COM_COMPOSE_IS_BURN}}: </span>
+                                    {{scope.row.subject|| lan.MAILBOX_NO_SUBJECT}}</span>
+                    </div>
+                    <div class="info-summary" :class="scope.row.color" v-if="false">
+                      <p class="summary-text">
+                        <span class="fromto from" v-if="scope.row.mfrom">{{scope.row.mfrom[1]}} <{{scope.row.mfrom[0]}}></span>
+
+                      </p>
+                    </div>
+                  </template>
+                </el-table-column>
+
+                <el-table-column class="plan_style" prop="date" :label="lan.COMMON_TIME"   :width="$store.getters.getIsSwtime?180:160"  >
+                  <template slot-scope="scope">
+                    <div class="plan_style" v-if="!scope.row.is_header">
+                      {{(scope.row.date ||scope.row.internaldate).replace('T',' ')}}
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column class="plan_style" prop="size" :label="lan.COMMON_SIZE"   width="100">
+                  <template slot-scope="scope">
+                    <div class="plan_style">
+                      {{scope.row.size | mailsize}}
+                      <!--<p style="padding-left:10px" v-if="scope.row.flags && scope.row.flags.join().indexOf('umail-attach')>=0" >-->
+                      <!--<i class="iconfont icon-attachment"></i>-->
+                      <!--</p>-->
+                    </div>
+                  </template>
+                </el-table-column>
+              </el-table>
+
             </div>
+          </div>
 
         </div>
+      </div>
+    </div>
+
+  </div>
 </template>
 <script>
   import lan from '@/assets/js/lan';
@@ -322,128 +314,128 @@
     },
 
     data() {
-        return {
-          is_checked:false,
-          listData:[],
-          listData_new:[],
-          flagsData:[
-          {flags:'\\flagged',action:'add',text:'红旗',classN:'redcolor'},
-          {flags:'umail-green',action:'add',text:'绿旗',classN:'flag-green'},
-          {flags:'umail-orange',action:'add',text:'橙旗',classN:'flag-orange'},
-          {flags:'umail-blue',action:'add',text:'蓝旗',classN:'flag-blue'},
-          {flags:'umail-pink',action:'add',text:'粉旗',classN:'flag-pink'},
-          {flags:'umail-cyan',action:'add',text:'青旗',classN:'flag-cyan'},
-          {flags:'umail-yellow',action:'add',text:'黄旗',classN:'flag-yellow'},
-          {flags:'umail-purple',action:'add',text:'紫旗',classN:'flag-purple'},
-          {flags:'umail-gray',action:'add',text:'灰旗',classN:'flag-gray'},
-          {flags:'\\flagged',text:'取消旗帜',action:'remove'},
+      return {
+        is_checked:false,
+        listData:[],
+        listData_new:[],
+        flagsData:[
+          {flags:'\\flagged',action:'add',text:' ',classN:'redcolor'},
+          {flags:'umail-green',action:'add',text:' ',classN:'flag-green'},
+          {flags:'umail-orange',action:'add',text:' ',classN:'flag-orange'},
+          {flags:'umail-blue',action:'add',text:' ',classN:'flag-blue'},
+          {flags:'umail-pink',action:'add',text:' ',classN:'flag-pink'},
+          {flags:'umail-cyan',action:'add',text:' ',classN:'flag-cyan'},
+          {flags:'umail-yellow',action:'add',text:' ',classN:'flag-yellow'},
+          {flags:'umail-purple',action:'add',text:' ',classN:'flag-purple'},
+          {flags:'umail-gray',action:'add',text:' ',classN:'flag-gray'},
+          {flags:'\\flagged',text:'',action:'remove'},
         ],
-          fullscreenLoading:false,
-          reject_is_delete:false,
-          boxId:'INBOX',
-          curr_folder:'',
-          moreSearch:false,
-          searchForm: {
-            from: '',
-            subject: '',
-            body: ''
-          },
-          loading: false,
-          sort:'',
-          search:'',
-          hoverIndex:'',
-          totalAllCount:0,
-          multipleSelection:[],
-          tableData: [],
-          unreadCount:0,
-          totalCount:0,
-          currentPage:1,
-          pageSize:20,
-          checkIndex:'',
-          checkAll:false,
-          checkItems:[
-            {id:0,text:'',divided:false},
-            {id:1,text:'',divided:true},
-            {id:2,text:'',divided:false},
-            {id:3,text:'',divided:false},
-            {id:4,text:'',divided:false},
-            {id:5,text:'',divided:false},
-          ],
-          orderCheckIndex:'',
-          orderItems:[
-            {id:0,text:'',divided:false,sort:'REVERSE ARRIVAL'},
-            {id:1,text:'',divided:false,sort:'ARRIVAL'},
-            {id:3,text:'',divided:true,sort:'FROM'},
-            {id:2,text:'',divided:false,sort:'REVERSE FROM'},
-            {id:4,text:'',divided:true,sort:'REVERSE SUBJECT '},
-            {id:5,text:'',divided:false,sort:'SUBJECT '},
-            {id:8,text:'',divided:true,sort:'SIZE'},
-            {id:9,text:'',divided:false,sort:'REVERSE SIZE'},
-          ],
+        fullscreenLoading:false,
+        reject_is_delete:false,
+        boxId:'INBOX',
+        curr_folder:'',
+        moreSearch:false,
+        searchForm: {
+          from: '',
+          subject: '',
+          body: ''
+        },
+        loading: false,
+        sort:'',
+        search:'',
+        hoverIndex:'',
+        totalAllCount:0,
+        multipleSelection:[],
+        tableData: [],
+        unreadCount:0,
+        totalCount:0,
+        currentPage:1,
+        pageSize:20,
+        checkIndex:'',
+        checkAll:false,
+        checkItems:[
+          {id:0,text:'',divided:false},
+          {id:1,text:'',divided:true},
+          {id:2,text:'',divided:false},
+          {id:3,text:'',divided:false},
+          {id:4,text:'',divided:false},
+          {id:5,text:'',divided:false},
+        ],
+        orderCheckIndex:'',
+        orderItems:[
+          {id:0,text:'',divided:false,sort:'REVERSE ARRIVAL'},
+          {id:1,text:'',divided:false,sort:'ARRIVAL'},
+          {id:3,text:'',divided:true,sort:'FROM'},
+          {id:2,text:'',divided:false,sort:'REVERSE FROM'},
+          {id:4,text:'',divided:true,sort:'REVERSE SUBJECT '},
+          {id:5,text:'',divided:false,sort:'SUBJECT '},
+          {id:8,text:'',divided:true,sort:'SIZE'},
+          {id:9,text:'',divided:false,sort:'REVERSE SIZE'},
+        ],
 
-          viewCheckIndex:'',
-          viewItems:[
-            {id:'',text:'',divided:false},
-            {id:'unseen',text:'',divided:false},
-            {id:'seen',text:'',divided:false},
-            {id:'flagged',text:'',divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
-            {id:'other',text:'',divided:false,children:[
-                {id:'KEYWORD umail-green',text:'',classN:'flag-green'},
-                {id:'KEYWORD umail-orange',text:'',classN:'flag-orange'},
-                {id:'KEYWORD umail-blue',text:'',classN:'flag-blue'},
-                {id:'KEYWORD umail-pink',text:'',classN:'flag-pink'},
-                {id:'KEYWORD umail-cyan',text:'',classN:'flag-cyan'},
-                {id:'KEYWORD umail-yellow',text:'',classN:'flag-yellow'},
-                {id:'KEYWORD umail-purple',text:'',classN:'flag-purple'},
-                {id:'KEYWORD umail-gray',text:'',classN:'flag-gray'}
-              ]},
-            {id:'unflagged',text:'',divided:false,classN:'iconfont icon-iconflat'},
-            {id:'ANSWERED',text:'',divided:true,classN:'iconfont icon-iconback greencolor'},
-            {id:'KEYWORD umail-forword',text:'',divided:false,classN:'iconfont icon-Forward greencolor'},
-          ],
-          moveCheckIndex:'',
+        viewCheckIndex:'',
+        viewItems:[
+          {id:'',text:'',divided:false},
+          {id:'unseen',text:'',divided:false},
+          {id:'seen',text:'',divided:false},
+          {id:'flagged',text:'',divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
+          {id:'other',text:'',divided:false,children:[
+              {id:'KEYWORD umail-green',text:'',classN:'flag-green'},
+              {id:'KEYWORD umail-orange',text:'',classN:'flag-orange'},
+              {id:'KEYWORD umail-blue',text:'',classN:'flag-blue'},
+              {id:'KEYWORD umail-pink',text:'',classN:'flag-pink'},
+              {id:'KEYWORD umail-cyan',text:'',classN:'flag-cyan'},
+              {id:'KEYWORD umail-yellow',text:'',classN:'flag-yellow'},
+              {id:'KEYWORD umail-purple',text:'',classN:'flag-purple'},
+              {id:'KEYWORD umail-gray',text:'',classN:'flag-gray'}
+            ]},
+          {id:'unflagged',text:'',divided:false,classN:'iconfont icon-iconflat'},
+          {id:'ANSWERED',text:'',divided:true,classN:'iconfont icon-iconback greencolor'},
+          {id:'KEYWORD umail-forword',text:'',divided:false,classN:'iconfont icon-Forward greencolor'},
+        ],
+        moveCheckIndex:'',
 
-          signItems:[
-            {id:0,flags:'\\Seen',text:'',divided:false,action:'add'},
-            {id:1,flags:'\\Seen',text:'',divided:false,action:'remove'},
-            {id:2,flags:'\\flagged',text:'',divided:true,action:'add',classN:'iconfont icon-iconflatcolor redcolor'},
-            {id:3,text:'',divided:false,children:[
-                {flags:'umail-green',action:'add',text:'',classN:{'flag-green':true}},
-                {flags:'umail-orange',action:'add',text:'',classN:{'flag-orange':true}},
-                {flags:'umail-blue',action:'add',text:'',classN:{'flag-blue':true}},
-                {flags:'umail-pink',action:'add',text:'',classN:{'flag-pink':true}},
-                {flags:'umail-cyan',action:'add',text:'',classN:{'flag-cyan':true}},
-                {flags:'umail-yellow',action:'add',text:'',classN:{'flag-yellow':true}},
-                {flags:'umail-purple',action:'add',text:'',classN:{'flag-purple':true}},
-                {flags:'umail-gray',action:'add',text:'',classN:{'flag-gray':true}}
-              ]},
-            {id:4,flags:'\\flagged',text:'',divided:false,action:'remove'},
-          ],
-          moreCheckIndex:'',
-          moreItems:[
-            {id:0,text:'',divided:false,checkone:true},
-            {id:1,text:'',divided:false,checkone:true},
-            {id:2,text:'',divided:true,checkone:true},
-            {id:3,text:'',divided:false,checkone:true},
-            {id:4,text:'',divided:true,checkone:false},
-            {id:5,text:'',divided:true,checkone:true},
-            {id:6,text:'',divided:false,checkone:false},
-            {id:7,text:'',divided:true,checkone:false},
-            {id:8,text:'',divided:false,checkone:false},
-          ],
-          activeNames: [0],
-          activeLi:[0,0],
-          collapseItems:[
-            {
-                  id:0,
+        signItems:[
+          {id:0,flags:'\\Seen',text:'',divided:false,action:'add'},
+          {id:1,flags:'\\Seen',text:'',divided:false,action:'remove'},
+          {id:2,flags:'\\flagged',text:'',divided:true,action:'add',classN:'iconfont icon-iconflatcolor redcolor'},
+          {id:3,text:'',divided:false,children:[
+              {flags:'umail-green',action:'add',text:'',classN:{'flag-green':true}},
+              {flags:'umail-orange',action:'add',text:'',classN:{'flag-orange':true}},
+              {flags:'umail-blue',action:'add',text:'',classN:{'flag-blue':true}},
+              {flags:'umail-pink',action:'add',text:'',classN:{'flag-pink':true}},
+              {flags:'umail-cyan',action:'add',text:'',classN:{'flag-cyan':true}},
+              {flags:'umail-yellow',action:'add',text:'',classN:{'flag-yellow':true}},
+              {flags:'umail-purple',action:'add',text:'',classN:{'flag-purple':true}},
+              {flags:'umail-gray',action:'add',text:'',classN:{'flag-gray':true}}
+            ]},
+          {id:4,flags:'\\flagged',text:'',divided:false,action:'remove'},
+        ],
+        moreCheckIndex:'',
+        moreItems:[
+          {id:0,text:'',divided:false,checkone:true},
+          {id:1,text:'',divided:false,checkone:true},
+          {id:2,text:'',divided:true,checkone:true},
+          {id:3,text:'',divided:false,checkone:true},
+          {id:4,text:'',divided:true,checkone:false},
+          {id:5,text:'',divided:true,checkone:true},
+          {id:6,text:'',divided:false,checkone:false},
+          {id:7,text:'',divided:true,checkone:false},
+          {id:8,text:'',divided:false,checkone:false},
+        ],
+        activeNames: [0],
+        activeLi:[0,0],
+        collapseItems:[
+          {
+            id:0,
 
-                  lists:[
+            lists:[
 
-                    ]
-              }
-          ]
+            ]
+          }
+        ]
 
-        }
+      }
     },
     methods:{
       selectablee(row,index){
@@ -493,21 +485,21 @@
         }
         messageFlag(param).then((suc)=>{
           this.$message({
-              type:'success',
-              message: this.lan.MAILBOX_COM_INNERBOX_MAIL_MARKUP_SUCCESSFUL
-            })
+            type:'success',
+            message: this.lan.MAILBOX_COM_INNERBOX_MAIL_MARKUP_SUCCESSFUL
+          })
           this.getMessageList();
         },(err)=>{
 
         }).catch(err=>{
           let str = '';
-            if(err.detail){
-              str = err.detail
-            }
+          if(err.detail){
+            str = err.detail
+          }
           this.$message({
-              type:'error',
-              message: this.lan.MAILBOX_COM_INNERBOX_MAIL_MARKUP_FAILED +str
-            })
+            type:'error',
+            message: this.lan.MAILBOX_COM_INNERBOX_MAIL_MARKUP_FAILED +str
+          })
         })
       },
       cellClick(row,col,cell){
@@ -527,10 +519,10 @@
         this.orderCheckIndex = '';
         this.search = '';
         this.searchForm = {
-            from: '',
-            subject: '',
-            body: ''
-          }
+          from: '',
+          subject: '',
+          body: ''
+        }
         this.$parent.$parent.$parent.getFloderfn()
         this.getMessageList();
       },
@@ -712,13 +704,13 @@
         return row.date.replace('T','  ');
       },
       jumpTo(path,rid){
-            router.push({
-             name: path,
-             params: {
-              id: rid
-             }
-            });
-        },
+        router.push({
+          name: path,
+          params: {
+            id: rid
+          }
+        });
+      },
       handleCommand:function(index){
         this.checkIndex = index;
         if(index===0){
@@ -825,9 +817,9 @@
             }
             this.fullscreenLoading = false
             this.$message({
-                type:'error',
-                message: this.lan.COMMON_DELETE_FAILED +str
-              })
+              type:'error',
+              message: this.lan.COMMON_DELETE_FAILED +str
+            })
           })
         }).catch(() => {
           this.fullscreenLoading = false;
@@ -910,21 +902,21 @@
               pp.content = data.plain_text;
             }
             // if(item.id == 0 || item.id ==1 || item.id==5){
-              if(data.to && data.to.length>0){
-                for(let i=0;i<data.to.length;i++){
-                  pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
-                }
+            if(data.to && data.to.length>0){
+              for(let i=0;i<data.to.length;i++){
+                pp.maillist.push({fullname:data.to[i][1]||'',email:data.to[i][0],status:true})
               }
-              if(data.cc && data.cc.length>0){
-                for(let i=0;i<data.cc.length;i++){
-                  pp.maillist_copyer.push({fullname:data.cc[i][1]||'',email:data.cc[i][0],status:true})
-                }
+            }
+            if(data.cc && data.cc.length>0){
+              for(let i=0;i<data.cc.length;i++){
+                pp.maillist_copyer.push({fullname:data.cc[i][1]||'',email:data.cc[i][0],status:true})
               }
-              if(data.bcc && data.bcc.length>0){
-                for(let i=0;i<data.bcc.length;i++){
-                  pp.maillist_bcc.push({fullname:data.bcc[i][1]||'',email:data.bcc[i][0],status:true})
-                }
+            }
+            if(data.bcc && data.bcc.length>0){
+              for(let i=0;i<data.bcc.length;i++){
+                pp.maillist_bcc.push({fullname:data.bcc[i][1]||'',email:data.bcc[i][0],status:true})
               }
+            }
             // }
             pp.addTab('compose'+view+' ',data.subject,data.uid,fid)
             let row = this.multipleSelection[0];
@@ -969,9 +961,9 @@
                 }
                 this.fullscreenLoading = false;
                 this.$message(
-                {type:'error',message: this.lan.COMMON_OPRATE_FAILED+str}
-              )
-            })
+                  {type:'error',message: this.lan.COMMON_OPRATE_FAILED+str}
+                )
+              })
           }).catch(() => {
 
           });
@@ -1280,7 +1272,7 @@
           flag = this.lan.MAILBOX_COM_INNERBOX_MORNING
         }
         if (theHour > 12) {
-           theHour = theHour-12
+          theHour = theHour-12
         }
         if (theHour == 0) {
           theHour = 12;
@@ -1308,11 +1300,11 @@
     },
     computed:{
       checkedMails:function(){
-          let list=[];
-          for(let i=0;i<this.multipleSelection.length;i++){
-            list.push(this.multipleSelection[i].uid)
-          }
-          return list;
+        let list=[];
+        for(let i=0;i<this.multipleSelection.length;i++){
+          list.push(this.multipleSelection[i].uid)
+        }
+        return list;
       },
       moveItems:function(){
         let folder = this.floderResult;
@@ -1333,7 +1325,7 @@
       },
       lan:function(){
         let lang = lan.zh
-        if(this.$store.getters.getLanguage=='zh'){
+        if(this.$store.getters.getLanguage=='zh-hans'){
           lang = lan.zh
         }else if(this.$store.getters.getLanguage=='zh-tw'){
           lang = lan.zh_tw
@@ -1397,6 +1389,18 @@
             ]},
           {id:4,flags:'\\flagged',text:lang.MAILBOX_COM_INNERBOX_CANCEL_FLAG,divided:false,action:'remove'},
         ]
+        this.flagsData = [
+          {flags:'\\flagged',action:'add',text:lang.MAILBOX_COM_INNERBOX_RED_FLAG,classN:'redcolor'},
+          {flags:'umail-green',action:'add',text:lang.MAILBOX_COM_INNERBOX_GREEN_FLAG,classN:'flag-green'},
+          {flags:'umail-orange',action:'add',text:lang.MAILBOX_COM_INNERBOX_ORANGE_FLAG,classN:'flag-orange'},
+          {flags:'umail-blue',action:'add',text:lang.MAILBOX_COM_INNERBOX_BLUE_FLAG,classN:'flag-blue'},
+          {flags:'umail-pink',action:'add',text:lang.MAILBOX_COM_INNERBOX_PINK_FLAG,classN:'flag-pink'},
+          {flags:'umail-cyan',action:'add',text:lang.MAILBOX_COM_INNERBOX_CYAN_FLAG,classN:'flag-cyan'},
+          {flags:'umail-yellow',action:'add',text:lang.MAILBOX_COM_INNERBOX_YELLOW_FLAG,classN:'flag-yellow'},
+          {flags:'umail-purple',action:'add',text:lang.MAILBOX_COM_INNERBOX_PURPLE_FLAG,classN:'flag-purple'},
+          {flags:'umail-gray',action:'add',text:lang.MAILBOX_COM_INNERBOX_GREY_FLAG,classN:'flag-gray'},
+          {flags:'\\flagged',text:lang.MAILBOX_COM_INNERBOX_CANCEL_FLAG,action:'remove'},
+        ]
         this.moreItems = [
           {id:0,text:lang.MAILBOX_COM_INNERBOX_RECOVER,divided:false,checkone:true},
           {id:1,text:lang.MAILBOX_COM_INNERBOX_RECOVER_ALL,divided:false,checkone:true},
@@ -1422,57 +1426,57 @@
       // $(".el-dropdown-menu .el-dropdown-menu__item")[1].click();
     },
     watch: {
-        boxId(newValue, oldValue) {
-          this.currentPage = 1;
-          this.search = '';
-          this.viewCheckIndex = ''
-          this.multipleSelection = [];
-          this.searchForm = {
-            from: '',
-            subject: '',
-            body: ''
-          };
-          this.getMessageList();
-          if(newValue == 'Drafts'){
-            this.viewItems = [
-              {id:'',text:this.lan.MAILBOX_COM_INNERBOX_ALL_MAIL,divided:false},
-              {id:'unseen',text:this.lan.MAILBOX_COM_INNERBOX_UNREAD_MAIL,divided:false},
-              {id:'seen',text:this.lan.MAILBOX_COM_INNERBOX_READ_MAIL,divided:false},
-              {id:'flagged',text:this.lan.MAILBOX_COM_INNERBOX_MARKED_MAIL,divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
-              {id:'other',text:this.lan.MAILBOX_COM_INNERBOX_OTHER_MARKERS,divided:false,children:[
-                  {id:'KEYWORD umail-green',text:this.lan.MAILBOX_COM_INNERBOX_GREEN_FLAG,classN:'flag-green'},
-                  {id:'KEYWORD umail-orange',text:this.lan.MAILBOX_COM_INNERBOX_ORANGE_FLAG,classN:'flag-orange'},
-                  {id:'KEYWORD umail-blue',text:this.lan.MAILBOX_COM_INNERBOX_BLUE_FLAG,classN:'flag-blue'},
-                  {id:'KEYWORD umail-pink',text:this.lan.MAILBOX_COM_INNERBOX_PINK_FLAG,classN:'flag-pink'},
-                  {id:'KEYWORD umail-cyan',text:this.lan.MAILBOX_COM_INNERBOX_CYAN_FLAG,classN:'flag-cyan'},
-                  {id:'KEYWORD umail-yellow',text:this.lan.MAILBOX_COM_INNERBOX_YELLOW_FLAG,classN:'flag-yellow'},
-                  {id:'KEYWORD umail-purple',text:this.lan.MAILBOX_COM_INNERBOX_PURPLE_FLAG,classN:'flag-purple'},
-                  {id:'KEYWORD umail-gray',text:this.lan.MAILBOX_COM_INNERBOX_GREY_FLAG,classN:'flag-gray'}
-                ]},
-              {id:'unflagged',text:this.lan.MAILBOX_COM_INNERBOX_UNMARKED_MAIL,divided:false,classN:'iconfont icon-iconflat'}
-            ]
-          }else{
-            this.viewItems = [
-              {id:'',text:this.lan.MAILBOX_COM_INNERBOX_ALL_MAIL,divided:false},
-              {id:'unseen',text:this.lan.MAILBOX_COM_INNERBOX_UNREAD_MAIL,divided:false},
-              {id:'seen',text:this.lan.MAILBOX_COM_INNERBOX_READ_MAIL,divided:false},
-              {id:'flagged',text:this.lan.MAILBOX_COM_INNERBOX_MARKED_MAIL,divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
-              {id:'other',text:this.lan.MAILBOX_COM_INNERBOX_OTHER_MARKERS,divided:false,children:[
-                  {id:'KEYWORD umail-green',text:this.lan.MAILBOX_COM_INNERBOX_GREEN_FLAG,classN:'flag-green'},
-                  {id:'KEYWORD umail-orange',text:this.lan.MAILBOX_COM_INNERBOX_ORANGE_FLAG,classN:'flag-orange'},
-                  {id:'KEYWORD umail-blue',text:this.lan.MAILBOX_COM_INNERBOX_BLUE_FLAG,classN:'flag-blue'},
-                  {id:'KEYWORD umail-pink',text:this.lan.MAILBOX_COM_INNERBOX_PINK_FLAG,classN:'flag-pink'},
-                  {id:'KEYWORD umail-cyan',text:this.lan.MAILBOX_COM_INNERBOX_CYAN_FLAG,classN:'flag-cyan'},
-                  {id:'KEYWORD umail-yellow',text:this.lan.MAILBOX_COM_INNERBOX_YELLOW_FLAG,classN:'flag-yellow'},
-                  {id:'KEYWORD umail-purple',text:this.lan.MAILBOX_COM_INNERBOX_PURPLE_FLAG,classN:'flag-purple'},
-                  {id:'KEYWORD umail-gray',text:this.lan.MAILBOX_COM_INNERBOX_GREY_FLAG,classN:'flag-gray'}
-                ]},
-              {id:'unflagged',text:this.lan.MAILBOX_COM_INNERBOX_UNMARKED_MAIL,divided:false,classN:'iconfont icon-iconflat'},
-              {id:'ANSWERED',text:this.lan.MAILBOX_COM_INNERBOX_RECOVERED,divided:true,classN:'iconfont icon-iconback greencolor'},
-              {id:'KEYWORD umail-forword',text:this.lan.MAILBOX_COM_INNERBOX_FORWARDED,divided:false,classN:'iconfont icon-Forward greencolor'},
-            ]
-          }
-        },
+      boxId(newValue, oldValue) {
+        this.currentPage = 1;
+        this.search = '';
+        this.viewCheckIndex = ''
+        this.multipleSelection = [];
+        this.searchForm = {
+          from: '',
+          subject: '',
+          body: ''
+        };
+        this.getMessageList();
+        if(newValue == 'Drafts'){
+          this.viewItems = [
+            {id:'',text:this.lan.MAILBOX_COM_INNERBOX_ALL_MAIL,divided:false},
+            {id:'unseen',text:this.lan.MAILBOX_COM_INNERBOX_UNREAD_MAIL,divided:false},
+            {id:'seen',text:this.lan.MAILBOX_COM_INNERBOX_READ_MAIL,divided:false},
+            {id:'flagged',text:this.lan.MAILBOX_COM_INNERBOX_MARKED_MAIL,divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
+            {id:'other',text:this.lan.MAILBOX_COM_INNERBOX_OTHER_MARKERS,divided:false,children:[
+                {id:'KEYWORD umail-green',text:this.lan.MAILBOX_COM_INNERBOX_GREEN_FLAG,classN:'flag-green'},
+                {id:'KEYWORD umail-orange',text:this.lan.MAILBOX_COM_INNERBOX_ORANGE_FLAG,classN:'flag-orange'},
+                {id:'KEYWORD umail-blue',text:this.lan.MAILBOX_COM_INNERBOX_BLUE_FLAG,classN:'flag-blue'},
+                {id:'KEYWORD umail-pink',text:this.lan.MAILBOX_COM_INNERBOX_PINK_FLAG,classN:'flag-pink'},
+                {id:'KEYWORD umail-cyan',text:this.lan.MAILBOX_COM_INNERBOX_CYAN_FLAG,classN:'flag-cyan'},
+                {id:'KEYWORD umail-yellow',text:this.lan.MAILBOX_COM_INNERBOX_YELLOW_FLAG,classN:'flag-yellow'},
+                {id:'KEYWORD umail-purple',text:this.lan.MAILBOX_COM_INNERBOX_PURPLE_FLAG,classN:'flag-purple'},
+                {id:'KEYWORD umail-gray',text:this.lan.MAILBOX_COM_INNERBOX_GREY_FLAG,classN:'flag-gray'}
+              ]},
+            {id:'unflagged',text:this.lan.MAILBOX_COM_INNERBOX_UNMARKED_MAIL,divided:false,classN:'iconfont icon-iconflat'}
+          ]
+        }else{
+          this.viewItems = [
+            {id:'',text:this.lan.MAILBOX_COM_INNERBOX_ALL_MAIL,divided:false},
+            {id:'unseen',text:this.lan.MAILBOX_COM_INNERBOX_UNREAD_MAIL,divided:false},
+            {id:'seen',text:this.lan.MAILBOX_COM_INNERBOX_READ_MAIL,divided:false},
+            {id:'flagged',text:this.lan.MAILBOX_COM_INNERBOX_MARKED_MAIL,divided:true,classN:'iconfont icon-iconflatcolor redcolor'},
+            {id:'other',text:this.lan.MAILBOX_COM_INNERBOX_OTHER_MARKERS,divided:false,children:[
+                {id:'KEYWORD umail-green',text:this.lan.MAILBOX_COM_INNERBOX_GREEN_FLAG,classN:'flag-green'},
+                {id:'KEYWORD umail-orange',text:this.lan.MAILBOX_COM_INNERBOX_ORANGE_FLAG,classN:'flag-orange'},
+                {id:'KEYWORD umail-blue',text:this.lan.MAILBOX_COM_INNERBOX_BLUE_FLAG,classN:'flag-blue'},
+                {id:'KEYWORD umail-pink',text:this.lan.MAILBOX_COM_INNERBOX_PINK_FLAG,classN:'flag-pink'},
+                {id:'KEYWORD umail-cyan',text:this.lan.MAILBOX_COM_INNERBOX_CYAN_FLAG,classN:'flag-cyan'},
+                {id:'KEYWORD umail-yellow',text:this.lan.MAILBOX_COM_INNERBOX_YELLOW_FLAG,classN:'flag-yellow'},
+                {id:'KEYWORD umail-purple',text:this.lan.MAILBOX_COM_INNERBOX_PURPLE_FLAG,classN:'flag-purple'},
+                {id:'KEYWORD umail-gray',text:this.lan.MAILBOX_COM_INNERBOX_GREY_FLAG,classN:'flag-gray'}
+              ]},
+            {id:'unflagged',text:this.lan.MAILBOX_COM_INNERBOX_UNMARKED_MAIL,divided:false,classN:'iconfont icon-iconflat'},
+            {id:'ANSWERED',text:this.lan.MAILBOX_COM_INNERBOX_RECOVERED,divided:true,classN:'iconfont icon-iconback greencolor'},
+            {id:'KEYWORD umail-forword',text:this.lan.MAILBOX_COM_INNERBOX_FORWARDED,divided:false,classN:'iconfont icon-Forward greencolor'},
+          ]
+        }
+      },
       checkedMails(v){
       },
       $route(v,o){
@@ -1482,7 +1486,7 @@
 
     },
 
-}
+  }
 </script>
 
 <style>
@@ -1561,28 +1565,28 @@
     padding:8px 0;
   }
   .mainMsg .icon-iconflat,.mainMsg .el-icon-arrow-down{
-  display:none;
-}
-.mainMsg.hoverStyle .icon-iconflat,.mainMsg.hoverStyle .el-icon-arrow-down{
-  display:inline;
-}
-.dropdown_item.active{
-  color:#409EFF;
-}
-.width_100{
-  width:100px;
-}
-#pagination{
-  margin-right:10px;
-}
-.m-mllist .el-collapse-item__header{
-  padding:0 14px;
-  border-bottom: 1px solid #ebeef5;
-  font-weight: bold;
-}
-.m-mllist .el-collapse-item__content{
+    display:none;
+  }
+  .mainMsg.hoverStyle .icon-iconflat,.mainMsg.hoverStyle .el-icon-arrow-down{
+    display:inline;
+  }
+  .dropdown_item.active{
+    color:#409EFF;
+  }
+  .width_100{
+    width:100px;
+  }
+  #pagination{
+    margin-right:10px;
+  }
+  .m-mllist .el-collapse-item__header{
+    padding:0 14px;
+    border-bottom: 1px solid #ebeef5;
+    font-weight: bold;
+  }
+  .m-mllist .el-collapse-item__content{
     padding-bottom:0;
-}
+  }
   .flagged{
     color:#c00;
   }

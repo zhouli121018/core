@@ -483,3 +483,13 @@ export const releaseSms = params => { return axios.post(`${host}/twofactor/phone
 export const twofactorLogin = params => { return axios.post(`${host}/twofactor/login/`, params) };
 //手机短信验证发送验证码 POST /api/twofactor/login/sms/
 export const loginSms = params => { return axios.post(`${host}/twofactor/login/sms/`, params) };
+
+
+//用户申请 协议获取、密码规则、部门获取 GET /api/setting/register/agreement/
+export const registerAgreement = params => { return axios.get(`${host}/setting/register/agreement/`,{ params: params })}
+//注册申请 POST /api/setting/register/post/
+export const register = params => { return axios.post(`${host}/setting/register/post/`, params) };
+
+
+
+

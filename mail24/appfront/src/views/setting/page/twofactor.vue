@@ -28,7 +28,7 @@
           </div>
           <div  class="text item" v-if="show_google_set">
 
-            <el-form v-if="showList.has_totp" :model="goggleForm" :rules="goggleRules"  label-width="100px" size="small">
+            <el-form v-if="showList.has_totp" :model="goggleForm" :rules="goggleRules"  label-width="200px" size="small">
               <el-form-item :label="this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_CODE" prop="code">
                 <el-input v-model="goggleForm.code" style="width:300px;" :placeholder="this.$parent.lan.SETTING_TWOFACTOR_GOOGLE_CODE_PLACE"></el-input>
               </el-form-item>

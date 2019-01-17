@@ -120,12 +120,19 @@
     },
     methods: {
       createEditorFn(val){
+        let language = 'zh_CN';
+        if(this.$store.getters.getLanguage == 'en'){
+          language = 'en';
+        }else if(this.$store.getters.getLanguage == 'zh-tw'){
+          language = 'zh_TW';
+        }
         let options = {
           items:this.toolbarItems,
           uploadJson:this.uploadJson,
           filterMode:false,
           resizeType:1,
           indentChar:"",
+          langType:language,
           loadStyleMode:false,
           autoHeightMode:false
         }
@@ -133,12 +140,19 @@
        this.createEditor.html(val);
       },
       updateEditorFn(val){
+        let language = 'zh_CN';
+        if(this.$store.getters.getLanguage == 'en'){
+          language = 'en';
+        }else if(this.$store.getters.getLanguage == 'zh-tw'){
+          language = 'zh_TW';
+        }
         let options = {
           items:this.toolbarItems,
           uploadJson:this.uploadJson,
           filterMode:false,
           resizeType:1,
           indentChar:"",
+          langType:language,
           loadStyleMode:false,
           autoHeightMode:false
         }

@@ -354,7 +354,7 @@
         options: {
           // https://github.com/simple-uploader/Uploader/tree/develop/samples/Node.js
           // target: '/api/netdisk/upload/chunk/',
-          target: '/api/netdisk/uploadnew/',
+          target: '/api/netdisk/uploadnew/?t='+new Date().getTime(),
           testChunks: true,
           headers:{
             Authorization :`JWT ${cookie.getCookie('token')}`
@@ -1376,7 +1376,7 @@
     computed:{
       plang(){
         let lang = lan.zh
-        if(this.$store.getters.getLanguage=='zh'){
+        if(this.$store.getters.getLanguage=='zh-hans'){
           lang = lan.zh
         }else if(this.$store.getters.getLanguage=='zh-tw'){
           lang = lan.zh_tw

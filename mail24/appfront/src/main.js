@@ -5,7 +5,14 @@ import App from './App'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import Menubar from './components/Menubar'
-Vue.use(ElementUI)
+
+import VueI18n from 'vue-i18n'
+
+Vue.use(VueI18n)
+Vue.use(ElementUI);
+
+import i18n from './i18n/i18n'
+
 import Vuex from 'vuex'
 import store from './store'
 import './axios/';
@@ -77,6 +84,7 @@ var VM =new Vue({
   el: '#app',
   router,
   store,
+  i18n,
   components: { App  },
   template: '<App/>'
 })

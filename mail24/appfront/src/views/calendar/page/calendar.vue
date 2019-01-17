@@ -9,7 +9,7 @@
     ></full-calendar>
 
     <el-dialog :title="lan.CALENDAR_PAGE_CAL_NEW_EVENT" :visible.sync="newEventDialog" :modal-append-to-body="false" width="100%" style="padding:0 142px;box-sizing: border-box" top="45px">
-      <el-form :model="newForm" :rules="rules" ref="newForm" label-width="100px" class="demo-ruleForm" size="small">
+      <el-form :model="newForm" :rules="rules" ref="newForm" label-width="180px" class="demo-ruleForm" size="small">
         <el-form-item :label="lan.COMMON_SUBJECT" prop="title">
           <el-row>
             <el-col :span="20">
@@ -90,22 +90,22 @@
             <el-option :label="lan.CALENDAR_PAGE_CAL_MONTH" value="3"></el-option>
             <el-option label="年" value="4"></el-option>
           </el-select>
-            <span v-if="newForm.is_copy">重复</span>
+            <span v-if="newForm.is_copy">{{lan.CALENDAR_PAGE_CAL_REPEAT}}</span>
 
         </el-form-item>
         <el-form-item label="" v-show="newForm.is_copy">
           <el-checkbox-group v-if="newForm.cycle_mode==2" v-model="newForm.cycle_week">
-            <el-checkbox :label="0">周一</el-checkbox>
-            <el-checkbox :label="1">周二</el-checkbox>
-            <el-checkbox :label="2">周三</el-checkbox>
-            <el-checkbox :label="3">周四</el-checkbox>
-            <el-checkbox :label="4">周五</el-checkbox>
-            <el-checkbox :label="5">周六</el-checkbox>
-            <el-checkbox :label="6">周日</el-checkbox>
+            <el-checkbox :label="0">{{lan.MONDAY}}</el-checkbox>
+            <el-checkbox :label="1">{{lan.TUESDAY}}</el-checkbox>
+            <el-checkbox :label="2">{{lan.WEDNESDAY}}</el-checkbox>
+            <el-checkbox :label="3">{{lan.THURSDAY}}</el-checkbox>
+            <el-checkbox :label="4">{{lan.FRIDAY}}</el-checkbox>
+            <el-checkbox :label="5">{{lan.SATURDAY}}</el-checkbox>
+            <el-checkbox :label="6">{{lan.SUNDAY}}</el-checkbox>
           </el-checkbox-group>
-          <el-select v-model="newForm.cycle_type" placeholder="请选择重复类型">
-            <el-option label="重复至" value="0"></el-option>
-            <el-option label="永远重复" value="1"></el-option>
+          <el-select v-model="newForm.cycle_type" :placeholder="lan.CALENDAR_PAGE_CAL_CHOOSE_REPEAT_TYPE">
+            <el-option :label="lan.CALENDAR_PAGE_CAL_REPEAT_TO" value="0"></el-option>
+            <el-option :label="lan.CALENDAR_PAGE_CAL_REPEAT_FOREVER" value="1"></el-option>
           </el-select>
           <el-date-picker
             v-model="newForm.cycle_day"
@@ -113,63 +113,63 @@
             :picker-options="pickerBeginDateEnd"
             v-show="newForm.cycle_type==0"
             type="date"
-            placeholder="请选择重复截止日期">
+            :placeholder="lan.CALENDAR_PAGE_CAL_CHOOSE_REPEAT_ENDTIME">
           </el-date-picker>
-          <p  v-if="newForm.is_copy && newForm.cycle_mode>0">重复摘要：<span v-if="newForm.is_copy && newForm.cycle_mode!=0">每<span v-if="newForm.cycle_frequency>1">{{newForm.cycle_frequency}}</span></span> {{newForm.cycle_mode==1?'天重复':(newForm.cycle_mode==2?'周重复':newForm.cycle_mode==3?'月在'+newForm.start_day.slice(newForm.start_day.length-2)+'日开始':newForm.cycle_mode==4?'年在'+newForm.start_day.slice(newForm.start_day.length-5,newForm.start_day.length-3)+'月'+newForm.start_day.slice(newForm.start_day.length-2)+'日开始':'不重复')}} <span v-if="newForm.is_copy">{{newForm.cycle_type==0?'，重复至 ':'，永远重复'}} <i v-if="newForm.cycle_type==0">{{newForm.cycle_day}}</i></span> </p>
+          <p  v-if="newForm.is_copy && newForm.cycle_mode>0">{{lan.CALENDAR_PAGE_CAL_REPEAT_DESC}}<span v-if="newForm.is_copy && newForm.cycle_mode!=0">{{lan.CALENDAR_PAGE_CAL_EVERY}}<span v-if="newForm.cycle_frequency>1">{{newForm.cycle_frequency}}</span></span> {{newForm.cycle_mode==1?lan.CALENDAR_PAGE_CAL_REPEAT_DAY:(newForm.cycle_mode==2?lan.CALENDAR_PAGE_CAL_REPEAT_WEEK:newForm.cycle_mode==3?lan.CALENDAR_PAGE_CAL_REPEAT_MONTH+newForm.start_day.slice(newForm.start_day.length-2)+lan.CALENDAR_PAGE_CAL_START_DAY:newForm.cycle_mode==4? lan.CALENDAR_PAGE_CAL_REPEAT_YEAR+newForm.start_day.slice(newForm.start_day.length-5,newForm.start_day.length-3)+lan.CALENDAR_PAGE_CAL_MONTH+newForm.start_day.slice(newForm.start_day.length-2)+lan.CALENDAR_PAGE_CAL_START_DAY:lan.CALENDAR_PAGE_CAL_NO_REPEAT)}} <span v-if="newForm.is_copy">{{newForm.cycle_type==0?'，'+lan.CALENDAR_PAGE_CAL_REPEAT_TO+' ':'，'+lan.CALENDAR_PAGE_CAL_REPEAT_FOREVER}} <i v-if="newForm.cycle_type==0">{{newForm.cycle_day}}</i></span> </p>
         </el-form-item>
 
-        <el-form-item label="地 点" prop="address">
+        <el-form-item :label="lan.CALENDAR_PAGE_CAL_PLACE" prop="address">
           <el-input type="textarea" autosize v-model.trim="newForm.address"></el-input>
         </el-form-item>
-        <el-form-item label="说 明" prop="remark">
+        <el-form-item :label="lan.CALENDAR_PAGE_CAL_REMARK" prop="remark">
           <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" v-model.trim="newForm.remark"></el-input>
         </el-form-item>
 
-        <el-form-item label="提 醒" prop="remind">
-          <el-checkbox v-model="newForm.remind">是否提醒(电子邮件)</el-checkbox>
+        <el-form-item :label="lan.CALENDAR_PAGE_CAL_REMIND" prop="remind">
+          <el-checkbox v-model="newForm.remind">{{lan.CALENDAR_PAGE_CAL_IS_REMIND}}</el-checkbox>
 
           <div v-show="newForm.remind">
-            提前
-            <el-input v-model="newForm.remind_before" type="number" style="width:80px;" min="1"></el-input><el-select v-model="newForm.remind_unit" placeholder="请选择">
-            <el-option label="分钟" value="60"></el-option>
-            <el-option label="小时" value="3600"></el-option>
-            <el-option label="日" value="86400"></el-option>
-            <el-option label="周" value="604800"></el-option>
+            {{lan.CALENDAR_PAGE_CAL_REMIND_BEFORE}}
+            <el-input v-model="newForm.remind_before" type="number" style="width:80px;" min="1"></el-input><el-select v-model="newForm.remind_unit" :placeholder="lan.SETTING_RE_ADD_PLACEHODER">
+            <el-option :label="lan.FILE_P_MIN" value="60"></el-option>
+            <el-option :label="lan.FILE_P_HOUR" value="3600"></el-option>
+            <el-option :label="lan.FILE_P_DAY" value="86400"></el-option>
+            <el-option :label="lan.CALENDAR_PAGE_CAL_WEEK" value="604800"></el-option>
           </el-select>
-            提醒
+            {{lan.CALENDAR_PAGE_CAL_REMIND}}
           </div>
 
         </el-form-item>
 
 
 
-        <el-form-item label="邀请对象" prop="invitors">
+        <el-form-item :label="lan.CALENDAR_PAGE_CAL_VISIT" prop="invitors">
           <div style="min-height:80px;border:1px solid #dcdfe6;max-width:400px;padding:4px 10px;max-height:400px;overflow: auto;">
             <el-row v-for="(v,k) in newForm.invitors" :key="k">
               <el-col :span="18">
                 <div>{{v}}</div>
               </el-col>
-              <el-col :span="6" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="delete_invitors(k)" title="取消邀请"></el-button></el-col>
+              <el-col :span="6" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="delete_invitors(k)" :title="lan.CALENDAR_PAGE_CAL_CANCEL_VISIT"></el-button></el-col>
             </el-row>
           </div>
-          <el-input placeholder="输入邀请人" style="width:auto;" v-model.trim="addemail"></el-input> <el-button @click="addEmail">添加</el-button>
-          <el-button @click="showChoice = !showChoice">{{showChoice?"隐藏通讯录":"打开通讯录"}}</el-button>
+          <el-input :placeholder="lan.CALENDAR_PAGE_SET_INPUT_VISIT" style="width:auto;" v-model.trim="addemail"></el-input> <el-button @click="addEmail">{{lan.COMMON_BUTTON_ADD}}</el-button>
+          <el-button @click="showChoice = !showChoice">{{showChoice?lan.ADDRBOOK_HIDE:lan.ADDRBOOK_SHOW}}</el-button>
         </el-form-item>
 
-        <el-form-item v-show="showChoice" label="选择邮箱：">
+        <el-form-item v-show="showChoice" :label="lan.CALENDAR_PAGE_SET_CHOOSE_MAILBOX">
 
           <el-row style="margin-bottom:6px;">
             <el-col :span="16">
               <el-cascader  change-on-select style="width:100%"
-                            :options="deptOptions" @change="menu_change" placeholder="请选择部门">
+                            :options="deptOptions" @change="menu_change" :placeholder="lan.SETTING_RE_ADD_SELECTDPT_PLACE">
               </el-cascader>
             </el-col>
             <el-col :span="5" :offset="1">
-              <el-input v-model="searchMailbox" size="small" placeholder="请输入内容"></el-input>
+              <el-input v-model="searchMailbox" size="small" :placeholder="lan.SETTING_RE_ADD_CONTENT_RULE"></el-input>
 
             </el-col>
             <el-col :span="2" style="text-align:right">
-              <el-button size="small" type="primary" @click="searchOabMembers(1)">搜索</el-button>
+              <el-button size="small" type="primary" @click="searchOabMembers(1)">{{lan.COMMON_SEARCH2}}</el-button>
             </el-col>
           </el-row>
 
@@ -182,12 +182,12 @@
               type="selection"
               width="55">
             </el-table-column>
-            <el-table-column prop="name" label="姓名&邮箱">
+            <el-table-column prop="name" :label="lan.SETTING_REFERE_EMAIL_NAME">
               <template slot-scope="scope">
                 <span>{{ scope.row.name +'<' +scope.row.username +'>'}}</span>
               </template>
             </el-table-column>
-            <el-table-column  label="部门">
+            <el-table-column  :label="lan.COMMON_DEPARTMENT">
               <template slot-scope="scope">
                 <span>{{scope.row.department}}</span>
               </template>
@@ -207,56 +207,56 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button @click="newEventDialog = false" size="small">取 消</el-button>
-        <el-button type="primary"  size="small"  @click="submitForm('newForm')">立即创建</el-button>
+        <el-button @click="newEventDialog = false" size="small">{{lan.COMMON_BUTTON_CANCELL}}</el-button>
+        <el-button type="primary"  size="small"  @click="submitForm('newForm')">{{lan.CALENDAR_PAGE_CAL_CREATE}}</el-button>
       </div>
     </el-dialog>
 
     <el-dialog :title="viewForm.title" :visible.sync="viewEventDialog"  :close-on-click-modal="false" :append-to-body="true" width="100%" style="padding:0 142px;box-sizing: border-box" top="45px">
-      <el-form :model="viewForm" :rules="view_rules" ref="viewForm" label-width="100px"  size="small">
+      <el-form :model="viewForm" :rules="view_rules" ref="viewForm" label-width="180px"  size="small">
         <el-card class="box-card" v-if="permisson.invite" style="background:#FFFFE1;margin-bottom:16px;">
-          <h3>您是否参加活动？</h3>
+          <h3>{{lan.CALENDAR_PAGE_CAL_IS_PASS}}</h3>
           <el-radio-group v-model="invitor_status" style="padding:16px 0;">
-            <el-radio label="pass">参加</el-radio>
-            <el-radio label="reject">拒绝</el-radio>
-            <el-radio label="wait">待定</el-radio>
+            <el-radio label="pass">{{lan.CALENDAR_PAGE_CAL_PASS}}</el-radio>
+            <el-radio label="reject">{{lan.MAILBOX_COM_REVIEW_REJECT_ACTION}}</el-radio>
+            <el-radio label="wait">{{lan.CALENDAR_PAGE_CAL_WAIT}}</el-radio>
           </el-radio-group>
 
           <div>
-            <el-button type="primary" size="mini" @click="saveStatus">保 存</el-button>
+            <el-button type="primary" size="mini" @click="saveStatus">{{lan.COMMON_BUTTON_SAVE}}</el-button>
             <!--<el-button  size="mini">取 消</el-button>-->
           </div>
         </el-card>
 
         <div v-if="!permisson.edit">
-          <el-form-item label="日 期：" >
-            <span>{{viewForm.start_day+' 至 '+viewForm.end_day }}</span>
+          <el-form-item :label="lan.MAILBOX_COM_REVIEW_DATE" >
+            <span>{{viewForm.start_day+' —— '+viewForm.end_day }}</span>
           </el-form-item>
-          <el-form-item label="时 间：" v-if="!viewForm.allday">
-            <span>{{viewForm.start_time+' 至 '+viewForm.end_time }}</span>
+          <el-form-item :label="lan.COMMON_TIME" v-if="!viewForm.allday">
+            <span>{{viewForm.start_time+' —— '+viewForm.end_time }}</span>
           </el-form-item>
-          <el-form-item label="地 点：" v-if="viewForm.address">
+          <el-form-item :label="lan.CALENDAR_PAGE_CAL_PLACE" v-if="viewForm.address">
             <span>{{viewForm.address}}</span>
           </el-form-item>
-          <el-form-item label="说 明：">
+          <el-form-item :label="lan.CALENDAR_PAGE_CAL_REMARK">
             <span>{{viewForm.remark}}</span>
           </el-form-item>
-          <el-form-item label="提 醒：" >
-            <span>{{viewForm.remind? '提前 '+viewForm.remind_before + ' '+(viewForm.remind_unit==60?'分钟':viewForm.remind_unit==3600?'小时':viewForm.remind_unit==86400?'天':'周') :'无'}}</span>
+          <el-form-item :label="lan.CALENDAR_PAGE_CAL_REMIND" >
+            <span>{{viewForm.remind? lan.CALENDAR_PAGE_CAL_REMIND_BEFORE+' '+viewForm.remind_before + ' '+(viewForm.remind_unit==60?lan.FILE_P_MIN:viewForm.remind_unit==3600?lan.FILE_P_HOUR:viewForm.remind_unit==86400?lan.FILE_P_DAY:lan.CALENDAR_PAGE_CAL_WEEK) :lan.CALENDAR_PAGE_CAL_NONE}}</span>
           </el-form-item>
-          <el-form-item label="状 态：" >
-            <span><span v-if="viewForm.cycle_mode!=0">每 {{viewForm.cycle_frequency}}</span>{{viewForm.cycle_mode==0?'不重复':(viewForm.cycle_mode==1?'天 ':viewForm.cycle_mode==2?'周 ':viewForm.cycle_mode==3?'月 ':'年 ')}}</span><span v-if="viewForm.cycle_mode!=0">重复</span> <span v-if="viewForm.cycle_mode>0"> {{viewForm.cycle_type?' 永远重复':' 重复至 '}}</span> <span v-if="viewForm.cycle_mode>0 && !viewForm.cycle_type">{{viewForm.cycle_day}}</span>
+          <el-form-item :label="lan.COMMON_STATUS" >
+            <span><span v-if="viewForm.cycle_mode!=0">{{lan.CALENDAR_PAGE_CAL_EVERY}} {{viewForm.cycle_frequency}}</span>{{viewForm.cycle_mode==0?lan.CALENDAR_PAGE_CAL_NO_REPEAT:(viewForm.cycle_mode==1?lan.FILE_P_DAY+' ':viewForm.cycle_mode==2?lan.CALENDAR_PAGE_CAL_WEEK+' ':viewForm.cycle_mode==3?lan.CALENDAR_PAGE_CAL_MONTH+' ':lan.FILE_P_YEAR+' ')}}</span><span v-if="viewForm.cycle_mode!=0">{{lan.CALENDAR_PAGE_CAL_REPEAT}}</span> <span v-if="viewForm.cycle_mode>0"> {{viewForm.cycle_type?' '+lan.CALENDAR_PAGE_CAL_REPEAT_FOREVER:' '+lan.CALENDAR_PAGE_CAL_REPEAT_TO+' '}}</span> <span v-if="viewForm.cycle_mode>0 && !viewForm.cycle_type">{{viewForm.cycle_day}}</span>
           </el-form-item>
-          <el-form-item label="组织者：">
+          <el-form-item :label="lan.CALENDAR_PAGE_CAL_USER">
             <span>{{viewForm.name+'<'+viewForm.email+'>'}}; </span>
           </el-form-item>
-          <el-form-item label="参与者：" v-if="viewForm.invitors.length>0">
+          <el-form-item :label="lan.CALENDAR_PAGE_CAL_VISITER" v-if="viewForm.invitors.length>0">
             <span v-for="v in viewForm.invitors">{{v.name+'<'+v.email+'>'}}; </span>
           </el-form-item>
         </div>
 
         <div  v-if="permisson.edit">
-          <el-form-item label="标 题" prop="title">
+          <el-form-item :label="lan.COMMON_SUBJECT" prop="title">
             <el-row>
               <el-col :span="20">
                 <el-input v-model="viewForm.title"></el-input>
@@ -267,31 +267,31 @@
                     <span style="display:inline-block;width:15px;height:15px" :style="{background:viewForm.color}"></span><i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="#D50000"  title="番茄红"><span style="background:#D50000;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                    <el-dropdown-item command="#E67C73"  title="红鹤色"><span style="background:#E67C73;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                    <el-dropdown-item command="#F4511E"  title="橘红"><span style="background:#F4511E;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                    <el-dropdown-item command="#F6BF26"  title="香蕉黄"><span style="background:#F6BF26;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                    <el-dropdown-item command="#33B679"  title="鼠尾草绿"><span style="background:#33B679;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                    <el-dropdown-item command="#0B8043"  title="罗勒绿"><span style="background:#0B8043;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                    <el-dropdown-item command="#039BE5"  title="孔雀蓝"><span style="background:#039BE5;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                    <el-dropdown-item command="#3F51B5"  title="蓝莓色"><span style="background:#3F51B5;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                    <el-dropdown-item command="#7986CB"  title="薰衣草色"><span style="background:#7986CB;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                    <el-dropdown-item command="#8E24AA"  title="葡萄紫"><span style="background:#8E24AA;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
-                    <el-dropdown-item command="#616161"  title="石墨黑"><span style="background:#616161;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                    <el-dropdown-item command="#D50000"  :title="lan.CALENDAR_PAGE_CAL_TOMATO_RED"><span style="background:#D50000;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                    <el-dropdown-item command="#E67C73"  :title="lan.CALENDAR_PAGE_CAL_RED_CRANE_COLOR"><span style="background:#E67C73;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                    <el-dropdown-item command="#F4511E"  :title="lan.CALENDAR_PAGE_CAL_TANGERINE"><span style="background:#F4511E;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                    <el-dropdown-item command="#F6BF26"  :title="lan.CALENDAR_PAGE_CAL_BANANA_YELLOW"><span style="background:#F6BF26;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                    <el-dropdown-item command="#33B679"  :title="lan.CALENDAR_PAGE_CAL_SALVIA_GREEN"><span style="background:#33B679;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                    <el-dropdown-item command="#0B8043"  :title="lan.CALENDAR_PAGE_CAL_BASIL_GREEN"><span style="background:#0B8043;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                    <el-dropdown-item command="#039BE5"  :title="lan.CALENDAR_PAGE_CAL_PEACOCK_BLUE"><span style="background:#039BE5;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                    <el-dropdown-item command="#3F51B5"  :title="lan.CALENDAR_PAGE_CAL_BLUEBERRY_COLOR"><span style="background:#3F51B5;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                    <el-dropdown-item command="#7986CB"  :title="lan.CALENDAR_PAGE_CAL_LAVENDER"><span style="background:#7986CB;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                    <el-dropdown-item command="#8E24AA"  :title="lan.CALENDAR_PAGE_CAL_GRAPE_PURPLE"><span style="background:#8E24AA;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
+                    <el-dropdown-item command="#616161"  :title="lan.CALENDAR_PAGE_CAL_GRAPHITE_BLACK"><span style="background:#616161;display:inline-block;width:15px;height:15px"></span></el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </el-col>
             </el-row>
           </el-form-item>
 
-          <el-form-item label="开始截止时间">
+          <el-form-item :label="lan.CALENDAR_PAGE_CAL_TIME">
             <el-date-picker
               v-model="viewForm.start_day"
               format="yyyy-MM-dd" value-format="yyyy-MM-dd"
               :picker-options="pickerBeginDateBefore"
               @change="pickBeginDate_view"
               type="date"
-              placeholder="请选择开始日期" style="width:180px">
+              :placeholder="lan.CALENDAR_PAGE_CAL_INPUT_START_TIME" style="width:180px">
             </el-date-picker>
             <!--<span  v-if="!viewForm.allday"> - </span>-->
             <el-time-picker
@@ -301,15 +301,15 @@
               :picker-options="{
                 selectableRange: '00:00:00 - 23:59:59'
               }"
-              placeholder="请选择时间点"  style="width:100px">
+              placeholder="lan.CALENDAR_PAGE_CAL_CHOOSE_TIME"  style="width:100px">
             </el-time-picker>
-            至
+            ——
             <el-date-picker
               format="yyyy-MM-dd" value-format="yyyy-MM-dd"
               :picker-options="pickerBeginDateAfter_edit"
               v-model="viewForm.end_day"
               type="date"
-              placeholder="选择截止日期"  style="width:180px">
+              :placeholder="lan.CALENDAR_PAGE_CAL_INPUT_END_TIME"  style="width:180px">
             </el-date-picker>
              <!--<span  v-if="!viewForm.allday"> - </span>-->
             <el-time-picker
@@ -319,41 +319,41 @@
               :picker-options="{
                 selectableRange: '00:00:00 - 23:59:59'
               }"
-              placeholder="请选择时间点"  style="width:100px">
+              :placeholder="lan.CALENDAR_PAGE_CAL_CHOOSE_TIME"  style="width:100px">
             </el-time-picker>
-            <el-checkbox v-model="viewForm.allday">全天事件</el-checkbox>
+            <el-checkbox v-model="viewForm.allday">{{lan.CALENDAR_PAGE_CAL_DAY_EVENT}}</el-checkbox>
             <div v-if="viewForm.process" style="color:#039BE5;">
-              活动时间：{{viewForm.process.start?viewForm.process.start.replace('T',' '):''}} 至 {{viewForm.process.end?viewForm.process.end.replace('T',' '):''}}
+              {{lan.CALENDAR_PAGE_CAL_SCHEDULE_TIME}}{{viewForm.process.start?viewForm.process.start.replace('T',' '):''}} —— {{viewForm.process.end?viewForm.process.end.replace('T',' '):''}}
             </div>
           </el-form-item>
 
-          <el-form-item label="重复事件" prop="cycle_mode">
-            <el-checkbox v-model="viewForm.is_copy">是否重复</el-checkbox>
+          <el-form-item :label="lan.CALENDAR_PAGE_CAL_REPEAT_EVENT" prop="cycle_mode">
+            <el-checkbox v-model="viewForm.is_copy">{{lan.CALENDAR_PAGE_CAL_IS_REPEAT}}</el-checkbox>
             <br>
-            <span v-if="viewForm.is_copy">重复频率：每</span>
+            <span v-if="viewForm.is_copy">{{lan.CALENDAR_PAGE_CAL_REPEAT_COUNT}}</span>
             <el-input v-if="viewForm.is_copy" v-model="viewForm.cycle_frequency" type="number" style="width:80px;" min="1"></el-input>
-          <el-select v-if="viewForm.is_copy" v-model="viewForm.cycle_mode" placeholder="请选择重复事件">
-            <el-option label="请选择" disabled :value="0"></el-option>
-            <el-option label="天" :value="1"></el-option>
-            <el-option label="周" :value="2"></el-option>
-            <el-option label="月" :value="3"></el-option>
-            <el-option label="年" :value="4"></el-option>
+          <el-select v-if="viewForm.is_copy" v-model="viewForm.cycle_mode" :placeholder="lan.CALENDAR_PAGE_CAL_CHOOSE_REPEAT_EVENT">
+            <el-option :label="lan.SETTING_RE_ADD_PLACEHODER" disabled :value="0"></el-option>
+            <el-option :label="lan.FILE_P_DAY" :value="1"></el-option>
+            <el-option :label="lan.CALENDAR_PAGE_CAL_WEEK" :value="2"></el-option>
+            <el-option :label="lan.CALENDAR_PAGE_CAL_MONTH" :value="3"></el-option>
+            <el-option :label="lan.FILE_P_YEAR" :value="4"></el-option>
           </el-select>
-            <span v-if="viewForm.is_copy">重复</span>
+            <span v-if="viewForm.is_copy">{{lan.CALENDAR_PAGE_CAL_REPEAT}}</span>
           </el-form-item>
           <el-form-item label="" v-show="viewForm.is_copy">
             <el-checkbox-group v-if="viewForm.cycle_mode==2" v-model="viewForm.cycle_week">
-              <el-checkbox :label="0">周一</el-checkbox>
-              <el-checkbox :label="1">周二</el-checkbox>
-              <el-checkbox :label="2">周三</el-checkbox>
-              <el-checkbox :label="3">周四</el-checkbox>
-              <el-checkbox :label="4">周五</el-checkbox>
-              <el-checkbox :label="5">周六</el-checkbox>
-              <el-checkbox :label="6">周日</el-checkbox>
+              <el-checkbox :label="0">{{lan.MONDAY}}</el-checkbox>
+              <el-checkbox :label="1">{{lan.TUESDAY}}</el-checkbox>
+              <el-checkbox :label="2">{{lan.WEDNESDAY}}</el-checkbox>
+              <el-checkbox :label="3">{{lan.THURSDAY}}</el-checkbox>
+              <el-checkbox :label="4">{{lan.FRIDAY}}</el-checkbox>
+              <el-checkbox :label="5">{{lan.SATURDAY}}</el-checkbox>
+              <el-checkbox :label="6">{{lan.SUNDAY}}</el-checkbox>
             </el-checkbox-group>
-            <el-select v-model="viewForm.cycle_type" placeholder="请选择重复类型">
-              <el-option label="重复至" :value="false"></el-option>
-              <el-option label="永远重复" :value="true"></el-option>
+            <el-select v-model="viewForm.cycle_type" :placeholder="lan.CALENDAR_PAGE_CAL_CHOOSE_REPEAT_TYPE">
+              <el-option :label="lan.CALENDAR_PAGE_CAL_REPEAT_TO" :value="false"></el-option>
+              <el-option :label="lan.CALENDAR_PAGE_CAL_REPEAT_FOREVER" :value="true"></el-option>
             </el-select>
             <el-date-picker
               v-model="viewForm.cycle_day"
@@ -361,38 +361,38 @@
               format="yyyy-MM-dd" value-format="yyyy-MM-dd"
               :picker-options="pickerBeginDateEnd_edit"
               type="date"
-              placeholder="请选择重复截止日期">
+              :placeholder="lan.CALENDAR_PAGE_CAL_CHOOSE_REPEAT_ENDTIME">
             </el-date-picker>
-            <p v-if="viewForm.is_copy && viewForm.cycle_mode>0">重复摘要：<span v-if="viewForm.is_copy && viewForm.cycle_mode!=0">每<span v-if="viewForm.cycle_frequency>1">{{viewForm.cycle_frequency}}</span></span>{{viewForm.cycle_mode==1?'天重复':(viewForm.cycle_mode==2?'周重复':viewForm.cycle_mode==3?'月在'+viewForm.start_day.slice(viewForm.start_day.length-2)+'日开始':viewForm.cycle_mode==4?'年在'+viewForm.start_day.slice(viewForm.start_day.length-5,viewForm.start_day.length-3)+'月'+viewForm.start_day.slice(viewForm.start_day.length-2)+'日开始':'不重复')}}<span v-if="viewForm.is_copy">{{viewForm.cycle_type==0?'，重复至 ':'，永远重复'}} <i v-if="viewForm.cycle_type==false">{{viewForm.cycle_day}}</i></span> </p>
+            <p v-if="viewForm.is_copy && viewForm.cycle_mode>0">{{lan.CALENDAR_PAGE_CAL_REPEAT_DESC}}<span v-if="viewForm.is_copy && viewForm.cycle_mode!=0">{{lan.CALENDAR_PAGE_CAL_EVERY}}<span v-if="viewForm.cycle_frequency>1">{{viewForm.cycle_frequency}}</span></span>{{viewForm.cycle_mode==1?lan.CALENDAR_PAGE_CAL_REPEAT_DAY:(viewForm.cycle_mode==2?lan.CALENDAR_PAGE_CAL_REPEAT_WEEK:viewForm.cycle_mode==3?lan.CALENDAR_PAGE_CAL_REPEAT_MONTH+viewForm.start_day.slice(viewForm.start_day.length-2)+lan.CALENDAR_PAGE_CAL_START_DAY:viewForm.cycle_mode==4?lan.CALENDAR_PAGE_CAL_REPEAT_YEAR+viewForm.start_day.slice(viewForm.start_day.length-5,viewForm.start_day.length-3)+lan.CALENDAR_PAGE_CAL_MONTH+viewForm.start_day.slice(viewForm.start_day.length-2)+lan.CALENDAR_PAGE_CAL_START_DAY:lan.CALENDAR_PAGE_CAL_NO_REPEAT)}}<span v-if="viewForm.is_copy">{{viewForm.cycle_type==0?'，'+lan.CALENDAR_PAGE_CAL_REPEAT_TO+' ':'，'+lan.CALENDAR_PAGE_CAL_REPEAT_FOREVER }} <i v-if="viewForm.cycle_type==false">{{viewForm.cycle_day}}</i></span> </p>
           </el-form-item>
 
-          <el-form-item label="地 点" prop="address">
+          <el-form-item :label="lan.CALENDAR_PAGE_CAL_PLACE" prop="address">
             <el-input type="textarea" autosize v-model.trim="viewForm.address"></el-input>
           </el-form-item>
-          <el-form-item label="说 明" prop="remark">
+          <el-form-item :label="lan.CALENDAR_PAGE_CAL_REMARK" prop="remark">
             <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" v-model.trim="viewForm.remark"></el-input>
           </el-form-item>
 
-          <el-form-item label="提 醒" prop="remind">
-            <el-checkbox v-model="viewForm.remind">是否提醒(电子邮件)</el-checkbox>
+          <el-form-item :label="lan.CALENDAR_PAGE_CAL_REMIND" prop="remind">
+            <el-checkbox v-model="viewForm.remind">{{lan.CALENDAR_PAGE_CAL_IS_REMIND}}</el-checkbox>
 
             <div v-show="viewForm.remind">
-              提前
-              <el-input v-model="viewForm.remind_before" type="number" style="width:80px;" min="1"></el-input><el-select v-model="viewForm.remind_unit" placeholder="请选择">
-              <el-option label="分钟" :value="60"></el-option>
-              <el-option label="小时" :value="3600"></el-option>
-              <el-option label="天" :value="86400"></el-option>
-              <el-option label="周" :value="604800"></el-option>
+              {{lan.CALENDAR_PAGE_CAL_REMIND_BEFORE}}
+              <el-input v-model="viewForm.remind_before" type="number" style="width:80px;" min="1"></el-input><el-select v-model="viewForm.remind_unit" :placeholder="lan.SETTING_RE_ADD_PLACEHODER">
+              <el-option :label="lan.FILE_P_MIN" :value="60"></el-option>
+              <el-option :label="lan.FILE_P_HOUR" :value="3600"></el-option>
+              <el-option :label="lan.FILE_P_DAY" :value="86400"></el-option>
+              <el-option :label="lan.CALENDAR_PAGE_CAL_WEEK" :value="604800"></el-option>
             </el-select>
-              提醒
+              {{lan.CALENDAR_PAGE_CAL_REMIND}}
             </div>
 
           </el-form-item>
-          <el-form-item label="组织者">
+          <el-form-item :label="lan.CALENDAR_PAGE_CAL_USER">
             <span>{{viewForm.name+'<'+viewForm.email+'>'}}; </span>
           </el-form-item>
 
-          <el-form-item label="邀请对象" prop="invitors">
+          <el-form-item :label="lan.CALENDAR_PAGE_CAL_VISIT" prop="invitors">
             <div style="min-height:80px;border:1px solid #dcdfe6;max-width:400px;padding:4px 10px;max-height:400px;overflow: auto;">
               <el-row v-for="(v,k) in viewForm.invitors" :key="k">
                 <el-col :span="15">
@@ -400,29 +400,29 @@
                   <div v-if="!v.email">{{v}}</div>
                 </el-col>
                 <el-col :span="6" style="text-align:right;" v-if="v.email">
-                  <el-button v-if="v.status" :type="v.status=='wait'?'warning':v.status=='pass'?'success':v.status=='reject'?'danger':'info'" plain size="mini">{{v.status=='start'?'待回复':v.status=='pass'?'已参加':v.status=='reject'?'已拒绝':'待定'}}</el-button>
+                  <el-button v-if="v.status" :type="v.status=='wait'?'warning':v.status=='pass'?'success':v.status=='reject'?'danger':'info'" plain size="mini">{{v.status=='start'?lan.CALENDAR_PAGE_CAL_STAY:v.status=='pass'?lan.CALENDAR_PAGE_CAL_ALREADY_PASS:v.status=='reject'?lan.CALENDAR_PAGE_CAL_ALREADY_REJECT:lan.CALENDAR_PAGE_CAL_WAIT}}</el-button>
 
                 </el-col>
-                <el-col :span="3" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="delete_invitors_view(k,v.id)" title="取消邀请"></el-button></el-col>
+                <el-col :span="3" style="text-align:right;"><el-button icon="el-icon-delete" size="mini" @click="delete_invitors_view(k,v.id)" :title="lan.CALENDAR_PAGE_CAL_CANCEL_VISIT"></el-button></el-col>
               </el-row>
             </div>
-            <el-input placeholder="输入邀请人" style="width:auto;" v-model.trim="addemail_view"></el-input> <el-button @click="addEmail_view">添加</el-button>
-            <el-button @click="showChoice = !showChoice">{{showChoice?"隐藏通讯录":"打开通讯录"}}</el-button>
+            <el-input :placeholder="lan.CALENDAR_PAGE_SET_INPUT_VISIT" style="width:auto;" v-model.trim="addemail_view"></el-input> <el-button @click="addEmail_view">{{lan.COMMON_BUTTON_ADD}}</el-button>
+            <el-button @click="showChoice = !showChoice">{{showChoice?lan.ADDRBOOK_HIDE:lan.ADDRBOOK_SHOW}}</el-button>
           </el-form-item>
 
-          <el-form-item v-show="showChoice" label="选择邮箱：">
+          <el-form-item v-show="showChoice" :label="lan.CALENDAR_PAGE_SET_CHOOSE_MAILBOX">
             <el-row style="margin-bottom:6px;">
               <el-col :span="16">
                 <el-cascader  change-on-select style="width:100%"
-                              :options="deptOptions" @change="menu_change" placeholder="请选择部门">
+                              :options="deptOptions" @change="menu_change" :placeholder="lan.SETTING_RE_ADD_SELECTDPT_PLACE">
                 </el-cascader>
               </el-col>
               <el-col :span="5" :offset="1">
-                <el-input v-model="searchMailbox" size="small" placeholder="请输入内容"></el-input>
+                <el-input v-model="searchMailbox" size="small" :placeholder="lan.SETTING_RE_ADD_CONTENT_RULE"></el-input>
 
               </el-col>
               <el-col :span="2" style="text-align:right">
-                <el-button size="small" type="primary" @click="searchOabMembers(1)">搜索</el-button>
+                <el-button size="small" type="primary" @click="searchOabMembers(1)">{{lan.COMMON_SEARCH2}}</el-button>
               </el-col>
             </el-row>
 
@@ -435,12 +435,12 @@
                 type="selection"
                 width="55">
               </el-table-column>
-              <el-table-column prop="name" label="姓名&邮箱">
+              <el-table-column prop="name" :label="lan.SETTING_REFERE_EMAIL_NAME">
                 <template slot-scope="scope">
                   <span>{{ scope.row.name +'<' +scope.row.username +'>'}}</span>
                 </template>
               </el-table-column>
-              <el-table-column  label="部门">
+              <el-table-column  :label="lan.COMMON_DEPARTMENT">
                 <template slot-scope="scope">
                   <span>{{scope.row.department}}</span>
                 </template>
@@ -460,10 +460,10 @@
 
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="viewEventDialog = false" size="small">关 闭</el-button>
-        <el-button type="info"  size="small"  @click="fwics(viewForm.id)"  v-if="permisson.edit || permisson.invite">转发</el-button>
-        <el-button type="primary"  size="small"  @click="updateEventSubmit"  v-if="permisson.edit">确定修改</el-button>
-        <el-button type="danger"  size="small"  @click="deleteEventSubmit(viewForm.id)"  v-if="permisson.edit">删除事件</el-button>
+        <el-button @click="viewEventDialog = false" size="small">{{lan.COMMON_CLOSE}}</el-button>
+        <el-button type="info"  size="small"  @click="fwics(viewForm.id)"  v-if="permisson.edit || permisson.invite">{{lan.SETTING_FILTER_ACTION5}}</el-button>
+        <el-button type="primary"  size="small"  @click="updateEventSubmit"  v-if="permisson.edit">{{lan.CALENDAR_PAGE_SET_SURE_EDIT}}</el-button>
+        <el-button type="danger"  size="small"  @click="deleteEventSubmit(viewForm.id)"  v-if="permisson.edit">{{lan.CALENDAR_PAGE_CAL_DELETE_EVENT}}</el-button>
       </div>
     </el-dialog>
     <el-popover
@@ -473,19 +473,19 @@
       ref="popoverfile"
     >
       <div style="text-align: right; margin: 0">
-        <el-button size="mini" type="primary" >编辑</el-button>
-        <el-button type="warning" size="mini">删除</el-button>
+        <el-button size="mini" type="primary" >{{lan.COMMON_BUTTON_ALTER}}</el-button>
+        <el-button type="warning" size="mini">{{lan.COMMON_BUTTON_DELETE}}</el-button>
       </div>
     </el-popover>
     <div v-if="!show_calendar" id="ces">
       <el-row style="padding:6px 0;">
         <el-col :span="6">
           <el-input
-            placeholder="请输入事件标题"
+            :placeholder="lan.CALENDAR_PAGE_CAL_INPUT_EVENT_NAME"
             prefix-icon="el-icon-search"
             v-model="event_search" size="small" style="width:auto">
           </el-input>
-          <el-button size="small" type="primary" plain @click="event_search_fn">查询</el-button>
+          <el-button size="small" type="primary" plain @click="event_search_fn">{{lan.COMMON_SEARCH}}</el-button>
         </el-col>
         <el-col :span="18" style="text-align:right">
           <el-pagination
@@ -507,13 +507,13 @@
         style="width: 100%">
         <el-table-column
           prop="title"
-          label="标题"
+          :label="lan.COMMON_SUBJECT"
         >
         </el-table-column>
         <el-table-column
           sortable
           prop="start"
-          label="开始时间"
+          :label="lan.CALENDAR_PAGE_CAL_START_TIME"
           width="200"
         >
           <template slot-scope="scope">
@@ -523,7 +523,7 @@
         <el-table-column
           sortable
           prop="end"
-          label="截止时间"
+          :label="lan.CALENDAR_PAGE_CAL_END_TIME"
           width="200"
         >
           <template slot-scope="scope">
@@ -533,18 +533,18 @@
 
         <el-table-column
           prop="status"
-          label="状态"
+          :label="lan.COMMON_STATUS"
           width="300"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.cycle_mode!=0">每<span v-if="scope.row.cycle_frequency>1">{{scope.row.cycle_frequency}}</span></span><span>{{scope.row.cycle_mode==0?'不重复':(scope.row.cycle_mode==1?'天重复 ':scope.row.cycle_mode==2?'周重复 ':scope.row.cycle_mode==3?'月在'+scope.row.start.slice(8,10)+'日开始':'年在'+scope.row.start.slice(5,7)+'月'+scope.row.start.slice(8,10)+'日开始')}}</span> <span v-if="scope.row.cycle_mode>0"> {{scope.row.cycle_type?' ，永远重复':' ，重复至 '}}</span> <span v-if="scope.row.cycle_mode>0 && !scope.row.cycle_type">{{scope.row.cycle_day}}</span>
+            <span v-if="scope.row.cycle_mode!=0">{{lan.CALENDAR_PAGE_CAL_EVERY}}<span v-if="scope.row.cycle_frequency>1">{{scope.row.cycle_frequency}}</span></span><span>{{scope.row.cycle_mode==0?lan.CALENDAR_PAGE_CAL_NO_REPEAT:(scope.row.cycle_mode==1?lan.CALENDAR_PAGE_CAL_REPEAT_DAY+' ':scope.row.cycle_mode==2?lan.CALENDAR_PAGE_CAL_REPEAT_WEEK+' ':scope.row.cycle_mode==3?lan.CALENDAR_PAGE_CAL_REPEAT_MONTH+scope.row.start.slice(8,10)+lan.CALENDAR_PAGE_CAL_START_DAY:lan.CALENDAR_PAGE_CAL_REPEAT_YEAR+scope.row.start.slice(5,7)+lan.CALENDAR_PAGE_CAL_MONTH+scope.row.start.slice(8,10)+lan.CALENDAR_PAGE_CAL_START_DAY)}}</span> <span v-if="scope.row.cycle_mode>0"> {{scope.row.cycle_type?' ，'+lan.CALENDAR_PAGE_CAL_REPEAT_FOREVER:' ，'+lan.CALENDAR_PAGE_CAL_REPEAT_TO+' '}}</span> <span v-if="scope.row.cycle_mode>0 && !scope.row.cycle_type">{{scope.row.cycle_day}}</span>
           </template>
         </el-table-column>
         <el-table-column
-          label="操作" width="200">
+          :label="lan.COMMON_OPRATE" width="200">
           <template slot-scope="scope">
-            <el-button  type="text" size="small" @click="editEvent(scope.row)">{{scope.row.permisson.edit?'编辑':'查看'}}</el-button>
-            <el-button size="mini" type="text"  @click="deleteEventSubmit(scope.row.id)"  v-if="scope.row.permisson.edit" style="color:red">删除</el-button>
+            <el-button  type="text" size="small" @click="editEvent(scope.row)">{{scope.row.permisson.edit?lan.COMMON_BUTTON_ALTER:lan.MAILBOX_COM_INNERBOX_SEE}}</el-button>
+            <el-button size="mini" type="text"  @click="deleteEventSubmit(scope.row.id)"  v-if="scope.row.permisson.edit" style="color:red">{{lan.COMMON_BUTTON_DELETE}}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -562,6 +562,12 @@
     },
     data() {
       let _self = this;
+      let calendar_lang = 'zh-cn';
+      if(this.$store.getters.getLanguage == 'en'){
+        calendar_lang = 'en'
+      }else{
+        calendar_lang = 'zh-cn'
+      }
       return {
         listLoading:false,
         currentPage_list:1,
@@ -569,19 +575,7 @@
         totalCount_list:200,
         event_search:'',
         event_list:[
-          {
-            id:0,
-            title: '我的共享日程',
-            start_day: '2018-10-01',
-            start_time: '09:00:00',
-            status:'不重复'
-          }, {
-            id:1,
-            title: 'yc日程',
-            start_day: '2018-10-05',
-            start_time: '10:00:05',
-            status:'每天重复 重复至2018-10-20'
-          }],
+          ],
         show_calendar:true,
         permisson:{
           edit: true,
@@ -630,20 +624,18 @@
         },
         rules: {
           title: [
-            {required: true, message: '请输入事件标题', trigger: 'blur'},
+            {required: true, message: '', trigger: 'blur'},
             // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
           ],
           cycle_mode: [
-            {required: true, message: '请选择重复事件', trigger: 'change'}
+            {required: true, message: '', trigger: 'change'}
           ],
           start_day: [
-            {required: true, message: '请选择开始日期', trigger: 'blur'}
+            {required: true, message: '', trigger: 'blur'}
           ],
           end_day: [
-            {required: true, message: '请选择截止日期', trigger: 'blur'}
+            {required: true, message: '', trigger: 'blur'}
           ],
-
-
         },
 
         viewEventDialog: false,
@@ -673,7 +665,7 @@
         },
         view_rules: {
           title: [
-            {required: true, message: '请输入事件标题', trigger: 'blur'},
+            {required: true, message: '', trigger: 'blur'},
             // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
           ],
         },
@@ -685,20 +677,20 @@
           height: window.innerHeight - 120,
           eventColor: "transparent",
           // eventTextColor: "#474545",
-          locale: "zh-cn",
+          locale: calendar_lang ,//zh-cn  / en
           defaultView: 'month',
           editable: true,
           droppable: true,
           selectable: true,
           diableResizing: true,
           // columnFormat:'周dd',
-          titleFormat: 'YYYY年MM月',
+          titleFormat: 'YYYY-MM',
           buttonText: {
-            today: '今天',
-            month: '月',
-            agendaWeek: '周',
-            agendaDay: '日',
-            listMonth: '事件',
+            today: _self.$parent.lan.MAILBOX_COM_INNERBOX_TODAY,
+            month: _self.$parent.lan.CALENDAR_PAGE_CAL_MONTH,
+            agendaWeek: _self.$parent.lan.CALENDAR_PAGE_CAL_WEEK,
+            agendaDay: _self.$parent.lan.SETTING_RE_ADD_DAY,
+            listMonth: _self.$parent.lan.CALENDAR_PAGE_CAL_EVENT,
           },
           header: {
             center: "prev title next",
@@ -708,10 +700,10 @@
           },
           views: {
             agendaWeek: {
-              titleFormat: 'YYYY年MM月D日',
+              titleFormat: 'YYYY-MM-D',
             },
             agendaDay: {
-              titleFormat: 'YYYY年MM月D日',
+              titleFormat: 'YYYY-MM-D',
             }
           },
           eventMouseover: function (event, jsEvent, view) {
@@ -784,29 +776,29 @@
         },
 
         fcEvents: [
-          {
-            id: 0,
-            title: "新建事件...",
-            start: '',
-            color: '#EDF8FB',
-            textColor: '#aaa'
-          },
-          {
-            id: 1,
-            title: '标记32测试测试吃测试吃测试测试测试测色测色测试',
-            start: '2018-09-11',
-            allDay: true,
-            // url:'http://www.baidu.com'
-            // backgroundColor: 'red',
-            // borderColor: 'red',
-          },
-          {
-            id: 2,
-            title: '试测试测色你哦士大夫hi上的i和迫使对方屁哦士大夫横批哦撒旦测色测试',
-            start: '2018-09-13 14:30:00',
-            end: '2018-09-30 15:30:00',
-            allDay: false,
-          },
+          // {
+          //   id: 0,
+          //   title: "新建事件...",
+          //   start: '',
+          //   color: '#EDF8FB',
+          //   textColor: '#aaa'
+          // },
+          // {
+          //   id: 1,
+          //   title: '标记32测试测试吃测试吃测试测试测试测色测色测试',
+          //   start: '2018-09-11',
+          //   allDay: true,
+          //   // url:'http://www.baidu.com'
+          //   // backgroundColor: 'red',
+          //   // borderColor: 'red',
+          // },
+          // {
+          //   id: 2,
+          //   title: '试测试测色你哦士大夫hi上的i和迫使对方屁哦士大夫横批哦撒旦测色测试',
+          //   start: '2018-09-13 14:30:00',
+          //   end: '2018-09-30 15:30:00',
+          //   allDay: false,
+          // },
         ],
         pickerBeginDateBefore: {
           disabledDate: time => {
@@ -855,6 +847,14 @@
     components: {
     },
     created: function() {
+      // this.buttonText = {
+      //   today: this.lan.MAILBOX_COM_INNERBOX_TODAY,
+      //   month: this.lan.CALENDAR_PAGE_CAL_MONTH,
+      //   agendaWeek: this.lan.CALENDAR_PAGE_CAL_WEEK,
+      //   agendaDay: this.lan.SETTING_RE_ADD_DAY,
+      //   listMonth: this.lan.CALENDAR_PAGE_CAL_EVENT,
+      // }
+      this.titleFormat = 'YYYY'+this.lan.FILE_P_YEAR+'MM'+this.lan.CALENDAR_PAGE_CAL_MONTH
       let mail_event = this.$store.getters.getMailEvent;
       if(mail_event.event_jump){
         this.getDeptOptions();
@@ -875,9 +875,9 @@
     },
     methods: {
       fwics(id){
-        this.$confirm('确认转发?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm(this.lan.CALENDAR_PAGE_CAL_SURE_TRANSFER, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+          confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+          cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
           type: 'warning'
         }).then(() => {
           console.log(id)
@@ -897,7 +897,7 @@
             console.log(err)
             this.$message({
               type:'error',
-              message:'转发失败！'
+              message:this.lan.CALENDAR_PAGE_CAL_TRANSFER_FAIL
             })
           })
         }).catch(() => {
@@ -990,7 +990,7 @@
           }
           console.log(this.fcEvents)
           this.fcEvents.push({
-            title:"新建事件...",
+            title:this.lan.CALENDAR_PAGE_CAL_NEW_EVENT+ "...",
             start:'',
             textColor:'#aaa'
           })
@@ -1095,7 +1095,7 @@
               this.addemail = '';
             }
           }else{
-            this.$message({message:'邮箱格式不正确！',type:'error'})
+            this.$message({message:this.lan.CALENDAR_PAGE_SET_MAIL_TYPE,type:'error'})
           }
 
         }
@@ -1124,7 +1124,7 @@
               this.addemail_view = '';
             }
           }else{
-            this.$message({message:'邮箱格式不正确！',type:'error'})
+            this.$message({message:this.lan.CALENDAR_PAGE_SET_MAIL_TYPE,type:'error'})
           }
 
         }
@@ -1132,7 +1132,7 @@
       delete_invitors_view(k,id){
         if(id){
           cancelInvitorEvent(id).then(res=>{
-            this.$message({message:'取消邀请成功！',type:'success'});
+            this.$message({message:this.lan.COMMON_OPRATE_SUCCESS,type:'success'});
             this.hashMailbox_view[this.viewForm.invitors[k]] = false;
             this.viewForm.invitors.splice(k,1)
           },err=>{
@@ -1140,7 +1140,7 @@
             if(err.detail){
               str = err.detail
             }
-            this.$message({message:'取消邀请失败！'+str,type:'error'});
+            this.$message({message:this.lan.COMMON_OPRATE_FAILED+str,type:'error'});
           })
         }else{
           this.hashMailbox_view[this.viewForm.invitors[k]] = false;
@@ -1151,7 +1151,7 @@
       },
       saveStatus(){
         setStatus(this.event_id,this.invitor_status).then(res=>{
-          this.$message({message:'操作成功！',type:'success'});
+          this.$message({message:this.lan.COMMON_OPRATE_SUCCESS,type:'success'});
         },err=>{
           if("detail" in err){
             this.$message({message:err.detail,type:'error'});
@@ -1170,19 +1170,19 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             if(!this.newForm.start_day){
-              _this.$message({message:'请选择事件开始日期！',type:'error'});
+              _this.$message({message:this.lan.CALENDAR_PAGE_CAL_INPUT_START_TIME,type:'error'});
               return;
             }
             if(!this.newForm.end_day){
-              _this.$message({message:'请选择事件截止日期！',type:'error'});
+              _this.$message({message:this.lan.CALENDAR_PAGE_CAL_INPUT_END_TIME,type:'error'});
               return;
             }
             if(this.newForm.cycle_mode!=0 &&this.newForm.cycle_type==0&& !this.newForm.cycle_day){
-              _this.$message({message:'请选择重复截止日期！',type:'error'});
+              _this.$message({message:this.lan.CALENDAR_PAGE_CAL_CHOOSE_REPEAT_ENDTIME,type:'error'});
               return;
             }
             if(this.newForm.is_copy && this.newForm.cycle_mode==0 ){
-               _this.$message({message:'请选择重复频率！',type:'error'});
+               _this.$message({message:this.lan.CALENDAR_PAGE_CAL_CHOOSE_REPEAT_COUNT,type:'error'});
               return;
             }
             if(!this.newForm.is_copy){
@@ -1206,7 +1206,7 @@
 
             createEvent(obj).then(res=>{
               this.newEventDialog = false;
-              this.$message({message:'创建事件成功！',type:'success'});
+              this.$message({message:this.lan.COMMON_OPRATE_SUCCESS,type:'success'});
               this.getEventList();
               // this.newForm.invitors = [];
               this.$refs.newForm.resetFields();
@@ -1234,19 +1234,19 @@
         this.$refs['viewForm'].validate((valid) => {
           if (valid) {
             if(!this.viewForm.start_day){
-              _this.$message({message:'请选择事件开始日期！',type:'error'});
+              _this.$message({message:this.lan.CALENDAR_PAGE_CAL_INPUT_START_TIME,type:'error'});
               return;
             }
             if(!this.viewForm.end_day){
-              _this.$message({message:'请选择事件截止日期！',type:'error'});
+              _this.$message({message:this.lan.CALENDAR_PAGE_CAL_INPUT_END_TIME,type:'error'});
               return;
             }
             if(this.viewForm.cycle_mode!=0 && !this.viewForm.cycle_type && !this.viewForm.cycle_day){
-              _this.$message({message:'请选择重复截止日期！',type:'error'});
+              _this.$message({message:this.lan.CALENDAR_PAGE_CAL_CHOOSE_REPEAT_ENDTIME,type:'error'});
               return;
             }
             if(this.viewForm.is_copy && this.viewForm.cycle_mode==0 ){
-               _this.$message({message:'请选择重复频率！',type:'error'});
+               _this.$message({message:this.lan.CALENDAR_PAGE_CAL_CHOOSE_REPEAT_COUNT,type:'error'});
               return;
             }
             if(!this.viewForm.is_copy){
@@ -1277,7 +1277,7 @@
             obj.invitors = invitors;
             updateEvent(this.viewForm.id,obj).then(res=>{
               this.viewEventDialog = false;
-              this.$message({message:'修改成功！',type:'success'});
+              this.$message({message:this.lan.COMMON_ALTER_SUCCESS,type:'success'});
               this.getEventList();
             },err=>{
               if("detail" in err){
@@ -1297,13 +1297,13 @@
         });
       },
       deleteEventSubmit(id){
-        this.$confirm('此操作将永久删除该事件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm(this.lan.CALENDAR_PAGE_CAL_DELETE_EVENT_DESC, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+          confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+          cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
           type: 'warning'
         }).then(() => {
           deleteEvent(id).then(res=>{
-            this.$message({message:'删除事件成功！',type:'success'});
+            this.$message({message:this.lan.COMMON_DELETE_SUCCESS,type:'success'});
             this.viewEventDialog = false;
             this.getEventList();
           },err=>{
@@ -1319,10 +1319,7 @@
             }
           })
         }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
+
         });
 
       },
@@ -1404,7 +1401,7 @@
     computed:{
       lan:function(){
         let lang = lan.zh
-        if(this.$store.getters.getLanguage=='zh'){
+        if(this.$store.getters.getLanguage=='zh-hans'){
           lang = lan.zh
         }else if(this.$store.getters.getLanguage=='zh-tw'){
           lang = lan.zh_tw
@@ -1415,18 +1412,35 @@
         }else{
           lang = lan.zh
         }
-        this.add_rules = {
-          name:[
-            {required: true, message: lang.CALENDAR_PAGE_SET_SCHEDULE_NAME_RULES1, trigger: 'blur'},
-            { min: 1, max: 20, message: lang.CALENDAR_PAGE_SET_SCHEDULE_NAME_RULES2, trigger: 'blur' }
-          ]
+        this.rules = {
+          title: [
+            {required: true, message: lang.CALENDAR_PAGE_CAL_INPUT_EVENT_NAME, trigger: 'blur'},
+            // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          ],
+          cycle_mode: [
+            {required: true, message: lang.CALENDAR_PAGE_CAL_CHOOSE_REPEAT_EVENT, trigger: 'change'}
+          ],
+          start_day: [
+            {required: true, message: lang.CALENDAR_PAGE_CAL_INPUT_START_TIME, trigger: 'blur'}
+          ],
+          end_day: [
+            {required: true, message: lang.CALENDAR_PAGE_CAL_INPUT_END_TIME, trigger: 'blur'}
+          ],
         }
-        this.edit_rules = {
-          name:[
-            {required: true, message: lang.CALENDAR_PAGE_SET_SCHEDULE_NAME_RULES1, trigger: 'blur'},
-            { min: 1, max: 20, message: lang.CALENDAR_PAGE_SET_SCHEDULE_NAME_RULES2, trigger: 'blur' }
-          ]
+        this.view_rules = {
+          title: [
+            {required: true, message: lang.CALENDAR_PAGE_CAL_INPUT_EVENT_NAME, trigger: 'blur'},
+            // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          ],
         }
+        this.titleFormat = 'YYYY'+lang.FILE_P_YEAR+'MM'+lang.CALENDAR_PAGE_CAL_MONTH;
+        // this.buttonText = {
+        //     today: lang.MAILBOX_COM_INNERBOX_TODAY,
+        //     month: lang.CALENDAR_PAGE_CAL_MONTH,
+        //     agendaWeek: lang.CALENDAR_PAGE_CAL_WEEK,
+        //     agendaDay: lang.SETTING_RE_ADD_DAY,
+        //     listMonth: lang.CALENDAR_PAGE_CAL_EVENT,
+        //   }
         return lang
       }
     }

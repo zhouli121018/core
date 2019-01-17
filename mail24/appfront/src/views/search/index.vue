@@ -39,7 +39,7 @@
             <el-date-picker type="date" :placeholder="plang.COMMON_SEARCH_DATE" v-model="sendfilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchSendDate"></el-date-picker>
           </el-col>
           <el-col :span="12" style="text-align:right;">
-            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'send')" @current-change="currentChange($event,'send')" :current-page="sendData.page" :page-sizes="[10, 20, 50, 100]" :page-size="sendData.page_size" layout="total, sizes, prev, pager, next " :total="sendData.total"></el-pagination>
+            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'send')" @current-change="currentChange($event,'send')" :current-page="sendData.page" :page-sizes="[10, 20, 50]" :page-size="sendData.page_size" layout="total, sizes, prev, pager, next " :total="sendData.total"></el-pagination>
           </el-col>
         </el-row>
         <el-table ref="sendTable" id="sendTable" :data="sendData.tableData" stripe :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}" size="mini" style="width: 100%">
@@ -50,6 +50,8 @@
                   <span v-if="r.name">{{r.name +' '}} &lt;</span> <span> {{r.recipient}}</span> <span v-if="r.name">&gt;</span>
                 </el-col>
                 <el-col :style="{width:expand_table.col2+'px'}" style="overflow: hidden; white-space: nowrap;text-overflow: ellipsis;box-sizing:border-box;padding-left:10px;">
+                  <span style="color:#45AB19;" v-if="r.status=='deliver' && r.recall_status!='stay'"> {{r.status_info||''}};</span>
+                  <span style="color:#45AB19;" v-if="r.status=='readed' && r.recall_status!='stay'"> {{r.status_info||''}};</span>
                   <span style="color:#45AB19;" :class="{is_red:r.is_red}"> {{r.inform||''}}</span>
                 </el-col>
                 <el-col :style="{width:expand_table.col3+'px'}" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;box-sizing:border-box;padding-left:10px;">
@@ -84,6 +86,8 @@
           <el-table-column prop="details" :label="plang.COMMON_STATUS">
             <template slot-scope="scope" >
               <div v-if="scope.row.details.length==1">
+                <span style="color:#45AB19;" v-if="scope.row.details[0].status=='deliver' && scope.row.details[0].recall_status!='stay'"> {{scope.row.details[0].status_info||''}};</span>
+                <span style="color:#45AB19;" v-if="scope.row.details[0].status=='readed' && scope.row.details[0].recall_status!='stay'"> {{scope.row.details[0].status_info||''}};</span>
                 <span style="color:#45AB19;" :class="{is_red:scope.row.details[0].is_red}"> {{scope.row.details[0].inform||''}} </span>
               </div>
             </template>
@@ -263,7 +267,7 @@
     },
     computed: {
       plang(){
-        if(this.$store.getters.getLanguage=='zh'){
+        if(this.$store.getters.getLanguage=='zh-hans'){
           return lan.zh
         }else if(this.$store.getters.getLanguage=='zh-tw'){
           return lan.zh_tw

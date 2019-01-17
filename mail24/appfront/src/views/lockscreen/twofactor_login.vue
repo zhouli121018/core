@@ -1,45 +1,45 @@
 <template>
     <div class="verifyLayout" :class="'bg'+bgIndex">
       <div class="two_main">
-        <h3 style="margin-bottom:20px;"> 二次验证</h3>
+        <h3 style="margin-bottom:20px;"> {{lan.TWOFACTOR_LOGIN_TITLE}}</h3>
         <!--<el-alert :title="'请任意选择一种验证方式登录账号 '+$route.query.mail" type="warning" style="margin:20px 0;" show-icon :closable="false"></el-alert>-->
         <el-tabs  v-model="activeTwoType" type="card" @tab-click="" class="safe_box" style="max-width:900px;text-align:left">
-                <el-tab-pane label="谷歌验证登录" name="google" class="two_box" v-if="has_totp">
-                  <el-form  :model="goggleForm" :rules="goggleRules"  label-width="100px" size="small">
-                    <el-form-item label="谷歌验证码" prop="code">
-                      <el-input v-model="goggleForm.code" style="width:300px;" placeholder="请输入谷歌验证码"></el-input>
+                <el-tab-pane :label="lan.TWOFACTOR_LOGIN_GOOGLE" name="google" class="two_box" v-if="has_totp">
+                  <el-form  :model="goggleForm" :rules="goggleRules"  :label-width="$store.getters.getLanguage=='en'?'200px':'100px'" size="small">
+                    <el-form-item :label="lan.SETTING_TWOFACTOR_GOOGLE_CODE" prop="code">
+                      <el-input v-model="goggleForm.code" style="width:300px;" :placeholder="lan.SETTING_TWOFACTOR_GOOGLE_CODE_PLACE"></el-input>
                     </el-form-item>
                     <el-form-item>
-                      <el-button type="primary" @click="googleLogin(goggleForm.code)">登 录</el-button>
-                      <el-button type="warning" @click="goLogin">返 回</el-button>
+                      <el-button type="primary" @click="googleLogin(goggleForm.code)">{{lan.login}}</el-button>
+                      <el-button type="warning" @click="goLogin">{{lan.TWOFACTOR_LOGIN_RETURN}}</el-button>
                     </el-form-item>
                   </el-form>
                 </el-tab-pane>
-                <el-tab-pane label="手机短信登录" name="phone" class="two_box" v-if="has_phone">
-                  <el-form :model="phoneForm" :rules="phoneRules"  label-width="100px" size="small"  style="max-width:900px">
+                <el-tab-pane :label="lan.TWOFACTOR_LOGIN_SMS" name="phone" class="two_box" v-if="has_phone">
+                  <el-form :model="phoneForm" :rules="phoneRules"  :label-width="$store.getters.getLanguage=='en'?'200px':'100px'" size="small"  style="max-width:900px">
 
-                    <el-form-item label="短信验证码" prop="code">
-                      <el-input v-model="phoneForm.code" style="width:200px;" placeholder="请输入短信验证码"></el-input>
-                      <el-button  @click="getLoginCode" :disabled="getcodeDisabled"> 获取验证码 <span v-if="getcodeDisabled">({{ss}} 秒)</span></el-button>
+                    <el-form-item :label="lan.SETTING_TWOFACTOR_PHONE_CODE" prop="code">
+                      <el-input v-model="phoneForm.code" style="width:200px;" :placeholder="lan.SETTING_TWOFACTOR_PHONE_CODE_RULE"></el-input>
+                      <el-button  @click="getLoginCode" :disabled="getcodeDisabled"> {{lan.COMMON_FETCH_VERIFICATION_CODE}} <span v-if="getcodeDisabled">({{ss}} 秒)</span></el-button>
                     </el-form-item>
                     <el-form-item label="" >
-                      <el-button  @click="googleLogin(phoneForm.code)" type="primary"> 登 录 </el-button>
-                      <el-button type="warning" @click="goLogin">返 回</el-button>
+                      <el-button  @click="googleLogin(phoneForm.code)" type="primary"> {{lan.login}} </el-button>
+                      <el-button type="warning" @click="goLogin">{{lan.TWOFACTOR_LOGIN_RETURN}}</el-button>
                     </el-form-item>
                   </el-form>
                 </el-tab-pane>
-                <el-tab-pane label="备份密钥登录" name="backup" class="two_box" v-if="has_totp">
-                  <el-form :model="backupForm" :rules="backupRules"  label-width="100px" size="small"  style="max-width:900px">
+                <!--<el-tab-pane label="备份密钥登录" name="backup" class="two_box" v-if="has_totp">-->
+                  <!--<el-form :model="backupForm" :rules="backupRules"  label-width="100px" size="small"  style="max-width:900px">-->
 
-                    <el-form-item label="备份密钥" prop="code">
-                      <el-input v-model="backupForm.code" style="width:300px;" placeholder="请输入备份密钥"></el-input>
-                    </el-form-item>
-                    <el-form-item label="" >
-                      <el-button  @click="googleLogin(backupForm.code)" type="primary"> 登 录 </el-button>
-                      <el-button type="warning" @click="goLogin">返 回</el-button>
-                    </el-form-item>
-                  </el-form>
-                </el-tab-pane>
+                    <!--<el-form-item label="备份密钥" prop="code">-->
+                      <!--<el-input v-model="backupForm.code" style="width:300px;" placeholder="请输入备份密钥"></el-input>-->
+                    <!--</el-form-item>-->
+                    <!--<el-form-item label="" >-->
+                      <!--<el-button  @click="googleLogin(backupForm.code)" type="primary"> 登 录 </el-button>-->
+                      <!--<el-button type="warning" @click="goLogin">返 回</el-button>-->
+                    <!--</el-form-item>-->
+                  <!--</el-form>-->
+                <!--</el-tab-pane>-->
 
               </el-tabs>
       </div>
@@ -57,6 +57,7 @@
 </template>
 
 <script>
+  import lan from '@/assets/js/lan';
 import {lockscreen,twofactorLogin,loginSms} from '@/api/api'
 import cookie from '@/assets/js/cookie';
 import router from '@/router'
@@ -70,16 +71,16 @@ export default {
             ss:60,
             timer:'',
             phoneRules:{
-              code:[{ required: true, message: '请输入短信验证码~', trigger: 'blur' }],
+              code:[{ required: true, message: '', trigger: 'blur' }],
             },
             backupForm:{code:''},
             backupRules:{
-              code:[{ required: true, message: '请输入备份密钥~', trigger: 'blur' }],
+              code:[{ required: true, message: '', trigger: 'blur' }],
             },
             activeTwoType:'google',
             goggleForm:{code:''},
             goggleRules:{
-              code:[{ required: true, message: '请输入谷歌验证码~', trigger: 'blur' }],
+              code:[{ required: true, message: '', trigger: 'blur' }],
             },
             twofactor_login:false,
             twofactorList:{"has_totp":true,"uuid_string":"08483291a0f3d11e9881e005056a7d9881411","has_phone":true},
@@ -131,6 +132,11 @@ export default {
         console.log(param);
         twofactorLogin(param).then(response=>{
           if(response.data.token){
+            if(this.$route.query.rememberUserInfo){
+              localStorage['userName'] = this.$route.query.mail
+            }else{
+              localStorage['userName'] = ''
+            }
             cookie.setCookie('name', this.$route.query.mail, 7);
             cookie.setCookie('token', response.data.token, 7);
             cookie.delCookie('locked')
@@ -138,6 +144,7 @@ export default {
             window.sessionStorage.clear();
             this.$store.dispatch('setInfo');
             this.$router.push('/mailbox')
+
           }
         }).catch(err=>{
           console.log(err)
@@ -172,6 +179,28 @@ export default {
       },
       bgIndex:function(){
         return this.$route.query.bi
+      },
+      lan:function(){
+        let lang = lan.zh
+        if(this.$store.getters.getLanguage=='zh-hans'){
+          lang = lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          lang = lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          lang = lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          lang = lan.zh
+        }else{
+          lang = lan.zh
+        }
+        this.phoneRules = {
+          code:[{ required: true, message: lang.SETTING_TWOFACTOR_PHONE_CODE_RULE, trigger: 'blur' }],
+        }
+        this.goggleRules = {
+          code:[{ required: true, message: lang.SETTING_TWOFACTOR_GOOGLE_CODE_PLACE, trigger: 'blur' }],
+        }
+        return lang
+
       }
     }
 }

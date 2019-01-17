@@ -65,7 +65,7 @@ const store = new Vuex.Store({
     login_after:{},
     login_before:{},
     skin_order:'',
-    language:cookie.getCookie('webvue_language')||'zh'
+    language:cookie.getCookie('webvue_language')||'zh-hans'
   },
   getters:{
     getLanguage(state){

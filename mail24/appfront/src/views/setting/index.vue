@@ -18,7 +18,7 @@
               <span slot="title" :title="lan.SETTING_INDEX_PASSWORD_MENU_TITLE">{{lan.SETTING_INDEX_PASSWORD_MENU}}</span>
             </el-menu-item>
 
-            <el-menu-item index="/setting/twofactor" style="text-align: left" >
+            <el-menu-item index="/setting/twofactor" style="text-align: left" v-show="setting_password_show">
               <img src="./img/op_password.gif" style="width:20px;">
               <span slot="title" :title="lan.SETTING_INDEX_TWOFACTOR_MENU">{{lan.SETTING_INDEX_TWOFACTOR_MENU}}</span>
             </el-menu-item>
@@ -88,7 +88,7 @@
               <span slot="title" :title="lan.SETTING_INDEX_FILTER_MENU_TITLE">{{lan.SETTING_INDEX_FILTER_MENU}}</span>
             </el-menu-item>
 
-            <el-menu-item index="/setting/relatelist" style="text-align: left" v-show="setting_relatelist_show && menuShow.setting_relatelist_show">
+            <el-menu-item index="/setting/relatelist" style="text-align: left" v-show="setting_password_show && menuShow.setting_relatelist_show">
               <img src="./img/op_sharemailbox.gif" style="width:20px;">
               <span slot="title" :title="lan.SETTING_INDEX_REFER_MENU_TITLE">{{lan.SETTING_INDEX_REFER_MENU}}</span>
             </el-menu-item>
@@ -163,11 +163,8 @@
       setting_password_show(){
         return  !this.$store.getters.getIsShared
       },
-      setting_relatelist_show(){
-        return  !this.$store.getters.getIsShared
-      },
       lan(){
-        if(this.$store.getters.getLanguage=='zh'){
+        if(this.$store.getters.getLanguage=='zh-hans'){
           return lan.zh
         }else if(this.$store.getters.getLanguage=='zh-tw'){
           return lan.zh_tw

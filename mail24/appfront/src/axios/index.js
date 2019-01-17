@@ -50,22 +50,11 @@ axios.interceptors.request.use(
     if( config.url.indexOf('/setting/secret-reset')>-1){
       return config;
     }
+    if( config.url.indexOf('/setting/register')>-1){
+      return config;
+    }
     if(config.url.indexOf('login')==-1 &&!cookie.getCookie('token')){
       store.dispatch('setInfo');
-      // if(router.currentRoute.path != '/login'){
-      //   if(!hasBox){
-      //     hasBox = true;
-      //     MessageBox.alert('会话已过期，请重新登录','系统信息',{
-      //       confirmButtonText: '确定',
-      //       callback: action => {
-      //         hasBox = false;
-      //         router.push('/')
-      //       }
-      //     })
-      //   }
-      // }
-
-
       return;
     }
     if(config.url.indexOf('?')>-1){
@@ -143,6 +132,10 @@ axios.interceptors.response.use(
       }
     }
     tryHideFullScreenLoading()
-    return Promise.reject(error.response.data)   // 返回接口返回的错误信息
+    if(error.response && error.response.data){
+      return Promise.reject(error.response.data)   // 返回接口返回的错误信息
+    }else{
+      return Promise.reject(error.response)
+    }
   });
 

@@ -577,7 +577,7 @@
             _this.$message({message:this.plang.SETTING_RE_ADD_RULE_2,type:'error'});
             return false;
           }
-          if(o.suboption!='all_mail'&&o.suboption!='has_attach'&&!o.value){
+          if(o.suboption!='all_mail'&&o.suboption!='has_attach'&&!o.value && o.value!=0){
             _this.$message({message:this.plang.SETTING_RE_ADD_RULE_3,type:'error'});
             return false;
           }
@@ -588,7 +588,7 @@
                 _this.$message({message:this.plang.SETTING_RE_ADD_RULE_2,type:'error'});
                 return false;
               }
-              if(subO.suboption!='all_mail'&&subO.suboption!='has_attach'&&!subO.value){
+              if(subO.suboption!='all_mail'&&subO.suboption!='has_attach'&&!subO.value && subO.value!=0){
                 _this.$message({message:this.plang.SETTING_RE_ADD_RULE_3,type:'error'});
                 return false;
               }

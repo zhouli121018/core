@@ -52,7 +52,7 @@
     },
     computed: {
       plang(){
-        if(this.$store.getters.getLanguage=='zh'){
+        if(this.$store.getters.getLanguage=='zh-hans'){
           return lan.zh
         }else if(this.$store.getters.getLanguage=='zh-tw'){
           return lan.zh_tw

@@ -5,28 +5,30 @@
         <h1 class="logo" style="float:left;" v-if="false">
           <img src="@/assets/img/logo.png" alt="logo" style="width: 152px; height: 42px;">
         </h1>
-        <span v-if="false" class="username" style="float: left;margin: 5px 0 0 60px;white-space: nowrap;">您好！<b>&lt;{{$store.getters.userInfo.name}}&gt;</b> <span style="cursor:pointer;text-decoration: underline;color:#074977;margin-left:10px;font-size:12px;" @click="closeWindow">[返回]</span></span>
+        <span v-if="false" class="username" style="float: left;margin: 5px 0 0 60px;white-space: nowrap;">{{lan.MAILBOX_COM_HOME_HELLO}}<b>&lt;{{$store.getters.userInfo.name}}&gt;</b> <span style="cursor:pointer;text-decoration: underline;color:#074977;margin-left:10px;font-size:12px;" @click="closeWindow">[{{lan.MAILBOX_COM_COMPOSE_RETURN_TO_MAILBOX}}]</span></span>
 
       </div>
       <span style="font-size:22px;font-weight: bold;">{{name}}</span> <span style="font-size:12px;color:#aaa;margin-left:10px;">({{$route.query.size |mailsize}})</span>
 
-      <el-button  type="text" size="small" style="margin:0 10px;text-decoration: underline;color: #074977" @click="download">{{$route.query.type=='attach'?'[下载附件]':'[下载]'}}</el-button>
+      <el-button  type="text" size="small" style="margin:0 10px;text-decoration: underline;color: #074977" @click="download">{{$route.query.type=='attach'?'['+lan.PREVIEW_DOWNLOAD_ATTACH+']':'['+lan.FILE_P_DOWNLOAD+']'}}</el-button>
       <!--<el-button @click="refresh" size="small" type="text" style="text-decoration: underline; color: #074977">[刷新重试]</el-button>-->
-      <p v-if="$route.query.subject" style="color:#999;font-size:14px;">邮件标题：<span style="color:#000;">{{$route.query.subject}}</span></p>
-      <p style="margin-top: 6px; color: #999;white-space: nowrap;font-size:12px;">部分格式和图片可能无法显示，请下载原文档查看</p>
+      <p v-if="$route.query.subject" style="color:#999;font-size:14px;">{{lan.PREVIEW_MAIL_SUBJECT}}<span style="color:#000;">{{$route.query.subject}}</span></p>
+      <p style="margin-top: 6px; color: #999;white-space: nowrap;font-size:12px;">{{lan.PREVIEW_VIEW_DESC}}</p>
     </div>
-    <div style="position:absolute;bottom:0;left:0;right:0" v-loading="loading" :class="{attachpre:$route.query.type=='attach'||$route.query.type =='review',noread:$route.query.type!='attach'&&$route.query.type!='review'}">
+    <div style="position:absolute;bottom:0;left:0;right:0" v-loading="loading" :element-loading-text="lan.PREVIEW_LOADING_TEXT"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.3)" :class="{attachpre:$route.query.type=='attach'||$route.query.type =='review',noread:$route.query.type!='attach'&&$route.query.type!='review'}">
       <!--<el-input type="file" @change="change" id="file"></el-input>-->
       <iframe id="previewIframe"  frameborder="0" scrolling="100%" height="200" width="100%" :src="preUrl"></iframe>
     </div>
-    <el-dialog title="提示"  :visible.sync="infoView"  :close-on-click-modal="false" :append-to-body="true" width="400px">
-        <span>附件预览时发生错误：</span> <span style="color:#f56c6c;">{{errMsg}}</span>
-        <p v-if="canRetry" style="padding:10px 0 0;">请 <span @click="preview" style="cursor:pointer;text-decoration: underline;color: #074977">重试</span> 或直接 <span style="cursor:pointer;text-decoration: underline;color: #074977" @click="download">下载</span> 查看
+    <el-dialog :title="lan.COMMON_BUTTON_CONFIRM_NOTICE"  :visible.sync="infoView"  :close-on-click-modal="false" :append-to-body="true" width="400px">
+        <span>{{lan.PREVIEW_ERROR}}</span> <span style="color:#f56c6c;">{{errMsg}}</span>
+        <p v-if="canRetry" style="padding:10px 0 0;"> <span @click="preview" style="cursor:pointer;text-decoration: underline;color: #074977">{{lan.PREVIEW_RETRY}}</span> {{lan.PREVIEW_OR}} <span style="cursor:pointer;text-decoration: underline;color: #074977" @click="download">{{lan.FILE_P_DOWNLOAD}}</span> {{lan.FILE_P_VIEW}}
         </p>
-        <p v-if="!canRetry" style="padding:10px 0 0;">请直接 <span style="cursor:pointer;text-decoration: underline;color: #074977" @click="download">下载</span> 查看
+        <p v-if="!canRetry" style="padding:10px 0 0;">{{lan.PREVIEW_OR}} <span style="cursor:pointer;text-decoration: underline;color: #074977" @click="download">{{lan.FILE_P_DOWNLOAD}}</span> {{lan.FILE_P_VIEW}}
         </p>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="infoView = false">取消</el-button>
+          <el-button @click.native="infoView = false">{{lan.COMMON_BUTTON_CANCELL}}</el-button>
         </div>
       </el-dialog>
     <!--<el-button style="position:fixed;bottom:10px;right:10px;" @click="goTop">top</el-button>-->
@@ -34,6 +36,7 @@
 </template>
 
 <script>
+  import lan from '@/assets/js/lan';
   import {getOpenoffice,downloadAttach2,downloadAttach,netdiskFileDownload,companyDiskFileDownload,companyDiskZipDownload,reviewDowload} from '@/api/api';
   export default  {
     data(){
@@ -58,7 +61,7 @@
         var folders = [];
         files.push(row.id);
 
-        this.$confirm('确认下载当前文件？', '提示', {
+        this.$confirm( this.lan.PREVIEW_SURE_DOWNLOAD, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           this.folders(that, files, folders,row.name);
@@ -81,20 +84,20 @@
               document.body.appendChild(link);
               link.click();
             }
-            that.$message({ message: '导出成功', type: 'success' });
+            that.$message({ message: this.lan.COMMON_EXPORT_SUCCESS, type: 'success' });
           }).catch(function (err) {
             let str = '';
             if(err.detail){
               str = err.detail
             }
-            that.$message({ message: '导出失败！'+str,  type: 'error' });
+            that.$message({ message: this.lan.COMMON_EXPORT_FAILED+str,  type: 'error' });
           });
 
         });
       },
       zipRowDownloadmail: function (row) {
         let that = this;
-        this.$confirm('确认下载文件？', '提示', {
+        this.$confirm(this.lan.PREVIEW_SURE_DOWNLOAD, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           downloadAttach2(row.id, {download: true}).then((response)=> {
@@ -112,20 +115,20 @@
               document.body.appendChild(link);
               link.click();
             }
-            that.$message({ message: '导出成功', type: 'success' });
+            that.$message({ message: this.lan.COMMON_EXPORT_SUCCESS, type: 'success' });
           }).catch(function (err) {
             let str = '';
             if(err.detail){
               str = err.detail
             }
-            that.$message({ message: '导出失败! '+str,  type: 'error' });
+            that.$message({ message: this.lan.COMMON_EXPORT_FAILED+str,  type: 'error' });
           });
         });
       },
       zipRowDownloadfile: function(row){
         console.log(row)
         let that = this;
-        this.$confirm('确认下载当前文件？', '提示', {
+        this.$confirm(this.lan.PREVIEW_SURE_DOWNLOAD, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
             let file_id = row.id;
@@ -145,7 +148,7 @@
                 document.body.appendChild(link);
                 link.click();
               }
-              that.$message({ message: '导出成功', type: 'success' });
+              that.$message({ message: this.lan.COMMON_EXPORT_SUCCESS, type: 'success' });
             }).catch(function (err) {
               console.log(err)
               console.log(err.toString())
@@ -153,7 +156,7 @@
               if(err.detail){
                 str = err.detail
               }
-              that.$message({ message: '导出失败！'+str,  type: 'error' });
+              that.$message({ message: this.lan.COMMON_EXPORT_FAILED+str,  type: 'error' });
             });
 
         });
@@ -176,14 +179,14 @@
             link.click();
             link.remove();
           }
-          that.$message({ message: '导出成功', type: 'success' });
+          that.$message({ message: this.lan.COMMON_EXPORT_SUCCESS, type: 'success' });
           // this.getPabs();
         }).catch(function (err) {
           let str = '';
           if(err.detail){
             str = err.detail
           }
-          that.$message({ message: '导出失败！'+str,  type: 'error' });
+          that.$message({ message: this.lan.COMMON_EXPORT_FAILED+str,  type: 'error' });
         });
       },
       download(){
@@ -228,18 +231,18 @@
             document.body.appendChild(link);
             link.click();
           }
-          this.$message({ message: '下载成功！', type: 'success' });
+          this.$message({ message: this.lan.COMMON_DOWNLOAD_SUCCESS, type: 'success' });
         },err=>{
           console.log(err);
           let str = '';
           if(err.detail){
             str = err.detail
           }
-          this.$message({ message: '下载失败！'+str, type: 'error' });
+          this.$message({ message: this.lan.COMMON_DOWNLOAD_FAILED+str, type: 'error' });
         })
       },
       downloadAttach(sid,sname){
-        this.$confirm('确认下载当前文件？', '提示', {
+        this.$confirm(this.lan.PREVIEW_SURE_DOWNLOAD, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
           type: 'warning'
         }).then(() => {
           this.infoView = false;
@@ -269,14 +272,14 @@
               document.body.appendChild(link);
               link.click();
             }
-            this.$message({ message: '下载成功！', type: 'success' });
+            this.$message({ message: this.lan.COMMON_DOWNLOAD_SUCCESS, type: 'success' });
           },err=>{
             console.log(err);
             let str = '';
             if(err.detail){
               str = err.detail
             }
-            this.$message({ message: '下载失败！'+str, type: 'error' });
+            this.$message({ message: this.lan.COMMON_DOWNLOAD_FAILED+str, type: 'error' });
           })
         }).catch(err=>{
           console.log(err)
@@ -325,7 +328,7 @@
           }
           this.$message({
               type:'error',
-              message:'预览出错！'+str
+              message:this.lan.PREVIEW_ERROR+str
             })
         })
       },
@@ -377,7 +380,7 @@
           }
           this.$message({
             type:'error',
-            message:'预览出错！'+str
+            message:this.lan.PREVIEW_ERROR+str
           })
         })
       }
@@ -401,6 +404,30 @@
             },100)
 
     },
+    computed:{
+      lan:function(){
+        let lang = lan.zh
+        if(this.$store.getters.getLanguage=='zh-hans'){
+          lang = lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          lang = lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          lang = lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          lang = lan.zh
+        }else{
+          lang = lan.zh
+        }
+        this.buttonText = {
+            today: lang.MAILBOX_COM_INNERBOX_TODAY,
+            month: lang.CALENDAR_PAGE_CAL_MONTH,
+            agendaWeek: lang.CALENDAR_PAGE_CAL_WEEK,
+            agendaDay: lang.SETTING_RE_ADD_DAY,
+            listMonth: lang.CALENDAR_PAGE_CAL_EVENT,
+          }
+        return lang
+      }
+    }
   }
 </script>
 <style>
