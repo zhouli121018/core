@@ -1,244 +1,248 @@
 <template>
-     <div  id="login_bg" ref="login_bg" :class="'bg'+bgIndex">
-      <div class="main-bottom main-bottom-0"></div>
-      <div class="main-middle main-middle-0"></div>
+  <div  id="login_bg" ref="login_bg" :class="'bg'+bgIndex">
+    <div class="main-bottom main-bottom-0"></div>
+    <div class="main-middle main-middle-0"></div>
 
 
-      <div class="main">
-        <div class="content">
-          <div>
-            <a href="#" class="login_logo"  v-if="loginBeforeData.login_logo">
-              <img :src="loginBeforeData.login_logo" alt=" U-Mail">
-            </a>
+    <div class="main">
+      <div class="content">
+        <div>
+          <a href="#" class="login_logo"  v-if="loginBeforeData.login_logo">
+            <img :src="loginBeforeData.login_logo" alt=" U-Mail">
+          </a>
 
 
-          </div>
-          <div class="version" style="width:60%;min-height:200px;margin:0 auto;" v-if="loginBeforeData.login_ads && loginBeforeData.login_ads.length>0">
+        </div>
+        <div class="version" style="width:60%;min-height:200px;margin:0 auto;" v-if="loginBeforeData.login_ads && loginBeforeData.login_ads.length>0">
 
-            <el-carousel trigger="click" indicator-position="outside">
-              <el-carousel-item v-for="(item,k) in loginBeforeData.login_ads" :key="k" v-if="loginBeforeData.login_ads">
-                <a :href="item.link" target="_blank" v-if="item.link">
-                  <img :src="item.image" style="width:100%;max-width:100%;">
-                </a>
-                <img :src="item.image" style="width:100%;max-width:100%;" v-if="!item.link">
-              </el-carousel-item>
-            </el-carousel>
+          <el-carousel trigger="click" indicator-position="outside">
+            <el-carousel-item v-for="(item,k) in loginBeforeData.login_ads" :key="k" v-if="loginBeforeData.login_ads">
+              <a :href="item.link" target="_blank" v-if="item.link">
+                <img :src="item.image" style="width:100%;max-width:100%;">
+              </a>
+              <img :src="item.image" style="width:100%;max-width:100%;" v-if="!item.link">
+            </el-carousel-item>
+          </el-carousel>
 
-          </div>
-          <!--<div style="width:300px;padding-left:20px;margin-top:30px;">-->
-            <!--<a :href="loginBeforeData.login_ads[0].link" target="_blank" >-->
-              <!--<img :src="loginBeforeData.login_ads[0].image" style="width:100%;max-width:100%;">-->
-            <!--</a>-->
-          <!--</div>-->
-          <div class="copyright">
-            <label>
-              Copyright © <span>{{loginBeforeData.name}}</span>
-              <span v-if="loginBeforeData.is_icp">
+        </div>
+        <!--<div style="width:300px;padding-left:20px;margin-top:30px;">-->
+        <!--<a :href="loginBeforeData.login_ads[0].link" target="_blank" >-->
+        <!--<img :src="loginBeforeData.login_ads[0].image" style="width:100%;max-width:100%;">-->
+        <!--</a>-->
+        <!--</div>-->
+        <div class="copyright">
+          <label>
+            Copyright © <span>{{loginBeforeData.name}}</span>
+            <span v-if="loginBeforeData.is_icp">
                 <a :href="loginBeforeData.icp_link" v-if="loginBeforeData.icp_link"  target="_blank" style="color:#fff;text-decoration:none;"> | {{loginBeforeData.icp_no}}</a>
                 <span v-if="!loginBeforeData.icp_link"> | {{loginBeforeData.icp_no}}</span>
               </span>
-            </label>
-          </div>
+          </label>
         </div>
-        <div class="aside-blur" style="min-width: 330px;z-index:10;">
+      </div>
+      <div class="aside-blur" style="min-width: 330px;z-index:10;">
 
+      </div>
+      <div class="aside" style="min-width: 330px;z-index:11;" ref="aside">
+        <div class="text-center">
+          <el-button type="text" style="color:#fff;" @click="remark_page">
+            <!--<i class="el-icon-star-off" style="font-size:18px;"></i>-->
+            <i class="el-icon-star-on" style="font-size:16px;"></i>{{lan.REMARK_PAGE}}
+          </el-button>
+          <el-button type="text" @click="show_agreement_dialog" style="color:#fff">{{lan.USER_REGISTRATION}}</el-button>
+          <el-button type="text" style="color:#fff" @click="goToHelp">
+            <i class="iconfont icon-iconhelp1" style="font-size:18px;"></i>
+            {{lan.LAYOUT_INDEX_HELP_CENTER}}</el-button>
         </div>
-        <div class="aside" style="min-width: 330px;z-index:11;" ref="aside">
-          <div class="text-center">
-            <el-button type="text" style="color:#fff;">
-              <!--<i class="el-icon-star-off" style="font-size:18px;"></i>-->
-              <i class="el-icon-star-on" style="font-size:16px;"></i>收藏本页
-            </el-button>
-            <el-button type="text" @click="show_agreement_dialog" style="color:#fff">注 册</el-button>
-            <el-button type="text" style="color:#fff">
-              <i class="iconfont icon-iconhelp1" style="font-size:18px;"></i>
-              帮助中心</el-button>
-          </div>
-          <div class="loginArea normalForm" curtype="normalForm">
-            <div id="login_box" style="min-width:260px;width: 54%;margin:0 auto;">
+        <div class="loginArea normalForm" curtype="normalForm">
+          <div id="login_box" style="min-width:260px;width: 54%;margin:0 auto;">
 
 
-              <h2 class="text-center">{{lan.user_login}}</h2>
-              <el-form :label-position="labelPosition" class="loginForm" ref="loginForm" :rules="rules" label-width="80px" :model="formLabelAlign">
-                <el-form-item :label="lan.user_name" prop="username" style="">
-                  <label slot="label">
-                    <template>
-                      <el-select v-model="language" @change="changeLanguage" class="no_border" style="float:right;width:124px;">
-                          <el-option label="中文（简体）" value="zh-hans"></el-option>
-                          <el-option label="中文（繁體）" value="zh-tw"></el-option>
-                          <el-option label="English" value="en"></el-option>
-                          <!--<el-option label="Español" value="es" disabled></el-option>-->
-                        </el-select>
-                        <span>{{lan.user_name}}</span>
+            <h2 class="text-center">{{lan.user_login}}</h2>
+            <el-form :label-position="labelPosition" class="loginForm" ref="loginForm" :rules="rules" label-width="80px" :model="formLabelAlign">
+              <el-form-item :label="lan.user_name" prop="username" style="">
+                <label slot="label">
+                  <template>
+                    <el-select v-model="language" @change="changeLanguage" class="no_border" style="float:right;width:124px;">
+                      <el-option label="中文（简体）" value="zh-hans"></el-option>
+                      <el-option label="中文（繁體）" value="zh-tw"></el-option>
+                      <el-option label="English" value="en"></el-option>
+                      <!--<el-option label="Español" value="es" disabled></el-option>-->
+                    </el-select>
+                    <span>{{lan.user_name}}</span>
 
-                    </template>
-                  </label>
-                  <!--<el-input v-model.trim="formLabelAlign.username"></el-input>-->
-                  <el-input :placeholder="lan.placeholder_user_name" v-model.trim="formLabelAlign.username" class="input-with-select" name="username">
-                    <template slot="append">@
+                  </template>
+                </label>
+                <!--<el-input v-model.trim="formLabelAlign.username"></el-input>-->
+                <el-input :placeholder="lan.placeholder_user_name" v-model.trim="formLabelAlign.username" class="input-with-select" name="username">
+                  <template slot="append">@
                     <el-select v-model="loginBeforeData.domain"  :placeholder="lan.please_choose"  style="width:120px" @change="changeDomain">
                       <el-option v-for="(d,k) in loginBeforeData.domains" :key="k" :label="d[1]" :value="d[1]"></el-option>
                     </el-select>
-                    </template>
+                  </template>
 
-                  </el-input>
-                </el-form-item>
-                <el-form-item :label="lan.password" prop="password">
-                  <el-input type="password" name="password" v-model="formLabelAlign.password"></el-input>
-                </el-form-item>
-                <div style="height:30px;">
-                  <el-checkbox style="float:left;" v-model="rememberUserInfo" :class="{'is-checked el-checkbox__input':rememberUserInfo}">{{lan.LOGIN_REMEMBER_USERNAME}}</el-checkbox>
-                  <el-button type="text" style="float:right;padding:0;color:#e6a23c;" @click="forget">{{lan.forget_password}}</el-button>
-                </div>
-
-              </el-form>
-              <div class="text-center">
-                <el-button type="primary" @click="login" style="width:50%">{{lan.login}}</el-button>
-
+                </el-input>
+              </el-form-item>
+              <el-form-item :label="lan.password" prop="password">
+                <el-input type="password" name="password" v-model="formLabelAlign.password"></el-input>
+              </el-form-item>
+              <div style="height:30px;">
+                <el-checkbox style="float:left;" v-model="rememberUserInfo" :class="{'is-checked el-checkbox__input':rememberUserInfo}">{{lan.LOGIN_REMEMBER_USERNAME}}</el-checkbox>
+                <el-button type="text" style="float:right;padding:0;color:#e6a23c;" @click="forget">{{lan.forget_password}}</el-button>
               </div>
 
+            </el-form>
+            <div class="text-center">
+              <el-button type="primary" @click="login" style="width:50%">{{lan.login}}</el-button>
+
             </div>
+
           </div>
-
-          <el-dialog :title="lan.reset_password" :visible.sync="formVisible" width="400px" :append-to-body="true" :close-on-click-modal="false">
-            <el-form :model="form" size="small" :rules="formRule" ref="reset2Form">
-              <el-input v-model="form.carbled" type="hidden" style="display:none;"></el-input>
-              <el-form-item :label="lan.placeholder_validation_code +form.code_label" prop="code">
-                <el-input v-model="form.code" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item :label="form.label_q1" prop="q1">
-                <el-input v-model="form.q1" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item :label="form.label_q2" prop="q2">
-                <el-input v-model="form.q2" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item :label="form.label_q3" prop="q3">
-                <el-input v-model="form.q3" auto-complete="off"></el-input>
-              </el-form-item>
-
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="formVisible = false">{{lan.cancel}}</el-button>
-              <el-button type="primary" @click="reset2_submit">{{lan.sure}}</el-button>
-            </div>
-          </el-dialog>
-
-          <el-dialog :title="lan.reset_password" :visible.sync="form3Visible" width="400px" :append-to-body="true" :close-on-click-modal="false">
-            <el-form :model="form3" size="small" :rules="form3Rule" ref="reset3Form">
-              <el-input v-model="form3.carbled" type="hidden" style="display:none;"></el-input>
-              <el-input v-model="form3.new_carbled" type="hidden" style="display:none;"></el-input>
-
-              <el-form-item :label="lan.COMMON_NEW_PASSWORD" prop="new_password">
-                <el-input v-model="form3.new_password" type="password" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item :label="lan.COMMON_CONFIRM_PASSWORD" prop="confirm_password">
-                <el-input v-model="form3.confirm_password" type="password" auto-complete="off"></el-input>
-              </el-form-item>
-              <div>
-                <div>
-                  <strong style="color: red">{{lan.COMMON_PASSWORD_NOTICE}}</strong>
-                  <ul style="margin-left: 26px;">
-                    <li style="list-style-type:circle;"> {{lan.COMMON_PASSWORD_NOTICE_1}} {{passwordRules.passwd_size2}} {{lan.COMMON_PASSWORD_NOTICE_2}}</li>
-                    <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_3}}</li>
-                    <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_4}}</li>
-                    <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_5}}</li>
-                    <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_6}}</li>
-                    <li v-if="passwordRules.passwd_name" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_7}}</li>
-                    <li v-if="passwordRules.passwd_name2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_8}}</li>
-                    <li v-if="passwordRules.passwd_letter" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_9}}</li>
-                    <li v-if="passwordRules.passwd_letter2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_10}}</li>
-                  </ul>
-                </div>
-              </div>
-
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="form3Visible = false">{{lan.cancel}}</el-button>
-              <el-button type="primary" @click="reset3_submit">{{lan.sure}}</el-button>
-            </div>
-          </el-dialog>
-
-          <el-dialog title="注册账号" :visible.sync="agreementVisible" width="80%" :append-to-body="true" >
-            <div v-html="register_data.agreement"></div>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="agreementVisible = false">{{lan.cancel}}</el-button>
-              <el-button type="primary" @click="show_register_dialog">同意</el-button>
-            </div>
-          </el-dialog>
-
-          <el-dialog title="注册账号" :visible.sync="registerVisible" width="600px" :append-to-body="true" :close-on-click-modal="false">
-            <el-form :model="register_form" size="small" :rules="register_form_rules" label-width="140px"  ref="register_form">
-              <el-form-item label="邮件地址" prop="username">
-                <el-input v-model="register_form.username" auto-complete="off" style="width:50%"></el-input>
-                <span>@ <span>{{register_data.domain}}</span></span>
-              </el-form-item>
-              <el-form-item label="登录密码" prop="password">
-                <el-input v-model="register_form.password" type="password" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="确认登录密码" prop="confirm_password">
-                <el-input v-model="register_form.confirm_password" type="password" auto-complete="off"></el-input>
-                <el-input  type="password" auto-complete="off" style="display:none"></el-input>
-              </el-form-item>
-              <el-form-item label="真实姓名" prop="realname">
-                <el-input v-model="register_form.realname" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="英文名称" prop="engname">
-                <el-input v-model="register_form.engname" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="工号" prop="eenumber">
-                <el-input v-model="register_form.eenumber" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="手机号码" prop="mobile">
-                <el-input v-model="register_form.mobile" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="所属部门" prop="department" >
-                <el-cascader v-model="department_value" :props="props"
-                  :options="register_data.departments"
-                  change-on-select
-                ></el-cascader>
-              </el-form-item>
-              <el-form-item label="备注" prop="remark">
-                <el-input v-model="register_form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 5}"></el-input>
-              </el-form-item>
-
-              <div>
-                <div>
-                  <strong style="color: red">{{lan.COMMON_PASSWORD_NOTICE}}</strong>
-                  <ul style="margin-left: 26px;">
-                    <li style="list-style-type:circle;"> {{lan.COMMON_PASSWORD_NOTICE_1}} {{register_data.rules.passwd_size2}} {{lan.COMMON_PASSWORD_NOTICE_2}}</li>
-                    <li v-if="register_data.rules.passwd_type==2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_3}}</li>
-                    <li v-if="register_data.rules.passwd_type==3" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_4}}</li>
-                    <li v-if="register_data.rules.passwd_type==4" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_5}}</li>
-                    <li v-if="register_data.rules.passwd_digital" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_6}}</li>
-                    <li v-if="register_data.rules.passwd_name" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_7}}</li>
-                    <li v-if="register_data.rules.passwd_name2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_8}}</li>
-                    <li v-if="register_data.rules.passwd_letter" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_9}}</li>
-                    <li v-if="register_data.rules.passwd_letter2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_10}}</li>
-                  </ul>
-                </div>
-              </div>
-
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="registerVisible = false">{{lan.cancel}}</el-button>
-              <el-button type="primary" @click="do_register">注 册</el-button>
-            </div>
-          </el-dialog>
-
         </div>
 
+        <el-dialog :title="lan.reset_password" :visible.sync="formVisible" width="400px" :append-to-body="true" :close-on-click-modal="false">
+          <el-form :model="form" size="small" :rules="formRule" ref="reset2Form">
+            <el-input v-model="form.carbled" type="hidden" style="display:none;"></el-input>
+            <el-form-item :label="lan.placeholder_validation_code +form.code_label" prop="code">
+              <el-input v-model="form.code" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item :label="form.label_q1" prop="q1">
+              <el-input v-model="form.q1" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item :label="form.label_q2" prop="q2">
+              <el-input v-model="form.q2" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item :label="form.label_q3" prop="q3">
+              <el-input v-model="form.q3" auto-complete="off"></el-input>
+            </el-form-item>
+
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="formVisible = false">{{lan.cancel}}</el-button>
+            <el-button type="primary" @click="reset2_submit">{{lan.sure}}</el-button>
+          </div>
+        </el-dialog>
+
+        <el-dialog :title="lan.reset_password" :visible.sync="form3Visible" width="400px" :append-to-body="true" :close-on-click-modal="false">
+          <el-form :model="form3" size="small" :rules="form3Rule" ref="reset3Form">
+            <el-input v-model="form3.carbled" type="hidden" style="display:none;"></el-input>
+            <el-input v-model="form3.new_carbled" type="hidden" style="display:none;"></el-input>
+
+            <el-form-item :label="lan.COMMON_NEW_PASSWORD" prop="new_password">
+              <el-input v-model="form3.new_password" type="password" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item :label="lan.COMMON_CONFIRM_PASSWORD" prop="confirm_password">
+              <el-input v-model="form3.confirm_password" type="password" auto-complete="off"></el-input>
+            </el-form-item>
+            <div>
+              <div>
+                <strong style="color: red">{{lan.COMMON_PASSWORD_NOTICE}}</strong>
+                <ul style="margin-left: 26px;">
+                  <li style="list-style-type:circle;"> {{lan.COMMON_PASSWORD_NOTICE_1}} {{passwordRules.passwd_size2}} {{lan.COMMON_PASSWORD_NOTICE_2}}</li>
+                  <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_3}}</li>
+                  <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_4}}</li>
+                  <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_5}}</li>
+                  <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_6}}</li>
+                  <li v-if="passwordRules.passwd_name" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_7}}</li>
+                  <li v-if="passwordRules.passwd_name2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_8}}</li>
+                  <li v-if="passwordRules.passwd_letter" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_9}}</li>
+                  <li v-if="passwordRules.passwd_letter2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_10}}</li>
+                </ul>
+              </div>
+            </div>
+
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="form3Visible = false">{{lan.cancel}}</el-button>
+            <el-button type="primary" @click="reset3_submit">{{lan.sure}}</el-button>
+          </div>
+        </el-dialog>
+
+        <el-dialog :title="lan.REGISTER_AGREEMENT" :visible.sync="agreementVisible" width="600px" :append-to-body="true" style="margin-top: 50px;
+    margin-bottom: 50px;" :lock-scroll="false" custom-class="max_height_100_dialog" :close-on-click-modal="false" top="0">
+          <div style="">
+            <div v-html="register_data.agreement" ></div>
+          </div>
+          <div slot="footer" class="dialog-footer" style="position: absolute;bottom: 0;left: 0;right: 0;padding: 10px 20px;">
+            <el-button @click="agreementVisible = false">{{lan.COMMON_BUTTON_CANCELL}}</el-button>
+            <el-button type="primary" @click="show_register_dialog">{{lan.REGISTER_AGREE}}</el-button>
+          </div>
+
+        </el-dialog>
+
+        <el-dialog :title="lan.USER_REGISTRATION" :visible.sync="registerVisible" width="600px" :append-to-body="true" :close-on-click-modal="false" top="50px">
+          <el-form :model="register_form" size="small" :rules="register_form_rules" label-width="140px"  ref="register_form">
+            <el-form-item :label="lan.MAILBOX_COM_COMPOSE_MAIL_ADDRESS" prop="username">
+              <el-input v-model="register_form.username" auto-complete="off">
+                <template slot="append">@{{register_data.domain}}</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item :label="lan.REGISTER_PASSWORD" prop="password">
+              <el-input v-model="register_form.password" type="password" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item :label="lan.REGISTER_CONFIRM_PASSWORD" prop="confirm_password">
+              <el-input v-model="register_form.confirm_password" type="password" auto-complete="off"></el-input>
+              <el-input  type="password" auto-complete="off" style="display:none"></el-input>
+            </el-form-item>
+            <el-form-item :label="lan.REGISTER_REALNAME" prop="realname">
+              <el-input v-model="register_form.realname" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item :label="lan.REGISTER_ENGNAME" prop="engname">
+              <el-input v-model="register_form.engname" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item :label="lan.REGISTER_EENUMBER" prop="eenumber">
+              <el-input v-model="register_form.eenumber" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item :label="lan.COMMON_MOBILE" prop="mobile">
+              <el-input v-model="register_form.mobile" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item :label="lan.REGISTER_DEPARTMENT" prop="department" with="100%">
+              <el-cascader v-model="department_value" :props="props"
+                           :options="register_data.departments"
+                           change-on-select></el-cascader>
+            </el-form-item>
+            <el-form-item :label="lan.COMMON_REMARK" prop="remark">
+              <el-input v-model="register_form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 5}"></el-input>
+            </el-form-item>
+
+            <div>
+              <div>
+                <strong style="color: red">{{lan.COMMON_PASSWORD_NOTICE}}</strong>
+                <ul style="margin-left: 26px;">
+                  <li style="list-style-type:circle;"> {{lan.COMMON_PASSWORD_NOTICE_1}} {{register_data.rules.passwd_size2}} {{lan.COMMON_PASSWORD_NOTICE_2}}</li>
+                  <li v-if="register_data.rules.passwd_type==2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_3}}</li>
+                  <li v-if="register_data.rules.passwd_type==3" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_4}}</li>
+                  <li v-if="register_data.rules.passwd_type==4" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_5}}</li>
+                  <li v-if="register_data.rules.passwd_digital" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_6}}</li>
+                  <li v-if="register_data.rules.passwd_name" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_7}}</li>
+                  <li v-if="register_data.rules.passwd_name2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_8}}</li>
+                  <li v-if="register_data.rules.passwd_letter" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_9}}</li>
+                  <li v-if="register_data.rules.passwd_letter2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_10}}</li>
+                </ul>
+              </div>
+            </div>
+
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="registerVisible = false">{{lan.cancel}}</el-button>
+            <el-button type="primary" @click="do_register">{{lan.REGISTER_BUTTON}}</el-button>
+          </div>
+        </el-dialog>
 
       </div>
 
-      <!--弹窗-->
 
     </div>
+
+    <!--弹窗-->
+
+  </div>
 
 </template>
 <script>
   import cookie from '@/assets/js/cookie';
   import lan from '@/assets/js/lan';
-  import {login,resetSecret1,resetSecret2,resetSecret3,loginBefore,registerAgreement,register} from '@/api/api'
+  import {login,resetSecret1,resetSecret2,resetSecret3,loginBefore,registerAgreement,register,setLang} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   import router from '@/router'
   import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
@@ -246,8 +250,8 @@
     data() {
       let _this = this
       var validatePass = (rule, value, callback) => {
-         // let reg =  /^(.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*)|(.*(?=.{6,})(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*? ]).*)$/;
-         let reg =  /^[\d]{6}$/;
+        // let reg =  /^(.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*)|(.*(?=.{6,})(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*? ]).*)$/;
+        let reg =  /^[\d]{6}$/;
         if (value === '') {
           callback(new Error(_this.lan.LAYOUT_INDEX_PASSWORD_RULE));
         } else{
@@ -273,29 +277,7 @@
         department_value:[],
         register_data:{
           agreement:'',
-          departments:[{
-          value: 'zhinan',
-          label: '指南',
-          children: [
-            {
-              value: 'shejiyuanze',
-              label: '设计原则',
-              children: [{
-                value: 'yizhi',
-                label: '一致'
-              }, {
-                value: 'fankui',
-                label: '反馈'
-              }, {
-                value: 'xiaolv',
-                label: '效率'
-              }, {
-                value: 'kekong',
-                label: '可控'
-              }]
-            }
-          ],
-        }],
+          departments:[],
           rules:{},
           domain:'',
         },
@@ -408,19 +390,19 @@
         },
         register_form_rules: {
           username: [
-            { required: true, message: '请输入邮件地址', trigger: 'blur' }
+            { required: true, message: '', trigger: 'blur' }
           ],
           password: [
-            { required: true, message: '请输入登录密码', trigger: 'blur' }
+            { required: true, message: '', trigger: 'blur' }
           ],
           confirm_password: [
-            { required: true, message: '请确认密码', trigger: 'blur' }
+            { required: true, message: '', trigger: 'blur' }
           ],
           realname: [
-            { required: true, message: '请输入真实姓名', trigger: 'blur' }
+            { required: true, message: '', trigger: 'blur' }
           ],
           department: [
-            { required: true, message: '请选择所属部门', trigger: 'blur' }
+            { required: true, message: '', trigger: 'blur' }
           ],
         },
         registerVisible:false,
@@ -443,7 +425,7 @@
             // {"image":"http://192.168.1.39:81/media/logo_FbIHh_20181213113253_180.jpg","link":"12"},
             // {"image":"http://192.168.1.39:81/media/logo_FbIHh_20181213113253_180.jpg","link":"1234"},
             // {"image":"http://192.168.1.39:81/media/logo_FbIHh_20181213113253_180.jpg","link":"12"}
-            ]
+          ]
         },
         reset1_show:false,
         form3Visible:false,
@@ -509,6 +491,19 @@
       };
     },
     methods: {
+      remark_page(){
+        this.$alert(this.lan.COLECTION_NOTICE, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+          confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+          callback: action => {
+            console.log(action);
+          }
+        });
+      },
+      goToHelp(){
+        let href = window.location.origin+'/webmail/zh_hans/index.html'; //window.location.origin  'http://192.168.1.39:81'
+        console.log(href)
+        window.open(href)
+      },
       htmlDecodeByRegExp:function (str){
         var s = "";
         if(str.length == 0) return "";
@@ -540,9 +535,9 @@
               console.log(res)
               this.$message({
                 type:'success',
-                message:'账号 '+obj.username+' 注册成功！请耐心等待审核通过，即可使用申请账号登录!'
+                message:+obj.username+ this.lan.REGISTER_SUCCESS
               })
-               this.registerVisible = false;
+              this.registerVisible = false;
               this.$refs['register_form'].resetFields()
             }).catch(err=>{
               console.log(err)
@@ -573,6 +568,17 @@
           }
           this.register_data.rules = res.data.rules;
           this.register_data.departments = res.data.departments;
+          function filterChildren(arr){
+            arr.forEach(val=>{
+              if(val.children && val.children.length ==0){
+                val.children = null;
+              }
+              if(val.children && val.children.length>0){
+                filterChildren(val.children)
+              }
+            })
+          }
+          filterChildren(this.register_data.departments)
           this.register_data.domain = res.data.domain;
           this.agreementVisible = true;
         }).catch(err=>{
@@ -586,6 +592,11 @@
       changeLanguage(val){
         cookie.setCookie('webvue_language',val,365*10)
         this.$store.dispatch('setLanguageA',val)
+        setLang().then(res=>{
+          console.log(res)
+        }).catch(err=>{
+          console.log(err);
+        })
         router.go(0)
       },
       changeDomain(val){
@@ -681,7 +692,7 @@
       getLabel(c,b){
         let str = ''
         if(c==1){
-         str = this.lan.CONMON_PASSWORD_SECURITY_QD1
+          str = this.lan.CONMON_PASSWORD_SECURITY_QD1
         }else if(c==2){
           str = this.lan.CONMON_PASSWORD_SECURITY_QD2
         }else if(c==3){
@@ -705,6 +716,7 @@
         this.reset1_show = true;
         this.$prompt(this.lan.MAILBOX_COM_COMPOSE_INPUT_EMAIL, this.lan.reset_password, {
           confirmButtonText: this.lan.sure,
+          closeOnClickModal:false,
           // dangerouslyUseHTMLString: true,
           cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
           inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
@@ -738,37 +750,37 @@
               str +='@'+ this.loginBeforeData.domain;
             }
             login({"username": str, "password": this.formLabelAlign.password})
-            .then((response) => {
-              if(response.data.token){
-                cookie.setCookie('name', str, 7);
-                cookie.setCookie('token', response.data.token, 7);
-                cookie.delCookie('locked')
-                // 设置联系人的初始值
-                window.sessionStorage.clear();
-                that.$store.dispatch('setInfo');
-                if(this.rememberUserInfo){
-                  localStorage['userName'] = str
-                }else{
-                  localStorage['userName'] = ''
-                }
-                that.$router.push('/mailbox')
-              }
-              if(response.data.uuid_string){
-                this.$router.push({
-                  path:'/twofactor_login',
-                  query:{
-                    uuid_string:response.data.uuid_string,
-                    mail:str,
-                    totp:response.data.has_totp,
-                    phone:response.data.has_phone,
-                    bi:this.bgIndex,
-                    rememberUserInfo:this.rememberUserInfo
+              .then((response) => {
+                if(response.data.token){
+                  cookie.setCookie('name', str, 7);
+                  cookie.setCookie('token', response.data.token, 7);
+                  cookie.delCookie('locked')
+                  // 设置联系人的初始值
+                  window.sessionStorage.clear();
+                  that.$store.dispatch('setInfo');
+                  if(this.rememberUserInfo){
+                    localStorage['userName'] = str
+                  }else{
+                    localStorage['userName'] = ''
                   }
-                })
-                // this.twofactorList = response.data;
-              }
+                  that.$router.push('/mailbox')
+                }
+                if(response.data.uuid_string){
+                  this.$router.push({
+                    path:'/twofactor_login',
+                    query:{
+                      uuid_string:response.data.uuid_string,
+                      mail:str,
+                      totp:response.data.has_totp,
+                      phone:response.data.has_phone,
+                      bi:this.bgIndex,
+                      rememberUserInfo:this.rememberUserInfo
+                    }
+                  })
+                  // this.twofactorList = response.data;
+                }
 
-            }).catch(err=>{
+              }).catch(err=>{
               let str = '';
               if(err.non_field_errors){
                 str = err.non_field_errors[0]
@@ -844,10 +856,26 @@
         this.rules = {
           username: [
             { required: true, message: lang.placeholder_user_name, trigger: 'blur' },
-            // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
           ],
           password: [
             { required: true, message: lang.LAYOUT_INDEX_PASSWORD_RULE, trigger: 'blur' }
+          ],
+        }
+        this.register_form_rules = {
+          username: [
+            { required: true, message: lang.REGISTER_USERNAME_RULE, trigger: 'blur' }
+          ],
+          password: [
+            { required: true, message: lang.REGISTER_PASSWORD_RULE, trigger: 'blur' }
+          ],
+          confirm_password: [
+            { required: true, message: lang.REGISTER_CONFIRM_PASSWORD_RULE, trigger: 'blur' }
+          ],
+          realname: [
+            { required: true, message: lang.REGISTER_REALNAME_RULE, trigger: 'blur' }
+          ],
+          department: [
+            { required: true, message: lang.REGISTER_DEPARTMENT_RULE, trigger: 'blur' }
           ],
         }
         return lang
@@ -884,7 +912,7 @@
         let JsSrc =(navigator.language || navigator.browserLanguage).toLowerCase();
         if(JsSrc.indexOf('zh')>=0)
         {
-           // 假如浏览器语言是中文
+          // 假如浏览器语言是中文
           cookie.setCookie('webvue_language','zh-hans',365*10)
           if(JsSrc=='zh-tw'){
             cookie.setCookie('webvue_language','zh-tw',365*10)
@@ -892,12 +920,12 @@
         }
         else if(JsSrc.indexOf('en')>=0)
         {
-            // 假如浏览器语言是英文
+          // 假如浏览器语言是英文
           cookie.setCookie('webvue_language','en',365*10)
         }
         else
         {
-           // 假如浏览器语言是其它语言
+          // 假如浏览器语言是其它语言
           cookie.setCookie('webvue_language','zh-hans',365*10)
         }
       }
@@ -905,7 +933,7 @@
       this.language = cookie.getCookie('webvue_language');
 
 
-      this.bgIndex = Math.floor(Math.random()*4)
+      this.bgIndex = 0 //Math.floor(Math.random()*4)
       this.getLoginBefore()
       var lett = this;
       if(lett.$route.name && lett.$route.name == 'login'){
@@ -925,6 +953,17 @@
   }
 </script>
 <style>
+  .max_height_100_dialog{
+    height:100%;
+    margin-bottom:0;
+
+  }
+  .max_height_100_dialog .el-dialog__body{
+    position:absolute;
+    top:54px;
+    bottom:70px;
+    overflow-y:auto;
+  }
   #login_bg .el-form-item__label{
     width:100%;
   }
@@ -952,8 +991,8 @@
     width:100%;
 
     height:100%;
-    background-image: url(../../assets/img/mainBg0.jpg);
-    /* background-image: url(../assets/img/login_right.png); */
+    background-image: url(../../assets/img/login/1.jpg);
+    /*background-image: url(../../assets/img/login/2.jpg);*/
     background-size: cover;
     background-position:right bottom;
   }
@@ -1146,6 +1185,8 @@
     text-align: center;
     /* background: url(../assets/img/login_center.png) 50% 50%; */
   }
-
+  .el-cascader--small{
+    width: 100%;
+  }
 </style>
 

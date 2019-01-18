@@ -124,7 +124,8 @@
             <div class="mail-top-info" style="min-height: 42px;">
               <h3 class="mail-subject j-mail-subject " :class="[{redcolor:flagged},flag_color]" style="font-size:18px;">
                 <!--<span class="icon"><i class="j-sourceIcon iconfont state-icon icon-SYSTEM" title="系统认证可信任来源"></i></span>-->
-                <span v-if="burn_flagged">{{lan.MAILBOX_COM_COMPOSE_IS_BURN}}: </span>
+                <!--<span v-if="burn_flagged">{{lan.MAILBOX_COM_COMPOSE_IS_BURN}}: </span>-->
+                <span class="is_burn_img" v-if="burn_flagged" :title="lan.MAILBOX_COM_COMPOSE_IS_BURN"></span>
                 {{subject?subject:this.lan.MAILBOX_NO_SUBJECT}}
               </h3>
               <div class="short-info f-ellipsis j-short-info" v-show="!showDetails" v-if="mfrom || to.length>0">
@@ -204,9 +205,10 @@
               <el-button type="text"  style="padding:0" @click="msg.attrs.is_notify=false">{{lan.COMMON_BUTTON_CANCELL}}</el-button>
             </div>
           </div>
-          <div class="mail-cipher-encrypted j-mailCipherEncrypted" v-if="msg.attrs && msg.attrs.is_burn">
+          <div class="mail-cipher-encrypted j-mailCipherEncrypted" v-if="msg.attrs && msg.attrs.is_burn && false">
             <div class="decryption-success" style="color:#e6a23c">
-              <span class="el-icon-warning"></span>
+              <!--<span class="el-icon-warning"></span>-->
+              <span class="is_burn_img" :title="lan.MAILBOX_COM_COMPOSE_IS_BURN"></span>
               {{lan.MAILBOX_COM_READ_IS_BURN_DESC}}
             </div>
           </div>
@@ -313,7 +315,7 @@
             <div class="no-decryption">
               <div class="lock-item" style="padding:20px;"><i class="lock_style"></i></div>
               <div class="action-item">
-                <input type="text" placeholder="输入密码" class="u-input" v-model="de_password" maxlength="6">
+                <input type="text" :placeholder="lan.LAYOUT_INDEX_PASSWORD_RULE" class="u-input" v-model="de_password" maxlength="6">
               </div>
               <div class="decryption-msg">
                 <span class="j-decryption-error decryption-error" v-show="decryption_error">{{lan.MAILBOX_COM_READ_PASSWORD_ERROR}}</span>

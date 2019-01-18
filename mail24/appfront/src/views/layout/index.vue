@@ -57,7 +57,7 @@
       <div class="icon icon-help j-to-helpcenter "  :title="lan.LAYOUT_INDEX_HELP_CENTER" @click="goToHelp">
         <i class="iconfont icon-iconhelp1"></i>
       </div>
-      <div class="icon icon-bottom" :class="{active:activeTab==5}" data-trigger="setting" role="toggle" data-i18n="common/nav_setting" i18n-target="title" title="设置" @click="changeTab(5)">
+      <div class="icon icon-bottom" :class="{active:activeTab==5}" data-trigger="setting" role="toggle" data-i18n="common/nav_setting" i18n-target="title" :title="lan.LAYOUT_INDEX_SETTING" @click="changeTab(5)">
         <i class="iconfont icon-iconsetupcenter"></i>
       </div>
     </aside>
@@ -251,7 +251,7 @@
   import router from '@/router'
   import cookie from '@/assets/js/cookie';
   import lan from '@/assets/js/lan';
-  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome,settingUsersGet,settingUsersSetpassword,reviewShow,loginAfter,settingUsersGetpassword,setSkin } from '@/api/api'
+  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome,settingUsersGet,settingUsersSetpassword,reviewShow,loginAfter,settingUsersGetpassword,setSkin,setLang } from '@/api/api'
   export default {
     data:function(){
       let _this = this;
@@ -275,6 +275,7 @@
         }
       };
       return {
+        title_scroll_timer:'',
         language:'zh',
         admin_login_url:'',
         skins:[
@@ -341,6 +342,11 @@
       changeLanguage(val){
         cookie.setCookie('webvue_language',val,365*10)
         this.$store.dispatch('setLanguageA',val)
+        setLang().then(res=>{
+          console.log(res)
+        }).catch(err=>{
+          console.log(err);
+        })
         router.go(0)
         // this.$confirm(this.lan.MAILBOX_WRITING, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
         //   confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
@@ -390,14 +396,15 @@
         function func(){
           let  s= $('title').text().split("");
           if(s.join("") == _this.$store.getters.getLoginAfter.title){
-            clearInterval(aaa)
+            clearInterval(this.title_scroll_timer)
             return;
           }
             s.push(s[0]); //方法可向数组的末尾添加一个或多个元素，并返回新的长度
             s.shift();// 去掉数组的第一个元素
             $('title').text(s.join(""))
         }
-		    var aaa = setInterval(func,1000);
+        if(this.title_scroll_timer){clearInterval(this.title_scroll_timer)}
+		    this.title_scroll_timer = setInterval(func,1000);
       },
       getLoginAfter(){
         loginAfter().then(res=>{
@@ -538,7 +545,7 @@
         let _this = this;
         newMessage().then(res=>{
           if(res.data.length>0){
-            $('title').text('您有'+res.data.length+'封新邮件到达了！')
+            $('title').text(this.lan.LAYOUT_INDEX_YOU_HAVE +res.data.length+ this.lan.TITLE_DESC)
             this.newIndex = 0;
             _this.newList = res.data;
             if(_this.$store.getters.getNewMsgClear){clearTimeout(_this.$store.getters.getNewMsgClear)}
@@ -561,7 +568,7 @@
         this.$store.dispatch('setNewMsgTimer',setInterval(function(){
           newMessage().then(res=>{
             if(res.data.length>0){
-              $('title').text('您有'+res.data.length+'封新邮件到达了！')
+              $('title').text(this.lan.LAYOUT_INDEX_YOU_HAVE +res.data.length+ this.lan.TITLE_DESC)
               _this.newList = res.data;
               if(_this.$store.getters.getNewMsgClear){clearTimeout(_this.$store.getters.getNewMsgClear)}
               _this.$store.dispatch('setNewMsgClearTimer',setTimeout(function(){

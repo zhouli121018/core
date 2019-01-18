@@ -693,7 +693,7 @@ var  zh_hans = {
   LAYOUT_INDEX_SWITCHING_MAILBOX:'Switch accounts',
   LAYOUT_INDEX_ASSOCIATED_SHARED_MAILBOX:'Associated accounts',
   LAYOUT_INDEX_RETURN_TO_MAILBOX:'Back to Myself',
-  LAYOUT_INDEX_SETTING:'Settings',
+  LAYOUT_INDEX_SETTING:'Setting',
   LAYOUT_INDEX_SKIN_PEELER:'Set Skin',
   LAYOUT_INDEX_MORE_SKIN:'More skins...',
   LAYOUT_INDEX_LOCK_SCREEN:'Lock Screen',
@@ -849,7 +849,7 @@ var  zh_hans = {
   MAILBOX_COM_READ_COUNT: " Item", // 个
   MAILBOX_COM_READ_AND_SO: "...etc.",
   MAILBOX_COM_READ_SEE_ALL_ATTACH: "More",
-  MAILBOX_COM_READ_ENCRYPTED_DESC: "邮件已解密，以下是解密后的邮件内容：",
+  MAILBOX_COM_READ_ENCRYPTED_DESC: "Email has been decrypted, following is decrypted message content:",
   MAILBOX_COM_READ_IS_NOTIFY_DESC: "Are you sure to send out read receipt? Send read receipt automatically.",
   MAILBOX_COM_READ_IS_BURN_DESC: "This is a self-destruct message!",
   MAILBOX_COM_READ_IS_CALENDAR_DESC: "This is a calendar sharing reminder email!",
@@ -1155,5 +1155,35 @@ var  zh_hans = {
   TWOFACTOR_LOGIN_SMS: "SMS Authentication",
 
   LOGIN_REMEMBER_USERNAME: "Remember username",
+  //axios 页面
+  AXIOS_LOGIN_ERROR: "The session has expired, please log in again!",
+  AXIOS_SERVICE_ERROR: "Server error!",
+  AXIOS_SYSTEM_ERROR: "System exception!",
+
+
+  //用户注册 login/login
+  REMARK_PAGE: "Collection",
+  REGISTER_AGREEMENT: "Registration Agreement",
+  USER_REGISTRATION: "Registration",
+  REGISTER_AGREE: "Agree",
+  REGISTER_PASSWORD: "Password",
+  REGISTER_CONFIRM_PASSWORD: "Confirm Password",
+  REGISTER_REALNAME: "Real Name",
+  REGISTER_ENGNAME: "English Name",
+  REGISTER_EENUMBER: "Job number",
+  REGISTER_DEPARTMENT: "Department",
+  REGISTER_BUTTON: "Registration",
+  REGISTER_USERNAME_RULE: "Please enter your email",
+  REGISTER_PASSWORD_RULE: "Please enter your password",
+  REGISTER_CONFIRM_PASSWORD_RULE: "Please confirm your password",
+  REGISTER_REALNAME_RULE:'Please enter your real name',
+  REGISTER_DEPARTMENT_RULE: "Please select your department",
+
+  COMMON_EXPORT:"export",
+  //layout/index
+  TITLE_DESC: " new mails arrived!",
+  //login/login
+  REGISTER_SUCCESS: " Registration successful! Please be patient and wait for approval, then you can use the application account to login!",
+  COLECTION_NOTICE: "Please use Ctrl+D to bookmark this page.",
 }
 export default zh_hans;

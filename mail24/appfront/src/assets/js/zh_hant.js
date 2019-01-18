@@ -1132,5 +1132,36 @@ var  zh_hant = {
   TWOFACTOR_LOGIN_SMS: "手機短信登錄",
 
   LOGIN_REMEMBER_USERNAME: "記住用戶名",
+  //axios 页面
+  AXIOS_LOGIN_ERROR: "會話已過期，請重新登入！",
+  AXIOS_SERVICE_ERROR: "服務器錯誤!",
+  AXIOS_SYSTEM_ERROR: "系統异常！",
+
+
+  //用户注册 login/login
+  REMARK_PAGE: "收藏本頁",
+  REGISTER_AGREEMENT: "註冊協議",
+  USER_REGISTRATION: "用戶註冊",
+  REGISTER_AGREE: "同意",
+  REGISTER_PASSWORD: "密碼",
+  REGISTER_CONFIRM_PASSWORD: "確認密碼",
+  REGISTER_REALNAME: "姓名",
+  REGISTER_ENGNAME: "英文名",
+  REGISTER_EENUMBER: "工號",
+  REGISTER_DEPARTMENT: "部門",
+  REGISTER_BUTTON: "註冊",
+  REGISTER_USERNAME_RULE: "請輸入郵件地址",
+  REGISTER_PASSWORD_RULE: "請輸入登錄密碼",
+  REGISTER_CONFIRM_PASSWORD_RULE: "請輸入確認密碼",
+  REGISTER_REALNAME_RULE: "請輸入真實姓名",
+  REGISTER_DEPARTMENT_RULE: "請選擇所屬部門",
+
+  COMMON_EXPORT:"匯 出",
+  //layout/index
+  TITLE_DESC: "封新郵件到達了!",
+
+  //login/login
+  REGISTER_SUCCESS: " 註冊成功！請耐心等待審核通過，即可使用申請賬號登錄!",
+  COLECTION_NOTICE: "請按 Ctrl+D 收藏本頁",
 }
 export default zh_hant;

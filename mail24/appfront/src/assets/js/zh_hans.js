@@ -1144,5 +1144,32 @@ var  zh_hans = {
   AXIOS_SERVICE_ERROR: "服务器错误!",
   AXIOS_SYSTEM_ERROR: "系统异常！",
 
+
+  //用户注册 login/login
+  REMARK_PAGE: "收藏本页",
+  REGISTER_AGREEMENT: "注册协议",
+  USER_REGISTRATION: "用户注册",
+  REGISTER_AGREE: "同意",
+  REGISTER_PASSWORD: "密码",
+  REGISTER_CONFIRM_PASSWORD: "确认密码",
+  REGISTER_REALNAME: "姓名",
+  REGISTER_ENGNAME: "英文名",
+  REGISTER_EENUMBER: "工号",
+  REGISTER_DEPARTMENT: "部门",
+  REGISTER_BUTTON: "注册",
+  REGISTER_USERNAME_RULE: "请输入邮件地址",
+  REGISTER_PASSWORD_RULE: "请输入登录密码",
+  REGISTER_CONFIRM_PASSWORD_RULE: "请输入确认密码",
+  REGISTER_REALNAME_RULE: "请输入真实姓名",
+  REGISTER_DEPARTMENT_RULE: "请选择所属部门",
+
+  COMMON_EXPORT:"导 出",
+
+  //layout/index
+  TITLE_DESC: "封新邮件到达了!",
+  //login/login
+  REGISTER_SUCCESS: " 注册成功！请耐心等待审核通过，即可使用申请账号登录!",
+  COLECTION_NOTICE: "请按 Ctrl+D 收藏本页",
+
 }
 export default zh_hans;

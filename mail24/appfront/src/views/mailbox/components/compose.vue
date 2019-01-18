@@ -833,7 +833,7 @@
 
         </div>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="bigUploadVisible = false" >{{lan.COMMON_BUTTON_CANCELL}}</el-button>
+          <el-button @click="bigUploadVisible = false" >{{lan.COMMON_CLOSE}}</el-button>
           <!--<el-button @click="submitUpload" type="primary">上 传</el-button>-->
           <el-button @click="addBigAttach" type="primary" :loading="bigLoading">{{lan.COMMON_BUTTON_CONFIRM}}</el-button>
         </div>

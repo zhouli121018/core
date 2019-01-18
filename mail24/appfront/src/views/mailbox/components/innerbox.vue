@@ -258,7 +258,8 @@
                   <template slot-scope="scope">
                     <div class="clear mainMsg" style="font-size:16px;" :class="[{flagged:scope.row.flagged,unseen:!scope.row.isread},scope.row.color]">
                                   <span class="fl_l subject_hover" style="width:96%;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" @click.stop.prevent="readMail(scope.row)" :title="scope.row.subject||''">
-                                    <span v-if="scope.row.flags.join().indexOf('umail-burn')>=0">{{lan.MAILBOX_COM_COMPOSE_IS_BURN}}: </span>
+                                    <!--<span v-if="scope.row.flags.join().indexOf('umail-burn')>=0">{{lan.MAILBOX_COM_COMPOSE_IS_BURN}}: </span>-->
+                                    <span class="is_burn_img" :title="lan.MAILBOX_COM_COMPOSE_IS_BURN" v-if="scope.row.flags.join().indexOf('umail-burn')>=0"></span>
                                     {{scope.row.subject|| lan.MAILBOX_NO_SUBJECT}}</span>
                     </div>
                     <div class="info-summary" :class="scope.row.color" v-if="false">
@@ -1106,6 +1107,7 @@
       getDateN(params){
         this.loading = true;
         getMailMessage(params).then((res)=>{
+          $('title').text(this.$store.getters.getLoginAfter.title)
           this.totalCount = res.data.count;
           let items = res.data.results;
           // this.totalAllCount = res.data.count;

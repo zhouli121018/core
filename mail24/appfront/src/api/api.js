@@ -490,6 +490,11 @@ export const registerAgreement = params => { return axios.get(`${host}/setting/r
 //注册申请 POST /api/setting/register/post/
 export const register = params => { return axios.post(`${host}/setting/register/post/`, params) };
 
+//语言保存，用于底层使用POST /api/setting/users/set-lang/
+export const setLang = () => { return axios.post(`${host}/setting/users/set-lang/`) };
+
+//导出日程 GET /api/schedule/events/{id}/export-ics/
+export const exportIcs = id => { return axios.get(`${host}/schedule/events/${id}/export-ics/`, { responseType:'blob' }) };
 
 
 

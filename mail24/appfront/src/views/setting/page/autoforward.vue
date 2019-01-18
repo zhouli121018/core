@@ -106,7 +106,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="forward" :label="plang.SETTING_FW_FORWARD" width="280">
+        <el-table-column prop="forward" :label="plang.SETTING_FW_FORWARD">
           <template slot-scope="scope">
             {{scope.row.action.forward}}
           </template>

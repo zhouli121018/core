@@ -117,6 +117,9 @@ export default {
           if(err.non_field_errors){
             str = err.non_field_errors[0]
           }
+          if(err.detail){
+            str = err.detail;
+          }
           this.$message({
             type:'error',
             message:''+str

@@ -184,7 +184,7 @@
 
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="uploadFormVisible = false">{{plang.COMMON_BUTTON_CANCELL}}</el-button>
+          <el-button @click.native="uploadFormVisible = false">{{plang.COMMON_CLOSE}}</el-button>
         </div>
 
       </el-dialog>

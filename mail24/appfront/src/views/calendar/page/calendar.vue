@@ -229,28 +229,28 @@
         </el-card>
 
         <div v-if="!permisson.edit">
-          <el-form-item :label="lan.MAILBOX_COM_REVIEW_DATE" >
-            <span>{{viewForm.start_day+' —— '+viewForm.end_day }}</span>
+          <el-form-item :label="lan.MAILBOX_COM_REVIEW_DATE+'：'" >
+            <span>{{viewForm.start_day+' '+viewForm.start_time+' —— '+viewForm.end_day+' '+viewForm.end_time }}</span>
           </el-form-item>
-          <el-form-item :label="lan.COMMON_TIME" v-if="!viewForm.allday">
-            <span>{{viewForm.start_time+' —— '+viewForm.end_time }}</span>
-          </el-form-item>
-          <el-form-item :label="lan.CALENDAR_PAGE_CAL_PLACE" v-if="viewForm.address">
+          <!--<el-form-item :label="lan.COMMON_TIME" v-if="!viewForm.allday">-->
+            <!--<span>{{viewForm.start_time+' —— '+viewForm.end_time }}</span>-->
+          <!--</el-form-item>-->
+          <el-form-item :label="lan.CALENDAR_PAGE_CAL_PLACE+'：'" v-if="viewForm.address">
             <span>{{viewForm.address}}</span>
           </el-form-item>
-          <el-form-item :label="lan.CALENDAR_PAGE_CAL_REMARK">
+          <el-form-item :label="lan.CALENDAR_PAGE_CAL_REMARK+'：'">
             <span>{{viewForm.remark}}</span>
           </el-form-item>
-          <el-form-item :label="lan.CALENDAR_PAGE_CAL_REMIND" >
+          <el-form-item :label="lan.CALENDAR_PAGE_CAL_REMIND+'：'" >
             <span>{{viewForm.remind? lan.CALENDAR_PAGE_CAL_REMIND_BEFORE+' '+viewForm.remind_before + ' '+(viewForm.remind_unit==60?lan.FILE_P_MIN:viewForm.remind_unit==3600?lan.FILE_P_HOUR:viewForm.remind_unit==86400?lan.FILE_P_DAY:lan.CALENDAR_PAGE_CAL_WEEK) :lan.CALENDAR_PAGE_CAL_NONE}}</span>
           </el-form-item>
-          <el-form-item :label="lan.COMMON_STATUS" >
+          <el-form-item :label="lan.COMMON_STATUS+'：'" >
             <span><span v-if="viewForm.cycle_mode!=0">{{lan.CALENDAR_PAGE_CAL_EVERY}} {{viewForm.cycle_frequency}}</span>{{viewForm.cycle_mode==0?lan.CALENDAR_PAGE_CAL_NO_REPEAT:(viewForm.cycle_mode==1?lan.FILE_P_DAY+' ':viewForm.cycle_mode==2?lan.CALENDAR_PAGE_CAL_WEEK+' ':viewForm.cycle_mode==3?lan.CALENDAR_PAGE_CAL_MONTH+' ':lan.FILE_P_YEAR+' ')}}</span><span v-if="viewForm.cycle_mode!=0">{{lan.CALENDAR_PAGE_CAL_REPEAT}}</span> <span v-if="viewForm.cycle_mode>0"> {{viewForm.cycle_type?' '+lan.CALENDAR_PAGE_CAL_REPEAT_FOREVER:' '+lan.CALENDAR_PAGE_CAL_REPEAT_TO+' '}}</span> <span v-if="viewForm.cycle_mode>0 && !viewForm.cycle_type">{{viewForm.cycle_day}}</span>
           </el-form-item>
-          <el-form-item :label="lan.CALENDAR_PAGE_CAL_USER">
+          <el-form-item :label="lan.CALENDAR_PAGE_CAL_USER+'：'">
             <span>{{viewForm.name+'<'+viewForm.email+'>'}}; </span>
           </el-form-item>
-          <el-form-item :label="lan.CALENDAR_PAGE_CAL_VISITER" v-if="viewForm.invitors.length>0">
+          <el-form-item :label="lan.CALENDAR_PAGE_CAL_VISITER+'：'" v-if="viewForm.invitors.length>0">
             <span v-for="v in viewForm.invitors">{{v.name+'<'+v.email+'>'}}; </span>
           </el-form-item>
         </div>
@@ -461,8 +461,10 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="viewEventDialog = false" size="small">{{lan.COMMON_CLOSE}}</el-button>
-        <el-button type="info"  size="small"  @click="fwics(viewForm.id)"  v-if="permisson.edit || permisson.invite">{{lan.SETTING_FILTER_ACTION5}}</el-button>
+
         <el-button type="primary"  size="small"  @click="updateEventSubmit"  v-if="permisson.edit">{{lan.CALENDAR_PAGE_SET_SURE_EDIT}}</el-button>
+        <el-button type="info"  size="small"  @click="fwics(viewForm.id)"  v-if="permisson.edit || permisson.invite">{{lan.SETTING_FILTER_ACTION5}}</el-button>
+        <el-button type="info"  size="small"  @click="exportIcsFn(viewForm.id)"  v-if="permisson.edit || permisson.invite">{{lan.COMMON_EXPORT}}</el-button>
         <el-button type="danger"  size="small"  @click="deleteEventSubmit(viewForm.id)"  v-if="permisson.edit">{{lan.CALENDAR_PAGE_CAL_DELETE_EVENT}}</el-button>
       </div>
     </el-dialog>
@@ -553,7 +555,7 @@
 </template>
 <script>
   import lan from '@/assets/js/lan';
-  import {contactOabDepartsGet,contactOabMembersGet,getCalendarsList,getEvents,createEvent,getEventById,updateEvent,deleteEvent,cancelInvitorEvent,setStatus,eventsIcs} from '@/api/api'
+  import {contactOabDepartsGet,contactOabMembersGet,getCalendarsList,getEvents,createEvent,getEventById,updateEvent,deleteEvent,cancelInvitorEvent,setStatus,eventsIcs,exportIcs} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   export default {
     name:'Calendar',
@@ -874,6 +876,33 @@
 
     },
     methods: {
+      exportIcsFn(id){
+        exportIcs(id).then(response=>{
+          let blob = new Blob([response.data], { type: response.headers["content-type"] })
+          let objUrl = URL.createObjectURL(blob);
+          let filenameHeader = response.headers['content-disposition']
+          let filename = filenameHeader.slice(filenameHeader.indexOf('=')+2,filenameHeader.length-1);
+          if (window.navigator.msSaveOrOpenBlob) {
+            // if browser is IE
+            navigator.msSaveBlob(blob, filename);//filename文件名包括扩展名，下载路径为浏览器默认路径
+          } else {
+            // var encodedUri = encodeURI(csvContent);//encodeURI识别转义符
+            var link = document.createElement("a");
+            link.setAttribute("href", objUrl);
+            link.setAttribute("download", filename);
+            document.body.appendChild(link);
+            link.click();
+          }
+          this.$message({ message: this.lan.COMMON_EXPORT_SUCCESS, type: 'success' });
+        }).catch(err=>{
+          console.log(err);
+          let str = '';
+          if(err.detail){
+            str = err.detail
+          }
+          this.$message({ message: this.lan.COMMON_EXPORT_FAILED+' '+str,  type: 'error' });
+        })
+      },
       fwics(id){
         this.$confirm(this.lan.CALENDAR_PAGE_CAL_SURE_TRANSFER, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
           confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,

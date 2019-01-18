@@ -798,6 +798,12 @@ export default {
 </script>
 
 <style>
+  .is_burn_img{
+    display:inline-block;
+    width:18px;
+    height:18px;
+    background:url(/static/img/is_burn.jpg)
+  }
   .tab_box .el-tabs__header{
     background:#fff;
   }

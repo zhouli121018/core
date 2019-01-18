@@ -72,7 +72,7 @@
               <span style="margin-left: 10px" v-if="$store.getters.getLanguage=='en'">{{scope.row.left_timestamp| validateLeft_en}}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="plang.COMMON_MAIL_SUBJECT" width="250">
+          <el-table-column :label="plang.COMMON_MAIL_SUBJECT" >
             <template slot-scope="scope" >
               <div class="nowrap" :title="scope.row.subject">{{scope.row.subject}}</div>
             </template>

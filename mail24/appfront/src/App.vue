@@ -15,6 +15,18 @@
 </script>
 
 <style>
+  .uploader-file-info .uploader-file-size{
+    min-width:66px;
+  }
+  div.el-dialog__header {
+    height: 21px;
+    line-height: 21px;
+    padding: 9px 18px;
+    font-size: 14px;
+    border-bottom: 1px solid #e4e4e5;
+    font-weight: bold;
+    background: #f5f6f7;
+ }
   *{
     /*box-sizing:border-box;*/
   }

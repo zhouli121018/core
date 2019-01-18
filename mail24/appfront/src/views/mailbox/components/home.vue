@@ -48,7 +48,6 @@
                   <span class="place">{{weatherinfo.data.cityname}}</span>
                 </div>
                 <div class="weaimg" :style="{ backgroundPosition: weatherinfo.data.imgLocation1 }">
-                  <!-- <img src="/coremail/XT5/89517/style/img/weather/zhongyu.png" alt="weather"> -->
                 </div>
               </div>
             </div>
