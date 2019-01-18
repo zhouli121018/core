@@ -1,4 +1,8 @@
 #coding: utf-8
+"""
+python manage.py makemessages -l
+python manage.py compilemessages
+"""
 
 import StringIO,os
 import os.path
@@ -99,17 +103,6 @@ for dir_name in os.listdir("."):
                             continue
                         if KEY in DATA:
                             KEY_VALUE = DATA[KEY]
-                            #debug-------------------
-                            #用aaa填充debug
-                            if not KEY_VALUE:
-                                KEY_VALUE = "aaa"
-                            if "%s" in KEY:
-                                KEY_VALUE = KEY
-                            if "%(" in KEY:
-                                KEY_VALUE = KEY
-                            if "{PASSWORD}" in KEY or "{ACCOUNT}" in KEY or "{DOMAIN}" in KEY or "{NAME}" in KEY:
-                                KEY_VALUE = KEY
-                            #debug------------------
                             line = ReFinedMsgSTR.sub('msgstr "%s"'%KEY_VALUE, line)
                             #踢出去重新添加
                             all_lines.pop(-1)
@@ -132,10 +125,6 @@ for dir_name in os.listdir("."):
                 key = 'msgid "{}"'.format(k)
                 if key in all_code:
                     continue
-                #debug-------------------
-                if not v:
-                    v = "aaa"
-                #debug------------------
                 all_list.append(key)
                 all_list.append('msgstr "{}"\n'.format(v))
             if not comment_start in all_code:

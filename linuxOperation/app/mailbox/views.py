@@ -13,6 +13,7 @@ from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.template.response import TemplateResponse
 from django.contrib import messages
+from django.utils.translation import ugettext_lazy as lazy
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.db.models import Q
@@ -40,13 +41,13 @@ from lib.licence import licence_required
 from lib.tools import get_exception_info
 
 DAY_DICT = {
-    '1': _(u'星期一'),
-    '2': _(u'星期二'),
-    '3': _(u'星期三'),
-    '4': _(u'星期四'),
-    '5': _(u'星期五'),
-    '6': _(u'星期六'),
-    '7': _(u'星期日'),
+    '1': lazy(u'星期一'),
+    '2': lazy(u'星期二'),
+    '3': lazy(u'星期三'),
+    '4': lazy(u'星期四'),
+    '5': lazy(u'星期五'),
+    '6': lazy(u'星期六'),
+    '7': lazy(u'星期日'),
 }
 
 
@@ -259,6 +260,7 @@ def account(request, template_name='mailbox/emailAccounts.html'):
             #获取部门名称， 用'-'分隔
             dept_id_lst = all_data_depts2.get(l.id, [])
             dept_name_lst = []
+            position = u""
             if dept_id_lst:
                 parent_id = int(dept_id_lst[0][1])
                 position = all_data_position.get(l.id, {}).get(parent_id, "")
@@ -493,6 +495,7 @@ def mailbox_reset_pwd(request):
             domain_id = get_domainid_bysession(request)
             ret, reason = CheckMailboxPassword(domain_id=domain_id, mailbox_id=request.user.id, password=password1)
             if ret != 0:
+                reason = _(reason)
                 data["status"] = "Failure"
                 data["message"] = reason
             else:
@@ -522,6 +525,7 @@ def ajax_check_change_pwd(request):
         if not reason:
             reason = _(u"被系统强制设置为需要修改密码"),
         else:
+            reason = _(reason)
             data["reason"] = reason
     return HttpResponse(json.dumps(data), content_type="application/json")
 
@@ -1237,7 +1241,7 @@ def add_reply(request, id, template_name='mailbox/add_reply.html'):
     obj = Mailbox.objects.get(id=id)
     return render(request, template_name=template_name, context={
         'mailbox_obj': obj,
-        'mailbox_id': mailbox_obj.id,
+        'mailbox_id': obj.id,
     })
 
 

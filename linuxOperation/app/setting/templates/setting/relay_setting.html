@@ -25,9 +25,9 @@
                 <td class="row">
                     <div class="col-sm-3 no-padding">
                         <select name="mode" class="form-control">
-                            <option value="failure" {% if form.mode.value == 'failure' %} selected {% endif %} > {% trans " {% trans "先直接发送所有邮件，如果有问题再使用中继服务器发送" %}" %}  </option>
-                            <option value="disable" {% if form.mode.value == 'disable' %} selected {% endif %} > {% trans " {% trans "将所有出站邮件直接发送到收件人的邮件服务器" %}" %} </option>
-                            <option value="direct" {% if form.mode.value == 'direct' %} selected {% endif %} > {% trans " {% trans "将所有出站邮件发送到中继服务器 " %}" %}  </option>
+                            <option value="failure" {% if form.mode.value == 'failure' %} selected {% endif %} > {% trans "先直接发送所有邮件，如果有问题再使用中继服务器发送" %} </option>
+                            <option value="disable" {% if form.mode.value == 'disable' %} selected {% endif %} > {% trans "将所有出站邮件直接发送到收件人的邮件服务器" %}</option>
+                            <option value="direct" {% if form.mode.value == 'direct' %} selected {% endif %} > {% trans "将所有出站邮件发送到中继服务器 " %}  </option>
                         </select>
                     </div>
                 </td>

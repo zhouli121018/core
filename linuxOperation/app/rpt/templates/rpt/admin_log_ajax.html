@@ -1,12 +1,13 @@
 {% load i18n %}
+{% load tags %}
 {% load rpt_tags %}
 <td>{{ d.id }}</td>
 <td>{{ d.actor }}</td>
 <td>
     {% if d.is_extend %}
-        <span class="text-info">{{ d.get_extend_type_display }}</span>
+        <span class="text-info">{{ d.get_extend_type_display|translation }}</span>
     {% else %}
-        <span class="text-info">{{ d.model_class }}</span>
+        <span class="text-info">{{ d.model_class|translation }}</span>
     {% endif %}
 </td>
 <td>
@@ -26,9 +27,9 @@
             <span class="text-info">ID </span> ({{ d.object_id }} ----> {{ d.object_id }})</br>
         {% endif %}
         {% for k, v in d.changes_display_dict.iteritems %}
-            <span class="text-info">{{ k }}</span> (
+            <span class="text-info">{{ k|translation }}</span> (
             {% for i in v %}
-                {% if forloop.last %}<span class="text-warning"> {{ i }}</span>{% else %}{{ i }} ---->{% endif %}
+                {% if forloop.last %}<span class="text-warning"> {{ i|translation }}</span>{% else %}{{ i|translation }} ---->{% endif %}
             {% endfor %})</br>
         {% endfor %}
     {% endif %}

@@ -68,7 +68,7 @@
     function CheckChareTitle() {
         var share_title = $.trim($("#id_share_title").val());
         if ( share_title == "" ){
-            alert("请填写显示别名");
+            alert('{% trans "请填写显示别名" %}');
             return;
         }
         $('#id-domain_group_add').submit();

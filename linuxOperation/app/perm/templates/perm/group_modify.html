@@ -1,5 +1,6 @@
 {% extends 'base_site.html' %}
 {% load i18n %}
+{% load tags %}
 {% load static %}
 {% load bootstrap %}
 {% block title %} {% trans "管理员组" %} {% endblock %}
@@ -22,7 +23,9 @@
                     <div class="panel-heading">{% trans "管理员组信息" %}</div>
                     <div class="panel-body">
                         {% csrf_token %}
-                        {{ form|bootstrap }}
+                        <div class=" ">
+                            <input type="text" name="name" value="{{ form.name.value|translation }}" id="id_name" required="" class=" form-control" maxlength="80">
+                        </div>
 
                         <button type="submit" class="btn btn-primary btn-sm">{% trans "确认" %}</button>
                         <button class="btn btn-sm" type="reset">{% trans "重置" %}</button>

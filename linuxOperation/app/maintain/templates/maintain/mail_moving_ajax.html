@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load tags %}
 <td>{{ d.id }}</td>
 <td>{{ number }}</td>
 <td>{{ d.mailbox|default_if_none:'' }}</td>
@@ -12,7 +13,7 @@
     {% endif %}
 </td>
 <td>{{ d.get_status_display|default_if_none:'' }}</td>
-<td>{{ d.desc_msg|default_if_none:'' }}</td>
+<td>{{ d.desc_msg|translation }}</td>
 <td>{{ d.get_set_from_display }}</td>
 <td>{{ d.get_time|default_if_none:'' }}</td>
 <td>

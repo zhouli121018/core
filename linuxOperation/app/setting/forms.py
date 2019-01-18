@@ -22,6 +22,7 @@ from django_redis import get_redis_connection
 from auditlog.api import api_create_admin_log
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as ugettext
 
 class SystemSetForm(DotDict):
 
@@ -373,30 +374,33 @@ class ExtCfilterRuleNewForm(object):
         obj.deleteOptions()
         obj.deleteActions()
 
-        logListAction = [_(u'名称: {} 规则ID: {}').format(self.__instance.name,self.__instance.id)]
+        # 把 lazy 包起来的字符串存进数据库 会报错的
+        logListAction = [ ugettext(u'名称: {} 规则ID: {}').format(self.__instance.name,self.__instance.id)]
         # 动作
         bulk_action = []
         for d in self.cfilteraction.value:
             bulk_action.append( ExtCfilterNewAction( rule_id=rule_id, action=d.action, value=d.json_value, sequence=d.sequence ))
             name = self.ACTION_NAME.get(d.action, d.action)
-            logListAction.append(_(u'动作: {} 参数: {} 序号: {}').format(name,d.json_value,d.sequence))
+            logListAction.append(ugettext(u'动作: {} 参数: {} 序号: {}').format(name,d.json_value,d.sequence))
         ExtCfilterNewAction.objects.bulk_create(bulk_action)
         api_create_admin_log(self.__request, self.__instance, u'cfiltercond',u"{}".format(u' || '.join(logListAction)))
 
         # 条件
         for d in self.cfilteroption.value:
-            logListOption = [_(u'名称: {} 规则ID: {}').format(self.__instance.name,self.__instance.id)]
+            # 把 lazy 包起来的字符串存进数据库 会报错的
+            logListOption = [ugettext(u'名称: {} 规则ID: {}').format(self.__instance.name,self.__instance.id)]
 
             option_obj = ExtCfilterNewCond.objects.create(
                 rule_id=rule_id, logic=d.logic, option=d.option,
                 suboption=d.suboption, action=d.action, value=d.value
             )
             name0 = self.COND_LOGIC_NAME.get(d.logic, d.logic)
-            logListOption.append(name0)
+            # 把 lazy 包起来的字符串存进数据库 会报错的
+            logListOption.append(ugettext(name0))
 
             name1 = self.ALL_CONDITION_SUBOPTION_NAME.get(d.suboption,d.suboption)
             name2 = self.ALL_CONDITION_ACTION_OPTION.get(d.action,d.action)
-            logListOption.append(u'{} {} {}'.format(name1,name2,d.value))
+            logListOption.append(u'{} {} {}'.format(ugettext(name1),ugettext(name2),d.value))
             for dd in d.childs:
                 ExtCfilterNewCond.objects.create(
                     rule_id=rule_id, parent_id=option_obj.id, logic=d.logic, option=dd.option,
@@ -404,7 +408,7 @@ class ExtCfilterRuleNewForm(object):
                 )
                 name1 = self.ALL_CONDITION_SUBOPTION_NAME.get(dd.suboption,dd.suboption)
                 name2 = self.ALL_CONDITION_ACTION_OPTION.get(dd.action,dd.action)
-                logListOption.append(u'{} {} {}'.format(name1,name2,dd.value))
+                logListOption.append(u'{} {} {}'.format(ugettext(name1),ugettext(name2),dd.value))
                 api_create_admin_log(self.__request, self.__instance, u'cfilteraction',u"{}".format(u' || '.join(logListOption)))
         clear_redis_cache()
         #每次保存规则，都会自动开启新旧版本的内容过滤器开关
@@ -1002,7 +1006,7 @@ class ExtUserCfilterForm(object):
             act_value = act.get("value", {})
             if action == "forward":
                 #is_forward是单独传过来，然后再存到value里面的
-                is_forward = value.get("is_forward", True)
+                is_forward = act.get("is_forward", True)
                 act_value["is_forward"] = is_forward
             act_value = json.dumps(act_value)
             obj_act = ExtCfilterNewAction.objects.create(

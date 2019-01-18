@@ -171,15 +171,61 @@
             margin-top:8px;
         }
         .ace.ace-switch + .lbl::before{
-            content:"{% trans "启用 a0\a0\a0\a0 禁用" %}" !important;
+            /* content:"启用 a0\a0\a0\a0 禁用" !important; */
         }
         .ace.ace-switch + .lbl.gender::before{
-            content:"\a0\{% trans "a0男 a0\a0\a0\a0\a0\a0\a0 女\a0" %}" !important;
+            /* content:"\a0\{% trans "a0男 a0\a0\a0\a0\a0\a0\a0 女\a0" %}" !important; */
         }
         .ace.ace-switch + .lbl::before{
-            content:"{% trans "启用 a0\a0\a0\a0 禁用" %}" !important;
+            /* content:"{% trans "是 a0\a0\a0\a0a0\a0\a0\ 否" %}" !important; */
+        }
+        input[type=checkbox].ace.ace-switch.ace-switch-5 + .lbl::before{
+            content:'{% trans "是" %}  \a0\a0\a0\a0\a0\a0\a0\a0\a0\a0\a0 {% trans "否"  %}'
+            /* content:"{% trans '是' %}  \a0\a0\a0\a0\a0\a0\a0\a0\a0  {% trans '否'  %}" */
+        }
+        table th{min-width:80px !important;}
+        .auto_box{
+            position: relative;
+            padding-top: 54px;
+        }
+        .auto_box>div.table-responsive{
+            padding-bottom: 100px;
+        }
+        .auto_box div.table-responsive .dataTables_wrapper .row:first-child{
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            height:54px;
+        }
+        
+        .auto_box div.table-responsive .dataTables_wrapper .row:first-child select{
+            display:inline-block !important;
+        }
+        .auto_box div.table-responsive .dataTables_wrapper .row:last-child{
+            position: absolute;
+            left: 0;
+            right: 0;
         }
 
+        .form_group_inline_block .form-group{
+            display:inline-block;
+        }
+        .width_170_input input{
+            width:170px !important;
+        }
+        .child_float:after{
+            content:"";
+            display: block;
+            clear:both;
+        }
+        .child_float>div{
+            float:left;
+            margin-right:4px;
+        }
+        .child_float>div input,.child_float>div select{
+            width:170px !important;
+        }
         table td{
             vertical-align: middle !important;
         }

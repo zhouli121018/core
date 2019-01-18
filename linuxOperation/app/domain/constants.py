@@ -283,6 +283,8 @@ DOMAIN_SYS_OTHERS_PARAMS = (
     (u"sw_filter_duplicate_mail",    _(u"收件时是否过滤重复邮件")),
     #这个开关没有意义，应该作为通用设置存在
     (u"sw_display_list",       _(u"邮件列表发来邮件显示邮件列表名称")),
+    (u"sw_user_reg", _(u"用户申请邮箱功能")),
+    #(u"sw_reg_ratify", _(u"管理员审核开通")),
     (u"sw_welcome_letter", _(u"新用户欢迎信功能")),
     (u"sw_agreement", _(u"新用户欢迎信功能")),
     (u"sw_recvsms",               _(u"短信通知接收邮件")),
@@ -297,6 +299,8 @@ DOMAIN_SYS_OTHERS_VALUE = (
     #(u"sw_auto_inbox",          u"1"),
     (u"sw_filter_duplicate_mail",    u"1"),
     (u"sw_display_list",       u"1"),
+    (u"sw_user_reg",         "-1"),
+    #(u"sw_reg_ratify",       "-1"),
     (u"sw_welcome_letter",   "1"),
     (u"sw_agreement",         "1"),
     (u"sw_recvsms",             u"-1"),
@@ -311,6 +315,8 @@ DOMAIN_SYS_OTHERS_TYPE = (
     #(u"sw_auto_inbox",          u"webmail"),
     (u"sw_filter_duplicate_mail",    u"webmail"),
     (u"sw_display_list",       u"webmail"),
+    (u"sw_user_reg",            "webmail"),
+    #(u"sw_reg_ratify",          "webmail"),
     (u"sw_welcome_letter",      "system"),
     (u"sw_agreement",            "webmail"),
     (u"sw_recvsms",               u"webmail"),
@@ -347,14 +353,17 @@ DOMAIN_SYS_OTHERS_ATTACH_TYPE = (
 
 DOMAIN_SIGN_PARAMS = (
     (u'cf_domain_signature',_(u'域签名')),
+    (u'sw_domain_signature',_(u'域签名开关')),
 )
 
 DOMAIN_SIGN_VALUE = (
     (u'cf_domain_signature',u''),
+    (u'sw_domain_signature',u'-1'),
 )
 
 DOMAIN_SIGN_TYPE = (
     (u'cf_domain_signature',u'system'),
+    (u'sw_domain_signature',u'system'),
 )
 
 DOMAIN_SIGN_PERSONAL_PARAMS = (

@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load tags %}
 <td>{{ number }}</td>
 <td>{{ d.datetime|date:'Y-m-d H:i' }}</td>
 <td>{{ d.mailbox.name|default_if_none:'' }}</td>
@@ -20,5 +21,5 @@
         <span class="text-danger">{{ d.get_result_display }}</span>
     {% endif %}
 </td>
-<td>{{ d.description|default_if_none:'' }}</td>
+<td>{{ d.description|translation }}</td>
 <td>{{ d.clientip|default_if_none:'' }}</td>

@@ -18,7 +18,7 @@ from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnIn
 from django.template.response import TemplateResponse
 from django.contrib import messages
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from django_sysinfo.api import get_sysinfo, get_processes
 from django_sysinfo.utils import get_network_speed
@@ -125,10 +125,10 @@ def licence(request):
 
     if isinstance(extra_module, list):
         licence_mod = {
-            'all': '所有模块',
-            'sms': '短信模块',
-            'ctasd_inbound': '高级入站垃圾邮件检测',
-            'ctasd_outbound': '高级出站垃圾邮件检测',
+            'all': _(u'所有模块'),
+            'sms': _(u'短信模块'),
+            'ctasd_inbound': _(u'高级入站垃圾邮件检测'),
+            'ctasd_outbound': _(u'高级出站垃圾邮件检测'),
         }
         extra_module = ','.join(map(lambda l: licence_mod.get(l, ''), extra_module))
 
@@ -174,9 +174,9 @@ def home(request, template_name='home.html'):
         if status in ['reboot', 'shutdown']:
             password = request.POST.get('password', '')
             if not reboot('root', password, action=status):
-                messages.add_message(request, messages.ERROR, u'密码输入错误!')
+                messages.add_message(request, messages.ERROR, _(u'密码输入错误!'))
             else:
-                msg = u'重启' if status == 'reboot' else u'关闭'
+                msg = _(u'重启') if status == 'reboot' else _(u'关闭')
                 messages.add_message(request, messages.SUCCESS, u'您的服务器即将{}!'.format(msg))
             return HttpResponseRedirect(reverse('home'))
 
@@ -208,7 +208,11 @@ def home(request, template_name='home.html'):
             available_version = versions[1] if len(versions) >= 2 else None
 
             sys_info = get_sysinfo(request)
-
+            for k in sys_info.get("processes", {}).keys():
+                v = sys_info["processes"][k]
+                if "sname" in v:
+                    #读取全局变量时只能在这里翻译
+                    sys_info["processes"][k]["sname"] = _(v["sname"])
             ntcp_info_json, bntcp_info_json = get_tcp_connect_info()
             network_monitor_keys, network_monitor_infos = get_network_monitor_info()
             return render(request, template_name, {
@@ -566,6 +570,20 @@ def set_domain_id(request):
             request.session['domain_id'] = domain_id
         elif domain_id in request.user.domains.values_list('id', flat=True):
             request.session['domain_id'] = domain_id
+    return response
+
+@login_required
+def set_language(request):
+    from operation.settings import LANGUAGE_CODE, LANGUAGE_SESSION_KEY, LANGUAGE_COOKIE_NAME
+    next = request.META.get('HTTP_REFERER', None)
+    if not next or next.endswith("set_language"):
+        next = '/'
+    response = HttpResponseRedirect(next)
+    if hasattr(request, 'session'):
+        language = request.POST.get("language", LANGUAGE_CODE)
+        language = LANGUAGE_CODE if not language else language
+        request.session[LANGUAGE_SESSION_KEY] = language
+        response.set_cookie(LANGUAGE_COOKIE_NAME, language)
     return response
 
 @csrf_exempt

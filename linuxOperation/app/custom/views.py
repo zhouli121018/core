@@ -15,6 +15,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib import messages
 from lib.tools import get_process_pid, restart_process, get_fail2ban_info, fail2ban_ip
+from django.utils.translation import ugettext_lazy as _
 
 from django.template.response import TemplateResponse
 from django.core.paginator import Paginator, EmptyPage, InvalidPage

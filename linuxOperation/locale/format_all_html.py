@@ -105,7 +105,7 @@ def replace_line(line):
     return line
 
 #for dir_name in ("app","templates"):
-for dir_name in ("templates",):
+for dir_name in ("app/domain", "app/mailbox"):
     for root,dirs,files in os.walk("../{}".format(dir_name)):
         for filename in files:
             if not filename.endswith(".html"):

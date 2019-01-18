@@ -16,7 +16,7 @@ from django.core.urlresolvers import reverse
 from django.db.transaction import atomic
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from django_redis import get_redis_connection
 from app.core.models import Mailbox, DomainAttr, Domain, CoreMonitor, CoreAlias, MailboxExtra, MailboxUser

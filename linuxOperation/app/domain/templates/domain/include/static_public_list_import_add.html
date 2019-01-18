@@ -11,8 +11,8 @@
 
             <p><strong class="red">
                 {% trans "注：" %}
-            </strong>{% trans "一行为一个客户，每一行的格式为：客户名称;邮件地址;联系电话;客户分组;备注;生日;性别;工作电话;家庭电话;QQ;MSN，各字段间用';'或者'TAB'制表符分隔" %}
-                {% trans "性别说明：'M'表示男'F'表示女" %}</p>
+            </strong>{% trans "一行为一个客户，每一行的格式为" %}"{% trans "客户名称;邮件地址;联系电话;客户分组;备注;生日;性别;工作电话;家庭电话;QQ;MSN" %}"，{% trans "各字段间用" %}";"{% trans "或者" %}"TAB"{% trans "制表符分隔" %}
+                {% trans "性别说明：" %}"M"{% trans "表示男," %}"F"{% trans "表示女" %}</p>
             <p class="red">eg：</p>
             <p>lihong;lh@domain.com;444444;catrogname;des;1980-04-24;F;tel;home tel;QQ;MSN</p>
             {% for data in form.import_error %}

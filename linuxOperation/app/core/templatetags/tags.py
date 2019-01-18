@@ -2,9 +2,9 @@
 import datetime
 import urllib
 from django import template
+from django.utils.translation import ugettext as _
 from app.core.models import Domain, Department
 from app.utils.domain_session import get_domainid_bysession
-
 
 register = template.Library()
 
@@ -44,24 +44,25 @@ def preview_check(filname):
 def smooth_timedelta(timedeltaobj):
     """Convert a datetime.timedelta object into Days, Hours, Minutes, Seconds."""
     secs = timedeltaobj.total_seconds()
-    timetot = ""
+    timetot = u""
+    day_unit, hour_unit, minute_unit, sec_unit = _(u"天"), _(u"小时"), _(u"分钟"), _(u"秒")
     if secs > 86400: # 60sec * 60min * 24hrs
         days = secs // 86400
-        timetot += "{} 天".format(int(days))
+        timetot += u"{} {}".format(int(days), day_unit)
         secs = secs - days*86400
 
     if secs > 3600:
         hrs = secs // 3600
-        timetot += " {} 小时".format(int(hrs))
+        timetot += u" {} {}".format(int(hrs), hour_unit)
         secs = secs - hrs*3600
 
     if secs > 60:
         mins = secs // 60
-        timetot += " {} 分钟".format(int(mins))
+        timetot += u" {} {}".format(int(mins), minute_unit)
         secs = secs - mins*60
 
     if secs > 0:
-        timetot += " {} 秒".format(int(secs))
+        timetot += u" {} {}".format(int(secs), sec_unit)
     return timetot
 
 @register.inclusion_tag('switch_domain.html')
@@ -90,6 +91,17 @@ def switch_domain(request):
         'domain_id': domain_id
     }
 
+@register.inclusion_tag('switch_language.html')
+def switch_language(request):
+    from operation.settings import LANGUAGE_CODE
+    language = None
+    if '_language' in request.session:
+        language = request.session['_language']
+    language = LANGUAGE_CODE if not language else language
+    return {
+        'language': language
+    }
+
 @register.filter
 def urllib_unquote(s):
     return urllib.unquote(s.encode('utf-8'))
@@ -107,3 +119,7 @@ def show_all_dept(parent_id):
         parent_id = dept.parent_id
     l.reverse()
     return " -- ".join(l[-4:])
+
+@register.filter
+def translation(name):
+    return unicode(_(unicode(name)))

@@ -1,5 +1,6 @@
 {% extends 'base_site.html' %}
 {% load i18n %}
+{% load tags %}
 {% load static %}
 {% load bootstrap %}
 {% block title %} {% trans "组配置" %} {% endblock %}
@@ -26,9 +27,16 @@
                                 <div class="row">
                                     <div class="col-sm-10">
                                         {{ form.domain_id }}
-                                        {{ form.name|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
-                                        {{ form.description|bootstrap_horizontal:"col-sm-3 col-lg-3" }}
+                                    <div class="form-group">
+                                    <label class="control-label col-sm-3 col-lg-3 " for="id_name"><span class="red bold">*</span> {% trans "组名称" %}</label>
+                                        <div class=" col-sm-9 col-lg-9 ">
+                                            <input type="text" name="name" value="{{ form.name.value }}" id="id_name" required="" class=" form-control" maxlength="100">
+                                        </div>
                                     </div>
+                                    <label class="control-label col-sm-3 col-lg-3 " for="id_description"><span class="red bold">*</span> {% trans "组描述" %}</label>
+                                        <div class=" col-sm-9 col-lg-9 ">
+                                            <input type="text" name="description" value="{{ form.description.value }}" id="id_description" class=" form-control" maxlength="100">
+                                        </div>
                                     <div class="col-sm-2"></div>
                                 </div>
                             </div>
@@ -72,8 +80,9 @@
     <script src="{% static 'assets/js/jquery.ui.touch-punch.js' %}" ></script>
     <script src="{% static 'assets/js/jquery-ui.js' %}" ></script>
     <script src="{% static "components/datetimepiker/bootstrap-datetimepicker.min.js" %}"></script>
-    <script src="{% static "components/datetimepiker/bootstrap-datetimepicker.zh-CN.js" %}"></script>
-
+    {% if request.COOKIES.webvue_language == 'zh-hans'  %}
+        <script src="{% static "components/datetimepiker/bootstrap-datetimepicker.zh-CN.js" %}"></script>
+    {% endif %}
     <script>
         $('.limit_send_select').change(function(){
             if($(this).val()=='3'){

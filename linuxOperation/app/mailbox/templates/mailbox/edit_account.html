@@ -37,7 +37,7 @@
                 <div id="mailbox_info" class="tab-pane active">
                     <div class="table-header" style="margin-bottom:8px;">{% trans "邮箱基本信息" %}</div>
                     <div class="form-horizontal row">
-                        <div class="col-sm-6" style="border-right:2px dashed #eee;">
+                        <div class="col-sm-10" style="border-right:2px dashed #eee;">
                             <div class="col-sm-11">
                                 {{ form.name|bootstrap_horizontal:"col-sm-4"}}
                                 {{ form.password1|bootstrap_horizontal:"col-sm-4"}}
@@ -54,7 +54,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-10">
                             <div class="col-sm-11">
                                 {{ form.quota_mailbox|bootstrap_horizontal:"col-sm-4"}}
                                 {{ form.quota_netdisk|bootstrap_horizontal:"col-sm-4"}}
@@ -164,7 +164,7 @@
                 <div class="tab-pane" id="user_info">
                     <div class="table-header" style="margin-bottom:8px;">{% trans "用户信息" %}</div>
                     <div class="form-horizontal row">
-                        <div class="col-sm-6" >
+                        <div class="col-sm-10" >
                             <div class="col-sm-11">
                                 {{ user_form.realname|bootstrap_horizontal:"col-sm-4"}}
                                 {{ user_form.engname|bootstrap_horizontal:"col-sm-4"}}
@@ -175,7 +175,7 @@
                                 {{ user_form.showorder|bootstrap_horizontal:"col-sm-4"}}
                             </div>
                         </div>
-                        <div class="col-sm-6" style="border-left:2px dashed #eee;">
+                        <div class="col-sm-10" style="border-left:2px dashed #eee;">
                             <div class="col-sm-11">
                                 {{ user_form.tel_mobile|bootstrap_horizontal:"col-sm-4"}}
                                 {{ user_form.tel_work|bootstrap_horizontal:"col-sm-4"}}
@@ -226,10 +226,10 @@
                         </table>
                     </div>
                     <div class="row">
-                        <div class="col-sm-4">
+                        <div class="col-sm-10">
                             <div class="input-group">
                                 <span class="input-group-addon">{% trans "添加组：" %}</span>
-                                <select name="" id="" class="select2 form-control user_group_val">
+                                <select name="" id="" class="select2 form-control user_group_val" style="width:200px">
                                     <option value="">{% trans "选择组" %}</option>
                                     {% for g in groups %}
                                     <option value="{{ g.id }}">{{ g.name }}</option>

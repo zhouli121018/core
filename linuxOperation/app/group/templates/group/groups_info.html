@@ -681,7 +681,7 @@
                                                 <div class="dept_list active">
                                                     <div style="position:relative;padding-left:0">
                                                         <div id="input_box" class="input-group" style="max-width:300px;">
-                                                            <input type="text" value="" readonly placeholder="点击选择部门" class="form-control department_choice">
+                                                            <input type="text" value="" readonly placeholder='{% trans "点击选择部门" %}' class="form-control department_choice">
                                                             <input type="hidden" class="id_dept_id" value="" name="target_dept">
                                                             <span class="input-group-addon clear_dept" style="cursor:pointer;background:#a0a0a0;color:#fff;">{% trans "清空" %}</span><span class="input-group-addon submit_dept_permit_btn" style="cursor:pointer;background:#1b6aaa;color:#fff;">{% trans "添加部门" %}</span>
                                                         </div>
@@ -689,7 +689,7 @@
                                                             <button type="button" class="btn btn-danger btn-sm pull-right close_btn" >&times;</button>
                                                             <div class="widget-body" style="padding-right:20px;">
                                                                 <div style="padding:20px  6px 0;">
-                                                                    <input type="text" class="search_input form-control" placeholder="输入关键字搜索...">
+                                                                    <input type="text" class="search_input form-control" placeholder="{% trans "输入关键字搜索..." %}">
                                                                 </div>
                                                                 <div class="widget-main padding-8" style="height:auto;max-height:360px;">
                                                                     <ul id="tree"></ul>
@@ -936,8 +936,9 @@
     <script src="{% static 'assets/js/jquery.ui.touch-punch.js' %}" ></script>
     <script src="{% static 'assets/js/jquery-ui.js' %}" ></script>
     <script src="{% static "components/datetimepiker/bootstrap-datetimepicker.min.js" %}"></script>
-    <script src="{% static "components/datetimepiker/bootstrap-datetimepicker.zh-CN.js" %}"></script>
-
+    {% if request.COOKIES.webvue_language == 'zh-hans'  %}
+        <script src="{% static "components/datetimepiker/bootstrap-datetimepicker.zh-CN.js" %}"></script>
+    {% endif %}
     <script>
         var alsendList = [];
         var hashSend = [];
@@ -1061,11 +1062,11 @@
                 },
                 success:function(data){
                     if(data.status=='OK'){
-                        layer.msg("操作成功！");
+                        layer.msg('{% trans "操作成功！" %}');
                         freshHtmlSend()
                         // $('#allow_send_email_dress').modal('hide');
                     }else{
-                        layer.msg("操作失败：  "+data.message);
+                        layer.msg('{% trans "操作失败：  " %}'+data.message);
                     }
                 }
             })
@@ -1117,7 +1118,7 @@
                 },
                 success:function(data){
                     if(data.status=='OK'){
-                        layer.msg("操作成功！");
+                        layer.msg('{% trans "操作成功！" %}');
                         freshHtmlRecv()
                         // $('#allow_send_email_dress').modal('hide');
                     }else{
@@ -1388,9 +1389,9 @@
                     },
                 success:function(data){
                     if(data.status == 'OK'){
-                        layer.msg('操作成功！')
+                        layer.msg('{% trans "操作成功！" %}')
                     }else{
-                        layer.msg('操作失败！')
+                        layer.msg('{% trans "操作失败！" %}')
                     }
                     get_groups_new()
                 }
@@ -1437,7 +1438,7 @@
                 success:function(data){
                     var res = data.data;
                     var hashArr = [];
-                    var arr = [['basic','常规设置'],['login','登录方式限制'],['password','密码规则'],['spam','反垃圾/反病毒'],['frequency','发信频率设置'],['oab','企业通讯录设置'],['space','邮箱空间清理设置']];
+                    var arr = [['basic','{% trans "常规设置" %}'],['login','{% trans "登录方式限制" %}'],['password','{% trans "密码规则" %}'],['spam','{% trans "反垃圾/反病毒" %}'],['frequency','{% trans "发信频率设置" %}'],['oab','{% trans "企业通讯录设置" %}'],['space','{% trans "邮箱空间清理设置" %}']];
                     for(var key in res){
                         var type = res[key].type;
                         var id = res[key].id;
@@ -1577,9 +1578,9 @@
                     value : JSON.stringify(value)
                 },
                 success:function(data){
-                    let str = '修改配置成功！';
+                    let str = '{% trans "修改配置成功！" %}';
                     if(setting_id ==0){
-                        str = '添加配置成功！';
+                        str = '{% trans "添加配置成功！" %}';
                         $('#edit_email_tabs>ul>li').removeClass('ui-tabs-active')
                         $('#edit_email_tabs>div').hide();
                         $('#edit_email_tabs [href="#'+type+'"]').parent().removeClass('display-none');
@@ -1930,7 +1931,7 @@
                 type:'POST',
                 data:{setting_id:$(this).attr('data_id')},
                 success:function(data){
-                    layer.msg('删除配置成功！')
+                    layer.msg('{% trans "删除配置成功！" %}')
                     init(1);
                 }
             })

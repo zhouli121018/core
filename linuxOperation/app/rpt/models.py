@@ -58,7 +58,7 @@ class CoUserLog(models.Model):
 
     @property
     def wxuser(self):
-        if self.mailbox and self.mailbox.user:
+        if hasattr(self, "mailbox") and self.mailbox and self.mailbox.user:
             return WxUser.objects.filter(id=self.mailbox.user.wx_id).first()
         return None
 

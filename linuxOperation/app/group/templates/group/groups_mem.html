@@ -197,7 +197,7 @@
         }
 
         function Delete(id, name){
-            var str = '确定要删除发件人 "%s"？';
+            var str = '{% trans "确定要删除发件人 %s？" %}';
             str = str.replace(/%s/, name);
             if(confirm(str)) {
                 $('#id').val(id);
@@ -228,11 +228,11 @@
         function ModefyRemark(mem_id) {
             var remark = $.trim($("#id_remark_"+mem_id).val());
             if (remark==''|| remark==undefined){
-                alert('请填写备注');
+                alert('{% trans "请填写备注" %}');
                 return;
             }
             $.post('{% url 'core_group_member' group_id %}', {'action': 'remark', 'mem_id': mem_id, 'remark': remark, }, function(data){
-                alert('修改成功');
+                alert('{% trans "修改成功" %}');
             })
         }
 

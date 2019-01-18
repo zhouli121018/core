@@ -131,14 +131,14 @@
                 <tr>
                     <td class="text-right">{% trans "用户登录安全：" %}</td>
                     <td class="row no-padding-left">
-                        <div class="col-sm-4 ">
+                        <div class="col-sm-6 col-lg-4" style="margin-bottom:4px;">
                             <div class="input-group" >
                                 <span class="input-group-addon">{% trans "错误登录次数" %}</span>
                                 <input type="number" name="count" value="{{ form_security.count }}" class="form-control">
                                 <span class="input-group-addon">{% trans "次" %}</span>
                             </div>
                         </div>
-                        <div class="col-sm-4 no-padding">
+                        <div class="col-sm-6 col-lg-4" style="margin-bottom:4px;">
                             <div class="input-group">
                                 <span class="input-group-addon">{% trans "账号禁用时间" %}</span>
                                 <input type="number" name="timespan" value="{{ form_security.timespan }}" class="form-control">
@@ -445,6 +445,28 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="text-right" style="width:300px;">
+                        {% trans "用户申请邮箱功能：" %}
+                    </td>
+                    <td class="row">
+                        <div class="col-sm-4 no-padding">
+                            <label class="inline" >
+                                <input name="sw_user_reg" value="1" {% if form_others.sw_user_reg.value == '1' %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5 open">
+                                <span class="lbl"></span>
+                            </label>
+                        </div>
+                        <!--
+                        <div class="col-sm-8 no-padding">
+                            <label class="inline" >
+                                <small class="muted smaller-90">{% trans "管理员审核开通:" %}</small>
+                                <input name="sw_reg_ratify" value="1" {% if form_others.sw_reg_ratify.value == '1' %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5">
+                                <span class="lbl middle"></span>
+                            </label>
+                        </div>
+                        -->
+                    </td>
+                </tr>
+                <tr>
                     <td class="text-right">{% trans "用户注册及新用户欢迎信功能：" %}</td>
                     <td class="row">
                         <div class="col-sm-4 no-padding">
@@ -481,7 +503,7 @@
                     <tr>
                         <td class="text-right" >{% trans "短信帐号设置：" %}</td>
                         <td class="row">
-                            <div class="col-sm-4 no-padding-left">
+                            <div class="col-lg-4 col-sm-6 no-padding-left" style="margin-bottom:6px;">
                                 <div class="input-group">
                                     <span class="input-group-addon">{% trans "短信服务商：" %}</span>
                                     <select name="sms_type" class="form-control">
@@ -491,27 +513,27 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-sm-2">
+                            <div class="col-lg-4 col-sm-6 no-padding-left" style="margin-bottom:6px;">
                                 <div class="input-group">
                                     <span class="input-group-addon">{% trans "帐号：" %}</span>
                                     <input type="text" name="sms_account" value="{{ form_others.sms_account }}" class="form-control">
                                 </div>
                             </div>
-                            <div class="col-sm-2">
+                            <div class="col-lg-4 col-sm-6 no-padding-left" style="margin-bottom:6px;">
                                 <div class="input-group">
                                     <span class="input-group-addon">{% trans "密码：" %}</span>
                                     <input type="password" name="sms_password" value="{{ form_others.sms_password }}" class="form-control">
                                 </div>
                             </div>
                             {% if form_others.sms_type == 'zhutong' %}
-                                <div class="col-sm-2">
+                                <div class="col-lg-4 col-sm-6 no-padding-left" style="margin-bottom:6px;">
                                     <div class="input-group">
                                         <span class="input-group-addon">{% trans "签名：" %}</span>
                                         <input type="text" name="sms_sign" value="{{ form_others.sms_sign }}" class="form-control">
                                     </div>
                                 </div>
                             {% endif %}
-                            <div class="col-sm-2">
+                            <div class="col-lg-4 col-sm-6 no-padding-left" style="margin-bottom:6px;">
                                 <div class="input-group">
                                     {% if not form_others.sms_cost is None %}
                                         <span class="input-group-addon">{% trans "剩余短信：" %}</span>
@@ -549,7 +571,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">{% trans "接口地址：" %}</label>
                         <div class="col-sm-10">
-                            <input type="text" name="cf_auth_api" value="{{ form_auth_api.cf_auth_api.value }}" class="form-control"  placeholder='{% trans "接口地址" %}'>
+                            <input type="text" name="cf_auth_api" value="{{ form_auth_api.cf_auth_api.value }}" class="form-control"  placeholder="{% trans "接口地址" %}">
                         </div>
                     </div>
                     <div class=" ">
@@ -665,7 +687,7 @@
                         <td class="text-right">{% trans "邮件内容：" %}</td>
                         <td>
                             <textarea name="content"  rows="8" class="form-control">
-{{ form_space_clean.content }}
+                                {{ form_space_clean.content }}
                             </textarea>
                         </td>
                     </tr>
@@ -705,7 +727,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">{% trans "接口地址：" %}</label>
                         <div class="col-sm-10">
-                            <input type="text" name="cf_impush_api" value="{{ form_im_api.cf_impush_api.value }}" class="form-control"  placeholder='{% trans "接口地址" %}'>
+                            <input type="text" name="cf_impush_api" value="{{ form_im_api.cf_impush_api.value }}" class="form-control"  placeholder="{% trans "接口地址" %}">
                         </div>
                     </div>
                     <div class=" ">
@@ -783,7 +805,7 @@
                         <label class="col-sm-4 control-label">{% trans "邮件列表转存大小：" %}</label>
                         <div class="col-sm-8">
                             <div class="input-group">
-                                <input type="number" name="client_size_list" value="{{ form_client_attach.client_size_list }}" class="form-control"  placeholder='{% trans "转存附件大小" %}'>
+                                <input type="number" name="client_size_list" value="{{ form_client_attach.client_size_list }}" class="form-control"  placeholder="{% trans "转存附件大小" %}">
                                 <span class="input-group-addon">M</span>
                             </div>
                         </div>
@@ -792,7 +814,7 @@
                         <label class="col-sm-4 control-label">{% trans "内网邮件转存大小：" %}</label>
                         <div class="col-sm-8">
                             <div class="input-group">
-                                <input type="number" name="client_size_in" value="{{ form_client_attach.client_size_in }}" class="form-control"  placeholder='{% trans "转存附件大小" %}'>
+                                <input type="number" name="client_size_in" value="{{ form_client_attach.client_size_in }}" class="form-control"  placeholder="{% trans "转存附件大小" %}">
                                 <span class="input-group-addon">M</span>
                             </div>
                         </div>
@@ -801,7 +823,7 @@
                         <label class="col-sm-4 control-label">{% trans "外网邮件转存大小：" %}</label>
                         <div class="col-sm-8">
                             <div class="input-group">
-                                <input type="number" name="client_size_out" value="{{ form_client_attach.client_size_out }}" class="form-control"  placeholder='{% trans "转存附件大小" %}'>
+                                <input type="number" name="client_size_out" value="{{ form_client_attach.client_size_out }}" class="form-control"  placeholder="{% trans "转存附件大小" %}">
                                 <span class="input-group-addon">M</span>
                             </div>
                         </div>
@@ -809,7 +831,7 @@
                     <div class="form-group">
                         <label class="col-sm-4 control-label">{% trans "附件下载地址：" %}</label>
                         <div class="col-sm-8">
-                            <input type="text" name="client_url" value="{{ form_client_attach.client_url }}" class="form-control"  placeholder='{% trans "附件下载地址" %}'>
+                            <input type="text" name="client_url" value="{{ form_client_attach.client_url }}" class="form-control"  placeholder="{% trans "附件下载地址" %}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -839,6 +861,7 @@
                         <p>4、{% trans "若用户在自己的网络硬盘操作删除了该转存的附件，也会导致外部下载附件失败；" %}</p>
                         <p>5、{% trans "附件下载地址一般不需要自己修改，需要自定义外部访问域名的用户，需要考虑是否修改这里；" %}</p>
                         <p>6、{% trans "内网IP登录的用户，若地址栏显示的是诸如 " %}'10.x.x.x' 、 '172.16.x.{% trans "x至172.31.x.x" %}' 、 '192.168.x.x' {% trans "这些地址，则必须换成外部能访问到的域名地址，如" %}'mail.example.com'；</p>
+                        <p>6、“{% trans "附件存储目录”当选择存储在“发信人网络硬盘”时，发信人可管理删除该附件，存储在“系统公共目录”时，附件永久存储且不会被任何人删除。" %}</p>
                     </div>
                 </div>
             </div>
@@ -979,7 +1002,7 @@
                 </div>
             </div>
             <!--<div class="modal-footer center">-->
-                <!--<button type="button" class="btn  btn-success">{% trans "添加" %}</button>-->
+                <!--<button type="button" class="btn  btn-success">添加</button>-->
             <!--</div>-->
         </div>
     </div>
@@ -1002,7 +1025,7 @@
                         <div class="widget-box widget-color-blue2" style="border-color:#E0E0E0;">
                             <div class="">
                                 <p class="" style="padding:10px;padding-bottom:0;">
-                                    <input type="text" class="select_search form-control" placeholder='{% trans "输入关键字搜索..." %}'>
+                                    <input type="text" class="select_search form-control" placeholder="{% trans "输入关键字搜索..." %}">
                                 </p>
                             </div>
                             <div class="widget-body" style="padding-left:12px">
@@ -1027,7 +1050,7 @@
                             <div class="">
                                 <p class="" style="padding:10px;padding-bottom:0;">
                                     <span>{% trans "已选数量：" %}<b class="selected_count">0</b></span>
-                                    <input type="text" class="selected_search form-control" placeholder='{% trans "输入关键字搜索..." %}'>
+                                    <input type="text" class="selected_search form-control" placeholder="{% trans "输入关键字搜索..." %}">
                                 </p>
                             </div>
                             <div class="widget-body" style="padding-left:12px;">
@@ -1057,7 +1080,7 @@
                 </div>
             </div>
             <!--<div class="modal-footer center">-->
-                <!--<button type="button" class="btn  btn-success">{% trans "添加" %}</button>-->
+                <!--<button type="button" class="btn  btn-success">添加</button>-->
             <!--</div>-->
         </div>
     </div>
@@ -1201,6 +1224,8 @@
             $('.nable_set').hide();
         }
     });
+
+    console.log("tabs ==================  "+$("#sub_sys_tabs").tab().val());
 
     $('.limit_send_select').change(function(){
         if($(this).val()=='3'){

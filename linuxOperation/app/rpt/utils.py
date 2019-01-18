@@ -6,6 +6,7 @@ from app.core.models import (
     Mailbox, MailboxUser, MailboxSize, DomainAttr,
     Domain, CoreMonitor, CoreAlias, Department, DepartmentMember, VisitLog, AuthLog )
 from app.rpt.models import  MailLog, LogReport
+from django.utils.translation import ugettext_lazy as _
 
 def add_condition( cond, q ):
     if not cond:
@@ -30,14 +31,14 @@ def get_date_offset(domain_id):
     l = []
     for v in xrange(-1,save_days):
         if v == -1:
-            l.append( (-1,u"至今") )
+            l.append( (-1,_(u"--")) )
             continue
         date_start = get_daystart(int(v))
         l.append( (v, '%s'%date_start ) )
     return tuple(l)
 
 def get_department_list():
-    l = [(u"0",u"所有部门")]
+    l = [(u"0",_(u"--"))]
     for obj in Department.objects.all():
         l.append( (obj.id,obj.title) )
     return tuple(l)

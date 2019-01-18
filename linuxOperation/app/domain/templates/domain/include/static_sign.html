@@ -16,22 +16,38 @@
             <div>
                 <form class="form-horizontal form_domain">
                     {% csrf_token %}
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">{% trans "超文本签名：" %}</label>
-                        <div class="col-sm-10">
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <td style="width:140px;">{% trans "开启域签名" %}</td>
+                        <td>
+                            <label class="inline" >
+                                <input name="sw_domain_signature" value="1" {% if form_domain.sw_domain_signature.value == "1" %} checked {% endif %} type="checkbox" class="ace ace-switch ace-switch-5">
+                                <span class="lbl middle"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:140px;">{% trans "超文本签名：" %}</td>
+                        <td>
                             <div class="wysiwyg-editor" id="editor2"> {{ form_domain.content_html }} </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">{% trans "纯文本签名：" %}</label>
-                        <div class="col-sm-10">
+                        </td>
+                    </td>
+                    <tr>
+                        <td style="width:140px;">{% trans "纯文本签名：" %}</td>
+                        <td>
                             <textarea name="content_text" class="form-control" rows="10"> {{ form_domain.content_text }} </textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:140px;"></td>
+                        <td>
+                        <div class="modal-footer center">
+                            <button type="button" class="btn btn-success" onclick="clickSubmitButton('domain_sign','form_domain')">{% trans "提交" %}</button>
+                            <button type="button"  class="btn btn-warning">{% trans "重置" %}</button>
                         </div>
-                    </div>
-                    <div class="modal-footer center">
-                        <button type="button" class="btn btn-success" onclick="clickSubmitButton('domain_sign','form_domain')">{% trans "提交" %}</button>
-                        <button type="button"  class="btn btn-warning">{% trans "重置" %}</button>
-                    </div>
+                        </td>
+                    </tr>
+                </table>
                 </form>
             </div>
         </div>

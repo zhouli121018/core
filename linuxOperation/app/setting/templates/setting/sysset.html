@@ -31,7 +31,7 @@
         {% trans "杂项设置" %}
     </div>
     <div>
-        <form class="form-horizontal table-responsive" role="form" action="" method="POST">
+        <form class="form-horizontal" role="form" action="" method="POST">
             {% csrf_token %}
         <table class="table table-bordered">
             <tr>
@@ -73,7 +73,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="text-right">"旧邮件备份"{% trans "目录备份功能：" %}</td>
+                <td class="text-right">{% trans "旧邮件定期备份到其他目录：" %}</td>
                 <td class="row">
                     <div class="col-sm-3 no-padding">
                         <label class="inline" >
@@ -82,7 +82,7 @@
                         </label>
                     </div>
                     <div class="col-sm-9 green">
-                        {% trans "备注：每天仅保留收件箱最新的1万封邮件，老邮件转移到" %}"旧邮件备份"{% trans "目录中，开启该功能可提高邮件搜索速度。" %}
+                        {% trans "备注：每天仅保留收件箱最新的1万封邮件，老邮件转移到'旧邮件备份'目录中，开启该功能可提高邮件搜索速度。" %}
                     </div>
                 </td>
             </tr>
@@ -102,8 +102,8 @@
                     </div>
                     <div class="col-sm-9">
                         <p class="help-block green">
-                            {% trans "备注：在管理后台删除帐号后，系统会马上禁用该帐号并等待在这里输入的天数之后，才彻底删除该帐号的帐号和邮件数据" %}；
-                            {% trans "该选项只能被拥有" %}“{% trans "超级管理员" %}”{% trans "权限的管理员帐号修改。" %}
+                            {% trans "备注：在管理后台删除帐号后，系统会马上禁用该帐号并等待在这里输入的天数之后，才彻底删除该帐号的帐号和邮件数据" %}&nbsp
+                            {% trans "该选项只能被拥有 '超级管理员' 权限的管理员帐号修改。" %}
                         </p>
                     </div>
                 </td>
@@ -117,7 +117,7 @@
                         <span class="lbl"></span>
                     </label>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-lg-4 col-sm-6">
                         <div class="input-group">
                             <span class="input-group-addon">{% trans "搜索缓存存储地址：" %}</span>
                             <input type="text" name="cf_search_speedup_cache" value="{{ form.cf_search_speedup_cache.value }}" class="form-control">
@@ -141,7 +141,7 @@
                 <tr>
                     <td class="text-right">{% trans "短信模块设置：" %}</td>
                     <td class="row">
-                        <div class="col-sm-4 no-padding-left">
+                        <div class="col-lg-4 col-sm-6 no-padding-left" style="margin-bottom:6px;">
                             <div class="input-group">
                                 <span class="input-group-addon">{% trans "短信服务商：" %}</span>
                                 <select name="sms_type" class="form-control">
@@ -151,27 +151,27 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-sm-2">
+                        <div class="col-lg-4 col-sm-6 no-padding-left" style="margin-bottom:6px;">
                             <div class="input-group">
                                 <span class="input-group-addon">{% trans "用户ID：" %}</span>
                                 <input type="text" name="sms_account" value="{{ form.sms_account }}" class="form-control">
                             </div>
                         </div>
-                        <div class="col-sm-2">
+                        <div class="col-lg-4 col-sm-6 no-padding-left" style="margin-bottom:6px;">
                             <div class="input-group">
                                 <span class="input-group-addon">{% trans "帐号密码：" %}</span>
                                 <input type="password" name="sms_password" value="{{ form.sms_password }}" class="form-control">
                             </div>
                         </div>
                         {% if form.sms_type == 'zhutong' %}
-                            <div class="col-sm-2">
+                            <div class="col-lg-4 col-sm-6 no-padding-left" style="margin-bottom:6px;">
                                 <div class="input-group">
                                     <span class="input-group-addon">{% trans "签名：" %}</span>
                                     <input type="text" name="sms_sign" value="{{ form.sms_sign }}" class="form-control">
                                 </div>
                             </div>
                         {% endif %}
-                        <div class="col-sm-2">
+                        <div class="col-lg-4 col-sm-6 no-padding-left" style="margin-bottom:6px;">
                             <div class="input-group">
                                 {% if not form.sms_cost is None %}
                                     <span class="input-group-addon">{% trans "剩余短信：" %}</span>
@@ -185,7 +185,7 @@
             <tr>
                 <td class="text-right">{% trans "SMTP发送重试时间：" %}</td>
                 <td class="row">
-                    <div class="col-sm-4 no-padding-left">
+                    <div class="col-lg-4 col-sm-6 no-padding-left" style="margin-bottom:6px;">
                         <p>{% trans "第1次重试：" %}</p>
                         <div class="input-group">
                             <span class="input-group-addon">{% trans "与上次发送间隔" %}</span>
@@ -193,7 +193,7 @@
                             <span class="input-group-addon">{% trans "分" %}</span>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-lg-4 col-sm-6 no-padding-left" style="margin-bottom:6px;">
                         <p>{% trans "第2次重试：" %}</p>
                         <div class="input-group">
                             <span class="input-group-addon">{% trans "与上次发送间隔" %}</span>
@@ -201,7 +201,7 @@
                             <span class="input-group-addon">{% trans "分" %}</span>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-lg-4 col-sm-6 no-padding-left" style="margin-bottom:6px;">
                         <p>{% trans "第3次重试：" %}</p>
                         <div class="input-group">
                             <span class="input-group-addon">{% trans "与上次发送间隔" %}</span>

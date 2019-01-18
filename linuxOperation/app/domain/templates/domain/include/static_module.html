@@ -56,14 +56,32 @@
                     <td class="text-right" >{% trans "企业通讯录显示设置：" %}</td>
                     <td class="row">
                         <div>
-                            <input name="oab_show_mod" value="1" {% if form_mail.oab_show_mod.value == "1" %} checked {% endif %} type="radio"  class="ace">
-                            <span class="lbl"> {% trans "显示所有部门 " %}</span>
-                            <input name="oab_show_mod" value="2" {% if form_mail.oab_show_mod.value == "2" %} checked {% endif %} type="radio"  class="ace">
-                            <span class="lbl"> {% trans "仅显示本部门 " %}</span>
-                            <input name="oab_show_mod" value="3" {% if form_mail.oab_show_mod.value == "3" %} checked {% endif %} type="radio"  class="ace">
-                            <span class="lbl"> {% trans "显示本部门和子部门 " %}</span>
-                            <input name="sw_oab_dumpbutton" value="1" {% if form_mail.sw_oab_dumpbutton.value == "1" %} checked {% endif %} type="checkbox"  class="ace">
-                            <span class="lbl"> {% trans "显示导出按钮 " %}</span>
+                            <div class="radio" style="display:inline-block;">
+                                <label>
+                                        <input name="oab_show_mod" value="1" {% if form_mail.oab_show_mod.value == "1" %} checked {% endif %} type="radio"  class="ace">
+                                        <span class="lbl"> {% trans "显示所有部门 " %}</span>
+                                </label>
+                            </div>
+                            <div class="radio" style="display:inline-block;">
+                                <label>
+                                        <input name="oab_show_mod" value="2" {% if form_mail.oab_show_mod.value == "2" %} checked {% endif %} type="radio"  class="ace">
+                                        <span class="lbl"> {% trans "仅显示本部门 " %}</span>
+                                </label>
+                            </div>
+                            <div class="radio" style="display:inline-block;">
+                                <label>
+                                        <input name="oab_show_mod" value="3" {% if form_mail.oab_show_mod.value == "3" %} checked {% endif %} type="radio"  class="ace">
+                                        <span class="lbl"> {% trans "显示本部门和子部门 " %}</span>
+                                </label>
+                            </div>
+                            
+                            <span class="checkbox" style="display:inline-block;">
+                                <label>
+                                    <input name="sw_oab_dumpbutton" value="1" {% if form_mail.sw_oab_dumpbutton.value == "1" %} checked {% endif %} type="checkbox"  class="ace">
+                                    <span class="lbl"> {% trans "显示导出按钮 " %}</span>
+                                </label>
+                            </span>
+                            
                         </div>
                     </td>
                 </tr>

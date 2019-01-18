@@ -42,10 +42,9 @@ def read_excel(filename="translation_page.xls"):
         else:
             en = lst[1]
         #print "load cn,en",cn,en,type(cn)
-        tmp[get_string(cn)] = get_string(en)
+        tmp[get_string(cn)] = (get_string(cn), get_string(en))
     return tmp
 
-lst = [["中文","英文"]]
 KEY = None
 ALL_KEYS = {}   #去重
 for dir_name in os.listdir("."):
@@ -77,16 +76,21 @@ for dir_name in os.listdir("."):
                         msgstr = reObj.group(1)
                         msgstr = "" if not msgstr else msgstr
                         if KEY and not KEY in ALL_KEYS:
-                            lst.append( (KEY, msgstr) )
-                            ALL_KEYS[KEY] = msgstr
+                            ALL_KEYS[KEY] = (KEY, msgstr)
                         KEY = None
 
+lst = []
 OLD_DATA=read_excel()
-for k,v in OLD_DATA.items():
+ALL_KEYS.update(OLD_DATA)
+for k,v in ALL_KEYS.items():
     if not k:
         continue
-    if k in ALL_KEYS:
-        continue
-    lst.append((k, v))
-    ALL_KEYS[k] = v
+    v1, v2 = v
+    #if k in OLD_DATA:
+    #    v1, v2 = OLD_DATA[k]
+    lst.append( (v1, v2) )
+
+#排个序，方便管理
+lst.sort(lambda x,y:cmp(len(x[0]),len(y[0])))
+lst.insert(0, ("中文","英文"))
 format_excel(lst)

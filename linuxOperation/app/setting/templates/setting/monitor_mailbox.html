@@ -33,24 +33,30 @@
                 <input type="hidden" name="status" id="status" />
                 <input type="hidden" name="ids" id="ids" />
             </form>
-            <table id="ajax-table" class="table table-striped table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th width="4%">{% trans "序号" %}</th>
-                    <th>{% trans "域名" %}</th>
-                    <th>{% trans "监控邮箱" %}</th>
-                    <th>{% trans "监控部门" %}</th>
-                    <th>{% trans "接收邮箱" %}</th>
-                    <th>{% trans "监控类型" %}</th>
-                    <th>{% trans "通道" %}</th>
-                    <th>{% trans "邮件搬家" %}</th>
-                    <th>{% trans "状态" %}</th>
-                    <th>{% trans "操作" %}</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+            <div class="auto_box">
+                    <div class="table-responsive">
+                            <table id="ajax-table" class="table table-striped table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th width="4%">{% trans "序号" %}</th>
+                                    <th>{% trans "域名" %}</th>
+                                    <th>{% trans "监控邮箱" %}</th>
+                                    <th>{% trans "监控部门" %}</th>
+                                    <th>{% trans "接收邮箱" %}</th>
+                                    <th>{% trans "监控类型" %}</th>
+                                    <th>{% trans "通道" %}</th>
+                                    <th>{% trans "邮件搬家" %}</th>
+                                    <th>{% trans "状态" %}</th>
+                                    <th>{% trans "操作" %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+            </div>
+            
+            
         </div>
     </div>
 {% endblock %}

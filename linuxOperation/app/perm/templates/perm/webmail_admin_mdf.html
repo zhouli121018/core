@@ -1,5 +1,6 @@
 {% extends 'base_site.html' %}
 {% load i18n %}
+{% load perm_tags %}
 {% load static %}
 {% load bootstrap %}
 {% block title %} {% if obj %}{% trans "修改Webmail管理员" %}{% else %}{% trans "添加Webmail管理员" %}{% endif %} {% endblock %}

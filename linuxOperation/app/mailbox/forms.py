@@ -105,12 +105,14 @@ class MailboxForm(forms.ModelForm):
             ret, reason = 0, ""
             if self.instance.pk:
                 ret, reason = CheckMailboxPassword(domain_id=self.instance.domain_id, mailbox_id=self.instance.id, password=password1)
+                reason = _(reason)
             else:
                 domain_id = Domain.objects.filter(domain=self.domain).first().id
                 #前面的clean_name会在name不合格时把name从cleaned_data删掉
                 if self.mailbox:
                     realname = self.cleaned_data.get(u"realname", "")
                     ret, reason = CheckMailboxPassword(domain_id=domain_id, mailbox=self.mailbox, realname=realname, password=password1)
+                    reason = _(reason)
             if ret!=0:
                 raise forms.ValidationError(_(reason))
         return password1

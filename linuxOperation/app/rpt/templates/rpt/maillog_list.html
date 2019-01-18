@@ -53,8 +53,9 @@
     <script src="{% static 'components/_mod/datatables/jquery.dataTables.bootstrap.js' %}"></script>
     <script src="{% static 'components/_mod/jquery-ui.custom/jquery-ui.custom.js' %}"></script>
     <script src="{% static "components/datetimepiker/bootstrap-datetimepicker.min.js" %}"></script>
-    <script src="{% static "components/datetimepiker/bootstrap-datetimepicker.zh-CN.js" %}"></script>
-
+    {% if request.COOKIES.webvue_language == 'zh-hans'  %}
+        <script src="{% static "components/datetimepiker/bootstrap-datetimepicker.zh-CN.js" %}"></script>
+    {% endif %}
     <script>
 
         function exportLog(){

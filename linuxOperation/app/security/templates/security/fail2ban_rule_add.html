@@ -60,8 +60,9 @@
     <script src="{% static 'assets/js/jquery.ui.touch-punch.js' %}" ></script>
     <script src="{% static 'assets/js/jquery-ui.js' %}" ></script>
     <script src="{% static "components/datetimepiker/bootstrap-datetimepicker.min.js" %}"></script>
-    <script src="{% static "components/datetimepiker/bootstrap-datetimepicker.zh-CN.js" %}"></script>
-
+    {% if request.COOKIES.webvue_language == 'zh-hans'  %}
+        <script src="{% static "components/datetimepiker/bootstrap-datetimepicker.zh-CN.js" %}"></script>
+    {% endif %}
     <script>
         $(function(){
             var path = "{% url 'fail2ban_rulelist' %}";

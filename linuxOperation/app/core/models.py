@@ -10,7 +10,8 @@ from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import Permission, Group
 from django.contrib.auth.models import UserManager, AbstractUser
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext
 from lib.formats import dict_compatibility
 from lib.licence import licence_validate, licence_validsms
 from app.utils.ordered_model import OrderedModel
@@ -121,6 +122,8 @@ class Department(OrderedModel):
 
     @staticmethod
     def loopDepartLevel(obj, level):
+        if not obj:
+            return level
         if obj.parent_id <= 0 or not obj.parent_id:
             return level
         level += 1
@@ -159,7 +162,7 @@ class Department(OrderedModel):
 
     @property
     def get_title(self):
-        return _(unicode(self.title))+u"_{}".format(self.id)
+        return ugettext(unicode(self.title))
 
 class CoDepartmentInfo(models.Model):
     # dept_id = models.IntegerField(unique=True)
@@ -1156,7 +1159,7 @@ class ExtCommonCheckrule(models.Model):
     disabled = models.IntegerField()
 
     def __unicode__(self):
-        return _(u"规则")
+        return ugettext(u"规则")
 
     @property
     def conditions(self):
@@ -1180,7 +1183,7 @@ class ExtCheckruleCondition(models.Model):
     disabled = models.IntegerField()
 
     def __unicode__(self):
-        return _(u"条件")
+        return ugettext(u"条件")
 
     @property
     def children(self):

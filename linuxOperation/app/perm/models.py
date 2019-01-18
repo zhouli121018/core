@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from app.core.models import Domain
 
 class MyPermission(models.Model):

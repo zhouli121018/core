@@ -1,5 +1,6 @@
 {% extends 'base_site.html' %}
 {% load i18n %}
+{% load perm_tags %}
 {% load static %}
 {% block title %} {% trans "管理员组" %} {% endblock %}
 {% block breadcrumb %}<li> <a href="#">{% trans "管理员管理" %}</a> </li><li class="active">{% trans "管理员组管理" %}</li>{% endblock %}
@@ -29,7 +30,7 @@
                     <tbody>
                     {% for g in groups %}
                         <tr class="{% cycle 'odd' 'even' %}">
-                            <td class="sorting_1"><a href="{% url 'group_modify' g.id %}">{{ g.name }}</a></td>
+                            <td class="sorting_1"><a href="{% url 'group_modify' g.id %}">{{ g.name|translation }}</a></td>
                             <td><a href="{%url 'user_list' %}?group_id={{g.id}}">{{ g.user_set.count }}</a></td>
                             <td>{{ g.permissions.count }}</td>
                             <td>
@@ -38,7 +39,7 @@
                                 {% endif %}
                                 <a type="button" class="btn btn-white btn-success btn-xs" href="{% url 'perm_grant' %}?g_id={{g.id}}">{% trans "授权" %}</a>
                                 {% if not g.id in special_groups %}
-                                    <button type="button" class="red btn btn-white btn-danger btn-xs" onclick="Delete('{{ g.id }}', '{{ g.name }}')">{% trans "删除" %}</button>
+                                    <button type="button" class="red btn btn-white btn-danger btn-xs" onclick="Delete('{{ g.id }}', '{{ g.name|translation }}')">{% trans "删除" %}</button>
                                 {% endif %}
                             </td>
                         </tr>

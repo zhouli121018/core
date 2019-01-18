@@ -90,12 +90,10 @@ def replace_line(line):
     return line
 
 #for dir_name in ("app","templates"):
-for dir_name in ("app",):
+for dir_name in ("app/domain",):
     for root,dirs,files in os.walk("../{}".format(dir_name)):
         for filename in files:
             if not filename in ("views.py","forms.py","models.py","constants.py","choices.py","wechat_forms.py","wechat_views.py","wechat_models.py"):
-                continue
-            if not filename in ("wechat_forms.py","wechat_forms.py","wechat_views.py","wechat_models.py"):
                 continue
             filepath = os.path.join(root, filename)
             print filepath

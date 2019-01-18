@@ -16,8 +16,8 @@
                            <span class="text-success">{% trans "每行的格式如下: " %}<br>
                              <span style="color:blue"> {% trans "'通道类型'   '本地帐号'   '远程登录帐号'  '远程服务器地址' '密码'    'SSL方式登录' </span> 之间用'TAB'符号隔开，单次最多只允许插入1000条数据：" %}<br>
                                {% trans "批量插入的数据，不会验证输入的密码是否有效：" %}<br>
-                               {% trans "必须填写 " %}<span style="color:blue"> '通道类型'   '本地帐号'、'远程登录帐号','远程服务器地址','密码' ： </span><br>
-                                <span style="color:blue">'SSL方式登录' </span> {% trans "可不填，默认不启用：该列值为1时代表需要SSL登录，其它值或空代表不使用。" %}<br>
+                               {% trans "必须填写 " %}<span style="color:blue"> {% trans "'通道类型'   '本地帐号'、'远程登录帐号','远程服务器地址','密码' ：" %} </span><br>
+                                <span style="color:blue">{% trans "'SSL方式登录'" %} </span> {% trans "可不填，默认不启用：该列值为1时代表需要SSL登录，其它值或空代表不使用。" %}<br>
                                 {% trans "举例：" %}<br>
                                </span>
                             <textarea style="word-break: normal;width: 800px;" rows="3">

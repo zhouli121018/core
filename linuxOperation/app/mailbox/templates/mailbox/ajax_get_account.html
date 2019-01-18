@@ -26,6 +26,7 @@
  </td>
   <td>
   <span class="label label-sm {% if l.getSendLimit == '-1' %}label-success{% else %}label-grey{% endif %}">{% trans "发送: " %}{{ l.display_limit_send }}</span>
+  <br>
   <span class="label label-sm {% if l.getRecvLimit == '-1' %}label-success{% else %}label-grey{% endif %}">{% trans "接收: " %}{{ l.display_limit_recv }}</span>
  </td>
  <td>{{ l.ip_limit|default_if_none:'' }}</td>
@@ -40,6 +41,7 @@
  <td>{{ l.last_login|date:"Y-m-d H:i:s" }}</td>
  <td>
   <a class="green btn btn-white btn-primary btn-xs" data-toggle="modal" href="{% url 'mailbox_reply' l.id %}" data-target="#modal-reply">{% trans "自动回复" %}</a>
+  <br>
   <a class="green btn btn-white btn-primary btn-xs" data-toggle="modal" href="{% url 'mailbox_forward' l.id %}" data-target="#modal-lg">{% trans "自动转发" %}</a>
  </td>
 </tr>

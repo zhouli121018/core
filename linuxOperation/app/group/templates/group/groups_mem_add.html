@@ -148,7 +148,7 @@
     function ChooseSlected() {
         var id_array = fnGetSelected2();
         if (id_array.length == 0){
-            alert('请选择操作的邮箱');
+            alert('{% trans "请选择操作的邮箱" %}');
             return false;
         }
         $('#everyone_addresses').val(id_array);

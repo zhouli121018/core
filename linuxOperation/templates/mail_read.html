@@ -51,7 +51,7 @@
 
             {% if m.real_attachments  %}
                 <div id="header-attach">
-                    <span>{% trans "{% trans "附" %}&nbsp;&nbsp;&nbsp;{% trans "件" %}" %}:</span>
+                    <span>{% trans "附件" %}:</span>
                     &nbsp;
             <span style="margin-left: -8px;">
                 {{ m.real_attachments|length }}{% trans "个" %}(<span class="grayTxt"> {{ m.real_attachments|list_sum:"size"|filesizeformat }} </span> )
@@ -77,7 +77,7 @@
     {% if m.real_attachments %}
         <div id="mail-attach-box" class="mail-attach-box">
             <div style="" id="mail-attach-head" class="mail-attach-head">
-                <strong>{% trans "{% trans "附" %}&nbsp;&nbsp;&nbsp;{% trans "件" %}" %}({{ m.real_attachments|length }}{% trans "个" %})({{ m.real_attachments|list_sum:"size"|filesizeformat }})</strong>
+                <strong>{% trans "附件" %} ({{ m.real_attachments|length }}{% trans "个" %})({{ m.real_attachments|list_sum:"size"|filesizeformat }})</strong>
             </div>
             <div class="mail-attach-body">
                 <div class="mail-attach-title">

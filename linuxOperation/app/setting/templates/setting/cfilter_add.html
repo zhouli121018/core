@@ -126,7 +126,7 @@
                                         {% endfor %}
                                     </select>
 
-                                    <!-- {% trans "部门下拉选择 --" %}>
+                                    <!-- {% trans "部门下拉选择" %} -->
                                     <select class="col-xs-2 col-sm-2 {% if d.suboption not in form.G_COND_OPTION_IN  %} display-none {% endif %}"
                                             name="option_action_dpt{{ d.id }}--{{ d.parent_id }}" id="option_action_dpt{{ d.id }}--{{ d.parent_id }}" style="height: 34px;">
                                         {% for k, v in form.G_COND_ACTION_IN_T %}
@@ -134,7 +134,7 @@
                                         {% endfor %}
                                     </select>
 
-                                    <!-- {% trans "邮件大小 --" %}>
+                                    <!-- {% trans "邮件大小" %} -->
                                     <select class="col-xs-2 col-sm-2 {% if d.suboption not in form.G_COND_OPTION_GTE  %} display-none {% endif %}"
                                             name="option_action_size{{ d.id }}--{{ d.parent_id }}" id="option_action_size{{ d.id }}--{{ d.parent_id }}" style="height: 34px;">
                                         {% for k, v in form.G_COND_ACTION_GTE_T %}
@@ -142,7 +142,7 @@
                                         {% endfor %}
                                     </select>
 
-                                    <!-- {% trans "所有邮件 附件 --" %}>
+                                    <!-- {% trans "所有邮件 附件" %} -->
                                     <select class="col-xs-2 col-sm-2 {% if d.suboption not in form.G_COND_OPTION_EQ  %} display-none {% endif %}"
                                             name="option_action_disabled{{ d.id }}--{{ d.parent_id }}" id="option_action_disabled{{ d.id }}--{{ d.parent_id }}" style="height: 34px;">
                                         {% for k, v in form.G_COND_ACTION_EQ_T %}
@@ -150,7 +150,7 @@
                                         {% endfor %}
                                     </select>
 
-                                    <!-- {% trans "通用 --" %}>
+                                    <!-- {% trans "通用" %} -->
                                     <select class="col-xs-2 col-sm-2 {% if d.suboption not in form.G_COND_OPTION_OTHER  %} display-none {% endif %}"
                                             name="option_action_other{{ d.id }}--{{ d.parent_id }}" id="option_action_other{{ d.id }}--{{ d.parent_id }}" style="height: 34px;">
                                         {% for k, v in form.G_COND_ACTION_OTHER_T %}
@@ -159,7 +159,7 @@
                                     </select>
 
                                     <div class="input-group col-xs-4 col-sm-4">
-                                        <!-- {% trans "部门下拉选择 --" %}>
+                                        <!-- {% trans "部门下拉选择" %} -->
                                         <select class="col-xs-12 col-sm-12 {% if d.suboption not in form.G_COND_OPTION_IN  %} display-none {% endif %}"
                                                 name="option_value_dpt{{ d.id }}--{{ d.parent_id }}" id="option_value_dpt{{ d.id }}--{{ d.parent_id }}" style="height: 34px;">
                                             {% for dpt in form.DepartMent %}
@@ -167,11 +167,11 @@
                                             {% endfor %}
                                         </select>
 
-                                        <!-- {% trans "邮件大小 --" %}>
+                                        <!-- {% trans "邮件大小" %} -->
                                         <input type="number" name="option_value_size{{ d.id }}--{{ d.parent_id }}" id="option_value_size{{ d.id }}--{{ d.parent_id }}" value="{{ d.value }}"
                                                class="col-xs-12 col-sm-12 {% if d.suboption not in form.G_COND_OPTION_GTE  %} display-none {% endif %}" />
 
-                                        <!-- {% trans "所有邮件 附件 --" %}>
+                                        <!-- {% trans "所有邮件 附件" %} -->
                                         <select class="col-xs-12 col-sm-12 {% if d.suboption not in form.G_COND_OPTION_EQ  %} display-none {% endif %}"
                                                 name="option_value_disabled{{ d.id }}--{{ d.parent_id }}" id="option_value_disabled{{ d.id }}--{{ d.parent_id }}" style="height: 34px;">
                                             {% for k, v in form.G_COND_ACTION_EQ_VALUE %}
@@ -179,7 +179,7 @@
                                             {% endfor %}
                                         </select>
 
-                                        <!-- {% trans "通用 --" %}>
+                                        <!-- {% trans "通用" %} -->
                                         <input type="text" maxlength="200" name="option_value_other{{ d.id }}--{{ d.parent_id }}" id="option_value_other{{ d.id }}--{{ d.parent_id }}" value="{{ d.value }}"
                                                class="col-xs-12 col-sm-12 {% if d.suboption not in form.G_COND_OPTION_OTHER  %} display-none {% endif %}" />
 
@@ -200,7 +200,7 @@
                                     {% endif %}
                                 </div>
 
-                                <!-- {% trans "子条件 --" %}>
+                                <!-- {% trans "子条件" %} -->
                                 <div id="id_cfilteroption_childs{{ d.id }}--{{ d.parent_id }}" class="">
                                     {% for dd in d.childs %}
                                         <div id="id_cfilteroption_child{{ dd.id }}--{{ dd.parent_id }}" class="">
@@ -217,7 +217,7 @@
                                                     {% endfor %}
                                                 </select>
 
-                                                <!-- {% trans "部门下拉选择 --" %}>
+                                                <!-- {% trans "部门下拉选择" %} -->
                                                 <select class="col-xs-2 col-sm-2 {% if dd.suboption not in form.G_COND_OPTION_IN  %} display-none {% endif %}"
                                                         name="option_action_dpt{{ dd.id }}--{{ dd.parent_id }}" id="option_action_dpt{{ dd.id }}--{{ dd.parent_id }}" style="height: 34px;">
                                                     {% for k, v in form.G_COND_ACTION_IN_T %}
@@ -225,7 +225,7 @@
                                                     {% endfor %}
                                                 </select>
 
-                                                <!-- {% trans "邮件大小 --" %}>
+                                                <!-- {% trans "邮件大小" %} -->
                                                 <select class="col-xs-2 col-sm-2 {% if dd.suboption not in form.G_COND_OPTION_GTE  %} display-none {% endif %}"
                                                         name="option_action_size{{ dd.id }}--{{ dd.parent_id }}" id="option_action_size{{ dd.id }}--{{ dd.parent_id }}" style="height: 34px;">
                                                     {% for k, v in form.G_COND_ACTION_GTE_T %}
@@ -233,7 +233,7 @@
                                                     {% endfor %}
                                                 </select>
 
-                                                <!-- {% trans "所有邮件 附件 --" %}>
+                                                <!-- {% trans "所有邮件 附件" %} -->
                                                 <select class="col-xs-2 col-sm-2 {% if dd.suboption not in form.G_COND_OPTION_EQ  %} display-none {% endif %}"
                                                         name="option_action_disabled{{ dd.id }}--{{ dd.parent_id }}" id="option_action_disabled{{ dd.id }}--{{ dd.parent_id }}" style="height: 34px;">
                                                     {% for k, v in form.G_COND_ACTION_EQ_T %}
@@ -241,7 +241,7 @@
                                                     {% endfor %}
                                                 </select>
 
-                                                <!-- {% trans "通用 --" %}>
+                                                <!-- {% trans "通用" %} -->
                                                 <select class="col-xs-2 col-sm-2 {% if dd.suboption not in form.G_COND_OPTION_OTHER  %} display-none {% endif %}"
                                                         name="option_action_other{{ dd.id }}--{{ dd.parent_id }}" id="option_action_other{{ dd.id }}--{{ dd.parent_id }}" style="height: 34px;">
                                                     {% for k, v in form.G_COND_ACTION_OTHER_T %}
@@ -250,7 +250,7 @@
                                                 </select>
 
                                                 <div class="input-group col-xs-4 col-sm-4">
-                                                    <!-- {% trans "部门下拉选择 --" %}>
+                                                    <!-- {% trans "部门下拉选择" %} -->
                                                     <select class="col-xs-12 col-sm-12 {% if dd.suboption not in form.G_COND_OPTION_IN  %} display-none {% endif %}"
                                                             name="option_value_dpt{{ dd.id }}--{{ dd.parent_id }}" id="option_value_dpt{{ dd.id }}--{{ dd.parent_id }}" style="height: 34px;">
                                                         {% for dpt in form.DepartMent %}
@@ -258,11 +258,11 @@
                                                         {% endfor %}
                                                     </select>
 
-                                                    <!-- {% trans "邮件大小 --" %}>
+                                                    <!-- {% trans "邮件大小" %} -->
                                                     <input type="number" name="option_value_size{{ dd.id }}--{{ dd.parent_id }}" id="option_value_size{{ dd.id }}--{{ dd.parent_id }}" value="{{ dd.value }}"
                                                            class="col-xs-12 col-sm-12 {% if dd.suboption not in form.G_COND_OPTION_GTE  %} display-none {% endif %}" />
 
-                                                    <!-- {% trans "所有邮件 附件 --" %}>
+                                                    <!-- {% trans "所有邮件 附件" %} -->
                                                     <select class="col-xs-12 col-sm-12 {% if dd.suboption not in form.G_COND_OPTION_EQ  %} display-none {% endif %}"
                                                             name="option_value_disabled{{ dd.id }}--{{ dd.parent_id }}" id="option_value_disabled{{ dd.id }}--{{ dd.parent_id }}" style="height: 34px;">
                                                         {% for k, v in form.G_COND_ACTION_EQ_VALUE %}
@@ -270,7 +270,7 @@
                                                         {% endfor %}
                                                     </select>
 
-                                                    <!-- {% trans "通用 --" %}>
+                                                    <!-- {% trans "通用" %} -->
                                                     <input type="text" maxlength="200" name="option_value_other{{ dd.id }}--{{ dd.parent_id }}" id="option_value_other{{ dd.id }}--{{ dd.parent_id }}" value="{{ dd.value }}"
                                                            class="col-xs-12 col-sm-12 {% if dd.suboption not in form.G_COND_OPTION_OTHER  %} display-none {% endif %}" />
 
@@ -294,7 +294,7 @@
 
                                 </div>
 
-                                <!-- {% trans "分隔行 --" %}>
+                                <!-- {% trans "分隔行" %} -->
                                 <div class="">
                                     <div style="clear: both"></div>
                                     <label class="col-sm-3 control-label no-padding-right"></label>
@@ -350,11 +350,11 @@
                                         {% endfor %}
                                     </select>
 
-                                    <!-- {% trans "字段 --" %}>
+                                    <!-- {% trans "字段" %} -->
                                     <input type="text" name="action_field{{ d.id }}" id="action_field{{ d.id }}" value="{{ d.field }}" maxlength="200"
                                            class="col-xs-2 col-sm-2 {% if d.action not in form.Action_has_all %} display-none {% endif %} "/>
 
-                                    <!-- {% trans "值 --" %}>
+                                    <!-- {% trans "值" %} -->
                                     <input type="text" name="action_value_a{{ d.id }}" id="action_value_a{{ d.id }}" value="{{ d.value }}" maxlength="200"
                                            class="col-xs-3 col-sm-3 {% if d.action not in form.Action_has_all %} display-none {% endif %} "/>
 
@@ -384,7 +384,7 @@
 
                                 </div>
 
-                                <!-- {% trans "追加邮件内容 --" %}>
+                                <!-- {% trans "追加邮件内容" %} -->
                                 <div style="clear: both"></div>
                                 <label class="col-sm-3 control-label no-padding-right"></label>
                                 <div class="col-sm-9">
@@ -396,7 +396,7 @@
                                     </div>
                                 </div>
 
-                                <!-- {% trans "发送邮件 --" %}>
+                                <!-- {% trans "发送邮件" %} -->
                                 <div style="clear: both"></div>
                                 <label class="col-sm-3 control-label no-padding-right"></label>
                                 <div class="col-sm-9">
@@ -436,7 +436,7 @@
 
                                 </div>
 
-                                <!-- {% trans "外发中转 --" %}>
+                                <!-- {% trans "外发中转" %} -->
                                 <div style="clear: both"></div>
                                 <label class="col-sm-3 control-label no-padding-right"></label>
                                 <div class="col-sm-9">
@@ -498,11 +498,11 @@
                                 <span class="middle text-success">“{% trans "邮件主题替换" %}”{% trans "和" %}“{% trans "邮件正文替换" %}”{% trans "当前支持以下变量：" %}</span>
                             </div>
                             <div class="">
-                                <span class="middle text-success"> {SUBJECT} ： {% trans "邮件原始主题 ，" %}</span>
-                                <span class="middle text-success"> {RECIPIENT} ： {% trans "收件人 ，" %}</span>
-                                <span class="middle text-success"> {SENDER} ： {% trans "发件人 ，" %}</span>
-                                <span class="middle text-success"> {DOMAIN} ： {% trans "服务器域名 " %}</span>
-                                <span class="middle text-success"> {ATTACHMENT} ： {% trans "附件名 " %}</span>
+                                <span class="middle text-success"> {SUBJECT}：'{% trans "邮件原始主题" %}',&nbsp&nbsp</span>
+                                <span class="middle text-success"> {RECIPIENT}：'{% trans "收件人" %}',&nbsp&nbsp</span>
+                                <span class="middle text-success"> {SENDER}：'{% trans "发件人" %}',&nbsp&nbsp</span>
+                                <span class="middle text-success"> {DOMAIN}：'{% trans "服务器域名" %}',&nbsp&nbsp</span>
+                                <span class="middle text-success"> {ATTACHMENT}：'{% trans "附件名" %}',&nbsp&nbsp</span>
                             </div>
                             <div class="">
                                 <span class="middle text-success">{% trans "邮件外发代理：当服务器地址后接':xxx'格式时表示自定义端口号，如example.com:10025。" %}</span>

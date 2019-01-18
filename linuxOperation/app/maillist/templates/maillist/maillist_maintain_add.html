@@ -5,13 +5,13 @@
 {% block title %} {% trans "邮件列表成员" %} {% endblock %}
 {% block breadcrumb %}
     <li> <a href="#">{% trans "邮件列表管理" %}</a> </li>
-    <li class="active">{% if obj %}{% trans "修改邮件列表" %} {{ lobj.address }} {% trans "成员权限" %}{% else %}{% trans "添加邮件列表" %} {{ lobj.address }} {% trans "成员" %}{% endif %}</li>
+    <li class="active">{{ lobj.address }}</li>
 {% endblock %}
 {% block page-content %}
     <div class="row">
         <div class="col-lg-12">
             <h1 class="page-header">
-                {% if obj %}{% trans "修改邮件列表" %} {{ lobj.address }} {% trans "成员权限" %}{% else %}{% trans "添加邮件列表" %} {{ lobj.address }} {% trans "成员" %}{% endif %}
+                {{ lobj.address }}
             </h1>
         </div>
     </div>
@@ -19,8 +19,7 @@
         <div class="row">
             <div class="col-sm-8 ">
                 <div class="panel panel-default" style="margin-bottom: 0px!important;">
-                    <div class="panel-heading">{% if obj %}{% trans "修改邮件列表" %} {{ lobj.address }} {% trans "成员权限" %}{% else %}
-                        {% trans "添加邮件列表" %} {{ lobj.address }} {% trans "成员" %}{% endif %}</div>
+                    <div class="panel-heading">{{ lobj.address }}</div>
                     <div class="panel-body">
                         {% csrf_token %}
                         {{ form.address|bootstrap }}

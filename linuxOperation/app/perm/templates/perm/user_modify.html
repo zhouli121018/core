@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load tags %}
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h4 class="modal-title" id="myModalLabel" style="font-weight: 600">{% trans "修改“" %}{{ user_obj.fullname }}({{ user_obj.username }})”{% trans "的用户组" %}</h4>
@@ -18,7 +19,7 @@
                                     <div>
                                         {% for g in groups %}
                                             <span style="display: inline;float: left;">
-                                                <span onclick="changeLists('{{ group_ids }}','{{ g.id }}')" style="" id="id_change_{{ g.id }}" class="ac-tag_tag {% if g.id in user_group_ids %}is-active_tag{% endif %}">{{ g.name }}</span>
+                                                <span onclick="changeLists('{{ group_ids }}','{{ g.id }}')" style="" id="id_change_{{ g.id }}" class="ac-tag_tag {% if g.id in user_group_ids %}is-active_tag{% endif %}">{{ g.name|translation }}</span>
                                                 {% if g.id in user_group_ids %}
                                                     <input type="text" class="display-none" name="name[]" id="id_name_{{ g.id }}" value="{{ g.id }}"/>
                                                 {% endif %}

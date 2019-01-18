@@ -176,6 +176,9 @@
             <div class="main-content-inner">
                 <!-- #section:basics/content.breadcrumbs -->
                 <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+                    {% block switch-language %}
+                        {% switch_language request %}
+                    {% endblock %}
                     {% block switch-domain %}
                         {% switch_domain request %}
                     {% endblock %}

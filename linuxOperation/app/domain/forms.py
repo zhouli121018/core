@@ -20,7 +20,7 @@ from lib.tools import clear_redis_cache, download_excel, GenerateRsaKeys, genera
 from lib.validators import check_domain, check_email_ordomain
 
 from django_redis import get_redis_connection
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 import base64
 import time
@@ -750,6 +750,8 @@ class DomainSignDomainForm(DomainForm):
         if newData:
             self.content_html               = newData.get(u"content_html", u"")
             self.content_text               = newData.get(u"content_text", u"-1")
+            sw_domain_signature = newData.get("sw_domain_signature", "-1")
+            self.sw_domain_signature = BaseFied(value=sw_domain_signature, error=None)
         saveData = {
             u"html"         :   get_unicode(base64.encodestring(get_string(self.content_html))),
             u"text"         :   self.content_text,

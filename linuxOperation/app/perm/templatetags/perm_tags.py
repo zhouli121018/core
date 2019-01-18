@@ -1,6 +1,7 @@
 # coding=utf-8
 from django import template
 from django.db.models import Q
+from django.utils.translation import ugettext as _
 
 from app.core.models import CoreConfig, Domain
 from app.perm.models import MyPermission
@@ -35,4 +36,7 @@ def get_index(list, index):
         index -= length
     return list[index]
 
+@register.filter
+def translation(name):
+    return _(unicode(name))
 

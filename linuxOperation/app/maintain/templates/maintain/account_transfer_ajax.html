@@ -1,10 +1,11 @@
 {% load i18n %}
+{% load tags %}
 <td>{{ d.id }}</td>
 <td>{{ number }}</td>
 <td>{{ d.mailbox|default_if_none:'' }}</td>
 <td>{{ d.mailbox_to|default_if_none:'' }}</td>
 <td>{{ d.get_status_display }}</td>
-<td>{{ d.desc_msg|default_if_none:'' }}</td>
+<td>{{ d.desc_msg|translation }}</td>
 <td>{{ d.last_update|date:"Y-m-d H:i" }}</td>
 <td>
     {% if d.succ_del == 1 %}

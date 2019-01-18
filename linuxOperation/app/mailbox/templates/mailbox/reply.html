@@ -1269,7 +1269,11 @@
                             if(c.suboption=="sender_dept" || c.suboption=="cc_dept" || c.suboption=="rcpt_dept"){
                                 vv = hashdept['dept_'+vv]
                             }
-                            constr += '<span> “ '+ vv +' ” </span> '
+                            if(c.suboption=='all_mail'|| c.suboption=="has_attach"||c.action=='date' || c.action=='week'){
+                                vv = ' '
+                            }else{
+                                constr += '<span> “ '+ vv +' ” </span> '
+                            }
                         }
                         if(c.action=="date"){
                             var vv = c.value
@@ -1294,7 +1298,12 @@
                                 if(cc.suboption=="sender_dept" || cc.suboption=="cc_dept" || cc.suboption=="rcpt_dept"){
                                     subvv = hashdept['dept_'+subvv]
                                 }
-                                constr += '<span> “ '+ subvv +' ” </span>'
+                                if(cc.suboption=='all_mail'|| cc.suboption=="has_attach"||cc.action=='date' || cc.action=='week'){
+                                    subvv = ' '
+                                }else{
+                                    constr += '<span> “ '+ subvv +' ” </span>'
+                                }
+                                
                             }
                             if(cc.action=="date"){
                                 var subvv = cc.value2||cc.value

@@ -67,15 +67,17 @@ def get_host(**kwargs):
 
 def get_os(**kwargs):
     try:
+        from django.utils.translation import ugettext as _
         system_path = '/etc/redhat-release'
         boot_time = datetime.datetime.fromtimestamp(psutil.boot_time())
         td = datetime.datetime.now() - boot_time
+        days, hours, minutes = _(u"天"), _(u"小时"), _(u"分钟")
         return {
             "system_name": open(system_path, 'r').read() if os.path.exists(system_path) else '',
             "uname": os.uname(),
             "name": os.name,
             "boot_time": boot_time,
-            "delta_time": u'{}天 {}小时 {}分钟'.format(td.days, td.seconds // 3600, (td.seconds // 60) % 60),
+            "delta_time": u'{} {} {} {} {} {}'.format(td.days, days, td.seconds // 3600, hours, (td.seconds // 60) % 60, minutes),
             "users": psutil.users(),
             "avg_load": os.getloadavg(),
             "cpus": psutil.cpu_count(),

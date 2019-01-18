@@ -256,8 +256,11 @@ def maillog_export(request):
     for d in mailbox_lists:
         data = cal_mailboxstat(current_row, d)
         disabled_name = _(u"启用") if data["disabled"]!="1" else _(u"禁用")
+        #需要提前翻译好
+        limit_send = _(data["sendpermit"])
+        limit_recv = _(data["recvpermit"])
         lists.append([current_row, data["username"], data["name"], data["department"], data["position"],
-                      data["worknumber"], data["sendpermit"], data["recvpermit"], data["quotamailbox"], data["quotanetdisk"], data["quotamailbox_used"], disabled_name ])
+                      data["worknumber"], limit_send, limit_recv, data["quotamailbox"], data["quotanetdisk"], data["quotamailbox_used"], disabled_name ])
         current_row += 1
     return ExcelResponse(lists, "mailbox", encoding='gbk')
 
@@ -318,39 +321,15 @@ def maillog_user_search(request):
     #-------------------------- 筛选 邮箱 完毕 ------------------------
 
     condition = Q(domain_id=domain_id)
-    #obj_cache = LogActive.objects.filter(add_condition(condition, Q(key=start_time))).first()
-    #暂时先不用缓存
-    obj_cache = None
     condition_single = Q(domain_id=domain_id)
-    if obj_cache:
-        condition = add_condition(condition, Q(key__gte=start_time))
-        condition_single = add_condition(condition_single, Q(key__gte=start_time))
-        if end_day>-1 and end_day != start_day:
-            end_time=get_day(int(end_day))
-            condition = add_condition(condition, Q(key__lt=end_time))
-            condition_single = add_condition(condition_single, Q(key__lt=end_time))
-        lists = LogActive.objects.all()
-        lists = lists.filter(condition).values('mailbox_id').annotate(size__count=Sum('total_count'),size__sum=Sum('total_flow')).order_by('-size__count')
-        flag = "cache"
-
-        colums = ['id', 'id', 'key', 'total_count', 'total_flow', 'in_count', 'in_flow',
-                  'success_count', 'success_flow', 'spam_count', 'spam_flow', 'spam_ratio', 'success_ratio']
-        if order_column and int(order_column) < len(colums):
-            if order_dir == 'desc':
-                lists = lists.order_by('-%s' % colums[int(order_column)])
-            else:
-                lists = lists.order_by('%s' % colums[int(order_column)])
-
-    else:
-        condition = add_condition(condition, Q(recv_time__gte=start_time))
-        condition_single = add_condition(condition_single, Q(recv_time__gte=start_time))
-        if end_day>-1 and end_day != start_day:
-            end_time=get_day(int(end_day))
-            condition = add_condition(condition, Q(recv_time__lt=end_time))
-            condition_single = add_condition(condition_single, Q(recv_time__lt=end_time))
-        lists = MailLog.objects.all()
-        lists = lists.filter(condition).values('mailbox_id').annotate(Count('size'),Sum('size')).order_by('-size__count')
-        flag = "stat"
+    condition = add_condition(condition, Q(recv_time__gte=start_time))
+    condition_single = add_condition(condition_single, Q(recv_time__gte=start_time))
+    if end_day>-1 and end_day != start_day:
+        end_time=get_day(int(end_day))
+        condition = add_condition(condition, Q(recv_time__lt=end_time))
+        condition_single = add_condition(condition_single, Q(recv_time__lt=end_time))
+    lists = lists.filter(condition).values('mailbox_id').annotate(Count('size'),Sum('size')).order_by('-size__count')
+    flag = "stat"
     try:
         length = int(data.get('length', 1))
     except ValueError:
@@ -682,7 +661,9 @@ def maillog_list_export(request):
     current_row = 1
     for d in lists:
         result = _(u'成功') if d.get_result == '1' else _(u'失败')
-        lists2.append([current_row, d.get_time, d.get_username, d.get_type, d.send_mail, d.recv_mail, d.senderip, d.rcv_server, d.subject, d.attachment, d.get_attach_size, d.folder, result, d.remark])
+        #由 ugettext_lazy 包起来的数据要提前翻译
+        t = _(d.get_type)
+        lists2.append([current_row, d.get_time, d.get_username, t, d.send_mail, d.recv_mail, d.senderip, d.rcv_server, d.subject, d.attachment, d.get_attach_size, d.folder, result, d.remark])
         current_row += 1
     return ExcelResponse(lists2, "maillog_list", encoding='gbk')
 
@@ -844,9 +825,10 @@ def user_log_export(request):
     current_row = 1
     for d in lists:
         name, realname, mailbox, tel_mobile, nickname, img = "", "", "", "", "", ""
-        m = d.mailbox
+        # d,mailbox 可能为None
+        m = d.mailbox if hasattr(d, "mailbox") else None
         if m:
-            name, mailbox = m.name, m.mailbox
+            name, mailbox = m.name, m.username
             u = m.user
             if u:
                 realname, tel_mobile = u.realname, u.tel_mobile

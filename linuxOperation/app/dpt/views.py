@@ -12,6 +12,7 @@ from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.db import connection
 from django.utils.translation import ugettext as _
 from app.core.models import Department, CoDepartmentInfo, DepartmentMember, Domain, Mailbox, MailboxUser, DomainAttr, Domain, OabShare
+from app.maillist.models import ExtList
 from .forms import DepartmentForm, CoDepartmentInfoForm, DepartmentMemberForm, DomainSearchForm
 # from .utils import get_dept_list, get_cache_dept, clear_cache_dept_signal
 # from django.db.models.signals import post_delete, post_save
@@ -58,6 +59,7 @@ def department(request):
                 Department.objects.filter(id=id).delete()
                 CoDepartmentInfo.objects.filter(id=id).delete()
                 DepartmentMember.objects.filter(dept_id=id).delete()
+                ExtList.objects.filter(listtype="dept", dept_id=id).delete()
                 messages.add_message(request, messages.SUCCESS, _(u'删除成功'))
             else:
                 messages.add_message(request, messages.ERROR, _(u'不能删除拥有下级部门的部门！'))
@@ -65,10 +67,13 @@ def department(request):
     dept_list = get_user_child_departments(request, domain_id)
     dept = Department.objects.filter(domain_id=domain_id, id=cid).first()
     lists = Department.objects.filter(domain_id=domain_id, parent_id=cid).order_by("-order")
+    obj_set = DomainAttr.objects.filter(domain_id=0,type="system",item=u"superadmintitle").first()
+    company_name = _(u"邮件服务器") if not obj_set else obj_set.value
     return render(request, "dpt/dpt.html", {
         "cid": dept and dept.id or -1,
-        "cdpt": dept and dept.get_title or _(u"U-Mail邮件服务器"),
+        "cdpt": dept and dept.get_title or _(u"邮件服务器"),
         "dept_list": json.dumps(dept_list),
+        "company_name": company_name,
         "lists": lists,
     })
 

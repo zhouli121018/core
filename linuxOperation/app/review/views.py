@@ -13,6 +13,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.db.transaction import atomic
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.translation import ugettext_lazy as _
 
 from app.review.models import Review, ReviewRule, ReviewCondition, ReviewConfig
 from app.core.models import Mailbox

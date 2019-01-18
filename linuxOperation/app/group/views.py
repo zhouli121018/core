@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.template.response import TemplateResponse
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from app.core.models import Mailbox, Department
 from .models import CoreGroup, CoreGroupMember, CoreGroupSetting, GROUP_SETTING_TYPE
@@ -430,7 +430,7 @@ def ajax_group_setting_dept_mdf(request):
         status = "OK" if success else "failure"
         data = {
             "status"        :   status,
-            "message"       :   message,
+            "message"       :   _(message),
         }
     return HttpResponse(json.dumps(data), content_type="application/json")
 

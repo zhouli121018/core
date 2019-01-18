@@ -18,15 +18,19 @@
 
     <form role="form" action="" method="post">
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12 col-md-8">
                 <div class="panel panel-default" style="margin-bottom: 0px!important;">
                     <div class="panel-heading">{% if obj %}{% trans "修改部门信息" %} {% else %}{% trans "添加部门" %}{% endif %}</div>
                     <div class="panel-body">
                         {% csrf_token %}
                         {{ form.domain_id }}
                         {{ form.parent_id }}
-                        {{ form.title|bootstrap }}
-
+                        <div class="form-group">
+                            <label class="control-label  " for="id_title"><span class="red bold">*</span>{% trans "部门名称" %}</label>
+                            <div class=" ">
+                                <input type="text" name="title" value="{{ form.title.value }}" id="id_title" required="" class=" form-control" maxlength="100">
+                            </div>
+                        </div>
                         <div class="form-group {% if form.parent_id.errors %}has-error{% endif %}">
                             <label class="control-label  " for="id_parent_bak">{% trans "上级部门" %}</label>
                             <div class=" " id="box_tip">
@@ -41,7 +45,7 @@
                                         <button type="button" class="btn btn-danger btn-sm pull-right close_btn" style="">&times;</button>
                                         <div class="widget-body" style="padding-right:40px;">
                                             <div style="padding:20px 6px 0;">
-                                                <input type="text" id="search_input" class="select_search form-control" placeholder="输入关键字搜索...">
+                                                <input type="text" id="search_input" class="select_search form-control" placeholder="{% trans "输入关键字搜索..." %}">
                                             </div>
                                             <div class="widget-main padding-8" style="height:auto;">
                                                 <ul id="tree"></ul>
@@ -62,8 +66,8 @@
                         {{ form.order|bootstrap }}
 
                         <div class="form-group">
-                            <label class="control-label col-sm-3 col-lg-3 "">{% trans "部门权限设置" %}</label>
-                            <div class=" col-sm-9 col-lg-9 ">
+                            <label class="control-label">{% trans "部门权限设置" %}</label>
+                            <div class="  ">
                                 <div class="control-group">
                                     <label class="checkbox checkbox-inline no-padding margin-top-0 form-inline" style="margin-top: 7px;">
                                         <label style="margin-right:20px;">
@@ -112,8 +116,9 @@
     <script src="{% static 'assets/js/select2.js' %}" ></script>
     <script src="{% static 'assets/js/fuelux/fuelux.tree.js' %}" ></script>
     <script src="{% static 'components/datetimepiker/bootstrap-datetimepicker.min.js' %}"></script>
-    <script src="{% static 'components/datetimepiker/bootstrap-datetimepicker.zh-CN.js' %}"></script>
-
+    {% if request.COOKIES.webvue_language == 'zh-hans'  %}
+        <script src="{% static 'components/datetimepiker/bootstrap-datetimepicker.zh-CN.js' %}"></script>
+    {% endif %}
     <script>
         $(function(){
             var path = "{% url 'department_list' %}";
