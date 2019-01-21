@@ -1185,5 +1185,9 @@ var  zh_hans = {
   //login/login
   REGISTER_SUCCESS: " Registration successful! Please be patient and wait for approval, then you can use the application account to login!",
   COLECTION_NOTICE: "Please use Ctrl+D to bookmark this page.",
+
+  //components/Contact  选择通讯录组件
+  CHOOSE_CONTACT_DESC: "Please select department or member",
+  CHOOSE_CONTACT_ALREADY: "Selected Departments or Members",
 }
 export default zh_hans;

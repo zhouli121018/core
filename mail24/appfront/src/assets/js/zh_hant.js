@@ -1163,5 +1163,9 @@ var  zh_hant = {
   //login/login
   REGISTER_SUCCESS: " 註冊成功！請耐心等待審核通過，即可使用申請賬號登錄!",
   COLECTION_NOTICE: "請按 Ctrl+D 收藏本頁",
+
+  //components/Contact  选择通讯录组件
+  CHOOSE_CONTACT_DESC: "請選擇部門或成員",
+  CHOOSE_CONTACT_ALREADY: "已選部門或成員",
 }
 export default zh_hant;

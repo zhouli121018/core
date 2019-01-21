@@ -148,7 +148,8 @@
 
         </div>
         <div class="lycontent">
-          <router-view></router-view>
+          <Mailbox v-show="$route.path.indexOf('/mailbox')>=0 "></Mailbox>
+          <router-view v-if="$route.path.indexOf('/mailbox') == -1"></router-view>
         </div>
 
       </section>
@@ -251,8 +252,12 @@
   import router from '@/router'
   import cookie from '@/assets/js/cookie';
   import lan from '@/assets/js/lan';
+  import Mailbox from '@/views/mailbox/mailboxTab.vue';
   import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome,settingUsersGet,settingUsersSetpassword,reviewShow,loginAfter,settingUsersGetpassword,setSkin,setLang } from '@/api/api'
   export default {
+    components:{
+      Mailbox
+    },
     data:function(){
       let _this = this;
       var validatePass = (rule, value, callback) => {
@@ -608,7 +613,13 @@
       changeTab(index){
         this.activeTab = index;
         if(index == 0){
-          this.jumpTo('/mailbox')
+          console.log(1)
+          console.log(sessionStorage['mailbox_url'] )
+          if(!sessionStorage['mailbox_url'] || sessionStorage['mailbox_url'] ==''){
+            this.jumpTo('/mailbox')
+          }else{
+            this.jumpTo(sessionStorage['mailbox_url'])
+          }
         }else if(index == 1){
           this.jumpTo('/calendar')
         }else if(index == 2){

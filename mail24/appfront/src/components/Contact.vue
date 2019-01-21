@@ -2,20 +2,20 @@
   <div>
     <el-row :gutter="10" style="margin-bottom:10px;">
           <el-col :span="6" :offset="6">
-            <el-input placeholder="请输入内容" v-model="contact_search" class="input-with-select" size="small">
+            <el-input :placeholder="lan.SETTING_RE_ADD_CONTENT_RULE" v-model="contact_search" class="input-with-select" size="small">
               <el-button slot="append" icon="el-icon-search"  @click="search_dept"></el-button>
             </el-input>
           </el-col>
         </el-row>
     <el-row  :gutter="10">
       <el-col :span="6" >
-        选择部门：
+        {{lan.SETTING_RE_ADD_SELECTDPT_PLACE}}：
       </el-col>
       <el-col :span="12">
-        选择部门或成员：
+        {{lan.CHOOSE_CONTACT_DESC}}：
       </el-col>
       <el-col :span="6">
-        已选部门或成员：(<b>{{toList.length}}</b>)
+        {{lan.CHOOSE_CONTACT_ALREADY}}：(<b>{{toList.length}}</b>)
       </el-col>
 
     </el-row>
@@ -55,14 +55,14 @@
             type="selection"
             width="35">
           </el-table-column>
-          <el-table-column prop="fullname" label="姓名">
+          <el-table-column prop="fullname" :label="lan.COMMON_XINGMING">
             <template slot-scope="scope">
-              <i v-if="scope.row.is_dept" style="" title="部门" class="iconfont icon-icongroup"></i>
+              <i v-if="scope.row.is_dept" style="" :title="lan.COMMON_DEPARTMENT" class="iconfont icon-icongroup"></i>
               <i v-if="!scope.row.is_dept" style="color:#2976A8;" class="iconfont icon-icon-gender-man"></i>
               <span>{{ scope.row.fullname|| scope.row.name}}</span>
             </template>
           </el-table-column>
-          <el-table-column  label="邮件地址">
+          <el-table-column  :label="lan.MAILBOX_COM_COMPOSE_MAIL_ADDRESS">
             <template slot-scope="scope">
               <span>{{scope.row.email || scope.row.pref_email || scope.row.username}}</span>
             </template>
@@ -104,6 +104,7 @@
   </div>
 </template>
 <script>
+  import lan from '@/assets/js/lan';
   import { contactOabDepartsGet,contactOabMembersGet} from '@/api/api'
   export default {
     name:'Contact',
@@ -281,6 +282,23 @@
     watch:{
       toList(newVal){
         this.$emit('getData', newVal);
+      }
+    },
+    computed:{
+      lan:function(){
+        let lang = lan.zh
+        if(this.$store.getters.getLanguage=='zh-hans'){
+          lang = lan.zh
+        }else if(this.$store.getters.getLanguage=='zh-tw'){
+          lang = lan.zh_tw
+        }else if(this.$store.getters.getLanguage=='en'){
+          lang = lan.en
+        }else if(this.$store.getters.getLanguage=='es'){
+          lang = lan.zh
+        }else{
+          lang = lan.zh
+        }
+        return lang
       }
     }
   }

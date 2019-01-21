@@ -130,6 +130,9 @@
                 </el-tab-pane>
                 <el-tab-pane :label="lan.COMMON_TEMPLATE" name="third">
                   <div class="template_box" style="padding-top:4px;">
+                    <div class="text-center">
+                      <el-button type="text"  @click="refresh_template"> <i class="el-icon-refresh"></i>{{lan.MAILBOX_COM_INNERBOX_REFRESH}}{{lan.COMMON_TEMPLATE}}</el-button>
+                    </div>
                     <ul class="template_ul">
                       <li class="f-csp" style="text-align: center" :class="{selected:selectId===''}" @click="deleteTemplate">
                         <img src="../img/none_zh.png" alt="">
@@ -372,6 +375,7 @@
                           <el-dropdown-item divided command="editSign">{{lan.MAILBOX_COM_COMPOSE_EDIT_SIGN}}</el-dropdown-item>
                         </el-dropdown-menu>
                       </el-dropdown>
+                      <el-button type="text"  @click="getSignatrue"> <i class="el-icon-refresh"></i></el-button>
 
                       <!--<el-upload-->
                           <!--action=""-->
@@ -1856,6 +1860,11 @@
           this.content = '';
           this.$refs[this.editor_id].editor.html(this.content);
         }
+      },
+      refresh_template(){
+        this.tpage = 1;
+        this.templateList = [];
+        this.getTemplateListfn()
       },
       getTemplateListfn(){
         let param = {

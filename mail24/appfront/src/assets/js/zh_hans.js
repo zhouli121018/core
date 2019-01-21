@@ -1171,5 +1171,10 @@ var  zh_hans = {
   REGISTER_SUCCESS: " 注册成功！请耐心等待审核通过，即可使用申请账号登录!",
   COLECTION_NOTICE: "请按 Ctrl+D 收藏本页",
 
+
+  //components/Contact  选择通讯录组件
+  CHOOSE_CONTACT_DESC: "请选择部门或成员",
+  CHOOSE_CONTACT_ALREADY: "已选部门或成员",
+
 }
 export default zh_hans;

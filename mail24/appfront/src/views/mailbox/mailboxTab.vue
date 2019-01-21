@@ -683,8 +683,12 @@ export default {
       this.showTabIndex = 2;
       this.review_active = true;
     }
-
     let perm = this.$store.getters.getSharedStatus;
+    console.log(123321)
+    console.log(this.$route.path.indexOf('/mailbox')>=0)
+    if(this.$route.path.indexOf('/mailbox')>=0){
+      sessionStorage['mailbox_url'] = this.$route.path;
+    }
   },
   watch:{
       $route(v,o){
@@ -697,10 +701,12 @@ export default {
           if(this.$store.getters.getTimer){
             clearInterval(this.$store.getters.getTimer)
           }
+          sessionStorage['mailbox_url'] = v.path;
         }else if(v.path.indexOf('/mailbox/innerbox')>=0){
           this.showTabIndex = 1;
           this.review_active = false;
           this.setCurrentKey(v.params.boxId)
+          sessionStorage['mailbox_url'] = v.path;
         }else if(v.path == '/mailbox/review'){
           this.showTabIndex = 2;
           this.review_active = true;
@@ -710,7 +716,29 @@ export default {
           if(this.$store.getters.getTimer){
             clearInterval(this.$store.getters.getTimer)
           }
+          sessionStorage['mailbox_url'] = v.path;
         }
+        if(v.name == 'innerbox'){
+          this.showTabIndex = 1;
+          // this.setCurrentKey(v.params)
+          if(this.$store.getters.getFileJump){
+            this.addTab('compose_net_atta',this.lan.MAILBOX_WRITE_LETTERS);
+            this.$store.dispatch('setFileJ',false)
+          }
+          if(this.$store.getters.getFileJumpEvent){
+            this.addTab('compose_net_atta_event',this.lan.MAILBOX_WRITE_LETTERS);
+            this.$store.dispatch('setFileJEvent',false)
+          }
+          if(this.$store.getters.getContactJump){
+            this.addTab('compose_to_list',this.lan.MAILBOX_WRITE_LETTERS)
+            this.$store.dispatch('setContactJ',false)
+          }
+          this.review_active = false;
+          // if(this.$store.getters.getNewMsg.new_jump){
+          //   this.addTab('read',this.$store.getters.getNewMsg.subject,this.$store.getters.getNewMsg.uid,this.$store.getters.getNewMsg.folder)
+          // }
+        }
+
       },
       username(nv,ov){
         this.getFloderfn();
