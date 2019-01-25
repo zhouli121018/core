@@ -50,8 +50,8 @@
               <el-button type="info" @click="Oab_to_pab" :disabled="this.sels.length===0" size="mini">{{plang.CONTACT_OAB_TOPAB}}</el-button>
             </el-col>
             <el-col :span="12">
-              <el-pagination layout="total, sizes, prev, pager, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange"
-                             :page-sizes="[10, 20, 50, 100]" :current-page="page" :page-size="page_size" :total="total" style="float: right">
+              <el-pagination layout="total, sizes, prev, slot, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange" v-if="total>0" :page-sizes="[10, 20, 50, 100]" :current-page="page" :page-size="page_size" :total="total" style="float: right">
+                <span> {{page+' / '+Math.ceil(total/page_size)}}</span>
               </el-pagination>
             </el-col>
           </el-row>

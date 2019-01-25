@@ -47,8 +47,9 @@
           </span>
         </el-col>
         <el-col :span="12" style="text-align:right">
-          <el-pagination :current-page="page" :page-sizes="[10, 20, 50]" :page-size="page_size" :total="total"
-                         @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange" layout="total, sizes, prev, pager, next,jumper">
+          <el-pagination :current-page="page" :page-sizes="[10, 20, 50]" :page-size="page_size" :total="total" v-if="total>0"
+                         @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange" layout="total, sizes, prev, slot, next,jumper">
+            <span> {{page+' / '+Math.ceil(total/page_size)}}</span>
           </el-pagination>
         </el-col>
       </el-row>

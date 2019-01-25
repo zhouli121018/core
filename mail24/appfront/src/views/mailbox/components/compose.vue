@@ -679,8 +679,10 @@
               :current-page="currentPage"
               :page-sizes="[10, 20,50,100]"
               :page-size="pageSize"
-              layout="total,prev, pager, next,sizes"
+              layout="total,prev, slot, next,sizes"
+              v-if="totalCount>0"
               :total="totalCount">
+              <span> {{currentPage+' / '+Math.ceil(totalCount/pageSize)}}</span>
             </el-pagination>
           </el-col>
         </el-row>
@@ -699,8 +701,10 @@
               :current-page="attachCurrentPage"
               :page-sizes="[10,20,50,100]"
               :page-size="attachPageSize" background
-              layout="total, prev, pager, next, sizes"
+              layout="total, prev, slot, next, sizes,jumper"
+                           v-if="attachTotal>0"
               :total="attachTotal" small>
+              <span> {{attachCurrentPage+' / '+Math.ceil(attachTotal/attachPageSize)}}</span>
             </el-pagination>
 
             <el-table @selection-change="fileSelectionChange" @row-click="rowClick_afile"
@@ -726,8 +730,10 @@
               :current-page="attachCurrentPage_net"
               :page-sizes="[10,20,50,100]"
               :page-size="attachPageSize_net" background
-              layout="total, prev, pager, next, sizes"
+              layout="total, prev, slot, next, sizes"
+                           v-if="attachTotal_net>0"
               :total="attachTotal_net" small>
+              <span> {{attachCurrentPage_net+' / '+Math.ceil(attachTotal_net/attachPageSize_net)}}</span>
             </el-pagination>
             <el-table @selection-change="fileSelectionChange" @row-click="rowClick_nfile"
               ref="nfileTable" :data="nfileList" tooltip-effect="dark" style="width: 100%"
@@ -757,8 +763,10 @@
               :current-page="attachCurrentPage_company"
               :page-sizes="[10,20,50,100]"
               :page-size="attachPageSize_company" background
-              layout="total, prev, pager, next, sizes"
+              layout="total, prev, slot, next, sizes"
+                           v-if="attachTotal_company>0"
               :total="attachTotal_company" small>
+              <span> {{attachCurrentPage_company+' / '+Math.ceil(attachTotal_company/attachPageSize_company)}}</span>
             </el-pagination>
             <el-table @selection-change="fileSelectionChange" @row-click="rowClick_nfile_company"
               ref="nfileTable_company" :data="nfileList_company" tooltip-effect="dark" style="width: 100%"
@@ -2229,7 +2237,7 @@
 
       },
       backToBox(compose){
-        this.$parent.$parent.$parent.removeTab(this.$parent.$parent.$parent.editableTabsValue2);
+        this.$parent.$parent.$parent.removeTab(this.$parent.$parent.$parent.editableTabsValue2,'compose');
         if(compose){
           this.$parent.$parent.$parent.addTab('compose',this.lan.MAILBOX_COM_COMPOSE_WRITE)
         }else{

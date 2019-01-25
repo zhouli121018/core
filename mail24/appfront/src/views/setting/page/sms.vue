@@ -40,13 +40,15 @@
             <el-button type="primary" @click="createWhiter" size="mini">{{plang.COMMON_BUTTON_ADD}}</el-button>
           </el-col>
           <el-col :span="12" >
-            <el-pagination layout="total, sizes, prev, pager, next, jumper"
+            <el-pagination layout="total, sizes, prev, slot, next, jumper"
                            @size-change="f_TableSizeChange"
                            @current-change="f_TableCurrentChange"
                            :page-sizes="[15, 30, 50, 100]"
                            :current-page="page"
                            :page-size="page_size"
+                           v-if="total>0"
                            :total="total" style="float: right">
+              <span> {{page+' / '+Math.ceil(total/page_size)}}</span>
             </el-pagination>
           </el-col>
         </el-row>

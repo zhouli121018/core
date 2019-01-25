@@ -65,9 +65,13 @@ const store = new Vuex.Store({
     login_after:{},
     login_before:{},
     skin_order:'',
-    language:cookie.getCookie('webvue_language')||'zh-hans'
+    language:cookie.getCookie('webvue_language')||'zh-hans',
+    searchmailData:{},
   },
   getters:{
+    getSearchmailData(state){
+      return state.searchmailData;
+    },
     getLanguage(state){
       return state.language;
     },
@@ -148,6 +152,9 @@ const store = new Vuex.Store({
     }
   },
   mutations:{
+    setSearchmailData(state,param){
+      state.searchmailData = param;
+    },
     setLanguage(state,param){
       state.language = param
     },
@@ -244,6 +251,9 @@ const store = new Vuex.Store({
 
   },
   actions: {
+    setSearchmailDataA(store,param){
+      store.commit('setSearchmailData',param);
+    },
     setLanguageA(store,param){
       store.commit('setLanguage',param);
     },

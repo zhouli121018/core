@@ -8,7 +8,9 @@
             <el-date-picker type="date" :placeholder="plang.COMMON_SEARCH_DATE" v-model="loginfilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchLoginDate"></el-date-picker>
           </el-col>
           <el-col :span="12" style="text-align:right;">
-            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'login')" @current-change="currentChange($event,'login')" :current-page="loginData.page" :page-sizes="[10, 20, 50, 100]" :page-size="loginData.page_size" layout="total, sizes, prev, pager, next " :total="loginData.total"></el-pagination>
+            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'login')" @current-change="currentChange($event,'login')" :current-page="loginData.page" :page-sizes="[10, 20, 50, 100]" :page-size="loginData.page_size" layout="total, sizes, prev, slot, next,jumper " :total="loginData.total" v-if="loginData.total>0">
+              <span> {{loginData.page+' / '+Math.ceil(loginData.total/loginData.page_size)}}</span>
+            </el-pagination>
           </el-col>
         </el-row>
         <el-table :data="loginData.tableData" stripe :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}" size="mini" style="width: 100%" :empty-text="plang.COMMON_NODATA">
@@ -39,7 +41,9 @@
             <el-date-picker type="date" :placeholder="plang.COMMON_SEARCH_DATE" v-model="sendfilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchSendDate"></el-date-picker>
           </el-col>
           <el-col :span="12" style="text-align:right;">
-            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'send')" @current-change="currentChange($event,'send')" :current-page="sendData.page" :page-sizes="[10, 20, 50]" :page-size="sendData.page_size" layout="total, sizes, prev, pager, next " :total="sendData.total"></el-pagination>
+            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'send')" @current-change="currentChange($event,'send')" :current-page="sendData.page" :page-sizes="[10, 20, 50]" :page-size="sendData.page_size" layout="total, sizes, prev, slot, next ,jumper" :total="sendData.total" v-if="sendData.total>0">
+              <span> {{sendData.page+' / '+Math.ceil(sendData.total/sendData.page_size)}}</span>
+            </el-pagination>
           </el-col>
         </el-row>
         <el-table ref="sendTable" id="sendTable" :data="sendData.tableData" stripe :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}" size="mini" style="width: 100%">
@@ -117,7 +121,9 @@
             <el-date-picker type="date" :placeholder="plang.COMMON_SEARCH_DATE" v-model="receivefilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchReceiveDate"></el-date-picker>
           </el-col>
           <el-col :span="12" style="text-align:right;">
-            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'mail')" @current-change="currentChange($event,'mail')" :current-page="mailData.page" :page-sizes="[10, 20, 50, 100]" :page-size="mailData.page_size" layout="total, sizes, prev, pager, next " :total="mailData.total"></el-pagination>
+            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'mail')" @current-change="currentChange($event,'mail')" :current-page="mailData.page" :page-sizes="[10, 20, 50, 100]" :page-size="mailData.page_size" layout="total, sizes, prev, slot, next,jumper " :total="mailData.total" v-if="mailData.total>0">
+              <span> {{mailData.page+' / '+Math.ceil(mailData.total/mailData.page_size)}}</span>
+            </el-pagination>
           </el-col>
         </el-row>
         <el-table :data="mailData.tableData" stripe :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}" size="mini" style="width: 100%">
@@ -161,7 +167,9 @@
             <el-date-picker type="date" :placeholder="plang.COMMON_SEARCH_DATE" v-model="deleletfilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchDeleteDate"></el-date-picker>
           </el-col>
           <el-col :span="12">
-            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'delete')" @current-change="currentChange($event,'delete')" :current-page="deleteData.page" :page-sizes="[10, 20, 50, 100]" :page-size="deleteData.page_size" layout="total, sizes, prev, pager, next " :total="deleteData.total"></el-pagination>
+            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'delete')" @current-change="currentChange($event,'delete')" :current-page="deleteData.page" :page-sizes="[10, 20, 50, 100]" :page-size="deleteData.page_size" layout="total, sizes, prev, slot, next,jumper " :total="deleteData.total" v-if="deleteData.total>0">
+              <span> {{deleteData.page+' / '+Math.ceil(deleteData.total/deleteData.page_size)}}</span>
+            </el-pagination>
           </el-col>
         </el-row>
         <el-table :data="deleteData.tableData" stripe :header-cell-style="{background:'#f0f1f3',fontSize:'14px'}" size="mini" style="width: 100%">

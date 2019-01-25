@@ -144,8 +144,10 @@
               :current-page="currentPage"
               :page-sizes="[5,10, 20,50,100,200, 300, 400]"
               :page-size="pageSize"
-              layout="   prev, pager, next,sizes"
+              layout="   prev, slot, next,sizes,jumper"
+              v-if="totalCount>0"
               :total="totalCount">
+              <span> {{currentPage+' / '+Math.ceil(totalCount/pageSize)}}</span>
             </el-pagination>
           </el-form-item>
 
@@ -240,8 +242,10 @@
               :current-page="currentPage"
               :page-sizes="[5,10, 20,50,100,200, 300, 400]"
               :page-size="pageSize"
-              layout="   prev, pager, next,sizes"
+              layout="   prev, slot, next,sizes,jumper"
+              v-if="totalCount>0"
               :total="totalCount">
+              <span> {{currentPage+' / '+Math.ceil(totalCount/pageSize)}}</span>
             </el-pagination>
           </el-form-item>
 

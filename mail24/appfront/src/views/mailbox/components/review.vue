@@ -32,8 +32,10 @@
                       :current-page="waitData.page"
                       :page-sizes="[10, 20, 50, 100]"
                       :page-size="waitData.page_size"
-                      layout="total, sizes, prev, pager, next,jumper"
+                      layout="total, sizes, prev, slot, next,jumper"
+                                   v-if="waitData.total>0"
                       :total="waitData.total">
+                      <span> {{waitData.page+' / '+Math.ceil(waitData.total/waitData.page_size)}}</span>
                     </el-pagination>
                   </el-col>
                 </el-row>

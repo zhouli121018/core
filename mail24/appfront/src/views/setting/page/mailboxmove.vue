@@ -20,8 +20,10 @@
           <el-button type="success" @click="receiveALL" size="mini">{{plang.SETTING_MOVE_RECEIVE}}</el-button>
         </el-col>
         <el-col :span="12" >
-          <el-pagination layout="total, sizes, prev, pager, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange"
-                         :page-sizes="[10, 20, 50, 100]" :current-page="page" :page-size="page_size" v-if="total>0" :total="total" style="float: right"></el-pagination>
+          <el-pagination layout="total, sizes, prev, slot, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange"
+                         :page-sizes="[10, 20, 50, 100]" :current-page="page" :page-size="page_size" v-if="total>0" :total="total" style="float: right">
+            <span> {{page+' / '+Math.ceil(total/page_size)}}</span>
+          </el-pagination>
         </el-col>
       </el-row>
 
@@ -30,7 +32,7 @@
         <el-table-column type="index" label="No." width="50"></el-table-column>
         <el-table-column prop="account" :label="plang.COMMON_EMAIL2"></el-table-column>
         <el-table-column prop="protocol" :label="plang.SETTING_MOVE_PROTOCOL" width="80"></el-table-column>
-        <el-table-column prop="desc" :label="plang.SETTING_MOVE_TASK" width="100"></el-table-column>
+        <el-table-column prop="desc" :label="plang.SETTING_MOVE_TASK"></el-table-column>
         <el-table-column :label="plang.SETTING_MOVE_STATUS" width="120">
           <template slot-scope="scope">
             <i class="el-alert--success el-alert__icon el-icon-success" v-if="scope.row.disabled=='-1'"></i>
@@ -38,7 +40,7 @@
             </i></template>
         </el-table-column>
         <el-table-column prop="status" :label="plang.SETTING_MOVE_STATUS2" width="120"></el-table-column>
-        <el-table-column prop="updated" :label="plang.SETTING_MOVE_UPDATED"></el-table-column>
+        <el-table-column prop="updated" :label="plang.SETTING_MOVE_UPDATED" width="180"></el-table-column>
         <el-table-column :label="plang.COMMON_OPRATE">
           <template slot-scope="scope">
             <el-button size="mini" type="success" @click="receiveRow(scope.$index, scope.row)">{{plang.SETTING_MOVE_RECEIVE2}}</el-button>

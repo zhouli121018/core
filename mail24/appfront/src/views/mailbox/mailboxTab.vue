@@ -59,7 +59,7 @@
 
             </aside>
             <article class="mlmain mltabview tab_box" :class="{position_top0:!tabList.length}" ref="editor_h">
-                    <el-tabs v-model="editableTabsValue2"  type="card" closable @tab-remove="removeTab" class="tab_style_tt" @tab-click="tabClick" :class="{hide_tab_top:editableTabs2.length<=1}" v-if="showTabIndex==1" ref="tabref" >
+                    <el-tabs v-model="editableTabsValue2"  type="card" closable @tab-remove="removeTab" class="tab_style_tt" @tab-click="tabClick" :class="{hide_tab_top:editableTabs2.length<=1}" v-if="showTabIndex==1" ref="tabref" :before-leave="beforeLeave">
                       <el-tab-pane
                         v-for="(item, index) in editableTabs2"
                         :key="item.name"
@@ -67,17 +67,18 @@
                         :name="item.name"
 
                       >
-                         <span slot="label" class="tab_title" :class="{no_close:item.name==1}" :title="item.title"><i class="" :class="{'el-icon-message':item.type=='read','el-icon-edit':item.type!='read'&&item.name!='1'&&item.type!='readreview','el-icon-menu':item.name=='1','el-icon-search':item.type=='readreview'}"></i> {{item.title | hide_subject}} </span>
+                         <span slot="label" class="tab_title" :class="{no_close:item.name==1}" :title="item.title"><i class="" :class="{'el-icon-message':item.type=='read','el-icon-edit':item.type!='read'&&item.name!='1'&&item.type!='readreview'&&item.type!='searchmail','el-icon-menu':item.name=='1','el-icon-search':item.type=='readreview'}"></i> {{item.title | hide_subject}} </span>
                         <!--<div :style="{height: tab_content_height}">-->
 
                         <!--</div>-->
                         <Innerbox v-if="item.name=='1'" :boxId="boxId" :curr_folder="curr_folder"  @getRead="getRead" :unseencount="unseencount" :floderResult="floderResult" ref="innerbox"></Innerbox>
+                        <Searchmail v-if="item.type=='searchmail'" :floderResult="floderResult" ref="searchmail"></Searchmail>
                         <Read :readId="item.rid" :readFolderId="item.fid" :tagName="item.name" v-if="item.type=='read'"></Read>
                         <Readreview :readId="item.rid" :readFolderId="item.fid" v-if="item.type=='readreview'"></Readreview>
-                        <Compose  v-if="item.type!='read'&&item.name!='1'&&item.type!='readreview'" :ref="'ref_compose_'+item.name" :iframe_height="iframe_height" :rid="item.name" :parent_ruleForm2="ruleForm2" :parent_content="content" :parent_maillist="maillist" :parent_maillist_copyer="maillist_copyer" :parent_fileList="fileList" :compose_type="item.type" :parent_maillist_bcc="maillist_bcc" :parent_show_reply_to="show_reply_to" :type="item.type"></Compose>
+                        <Compose  v-if="item.type!='read'&&item.name!='1'&&item.type!='readreview'&&item.type!='searchmail'" :ref="'ref_compose_'+item.name" :iframe_height="iframe_height" :rid="item.name" :parent_ruleForm2="ruleForm2" :parent_content="content" :parent_maillist="maillist" :parent_maillist_copyer="maillist_copyer" :parent_fileList="fileList" :compose_type="item.type" :parent_maillist_bcc="maillist_bcc" :parent_show_reply_to="show_reply_to" :type="item.type"></Compose>
 
                       </el-tab-pane>
-                      <el-tab-pane class="testaaa" name="closeAll">
+                      <el-tab-pane class="testaaa" name="closeAll" v-if="editableTabs2.length>1">
                         <!--style="color:#f56c6c"-->
                          <span slot="label" style="padding:0" class="no_close" :title="lan.MAILBOX_CLOSE_ALL_TABS">
                             <i class="iconfont icon-iconcloseall closeall" ></i>
@@ -100,6 +101,7 @@ import lan from '@/assets/js/lan';
 import MailAside from './components/MailAside'
 import {getMailMessage,getFloder,creatFolder,deleteFolder,reviewShow } from "@/api/api"
 import Innerbox from './components/innerbox'
+import Searchmail from './components/searchmail'
 import Home from './components/home'
 import Read from './components/read'
 import Readreview from './components/readreview'
@@ -107,7 +109,7 @@ import Compose from './components/compose'
 import Review from './components/review'
 export default {
   components:{
-    MailAside,Innerbox,Home,Read,Compose,Review,Readreview
+    MailAside,Innerbox,Home,Read,Compose,Review,Readreview,Searchmail
   },
   data:function(){
       return{
@@ -220,15 +222,66 @@ export default {
     },
     tabClick(tab,event){
       this.showTabIndex=1;
-      console.log(tab.name)
       if(tab.name == 'closeAll'){
-        this.$router.push('/mailbox/welcome')
+        // this.$router.push('/mailbox/welcome')
         // this.hashTab = []
+        // let arr = [];
+        // arr[0] = this.editableTabs2[0];
+        // this.editableTabs2 = arr;
         // this.editableTabsValue2 = '1'
         // this.editableTabs2.splice(1);
         // if(this.$store.getters.getTimer){
         //   clearInterval(this.$store.getters.getTimer)
         // }
+      }
+    },
+    beforeLeave(activeName,oldName){
+      console.log(activeName,oldName)
+      if(activeName == 'closeAll' ){
+        let hasCompose = false;
+        for(let i=0;i<this.editableTabs2.length;i++){
+          if(this.editableTabs2[i].type && this.editableTabs2[i].type.indexOf('compose')>=0){
+            hasCompose = true;
+          }
+        }
+        if(hasCompose){
+          this.$confirm(this.lan.MAILBOX_WRITING, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+            confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+            cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
+            type: 'warning'
+          }).then(() => {
+            if(oldName == '1'){
+              this.editableTabsValue2 = this.editableTabs2[1].name;
+            }
+            this.hashTab = []
+            let arr = [];
+            arr[0] = this.editableTabs2[0];
+            this.editableTabs2 = arr;
+            this.editableTabsValue2 = '1'
+            this.editableTabs2.splice(1);
+            if(this.$store.getters.getTimer){
+              clearInterval(this.$store.getters.getTimer)
+            }
+            return false
+          }).catch(() => {
+            return false;
+          });
+          return false;
+        }else{
+          if(oldName == '1'){
+            this.editableTabsValue2 = this.editableTabs2[1].name;
+          }
+          this.hashTab = []
+          let arr = [];
+          arr[0] = this.editableTabs2[0];
+          this.editableTabs2 = arr;
+          this.editableTabsValue2 = '1'
+          this.editableTabs2.splice(1);
+          if(this.$store.getters.getTimer){
+            clearInterval(this.$store.getters.getTimer)
+          }
+          return false;
+        }
       }
     },
     addTab(type,subject,rid,fid,info) {
@@ -349,7 +402,10 @@ export default {
       if(type == 'compose_to_list'){
         this.maillist = this.$store.getters.getToList;
       }
-      if(rid && this.hashTab[type+rid+fid+'']){
+      if(type == 'searchmail' && this.hashTab[type+rid+fid+'']){
+        this.editableTabsValue2 = this.hashTab[type+rid+fid+''];
+      }
+      else if(rid && this.hashTab[type+rid+fid+'']){
         this.editableTabsValue2 = this.hashTab[type+rid+fid+''];
       }else{
         let newTabName = ++this.tabIndex + '';
@@ -365,12 +421,22 @@ export default {
         });
         this.editableTabsValue2 = newTabName;
       }
+      if(type == 'searchmail'){
+        this.$nextTick(()=>{
+          this.$refs.searchmail[0].getMessageList();
+        })
+
+      }
 
     },
-    removeTab(targetName) {
+    removeTab(targetName,isCompose) {
       let tabs = this.editableTabs2;
       let activeName = this.editableTabsValue2;
-      if (activeName === targetName) {
+
+      tabs.forEach((tab, index) => {
+        if (tab.name === targetName) {
+          if(isCompose == 'compose'){
+            if (activeName === targetName) {
         tabs.forEach((tab, index) => {
           if (tab.name === targetName) {
             let nextTab = tabs[index + 1] || tabs[index - 1];
@@ -380,18 +446,81 @@ export default {
           }
         });
       }
-      this.editableTabsValue2 = activeName;
-      for(let i=0;i<tabs.length;i++){
-        if(tabs[i].name == targetName){
-          if(this.$route.name =='review' && tabs[i].type == 'readreview'){
-            this.showTabIndex = 2;
+            this.editableTabsValue2 = activeName;
+            for(let i=0;i<tabs.length;i++){
+              if(tabs[i].name == targetName){
+                if(this.$route.name =='review' && tabs[i].type == 'readreview'){
+                  this.showTabIndex = 2;
+                }
+                if(tabs[i].rid && tabs[i].fid){
+                  console.log(tabs[i].type+tabs[i].rid+tabs[i].fid+'')
+                  this.hashTab[tabs[i].type+tabs[i].rid+tabs[i].fid+''] = false;
+                }
+              }
+            }
+            this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
+            return;
           }
-          if(tabs[i].rid && tabs[i].fid){
-            this.hashTab[tabs[i].type+tabs[i].rid+tabs[i].fid+''] = false;
+          if(tab.type && tab.type.indexOf('compose')>=0){
+            this.$confirm(this.lan.MAILBOX_WRITING, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+              confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+              cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
+              type: 'warning'
+            }).then(() => {
+              if (activeName === targetName) {
+        tabs.forEach((tab, index) => {
+          if (tab.name === targetName) {
+            let nextTab = tabs[index + 1] || tabs[index - 1];
+            if (nextTab) {
+              activeName = nextTab.name;
+            }
+          }
+        });
+      }
+              this.editableTabsValue2 = activeName;
+              for(let i=0;i<tabs.length;i++){
+                if(tabs[i].name == targetName){
+                  if(this.$route.name =='review' && tabs[i].type == 'readreview'){
+                    this.showTabIndex = 2;
+                  }
+                  if(tabs[i].rid && tabs[i].fid){
+                    console.log(tabs[i].type+tabs[i].rid+tabs[i].fid+'')
+                    this.hashTab[tabs[i].type+tabs[i].rid+tabs[i].fid+''] = false;
+                  }
+                }
+              }
+              this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
+            }).catch(() => {
+
+            });
+          }else{
+            if (activeName === targetName) {
+        tabs.forEach((tab, index) => {
+          if (tab.name === targetName) {
+            let nextTab = tabs[index + 1] || tabs[index - 1];
+            if (nextTab) {
+              activeName = nextTab.name;
+            }
+          }
+        });
+      }
+            this.editableTabsValue2 = activeName;
+            for(let i=0;i<tabs.length;i++){
+              if(tabs[i].name == targetName){
+                if(this.$route.name =='review' && tabs[i].type == 'readreview'){
+                  this.showTabIndex = 2;
+                }
+                if(tabs[i].rid && tabs[i].fid){
+                  console.log(tabs[i].type+tabs[i].rid+tabs[i].fid+'')
+                  this.hashTab[tabs[i].type+tabs[i].rid+tabs[i].fid+''] = false;
+                }
+              }
+            }
+            this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
           }
         }
-      }
-      this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
+      });
+
 
     },
     jumpTo(path){
@@ -425,12 +554,6 @@ export default {
           this.changeTab1();
         }
     },
-    closeAllTab(){
-      this.tabList = [];
-      this.titleHash = [];
-      this.changeTab1();
-    },
-
     setCurrentKey(boxId) {
       this.$nextTick(() =>{
         this.$refs.treeMenuBar.setCurrentKey(boxId);
@@ -596,9 +719,8 @@ export default {
     reloadMails(){
       this.getFloderfn();
       if(this.$refs.innerbox[0]){
-        this.$refs.innerbox[0].getMessageList()
+        this.$refs.innerbox[0].refresh()
       }
-
     },
 
   },
@@ -645,7 +767,6 @@ export default {
       }else{
         lang = lan.zh
       }
-      this.editableTabs2[0].title = lang.MAILBOX_INBOX
       this.rules = {
           name:[{required:true,message:lang.MAILBOX_FOLDER_NAME_RULES,trigger:'blur'}]
         }
@@ -653,7 +774,7 @@ export default {
     }
   },
   created(){
-    this.editableTabs2[0].title = this.lan.MAILBOX_INBOX
+    this.editableTabs2[0].title = sessionStorage['checkNodeLabel'] || this.lan.MAILBOX_INBOX
     this.curr_folder = this.lan.MAILBOX_INBOX
     this.getReviewShow();
     if(this.$route.name == 'innerbox'){
@@ -684,9 +805,7 @@ export default {
       this.review_active = true;
     }
     let perm = this.$store.getters.getSharedStatus;
-    console.log(123321)
-    console.log(this.$route.path.indexOf('/mailbox')>=0)
-    if(this.$route.path.indexOf('/mailbox')>=0){
+    if(this.$route.path.indexOf('/mailbox/')>=0){
       sessionStorage['mailbox_url'] = this.$route.path;
     }
   },
@@ -738,7 +857,7 @@ export default {
           //   this.addTab('read',this.$store.getters.getNewMsg.subject,this.$store.getters.getNewMsg.uid,this.$store.getters.getNewMsg.folder)
           // }
         }
-
+        this.editableTabs2[0].title = sessionStorage['checkNodeLabel'] || this.lan.MAILBOX_INBOX
       },
       username(nv,ov){
         this.getFloderfn();

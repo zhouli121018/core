@@ -744,7 +744,7 @@
           mfrom += '<p>'+this.lan.COMMON_SENDER+'：'+this.mfrom+'</p>'
         }
         if(this.msg.to && this.msg.to.length>0){
-          to += '<p>'+this.lan.COMMON_SENDER+'：'
+          to += '<p>'+this.lan.COMMON_RECAIVER+'：'
           for(let i=0;i<this.msg.to.length;i++){
             to += this.msg.to[i][1] + '&lt;'+this.msg.to[i][0]+'&gt;;'
           }
@@ -864,7 +864,7 @@
         }
         let param = {
           message_id: this.msg.message_id,
-          recipient: recp.join(',')
+          // recipient: recp.join(',')
         }
         getMessageStatus(param).then(res=>{
           this.mail_results = res.data.results;

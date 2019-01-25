@@ -96,8 +96,10 @@
               :current-page="currentPage"
               :page-sizes="[10, 20,50,100]"
               :page-size="page_size_add"
-              layout="total,prev, pager, next,sizes"
+              layout="total,prev, slot, next,sizes,jumper"
+              v-if="totalCount>0"
               :total="totalCount">
+              <span> {{currentPage+' / '+Math.ceil(totalCount/page_size_add)}}</span>
             </el-pagination>
           </el-col>
         </el-row>

@@ -64,7 +64,7 @@
     color: #333;
     background-color: #fff;
     /*overflow: hidden;*/
-    min-width: 980px;
+    min-width: 1000px;
     overflow: auto !important;
   }
   ul,li,p,h1,h2,h3,h4{
@@ -207,6 +207,6 @@
     }
   }
   section.m-read .full-info table .info-item, .m-thread .full-info table .info-item{
-    width: 62px;
+    width: 70px;
   }
 </style>

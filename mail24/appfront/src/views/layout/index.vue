@@ -132,8 +132,24 @@
             </li>
             <li>
               <div class="u-input-control">
-                <input type="text" class="u-input" id="lyfullsearch" maxlength="50" disabledhotkey="true"  :placeholder="lan.LAYOUT_INDEX_SEARCH_OF_MAIL" autocomplete="off">
-                <span class="j-search u-search iconfont icon-iconsreachm"></span>
+                <el-dropdown  placement="bottom-start" @command="fullsearchFn">
+                  <span class="el-dropdown-link">
+                    <input type="text" class="u-input" id="lyfullsearch" maxlength="50" disabledhotkey="true"  :placeholder="lan.LAYOUT_INDEX_SEARCH_OF_MAIL" autocomplete="off" v-model="fullsearchForm.keyword">
+                    <span class="j-search u-search iconfont icon-iconsreachm" @click="fullsearchbtn"></span>
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item v-if="!fullsearchForm.keyword" disabled>请输入关键字</el-dropdown-item>
+                    <el-dropdown-item v-if="fullsearchForm.keyword" command="keyword">关键字包含 "{{fullsearchForm.keyword}}" 的邮件</el-dropdown-item>
+                    <!--<el-dropdown-item v-if="fullsearchForm.keyword" command="sender">发件人包含 "{{fullsearchForm.keyword}}" 的邮件</el-dropdown-item>-->
+                    <el-dropdown-item v-if="fullsearchForm.keyword" command="subject">主题包含 "{{fullsearchForm.keyword}}" 的邮件</el-dropdown-item>
+                    <el-dropdown-item v-if="fullsearchForm.keyword" command="attach">附件名包含 "{{fullsearchForm.keyword}}" 的邮件</el-dropdown-item>
+
+                    <el-dropdown-item divided command="more">高级搜索</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+
+
+
               </div>
             </li>
           </ul>
@@ -148,8 +164,8 @@
 
         </div>
         <div class="lycontent">
-          <Mailbox v-show="$route.path.indexOf('/mailbox')>=0 "></Mailbox>
-          <router-view v-if="$route.path.indexOf('/mailbox') == -1"></router-view>
+          <Mailbox v-show="$route.path.indexOf('/mailbox/')>=0 " ref="mailbox_ele" v-loading="searchLoading"></Mailbox>
+          <router-view v-if="$route.path.indexOf('/mailbox/') == -1"></router-view>
         </div>
 
       </section>
@@ -240,6 +256,56 @@
         <el-button type='' @click="backToLogin" >{{lan.cancel}}</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog title="高级搜索" :visible.sync="show_Advanced_search" :append-to-body="true" width="450px" top="44px" custom-class="advance_search_dialog">
+      <el-form :model="fullsearchForm" status-icon :rules="fullsearchFormRules" ref="fullsearchForm" status-icon  label-width="100px" size="small">
+        <el-form-item label="关键字：" prop="keyword">
+          <el-input type="text" v-model="fullsearchForm.keyword" placeholder="输入关键词搜索"></el-input>
+        </el-form-item>
+        <el-form-item label="邮件主题：" prop="subject">
+          <el-input type="text" v-model="fullsearchForm.subject"></el-input>
+        </el-form-item>
+        <el-form-item label="附件名：" prop="attach">
+          <el-input type="text" v-model="fullsearchForm.attach"></el-input>
+        </el-form-item>
+        <el-form-item label="文件夹：" prop="folder">
+          <el-select v-model="fullsearchForm.folder" style="width:100%">
+            <el-option label="根文件夹" value=""></el-option>
+            <el-option v-for="f in floderList" :key="f.raw_name" v-if="f.raw_name!='Drafts'" :label="f.name" :value="f.raw_name"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="发信人：" prop="sender">
+          <el-input type="text" v-model="fullsearchForm.sender"></el-input>
+        </el-form-item>
+        <el-form-item label="收信人：" prop="recipient">
+          <el-input type="text" v-model="fullsearchForm.recipient"></el-input>
+        </el-form-item>
+        <el-form-item label="发信时间：" prop="date">
+          <el-select v-model="fullsearchForm.date" style="width:100%">
+            <el-option label="不限" value=""></el-option>
+            <el-option label="最近一天" value="1"></el-option>
+            <el-option label="最近三天" value="2"></el-option>
+            <el-option label="最近一周" value="3"></el-option>
+            <el-option label="最近一月" value="4"></el-option>
+            <el-option label="最近三月" value="5"></el-option>
+            <el-option label="最近半年" value="6"></el-option>
+            <el-option label="最近一年" value="7"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="邮件大小：" prop="size">
+          <el-select v-model="fullsearchForm.size" style="width:100%">
+            <el-option label="不限" value=""></el-option>
+            <el-option label="小于100KB" value="1"></el-option>
+            <el-option label="100kb ~ 10MB" value="2"></el-option>
+            <el-option label="大于等于10MB" value="3"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="advance_search_fn">搜索</el-button>
+          <el-button @click="show_Advanced_search = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </section>
 
 
@@ -253,7 +319,7 @@
   import cookie from '@/assets/js/cookie';
   import lan from '@/assets/js/lan';
   import Mailbox from '@/views/mailbox/mailboxTab.vue';
-  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome,settingUsersGet,settingUsersSetpassword,reviewShow,loginAfter,settingUsersGetpassword,setSkin,setLang } from '@/api/api'
+  import { settingRelateShared,shareLogin,backLogin,newMessage,deleteMail,welcome,settingUsersGet,settingUsersSetpassword,reviewShow,loginAfter,settingUsersGetpassword,setSkin,setLang,mailSearch,getFloder } from '@/api/api'
   export default {
     components:{
       Mailbox
@@ -280,8 +346,22 @@
         }
       };
       return {
+        floderList:[],
+        searchLoading:false,
+        show_Advanced_search:false,
+        fullsearchFormRules:{},
+        fullsearchForm:{
+          keyword:'',
+          folder:'',
+          subject:'',
+          attach:'',
+          sender:'',
+          recipient:'',
+          date:'',
+          size:'',
+        },
         title_scroll_timer:'',
-        language:'zh',
+        language:'zh-hans',
         admin_login_url:'',
         skins:[
           {url:'jingdianlan',title:''},
@@ -344,6 +424,120 @@
       }
     },
     methods:{
+      fullsearchbtn(){
+        if(this.fullsearchForm.keyword ==''){
+          return;
+        }
+        this.fullsearchFn('keyword')
+      },
+      advance_search_fn(){
+        if(this.fullsearchForm.keyword == '' && this.fullsearchForm.subject=='' && this.fullsearchForm.attach==''){
+          this.$message({
+            type:'error',
+            message:'关键字、邮件主题、附件名 至少填写一项！'
+          })
+          return;
+        }
+        this.searchLoading = true;
+        this.show_Advanced_search = false;
+        let params = {};
+        if( this.fullsearchForm.keyword!='')
+        params['keyword'] = this.fullsearchForm.keyword;
+        if( this.fullsearchForm.subject!='')
+        params['subject'] = this.fullsearchForm.subject;
+        if( this.fullsearchForm.sender!='')
+        params['sender'] = this.fullsearchForm.sender;
+        if( this.fullsearchForm.attach!='')
+        params['attach'] = this.fullsearchForm.attach;
+        if( this.fullsearchForm.folder!=''){
+          params['folder'] = this.fullsearchForm.folder;
+          for(let i=0;i<this.floderList.length;i++){
+            if(this.fullsearchForm.folder == this.floderList[i].raw_name){
+              params['folder_desc'] = this.floderList[i].name;
+            }
+          }
+
+        }
+
+        if( this.fullsearchForm.recipient!='')
+        params['recipient'] = this.fullsearchForm.recipient;
+        if( this.fullsearchForm.date!=''){
+          params['date'] = this.fullsearchForm.date;
+          params['date_desc'] = this.fullsearchForm.date==1?'最近一天':this.fullsearchForm.date==2?'最近三天':this.fullsearchForm.date==3?'最近一周':this.fullsearchForm.date==4?'最近一月':this.fullsearchForm.date==5?'最近三月':this.fullsearchForm.date==6?'最近半年':'最近一年';
+        }
+
+        if( this.fullsearchForm.size!=''){
+          params['size'] = this.fullsearchForm.size;
+          params['size_desc'] = this.fullsearchForm.size==1?'小于100KB':this.fullsearchForm.size==2?'100kb ~ 10MB':'大于等于10MB'
+        }
+
+        mailSearch(params).then(res=>{
+          this.searchLoading = false;
+          this.$store.dispatch('setSearchmailDataA',{params:params,data:res.data,searchtype:'advance_search',keyword:''});
+          if(this.$route.path.indexOf('/mailbox/') == -1){
+              if(!sessionStorage['mailbox_url'] || sessionStorage['mailbox_url'] ==''){
+                this.jumpTo('/mailbox/innerbox/INBOX')
+              }else{
+                if(sessionStorage['mailbox_url'].indexOf('/mailbox/innerbox/')==-1){
+                  this.jumpTo('/mailbox/innerbox/INBOX')
+                }else{
+                  this.jumpTo(sessionStorage['mailbox_url'])
+                }
+              }
+            }else{
+              if(this.$route.path.indexOf('/mailbox/innerbox/') == -1){
+                this.jumpTo('/mailbox/innerbox/INBOX')
+              }
+            }
+          this.$refs['mailbox_ele'].addTab('searchmail','搜索邮件',1,1)
+        }).catch(err=>{
+          console.log(err)
+          this.searchLoading = false;
+        })
+      },
+      fullsearchFn(a){
+        if(a == 'more'){
+          this.show_Advanced_search = true;
+          this.getFloderfn();
+        }else{
+          this.searchLoading = true;
+          let params = {};
+          params[a] = this.fullsearchForm.keyword;
+          mailSearch(params).then(res=>{
+            this.searchLoading = false;
+            this.$store.dispatch('setSearchmailDataA',{params:params,data:res.data,searchtype:a,keyword:this.fullsearchForm.keyword});
+            if(this.$route.path.indexOf('/mailbox/') == -1){
+              if(!sessionStorage['mailbox_url'] || sessionStorage['mailbox_url'] ==''){
+                this.jumpTo('/mailbox/innerbox/INBOX')
+              }else{
+                if(sessionStorage['mailbox_url'].indexOf('/mailbox/innerbox/')==-1){
+                  this.jumpTo('/mailbox/innerbox/INBOX')
+                }else{
+                  this.jumpTo(sessionStorage['mailbox_url'])
+                }
+              }
+            }else{
+              if(this.$route.path.indexOf('/mailbox/innerbox/') == -1){
+                this.jumpTo('/mailbox/innerbox/INBOX')
+              }
+            }
+            this.$refs['mailbox_ele'].addTab('searchmail','搜索邮件',1,1)
+
+          }).catch(err=>{
+            this.searchLoading = false;
+            console.log(err)
+          })
+        }
+
+      },
+      getFloderfn(){
+        getFloder().then((res)=>{
+          console.log(res.data)
+          this.floderList = res.data;
+        }).catch(()=>{
+
+        });
+      },
       changeLanguage(val){
         cookie.setCookie('webvue_language',val,365*10)
         this.$store.dispatch('setLanguageA',val)
@@ -775,7 +969,7 @@
         }
       }
       this.$store.dispatch('setLanguageA',cookie.getCookie('webvue_language'))
-      this.language = cookie.getCookie('webvue_language');
+      this.language = this.$store.getters.getLanguage;
       this.getReviewShow();
       this.getUser();
       this.getShared();
@@ -906,6 +1100,10 @@
 </script>
 
 <style>
+  .advance_search_dialog.el-dialog {
+    position:absolute;
+    right:26px;
+  }
   .no_border .el-input__inner{
     background: transparent;
     color: #222;

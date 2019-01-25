@@ -496,5 +496,6 @@ export const setLang = () => { return axios.post(`${host}/setting/users/set-lang
 //导出日程 GET /api/schedule/events/{id}/export-ics/
 export const exportIcs = id => { return axios.get(`${host}/schedule/events/${id}/export-ics/`, { responseType:'blob' }) };
 
-
+//邮件全文搜索 GET /api/mail/message/search/
+export const mailSearch = (params) => { return axios.get(`${host}/mail/message/search/`,{ params: params })}
 

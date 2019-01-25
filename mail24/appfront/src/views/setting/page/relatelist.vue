@@ -15,7 +15,7 @@
           <el-button type="primary" @click="createFormShow" size="mini">{{plang.COMMON_BUTTON_ADD}}</el-button>
         </el-col>
         <el-col :span="12" >
-          <el-pagination layout="total, sizes, prev, pager, next, jumper"
+          <el-pagination layout="total, sizes, prev, slot, next, jumper"
                          @size-change="f_TableSizeChange"
                          @current-change="f_TableCurrentChange"
                          :page-sizes="[10, 20, 50, 100]"
@@ -23,6 +23,7 @@
                          :page-size="page_size"
                          v-if="total>0"
                          :total="total" style="float: right">
+            <span> {{page+' / '+Math.ceil(total/page_size)}}</span>
           </el-pagination>
         </el-col>
       </el-row>
@@ -112,8 +113,10 @@
               :current-page="currentPage"
               :page-sizes="[5,10, 20,50,100,200, 300, 400]"
               :page-size="pageSize"
-              layout="   prev, pager, next,sizes"
+              layout="total, sizes, prev, slot, next, jumper"
+              v-if="totalCount>0"
               :total="totalCount">
+              <span> {{currentPage+' / '+Math.ceil(totalCount/pageSize)}}</span>
             </el-pagination>
           </el-form-item>
           <el-form-item v-show="addType == '2'" :label="plang.SETTING_RE_ADD_PLACEHODER">
@@ -203,7 +206,7 @@
     mounted: function () {
       this.getTables();
       this.getContactList();
-      this.searchOabMembers();
+      this.searchOabMembers(1);
     },
     methods: {
       changeFile(file,filelist){
