@@ -1176,5 +1176,52 @@ var  zh_hans = {
   CHOOSE_CONTACT_DESC: "请选择部门或成员",
   CHOOSE_CONTACT_ALREADY: "已选部门或成员",
 
+  // login/login  登录页面
+  LOGIN_WELCOME: "欢迎登录Webmail",
+  LOGIN_USERNAME_RULE: "用户名格式不正确,请输入正确格式的用户名",
+  LOGIN_PREV: "上一张",
+  LOGIN_NEXT: "下一张",
+  LOGIN_FOR_USERNAME: "邮箱帐号登录",
+  LOGIN_WY_DESC1: "精准反垃圾，有效过滤超过98.6%的垃圾邮件！",
+  LOGIN_WY_DESC2: "病毒邮件有效拦截率超过99.9%！",
+
+  //layout/index 邮件全文搜索
+  LAYOUT_INDEX_KEYWORD: "关键字包含",
+  LAYOUT_INDEX_SUBJECT: "主题包含",
+  LAYOUT_INDEX_ATTACH: "附件名包含",
+  LAYOUT_INDEX_MAILS: "的邮件",
+  LAYOUT_INDEX_MORE_SEARCH: "高级搜索",
+  LAYOUT_INDEX_LABEL_KEYWORD: "关键字",
+  LAYOUT_INDEX_LABEL_FOLDER: "文件夹",
+  LAYOUT_INDEX_LABEL_FOLDER_ROOT: "根文件夹",
+  LAYOUT_INDEX_LABEL_DATE: "发信时间",
+  LAYOUT_INDEX_NULL: "不限",
+  LAYOUT_INDEX_SEARCH_DATE1: "最近一天",
+  LAYOUT_INDEX_SEARCH_DATE2: "最近三天",
+  LAYOUT_INDEX_SEARCH_DATE3: "最近一周",
+  LAYOUT_INDEX_SEARCH_DATE4: "最近一月",
+  LAYOUT_INDEX_SEARCH_DATE5: "最近三月",
+  LAYOUT_INDEX_SEARCH_DATE6: "最近半年",
+  LAYOUT_INDEX_SEARCH_DATE7: "最近一年",
+  LAYOUT_INDEX_LABEL_SIZE: "邮件大小",
+  LAYOUT_INDEX_SIZE_DESC1: "小于100KB",
+  LAYOUT_INDEX_SIZE_DESC2: "100kb ~ 10MB",
+  LAYOUT_INDEX_SIZE_DESC3: "大于等于10MB",
+  LAYOUT_INDEX_SEARCH_RULES: "关键字、邮件主题、附件名 至少填写一项！",
+  LAYOUT_INDEX_SEARCH_TITLE: "搜索邮件",
+
+  //mailbox/components/searchmail 邮件全文搜索页面
+  MAILBOX_COM_SEARCH_CONDITION: "搜索条件",
+  MAILBOX_COM_SEARCH_NO: "没有搜索到",
+  MAILBOX_COM_SEARCH_FOLDER_DESC: "所在文件夹范围为",
+  MAILBOX_COM_SEARCH_SENDER_DESC: "发件人为",
+  MAILBOX_COM_SEARCH_REC_DESC: "收件人为",
+  MAILBOX_COM_SEARCH_DATE_DESC: "发信时间范围为",
+  MAILBOX_COM_SEARCH_SIZE_DESC: "邮件大小为",
+  MAILBOX_COM_SEARCH_YOU_CAN: "您可以",
+  MAILBOX_COM_SEARCH_TIP1: "1.更换关键字重新搜索",
+  MAILBOX_COM_SEARCH_TIP2: "2.使用高级搜索，通过其他邮件特征进行搜索",
+  MAILBOX_COM_SEARCH_NOT_FOND: "搜索邮件不存在或者已被删除!",
+
 }
 export default zh_hans;

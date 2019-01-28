@@ -663,7 +663,7 @@
           this.$store.dispatch('setUnseenCountA',unseenArr)
           console.log(row)
           if(row.flagbg_class == 'unseen'){
-            row.flagStr = '已读';
+            row.flagStr = this.lan.MAILBOX_COM_INNERBOX_ALREADY_READ;
             row.flagbg_class = ''
           }
         }

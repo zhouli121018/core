@@ -8,7 +8,7 @@
         <div class="content">
           <div>
             <a href="#" class="login_logo"  v-if="loginBeforeData.login_logo">
-              <img :src="loginBeforeData.login_logo" alt=" U-Mail">
+              <img :src="loginBeforeData.login_logo">
             </a>
 
 
@@ -49,16 +49,10 @@
               <!--<i class="el-icon-star-off" style="font-size:18px;"></i>-->
               {{lan.REMARK_PAGE}}
             </el-button>
-            <el-button type="text" @click="show_agreement_dialog" style="color:#fff">{{lan.USER_REGISTRATION}}</el-button>
+            <el-button v-if="loginBeforeData.is_register" type="text" @click="show_agreement_dialog" style="color:#fff">{{lan.USER_REGISTRATION}}</el-button>
             <el-button type="text" style="color:#fff" @click="goToHelp">
               <!--<i class="iconfont icon-iconhelp1" style="font-size:18px;"></i>-->
               {{lan.LAYOUT_INDEX_HELP_CENTER}}</el-button>
-            <!--<el-select v-model="login_type"  class="no_border color_white" style="width:144px;color:#fff;">-->
-              <!--<el-option label="登录风格一" value="cm"></el-option>-->
-              <!--<el-option label="登录风格二" value="xsy"></el-option>-->
-              <!--<el-option label="登录风格三" value="wy"></el-option>-->
-              <!--&lt;!&ndash;<el-option label="Español" value="es" disabled></el-option>&ndash;&gt;-->
-            <!--</el-select>-->
           </div>
           <div class="loginArea normalForm" curtype="normalForm">
             <div id="login_box" style="min-width:260px;width: 54%;margin:0 auto;">
@@ -116,7 +110,7 @@
       <div class="crm-register-bg" >
         <div class="crm-register-form crm-login-form login_box">
           <header class="crm-login1-header">
-            <h1>欢迎 登录Webmail</h1>
+            <h1>{{lan.LOGIN_WELCOME}}</h1>
           </header>
           <div class="crm-register-body crm-login1-body">
             <ul>
@@ -124,25 +118,24 @@
                 <!--<div class="crm-register-input-warpper error">-->
                 <div class="crm-register-input-warpper" :class="{error:username_error}">
 
-<label style="display:none;"><span></span><input type="text" name="login_username" ></label>
-<label style="display:none;"><span></span><input type="password" name="hidden2" ></label>
-                  <el-input type="text" class="crm-register-input user_name" name="login_username" v-model.trim="formLabelAlign.username" placeholder="请输入用户名" tabindex="1" autocomplete="off" @focus="username_error=false" clearable></el-input>
+<!--<label style="display:none;"><span></span><input type="text" name="login_username" ></label>-->
+<!--<label style="display:none;"><span></span><input type="password" name="hidden2" ></label>-->
+                  <el-input type="text" class="crm-register-input user_name" name="username" v-model.trim="formLabelAlign.username" :placeholder="lan.placeholder_user_name" tabindex="1" autocomplete="off" @focus="username_error=false" clearable></el-input>
                   <!--<span class="login_box_delete" style="display: inline;" @click="clear_username" v-if="formLabelAlign.username !=''"><i></i></span>-->
                   <el-select v-model="loginBeforeData.domain"  :placeholder="lan.please_choose"  style="width:152px;float:right" @change="changeDomain" class="no_bg_select">
                     <el-option v-for="(d,k) in loginBeforeData.domains" :key="k" :label="'@ '+d[1]" :value="d[1]"></el-option>
                   </el-select>
                 </div>
-                <!--<span class="errorinfo error_1 ">请您输入用户名</span>-->
-                <span class="errorinfo error_1 " v-if="username_error">用户名格式不正确,请输入正确格式的用户名</span>
+                <span class="errorinfo error_1 " v-if="username_error">{{lan.LOGIN_USERNAME_RULE}}</span>
               </li>
               <li>
                 <div class="crm-register-input-warpper" :class="{error:password_error}">
-                  <el-input class="crm-register-input user_pwd" :type="pwd_type"  v-model="formLabelAlign.password" placeholder="请输入密码" tabindex="2" autocomplete="off"   id="password" @focus="pwd_focus_fn" clearable></el-input>
+                  <el-input class="crm-register-input user_pwd" type="password"  v-model="formLabelAlign.password" :placeholder="lan.LAYOUT_INDEX_PASSWORD_RULE" tabindex="2" autocomplete="off"   id="password" @focus="pwd_focus_fn" clearable></el-input>
                   <span class="crm-register-verification dinline-block" style="">
-                    <a href="#" act="pwd_forget" tabindex="4" style="display:block;"  @click.prevent="forget">忘记密码？</a>
+                    <a href="#" act="pwd_forget" tabindex="4" style="display:block;"  @click.prevent="forget">{{lan.forget_password}}</a>
                   </span>
                 </div>
-                <span class="errorinfo error_2" v-if="password_error">请您输入密码</span>
+                <span class="errorinfo error_2" v-if="password_error">{{lan.LAYOUT_INDEX_PASSWORD_RULE}}</span>
               </li>
               <li style="text-align:left;">
                 <el-checkbox  v-model="rememberUserInfo" :class="{'is-checked el-checkbox__input':rememberUserInfo}" style="color:#fff;">{{lan.LOGIN_REMEMBER_USERNAME}}</el-checkbox>
@@ -151,17 +144,24 @@
           </div>
           <div class="crm-register-footer">
 
-            <a href="javascript:;" class="pg-btn-submit dinline-block " tabindex="3" act="login_btn" @click.prevent="login_xsy">登     录</a>
+            <a href="javascript:;" class="pg-btn-submit dinline-block " tabindex="3" act="login_btn" @click.prevent="login_xsy">{{lan.login}}</a>
           </div>
 
         </div>
       </div>
 
-      <a href="#"><div class="bottom-logo"></div></a>
+      <a href="#" v-if="loginBeforeData.login_logo">{{loginBeforeData.login_logo}}
+        <div class="bottom-logo">
+          <img :src="loginBeforeData.login_logo">
+        </div>
+      </a>
+      <!--<a href="#"  v-if="loginBeforeData.login_logo">-->
+              <!--<img :src="loginBeforeData.login_logo" alt=" U-Mail">-->
+            <!--</a>-->
 
       <div class="crm-register-container">
         <a href="#" class="register_link" @click.prevent="remark_page" style="color:#fff" >{{lan.REMARK_PAGE}}</a>
-        没有账号?<a href="#" class="register_link" tabindex="6" act="reg_link"  @click.prevent="show_agreement_dialog">免费注册</a>
+        <a href="#" v-if="loginBeforeData.is_register" class="register_link" tabindex="6" act="reg_link"  @click.prevent="show_agreement_dialog">{{lan.USER_REGISTRATION}}</a>
         <a href="#" class="register_link" style="color:#fff" @click.prevent="goToHelp">{{lan.LAYOUT_INDEX_HELP_CENTER}}</a>
         <el-select v-model="language" @change="changeLanguage" class="no_border" style="width:144px;color:#fff;">
           <el-option label="中文（简体）" value="zh-hans"></el-option>
@@ -169,12 +169,6 @@
           <el-option label="English" value="en"></el-option>
           <!--<el-option label="Español" value="es" disabled></el-option>-->
         </el-select>
-        <!--<el-select v-model="login_type"  class="no_border color_white" style="width:144px;">-->
-          <!--<el-option label="登录风格一" value="cm"></el-option>-->
-          <!--<el-option label="登录风格二" value="xsy"></el-option>-->
-          <!--<el-option label="登录风格三" value="wy"></el-option>-->
-          <!--&lt;!&ndash;<el-option label="Español" value="es" disabled></el-option>&ndash;&gt;-->
-        <!--</el-select>-->
       </div>
       <div class="crm-beian-container">
         <p style="color: rgba(255, 255, 255, 0.48);float:right;margin:0 40px 0 5px;">
@@ -195,45 +189,37 @@
     <div v-if="login_type=='wy'" id="login_wy" :style="{'padding-top':wy_padding_top+'px'}">
       <div class="header">
         <h1 class="headerLogo">
-          <!--<a href="#" class="login_logo"  v-if="loginBeforeData.login_logo">-->
-              <!--<img :src="loginBeforeData.login_logo" alt=" U-Mail">-->
-            <!--</a>-->
-          <a href="#"><div class="header-umail"></div></a>
+          <a href="#"  v-if="loginBeforeData.login_logo">
+              <img :src="loginBeforeData.login_logo">
+            </a>
         </h1>
-        <a class="headerTitle" href="http://mail.163.com/html/mail_intro/" target="_blank">
-          中文邮箱第一品牌
-        </a>
         <div class="headerNav">
-          <!--<el-select v-model="login_type"  class="no_border" >-->
-            <!--<el-option label="登录风格一" value="cm"></el-option>-->
-            <!--<el-option label="登录风格二" value="xsy"></el-option>-->
-            <!--<el-option label="登录风格三" value="wy"></el-option>-->
-            <!--&lt;!&ndash;<el-option label="Español" value="es" disabled></el-option>&ndash;&gt;-->
-          <!--</el-select>-->
           <a href="#" type="text" @click.prevent="remark_page">{{lan.REMARK_PAGE}}</a>
+          <a href="#" v-if="loginBeforeData.is_register" type="default" @click.prevent="show_agreement_dialog">{{lan.USER_REGISTRATION}}</a>
           <a href="#" type="text" @click.prevent="goToHelp">{{lan.LAYOUT_INDEX_HELP_CENTER}}</a>
+          <el-select v-model="language" @change="changeLanguage" class="no_border change_language" style="width:134px;">
+            <el-option label="中文（简体）" value="zh-hans"></el-option>
+            <el-option label="中文（繁體）" value="zh-tw"></el-option>
+            <el-option label="English" value="en"></el-option>
+            <!--<el-option label="Español" value="es" disabled></el-option>-->
+          </el-select>
         </div>
       </div>
       <div class="main_wy" :class="'bg'+wy_bg" id="mainBg">
         <div class="main-inner" id="mainCnt" @mouseenter="stop_timer" @mouseleave="start_timer">
           <div class="main-inner-wrap">
-            <div id="theme" style="">
-              <a href="http://www.baidu.com" target="_blank" style="position: absolute; width: 605px; height: 600px; left: 0px; top: 0px; cursor: pointer;"></a>
+            <div id="theme" style="visibility: hidden">
+              <a href="http://www.comingchina.com" target="_blank" style="position: absolute; width: 605px; height: 600px; left: 0px; top: 0px; cursor: pointer;"></a>
             </div>
             <div class="themeCtrl">
-              <a id="prevTheme" class="prevTheme" href="javascript:void(0);" title="上一张" style="display: block;" @click="prevTheme"></a>
-              <a id="nextTheme" class="nextTheme" href="javascript:void(0);" title="下一张" style="display: block;" @click="nextTheme"></a>
+              <a id="prevTheme" class="prevTheme" href="javascript:void(0);" :title="lan.LOGIN_PREV" style="display: block;" @click="prevTheme"></a>
+              <a id="nextTheme" class="nextTheme" href="javascript:void(0);" :title="lan.LOGIN_NEXT" style="display: block;" @click="nextTheme"></a>
             </div>
             <!--登录框-->
             <div id="loginBlock">
               <div class="loginFunc">
-                <div id="lbApp" class="loginFuncApp">邮箱帐号登录</div>
-                <el-select v-model="language" @change="changeLanguage" class="no_border" style="float:right;width:124px;">
-                  <el-option label="中文（简体）" value="zh-hans"></el-option>
-                  <el-option label="中文（繁體）" value="zh-tw"></el-option>
-                  <el-option label="English" value="en"></el-option>
-                  <!--<el-option label="Español" value="es" disabled></el-option>-->
-                </el-select>
+                <div id="lbApp" class="loginFuncApp">{{lan.LOGIN_FOR_USERNAME}}</div>
+
               </div>
               <div id="normalLoginTab" class="loginForm">
                 <div class="loginWrap">
@@ -246,39 +232,34 @@
                           </el-select>
                         </template>
                       </el-input>
+                      <el-input type="text" name="username" v-model.trim="formLabelAlign.username" style="display:none;"></el-input>
                       <el-input prefix-icon="el-icon-goods" type="password" name="password" v-model="formLabelAlign.password" clearable class="input_height_46_box" :class="{is_error:wy_password_error}" @focus="wy_password_error=false"></el-input>
                       <div  class="m-unlogin">
                         <el-checkbox  v-model="rememberUserInfo" :class="{'is-checked el-checkbox__input':rememberUserInfo}">{{lan.LOGIN_REMEMBER_USERNAME}}</el-checkbox>
                         <el-button type="text" style="float:right;padding:0;color:#3182d9;" @click="forget">{{lan.forget_password}}</el-button>
 
-
-
                       </div>
                       <el-row :gutter="10">
-                        <el-col :span="12">
+                        <el-col :span="24">
                           <el-button type="primary" style="width:100%;height:46px;" @click="login_wy">{{lan.login}}</el-button>
-                        </el-col>
-                        <el-col :span="12">
-                          <el-button type="default" style="width:100%;height:46px;" @click="show_agreement_dialog">{{lan.USER_REGISTRATION}}</el-button>
                         </el-col>
                       </el-row>
                     </div>
 
 
                   </div>
-                  <div class="mailApp">
+                  <div class="mailApp" style="visibility: hidden">
                     <a class="mailApp-logo mailApp-logo-6" id="mailAppLogo" href="http://reg.vip.163.com/register.m?from=anquan" target="_blank"></a>
                   </div>
                 </div>
                 <div id="loginExt" class="ext">
                   <ul id="extText">
                     <li class="ext-1">
-                      <a href="#" target="_blank" style="">新年红时尚品指南！</a>
-                      <img src="https://irpmt.mail.163.com/ir/stat.gif?statId=1_7_117_263&amp;rnd=1548402921284&amp;uid=nt@163.com" style="position:absolute;z-index:0;right:0;width:1px;height:1px;">
+                        {{lan.LOGIN_WY_DESC1}}
+
                     </li>
                     <li class="ext-2">
-                      <a href="#" target="_blank" style=""><span style="color: #cb4444">网易邮箱提醒您谨防邮件诈骗！</span></a>
-                      <img src="https://irpmt.mail.163.com/ir/stat.gif?statId=1_7_117_245&amp;rnd=1548402921284&amp;uid=nt@163.com" style="position:absolute;z-index:0;right:0;width:1px;height:1px;">
+                      {{lan.LOGIN_WY_DESC2}}
                     </li>
                   </ul>
                 </div>
@@ -286,7 +267,7 @@
             </div>
           </div>
 
-          <img id="adtag" width="22" height="14" src="/static/img/login/ad.png" style="position: absolute; left: 50%; bottom: 4px; margin-left: -484px; border: 0px;">
+          <img v-if="false" id="adtag" width="22" height="14" src="/static/img/login/ad.png" style="position: absolute; left: 50%; bottom: 4px; margin-left: -484px; border: 0px;">
         </div>
       </div>
       <div id="footer">
@@ -464,13 +445,14 @@
         }
       };
       return {
+        bg_counts:2,
         wy_padding_top:0,
         wy_bg:1,
         username_error:false,
         password_error:false,
         wy_username_error:false,
         wy_password_error:false,
-        login_type:'cm', //cm | xsy
+        login_type:'', //cm | xsy
         props:{
           value:'id',
           label: 'label',
@@ -610,20 +592,20 @@
         },
         registerVisible:false,
         rememberUserInfo:true,
-        language:'zh',
+        language:'zh-hans',
         bgIndex:0,
         passwordRules:{},
         loginBeforeData:{
-          "domain":"test.com",
-          "name":"77777umail",
-          "title":"11111111111",
-          "is_domain":true,
-          "domains":[[1,"test.com"],[33,"zsh1.com"],[31,"zsh.com"],[24,"domain2.com"],[25,"test.cn.com"],[26,"test1.cn.com"]],
-          "is_icp":true,
-          "icp_no":"dsfdsa",
-          "icp_link":"dsa",
+          "domain":"",
+          "name":"",
+          "title":"",
+          "is_domain":false,
+          "domains":[],
+          "is_icp":false,
+          "icp_no":"",
+          "icp_link":"",
           "is_ssl":false,
-          "login_logo":"/media/logo_5CrSq_20181213113208_763.jpg",
+          "login_logo":"",
           "login_ads":[
             // {"image":"http://192.168.1.39:81/media/logo_FbIHh_20181213113253_180.jpg","link":"12"},
             // {"image":"http://192.168.1.39:81/media/logo_FbIHh_20181213113253_180.jpg","link":"1234"},
@@ -700,7 +682,7 @@
         }
         this.wy_bg_timer = setInterval(()=>{
           this.wy_bg ++;
-          if(this.wy_bg>3)this.wy_bg=1;
+          if(this.wy_bg>this.bg_counts)this.wy_bg=1;
         },3000)
       },
       stop_timer(){
@@ -714,12 +696,12 @@
       prevTheme(){
         this.wy_bg --;
         if(this.wy_bg <=0){
-          this.wy_bg = 3
+          this.wy_bg = this.bg_counts
         }
       },
       nextTheme(){
         this.wy_bg ++;
-        if(this.wy_bg >=4){
+        if(this.wy_bg >this.bg_counts){
           this.wy_bg = 1
         }
       },
@@ -774,7 +756,7 @@
               console.log(res)
               this.$message({
                 type:'success',
-                message:+obj.username+ this.lan.REGISTER_SUCCESS
+                message:obj.username + this.lan.REGISTER_SUCCESS
               })
               this.registerVisible = false;
               this.$refs['register_form'].resetFields()
@@ -849,7 +831,9 @@
         loginBefore(param).then(res=>{
           let origin = window.location.origin  //window.location.origin  'http://192.168.1.39:81'
           this.loginBeforeData = res.data;
-          this.loginBeforeData.login_logo = origin + this.loginBeforeData.login_logo;
+          if(res.data.login_logo){
+            this.loginBeforeData.login_logo = origin + this.loginBeforeData.login_logo;
+          }
           if(this.loginBeforeData.login_ads && this.loginBeforeData.login_ads[0]){
             this.loginBeforeData.login_ads[0].image = origin + this.loginBeforeData.login_ads[0].image;
           }
@@ -860,14 +844,17 @@
           for(let i=0;i<this.loginBeforeData.domains.length;i++){
             this.domain_hash_id[this.loginBeforeData.domains[i][1]] = this.loginBeforeData.domains[i][0];
           }
+
           if(this.loginBeforeData.login_page == 1){
             this.login_type = 'wy';
+            sessionStorage['login_type']  = 'wy'
           }else if(this.loginBeforeData.login_page == 2){
             this.login_type = 'xsy';
+            sessionStorage['login_type']  = 'xsy'
           }else if(this.loginBeforeData.login_page == 3){
             this.login_type = 'cm';
+            sessionStorage['login_type']  = 'cm'
           }
-
 
           this.$store.dispatch('setLoginBeforeA',this.loginBeforeData);
 
@@ -1104,7 +1091,7 @@
           this.wy_username_error = true
           this.$message({
             type:'error',
-            message:'请输入用户名！'
+            message:this.lan.placeholder_user_name
           })
           return;
         }else{
@@ -1114,7 +1101,7 @@
           this.wy_password_error = true;
           this.$message({
             type:'error',
-            message:'请输入密码！'
+            message:this.lan.LAYOUT_INDEX_PASSWORD_RULE
           })
           return;
         }else{
@@ -1283,6 +1270,9 @@
       //   }
       // },2000)
       console.log()
+      if(sessionStorage['login_type']){
+        this.login_type = sessionStorage['login_type']
+      }
       if(localStorage['userName']=='' || !localStorage['userName']){
         this.rememberUserInfo = false;
       }else{
@@ -1322,28 +1312,32 @@
       this.wy_caroucel();
       this.getLoginBefore()
       var lett = this;
-      if(this.$route.name && this.$route.name == 'login'){
-        document.onkeydown = function (e) {
-          var key = e.keyCode;
-          if (key == 13) {
-            if( lett.reset1_show || lett.formVisible || lett.form3Visible ){
-
-            }else{
-              if(lett.login_type=='cm'){
-                lett.login();
-              }else if(lett.login_type=='xsy'){
-                lett.login_xsy();
-              }else if(lett.login_type=='wy'){
-                lett.login_wy();
-              }
-            }
-          }
-        }
-      }
+      // if(this.$route.name && this.$route.name == 'login'){
+      //   document.onkeydown = function (e) {
+      //     var key = e.keyCode;
+      //     if (key == 13) {
+      //       if( lett.reset1_show || lett.formVisible || lett.form3Visible ){
+      //
+      //       }else{
+      //         if(lett.login_type=='cm'){
+      //           lett.login();
+      //         }else if(lett.login_type=='xsy'){
+      //           lett.login_xsy();
+      //         }else if(lett.login_type=='wy'){
+      //           lett.login_wy();
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
     }
   }
 </script>
 <style>
+  #login_wy .change_language input{
+    color:#3399cc;
+    font-size:12px;
+  }
   #login_wy .is_error input[name='username'],#login_wy .is_error input[name='password']{
     border-color: #f56c6c;
   }
@@ -1379,15 +1373,16 @@
     margin-bottom: 35px;
     line-height: 16px;
   }
-  .loginFuncApp:after {
+  .loginFunc:after {
     content: "";
     position: absolute;
-    left: 68px;
+    /*left: 68px;*/
     bottom: 0;
-    width: 90px;
-    border-bottom: 2px solid #3182d9;
-    left: 60px;
-    width: 102px;
+    /*width: 90px;*/
+    border-bottom: 2px solid #dcdfe6;
+    left: 0;
+    /*width: 102px;*/
+    right:0;
   }
   .m-cnt {
     width: 330px;
@@ -1455,10 +1450,12 @@
     float: left;
     font-size: 16px;
     text-align: center;
-    /*color: #626262;*/
-    color: #3182d9;
+    color: #626262;
+    /*color: #3182d9;*/
     cursor: pointer;
-    font-weight: 100;
+    font-weight: 400;
+    /*margin:0 auto;*/
+    font-size:18px;
 
 
   }
@@ -1570,22 +1567,34 @@
       background-position: top;
   }
   .bg1.main_wy{
-    background-color: rgb(251, 221, 211)
+    /*background-color: rgb(251, 221, 211)*/
+    /*background:url(/static/img/login/promPic1.jpg) no-repeat;*/
+    background:url(/static/img/login/pic-1.jpg) no-repeat center;
+    background-size:cover;
   }
   .bg1 #mainCnt{
-    background-image:url(/static/img/login/promPic1.jpg);
+    /*background-image:url(/static/img/login/promPic1.jpg);*/
   }
   .bg2.main_wy{
-    background-color: rgb(210, 41, 72);
+    /*background-color: rgb(210, 41, 72);*/
+    background:url(/static/img/login/pic-2.jpg) no-repeat center;
+    background-size:cover;
   }
   .bg2 #mainCnt{
-    background-image:url(/static/img/login/promPic2.jpg);
+    /*background-image:url(/static/img/login/promPic2.jpg);*/
   }
   .bg3.main_wy{
-    background-color:rgb(180, 219, 233);
+    /*background-color:rgb(180, 219, 233);*/
+    background:url(/static/img/login/banner3.jpg) no-repeat center ;
+    background-size:cover;
+  }
+  .bg4.main_wy{
+    /*background-color:rgb(180, 219, 233);*/
+    background:url(/static/img/login/banner4.jpg) no-repeat center ;
+    background-size:cover;
   }
   .bg3 #mainCnt{
-    background-image:url(/static/img/login/promPic3.jpg);
+    /*background-image:url(/static/img/login/promPic3.jpg);*/
   }
 
 
@@ -1633,8 +1642,8 @@
     width:100%;
 
     height:100%;
-    background-image: url(../../assets/img/login/1.jpg);
-    /*background-image: url(../../assets/img/login/2.jpg);*/
+    /*background-image: url(../../assets/img/login/1.jpg);*/
+    background-image: url(../../assets/img/mainBg2.jpg);
     background-size: cover;
     background-position:right bottom;
   }
@@ -1860,8 +1869,9 @@
     width: 100%;
     height: 100%;
     background: url(/static/img/login/login_bg.jpg);
-    /*background: url(../../assets/img/login/2.jpg);*/
-    background-position: center;
+    /*background: url(../../assets/img/login/1.jpg);*/
+    /*background: url(../../assets/img/mainBg2.jpg);*/
+    background-position: right bottom;
     background-size: cover;
     padding-top: 6%;
   }
@@ -1880,9 +1890,10 @@
 
   }
   .bottom-logo {
-    background: url(../../assets/img/logo.png) center center no-repeat;
+    background: center center no-repeat;
+    /*background-image: url(../../assets/img/logo.png);*/
     position: absolute;
-    width: 192px;
+    /*width: 192px;*/
     margin: 0 auto;
     height: 58px;
     top: 22px;

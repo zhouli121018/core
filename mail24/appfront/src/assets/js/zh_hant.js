@@ -1167,5 +1167,52 @@ var  zh_hant = {
   //components/Contact  选择通讯录组件
   CHOOSE_CONTACT_DESC: "請選擇部門或成員",
   CHOOSE_CONTACT_ALREADY: "已選部門或成員",
+
+    // login/login  登录页面
+  LOGIN_WELCOME: "歡迎登錄Webmail",
+  LOGIN_USERNAME_RULE: "用戶名格式不正確，請輸入正確格式的用戶名",
+  LOGIN_PREV: "上一張",
+  LOGIN_NEXT: "下一張",
+  LOGIN_FOR_USERNAME: "郵箱帳號登入",
+  LOGIN_WY_DESC1: "精准反垃圾，有效過濾超過98.6%的垃圾郵件！",
+  LOGIN_WY_DESC2: "病毒郵件有效攔截率超過99.9%！",
+
+  //layout/index 邮件全文搜索
+  LAYOUT_INDEX_KEYWORD: "關鍵字包含",
+  LAYOUT_INDEX_SUBJECT: "主題包含",
+  LAYOUT_INDEX_ATTACH: "附件名包含",
+  LAYOUT_INDEX_MAILS: "的郵件",
+  LAYOUT_INDEX_MORE_SEARCH: "高級搜索",
+  LAYOUT_INDEX_LABEL_KEYWORD: "關鍵字",
+  LAYOUT_INDEX_LABEL_FOLDER: "資料夾",
+  LAYOUT_INDEX_LABEL_FOLDER_ROOT: "根資料夾",
+  LAYOUT_INDEX_LABEL_DATE: "發信時間",
+  LAYOUT_INDEX_NULL: "不限",
+  LAYOUT_INDEX_SEARCH_DATE1: "最近一天",
+  LAYOUT_INDEX_SEARCH_DATE2: "最近三天",
+  LAYOUT_INDEX_SEARCH_DATE3: "最近一周",
+  LAYOUT_INDEX_SEARCH_DATE4: "最近一月",
+  LAYOUT_INDEX_SEARCH_DATE5: "最近三月",
+  LAYOUT_INDEX_SEARCH_DATE6: "最近半年",
+  LAYOUT_INDEX_SEARCH_DATE7: "最近一年",
+  LAYOUT_INDEX_LABEL_SIZE: "郵件大小",
+  LAYOUT_INDEX_SIZE_DESC1: "小於100KB",
+  LAYOUT_INDEX_SIZE_DESC2: "100kB~10Mb",
+  LAYOUT_INDEX_SIZE_DESC3: "大於等於10MB",
+  LAYOUT_INDEX_SEARCH_RULES: "關鍵字、郵件主題、附件名至少填寫一項！",
+  LAYOUT_INDEX_SEARCH_TITLE: "蒐索郵件",
+
+  //mailbox/components/searchmail 邮件全文搜索页面
+  MAILBOX_COM_SEARCH_CONDITION: "搜索條件",
+  MAILBOX_COM_SEARCH_NO: "沒有蒐索到",
+  MAILBOX_COM_SEARCH_FOLDER_DESC: "所在資料夾範圍為",
+  MAILBOX_COM_SEARCH_SENDER_DESC: "發件人為",
+  MAILBOX_COM_SEARCH_REC_DESC: "收件人為",
+  MAILBOX_COM_SEARCH_DATE_DESC: "發信時間範圍為",
+  MAILBOX_COM_SEARCH_SIZE_DESC: "郵件大小為",
+  MAILBOX_COM_SEARCH_YOU_CAN: "您可以",
+  MAILBOX_COM_SEARCH_TIP1: "1.更換關鍵字重新搜索",
+  MAILBOX_COM_SEARCH_TIP2: "2.使用高級搜索，通過其他郵件特徵進行蒐索",
+  MAILBOX_COM_SEARCH_NOT_FOND: "蒐索郵件不存在或者已被删除！",
 }
 export default zh_hant;

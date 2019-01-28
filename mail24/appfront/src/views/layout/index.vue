@@ -138,13 +138,12 @@
                     <span class="j-search u-search iconfont icon-iconsreachm" @click="fullsearchbtn"></span>
                   </span>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item v-if="!fullsearchForm.keyword" disabled>请输入关键字</el-dropdown-item>
-                    <el-dropdown-item v-if="fullsearchForm.keyword" command="keyword">关键字包含 "{{fullsearchForm.keyword}}" 的邮件</el-dropdown-item>
-                    <!--<el-dropdown-item v-if="fullsearchForm.keyword" command="sender">发件人包含 "{{fullsearchForm.keyword}}" 的邮件</el-dropdown-item>-->
-                    <el-dropdown-item v-if="fullsearchForm.keyword" command="subject">主题包含 "{{fullsearchForm.keyword}}" 的邮件</el-dropdown-item>
-                    <el-dropdown-item v-if="fullsearchForm.keyword" command="attach">附件名包含 "{{fullsearchForm.keyword}}" 的邮件</el-dropdown-item>
+                    <el-dropdown-item v-if="!fullsearchForm.keyword" disabled>{{lan.FILE_C_SEARCH2}}</el-dropdown-item>
+                    <el-dropdown-item v-if="fullsearchForm.keyword" command="keyword">{{lan.LAYOUT_INDEX_KEYWORD}} "{{fullsearchForm.keyword}}" {{lan.LAYOUT_INDEX_MAILS}}</el-dropdown-item>
+                    <el-dropdown-item v-if="fullsearchForm.keyword" command="subject">{{lan.LAYOUT_INDEX_SUBJECT}} "{{fullsearchForm.keyword}}" {{lan.LAYOUT_INDEX_MAILS}}</el-dropdown-item>
+                    <el-dropdown-item v-if="fullsearchForm.keyword" command="attach">{{lan.LAYOUT_INDEX_ATTACH}} "{{fullsearchForm.keyword}}" {{lan.LAYOUT_INDEX_MAILS}}</el-dropdown-item>
 
-                    <el-dropdown-item divided command="more">高级搜索</el-dropdown-item>
+                    <el-dropdown-item divided command="more">{{lan.LAYOUT_INDEX_MORE_SEARCH}}</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
 
@@ -257,52 +256,52 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="高级搜索" :visible.sync="show_Advanced_search" :append-to-body="true" width="450px" top="44px" custom-class="advance_search_dialog">
+    <el-dialog :title="lan.LAYOUT_INDEX_MORE_SEARCH" :visible.sync="show_Advanced_search" :append-to-body="true" width="450px" top="44px" custom-class="advance_search_dialog">
       <el-form :model="fullsearchForm" status-icon :rules="fullsearchFormRules" ref="fullsearchForm" status-icon  label-width="100px" size="small">
-        <el-form-item label="关键字：" prop="keyword">
-          <el-input type="text" v-model="fullsearchForm.keyword" placeholder="输入关键词搜索"></el-input>
+        <el-form-item :label="lan.LAYOUT_INDEX_LABEL_KEYWORD+'：'" prop="keyword">
+          <el-input type="text" v-model="fullsearchForm.keyword" :placeholder="lan.FILE_C_SEARCH2"></el-input>
         </el-form-item>
-        <el-form-item label="邮件主题：" prop="subject">
+        <el-form-item :label="lan.COMMON_MAIL_SUBJECT+'：'" prop="subject">
           <el-input type="text" v-model="fullsearchForm.subject"></el-input>
         </el-form-item>
-        <el-form-item label="附件名：" prop="attach">
+        <el-form-item :label="lan.SETTING_RE_LOGIC_ATTACH+'：'" prop="attach">
           <el-input type="text" v-model="fullsearchForm.attach"></el-input>
         </el-form-item>
-        <el-form-item label="文件夹：" prop="folder">
+        <el-form-item :label="lan.LAYOUT_INDEX_LABEL_FOLDER+'：'" prop="folder">
           <el-select v-model="fullsearchForm.folder" style="width:100%">
-            <el-option label="根文件夹" value=""></el-option>
+            <el-option :label="lan.LAYOUT_INDEX_LABEL_FOLDER_ROOT" value=""></el-option>
             <el-option v-for="f in floderList" :key="f.raw_name" v-if="f.raw_name!='Drafts'" :label="f.name" :value="f.raw_name"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="发信人：" prop="sender">
+        <el-form-item :label="lan.SETTING_RE_LOGIC_SENDER+'：'" prop="sender">
           <el-input type="text" v-model="fullsearchForm.sender"></el-input>
         </el-form-item>
-        <el-form-item label="收信人：" prop="recipient">
+        <el-form-item :label="lan.SETTING_RE_LOGIC_RECIPIENT+'：'" prop="recipient">
           <el-input type="text" v-model="fullsearchForm.recipient"></el-input>
         </el-form-item>
-        <el-form-item label="发信时间：" prop="date">
+        <el-form-item :label="lan.LAYOUT_INDEX_LABEL_DATE+'：'" prop="date">
           <el-select v-model="fullsearchForm.date" style="width:100%">
-            <el-option label="不限" value=""></el-option>
-            <el-option label="最近一天" value="1"></el-option>
-            <el-option label="最近三天" value="2"></el-option>
-            <el-option label="最近一周" value="3"></el-option>
-            <el-option label="最近一月" value="4"></el-option>
-            <el-option label="最近三月" value="5"></el-option>
-            <el-option label="最近半年" value="6"></el-option>
-            <el-option label="最近一年" value="7"></el-option>
+            <el-option :label="lan.LAYOUT_INDEX_NULL" value=""></el-option>
+            <el-option :label="lan.LAYOUT_INDEX_SEARCH_DATE1" value="1"></el-option>
+            <el-option :label="lan.LAYOUT_INDEX_SEARCH_DATE2" value="2"></el-option>
+            <el-option :label="lan.LAYOUT_INDEX_SEARCH_DATE3" value="3"></el-option>
+            <el-option :label="lan.LAYOUT_INDEX_SEARCH_DATE4" value="4"></el-option>
+            <el-option :label="lan.LAYOUT_INDEX_SEARCH_DATE5" value="5"></el-option>
+            <el-option :label="lan.LAYOUT_INDEX_SEARCH_DATE6" value="6"></el-option>
+            <el-option :label="lan.LAYOUT_INDEX_SEARCH_DATE7" value="7"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="邮件大小：" prop="size">
+        <el-form-item :label="lan.LAYOUT_INDEX_LABEL_SIZE+'：'" prop="size">
           <el-select v-model="fullsearchForm.size" style="width:100%">
-            <el-option label="不限" value=""></el-option>
-            <el-option label="小于100KB" value="1"></el-option>
-            <el-option label="100kb ~ 10MB" value="2"></el-option>
-            <el-option label="大于等于10MB" value="3"></el-option>
+            <el-option :label="lan.LAYOUT_INDEX_NULL" value=""></el-option>
+            <el-option :label="lan.LAYOUT_INDEX_SIZE_DESC1" value="1"></el-option>
+            <el-option :label="lan.LAYOUT_INDEX_SIZE_DESC2" value="2"></el-option>
+            <el-option :label="lan.LAYOUT_INDEX_SIZE_DESC3" value="3"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="advance_search_fn">搜索</el-button>
-          <el-button @click="show_Advanced_search = false">取消</el-button>
+          <el-button type="primary" @click="advance_search_fn">{{lan.COMMON_SEARCH2}}</el-button>
+          <el-button @click="show_Advanced_search = false">{{lan.COMMON_BUTTON_CANCELL}}</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -434,7 +433,7 @@
         if(this.fullsearchForm.keyword == '' && this.fullsearchForm.subject=='' && this.fullsearchForm.attach==''){
           this.$message({
             type:'error',
-            message:'关键字、邮件主题、附件名 至少填写一项！'
+            message:this.lan.LAYOUT_INDEX_SEARCH_RULES
           })
           return;
         }
@@ -463,12 +462,12 @@
         params['recipient'] = this.fullsearchForm.recipient;
         if( this.fullsearchForm.date!=''){
           params['date'] = this.fullsearchForm.date;
-          params['date_desc'] = this.fullsearchForm.date==1?'最近一天':this.fullsearchForm.date==2?'最近三天':this.fullsearchForm.date==3?'最近一周':this.fullsearchForm.date==4?'最近一月':this.fullsearchForm.date==5?'最近三月':this.fullsearchForm.date==6?'最近半年':'最近一年';
+          params['date_desc'] = this.fullsearchForm.date==1?this.lan.LAYOUT_INDEX_SEARCH_DATE1:this.fullsearchForm.date==2?this.lan.LAYOUT_INDEX_SEARCH_DATE2:this.fullsearchForm.date==3?this.lan.LAYOUT_INDEX_SEARCH_DATE3:this.fullsearchForm.date==4?this.lan.LAYOUT_INDEX_SEARCH_DATE4:this.fullsearchForm.date==5?this.lan.LAYOUT_INDEX_SEARCH_DATE5:this.fullsearchForm.date==6?this.lan.LAYOUT_INDEX_SEARCH_DATE6:this.lan.LAYOUT_INDEX_SEARCH_DATE7;
         }
 
         if( this.fullsearchForm.size!=''){
           params['size'] = this.fullsearchForm.size;
-          params['size_desc'] = this.fullsearchForm.size==1?'小于100KB':this.fullsearchForm.size==2?'100kb ~ 10MB':'大于等于10MB'
+          params['size_desc'] = this.fullsearchForm.size==1?this.lan.LAYOUT_INDEX_SIZE_DESC1:this.fullsearchForm.size==2?this.lan.LAYOUT_INDEX_SIZE_DESC2:this.lan.LAYOUT_INDEX_SIZE_DESC3
         }
 
         mailSearch(params).then(res=>{
@@ -489,7 +488,7 @@
                 this.jumpTo('/mailbox/innerbox/INBOX')
               }
             }
-          this.$refs['mailbox_ele'].addTab('searchmail','搜索邮件',1,1)
+          this.$refs['mailbox_ele'].addTab('searchmail',this.lan.LAYOUT_INDEX_SEARCH_TITLE,1,1)
         }).catch(err=>{
           console.log(err)
           this.searchLoading = false;
@@ -521,7 +520,7 @@
                 this.jumpTo('/mailbox/innerbox/INBOX')
               }
             }
-            this.$refs['mailbox_ele'].addTab('searchmail','搜索邮件',1,1)
+            this.$refs['mailbox_ele'].addTab('searchmail',this.lan.LAYOUT_INDEX_SEARCH_TITLE,1,1)
 
           }).catch(err=>{
             this.searchLoading = false;

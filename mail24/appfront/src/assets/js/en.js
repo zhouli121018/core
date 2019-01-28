@@ -1189,5 +1189,52 @@ var  zh_hans = {
   //components/Contact  选择通讯录组件
   CHOOSE_CONTACT_DESC: "Please select department or member",
   CHOOSE_CONTACT_ALREADY: "Selected Departments or Members",
+
+  // login/login login login page
+  LOGIN_WELCOME:'Welcome to Webmail',
+  LOGIN_USERNAME_RULE: "The user name format is incorrect. Please enter the user name in the correct format.",
+  LOGIN_PREV:'Last one',
+  LOGIN_NEXT:'Next one',
+  LOGIN_FOR_USERNAME: "Mailbox Account Log-in",
+  LOGIN_WY_DESC1: "Precision anti-spam, effective filtering over 98.6% of spam! ",
+  LOGIN_WY_DESC2: "The effective interception rate of viral mail exceeds 99.9%! ",
+
+  //layout/index mail full-text search
+  LAYOUT_INDEX_KEYWORD: "Keyword Inclusion",
+  LAYOUT_INDEX_SUBJECT: "Topic Inclusion",
+  LAYOUT_INDEX_ATTACH:'Attachment Name Includes',
+  LAYOUT_INDEX_MAILS:'Mail',
+  LAYOUT_INDEX_MORE_SEARCH: "Advanced Search",
+  LAYOUT_INDEX_LABEL_KEYWORD:'Keyword',
+  LAYOUT_INDEX_LABEL_FOLDER: 'Folder',
+  LAYOUT_INDEX_LABEL_FOLDER_ROOT: 'Root Folder',
+  LAYOUT_INDEX_LABEL_DATE:'Time to Send',
+  LAYOUT_INDEX_NULL:'unlimited',
+  LAYOUT_INDEX_SEARCH_DATE1: "The Last Day",
+  LAYOUT_INDEX_SEARCH_DATE2:'The last three days',
+  LAYOUT_INDEX_SEARCH_DATE3:'Last week',
+  LAYOUT_INDEX_SEARCH_DATE4:'Recent January',
+  LAYOUT_INDEX_SEARCH_DATE5: "Last March",
+  LAYOUT_INDEX_SEARCH_DATE6: "The last half year",
+  LAYOUT_INDEX_SEARCH_DATE7:'The last year',
+  LAYOUT_INDEX_LABEL_SIZE: "Mail Size",
+  LAYOUT_INDEX_SIZE_DESC1: "Less than 100KB",
+  LAYOUT_INDEX_SIZE_DESC2: "100kb-10MB",
+  LAYOUT_INDEX_SIZE_DESC3: "greater than or equal to 10MB",
+  LAYOUT_INDEX_SEARCH_RULES: "Keyword, mail topic, attachment name at least fill in one! ",
+  LAYOUT_INDEX_SEARCH_TITLE: "Search for Mail",
+
+  //mailbox/components/searchmail full-text search page
+  MAILBOX_COM_SEARCH_CONDITION: "Search Conditions",
+  MAILBOX_COM_SEARCH_NO:'Not found',
+  MAILBOX_COM_SEARCH_FOLDER_DESC: "The scope of the folder where you are located",
+  MAILBOX_COM_SEARCH_SENDER_DESC: "Artificial Sender",
+  MAILBOX_COM_SEARCH_REC_DESC: "Artificial recipient",
+  MAILBOX_COM_SEARCH_DATE_DESC: "Sending time range",
+  MAILBOX_COM_SEARCH_SIZE_DESC:'Mail size is',
+  MAILBOX_COM_SEARCH_YOU_CAN:'You can',
+  MAILBOX_COM_SEARCH_TIP1: "1. Replace keywords and search again",
+  MAILBOX_COM_SEARCH_TIP2: "2. Use advanced search to search through other mail features",
+  MAILBOX_COM_SEARCH_NOT_FOND: "Search mail does not exist or has been deleted!",
 }
 export default zh_hans;

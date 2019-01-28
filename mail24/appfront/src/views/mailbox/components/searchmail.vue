@@ -10,11 +10,6 @@
                             <span class=" f-fr j-setting">
                             <el-button  icon="el-icon-setting" circle></el-button></span>
 
-            <!--<el-button size="mini" @click="selectAll" type="primary">-->
-            <!--{{is_checked?'取消全选':'全选'}}-->
-            <!--&lt;!&ndash;<el-checkbox @change="selectAll" :checked="is_checked" class="check_btn"></el-checkbox>&ndash;&gt;-->
-            <!--</el-button>-->
-
             <!--排序-->
             <el-dropdown @command="orderHandleCommand" placement="bottom-start" trigger="click" v-if="false">
               <el-button  size="small" plain>
@@ -136,9 +131,9 @@
             <div class="totals-info">
               <!--<span style="color:green;font-size:14px;">{{$store.getters.getSearchmailData.searchtype=='keyword'?'关键字包含 "'+$store.getters.getSearchmailData.keyword:$store.getters.getSearchmailData.searchtype=='sender'?'发件人包含'+$store.getters.getSearchmailData.keyword:$store.getters.getSearchmailData.searchtype=='subject'?'主题包含'+$store.getters.getSearchmailData.keyword:$store.getters.getSearchmailData.searchtype=='attach'?'附件名包含'+$store.getters.getSearchmailData.keyword:'高级搜索'}}</span>-->
               <el-tooltip class="item" effect="light" :content="search_desc" placement="bottom-start">
-                <el-button type="text">搜索条件</el-button>
+                <el-button type="text">{{lan.MAILBOX_COM_SEARCH_CONDITION}}</el-button>
               </el-tooltip>
-              搜索结果：{{totalCount}} 封邮件
+              <!--{{lan.MAILBOX_COM_SEARCH_RESULT}}：{{totalCount}} 封邮件-->
 
               <el-pagination style="float:right;text-align:right;padding:4px;height:32px;"
                              @size-change="handleSizeChange"
@@ -284,21 +279,21 @@
       </div>
       <div v-if="$store.getters.getSearchmailData.data.total==0" style="margin:0 20px;font-size:14px;">
         <h3 style="margin:30px 0 10px 0;font-size:24px;font-weight:normal;">
-          没有搜索到
+          {{lan.MAILBOX_COM_SEARCH_NO}}
 
-          <span v-if="$store.getters.getSearchmailData.params.keyword && $store.getters.getSearchmailData.params.keyword != ''">【关键字包含 <span class="mark">"{{$store.getters.getSearchmailData.params.keyword}}"</span>】</span>
-          <span v-if="$store.getters.getSearchmailData.params.subject && $store.getters.getSearchmailData.params.subject != ''">【主题包含 <span class="mark">"{{$store.getters.getSearchmailData.params.subject}}"</span>】</span>
-          <span v-if="$store.getters.getSearchmailData.params.attach && $store.getters.getSearchmailData.params.attach != ''">【附件名包含 <span class="mark">"{{$store.getters.getSearchmailData.params.attach}}"</span>】</span>
-          <span v-if="$store.getters.getSearchmailData.params.folder && $store.getters.getSearchmailData.params.folder != ''">【所在文件夹范围为 <span class="mark">"{{$store.getters.getSearchmailData.params.folder_desc}}"</span>】</span>
-          <span v-if="$store.getters.getSearchmailData.params.sender && $store.getters.getSearchmailData.params.sender != ''">【发件人为 <span class="mark">"{{$store.getters.getSearchmailData.params.sender}}"</span>】</span>
-          <span v-if="$store.getters.getSearchmailData.params.recipient && $store.getters.getSearchmailData.params.recipient != ''">【收件人为 <span class="mark">"{{$store.getters.getSearchmailData.params.recipient}}"</span>】</span>
-          <span v-if="$store.getters.getSearchmailData.params.date && $store.getters.getSearchmailData.params.date != ''">【发信时间范围为 <span class="mark">"{{$store.getters.getSearchmailData.params.date_desc}}"</span>】</span>
-          <span v-if="$store.getters.getSearchmailData.params.size && $store.getters.getSearchmailData.params.size != ''">【邮件大小为 <span class="mark">"{{$store.getters.getSearchmailData.params.size_desc}}" </span>】</span>
-          的邮件
+          <span v-if="$store.getters.getSearchmailData.params.keyword && $store.getters.getSearchmailData.params.keyword != ''">【{{lan.LAYOUT_INDEX_KEYWORD}} <span class="mark">"{{$store.getters.getSearchmailData.params.keyword}}"</span>】</span>
+          <span v-if="$store.getters.getSearchmailData.params.subject && $store.getters.getSearchmailData.params.subject != ''">【{{lan.LAYOUT_INDEX_SUBJECT}} <span class="mark">"{{$store.getters.getSearchmailData.params.subject}}"</span>】</span>
+          <span v-if="$store.getters.getSearchmailData.params.attach && $store.getters.getSearchmailData.params.attach != ''">【{{lan.LAYOUT_INDEX_ATTACH}} <span class="mark">"{{$store.getters.getSearchmailData.params.attach}}"</span>】</span>
+          <span v-if="$store.getters.getSearchmailData.params.folder && $store.getters.getSearchmailData.params.folder != ''">【{{lan.MAILBOX_COM_SEARCH_FOLDER_DESC}} <span class="mark">"{{$store.getters.getSearchmailData.params.folder_desc}}"</span>】</span>
+          <span v-if="$store.getters.getSearchmailData.params.sender && $store.getters.getSearchmailData.params.sender != ''">【{{lan.MAILBOX_COM_SEARCH_SENDER_DESC}} <span class="mark">"{{$store.getters.getSearchmailData.params.sender}}"</span>】</span>
+          <span v-if="$store.getters.getSearchmailData.params.recipient && $store.getters.getSearchmailData.params.recipient != ''">【{{lan.MAILBOX_COM_SEARCH_REC_DESC}} <span class="mark">"{{$store.getters.getSearchmailData.params.recipient}}"</span>】</span>
+          <span v-if="$store.getters.getSearchmailData.params.date && $store.getters.getSearchmailData.params.date != ''">【{{lan.MAILBOX_COM_SEARCH_DATE_DESC}} <span class="mark">"{{$store.getters.getSearchmailData.params.date_desc}}"</span>】</span>
+          <span v-if="$store.getters.getSearchmailData.params.size && $store.getters.getSearchmailData.params.size != ''">【{{lan.MAILBOX_COM_SEARCH_SIZE_DESC}} <span class="mark">"{{$store.getters.getSearchmailData.params.size_desc}}" </span>】</span>
+          {{lan.LAYOUT_INDEX_MAILS}}
         </h3>
-        <p>您可以：</p>
-        <p>1. 更换关键字重新搜索</p>
-        <p>2. 使用高级搜索，通过其他邮件特征进行搜索</p>
+        <p>{{lan.MAILBOX_COM_SEARCH_YOU_CAN}}：</p>
+        <p>{{lan.MAILBOX_COM_SEARCH_TIP1}}</p>
+        <p>{{lan.MAILBOX_COM_SEARCH_TIP2}}</p>
 
       </div>
     </div>
@@ -552,7 +547,7 @@
         if(row.is_move){
           this.$message({
             type:'error',
-            message:'搜索邮件不存在或者已被删除!'
+            message: this.lan.MAILBOX_COM_SEARCH_NOT_FOND
           })
           return;
         }
@@ -562,7 +557,7 @@
           this.$store.dispatch('setUnseenCountA',unseenArr)
           console.log(row)
           if(row.flagbg_class == 'unseen'){
-            row.flagStr = '已读';
+            row.flagStr = this.lan.MAILBOX_COM_INNERBOX_ALREADY_READ;
             row.flagbg_class = ''
           }
         }
@@ -1112,7 +1107,7 @@
               flagbg_class = 'schedule';
             }
             if(items[i].is_move){
-              flagStr = '搜索邮件不存在';
+              flagStr = this.lan.MAILBOX_COM_SEARCH_NOT_FOND;
               flagbg_class = 'is_move';
             }
             items[i].flagbg_class = flagbg_class
@@ -1342,28 +1337,28 @@
       search_desc:function(){
           let str = '';
           if(this.$store.getters.getSearchmailData.params.keyword && this.$store.getters.getSearchmailData.params.keyword != ''){
-            str += '【关键字包含 "'+this.$store.getters.getSearchmailData.params.keyword + '"】';
+            str += '【'+this.lan.LAYOUT_INDEX_KEYWORD+' "'+this.$store.getters.getSearchmailData.params.keyword + '"】';
           }
           if(this.$store.getters.getSearchmailData.params.subject && this.$store.getters.getSearchmailData.params.subject != ''){
-            str += '【主题包含 "'+this.$store.getters.getSearchmailData.params.subject + '"】';
+            str += '【'+this.lan.LAYOUT_INDEX_SUBJECT+' "'+this.$store.getters.getSearchmailData.params.subject + '"】';
           }
           if(this.$store.getters.getSearchmailData.params.attach && this.$store.getters.getSearchmailData.params.attach != ''){
-            str += '【附件名包含 "'+this.$store.getters.getSearchmailData.params.attach + '"】';
+            str += '【'+this.lan.LAYOUT_INDEX_ATTACH+' "'+this.$store.getters.getSearchmailData.params.attach + '"】';
           }
           if(this.$store.getters.getSearchmailData.params.folder && this.$store.getters.getSearchmailData.params.folder != ''){
-            str += '【所在文件夹范围为 "'+this.$store.getters.getSearchmailData.params.folder_desc + '"】';
+            str += '【'+this.lan.MAILBOX_COM_SEARCH_FOLDER_DESC+' "'+this.$store.getters.getSearchmailData.params.folder_desc + '"】';
           }
           if(this.$store.getters.getSearchmailData.params.sender && this.$store.getters.getSearchmailData.params.sender != ''){
-            str += '【发件人为 "'+this.$store.getters.getSearchmailData.params.sender + '"】';
+            str += '【'+this.lan.MAILBOX_COM_SEARCH_SENDER_DESC+' "'+this.$store.getters.getSearchmailData.params.sender + '"】';
           }
           if(this.$store.getters.getSearchmailData.params.recipient && this.$store.getters.getSearchmailData.params.recipient != ''){
-            str += '【收件人为 "'+this.$store.getters.getSearchmailData.params.recipient + '"】';
+            str += '【'+this.lan.MAILBOX_COM_SEARCH_REC_DESC+' "'+this.$store.getters.getSearchmailData.params.recipient + '"】';
           }
           if(this.$store.getters.getSearchmailData.params.date && this.$store.getters.getSearchmailData.params.date != ''){
-            str += '【发信时间范围为 "'+this.$store.getters.getSearchmailData.params.date_desc + '"】';
+            str += '【'+this.lan.MAILBOX_COM_SEARCH_DATE_DESC+' "'+this.$store.getters.getSearchmailData.params.date_desc + '"】';
           }
           if(this.$store.getters.getSearchmailData.params.size && this.$store.getters.getSearchmailData.params.size != ''){
-            str += '【邮件大小为 "'+this.$store.getters.getSearchmailData.params.size_desc + '"】';
+            str += '【'+this.lan.MAILBOX_COM_SEARCH_SIZE_DESC+' "'+this.$store.getters.getSearchmailData.params.size_desc + '"】';
           }
         return str
       }
