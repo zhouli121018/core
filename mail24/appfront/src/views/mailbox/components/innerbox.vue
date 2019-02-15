@@ -7,7 +7,7 @@
           <div class="toolbar" style="background:#fff;"
                element-loading-spinner="el-icon-loading"
                element-loading-background="rgba(0, 0, 0, 0.6)" >
-                            <span class=" f-fr j-setting">
+                            <span class=" f-fr j-setting" v-if="false">
                             <el-button  icon="el-icon-setting" circle></el-button></span>
 
             <!--<el-button size="mini" @click="selectAll" type="primary">-->
@@ -61,13 +61,13 @@
             </el-dropdown>
 
             <!-- 更多按钮 -->
-            <div v-if="multipleSelection.length>0" class="inline_block">
-              <el-button  size="small" plain @click="deleteMailById">
+            <div class="inline_block">
+              <el-button  size="small" plain @click="deleteMailById" type="danger"  :disabled="multipleSelection.length==0">
                 {{lan.COMMON_BUTTON_DELETE}}
               </el-button>
 
               <el-dropdown @command="moveHandleCommand" trigger="click" v-if="boxId!='Drafts'">
-                <el-button  size="small" plain>
+                <el-button  size="small" plain :disabled="multipleSelection.length==0">
                   <span>{{lan.MAILBOX_COM_INNERBOX_MOVE_TO}}</span>
                   <i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
@@ -80,7 +80,7 @@
               </el-dropdown>
 
               <el-dropdown @command="signHandleCommand" trigger="click">
-                <el-button  size="small" plain >
+                <el-button  size="small" plain :disabled="multipleSelection.length==0">
                   <span>{{lan.MAILBOX_COM_INNERBOX_MARKED_AS}}</span>
                   <i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
@@ -109,12 +109,12 @@
               </el-dropdown>
 
               <el-dropdown @command="moreHandleCommand" trigger="click">
-                <el-button  size="small" plain>
+                <el-button  size="small" plain :disabled="multipleSelection.length==0">
                   <span>{{lan.MAILBOX_COM_INNERBOX_MORE}}</span>
                   <i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item v-if="boxId!='Drafts'||item.id==6||item.id==7||item.id==8" v-for="item in moreItems" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }"
+                  <el-dropdown-item v-if="(boxId!='Drafts'&&item.id!=9)||item.id==6||item.id==7||item.id==8 || (boxId=='Spam'&&item.id==9)" v-for="item in moreItems" :key="item.id" class="dropdown_item" :class="{ active: moreCheckIndex===item.id }"
                                     :divided="item.divided" :command="item">
                     <b><i class="el-icon-check vibility_hide" :class="{ vibility_show: moreCheckIndex===item.id }"></i> </b>
                     {{ item.text}}</el-dropdown-item>
@@ -122,6 +122,10 @@
               </el-dropdown>
 
             </div>
+
+            <el-button  size="small" type="danger" plain @click="empty_folder">
+              {{lan.MAILBOX_COM_INNERBOX_EMPTY_FOLDER}}  <!-- <i class="el-icon-refresh el-icon--right"></i> -->
+            </el-button>
 
             <!--刷新-->
             <el-button  size="small" plain @click="refresh">
@@ -132,13 +136,13 @@
             <div v-show="moreSearch">
               <el-form :inline="true" :model="searchForm" ref="searchForm" class="demo-form-inline" size="small">
                 <el-form-item :label="lan.COMMON_SENDER">
-                  <el-input v-model="searchForm.from" :placeholder="lan.COMMON_SENDER"></el-input>
+                  <el-input v-model.trim="searchForm.from" :placeholder="lan.COMMON_SENDER"></el-input>
                 </el-form-item>
                 <el-form-item :label="lan.COMMON_MAIL_SUBJECT">
-                  <el-input v-model="searchForm.subject" :placeholder="lan.COMMON_MAIL_SUBJECT"></el-input>
+                  <el-input v-model.trim="searchForm.subject" :placeholder="lan.COMMON_MAIL_SUBJECT"></el-input>
                 </el-form-item>
                 <el-form-item :label="lan.SETTING_RE_LOGIC_CONTENT">
-                  <el-input v-model="searchForm.body" :placeholder="lan.SETTING_RE_LOGIC_CONTENT"></el-input>
+                  <el-input v-model.trim="searchForm.body" :placeholder="lan.SETTING_RE_LOGIC_CONTENT"></el-input>
                 </el-form-item>
                 <el-form-item>
                   <el-button type="primary" @click="moreSearchfn">{{lan.COMMON_SEARCH}}</el-button>
@@ -162,12 +166,12 @@
                              @current-change="handleCurrentChange"
                              background
                              v-if="totalCount>0"
-                             :current-page="currentPage"
+                             :current-page.sync="currentPage"
                              :page-sizes="[10, 20, 50,100]"
-                             :page-size="pageSize"
+                             :page-size.sync="pageSize"
                              layout="total, sizes, prev, slot, next, jumper"
                              :total="totalCount">
-                  <span> {{currentPage+' / '+Math.ceil(totalCount/pageSize)}}</span>
+                  <span class="page_slot7"> {{page_slot7}}</span>
               </el-pagination>
 
             </div>
@@ -181,12 +185,12 @@
                            @current-change="handleCurrentChange"
                            background
                            v-if="totalCount>0"
-                           :current-page="currentPage"
+                           :current-page.sync="currentPage"
                            :page-sizes="[10, 20, 50,100]"
-                           :page-size="pageSize"
+                           :page-size.sync="pageSize"
                            layout="total, sizes, prev, slot, next, jumper"
                            :total="totalCount">
-                <span> {{currentPage+' / '+Math.ceil(totalCount/pageSize)}}</span>
+                <span class="page_slot7"> {{page_slot7}}</span>
             </el-pagination>
           </div>
         </div>
@@ -308,8 +312,9 @@
   </div>
 </template>
 <script>
+  import axios from 'axios'
   import lan from '@/assets/js/lan';
-  import {getMailMessage,moveMails,getFloder,getFloderMsg,deleteMail,messageFlag,readMail,rejectMessage,pruneMessage,zipMessage,messageExpunge} from "@/api/api";
+  import {getMailMessage,moveMails,getFloder,getFloderMsg,deleteMail,messageFlag,readMail,rejectMessage,pruneMessage,zipMessage,messageExpunge,notSpam} from "@/api/api";
 
   import router from '@/router'
 
@@ -324,6 +329,9 @@
 
     data() {
       return {
+        totalPage:0,
+        read_uids:[],
+        read_params:{},
         is_checked:false,
         listData:[],
         listData_new:[],
@@ -342,7 +350,7 @@
         fullscreenLoading:false,
         reject_is_delete:false,
         boxId:'INBOX',
-        curr_folder:'',
+        // curr_folder:'',
         moreSearch:false,
         searchForm: {
           from: '',
@@ -427,10 +435,11 @@
           {id:2,text:'',divided:true,checkone:true},
           {id:3,text:'',divided:false,checkone:true},
           {id:4,text:'',divided:true,checkone:false},
+          {id:9,text:'',divided:false,checkone:false},
           {id:5,text:'',divided:true,checkone:true},
           {id:6,text:'',divided:false,checkone:false},
           {id:7,text:'',divided:true,checkone:false},
-          {id:8,text:'',divided:false,checkone:false},
+          // {id:8,text:'',divided:false,checkone:false},
         ],
         activeNames: [0],
         activeLi:[0,0],
@@ -614,6 +623,10 @@
           str += ' body "'+this.searchForm.body+'"';
         }
         if(str){params['search'] = str;}
+        if(this.sort){
+          params['sort'] = this.sort;
+        }
+        this.read_params = params;
         this.getDateN(params);
       },
       hoverfn(row, column, cell, event){
@@ -757,7 +770,7 @@
             console.log(err)
           })
         }else{
-          this.$parent.$parent.$parent.addTab('read',row.subject,row.uid,this.boxId)
+          this.$parent.$parent.$parent.addTab('read',row.subject,row.uid,this.boxId,this.read_params,this.read_uids,this.currentPage,this.totalPage,'innerbox_read')
           // this.$parent.$parent.$parent.getFloderfn();
         }
       },
@@ -892,6 +905,39 @@
           this.fullscreenLoading = false;
         });
 
+      },
+      empty_folder(){
+        let pp = this.$parent.$parent.$parent;
+        let param = {
+          folder:pp.activeMenubar.id || this.$route.params.boxId
+        }
+        this.$confirm( this.lan.MAILBOX_COM_INNERBOX_DELETE_DESC , this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+            confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+            cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
+            type: 'warning'
+          }).then(() => {
+            this.fullscreenLoading = true;
+            messageExpunge(param).then(res=>{
+              this.fullscreenLoading = false;
+              this.$message(
+                {type:'success',message:this.lan.COMMON_OPRATE_SUCCESS}
+              )
+              pp.getFloderfn();
+              this.getMessageList();
+            }).catch(err=>{
+              this.fullscreenLoading = false;
+              let str = '';
+              if(err.detail){
+                str = err.detail
+              }
+              this.$message({
+                type:'error',
+                message:this.lan.COMMON_OPRATE_FAILED+str
+              })
+            })
+          }).catch(() => {
+
+          });
       },
       moreHandleCommand:function(item){
         if(item.checkone && this.checkedMails.length > 1){
@@ -1128,6 +1174,39 @@
 
           });
 
+        }else if(item.id == 9){//这不是垃圾邮件
+          this.$confirm('<p>'+this.lan.MAILBOX_COM_INNERBOX_CONFIRM_1+'</p><input type="checkbox" id="to_white"> '+this.lan.MAILBOX_COM_INNERBOX_CONFIRM_2, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+            confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+            cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
+            dangerouslyUseHTMLString: true,
+
+          }).then(() => {
+            this.fullscreenLoading = true;
+            if($('#to_white').prop('checked')) {
+              param.to_white = true
+            }else{
+              param.to_white = false
+            }
+            notSpam(param).then(res=>{
+              this.fullscreenLoading = false;
+              this.$message(
+                {type:'success',message:this.lan.COMMON_OPRATE_SUCCESS}
+              )
+              this.getMessageList();
+            })
+              .catch(err=>{
+                let str = '';
+                if(err.detail){
+                  str = err.detail
+                }
+                this.fullscreenLoading = false;
+                this.$message(
+                  {type:'error',message: this.lan.COMMON_OPRATE_FAILED+str}
+                )
+              })
+          }).catch(() => {
+
+          });
         }
       },
       handleChange(value) {
@@ -1162,19 +1241,32 @@
         if(str){
           params['search'] = str;
         }
-
-
         if(this.sort){
           params['sort'] = this.sort;
         }
+        this.read_params = params;
         this.getDateN(params);
 
       },
+      cancelRequest(){
+          if(typeof this.$store.state.source ==='function'){
+              this.$store.state.source('终止请求')
+          }
+      },
       getDateN(params){
+        var CancelToken = axios.CancelToken
+        var source = CancelToken.source()
+
+        // 取消上一次请求
+        this.cancelRequest();
+
         this.loading = true;
         getMailMessage(params).then((res)=>{
-          $('title').text(this.$store.getters.getLoginAfter.title)
+          // $('title').text(this.$store.getters.getLoginAfter.title)
+          this.totalCount = 0;
           this.totalCount = res.data.count;
+          this.totalPage = Math.ceil(this.totalCount/this.pageSize);
+          console.log(this.totalCount)
           let items = res.data.results;
           // this.totalAllCount = res.data.count;
           this.unreadCount = res.data.unseen_count;
@@ -1186,7 +1278,9 @@
           let unseenArr = this.$store.getters.getUnseenCount;
           unseenArr[params.folder] = res.data.unseen_count;
           this.$store.dispatch('setUnseenCountA',unseenArr)
+          this.read_uids = [];
           for(let i=0;i<items.length;i++){
+            this.read_uids.push(items[i].uid)
             items[i].flagged = (items[i].flags.join('').indexOf('Flagged')>=0);
             items[i].isread = (items[i].flags.join(' ').indexOf('Seen')>=0);
             if(items[i].flagged){
@@ -1259,11 +1353,16 @@
               let date = new Date(val.date.slice(0,10));
               let now = new Date();
               let count = now.getDate()-date.getDate()
+              if(this.sort == '' || this.sort == 'REVERSE ARRIVAL' || this.sort == 'ARRIVAL'){
+
+              }else{
+                count = 5
+              }
               if(count == 0){
                 today.arr.push(val)
               }else if(count == 1){
                 yestoday.arr.push(val)
-              }else if(count == 1){
+              }else if(count == 2){
                 beforeYesdoday.arr.push(val)
               }else{
                 earlier.arr.push(val)
@@ -1272,62 +1371,112 @@
               let date = new Date(val.internaldate.slice(0,10));
               let now = new Date();
               let count = now.getDate()-date.getDate()
+              if(this.sort == '' || this.sort == 'REVERSE ARRIVAL' || this.sort == 'ARRIVAL'){
+
+              }else{
+                count = 5
+              }
               if(count == 0){
                 today.arr.push(val)
               }else if(count == 1){
                 yestoday.arr.push(val)
-              }else if(count == 1){
+              }else if(count == 2){
                 beforeYesdoday.arr.push(val)
               }else{
                 earlier.arr.push(val)
               }
             }
           })
-          if(today.arr.length>0){
-            result.push(today)
-            let obj = [].concat(today.arr[0])
-            obj.title = this.lan.MAILBOX_COM_INNERBOX_TODAY
-            obj.count = today.arr.length
-            obj.is_header = true
-            result_new.push(obj)
-            result_new = result_new.concat(today.arr);
+          if(this.sort == 'ARRIVAL'){
+            if(earlier.arr.length>0){
+              result.push(earlier)
+              let obj = [].concat(earlier.arr[0])
+              obj.title = this.lan.MAILBOX_COM_INNERBOX_EARLIER
+              obj.count = earlier.arr.length
+              obj.is_header = true
+              if(this.sort == '' || this.sort == 'REVERSE ARRIVAL' || this.sort == 'ARRIVAL'){
+                result_new.push(obj)
+              }
+              result_new = result_new.concat(earlier.arr);
+            }
+            if(beforeYesdoday.arr.length>0){
+              result.push(beforeYesdoday)
+              let obj = [].concat(beforeYesdoday.arr[0])
+              obj.title = this.lan.MAILBOX_COM_INNERBOX_BEFOREYESTODAY
+              obj.count = beforeYesdoday.arr.length
+              obj.is_header = true
+              result_new.push(obj)
+              result_new = result_new.concat(beforeYesdoday.arr);
+            }
+            if(yestoday.arr.length>0){
+              result.push(yestoday)
+              let obj = [].concat(yestoday.arr[0])
+              obj.title = this.lan.MAILBOX_COM_INNERBOX_YESTODAY
+              obj.count = yestoday.arr.length
+              obj.is_header = true
+              result_new.push(obj)
+              result_new = result_new.concat(yestoday.arr);
+            }
+            if(today.arr.length>0){
+              result.push(today)
+              let obj = [].concat(today.arr[0])
+              obj.title = this.lan.MAILBOX_COM_INNERBOX_TODAY
+              obj.count = today.arr.length
+              obj.is_header = true
+              result_new.push(obj)
+              result_new = result_new.concat(today.arr);
+            }
+          }else{
+            if(today.arr.length>0){
+              result.push(today)
+              let obj = [].concat(today.arr[0])
+              obj.title = this.lan.MAILBOX_COM_INNERBOX_TODAY
+              obj.count = today.arr.length
+              obj.is_header = true
+              result_new.push(obj)
+              result_new = result_new.concat(today.arr);
+            }
+            if(yestoday.arr.length>0){
+              result.push(yestoday)
+              let obj = [].concat(yestoday.arr[0])
+              obj.title = this.lan.MAILBOX_COM_INNERBOX_YESTODAY
+              obj.count = yestoday.arr.length
+              obj.is_header = true
+              result_new.push(obj)
+              result_new = result_new.concat(yestoday.arr);
+            }
+            if(beforeYesdoday.arr.length>0){
+              result.push(beforeYesdoday)
+              let obj = [].concat(beforeYesdoday.arr[0])
+              obj.title = this.lan.MAILBOX_COM_INNERBOX_BEFOREYESTODAY
+              obj.count = beforeYesdoday.arr.length
+              obj.is_header = true
+              result_new.push(obj)
+              result_new = result_new.concat(beforeYesdoday.arr);
+            }
+            if(earlier.arr.length>0){
+              result.push(earlier)
+              let obj = [].concat(earlier.arr[0])
+              obj.title = this.lan.MAILBOX_COM_INNERBOX_EARLIER
+              obj.count = earlier.arr.length
+              obj.is_header = true
+              if(this.sort == '' || this.sort == 'REVERSE ARRIVAL' || this.sort == 'ARRIVAL'){
+                result_new.push(obj)
+              }
+              result_new = result_new.concat(earlier.arr);
+            }
           }
-          if(yestoday.arr.length>0){
-            result.push(yestoday)
-            let obj = [].concat(yestoday.arr[0])
-            obj.title = this.lan.MAILBOX_COM_INNERBOX_YESTODAY
-            obj.count = yestoday.arr.length
-            obj.is_header = true
-            result_new.push(obj)
-            result_new = result_new.concat(yestoday.arr);
-          }
-          if(beforeYesdoday.arr.length>0){
-            result.push(beforeYesdoday)
-            let obj = [].concat(beforeYesdoday.arr[0])
-            obj.title = this.lan.MAILBOX_COM_INNERBOX_BEFOREYESTODAY
-            obj.count = beforeYesdoday.arr.length
-            obj.is_header = true
-            result_new.push(obj)
-            result_new = result_new.concat(beforeYesdoday.arr);
-          }
-          if(earlier.arr.length>0){
-            result.push(earlier)
-            let obj = [].concat(earlier.arr[0])
-            obj.title = this.lan.MAILBOX_COM_INNERBOX_EARLIER
-            obj.count = earlier.arr.length
-            obj.is_header = true
-            result_new.push(obj)
-            result_new = result_new.concat(earlier.arr);
-          }
+
           this.listData = result;
           this.listData_new = result_new;
 
           this.loading = false;
-        },(err)=>{
-          console.log(err)
-          this.loading = false;
         }).catch(err=>{
-          this.loading = false;
+          if(typeof this.$store.state.source ==='function'){
+              console.log('cancel')
+          }else{
+            this.loading = false;
+          }
         })
       },
       set_12_time(time){
@@ -1367,6 +1516,12 @@
 
     },
     computed:{
+      page_slot7:function(){
+        let str = this.currentPage+' / '+Math.ceil(this.totalCount/this.pageSize);
+        console.log(str)
+        $('.page_slot7').html(str)
+        return str
+      },
       checkedMails:function(){
         let list=[];
         for(let i=0;i<this.multipleSelection.length;i++){
@@ -1475,18 +1630,21 @@
           {id:2,text:lang.MAILBOX_COM_INNERBOX_FORWARD,divided:true,checkone:true},
           {id:3,text:lang.MAILBOX_COM_INNERBOX_ANNEX_FORWARDING,divided:false,checkone:true},
           {id:4,text:lang.MAILBOX_COM_INNERBOX_REJECTED_MAIL,divided:true,checkone:false},
+          {id:9,text:lang.MAILBOX_COM_INNERBOX_NOT_SPAM,divided:false,checkone:false},
           {id:5,text:lang.MAILBOX_COM_INNERBOX_SEND_AGAIN,divided:true,checkone:true},
           {id:6,text:lang.MAILBOX_COM_INNERBOX_PACKAGE_DOWNLOAD,divided:false,checkone:false},
           {id:7,text:lang.MAILBOX_COM_INNERBOX_DELETE_THOROUGHLY,divided:true,checkone:false},
-          {id:8,text:lang.MAILBOX_COM_INNERBOX_EMPTY_FOLDER,divided:false,checkone:false},
+          // {id:8,text:lang.MAILBOX_COM_INNERBOX_EMPTY_FOLDER,divided:false,checkone:false},
         ]
         return lang
+      },
+      curr_folder(){
+        return this.$store.getters.getHashFolder[this.boxId]
       }
     },
     created(){
       this.boxId = this.$route.params.boxId || 'INBOX'
-      this.curr_folder = sessionStorage['checkNodeLabel'] || this.lan.MAILBOX_INBOX
-
+      // this.curr_folder = sessionStorage['checkNodeLabel'] || this.lan.MAILBOX_INBOX
       this.getMessageList();
     },
     mounted(){
@@ -1549,7 +1707,7 @@
       },
       $route(v,o){
         this.boxId = this.$route.params.boxId;
-        this.curr_folder = sessionStorage['checkNodeLabel'] || this.lan.MAILBOX_INBOX
+        // this.curr_folder = sessionStorage['checkNodeLabel'] || this.lan.MAILBOX_INBOX
       },
 
     },
@@ -1558,6 +1716,12 @@
 </script>
 
 <style>
+  .is_burn_img{
+    display:inline-block;
+    width:18px;
+    height:18px;
+    background:url(../img/is_burn.jpg)
+  }
   .caret_color_1 .sort_date .sort-caret.ascending,.caret_color_3 .sort_sender .sort-caret.ascending,.caret_color_5 .sort_subject .sort-caret.ascending,.caret_color_8 .sort_size .sort-caret.ascending{
     border-bottom-color: #409eff;
   }

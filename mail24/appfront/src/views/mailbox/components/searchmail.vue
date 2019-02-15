@@ -140,12 +140,12 @@
                              @current-change="handleCurrentChange"
                              background
                              v-if="totalCount>0"
-                             :current-page="currentPage"
+                             :current-page.sync="currentPage"
                              :page-sizes="[10, 20, 50,100]"
-                             :page-size="pageSize"
+                             :page-size.sync="pageSize"
                              layout="total, prev, slot, next, jumper"
                              :total="totalCount">
-                  <span> {{currentPage+' / '+Math.ceil(totalCount/pageSize)}}</span>
+                  <span class="page_slot9"> {{page_slot9}}</span>
               </el-pagination>
 
             </div>
@@ -159,12 +159,12 @@
                            @current-change="handleCurrentChange"
                            background
                            v-if="totalCount>0"
-                           :current-page="currentPage"
+                           :current-page.sync="currentPage"
                            :page-sizes="[10, 20, 50,100]"
-                           :page-size="pageSize"
+                           :page-size.sync="pageSize"
                            layout="total, prev, slot, next, jumper"
                            :total="totalCount">
-                <span> {{currentPage+' / '+Math.ceil(totalCount/pageSize)}}</span>
+                <span class="page_slot9"> {{page_slot9}}</span>
             </el-pagination>
           </div>
         </div>
@@ -562,7 +562,12 @@
           }
         }
         row.isread = true;
-        this.$parent.$parent.$parent.addTab('read',row.subject,row.uid,row.raw_name)
+        let arr = this.$store.getters.getSearchmailData.data;
+        let uids = [];
+        for(let i=0;i<arr.results.length;i++){
+          uids.push([arr.results[i].uid,arr.results[i].raw_name])
+        }
+        this.$parent.$parent.$parent.addTab('read',row.subject,row.uid,row.raw_name,this.$store.getters.getSearchmailData.params,uids,this.currentPage,Math.ceil(this.totalCount/20),'search_read')
       },
       handleSelectionChange(val) {
         this.multipleSelection = [];
@@ -1219,6 +1224,11 @@
 
     },
     computed:{
+      page_slot9(){
+        let str = this.currentPage+' / '+Math.ceil(this.totalCount/this.pageSize);
+        $('.page_slot9').html(str);
+        return str;
+      },
       checkedMails:function(){
         let list=[];
         for(let i=0;i<this.multipleSelection.length;i++){

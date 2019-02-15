@@ -481,7 +481,7 @@
     width: 235px;
     height: 147px;
     display: inline-block;
-    background: url(/static/img/keepkey.jpg);
+    background: url(../img/keepkey.jpg);
     line-height: 147px;
   }
   .backupkey {
@@ -552,7 +552,7 @@
     display: inline-block;
     width: 154px;
     height: 54px;
-    background: url(/static/img/googleAuthen_downloads.png) no-repeat;
+    background: url(../img/googleAuthen_downloads.png) no-repeat;
   }
   .downloads {
     margin-bottom: 58px;
@@ -562,7 +562,7 @@
     width: 38px;
     height: 38px;
     vertical-align: middle;
-    background: url(/static/img/icons.png) no-repeat center;
+    background: url(../img/icons.png) no-repeat center;
   }
   .img_mobile{
     background-position: 0 -45px;
@@ -681,10 +681,6 @@
   }
   .gu0 .nui-ico {
     margin: 10px 0 0 8px;
-  }
-
-  .nui-ico-done-white {
-    background: url(/static/img/check.png) no-repeat;
   }
   .nui-ico{
     display: inline-block;

@@ -29,13 +29,13 @@
                     <el-pagination style="text-align: right;"
                       @size-change="sizeChange($event,'wait')"
                       @current-change="currentChange($event,'wait')"
-                      :current-page="waitData.page"
+                      :current-page.sync="waitData.page"
                       :page-sizes="[10, 20, 50, 100]"
-                      :page-size="waitData.page_size"
+                      :page-size.sync="waitData.page_size"
                       layout="total, sizes, prev, slot, next,jumper"
                                    v-if="waitData.total>0"
                       :total="waitData.total">
-                      <span> {{waitData.page+' / '+Math.ceil(waitData.total/waitData.page_size)}}</span>
+                      <span class="page_slot8"> {{page_slot8}}</span>
                     </el-pagination>
                   </el-col>
                 </el-row>
@@ -372,13 +372,16 @@
       })
     },
     created(){
+      this.tableTabs[0] = {
+        title: this.lan.MAILBOX_COM_REVIEW_TITLE_NAME,
+        name: '1',
+      }
       if(sessionStorage['reviewStatus']){
         this.status = sessionStorage['reviewStatus'];
         this.getWait();
       }else{
         this.getWait();
       }
-
     },
     watch: {
 
@@ -395,6 +398,11 @@
       },
     },
     computed:{
+      page_slot8(){
+        let str = this.waitData.page+' / '+Math.ceil(this.waitData.total/this.waitData.page_size);
+        $('.page_slot8').html(str);
+        return str;
+      },
       lan:function(){
         let lang = lan.zh
         if(this.$store.getters.getLanguage=='zh-hans'){

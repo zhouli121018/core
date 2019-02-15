@@ -15,6 +15,10 @@
 </script>
 
 <style>
+  .text_to_password input{
+    -webkit-text-security:disc;
+    text-security:disc;
+  }
   .uploader-file-info .uploader-file-size{
     min-width:66px;
   }
@@ -88,6 +92,9 @@
   }
   #app .el-tree-node__content{
     height:36px;
+  }
+  #treeMenuBar .el-tree-node__content{
+    text-align:left;
   }
   .toolbar {
     background: #f2f2f2;

@@ -67,8 +67,13 @@ const store = new Vuex.Store({
     skin_order:'',
     language:cookie.getCookie('webvue_language')||'zh-hans',
     searchmailData:{},
+    source:'',
+    hashFolder:[],
   },
   getters:{
+    getHashFolder(state){
+      return state.hashFolder;
+    },
     getSearchmailData(state){
       return state.searchmailData;
     },
@@ -152,6 +157,13 @@ const store = new Vuex.Store({
     }
   },
   mutations:{
+    setHashFolder(state,param){
+      state.hashFolder = null;
+      state.hashFolder = param;
+    },
+    setSource(state,param){
+      state.source = param;
+    },
     setSearchmailData(state,param){
       state.searchmailData = param;
     },
@@ -251,6 +263,12 @@ const store = new Vuex.Store({
 
   },
   actions: {
+    setHashFolderA(store,param){
+      store.commit('setHashFolder',param)
+    },
+    setSourceA(store,param){
+      store.commit('setSource',param)
+    },
     setSearchmailDataA(store,param){
       store.commit('setSearchmailData',param);
     },

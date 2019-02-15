@@ -1214,5 +1214,14 @@ var  zh_hant = {
   MAILBOX_COM_SEARCH_TIP1: "1.更換關鍵字重新搜索",
   MAILBOX_COM_SEARCH_TIP2: "2.使用高級搜索，通過其他郵件特徵進行蒐索",
   MAILBOX_COM_SEARCH_NOT_FOND: "蒐索郵件不存在或者已被删除！",
+
+  //mailbox/innerbox not_spam
+  MAILBOX_COM_INNERBOX_NOT_SPAM: "這不是垃圾郵件",
+  MAILBOX_COM_INNERBOX_CONFIRM_1: "所選郵件將被移動到收件箱",
+  MAILBOX_COM_INNERBOX_CONFIRM_2: "把發件人加入白名單",
+
+  //mailbox/components/read.vue 查看邮件页面
+  MAILBOX_COM_READ_PREV: "上一封",
+  MAILBOX_COM_READ_NEXT: "下一封",
 }
 export default zh_hant;

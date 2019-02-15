@@ -30,7 +30,7 @@
                     <div class="full-info j-full-info" v-show="showDetails">
                         <table class="u-table u-table-row">
                             <tbody><tr v-if="mfrom">
-                                <td class="info-item">{{lan.MAILBOX_COM_READ_SENDER}} </td>
+                                <td class="info-item">{{lan.MAILBOX_COM_COMPOSE_SENDER}} </td>
                                 <td>
                                      <span class="u-email j-u-email">
                                         <span class="name">{{mfrom}}</span>
@@ -40,7 +40,7 @@
                                 </td>
                             </tr>
                             <tr v-if="to.length>0">
-                                <td class="info-item">{{lan.MAILBOX_COM_READ_RECIPENT}}</td>
+                                <td class="info-item">{{lan.MAILBOX_COM_COMPOSE_RECIVER}}</td>
                                 <td>
 
                                     <div class="j-contacts ">
@@ -52,7 +52,7 @@
                                 </td>
                             </tr>
                             <tr v-if="msg.cc">
-                                <td class="info-item">{{lan.MAILBOX_COM_READ_CC}}</td>
+                                <td class="info-item">{{lan.MAILBOX_COM_COMPOSE_CCER}}</td>
                                 <td>
 
                                     <div class="j-contacts ">

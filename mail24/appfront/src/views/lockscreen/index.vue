@@ -20,7 +20,7 @@
           <label>
             {{lan.LOCKSCREEN_MAILBOX_PASSWORD}}
           </label>
-          <el-input type="text" class="" v-model="lockpassword" autocomplete="new-password"></el-input>
+          <el-input :type="lockpassword?'password':'text'" class="text_to_password" v-model="lockpassword" autocomplete="new-password" ></el-input>
         </div>
 
         <div class="u-form-item">
@@ -52,6 +52,13 @@ export default {
         }
     },
     methods:{
+        keyupEnter(){
+            document.onkeydown = e =>{
+                if (e.keyCode === 13 && this.$route.path =='/lockscreen') {
+                   this.lockscreenfn();
+                }
+            }
+        },
         lockscreenfn(){
             var that =this;
             lockscreen({"password":this.lockpassword})
@@ -62,6 +69,7 @@ export default {
                 cookie.delCookie('locked')
                 cookie.setCookie('token',response.data.token,7);
                 that.$store.dispatch('setInfo');
+                this.lockpassword = '';
                 that.$router.push(that.$store.state.lastUrl)
               }
             }, (data)=>{
@@ -91,6 +99,9 @@ export default {
         return lang
 
       }
+    },
+    created(){
+      this.keyupEnter();
     }
 }
 </script>

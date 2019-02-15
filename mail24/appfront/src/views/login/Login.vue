@@ -91,7 +91,7 @@
 
               </el-form>
               <div class="text-center">
-                <el-button type="primary" @click="login" style="width:50%">{{lan.login}}</el-button>
+                <el-button type="primary" @click="login" :loading="loading_core" style="width:50%">{{lan.login}}</el-button>
 
               </div>
 
@@ -144,7 +144,8 @@
           </div>
           <div class="crm-register-footer">
 
-            <a href="javascript:;" class="pg-btn-submit dinline-block " tabindex="3" act="login_btn" @click.prevent="login_xsy">{{lan.login}}</a>
+            <!--<a href="javascript:;" class="pg-btn-submit dinline-block " tabindex="3" act="login_btn" @click.prevent="login_xsy">{{lan.login}}</a>-->
+            <el-button @click.prevent="login_xsy" class="pg-btn-submit" :loading="loading_xsy" type="primary" style="outline:none;line-height:0;">{{lan.login}}</el-button>
           </div>
 
         </div>
@@ -174,16 +175,11 @@
         <p style="color: rgba(255, 255, 255, 0.48);float:right;margin:0 40px 0 5px;">
           Copyright © <span>{{loginBeforeData.name}}</span>
           <span v-if="loginBeforeData.is_icp">
-            <img class="crm-beian-image" src="/static/img/login/beian.png">
+            <img class="crm-beian-image" src="../../assets/img/login/beian.png">
             <a :href="loginBeforeData.icp_link" v-if="loginBeforeData.icp_link"  target="_blank" style="color:#fff;text-decoration:none;"> | {{loginBeforeData.icp_no}}</a>
             <span v-if="!loginBeforeData.icp_link"> | {{loginBeforeData.icp_no}}</span>
           </span>
         </p>
-
-        <!--<a class="crm-beian-link" target="_blank" href="https://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010502035449">-->
-          <!--<p class="crm-beian-text">京公网安备 11010502035449号</p>-->
-          <!--<img class="crm-beian-image" src="/static/img/login/beian.png">-->
-        <!--</a>-->
       </div>
     </div>
     <div v-if="login_type=='wy'" id="login_wy" :style="{'padding-top':wy_padding_top+'px'}">
@@ -205,11 +201,12 @@
           </el-select>
         </div>
       </div>
-      <div class="main_wy" :class="'bg'+wy_bg" id="mainBg">
-        <div class="main-inner" id="mainCnt" @mouseenter="stop_timer" @mouseleave="start_timer">
+      <div class="main_wy" :class="'bg'+wy_bg" id="mainBg" >
+        <div class="main-inner" id="mainCnt" @mouseenter="stop_timer" @mouseleave="start_timer" >
+          <!--:style="{'background-image':loginBeforeData.login_ads[wy_bg-1]?'url('+loginBeforeData.login_ads[wy_bg-1].image+')':''}"-->
           <div class="main-inner-wrap">
-            <div id="theme" style="visibility: hidden">
-              <a href="http://www.comingchina.com" target="_blank" style="position: absolute; width: 605px; height: 600px; left: 0px; top: 0px; cursor: pointer;"></a>
+            <div id="theme" :style="{visibility: (loginBeforeData.login_ads&&loginBeforeData.login_ads.length>0?'visible':'hidden')}">
+              <a :href="loginBeforeData.login_ads[wy_bg-1]?loginBeforeData.login_ads[wy_bg-1].link:''" target="_blank" style="position: absolute; width: 605px; height: 600px; left: 0px; top: 0px; cursor: pointer;"></a>
             </div>
             <div class="themeCtrl">
               <a id="prevTheme" class="prevTheme" href="javascript:void(0);" :title="lan.LOGIN_PREV" style="display: block;" @click="prevTheme"></a>
@@ -241,7 +238,7 @@
                       </div>
                       <el-row :gutter="10">
                         <el-col :span="24">
-                          <el-button type="primary" style="width:100%;height:46px;" @click="login_wy">{{lan.login}}</el-button>
+                          <el-button type="primary" style="width:100%;height:46px;" @click="login_wy" :loading="loading_wy">{{lan.login}}</el-button>
                         </el-col>
                       </el-row>
                     </div>
@@ -267,15 +264,15 @@
             </div>
           </div>
 
-          <img v-if="false" id="adtag" width="22" height="14" src="/static/img/login/ad.png" style="position: absolute; left: 50%; bottom: 4px; margin-left: -484px; border: 0px;">
+          <img v-if="loginBeforeData.login_ads && loginBeforeData.login_ads.length>0" id="adtag" width="22" height="14" src="../../assets/img/login/ad.png" style="position: absolute; left: 50%; bottom: 4px; margin-left: -484px; border: 0px;">
         </div>
       </div>
       <div id="footer">
         <div>
            Copyright © <span>{{loginBeforeData.name}}</span>
           <span v-if="loginBeforeData.is_icp">
-            <img class="crm-beian-image" src="/static/img/login/beian.png">
-            <a :href="loginBeforeData.icp_link" v-if="loginBeforeData.icp_link"  target="_blank" style="color:#fff;text-decoration:none;"> | {{loginBeforeData.icp_no}}</a>
+            <img class="crm-beian-image" src="../../assets/img/login/beian.png">
+            <a :href="loginBeforeData.icp_link" v-if="loginBeforeData.icp_link"  target="_blank" style="color:#848585;text-decoration:none;"> | {{loginBeforeData.icp_no}}</a>
             <span v-if="!loginBeforeData.icp_link"> | {{loginBeforeData.icp_no}}</span>
           </span>
         </div>
@@ -305,112 +302,112 @@
             </div>
           </el-dialog>
 
-          <el-dialog :title="lan.reset_password" :visible.sync="form3Visible" width="400px" :append-to-body="true" :close-on-click-modal="false">
-            <el-form :model="form3" size="small" :rules="form3Rule" ref="reset3Form">
-              <el-input v-model="form3.carbled" type="hidden" style="display:none;"></el-input>
-              <el-input v-model="form3.new_carbled" type="hidden" style="display:none;"></el-input>
+    <el-dialog :title="lan.reset_password" :visible.sync="form3Visible" width="400px" :append-to-body="true" :close-on-click-modal="false">
+      <el-form :model="form3" size="small" :rules="form3Rule" ref="reset3Form">
+        <el-input v-model="form3.carbled" type="hidden" style="display:none;"></el-input>
+        <el-input v-model="form3.new_carbled" type="hidden" style="display:none;"></el-input>
 
-              <el-form-item :label="lan.COMMON_NEW_PASSWORD" prop="new_password">
-                <el-input v-model="form3.new_password" type="password" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item :label="lan.COMMON_CONFIRM_PASSWORD" prop="confirm_password">
-                <el-input v-model="form3.confirm_password" type="password" auto-complete="off"></el-input>
-              </el-form-item>
-              <div>
-                <div>
-                  <strong style="color: red">{{lan.COMMON_PASSWORD_NOTICE}}</strong>
-                  <ul style="margin-left: 26px;">
-                    <li style="list-style-type:circle;"> {{lan.COMMON_PASSWORD_NOTICE_1}} {{passwordRules.passwd_size2}} {{lan.COMMON_PASSWORD_NOTICE_2}}</li>
-                    <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_3}}</li>
-                    <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_4}}</li>
-                    <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_5}}</li>
-                    <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_6}}</li>
-                    <li v-if="passwordRules.passwd_name" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_7}}</li>
-                    <li v-if="passwordRules.passwd_name2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_8}}</li>
-                    <li v-if="passwordRules.passwd_letter" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_9}}</li>
-                    <li v-if="passwordRules.passwd_letter2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_10}}</li>
-                  </ul>
-                </div>
-              </div>
+        <el-form-item :label="lan.COMMON_NEW_PASSWORD" prop="new_password">
+          <el-input v-model="form3.new_password" type="password" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item :label="lan.COMMON_CONFIRM_PASSWORD" prop="confirm_password">
+          <el-input v-model="form3.confirm_password" type="password" auto-complete="off"></el-input>
+        </el-form-item>
+        <div>
+          <div>
+            <strong style="color: red">{{lan.COMMON_PASSWORD_NOTICE}}</strong>
+            <ul style="margin-left: 26px;">
+              <li style="list-style-type:circle;"> {{lan.COMMON_PASSWORD_NOTICE_1}} {{passwordRules.passwd_size2}} {{lan.COMMON_PASSWORD_NOTICE_2}}</li>
+              <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_3}}</li>
+              <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_4}}</li>
+              <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_5}}</li>
+              <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_6}}</li>
+              <li v-if="passwordRules.passwd_name" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_7}}</li>
+              <li v-if="passwordRules.passwd_name2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_8}}</li>
+              <li v-if="passwordRules.passwd_letter" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_9}}</li>
+              <li v-if="passwordRules.passwd_letter2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_10}}</li>
+            </ul>
+          </div>
+        </div>
 
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="form3Visible = false">{{lan.cancel}}</el-button>
-              <el-button type="primary" @click="reset3_submit">{{lan.sure}}</el-button>
-            </div>
-          </el-dialog>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="form3Visible = false">{{lan.cancel}}</el-button>
+        <el-button type="primary" @click="reset3_submit">{{lan.sure}}</el-button>
+      </div>
+    </el-dialog>
 
-          <el-dialog :title="lan.REGISTER_AGREEMENT" :visible.sync="agreementVisible" width="600px" :append-to-body="true" style="margin-top: 50px;
-      margin-bottom: 50px;" :lock-scroll="false" custom-class="max_height_100_dialog" :close-on-click-modal="false" top="0">
-            <div style="">
-              <div v-html="register_data.agreement" ></div>
-            </div>
-            <div slot="footer" class="dialog-footer" style="position: absolute;bottom: 0;left: 0;right: 0;padding: 10px 20px;">
-              <el-button @click="agreementVisible = false">{{lan.COMMON_BUTTON_CANCELL}}</el-button>
-              <el-button type="primary" @click="show_register_dialog">{{lan.REGISTER_AGREE}}</el-button>
-            </div>
+    <el-dialog :title="lan.REGISTER_AGREEMENT" :visible.sync="agreementVisible" width="600px" :append-to-body="true" style="margin-top: 50px;
+margin-bottom: 50px;" :lock-scroll="false" custom-class="max_height_100_dialog" :close-on-click-modal="false" top="0">
+      <div style="">
+        <div v-html="register_data.agreement" ></div>
+      </div>
+      <div slot="footer" class="dialog-footer" style="position: absolute;bottom: 0;left: 0;right: 0;padding: 10px 20px;">
+        <el-button @click="agreementVisible = false">{{lan.COMMON_BUTTON_CANCELL}}</el-button>
+        <el-button type="primary" @click="show_register_dialog">{{lan.REGISTER_AGREE}}</el-button>
+      </div>
 
-          </el-dialog>
+    </el-dialog>
 
-          <el-dialog :title="lan.USER_REGISTRATION" :visible.sync="registerVisible" width="600px" :append-to-body="true" :close-on-click-modal="false" top="50px">
-            <el-form :model="register_form" size="small" :rules="register_form_rules" label-width="140px"  ref="register_form">
-              <el-form-item :label="lan.MAILBOX_COM_COMPOSE_MAIL_ADDRESS" prop="username">
-                <el-input v-model="register_form.username" auto-complete="off" name="register_username">
-                  <template slot="append">@{{register_data.domain}}</template>
-                </el-input>
-              </el-form-item>
-              <el-form-item :label="lan.REGISTER_PASSWORD" prop="password">
-                <el-input type="password" name="register_pwd" style="display:none;"></el-input>
-                <el-input v-model="register_form.password" type="password" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item :label="lan.REGISTER_CONFIRM_PASSWORD" prop="confirm_password">
-                <el-input v-model="register_form.confirm_password" type="password" auto-complete="off"></el-input>
-                <el-input  type="password" auto-complete="off" style="display:none"></el-input>
-              </el-form-item>
-              <el-form-item :label="lan.REGISTER_REALNAME" prop="realname">
-                <el-input v-model="register_form.realname" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item :label="lan.REGISTER_ENGNAME" prop="engname">
-                <el-input v-model="register_form.engname" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item :label="lan.REGISTER_EENUMBER" prop="eenumber">
-                <el-input v-model="register_form.eenumber" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item :label="lan.COMMON_MOBILE" prop="mobile">
-                <el-input v-model="register_form.mobile" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item :label="lan.REGISTER_DEPARTMENT" prop="department" with="100%">
-                <el-cascader v-model="department_value" :props="props"
-                             :options="register_data.departments"
-                             change-on-select></el-cascader>
-              </el-form-item>
-              <el-form-item :label="lan.COMMON_REMARK" prop="remark">
-                <el-input v-model="register_form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 5}"></el-input>
-              </el-form-item>
+    <el-dialog :title="lan.USER_REGISTRATION" :visible.sync="registerVisible" width="600px" :append-to-body="true" :close-on-click-modal="false" top="50px">
+      <el-form :model="register_form" size="small" :rules="register_form_rules" label-width="140px"  ref="register_form">
+        <el-form-item :label="lan.MAILBOX_COM_COMPOSE_MAIL_ADDRESS" prop="username">
+          <el-input v-model="register_form.username" auto-complete="off" name="register_username">
+            <template slot="append">@{{register_data.domain}}</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item :label="lan.REGISTER_PASSWORD" prop="password">
+          <el-input type="password" name="register_pwd" style="display:none;"></el-input>
+          <el-input v-model="register_form.password" type="password" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item :label="lan.REGISTER_CONFIRM_PASSWORD" prop="confirm_password">
+          <el-input v-model="register_form.confirm_password" type="password" auto-complete="off"></el-input>
+          <el-input  type="password" auto-complete="off" style="display:none"></el-input>
+        </el-form-item>
+        <el-form-item :label="lan.REGISTER_REALNAME" prop="realname">
+          <el-input v-model="register_form.realname" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item :label="lan.REGISTER_ENGNAME" prop="engname">
+          <el-input v-model="register_form.engname" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item :label="lan.REGISTER_EENUMBER" prop="eenumber">
+          <el-input v-model="register_form.eenumber" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item :label="lan.COMMON_MOBILE" prop="mobile">
+          <el-input v-model="register_form.mobile" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item :label="lan.REGISTER_DEPARTMENT" prop="department" with="100%">
+          <el-cascader v-model="department_value" :props="props"
+                       :options="register_data.departments"
+                       change-on-select></el-cascader>
+        </el-form-item>
+        <el-form-item :label="lan.COMMON_REMARK" prop="remark">
+          <el-input v-model="register_form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 5}"></el-input>
+        </el-form-item>
 
-              <div>
-                <div>
-                  <strong style="color: red">{{lan.COMMON_PASSWORD_NOTICE}}</strong>
-                  <ul style="margin-left: 26px;">
-                    <li style="list-style-type:circle;"> {{lan.COMMON_PASSWORD_NOTICE_1}} {{register_data.rules.passwd_size2}} {{lan.COMMON_PASSWORD_NOTICE_2}}</li>
-                    <li v-if="register_data.rules.passwd_type==2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_3}}</li>
-                    <li v-if="register_data.rules.passwd_type==3" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_4}}</li>
-                    <li v-if="register_data.rules.passwd_type==4" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_5}}</li>
-                    <li v-if="register_data.rules.passwd_digital" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_6}}</li>
-                    <li v-if="register_data.rules.passwd_name" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_7}}</li>
-                    <li v-if="register_data.rules.passwd_name2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_8}}</li>
-                    <li v-if="register_data.rules.passwd_letter" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_9}}</li>
-                    <li v-if="register_data.rules.passwd_letter2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_10}}</li>
-                  </ul>
-                </div>
-              </div>
+        <div>
+          <div>
+            <strong style="color: red">{{lan.COMMON_PASSWORD_NOTICE}}</strong>
+            <ul style="margin-left: 26px;">
+              <li style="list-style-type:circle;"> {{lan.COMMON_PASSWORD_NOTICE_1}} {{register_data.rules.passwd_size2}} {{lan.COMMON_PASSWORD_NOTICE_2}}</li>
+              <li v-if="register_data.rules.passwd_type==2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_3}}</li>
+              <li v-if="register_data.rules.passwd_type==3" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_4}}</li>
+              <li v-if="register_data.rules.passwd_type==4" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_5}}</li>
+              <li v-if="register_data.rules.passwd_digital" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_6}}</li>
+              <li v-if="register_data.rules.passwd_name" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_7}}</li>
+              <li v-if="register_data.rules.passwd_name2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_8}}</li>
+              <li v-if="register_data.rules.passwd_letter" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_9}}</li>
+              <li v-if="register_data.rules.passwd_letter2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_10}}</li>
+            </ul>
+          </div>
+        </div>
 
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="registerVisible = false">{{lan.cancel}}</el-button>
-              <el-button type="primary" @click="do_register">{{lan.REGISTER_BUTTON}}</el-button>
-            </div>
-          </el-dialog>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="registerVisible = false">{{lan.cancel}}</el-button>
+        <el-button type="primary" @click="do_register">{{lan.REGISTER_BUTTON}}</el-button>
+      </div>
+    </el-dialog>
   </div>
 
 
@@ -418,6 +415,7 @@
 <script>
   import cookie from '@/assets/js/cookie';
   import lan from '@/assets/js/lan';
+  // import RGBaster from 'rgbaster'
   import {login,resetSecret1,resetSecret2,resetSecret3,loginBefore,registerAgreement,register,setLang} from '@/api/api'
   const emailReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
   import router from '@/router'
@@ -447,7 +445,7 @@
       return {
         bg_counts:2,
         wy_padding_top:0,
-        wy_bg:1,
+        wy_bg:'',
         username_error:false,
         password_error:false,
         wy_username_error:false,
@@ -607,9 +605,6 @@
           "is_ssl":false,
           "login_logo":"",
           "login_ads":[
-            // {"image":"http://192.168.1.39:81/media/logo_FbIHh_20181213113253_180.jpg","link":"12"},
-            // {"image":"http://192.168.1.39:81/media/logo_FbIHh_20181213113253_180.jpg","link":"1234"},
-            // {"image":"http://192.168.1.39:81/media/logo_FbIHh_20181213113253_180.jpg","link":"12"}
           ]
         },
         reset1_show:false,
@@ -672,10 +667,39 @@
           username: '',
           password: ''
         },
-        randB: ['url(../../assets/img/mainBg0.jpg)', 'url(../../assets/img/aside0.png)']
+        randB: ['url(../../assets/img/mainBg0.jpg)', 'url(../../assets/img/aside0.png)'],
+        loading_wy:false,
+        loading_xsy:false,
+        loading_core:false,
       };
     },
     methods: {
+      keyupEnter(){
+          document.onkeydown = e =>{
+              if (e.keyCode === 13 && this.$route.name =='login') {
+                if( this.reset1_show || this.formVisible || this.form3Visible||this.agreementVisible || this.registerVisible ){
+                  if(this.formVisible){
+                    this.reset2_submit();
+                  }else if(this.form3Visible){
+                    this.reset3_submit();
+                  }else if(this.agreementVisible){
+                    // this.show_register_dialog();
+                  }else if(this.registerVisible){
+                    this.do_register();
+                  }
+
+                }else{
+                  if(this.login_type == 'cm'){
+                    this.login()
+                  }else if(this.login_type == 'wy'){
+                    this.login_wy()
+                  }else if(this.login_type == 'xsy'){
+                    this.login_xsy()
+                  }
+                }
+              }
+          }
+      },
       wy_caroucel(){
         if(this.wy_bg_timer){
           clearInterval(this.wy_bg_timer)
@@ -683,6 +707,7 @@
         this.wy_bg_timer = setInterval(()=>{
           this.wy_bg ++;
           if(this.wy_bg>this.bg_counts)this.wy_bg=1;
+          this.getColor();
         },3000)
       },
       stop_timer(){
@@ -698,12 +723,14 @@
         if(this.wy_bg <=0){
           this.wy_bg = this.bg_counts
         }
+        this.getColor();
       },
       nextTheme(){
         this.wy_bg ++;
         if(this.wy_bg >this.bg_counts){
           this.wy_bg = 1
         }
+        this.getColor();
       },
       pwd_focus_fn(){
         // this.pwd_type='password'
@@ -721,8 +748,13 @@
         });
       },
       goToHelp(){
-        let href = window.location.origin+'/webmail/zh_hans/index.html'; //window.location.origin  'http://192.168.1.39:81'
-        console.log(href)
+        let help_lang = 'zh_hans';
+        if(this.language == 'zh-tw'){
+          help_lang = 'zh_hant'
+        }else if(this.language == 'en'){
+          help_lang = 'en'
+        }
+        let href = window.location.origin+'/webmail/'+help_lang+'/index.html'; //window.location.origin  'http://192.168.1.39:81'
         window.open(href)
       },
       htmlDecodeByRegExp:function (str){
@@ -753,7 +785,6 @@
             };
             obj.username = this.register_form.username + '@'+this.register_data.domain
             register(obj).then(res=>{
-              console.log(res)
               this.$message({
                 type:'success',
                 message:obj.username + this.lan.REGISTER_SUCCESS
@@ -781,7 +812,6 @@
           domain_id:  this.domain_hash_id[this.loginBeforeData.domain]
         }
         registerAgreement(param).then(res=>{
-          console.log(res)
           if(!res.data.agreement || res.data.agreement == -1){
             this.register_data.agreement = this.default_agreement;
           }else{
@@ -814,14 +844,12 @@
         cookie.setCookie('webvue_language',val,365*10)
         this.$store.dispatch('setLanguageA',val)
         setLang().then(res=>{
-          console.log(res)
         }).catch(err=>{
           console.log(err);
         })
         // router.go(0)
       },
       changeDomain(val){
-        console.log(val)
         let param = {
           domain:val
         }
@@ -834,9 +862,13 @@
           if(res.data.login_logo){
             this.loginBeforeData.login_logo = origin + this.loginBeforeData.login_logo;
           }
-          if(this.loginBeforeData.login_ads && this.loginBeforeData.login_ads[0]){
-            this.loginBeforeData.login_ads[0].image = origin + this.loginBeforeData.login_ads[0].image;
+          if(this.loginBeforeData.login_ads && this.loginBeforeData.login_ads.length>0){
+            this.bg_counts = this.loginBeforeData.login_ads.length;
+            for(let i=0;i<this.loginBeforeData.login_ads.length;i++){
+              this.loginBeforeData.login_ads[i].image = origin + this.loginBeforeData.login_ads[i].image;
+            }
           }
+          // this.loginBeforeData.login_ads = []
           if(!res.data.is_domain){
             this.loginBeforeData.domains = [[res.data.domain_id,res.data.domain]]
           }
@@ -855,10 +887,12 @@
             this.login_type = 'cm';
             sessionStorage['login_type']  = 'cm'
           }
-
+          this.wy_bg = 1;
           this.$store.dispatch('setLoginBeforeA',this.loginBeforeData);
 
           $('title').text(res.data.title)
+          this.getColor()
+          this.wy_caroucel()
         }).catch(err=>{
           console.log(err)
         })
@@ -983,8 +1017,10 @@
             if(!emailReg.test(this.formLabelAlign.username)){
               str +='@'+ this.loginBeforeData.domain;
             }
+            this.loading_core = true;
             login({"username": str, "password": this.formLabelAlign.password})
               .then((response) => {
+                this.loading_core = false;
                 if(response.data.token){
                   cookie.setCookie('name', str, 7);
                   cookie.setCookie('token', response.data.token, 7);
@@ -1015,6 +1051,7 @@
                 }
 
               }).catch(err=>{
+                this.loading_core = false;
               let str = '';
               if(err.non_field_errors){
                 str = err.non_field_errors[0]
@@ -1045,8 +1082,10 @@
             if(!emailReg.test(this.formLabelAlign.username)){
               str +='@'+ this.loginBeforeData.domain;
             }
+            this.loading_xsy = true;
             login({"username": str, "password": this.formLabelAlign.password})
               .then((response) => {
+                this.loading_xsy = false;
                 if(response.data.token){
                   cookie.setCookie('name', str, 7);
                   cookie.setCookie('token', response.data.token, 7);
@@ -1077,6 +1116,7 @@
                 }
 
               }).catch(err=>{
+                this.loading_xsy = false;
               let str = '';
               if(err.non_field_errors){
                 str = err.non_field_errors[0]
@@ -1111,8 +1151,10 @@
             if(!emailReg.test(this.formLabelAlign.username)){
               str +='@'+ this.loginBeforeData.domain;
             }
+            this.loading_wy = true;
             login({"username": str, "password": this.formLabelAlign.password})
               .then((response) => {
+                this.loading_wy = false;
                 if(response.data.token){
                   cookie.setCookie('name', str, 7);
                   cookie.setCookie('token', response.data.token, 7);
@@ -1143,6 +1185,7 @@
                 }
 
               }).catch(err=>{
+                this.loading_wy = false;
               let str = '';
               if(err.non_field_errors){
                 str = err.non_field_errors[0]
@@ -1168,6 +1211,22 @@
           "username": "system@test.com",
           "password": "1QAZ2wsx"
         }).then((data) => {}, (data) => console.log(data));
+      },
+      getColor(){
+        if(this.loginBeforeData.login_ads && this.loginBeforeData.login_ads.length>0){
+          var img = this.loginBeforeData.login_ads[this.wy_bg-1].image;
+          // var img = '/static/img/a_01.jpg';
+          RGBaster.colors(img,{
+            exclude: ['rgb(255,255,255)','rgb(0,0,0)'],
+            success: function(payload) {
+              // payload.dominant是主色，RGB形式表示
+              // payload.secondary是次色，RGB形式表示
+              // payload.palette是调色板，含多个主要颜色，数组
+              $('#mainBg').css({background:payload.dominant})
+              $('#mainBg>div').css({'background-image':'url('+img+')'})
+            }
+          })
+        }
       }
     },
     mounted: function () {
@@ -1183,7 +1242,6 @@
       // })
       this.$nextTick(function(){
         let h = $('#top_box').height();
-        console.log(h)
         if(h-750>0){
           this.wy_padding_top = (h-750)/2;
         }
@@ -1263,13 +1321,13 @@
       // }
     },
     created: function () {
+      this.keyupEnter();
       // setInterval(()=>{
       //   this.bgIndex ++;
       //   if(this.bgIndex >=4){
       //     this.bgIndex = 0
       //   }
       // },2000)
-      console.log()
       if(sessionStorage['login_type']){
         this.login_type = sessionStorage['login_type']
       }
@@ -1309,7 +1367,6 @@
 
 
       this.bgIndex = 0 //Math.floor(Math.random()*4)
-      this.wy_caroucel();
       this.getLoginBefore()
       var lett = this;
       // if(this.$route.name && this.$route.name == 'login'){
@@ -1394,7 +1451,6 @@
   }
   .mailApp-logo {
     height: 35px;
-    background: url(/static/img/login/vip.png);
     display: block;
     width: 256px;
     margin: 0 auto;
@@ -1493,11 +1549,11 @@
     display: inline;
   }
   .prevTheme {
-    background: url(/static/img/login/prevthemem.png) 50% no-repeat;
+    background: url(../../assets/img/login/prevthemem.png) 50% no-repeat;
     background-size: 100% 100%;
   }
   .nextTheme {
-    background: url(/static/img/login/nexttheme.png) 50% no-repeat;
+    background: url(../../assets/img/login/nexttheme.png) 50% no-repeat;
     background-size: 100% 100%;
 }
   .main-inner-wrap {
@@ -1568,33 +1624,17 @@
   }
   .bg1.main_wy{
     /*background-color: rgb(251, 221, 211)*/
-    /*background:url(/static/img/login/promPic1.jpg) no-repeat;*/
-    background:url(/static/img/login/pic-1.jpg) no-repeat center;
+    /*background:url(../../assets/img/login/promPic1.jpg) no-repeat;*/
+    background:url(../../assets/img/login/pic-1.jpg) no-repeat center;
     background-size:cover;
   }
   .bg1 #mainCnt{
-    /*background-image:url(/static/img/login/promPic1.jpg);*/
+    /*background-image:url(../../assets/img/login/promPic1.jpg);*/
   }
   .bg2.main_wy{
     /*background-color: rgb(210, 41, 72);*/
-    background:url(/static/img/login/pic-2.jpg) no-repeat center;
+    background:url(../../assets/img/login/pic-2.jpg) no-repeat center;
     background-size:cover;
-  }
-  .bg2 #mainCnt{
-    /*background-image:url(/static/img/login/promPic2.jpg);*/
-  }
-  .bg3.main_wy{
-    /*background-color:rgb(180, 219, 233);*/
-    background:url(/static/img/login/banner3.jpg) no-repeat center ;
-    background-size:cover;
-  }
-  .bg4.main_wy{
-    /*background-color:rgb(180, 219, 233);*/
-    background:url(/static/img/login/banner4.jpg) no-repeat center ;
-    background-size:cover;
-  }
-  .bg3 #mainCnt{
-    /*background-image:url(/static/img/login/promPic3.jpg);*/
   }
 
 
@@ -1844,7 +1884,7 @@
 
   body {
     font-family: Arial, 'Hiragino Sans GB', 'å¾®è½¯é›…é»‘', 'é»‘ä½“-ç®€', Helvetica, sans-serif;
-    font-size: 12px;
+    font-size: 14px;
     overflow: auto;
     height: 100%;
     color: #3d5266;
@@ -1868,7 +1908,7 @@
   .crm-register-bg {
     width: 100%;
     height: 100%;
-    background: url(/static/img/login/login_bg.jpg);
+    background: url(../../assets/img/login/login_bg.jpg);
     /*background: url(../../assets/img/login/1.jpg);*/
     /*background: url(../../assets/img/mainBg2.jpg);*/
     background-position: right bottom;
@@ -2100,13 +2140,6 @@
   .crm-register-body > ul li {
     margin-bottom: 20px;
   }
-  .login_box_delete i {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    margin-top: 10px;
-    background: url(/static/img/login/edit_close.png) 0 0 no-repeat;
-  }
   .crm-login-form .crm-register-footer {
     margin-top: 30px;
   }
@@ -2125,9 +2158,6 @@
   .crm-register-footer .pg-btn-submit:hover {
     text-decoration: none;
     background: rgb(116, 150, 247);
-  }
-  .login_box_delete:hover i {
-    background: url(/static/img/login/edit_close.png) 0 -30px no-repeat;
   }
   .crm-login1-body .crm-register-input-warpper.error .crm-register-verification > a {
     color: #fa7252;

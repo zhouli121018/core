@@ -19,11 +19,11 @@
                          @size-change="f_TableSizeChange"
                          @current-change="f_TableCurrentChange"
                          :page-sizes="[10, 20, 50, 100]"
-                         :current-page="page"
-                         :page-size="page_size"
+                         :current-page.sync="page"
+                         :page-size.sync="page_size"
                          v-if="total>0"
                          :total="total" style="float: right">
-            <span> {{page+' / '+Math.ceil(total/page_size)}}</span>
+            <span class="page_slot"> {{page_slot}}</span>
           </el-pagination>
         </el-col>
       </el-row>
@@ -110,13 +110,13 @@
             <el-pagination
               @size-change="handleSizeChange" small
               @current-change="handleCurrentChange"
-              :current-page="currentPage"
+              :current-page.sync="currentPage"
               :page-sizes="[5,10, 20,50,100,200, 300, 400]"
-              :page-size="pageSize"
+              :page-size.sync="pageSize"
               layout="total, sizes, prev, slot, next, jumper"
               v-if="totalCount>0"
               :total="totalCount">
-              <span> {{currentPage+' / '+Math.ceil(totalCount/pageSize)}}</span>
+              <span class="page_slot_c"> {{page_slot_c}}</span>
             </el-pagination>
           </el-form-item>
           <el-form-item v-show="addType == '2'" :label="plang.SETTING_RE_ADD_PLACEHODER">
@@ -431,6 +431,16 @@
 
     },
     computed:{
+      page_slot(){
+        let str = this.page+' / '+Math.ceil(this.total/this.page_size);
+        $('.page_slot').html(str);
+        return str;
+      },
+      page_slot_c(){
+        let str = this.currentPage+' / '+Math.ceil(this.totalCount/this.pageSize);
+        $('.page_slot_c').html(str);
+        return str;
+      }
     }
   }
 </script>

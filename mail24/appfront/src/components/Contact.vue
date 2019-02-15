@@ -99,7 +99,7 @@
               layout="total,prev, slot, next,sizes,jumper"
               v-if="totalCount>0"
               :total="totalCount">
-              <span> {{currentPage+' / '+Math.ceil(totalCount/page_size_add)}}</span>
+              <span class="page_slot_co"> {{page_slot_co}}</span>
             </el-pagination>
           </el-col>
         </el-row>
@@ -287,6 +287,11 @@
       }
     },
     computed:{
+      page_slot_co(){
+        let str = this.currentPage+' / '+Math.ceil(this.totalCount/this.page_size_add);
+        $('.page_slot_co').html(str);
+        return str;
+      },
       lan:function(){
         let lang = lan.zh
         if(this.$store.getters.getLanguage=='zh-hans'){

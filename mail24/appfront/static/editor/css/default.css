@@ -473,7 +473,7 @@ span.ke-icon-umail_link {
 	display: block;
 }
 .ke-toolbar-icon-url {
-	background-image: url('/static/editor/img/default.png');
+	background-image: url('/staticvue/editor/img/default.png');
 }
 .ke-toolbar .ke-outline {
 	border: 1px solid #F0F0EE;
@@ -551,7 +551,7 @@ span.ke-icon-umail_link {
 	background-position: -0px -754px;
 	width: 15px;
 	height: 11px;
-	background-image: url('/static/editor/img/default.png');
+	background-image: url('/staticvue/editor/img/default.png');
 }
 .ke-statusbar-right-icon {
 	position: absolute;
@@ -561,7 +561,7 @@ span.ke-icon-umail_link {
 	background-position: -5px -741px;
 	width: 11px;
 	height: 11px;
-	background-image: url('/static/editor/img/default.png');
+	background-image: url('/staticvue/editor/img/default.png');
 }
 /* menu */
 .ke-menu {
@@ -710,7 +710,7 @@ span.ke-icon-umail_link {
 	border:0;
 	margin:0;
 	padding: 0 10px;
-	background: url('/static/editor/img/background.png') repeat scroll 0 0 #F0F0EE;
+	background: url('/staticvue/editor/img/background.png') repeat scroll 0 0 #F0F0EE;
 	border-bottom: 1px solid #CFCFCF;
 	height: 24px;
 	font: 12px/24px "sans serif",tahoma,verdana,helvetica;
@@ -720,7 +720,7 @@ span.ke-icon-umail_link {
 }
 .ke-dialog-icon-close {
 	display: block;
-	background: url('/static/editor/img/default.png') no-repeat scroll 0px -688px;
+	background: url('/staticvue/editor/img/default.png') no-repeat scroll 0px -688px;
 	width: 16px;
 	height: 16px;
 	position: absolute;
@@ -791,7 +791,7 @@ span.ke-icon-umail_link {
 	text-align: center;
 }
 .ke-dialog-loading-content {
-	background: url('/static/editor/img/loading.gif') no-repeat;
+	background: url('/staticvue/editor/img/loading.gif') no-repeat;
 	color: #666;
 	font-size: 14px;
 	font-weight: bold;
@@ -822,7 +822,7 @@ span.ke-icon-umail_link {
 	opacity:0.5;
 }
 .ke-button-common {
-	background: url('/static/editor/img/background.png') no-repeat scroll 0 -25px transparent;
+	background: url('/staticvue/editor/img/background.png') no-repeat scroll 0 -25px transparent;
 	cursor: pointer;
 	height: 23px;
 	line-height: 23px;
@@ -1015,7 +1015,7 @@ span.ke-icon-umail_link {
 }
 .ke-swfupload-body .ke-delete {
 	display: block;
-	background: url('/static/editor/img/default.png') no-repeat scroll 0px -688px;
+	background: url('/staticvue/editor/img/default.png') no-repeat scroll 0px -688px;
 	width: 16px;
 	height: 16px;
 	position: absolute;

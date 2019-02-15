@@ -402,16 +402,6 @@
                 </div>
 
 
-
-                <!--<editor :id="editor_id+'1'" :ref="editor_id" :height="editor_height+'px'" width="100%" :content="content" :filterMode="false"-->
-                    <!--pluginsPath="/static/kindeditor/plugins/" :resizeType="0" indentChar=""-->
-                    <!--:loadStyleMode="false" :items="toolbarItems" :uploadJson="uploadJson"-->
-                    <!--@on-content-change="onContentChange"  :autoHeightMode="false" :afterCreate="afterChange" @afterFocus="editorfocus">-->
-
-                <!--</editor>-->
-
-
-
               </div>
               <!-- form-toolbar compose_footer -->
               <div class=" footer_height" style="padding-left: 10px;">
@@ -676,13 +666,13 @@
             <el-pagination
               @size-change="handleSizeChange_contact"
               @current-change="handleCurrentChange_contact"
-              :current-page="currentPage"
+              :current-page.sync="currentPage"
               :page-sizes="[10, 20,50,100]"
-              :page-size="pageSize"
+              :page-size.sync="pageSize"
               layout="total,prev, slot, next,sizes"
               v-if="totalCount>0"
               :total="totalCount">
-              <span> {{currentPage+' / '+Math.ceil(totalCount/pageSize)}}</span>
+              <span class="page_slot3"> {{page_slot3}}</span>
             </el-pagination>
           </el-col>
         </el-row>
@@ -698,13 +688,13 @@
             <el-pagination class="margin-bottom-5"
               @size-change="attachSizeChange"
               @current-change="attachCurrentChange"
-              :current-page="attachCurrentPage"
+              :current-page.sync="attachCurrentPage"
               :page-sizes="[10,20,50,100]"
-              :page-size="attachPageSize" background
+              :page-size.sync="attachPageSize" background
               layout="total, prev, slot, next, sizes,jumper"
                            v-if="attachTotal>0"
               :total="attachTotal" small>
-              <span> {{attachCurrentPage+' / '+Math.ceil(attachTotal/attachPageSize)}}</span>
+              <span class="page_slot4"> {{page_slot4}}</span>
             </el-pagination>
 
             <el-table @selection-change="fileSelectionChange" @row-click="rowClick_afile"
@@ -727,13 +717,13 @@
             <el-pagination class="margin-bottom-5"
               @size-change="attachSizeChange_net"
               @current-change="attachCurrentChange_net"
-              :current-page="attachCurrentPage_net"
+              :current-page.sync="attachCurrentPage_net"
               :page-sizes="[10,20,50,100]"
-              :page-size="attachPageSize_net" background
+              :page-size.sync="attachPageSize_net" background
               layout="total, prev, slot, next, sizes"
                            v-if="attachTotal_net>0"
               :total="attachTotal_net" small>
-              <span> {{attachCurrentPage_net+' / '+Math.ceil(attachTotal_net/attachPageSize_net)}}</span>
+              <span class="page_slot5"> {{page_slot5}}</span>
             </el-pagination>
             <el-table @selection-change="fileSelectionChange" @row-click="rowClick_nfile"
               ref="nfileTable" :data="nfileList" tooltip-effect="dark" style="width: 100%"
@@ -760,13 +750,13 @@
             <el-pagination class="margin-bottom-5"
               @size-change="attachSizeChange_company"
               @current-change="attachCurrentChange_company"
-              :current-page="attachCurrentPage_company"
+              :current-page.sync="attachCurrentPage_company"
               :page-sizes="[10,20,50,100]"
-              :page-size="attachPageSize_company" background
+              :page-size.sync="attachPageSize_company" background
               layout="total, prev, slot, next, sizes"
                            v-if="attachTotal_company>0"
               :total="attachTotal_company" small>
-              <span> {{attachCurrentPage_company+' / '+Math.ceil(attachTotal_company/attachPageSize_company)}}</span>
+              <span class="page_slot6"> {{page_slot6}}</span>
             </el-pagination>
             <el-table @selection-change="fileSelectionChange" @row-click="rowClick_nfile_company"
               ref="nfileTable_company" :data="nfileList_company" tooltip-effect="dark" style="width: 100%"
@@ -1047,21 +1037,21 @@
         ],
         checkBg:'',
         stationeryList:[
-          {id:0,src:require('../img/0.png'),background:'url(/static/img/a_04.jpg) repeat-x #cdede2'},
-          {id:1,src:require('../img/1.png'),background:'url(/static/img/a_01.jpg) no-repeat #f6ffec'},
-          {id:2,src:require('../img/2.png'),background:'url(/static/img/a_12.jpg) repeat-x left bottom #e3ebf4'},
+          {id:0,src:require('../img/0.png'),background:'url(/staticvue/img/a_04.jpg) repeat-x #cdede2'},
+          {id:1,src:require('../img/1.png'),background:'url(/staticvue/img/a_01.jpg) no-repeat #f6ffec'},
+          {id:2,src:require('../img/2.png'),background:'url(/staticvue/img/a_12.jpg) repeat-x left bottom #e3ebf4'},
 
-          {id:5,src:require('../img/5.png'),background:'url(/static/img/a_07.jpg) repeat-x #e4ebf5'},
-          {id:6,src:require('../img/6.png'),background:'url(/static/img/b_02.jpg)'},
-          {id:7,src:require('../img/7.png'),background:'url(/static/img/b_01.jpg)'},
-          {id:8,src:require('../img/8.png'),background:'url(/static/img/a_02.jpg) no-repeat #fffaf6'},
-          {id:9,src:require('../img/9.png'),background:'url(/static/img/a_03.jpg) no-repeat #fbf7f4'},
-          {id:10,src:require('../img/10.png'),background:'url(/static/img/a_05.jpg) no-repeat #a7dcd2'},
-          {id:11,src:require('../img/11.png'),background:'url(/static/img/a_08.jpg) no-repeat #f3f3eb'},
-          {id:12,src:require('../img/12.png'),background:'url(/static/img/a_09.jpg) repeat-x #0e9dbb'},
-          {id:13,src:require('../img/13.png'),background:'url(/static/img/a_10.jpg) repeat-x #bfdfec'},
-          {id:14,src:require('../img/14.png'),background:'url(/static/img/a_11.jpg) no-repeat #fff2d8'},
-          {id:3,src:require('../img/3.png'),background:'url(/static/img/a_06.jpg) repeat-x #221f18'},
+          {id:5,src:require('../img/5.png'),background:'url(/staticvue/img/a_07.jpg) repeat-x #e4ebf5'},
+          {id:6,src:require('../img/6.png'),background:'url(/staticvue/img/b_02.jpg)'},
+          {id:7,src:require('../img/7.png'),background:'url(/staticvue/img/b_01.jpg)'},
+          {id:8,src:require('../img/8.png'),background:'url(/staticvue/img/a_02.jpg) no-repeat #fffaf6'},
+          {id:9,src:require('../img/9.png'),background:'url(/staticvue/img/a_03.jpg) no-repeat #fbf7f4'},
+          {id:10,src:require('../img/10.png'),background:'url(/staticvue/img/a_05.jpg) no-repeat #a7dcd2'},
+          {id:11,src:require('../img/11.png'),background:'url(/staticvue/img/a_08.jpg) no-repeat #f3f3eb'},
+          {id:12,src:require('../img/12.png'),background:'url(/staticvue/img/a_09.jpg) repeat-x #0e9dbb'},
+          {id:13,src:require('../img/13.png'),background:'url(/staticvue/img/a_10.jpg) repeat-x #bfdfec'},
+          {id:14,src:require('../img/14.png'),background:'url(/staticvue/img/a_11.jpg) no-repeat #fff2d8'},
+          {id:3,src:require('../img/3.png'),background:'url(/staticvue/img/a_06.jpg) repeat-x #221f18'},
         ],
         signCheck:'',
         signatureList:[],
@@ -3799,6 +3789,26 @@
       });
     },
     computed:{
+      page_slot3(){
+        let str = this.currentPage+' / '+Math.ceil(this.totalCount/this.pageSize);
+        $('.page_slot3').html(str)
+        return str;
+      },
+      page_slot4(){
+        let str = this.attachCurrentPage+' / '+Math.ceil(this.attachTotal/this.attachPageSize);
+        $('.page_slot4').html(str)
+        return str;
+      },
+      page_slot5(){
+        let str = this.attachCurrentPage_net+' / '+Math.ceil(this.attachTotal_net/this.attachPageSize_net);
+        $('.page_slot5').html(str)
+        return str;
+      },
+      page_slot6(){
+        let str = this.attachCurrentPage_company+' / '+Math.ceil(this.attachTotal_company/this.attachPageSize_company);
+        $('.page_slot6').html(str)
+        return str;
+      },
       uploadJson:function(){
         return this.$store.state.uploadJson;
       },

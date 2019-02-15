@@ -6,14 +6,14 @@
         <div class="toolbar" style="background:#fff"
         >
 
-          <!--<div id="pagination" class="f-fr">-->
-          <!--<div class="">-->
-          <!--<el-button-group>-->
-          <!--<el-button  size="small" icon="el-icon-arrow-left" plain round></el-button>-->
-          <!--<el-button  size="small" plain round><i class="el-icon-arrow-right el-icon&#45;&#45;right"></i></el-button>-->
-          <!--</el-button-group>-->
-          <!--</div>-->
-          <!--</div>-->
+          <div id="pagination" class="f-fr">
+          <div class="">
+          <el-button-group>
+          <el-button  size="small" icon="el-icon-arrow-left" :title="lan.MAILBOX_COM_READ_PREV" plain round @click="prevMail" :disabled="curr_mail_index==0 && curr_page==1"></el-button>
+          <el-button  size="small" plain round icon="el-icon-arrow-right" :title="lan.MAILBOX_COM_READ_NEXT" @click="nextMail" :disabled="curr_mail_index==uids.length-1 && curr_page == total_page"></el-button>
+          </el-button-group>
+          </div>
+          </div>
 
           <el-button size="small" @click="recallMessage" v-if="msg.attrs" v-show="msg.attrs.is_canrecall" :disabled="msg.attrs.is_recall">{{msg.attrs.is_recall? lan.MAILBOX_COM_READ_RECALLED: lan.COMMON_BUTTON_ZHAOHUI}}</el-button>
           <el-button-group >
@@ -76,8 +76,8 @@
               <i class="el-icon-arrow-down el-icon--right"></i>
             </el-button>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item v-for="item in moreItems" :key="item.id" class="dropdown_item"
-                                :divided="item.divided" :command="item">
+              <el-dropdown-item v-if="item.id!=12 || (item.id==12&&readFolderId=='Spam')" v-for="item in moreItems" :key="item.id" class="dropdown_item"
+                                :divided="item.divided" :command="item" >
                 <b><i class="el-icon-check vibility_hide" v-if="!item.classN"></i> </b><i :class="item.classN"></i>
                 {{ item.text}}</el-dropdown-item>
             </el-dropdown-menu>
@@ -126,7 +126,7 @@
                 <!--<span class="icon"><i class="j-sourceIcon iconfont state-icon icon-SYSTEM" title="系统认证可信任来源"></i></span>-->
                 <!--<span v-if="burn_flagged">{{lan.MAILBOX_COM_COMPOSE_IS_BURN}}: </span>-->
                 <span class="is_burn_img" v-if="burn_flagged" :title="lan.MAILBOX_COM_COMPOSE_IS_BURN"></span>
-                {{subject?subject:this.lan.MAILBOX_NO_SUBJECT}}
+                {{subject}}
               </h3>
               <div class="short-info f-ellipsis j-short-info" v-show="!showDetails" v-if="mfrom || to.length>0">
                 <a class="j-u-email" href="javascript:void(0);" >{{mfrom}}</a>
@@ -332,7 +332,7 @@
             <!--<iframe width="100%" id="mail-1534902112297" class="j-mail-content" frameborder="0" allowtransparency="true" sandbox="allow-scripts allow-popups" src="jsp/viewMailHTML.jsp?mid=1%3A1tbiAQAJEFXEqdgAXgADsl&amp;mailCipherPassword=&amp;partId=&amp;isSearch=&amp;priority=&amp;supportSMIME=&amp;striptTrs=true&amp;mboxa=&amp;iframeId=1534902112297&amp;sspurl=false" style="width: 1642px; height: 198px;">-->
             <!--</iframe>-->
 
-            <iframe   :id="'show-iframe'+readId" frameborder="0" scrolling="100%" height="auto" width="100%"></iframe>
+            <iframe   :id="'show-iframe'+readId+'_'+tagName" frameborder="0" scrolling="100%" height="auto" width="100%"></iframe>
             <el-collapse v-model="activeNames" v-if="attachments.length>0" class="attach_box">
               <el-collapse-item :title=" lan.MAILBOX_COM_READ_ATTACH+ ' ('+attachments.length+ lan.MAILBOX_COM_READ_COUNT +' )'" name="1">
 
@@ -381,13 +381,7 @@
           </div>
 
           <form class="quick-reply-form quick-reply-item j-reply-form tran" v-show="replying">
-            <!--<textarea name="replyContent" class="reply-textarea" rows="6" v-model="content"></textarea>-->
-            <!--<editor v-if="replying" :id="'editor_id_fast_'+readId+readFolderId" :ref="'editor_id_fast_'+readId+readFolderId" height="200px" width="100%" :content="content" :filterMode="false"-->
-            <!--pluginsPath="/static/kindeditor/plugins/" :resizeType="0" indentChar=""-->
-            <!--:loadStyleMode="false" :items="toolbarItems" :uploadJson="uploadJson"-->
-            <!--@on-content-change="onContentChange"  :autoHeightMode="false" :afterChange="onContentChange">-->
 
-            <!--</editor>-->
             <textarea  v-if="replying":id="'editor_id_fast_'+readId+readFolderId" :ref="'editor_id_fast_'+readId+readFolderId" style="width:100%;height:200px;" v-model="content"></textarea>
             <div style="height:4px"></div>
             <span class="u-btn u-btn-primary" @click="reply" >{{lan.MAILBOX_COM_READ_SENT}}</span>
@@ -423,16 +417,28 @@
 
 <script>
   import lan from '@/assets/js/lan';
-  import {readMail,downloadAttach,mailDecode,moveMails,messageFlag,rejectMessage,zipMessage,pruneMessage,emlMessage,pabMessage,deleteMail,getMessageStatus,messageRecall,notifyRecall,notifyMessage,replayMessage,saveNetAttach,setStatus,getOpenoffice,logRecall} from '@/api/api';
+  import {readMail,downloadAttach,mailDecode,moveMails,messageFlag,rejectMessage,zipMessage,pruneMessage,emlMessage,pabMessage,deleteMail,getMessageStatus,messageRecall,notifyRecall,notifyMessage,replayMessage,saveNetAttach,setStatus,getOpenoffice,logRecall,notSpam,getMailMessage,mailSearch} from '@/api/api';
   export default  {
     name:'Read',
     props:{
       tagName:'',
-      readId:'',
-      readFolderId: '',
+      parent_readId:'',
+      parent_readFolderId: '',
+      read_params:'',
+      read_uids:'',
+      currentPage:'',
+      totalPage:'',
+      read_type:''
     },
     data(){
       return {
+        params:'',
+        uids:[],
+        curr_page:1,
+        total_page:1,
+        curr_mail_index:0,
+        readId:'',
+        readFolderId:'',
         createEditor:'',
         reviewCount:0,
         sequesterCount:0,
@@ -498,6 +504,7 @@
           {id:8,text:'',divided:false,classN:'iconfont icon-iconcontacts1'},
           {id:9,text:'',divided:false,classN:'el-icon-download'},
           {id:4,text:'',divided:true,checkone:false},
+          {id:12,text:'',divided:false,checkone:false},
           {id:5,text:'',divided:true,checkone:true},
           // {id:6,text:'打包下载',divided:false,checkone:false},
           {id:7,text:'',divided:false,checkone:false},
@@ -524,6 +531,105 @@
       }
     },
     methods:{
+      prevMail(){
+        if(this.curr_mail_index==0){
+          this.curr_page --;
+          this.loading = true;
+          if(this.read_type=='innerbox_read'){
+            this.params.offset = (this.curr_page-1)*this.params.limit;
+            getMailMessage(this.params).then(res=>{
+              this.total_page = Math.ceil(res.data.count/this.params.limit);
+              this.uids = [];
+              for(let i=0;i<res.data.results.length;i++){
+                this.uids.push(res.data.results[i].uid)
+              }
+              this.loading = false;
+              this.curr_mail_index = this.uids.length-1;
+              this.readId = this.uids[this.curr_mail_index]
+
+            }).catch(err=>{
+              this.loading = false;
+            })
+          }else if(this.read_type == 'search_read'){
+            this.params.page = this.curr_page;
+            mailSearch(this.params).then(res=>{
+              this.loading = false;
+              this.total_page = Math.ceil(res.data.count/20);
+              this.uids = [];
+              for(let i=0;i<res.data.results.length;i++){
+                this.uids.push([res.data.results[i].uid,res.data.results[i].raw_name])
+              }
+              this.loading = false;
+              this.curr_mail_index = 0;
+              this.readFolderId = this.uids[this.curr_mail_index][1]
+              this.readId = this.uids[this.curr_mail_index][0]
+            }).catch(err=>{
+              this.loading = false;
+              console.log(err);
+            })
+          }
+
+        }else{
+          this.curr_mail_index --;
+          if(this.read_type=='innerbox_read'){
+            this.readId = this.uids[this.curr_mail_index]
+          }else if(this.read_type == 'search_read'){
+            this.readFolderId = this.uids[this.curr_mail_index][1]
+            this.readId = this.uids[this.curr_mail_index][0]
+          }
+        }
+
+      },
+      nextMail(){
+        if(this.curr_mail_index==this.uids.length-1){
+          this.curr_page ++;
+          this.loading = true;
+          if(this.read_type=='innerbox_read'){
+            this.params.offset = (this.curr_page-1)*this.params.limit;
+            getMailMessage(this.params).then(res=>{
+              this.total_page = Math.ceil(res.data.count/this.params.limit);
+              this.uids = [];
+              for(let i=0;i<res.data.results.length;i++){
+                this.uids.push(res.data.results[i].uid)
+              }
+              this.loading = false;
+              this.curr_mail_index = 0;
+              this.readId = this.uids[this.curr_mail_index]
+
+            }).catch(err=>{
+              this.loading = false;
+            })
+          }else if(this.read_type == 'search_read'){
+            this.params.page = this.curr_page;
+            mailSearch(this.params).then(res=>{
+              this.loading = false;
+              this.total_page = Math.ceil(res.data.count/20);
+              this.uids = [];
+              for(let i=0;i<res.data.results.length;i++){
+                this.uids.push([res.data.results[i].uid,res.data.results[i].raw_name])
+              }
+              this.loading = false;
+              this.curr_mail_index = 0;
+              this.readFolderId = this.uids[this.curr_mail_index][1]
+              this.readId = this.uids[this.curr_mail_index][0]
+            }).catch(err=>{
+              this.loading = false;
+              console.log(err);
+            })
+          }
+
+        }else{
+          this.curr_mail_index ++;
+          if(this.read_type=='innerbox_read'){
+            this.readId = this.uids[this.curr_mail_index]
+          }else if(this.read_type == 'search_read'){
+            this.readFolderId = this.uids[this.curr_mail_index][1]
+            this.readId = this.uids[this.curr_mail_index][0]
+          }
+        }
+        console.log(this.uids)
+        console.log(this.curr_mail_index)
+      },
       createEditorFn(val){
         let language = 'zh_CN';
         if(this.$store.getters.getLanguage == 'en'){
@@ -576,7 +682,6 @@
       },
       changeType(){
         this.passwordType = 'password';
-        console.log(this.passwordType)
       },
       seeAttach(){
         $('#mail_'+this.readId+'_'+this.readFolderId).animate({scrollTop:$('#mail_'+this.readId+'_'+this.readFolderId).find('.attach_box').offset().top}, 600);
@@ -786,6 +891,7 @@
         wind.print();
       },
       sendNotifyMessage(){
+        this.msg.attrs.is_notify = false;
         let param = {
           uid:this.readId,
           folder:this.readFolderId
@@ -795,7 +901,6 @@
             type:'success',
             message:this.lan.MAILBOX_COM_READ_NOTICE_SEND_SUC
           })
-          this.msg.attrs.is_notify = false;
         }).catch(err=>{
           let str = '';
           if(err.detail){
@@ -805,7 +910,6 @@
             type:'error',
             message:this.lan.MAILBOX_COM_READ_NOTICE_SEND_FAIL +str
           })
-          this.msg.attrs.is_notify = false;
         })
       },
       recallMessage(){
@@ -1105,6 +1209,45 @@
               {type:'error',message: this.lan.COMMON_DOWNLOAD_FAILED +str}
             )
           })
+        }else if(item.id == 12){//这不是垃圾邮件
+          this.$confirm('<p>'+this.lan.MAILBOX_COM_INNERBOX_CONFIRM_1+'</p><input type="checkbox" id="to_white"> '+this.lan.MAILBOX_COM_INNERBOX_CONFIRM_2, this.lan.COMMON_BUTTON_CONFIRM_NOTICE, {
+            confirmButtonText: this.lan.COMMON_BUTTON_CONFIRM,
+            cancelButtonText: this.lan.COMMON_BUTTON_CANCELL,
+            dangerouslyUseHTMLString: true,
+
+          }).then(() => {
+            this.loading = true;
+            let param_not_spam = {
+              uids:[this.readId],
+            }
+            if($('#to_white').prop('checked')) {
+              param_not_spam.to_white = true
+            }else{
+              param_not_spam.to_white = false
+            }
+            notSpam(param_not_spam).then(res=>{
+              this.loading = false;
+              this.$message(
+                {type:'success',message:this.lan.COMMON_OPRATE_SUCCESS}
+              )
+              pp.getFloderfn();
+              // this.closeTab(this.tagName)
+              this.readFolderId = 'INBOX';
+              this.$parent.$parent.$children[1].$children[0].getMessageList()
+            })
+              .catch(err=>{
+                this.loading = false;
+                let str = '';
+                if(err.detail){
+                  str = err.detail
+                }
+                this.$message(
+                  {type:'error',message: this.lan.COMMON_OPRATE_FAILED+str}
+                )
+              })
+          }).catch(() => {
+
+          });
         }
       },
       deleteMail(){
@@ -1314,6 +1457,7 @@
             type:'success',
             message: this.lan.MAILBOX_COM_INNERBOX_MAIL_MOVE_SUCCESSFUL
           })
+          // this.closeTab(this.tagName);
           this.readFolderId = index;
           // this.$parent.$parent.$parent.getFloderfn();
         },(err)=>{
@@ -1367,11 +1511,14 @@
               this.flag_color = 'flag-purple';
             }else if(item.flags == 'umail-gray'){
               this.flag_color = 'flag-gray';
+            }else{
+              this.flag_color = '';
             }
           }else{
             this.flagged = false;
             this.flag_color = ''
           }
+          this.$parent.$parent.$parent.$refs.innerbox[0].getMessageList();
         },(err)=>{
 
         }).catch(err=>{
@@ -1405,13 +1552,13 @@
       getReadMail(){
         this.loading = true;
         let rid = this.readId;
+        let tagName = this.tagName;
         readMail(this.readId,{"folder":this.readFolderId}).then((data)=>{
           this.notFond = false;
           this.msg = data.data
           if(this.msg.attrs.calendar_eventer_status && this.msg.attrs.calendar_eventer_status!='start'){
             this.show_change_btn = false;
           }
-
           if(this.msg.attrs.is_canrecall){
             this.is_sender = true;
             this.getMessageStatus();
@@ -1420,7 +1567,8 @@
           }
           this.is_password = data.data.attrs.is_password;
           this.password = data.data.attrs.password;
-          this.subject = data.data.subject;
+          this.subject = data.data.subject || this.lan.MAILBOX_NO_SUBJECT;
+          this.$parent.$parent.$parent.changeTabRid(this.readId,this.readFolderId,this.tagName,data.data)
           this.time = data.data.date;
           if(this.$store.getters.getIsSwtime){
             let index = this.time.indexOf('T');
@@ -1459,11 +1607,7 @@
               }
             }
           }
-
-
-
-
-          const oIframe = document.getElementById('show-iframe'+rid);
+          const oIframe = document.getElementById('show-iframe'+rid+'_'+tagName);
           //-30padding
           // const deviceWidth = this.$refs.companyStyle.getBoundingClientRect().width-30;
 
@@ -1473,12 +1617,12 @@
             // oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = data.data.html_text||data.data.plain_text;
             // oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = data.data.html_text||data.data.plain_text;
             var aa = data.data.html_text||data.data.plain_text
-            $('#show-iframe'+rid).contents().find("body").html(aa)
+            $('#show-iframe'+rid+'_'+tagName).contents().find("body").html(aa)
             this.print_html =  data.data.html_text
           }else{
             let bhtml = data.data.html_text||data.data.plain_text;
             // oIframe.contentDocument.getElementsByTagName('html')[0].innerHTML = '<pre>'+bhtml+'</pre>';
-            $('#show-iframe'+rid).contents().find("body").html('<pre>'+bhtml+'</pre>')
+            $('#show-iframe'+rid+'_'+tagName).contents().find("body").html('<pre>'+bhtml+'</pre>')
             this.print_html =  '<pre>'+bhtml+'</pre>'
           }
 
@@ -1514,8 +1658,29 @@
 
     },
     created:function(){
-      this.getReadMail();
 
+      this.readFolderId = this.parent_readFolderId
+      this.readId = this.parent_readId
+      this.params = this.read_params
+      this.uids = this.read_uids
+      this.curr_page = this.currentPage
+      this.total_page = this.totalPage
+      if(this.read_type=='innerbox_read'){
+        for(let i=0;i<this.uids.length;i++){
+          if(this.uids[i] == this.readId){
+            this.curr_mail_index = i;
+            break;
+          }
+        }
+      }else if(this.read_type=='search_read'){
+        for(let i=0;i<this.uids.length;i++){
+          if(this.uids[i][0] == this.readId){
+            this.curr_mail_index = i;
+            break;
+          }
+        }
+      }
+      this.getReadMail();
     },
     watch: {
       readId(newValue, oldValue) {
@@ -1570,6 +1735,7 @@
           {id:8,text:lang.CONTACT_OAB_TOPAB,divided:false,classN:'iconfont icon-iconcontacts1'},
           {id:9,text:lang.MAILBOX_COM_READ_MAIL_DOWNLOAD,divided:false,classN:'el-icon-download'},
           {id:4,text:lang.MAILBOX_COM_INNERBOX_REJECTED_MAIL,divided:true,checkone:false},
+          {id:12,text:lang.MAILBOX_COM_INNERBOX_NOT_SPAM,divided:false,checkone:false},
           {id:5,text:lang.MAILBOX_COM_INNERBOX_SEND_AGAIN,divided:true,checkone:true},
           {id:7,text:lang.MAILBOX_COM_INNERBOX_DELETE_THOROUGHLY,divided:false,checkone:false},
           {id:10,text:lang.MAILBOX_COM_READ_LETTER_HEAD,divided:true,checkone:true},
@@ -1594,11 +1760,17 @@
       },
     },
     mounted(){
-      this.$parent.$parent.$parent.$refs.innerbox[0].getMessageList();
+      // this.$parent.$parent.$parent.$refs.innerbox[0].getMessageList();
     }
   }
 </script>
 <style>
+  .is_burn_img{
+    display:inline-block;
+    width:18px;
+    height:18px;
+    background:url(../img/is_burn.jpg)
+  }
   .attach_box .el-collapse-item__header,.attach_box .el-collapse-item__wrap{
     background:transparent;
   }

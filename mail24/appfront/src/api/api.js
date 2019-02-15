@@ -1,4 +1,5 @@
 import axios from 'axios';
+import store from '../store/index';
 
 
 let host = '/api';
@@ -78,7 +79,9 @@ export const contactSoabMembersGet = params => { return axios.get(`${host}/conta
 
 /* ***********************  邮件列表 *********************** */
 //获取邮件列表
-export const getMailMessage = params => { return axios.get(`${host}/mail/message/`, { params: params }) }
+export const getMailMessage = params => { return axios.get(`${host}/mail/message/`, { params: params,cancelToken: new axios.CancelToken(function executor(c) {
+          store.dispatch('setSourceA',c);
+        }) }) }
 
 //获取文件夹列表
 export const getFloder = params => { return axios.get(`${host}/mail/folder/`, { params: params }) };
@@ -499,3 +502,5 @@ export const exportIcs = id => { return axios.get(`${host}/schedule/events/${id}
 //邮件全文搜索 GET /api/mail/message/search/
 export const mailSearch = (params) => { return axios.get(`${host}/mail/message/search/`,{ params: params })}
 
+//这不是垃圾邮件 POST /api/mail/message/not-spam/
+export const notSpam = params => { return axios.post(`${host}/mail/message/not-spam/`, params) };

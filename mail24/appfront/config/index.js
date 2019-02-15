@@ -12,7 +12,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/': {
-        target: 'http://192.168.1.39:9998',
+        // target: 'http://192.168.1.24:9990',
+        target: 'http://192.168.1.39',
         changeOrigin: true,
         pathRewrite: {
         '^/': ''
@@ -57,7 +58,7 @@ module.exports = {
 
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
-    assetsSubDirectory: 'static',
+    assetsSubDirectory: 'staticvue',
     assetsPublicPath: './',
 
     /**

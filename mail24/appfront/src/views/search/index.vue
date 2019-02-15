@@ -8,8 +8,8 @@
             <el-date-picker type="date" :placeholder="plang.COMMON_SEARCH_DATE" v-model="loginfilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchLoginDate"></el-date-picker>
           </el-col>
           <el-col :span="12" style="text-align:right;">
-            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'login')" @current-change="currentChange($event,'login')" :current-page="loginData.page" :page-sizes="[10, 20, 50, 100]" :page-size="loginData.page_size" layout="total, sizes, prev, slot, next,jumper " :total="loginData.total" v-if="loginData.total>0">
-              <span> {{loginData.page+' / '+Math.ceil(loginData.total/loginData.page_size)}}</span>
+            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'login')" @current-change="currentChange($event,'login')" :current-page.sync="loginData.page" :page-sizes="[10, 20, 50, 100]" :page-size.sync="loginData.page_size" layout="total, sizes, prev, slot, next,jumper " :total="loginData.total" v-if="loginData.total>0">
+              <span class="page_slot"> {{page_slot}}</span>
             </el-pagination>
           </el-col>
         </el-row>
@@ -41,8 +41,8 @@
             <el-date-picker type="date" :placeholder="plang.COMMON_SEARCH_DATE" v-model="sendfilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchSendDate"></el-date-picker>
           </el-col>
           <el-col :span="12" style="text-align:right;">
-            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'send')" @current-change="currentChange($event,'send')" :current-page="sendData.page" :page-sizes="[10, 20, 50]" :page-size="sendData.page_size" layout="total, sizes, prev, slot, next ,jumper" :total="sendData.total" v-if="sendData.total>0">
-              <span> {{sendData.page+' / '+Math.ceil(sendData.total/sendData.page_size)}}</span>
+            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'send')" @current-change="currentChange($event,'send')" :current-page.sync="sendData.page" :page-sizes="[10, 20, 50]" :page-size.sync="sendData.page_size" layout="total, sizes, prev, slot, next ,jumper" :total="sendData.total" v-if="sendData.total>0">
+              <span class="page_slot_send"> {{page_slot_send}}</span>
             </el-pagination>
           </el-col>
         </el-row>
@@ -121,8 +121,8 @@
             <el-date-picker type="date" :placeholder="plang.COMMON_SEARCH_DATE" v-model="receivefilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchReceiveDate"></el-date-picker>
           </el-col>
           <el-col :span="12" style="text-align:right;">
-            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'mail')" @current-change="currentChange($event,'mail')" :current-page="mailData.page" :page-sizes="[10, 20, 50, 100]" :page-size="mailData.page_size" layout="total, sizes, prev, slot, next,jumper " :total="mailData.total" v-if="mailData.total>0">
-              <span> {{mailData.page+' / '+Math.ceil(mailData.total/mailData.page_size)}}</span>
+            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'mail')" @current-change="currentChange($event,'mail')" :current-page.sync="mailData.page" :page-sizes="[10, 20, 50, 100]" :page-size.sync="mailData.page_size" layout="total, sizes, prev, slot, next,jumper " :total="mailData.total" v-if="mailData.total>0">
+              <span class="page_slot_mail"> {{page_slot_mail}}</span>
             </el-pagination>
           </el-col>
         </el-row>
@@ -162,13 +162,14 @@
               <el-button class="status_btn" size="mini" :class="{active:deleteData.status == ''}" @click="changeType('')">{{plang.CENTER_DELETE_ACT1}}</el-button>
               <el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'web'}" @click="changeType('web')">{{plang.CENTER_DELETE_ACT2}}</el-button>
               <el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'system'}" @click="changeType('system')">{{plang.CENTER_DELETE_ACT3}}</el-button>
-              <el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'client'}" @click="changeType('client')">{{plang.CENTER_DELETE_ACT4}}</el-button>
+              <!--隐藏客户端删信-->
+              <!--<el-button class="status_btn" size="mini" :class="{active:deleteData.status == 'client'}" @click="changeType('client')">{{plang.CENTER_DELETE_ACT4}}</el-button>-->
             </el-button-group>
             <el-date-picker type="date" :placeholder="plang.COMMON_SEARCH_DATE" v-model="deleletfilterdate" value-format="yyyy-MM-dd" auto-complete="off" size="mini" style="width: 200px!important;" @change="searchDeleteDate"></el-date-picker>
           </el-col>
           <el-col :span="12">
-            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'delete')" @current-change="currentChange($event,'delete')" :current-page="deleteData.page" :page-sizes="[10, 20, 50, 100]" :page-size="deleteData.page_size" layout="total, sizes, prev, slot, next,jumper " :total="deleteData.total" v-if="deleteData.total>0">
-              <span> {{deleteData.page+' / '+Math.ceil(deleteData.total/deleteData.page_size)}}</span>
+            <el-pagination style="text-align: right;" @size-change="sizeChange($event,'delete')" @current-change="currentChange($event,'delete')" :current-page.sync="deleteData.page" :page-sizes="[10, 20, 50, 100]" :page-size.sync="deleteData.page_size" layout="total, sizes, prev, slot, next,jumper " :total="deleteData.total" v-if="deleteData.total>0">
+              <span class="page_slot_del"> {{page_slot_del}}</span>
             </el-pagination>
           </el-col>
         </el-row>
@@ -274,6 +275,26 @@
       };
     },
     computed: {
+      page_slot(){
+        let str = this.loginData.page+' / '+Math.ceil(this.loginData.total/this.loginData.page_size);
+        $('.page_slot').html(str);
+        return str;
+      },
+      page_slot_send(){
+        let str = this.sendData.page+' / '+Math.ceil(this.sendData.total/this.sendData.page_size);
+        $('.page_slot_send').html(str);
+        return str;
+      },
+      page_slot_mail(){
+        let str = this.mailData.page+' / '+Math.ceil(this.mailData.total/this.mailData.page_size);
+        $('.page_slot_mail').html(str);
+        return str;
+      },
+      page_slot_del(){
+        let str = this.deleteData.page+' / '+Math.ceil(this.deleteData.total/this.deleteData.page_size);
+        $('.page_slot_del').html(str);
+        return str;
+      },
       plang(){
         if(this.$store.getters.getLanguage=='zh-hans'){
           return lan.zh

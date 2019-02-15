@@ -1,5 +1,5 @@
 <template>
-  <div style="height:100%;overflow: hidden;position:relative">
+  <div style="height:100%;overflow: hidden;position:relative" class="preview_box">
     <div style="padding:10px 10px;border-bottom:1px solid #e5e5e5;font-size:12px;" class="header">
       <div>
         <h1 class="logo" style="float:left;" v-if="false">
@@ -436,5 +436,8 @@
   }
   .noread{
     top:80px;
+  }
+  .preview_box .el-loading-spinner i,.preview_box .el-loading-spinner .el-loading-text{
+    color:#fff;
   }
 </style>

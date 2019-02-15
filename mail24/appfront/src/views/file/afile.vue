@@ -20,9 +20,9 @@
           </el-col>
 
           <el-col :span="12" style="text-align:right;margin-top: 6px;">
-            <el-pagination :current-page="page" :page-sizes="[10, 20, 50]" :page-size="page_size" :total="total" v-if="total>0"
+            <el-pagination :current-page.sync="page" :page-sizes="[10, 20, 50]" :page-size.sync="page_size" :total="total" v-if="total>0"
                            @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange" layout="total, sizes, prev, slot, next,jumper">
-              <span> {{page+' / '+Math.ceil(total/page_size)}}</span>
+              <span class="page_slot"> {{page_slot}}</span>
             </el-pagination>
           </el-col>
         </el-row>
@@ -39,7 +39,7 @@
                   <span class="bico" :class="scope.row.classObject"></span>
                 </el-col>
                 <el-col :span="20" style="font-size:16px;">
-                  <div>{{scope.row.filename}}</div>
+                  <div style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" :title="scope.row.filename">{{scope.row.filename}}</div>
                   <div class="actions_a">
                     <span @click="zipRowDownload(scope.row)">{{plang.FILE_P_DOWNLOAD}}</span>
                     <span @click="$parent.sendMail_net(scope.row)">{{plang.FILE_P_SEND2}}</span>
@@ -136,6 +136,11 @@
       }
     },
     computed:{
+      page_slot(){
+        let str = this.page+' / '+Math.ceil(this.total/this.page_size);
+        $('.page_slot').html(str);
+        return str;
+      },
       plang(){
         let lang = lan.zh
         if(this.$store.getters.getLanguage=='zh-hans'){

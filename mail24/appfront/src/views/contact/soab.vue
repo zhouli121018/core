@@ -56,8 +56,8 @@
             </el-col>
             <el-col :span="12">
               <el-pagination layout="total, sizes, prev, slot, next, jumper" @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange" v-if="total>0"
-                             :page-sizes="[10, 20, 50, 100]" :current-page="page" :page-size="page_size" :total="total" style="float: right">
-                <span> {{page+' / '+Math.ceil(total/page_size)}}</span>
+                             :page-sizes="[10, 20, 50, 100]" :current-page.sync="page" :page-size.sync="page_size" :total="total" style="float: right">
+                <span class="page_slot"> {{page_slot}}</span>
               </el-pagination>
             </el-col>
           </el-row>
@@ -293,6 +293,13 @@
           // }
         });
       }
+    },
+    computed:{
+      page_slot(){
+        let str = this.page+' / '+Math.ceil(this.total/this.page_size);
+        $('.page_slot').html(str);
+        return str;
+      },
     }
   }
 </script>

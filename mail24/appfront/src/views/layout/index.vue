@@ -64,7 +64,7 @@
 
     <article class="lymain" v-if="!change_password">
       <section>
-        <header class="lyheader" :class="skin_order">
+        <header class="lyheader" >
           <div class="logo">
             <a href="javascript:void(0);" class="u-img j-lylogo" data-trigger="mail.welcome">
               <img :src="welcome_logo" alt="U-Mail" style=" height: 42px;">
@@ -85,7 +85,7 @@
                         </span>
                       <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item  v-for="(s,k) in skins" :key="k" class="dropdown_item" :command="s" :class="{activeitem:s.url == $store.getters.getSkinOrder}">
-                          <img :src="'/static/img/'+s.url+'_small.jpg'" style="width:40px;vertical-align: middle" alt=""> {{ s.title}}
+                          <img :src="'/staticvue/img/'+s.url+'_small.jpg'" style="width:40px;vertical-align: middle" alt=""> {{ s.title}}
                         </el-dropdown-item>
                         <el-dropdown-item class="dropdown_item" command="more">
                           {{lan.LAYOUT_INDEX_MORE_SKIN}}
@@ -125,7 +125,7 @@
             <li><a href="#" class="skin-primary-hover-color f-dn j-migrate-mbox" >{{lan.LAYOUT_INDEX_MOVE_IMMEDIATELY}}</a></li>
             <li><a href="#" class="skin-primary-hover-color" @click.prevent.stop="lockscreen">{{lan.LAYOUT_INDEX_LOCK_SCREEN}}</a></li>
             <li><a href="#" class="skin-primary-hover-color" @click.prevent="logout">{{lan.LAYOUT_INDEX_LOGOUT}}</a></li>
-            <li class="header-divider">
+            <li class="header-divider" v-if="false">
               <a href="javascript:void(0);" class="skin-primary-hover-color history-notification-trigger j-history-notification-trigger unread">
                 <i class="iconfont icon-iconms"></i>
               </a>
@@ -134,7 +134,7 @@
               <div class="u-input-control">
                 <el-dropdown  placement="bottom-start" @command="fullsearchFn">
                   <span class="el-dropdown-link">
-                    <input type="text" class="u-input" id="lyfullsearch" maxlength="50" disabledhotkey="true"  :placeholder="lan.LAYOUT_INDEX_SEARCH_OF_MAIL" autocomplete="off" v-model="fullsearchForm.keyword">
+                    <input type="text" class="u-input" id="lyfullsearch" maxlength="50" disabledhotkey="true"  :placeholder="lan.LAYOUT_INDEX_SEARCH_OF_MAIL" autocomplete="off" v-model.trim="fullsearchForm.keyword">
                     <span class="j-search u-search iconfont icon-iconsreachm" @click="fullsearchbtn"></span>
                   </span>
                   <el-dropdown-menu slot="dropdown">
@@ -159,7 +159,7 @@
           <div class="bg3"></div>
           <div class="bg4"></div>
           <div class="bg5" v-if="skin_order && (skin_order=='jingdianlan' || skin_order == '')"></div>
-          <div class="bg5" v-if="skin_order && skin_order!='jingdianlan'" style="background-size:cover;" :style="{'background-image':'url(/static/img/'+skin_order+'.jpg)'}"></div>
+          <div class="bg5" v-if="skin_order && skin_order!='jingdianlan'" style="background-size:cover;" :style="{'background-image':'url(/staticvue/img/'+skin_order+'.jpg)'}"></div>
 
         </div>
         <div class="lycontent">
@@ -201,7 +201,7 @@
     </transition>
 
     <transition name="fade" v-if="!change_password">
-      <div v-if="reviewUnseen>0&&show_review" class="test" :class="{has_newMsg:newMsg}">
+      <div v-if="reviewUnseen>0&&show_review" class="test" :class="{has_newMsg:has_newmsg_div}">
         <div role="alert" class="el-notification right" style="bottom: 16px; z-index: 2000;border: 1px solid #ddd;box-shadow: 0 0 10px #aaa;"><!----><div class="el-notification__group"><h2 class="el-notification__title">{{this.$store.getters.userInfo.name}}</h2>
           <div class="el-notification__content">
             <table style="margin:0 12px;cursor:pointer;height:80px;" @click="reviewMail">
@@ -240,7 +240,7 @@
             <li v-if="passwordRules.passwd_type==2" style="list-style-type:circle;"> {{lan.COMMON_PASSWORD_NOTICE_3}}</li>
             <li v-if="passwordRules.passwd_type==3" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_4}}</li>
             <li v-if="passwordRules.passwd_type==4" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_5}}</li>
-            <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_6}}/li>
+            <li v-if="passwordRules.passwd_digital" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_6}}</li>
             <li v-if="passwordRules.passwd_name" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_7}}</li>
             <li v-if="passwordRules.passwd_name2" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_8}}</li>
             <li v-if="passwordRules.passwd_letter" style="list-style-type:circle;">{{lan.COMMON_PASSWORD_NOTICE_9}}</li>
@@ -257,15 +257,15 @@
     </el-dialog>
 
     <el-dialog :title="lan.LAYOUT_INDEX_MORE_SEARCH" :visible.sync="show_Advanced_search" :append-to-body="true" width="450px" top="44px" custom-class="advance_search_dialog">
-      <el-form :model="fullsearchForm" status-icon :rules="fullsearchFormRules" ref="fullsearchForm" status-icon  label-width="100px" size="small">
+      <el-form :model="fullsearchForm" status-icon :rules="fullsearchFormRules" ref="fullsearchForm" label-width="100px" size="small">
         <el-form-item :label="lan.LAYOUT_INDEX_LABEL_KEYWORD+'：'" prop="keyword">
-          <el-input type="text" v-model="fullsearchForm.keyword" :placeholder="lan.FILE_C_SEARCH2"></el-input>
+          <el-input type="text" v-model.trim="fullsearchForm.keyword" :placeholder="lan.FILE_C_SEARCH2"></el-input>
         </el-form-item>
         <el-form-item :label="lan.COMMON_MAIL_SUBJECT+'：'" prop="subject">
-          <el-input type="text" v-model="fullsearchForm.subject"></el-input>
+          <el-input type="text" v-model.trim="fullsearchForm.subject"></el-input>
         </el-form-item>
         <el-form-item :label="lan.SETTING_RE_LOGIC_ATTACH+'：'" prop="attach">
-          <el-input type="text" v-model="fullsearchForm.attach"></el-input>
+          <el-input type="text" v-model.trim="fullsearchForm.attach"></el-input>
         </el-form-item>
         <el-form-item :label="lan.LAYOUT_INDEX_LABEL_FOLDER+'：'" prop="folder">
           <el-select v-model="fullsearchForm.folder" style="width:100%">
@@ -274,10 +274,10 @@
           </el-select>
         </el-form-item>
         <el-form-item :label="lan.SETTING_RE_LOGIC_SENDER+'：'" prop="sender">
-          <el-input type="text" v-model="fullsearchForm.sender"></el-input>
+          <el-input type="text" v-model.trim="fullsearchForm.sender"></el-input>
         </el-form-item>
         <el-form-item :label="lan.SETTING_RE_LOGIC_RECIPIENT+'：'" prop="recipient">
-          <el-input type="text" v-model="fullsearchForm.recipient"></el-input>
+          <el-input type="text" v-model.trim="fullsearchForm.recipient"></el-input>
         </el-form-item>
         <el-form-item :label="lan.LAYOUT_INDEX_LABEL_DATE+'：'" prop="date">
           <el-select v-model="fullsearchForm.date" style="width:100%">
@@ -531,7 +531,6 @@
       },
       getFloderfn(){
         getFloder().then((res)=>{
-          console.log(res.data)
           this.floderList = res.data;
         }).catch(()=>{
 
@@ -541,7 +540,6 @@
         cookie.setCookie('webvue_language',val,365*10)
         this.$store.dispatch('setLanguageA',val)
         setLang().then(res=>{
-          console.log(res)
         }).catch(err=>{
           console.log(err);
         })
@@ -558,8 +556,13 @@
 
       },
       goToHelp(){
-        let href = window.location.origin+'/webmail/zh_hans/index.html'; //window.location.origin  'http://192.168.1.39:81'
-        console.log(href)
+        let help_lang = 'zh_hans';
+        if(this.language == 'zh-tw'){
+          help_lang = 'zh_hant'
+        }else if(this.language == 'en'){
+          help_lang = 'en'
+        }
+        let href = window.location.origin+'/webmail/'+help_lang+'/index.html'; //window.location.origin  'http://192.168.1.39:81'
         window.open(href)
       },
       changeSkin(m){
@@ -606,7 +609,6 @@
       },
       getLoginAfter(){
         loginAfter().then(res=>{
-          console.log(res)
           this.$store.dispatch('setLoginAfterA',res.data);
           if(res.data.skin_name){
             this.$store.dispatch('setSkinOrderA',res.data.skin_name);
@@ -721,22 +723,16 @@
       },
       readNewMsg(){
         let _this = this;
-        console.log(_this)
         this.$router.push('/mailbox/innerbox/'+this.newMsg.folder);
-
         this.$nextTick(() =>{
-          console.log(_this)
-          if(_this.$children[0].addTab){
-            _this.$children[0].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
-          }else if(_this.$children[1].addTab){
-            _this.$children[1].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
-          }else if(_this.$children[2].addTab){
-            _this.$children[2].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
-          }else if(_this.$children[3].addTab){
-            _this.$children[3].addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder);
-          }
+          _this.$refs.mailbox_ele.addTab('read',_this.newMsg.subject,_this.newMsg.uid,_this.newMsg.folder)
           _this.newList.splice(_this.newIndex,1);
           _this.newIndex = 0;
+          if(_this.newList.length>0){
+            $('title').text(_this.lan.LAYOUT_INDEX_YOU_HAVE +_this.newList.length+ _this.lan.TITLE_DESC)
+          }else{
+             $('title').text(_this.$store.getters.getLoginAfter.title)
+          }
         })
       },
       open_notify(){
@@ -750,11 +746,11 @@
             _this.$store.dispatch('setNewMsgClearTimer',setTimeout(function(){
               _this.newList = [];
             },15*60*1000))
-            if(_this.$children[1].getFloderfn){
-              _this.$children[1].getFloderfn();
-              if(_this.$children[1].$refs['innerbox'] && _this.$children[1].$refs['innerbox'][0]){
-                _this.$children[1].$refs['innerbox'][0].getMessageList();
-              };
+            if(_this.$refs.mailbox_ele.getFloderfn){
+              _this.$refs.mailbox_ele.getFloderfn();
+            }
+            if(_this.$route.path.indexOf('/mailbox/innerbox/')>=0){
+              _this.$refs.mailbox_ele.$refs['innerbox'][0].getMessageList()
             }
           }else{
              $('title').text(_this.$store.getters.getLoginAfter.title)
@@ -766,17 +762,17 @@
         this.$store.dispatch('setNewMsgTimer',setInterval(function(){
           newMessage().then(res=>{
             if(res.data.length>0){
-              $('title').text(this.lan.LAYOUT_INDEX_YOU_HAVE +res.data.length+ this.lan.TITLE_DESC)
+              $('title').text(_this.lan.LAYOUT_INDEX_YOU_HAVE +res.data.length+ _this.lan.TITLE_DESC)
               _this.newList = res.data;
               if(_this.$store.getters.getNewMsgClear){clearTimeout(_this.$store.getters.getNewMsgClear)}
               _this.$store.dispatch('setNewMsgClearTimer',setTimeout(function(){
                 _this.newList = [];
               },15*60*1000))
-              if(_this.$children[1].getFloderfn){
-                _this.$children[1].getFloderfn();
-                if(_this.$children[1].$refs['innerbox'] && _this.$children[1].$refs['innerbox'][0]){
-                  _this.$children[1].$refs['innerbox'][0].getMessageList();
-                };
+              if(_this.$refs.mailbox_ele.getFloderfn){
+                _this.$refs.mailbox_ele.getFloderfn();
+              }
+              if(_this.$route.path.indexOf('/mailbox/innerbox/')>=0){
+                _this.$refs.mailbox_ele.$refs['innerbox'][0].getMessageList()
               }
               let o = {
                 "uid":110341,
@@ -806,8 +802,6 @@
       changeTab(index){
         this.activeTab = index;
         if(index == 0){
-          console.log(1)
-          console.log(sessionStorage['mailbox_url'] )
           if(!sessionStorage['mailbox_url'] || sessionStorage['mailbox_url'] ==''){
             this.jumpTo('/mailbox')
           }else{
@@ -837,8 +831,6 @@
           cookie.delCookie('name');
           this.$store.dispatch('setInfo');
           store.commit('setIsCompose',false);
-          console.log(this.$store.getters.getLoginAfter.logout_url)
-          console.log(this.$store.getters.getLoginAfter)
           // router.push('/login')
           // return;
 
@@ -1040,6 +1032,13 @@
       newMsg: function(){
         return this.newList[this.newIndex]
       },
+      has_newmsg_div:function(){
+        if(this.newList.length>0){
+          return true;
+        }else{
+          return false;
+        }
+      },
       token:function(){ return this.$store.getters.userInfo.token},
       login_url:function(){ return this.$store.getters.getLoginUrl},
       admin_is_active:function(){ return this.$store.getters.getAdminIsActive},
@@ -1117,8 +1116,8 @@
     background-color: #ecf5ff;
     color: #66b1ff;
   }
-  .test.has_newMsg{
-    bottom:202px;
+  .test.has_newMsg>div{
+    bottom: 180px !important;
   }
   .test{
     width:330px;
@@ -1192,7 +1191,7 @@
     background-size: contain;
   }
   .lymain .lybg .bg5.chunzhihua{
-    background-image:url(/static/img/chunzhihua.jpg);
+    background-image:url(/staticvue/img/chunzhihua.jpg);
   }
   .lymain .lyheader{
     /*background-color:#79C6F6;*/

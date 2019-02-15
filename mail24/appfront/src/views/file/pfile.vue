@@ -47,9 +47,9 @@
           </span>
         </el-col>
         <el-col :span="12" style="text-align:right">
-          <el-pagination :current-page="page" :page-sizes="[10, 20, 50]" :page-size="page_size" :total="total" v-if="total>0"
+          <el-pagination :current-page.sync="page" :page-sizes="[10, 20, 50]" :page-size.sync="page_size" :total="total" v-if="total>0"
                          @size-change="f_TableSizeChange" @current-change="f_TableCurrentChange" layout="total, sizes, prev, slot, next,jumper">
-            <span> {{page+' / '+Math.ceil(total/page_size)}}</span>
+            <span class="page_slot"> {{page_slot}}</span>
           </el-pagination>
         </el-col>
       </el-row>
@@ -64,8 +64,8 @@
                   <span class="bico" :class="scope.row.classObject"></span>
                 </el-col>
                 <el-col :span="20" style="font-size:16px;">
-                  <div @click="changeFolderTables(scope.row)" v-if="scope.row.nettype=='folder'" class="folder_type">{{scope.row.name}}</div>
-                  <div v-if="scope.row.nettype=='file'">{{scope.row.name}}</div>
+                  <div @click="changeFolderTables(scope.row)" v-if="scope.row.nettype=='folder'" class="folder_type" >{{scope.row.name}}</div>
+                  <div v-if="scope.row.nettype=='file'" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;" :title="scope.row.name">{{scope.row.name}}</div>
                   <a :href="blobUrl" download="" style="display:none;" ref="download"></a>
                   <div class="actions_a">
                     <span @click="zipRowDownload(scope.row)">{{plang.FILE_P_DOWNLOAD}}</span>
@@ -927,6 +927,11 @@
 
     },
     computed:{
+      page_slot(){
+        let str = this.page+' / '+Math.ceil(this.total/this.page_size);
+        $('.page_slot').html(str);
+        return str;
+      },
       plang(){
         let lang = lan.zh
         if(this.$store.getters.getLanguage=='zh-hans'){

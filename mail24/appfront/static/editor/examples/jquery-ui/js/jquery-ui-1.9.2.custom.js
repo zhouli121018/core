@@ -10604,7 +10604,7 @@ $.ui.plugin.add("resizable", "containment", {
 				ps = that.containerSize, co = that.containerOffset, cs = that.size, cp = that.position,
 				pRatio = that._aspectRatio || event.shiftKey, cop = { top:0, left:0 }, ce = that.containerElement;
 
-		if (ce[0] != document && (/static/).test(ce.css('position'))) cop = co;
+		if (ce[0] != document && (/staticvue/).test(ce.css('position'))) cop = co;
 
 		if (cp.left < (that._helper ? co.left : 0)) {
 			that.size.width = that.size.width + (that._helper ? (that.position.left - co.left) : (that.position.left - cop.left));
@@ -10649,7 +10649,7 @@ $.ui.plugin.add("resizable", "containment", {
 		if (that._helper && !o.animate && (/relative/).test(ce.css('position')))
 			$(this).css({ left: ho.left - cop.left - co.left, width: w, height: h });
 
-		if (that._helper && !o.animate && (/static/).test(ce.css('position')))
+		if (that._helper && !o.animate && (/staticvue/).test(ce.css('position')))
 			$(this).css({ left: ho.left - cop.left - co.left, width: w, height: h });
 
 	}

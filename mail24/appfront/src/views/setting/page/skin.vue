@@ -14,7 +14,7 @@
     <section class="content content-list height100" style="background-color: rgba(255,255,255,0.3);;padding-bottom: 13px;">
         <div style="padding-left:10px;">
           <div class="hC0">{{this.$parent.lan.SETTING_SKIN_TITLE}}</div>
-          <div v-for="(m,k) in imgs" :key="k" class="rp0"  :class="{il0:m.url == $store.getters.getSkinOrder}" @click="checkImg(m)" :style="{background:'url(/static/img/'+m.url+'_small.jpg)'}">
+          <div v-for="(m,k) in imgs" :key="k" class="rp0"  :class="{il0:m.url == $store.getters.getSkinOrder}" @click="checkImg(m)" :style="{background:'url(/staticvue/img/'+m.url+'_small.jpg)'}">
             <a class="nd0">
               <b class="ng0 mN1"></b>
               <span class="nk0">{{m.title}}</span>
@@ -137,7 +137,7 @@
   }
 
   .nui-ico-done-white {
-      background: url(/static/img/check.png) no-repeat;
+      background: url(../img/check.png) no-repeat;
   }
   .nui-ico{
     display: inline-block;

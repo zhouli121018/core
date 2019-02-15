@@ -141,13 +141,13 @@
             <el-pagination
               @size-change="handleSizeChange" small
               @current-change="handleCurrentChange"
-              :current-page="currentPage"
+              :current-page.sync="currentPage"
               :page-sizes="[5,10, 20,50,100,200, 300, 400]"
-              :page-size="pageSize"
+              :page-size.sync="pageSize"
               layout="   prev, slot, next,sizes,jumper"
               v-if="totalCount>0"
               :total="totalCount">
-              <span> {{currentPage+' / '+Math.ceil(totalCount/pageSize)}}</span>
+              <span class="page_slot"> {{page_slot}}</span>
             </el-pagination>
           </el-form-item>
 
@@ -238,14 +238,14 @@
             </el-table>
             <el-pagination
               @size-change="handleSizeChange" small
-              @current-change="handleCurrentChange"
-              :current-page="currentPage"
+              @current-change.sync="handleCurrentChange"
+              :current-page.sync="currentPage"
               :page-sizes="[5,10, 20,50,100,200, 300, 400]"
-              :page-size="pageSize"
+              :page-size.sync="pageSize"
               layout="   prev, slot, next,sizes,jumper"
               v-if="totalCount>0"
               :total="totalCount">
-              <span> {{currentPage+' / '+Math.ceil(totalCount/pageSize)}}</span>
+              <span class="page_slot"> {{page_slot}}</span>
             </el-pagination>
           </el-form-item>
 
@@ -702,6 +702,11 @@
       },
     },
     computed: {
+      page_slot(){
+        let str = this.currentPage+' / '+Math.ceil(this.totalCount/this.pageSize);
+        $('.page_slot').html(str);
+        return str;
+      },
       lan:function(){
         let lang = lan.zh
         if(this.$store.getters.getLanguage=='zh-hans'){

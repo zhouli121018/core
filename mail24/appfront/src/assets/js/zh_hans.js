@@ -1223,5 +1223,15 @@ var  zh_hans = {
   MAILBOX_COM_SEARCH_TIP2: "2.使用高级搜索，通过其他邮件特征进行搜索",
   MAILBOX_COM_SEARCH_NOT_FOND: "搜索邮件不存在或者已被删除!",
 
+
+  //mailbox/innerbox not_spam
+  MAILBOX_COM_INNERBOX_NOT_SPAM: "这不是垃圾邮件",
+  MAILBOX_COM_INNERBOX_CONFIRM_1: "所选邮件将被移动到收件箱",
+  MAILBOX_COM_INNERBOX_CONFIRM_2: "把发件人加入白名单",
+
+  //mailbox/components/read.vue 查看邮件页面
+  MAILBOX_COM_READ_PREV: "上一封",
+  MAILBOX_COM_READ_NEXT: "下一封",
+
 }
 export default zh_hans;

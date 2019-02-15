@@ -73,7 +73,7 @@
                         <!--</div>-->
                         <Innerbox v-if="item.name=='1'" :boxId="boxId" :curr_folder="curr_folder"  @getRead="getRead" :unseencount="unseencount" :floderResult="floderResult" ref="innerbox"></Innerbox>
                         <Searchmail v-if="item.type=='searchmail'" :floderResult="floderResult" ref="searchmail"></Searchmail>
-                        <Read :readId="item.rid" :readFolderId="item.fid" :tagName="item.name" v-if="item.type=='read'"></Read>
+                        <Read :parent_readId="item.rid" :parent_readFolderId="item.fid" :tagName="item.name" v-if="item.type=='read'" :read_params="item.info" :read_uids="item.uids" :currentPage="item.currentPage" :totalPage="item.totalPage" :read_type="item.read_type"></Read>
                         <Readreview :readId="item.rid" :readFolderId="item.fid" v-if="item.type=='readreview'"></Readreview>
                         <Compose  v-if="item.type!='read'&&item.name!='1'&&item.type!='readreview'&&item.type!='searchmail'" :ref="'ref_compose_'+item.name" :iframe_height="iframe_height" :rid="item.name" :parent_ruleForm2="ruleForm2" :parent_content="content" :parent_maillist="maillist" :parent_maillist_copyer="maillist_copyer" :parent_fileList="fileList" :compose_type="item.type" :parent_maillist_bcc="maillist_bcc" :parent_show_reply_to="show_reply_to" :type="item.type"></Compose>
 
@@ -236,7 +236,6 @@ export default {
       }
     },
     beforeLeave(activeName,oldName){
-      console.log(activeName,oldName)
       if(activeName == 'closeAll' ){
         let hasCompose = false;
         for(let i=0;i<this.editableTabs2.length;i++){
@@ -284,7 +283,7 @@ export default {
         }
       }
     },
-    addTab(type,subject,rid,fid,info) {
+    addTab(type,subject,rid,fid,info,uids,currentPage,totalPage,read_type) {
       if(this.sharedStatus.shareuser_all || this.sharedStatus.shareuser_post ||this.sharedStatus.shareuser_send||type=='read'){
 
       }else{
@@ -417,7 +416,11 @@ export default {
           rid:rid,
           fid:fid,
           type:type,
-          info:info
+          info:info,
+          uids:uids,
+          currentPage:currentPage,
+          totalPage:totalPage,
+          read_type:read_type
         });
         this.editableTabsValue2 = newTabName;
       }
@@ -428,6 +431,20 @@ export default {
 
       }
 
+    },
+    changeTabRid(rid,fid,tagName,data){
+      this.editableTabs2.forEach(val=>{
+        if(val.name == tagName){
+          this.hashTab['read'+val.rid+val.fid+''] = false;
+          val.rid = rid;
+          val.fid = fid;
+          val.title = data.subject
+          this.hashTab['read'+val.rid+val.fid+''] = val.name;
+          $('#tab-'+tagName+' .tab_title').attr('title',val.title)
+          let html = '<i class="el-icon-message"></i>'+this.$options.filters['hide_subject'](val.title)
+          $('#tab-'+tagName+' .tab_title').html(html);
+        }
+      })
     },
     removeTab(targetName,isCompose) {
       let tabs = this.editableTabs2;
@@ -453,7 +470,6 @@ export default {
                   this.showTabIndex = 2;
                 }
                 if(tabs[i].rid && tabs[i].fid){
-                  console.log(tabs[i].type+tabs[i].rid+tabs[i].fid+'')
                   this.hashTab[tabs[i].type+tabs[i].rid+tabs[i].fid+''] = false;
                 }
               }
@@ -484,7 +500,6 @@ export default {
                     this.showTabIndex = 2;
                   }
                   if(tabs[i].rid && tabs[i].fid){
-                    console.log(tabs[i].type+tabs[i].rid+tabs[i].fid+'')
                     this.hashTab[tabs[i].type+tabs[i].rid+tabs[i].fid+''] = false;
                   }
                 }
@@ -511,7 +526,6 @@ export default {
                   this.showTabIndex = 2;
                 }
                 if(tabs[i].rid && tabs[i].fid){
-                  console.log(tabs[i].type+tabs[i].rid+tabs[i].fid+'')
                   this.hashTab[tabs[i].type+tabs[i].rid+tabs[i].fid+''] = false;
                 }
               }
@@ -559,7 +573,7 @@ export default {
         this.$refs.treeMenuBar.setCurrentKey(boxId);
         if(this.$refs.treeMenuBar.getCurrentNode()){
           this.unseencount = this.$refs.treeMenuBar.getCurrentNode().unseen;
-          this.editableTabs2[0].title = this.$refs.treeMenuBar.getCurrentNode().label;
+          this.editableTabs2[0].title = this.$refs.treeMenuBar.getCurrentNode().label
         }
         // let data = this.$refs.treeMenuBar.getCurrentNode();
         // this.pab_cname = data.groupname;
@@ -603,11 +617,13 @@ export default {
         this.menubarLoading = false;
         this.floderResult = res.data;
         let countArr = [];
+        let hashFolder = [];
         this.floderResult.forEach(val=>{
           countArr[val.raw_name] = val.unseen_count || 0;
+          hashFolder[val.raw_name] = val.name
         })
-        console.log(countArr)
         this.$store.dispatch('setUnseenCountA',countArr)
+        this.$store.dispatch('setHashFolderA',hashFolder)
         if(sessionStorage['checkNodes']){
           this.checkNodes = [];
           this.checkNodes.push(sessionStorage['checkNodes'])
@@ -945,13 +961,7 @@ export default {
 </script>
 
 <style>
-  .is_burn_img{
-    display:inline-block;
-    width:18px;
-    height:18px;
-    background:url(/static/img/is_burn.jpg)
-  }
-  .tab_box .el-tabs__header{
+  .tab_box .el-tabs--card .el-tabs__header{
     background:#fff;
   }
   #app .review_style{

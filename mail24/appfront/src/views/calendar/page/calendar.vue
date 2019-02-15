@@ -196,13 +196,13 @@
           <el-pagination
             @size-change="handleSizeChange" small
             @current-change="handleCurrentChange"
-            :current-page="currentPage"
+            :current-page.sync="currentPage"
             :page-sizes="[5,10, 20,50,100,200, 300, 400]"
-            :page-size="pageSize"
+            :page-size.sync="pageSize"
             v-if="totalCount>0"
             layout="   prev, slot, next,sizes,jumper"
             :total="totalCount">
-            <span> {{currentPage+' / '+Math.ceil(totalCount/pageSize)}}</span>
+            <span class="page_slot1"> {{page_slot1}}</span>
           </el-pagination>
         </el-form-item>
 
@@ -451,13 +451,13 @@
             <el-pagination
               @size-change="handleSizeChange" small
               @current-change="handleCurrentChange"
-              :current-page="currentPage"
+              :current-page.sync="currentPage"
               :page-sizes="[5,10, 20,50,100,200, 300, 400]"
-              :page-size="pageSize"
+              :page-size.sync="pageSize"
               layout="   prev, slot, next,sizes,jumper"
               v-if="totalCount>0"
               :total="totalCount">
-              <span> {{currentPage+' / '+Math.ceil(totalCount/pageSize)}}</span>
+              <span class="page_slot1"> {{page_slot1}}</span>
             </el-pagination>
           </el-form-item>
         </div>
@@ -498,13 +498,13 @@
             @size-change="handleSizeChange_list"
             @current-change="handleCurrentChange_list"
             background
-            :current-page="currentPage_list"
+            :current-page.sync="currentPage_list"
             :page-sizes="[10,20,50,100]"
-            :page-size="pageSize_list"
+            :page-size.sync="pageSize_list"
             layout="total, prev, slot, next, sizes,jumper"
             v-if="totalCount_list>0"
             :total="totalCount_list">
-            <span> {{currentPage_list+' / '+Math.ceil(totalCount_list/pageSize_list)}}</span>
+            <span class="page_slot2"> {{page_slot2}}</span>
           </el-pagination>
         </el-col>
       </el-row>
@@ -1434,6 +1434,16 @@
       }
     },
     computed:{
+      page_slot1(){
+        let str = this.currentPage+' / '+Math.ceil(this.totalCount/this.pageSize);
+        $('.page_slot1').html(str);
+        return str;
+      },
+      page_slot2(){
+        let str = this.currentPage_list+' / '+Math.ceil(this.totalCount_list/this.pageSize_list);
+        $('.page_slot2').html(str);
+        return str;
+      },
       lan:function(){
         let lang = lan.zh
         if(this.$store.getters.getLanguage=='zh-hans'){
