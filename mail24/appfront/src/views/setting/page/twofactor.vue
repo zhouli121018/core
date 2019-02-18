@@ -1,5 +1,5 @@
 <template>
-  <div class="j-module-content j-maillist mllist-list height100 ">
+  <div class="j-module-content j-maillist mllist-list height100 " style="background-color: rgba(255,255,255,0.3);">
 
     <el-row class="" style="padding: 0px;">
       <el-col :span="24" class="breadcrumb-container">
@@ -11,7 +11,7 @@
       </el-col>
     </el-row>
 
-    <section class="content content-list" style="background-color: rgba(255,255,255,0.3);padding-bottom: 13px;">
+    <section class="content content-list" style="padding-bottom: 13px;">
       <div style="padding:0 10px;">
         <p>{{this.$parent.lan.SETTING_TWOFACTOR_TITLE}}</p>
         <el-alert style="margin:10px 0;" :title="this.$parent.lan.SETTING_TWOFACTOR_ALERT" type="warning" :closable="false" v-if="!showList.has_totp && !showList.has_phone"></el-alert>

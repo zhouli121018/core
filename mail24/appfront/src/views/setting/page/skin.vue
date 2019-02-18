@@ -43,12 +43,21 @@
       return {
         imgs:[
           {url:'jingdianlan',title: this.$parent.lan.SETTING_SKIN_JINGDIANLAN},
-          {url:'chunzhihua',title: this.$parent.lan.SETTING_SKIN_CHUNZHIHUA},
-          {url:'yanyujiangnan',title: this.$parent.lan.SETTING_SKIN_YANYUJIANGNAN},
-          {url:'hetangyuese',title: this.$parent.lan.SETTING_SKIN_HETANGYUESE},
           {url:'qingxinlu',title: this.$parent.lan.SETTING_SKIN_QINGXINLU},
+          {url:'tiankonglan',title: this.$parent.lan.SETTING_SKIN_TIANKONGLAN},
+          {url:'taohuahong',title: this.$parent.lan.SETTING_SKIN_TAOHUAHONG},
+          {url:'jianlan',title: this.$parent.lan.SETTING_SKIN_JIANLAN},
+          {url:'jianlu',title: this.$parent.lan.SETTING_SKIN_JIANLU},
+          {url:'jianqing',title: this.$parent.lan.SETTING_SKIN_JIANQING},
           {url:'haishuilan',title: this.$parent.lan.SETTING_SKIN_HAISHUILAN},
+          {url:'yanyujiangnan',title: this.$parent.lan.SETTING_SKIN_YANYUJIANGNAN},
+          {url:'keaifen',title: this.$parent.lan.SETTING_SKIN_KEAIFEN},
+          {url:'chunzhihua',title: this.$parent.lan.SETTING_SKIN_CHUNZHIHUA},
           {url:'zhongguofeng',title: this.$parent.lan.SETTING_SKIN_ZHONGGUOFENG},
+          {url:'chenlu',title: this.$parent.lan.SETTING_SKIN_CHENLU},
+          {url:'caodi',title: this.$parent.lan.SETTING_SKIN_CAODI},
+          {url:'muwen',title: this.$parent.lan.SETTING_SKIN_MUWEN},
+          {url:'hetangyuese',title: this.$parent.lan.SETTING_SKIN_HETANGYUESE},
         ]
       }
     },

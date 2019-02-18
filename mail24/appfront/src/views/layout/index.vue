@@ -64,7 +64,7 @@
 
     <article class="lymain" v-if="!change_password">
       <section>
-        <header class="lyheader" >
+        <header class="lyheader" :class="skin_order">
           <div class="logo">
             <a href="javascript:void(0);" class="u-img j-lylogo" data-trigger="mail.welcome">
               <img :src="welcome_logo" alt="U-Mail" style=" height: 42px;">
@@ -364,12 +364,12 @@
         admin_login_url:'',
         skins:[
           {url:'jingdianlan',title:''},
-          {url:'chunzhihua',title:''},
-          {url:'yanyujiangnan',title:''},
-          {url:'hetangyuese',title:''},
           {url:'qingxinlu',title:''},
           {url:'haishuilan',title:''},
-          {url:'zhongguofeng',title:''}
+          {url:'yanyujiangnan',title:''},
+          {url:'chunzhihua',title:''},
+          {url:'zhongguofeng',title:''},
+          {url:'hetangyuese',title:''},
         ],
         welcome_logo:'',
         passwordRules:{
@@ -1069,12 +1069,13 @@
         }
         this.skins = [
           {url:'jingdianlan',title: lang.SETTING_SKIN_JINGDIANLAN},
-          {url:'chunzhihua',title: lang.SETTING_SKIN_CHUNZHIHUA},
-          {url:'yanyujiangnan',title: lang.SETTING_SKIN_YANYUJIANGNAN},
-          {url:'hetangyuese',title: lang.SETTING_SKIN_HETANGYUESE},
           {url:'qingxinlu',title: lang.SETTING_SKIN_QINGXINLU},
           {url:'haishuilan',title: lang.SETTING_SKIN_HAISHUILAN},
-          {url:'zhongguofeng',title: lang.SETTING_SKIN_ZHONGGUOFENG}
+          {url:'yanyujiangnan',title: lang.SETTING_SKIN_YANYUJIANGNAN},
+          {url:'chunzhihua',title: lang.SETTING_SKIN_CHUNZHIHUA},
+          {url:'zhongguofeng',title: lang.SETTING_SKIN_ZHONGGUOFENG},
+          {url:'keaifen',title: lang.SETTING_SKIN_KEAIFEN},
+          {url:'hetangyuese',title: lang.SETTING_SKIN_HETANGYUESE},
         ]
         this.passwordFormRules.password =  [
           { required: true, message: lang.COMMON_SRC_PASSWORD_RULE, trigger: 'blur' },
@@ -1198,17 +1199,23 @@
     /*background-color:#98B4EA;*/
   }
   .chunzhihua{
-    background-color:#9BC78A !important;
+    background-color:#95C097 !important;
+  }
+  .chunzhihua.lyheader{
+    background-color:#EEF7EE !important;
   }
   .lysidebar.chunzhihua .icon{
-    color:#326F2B;
+    color:#fff;
   }
   .lysidebar.chunzhihua .icon:hover,.lysidebar.chunzhihua .icon.active{
-    background-color:#639D66;
+    background-color:#6AA36E;
     color:#fff;
   }
   .yanyujiangnan{
     background-color:#9ABDBC !important;
+  }
+  .yanyujiangnan.lyheader{
+    background-color:#EDF2F3 !important;
   }
   .lysidebar.yanyujiangnan .icon{
     color:#fff;
@@ -1221,6 +1228,9 @@
   .hetangyuese{
     background-color:#947DAE !important;
   }
+  .hetangyuese.lyheader{
+    background-color:#D5BFDD !important;
+  }
   .lysidebar.hetangyuese .icon{
     color:#fff;
   }
@@ -1230,6 +1240,9 @@
 
   .qingxinlu{
     background-color:#6CAF7C !important;
+  }
+  .qingxinlu.lyheader{
+    background-color:#F6FAFB !important;
   }
   .lysidebar.qingxinlu .icon{
     color:#fff;
@@ -1241,6 +1254,9 @@
   .haishuilan{
     background-color:#74CAE4 !important;
   }
+  .haishuilan.lyheader{
+    background-color:#FCFFFF !important;
+  }
   .lysidebar.haishuilan .icon{
     color:#fff;
   }
@@ -1251,11 +1267,141 @@
   .zhongguofeng{
     background-color:#C5BEAA !important;
   }
+  .zhongguofeng.lyheader{
+    background-color:#EBE9E3 !important;
+  }
   .lysidebar.zhongguofeng .icon{
     color:#fff;
   }
   .lysidebar.zhongguofeng .icon:hover,.lysidebar.zhongguofeng .icon.active{
-    background-color:#0B0B0A;
+    background-color:#969187;
+  }
+
+  .fanxingzhiwu{
+    background-color:#000 !important;
+  }
+  .lysidebar.fanxingzhiwu .icon{
+    color:#fff;
+  }
+  .lysidebar.fanxingzhiwu .icon:hover,.lysidebar.fanxingzhiwu .icon.active{
+    background-color:#000;
+  }
+
+  .chenlu{
+    background-color:#709AC2 !important;
+  }
+  .chenlu.lyheader{
+    background-color:#EBF3F7 !important;
+  }
+  .lysidebar.chenlu .icon{
+    color:#fff;
+  }
+  .lysidebar.chenlu .icon:hover,.lysidebar.chenlu .icon.active{
+    background-color:#2966A0;
+  }
+
+  .caodi{
+    background-color:#6CA531 !important;
+  }
+  .caodi.lyheader{
+    background-color:#BFD4A9 !important;
+  }
+  .lysidebar.caodi .icon{
+    color:#fff;
+  }
+  .lysidebar.caodi .icon:hover,.lysidebar.caodi .icon.active{
+    background-color:#368019;
+  }
+
+  .muwen{
+    background-color:#D5A660 !important;
+  }
+  .muwen.lyheader{
+    background-color:#F0DEC3 !important;
+  }
+  .lysidebar.muwen .icon{
+    color:#fff;
+  }
+  .lysidebar.muwen .icon:hover,.lysidebar.muwen .icon.active{
+    background-color:#BC8C42;
+  }
+
+  .tiankonglan{
+    background-color:#4680BE !important;
+  }
+  .tiankonglan.lyheader{
+    background-color:#ECF0F3 !important;
+  }
+  .lysidebar.tiankonglan .icon{
+    color:#fff;
+  }
+  .lysidebar.tiankonglan .icon:hover,.lysidebar.tiankonglan .icon.active{
+    background-color:#2A67A1;
+  }
+
+  .taohuahong{
+    background-color:#FABCCE !important;
+  }
+  .taohuahong.lyheader{
+    background-color:#FFFBFC !important;
+  }
+  .lysidebar.taohuahong .icon{
+    color:#fff;
+  }
+  .lysidebar.taohuahong .icon:hover,.lysidebar.taohuahong .icon.active{
+    background-color:#F2A1BC;
+  }
+
+  .keaifen{
+    background-color:#E86C9B !important;
+  }
+  .keaifen.lyheader{
+    background-color:#FCF3F2 !important;
+  }
+  .lysidebar.keaifen .icon{
+    color:#fff;
+  }
+  .lysidebar.keaifen .icon:hover,.lysidebar.keaifen .icon.active{
+    background-color:#D43E73;
+  }
+
+  .jianlan{
+    background-color:#2863ba !important;
+  }
+  .jianlan.lyheader{
+    background-color:#D4DEF1 !important;
+  }
+  .lysidebar.jianlan .icon{
+    color:#fff;
+  }
+  .lysidebar.jianlan .icon:hover,.lysidebar.jianlan .icon.active{
+    background-color:#12396F;
+  }
+
+  .jianlu{
+    background-color:#329436 !important;
+  }
+  .jianlu.lyheader{
+    background-color:#D6E9D4 !important;
+  }
+  .lysidebar.jianlu .icon{
+    color:#fff;
+  }
+  .lysidebar.jianlu .icon:hover,.lysidebar.jianlu .icon.active{
+    background-color:#1A6119;
+  }
+
+  .jianqing{
+    background-color:#41ADE6 !important;
+  }
+  .jianqing.lyheader{
+    background-color:#D9EDFA !important;
+  }
+  .lysidebar.jianqing .icon{
+    color:#fff;
+  }
+  .lysidebar.jianqing .icon:hover,.lysidebar.jianqing .icon.active{
+    background-color:#287BAB;
   }
 
   /*.shiguangshalou{*/
