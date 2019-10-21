@@ -81,5 +81,5 @@ simplejson==3.16.0
 uritemplate==3.0.0
 urllib3==1.23
 xxtea==1.2.0
-Werkzeug==0.14.1
+Werkzeug==0.15.3
 flask==1.0.2
