@@ -69,7 +69,7 @@ drf-extensions==0.3.1
 future==0.16.0
 hiredis==0.2.0
 itypes==1.1.0
-Jinja2==2.10
+Jinja2==2.11.3
 M2Crypto==0.26.2
 MarkupSafe==1.0
 meinheld==0.6.1
