@@ -79,7 +79,7 @@ pyminizip==0.2.3
 python-magic==0.4.15
 simplejson==3.16.0
 uritemplate==3.0.0
-urllib3==1.23
+urllib3==1.26.5
 xxtea==1.2.0
 Werkzeug==0.14.1
 flask==1.0.2
